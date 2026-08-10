@@ -15,6 +15,7 @@ No production implementation should be inferred from the current repository.
 ## Current accepted direction
 
 - Adversarial assessment before planning, with proportional documentation and decisive falsifiers.
+- Governed plan execution through dependency-ready nodes, expected-before-actual operations, immediate falsification/reconciliation, explicit deviation handling, and no invalid partial state.
 - Proportional sanity checking with exact frozen targets, explicit full/bounded/sampled claims, risk-based semantic depth, integration reconciliation, and durable findings.
 - Exact-head PR review, risk/phase-appropriate independence, guarded merge, and verified target integration.
 - LEGO macroscopic ownership, SOLID internal responsibilities, CUPID implementation quality, and simplest sufficient total-system design.
@@ -31,6 +32,7 @@ No production implementation should be inferred from the current repository.
 - Developers and coding agents: [`AGENTS.md`](AGENTS.md)
 - Canonical agent system: [`agent_files/README.md`](agent_files/README.md)
 - Assessment and planning: [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md)
+- Plan execution: [`agent_files/general_foundation/PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md)
 - Sanity checking: [`agent_files/general_foundation/SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md)
 - PR review and merge: [`agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md)
 - Repository organization: [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md)

@@ -1,24 +1,25 @@
 # Canonical Agent Operating Manual
 
-**Scope:** All research, specification, implementation, sanity checking, pull-request review, merge, debugging, documentation, and publication work in UMCGS.
+**Scope:** All research, specification, plan execution, implementation, sanity checking, pull-request review, merge, debugging, documentation, and publication work in UMCGS.
 
 ## Mission
 
-Produce trustworthy, reusable engineering progress without allowing the first domain, first model, first GPU, first implementation shortcut, early repository size, unjustified review claim, or stale PR approval to become an accidental permanent constraint.
+Produce trustworthy, reusable engineering progress without allowing the first domain, first model, first GPU, first implementation shortcut, stale plan wording, early repository size, unjustified review claim, or stale PR approval to become an accidental permanent constraint.
 
 ## Required orientation
 
 1. Read the root `AGENTS.md`, `AI_RULES.md`, `DESIGN_ALIGNMENT_CARD.md`, and `general_foundation/PRINCIPLES.md`.
 2. Identify the task class and assessment depth: routine, substantial, or critical.
 3. For substantial or critical work, read `general_foundation/ASSESSMENT_AND_PLANNING.md` and complete assessment before planning.
-4. For requested sanity, audit, whole-project review, incident, or release-readiness work, read `general_foundation/SANITY_CHECKING.md` and `general_foundation/SEMANTIC_INTERROGATION.md` before deep inspection.
-5. For PR readiness, review, approval, or merge work, read `general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md` before acting.
-6. Use `SYSTEM_REGISTRY.md` to identify the owning boundary and authoritative documents.
-7. For any new or moved artifact, read `general_foundation/PROJECT_ORGANIZATION.md` and `application_specific/REPOSITORY_ORGANIZATION.md`.
-8. For component, contract, dependency, foundational type/schema, compatibility, or reusable-name work, load the triggered detailed doctrine linked from `general_foundation/PRINCIPLES.md`.
-9. Inspect repository state and unrelated work before editing.
-10. Establish purpose, expected ranges, invariants, resource limits, lifecycle, failures, organizational home, dependencies, design weighting, and evidence requirements.
-11. Apply the reasoning gate.
+4. Before executing a material plan node, read `general_foundation/PLAN_EXECUTION.md` and prove node readiness.
+5. For requested sanity, audit, whole-project review, incident, or release-readiness work, read `general_foundation/SANITY_CHECKING.md` and `general_foundation/SEMANTIC_INTERROGATION.md` before deep inspection.
+6. For PR readiness, review, approval, or merge work, read `general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md` before acting.
+7. Use `SYSTEM_REGISTRY.md` to identify the owning boundary and authoritative documents.
+8. For any new or moved artifact, read `general_foundation/PROJECT_ORGANIZATION.md` and `application_specific/REPOSITORY_ORGANIZATION.md`.
+9. For component, contract, dependency, foundational type/schema, compatibility, or reusable-name work, load the triggered detailed doctrine linked from `general_foundation/PRINCIPLES.md`.
+10. Inspect repository state and unrelated work before editing.
+11. Establish purpose, expected ranges, invariants, resource limits, lifecycle, failures, organizational home, dependencies, design weighting, and evidence requirements.
+12. Apply the reasoning and plan-execution gates.
 
 ## Task routing
 
@@ -29,7 +30,8 @@ Produce trustworthy, reusable engineering progress without allowing the first do
 | Component or contract design | LEGO/component/contract/composition standards, accepted owning specification, registry and manifest |
 | Project organization | ADR-0004, organization guides, registry, affected component manifests |
 | Normative contract | Accepted owner direction and specification scope |
-| Production implementation | Accepted specification/component ownership plus an assessment disposition that permits implementation |
+| Plan execution | ADR-0009, current plan version/node, readiness evidence, expected effects, falsifier, rollback/safe stop, and triggered doctrine |
+| Production implementation | Accepted specification/component ownership, an assessment disposition that permits implementation, and a dependency-ready governed plan node |
 | Sanity check or audit | ADR-0007, frozen revision/artifact, explicit claim, complete coverage map, focused branch sizing, semantic interrogation, integrated reconciliation, and independent finding disposition where required |
 | PR readiness/review | ADR-0008, exact head/base, complete changed-surface accounting, phase/risk review mode, semantic/integration evidence, discussion reconciliation, and result |
 | Merge | ADR-0008, exact accepted head, correct target, current checks/reviews/protection, no blockers, deliberate merge method, expected-head guard, and post-merge verification |
@@ -67,6 +69,23 @@ Before planning substantial or critical implementation:
 7. plan only after the disposition permits it.
 
 The durable record should contain integrated answers and the strongest remaining objections, not a performative transcript. Use one combined assessment/plan by default and avoid duplicate administrative ledgers.
+
+## Plan execution gate
+
+Before executing a material node:
+
+1. identify the current plan record/version/node, owner, branch/environment, and frozen revision;
+2. prove dependencies, expected dependency outputs, authority, accepted specifications, repository state, environment, tools, generated inputs, and test/runtime trust;
+3. state the owned outcome, scope, non-goals, expected effects, outputs, acceptance, cheapest falsifier, rollback/recovery, and stop conditions;
+4. scan for triggered component, contract, naming, foundation, persistence, security, concurrency, memory, graph/search, evaluator, performance, generated/JIT/ABI, sanity, packaging, and release doctrine;
+5. prepare only the checkpoints, gates, fixtures, generated inputs, and bounded instrumentation needed to execute safely;
+6. apply one coherent ownership-sized operation;
+7. inspect exact actual effects immediately, compare expected and actual, run the focused falsifier, and reconcile material consequences;
+8. classify each operation as continue, accept, pause, revise, rollback, fail, or supersede;
+9. treat a change to cause, owner, authority, public contract, schema, ABI, consequence horizon, resource model, risk, acceptance, rollback, output, or downstream ordering as a material deviation requiring plan revision;
+10. leave no invalid partial state, competing authority, stale generated form, abandoned resource, or downstream node with false preconditions.
+
+A plan is not authority. A node listed in a plan is not automatically ready. Routine reversible single-session execution does not need a separate record; use one `plan-execution` record only when another session, agent, operator, coordinated group, invalid intermediate state, or high-consequence gate consumes its unique evidence.
 
 ## Design gate
 
@@ -110,7 +129,7 @@ Before marking a PR ready or approving it:
 1. freeze the PR number, intended target, reviewed base/merge base when material, exact head SHA, and comparison range;
 2. identify project phase and whether author-side, independent, or owner exact-head authorization is permitted/required;
 3. inspect the complete patch, changed-file inventory, ancestry, generated/manifest/schema/dependency effects, and PR discussion;
-4. verify authority, assessment, ownership, contracts, preserved behavior, and closure criteria;
+4. verify authority, assessment, plan-execution fidelity, ownership, contracts, preserved behavior, and closure criteria;
 5. review material semantic units and affected producer/consumer/end-to-end paths;
 6. verify focused evidence and current-head checks, including checks not run and infrastructure limits;
 7. classify blockers, questions, non-blocking improvements, and information precisely;
@@ -141,11 +160,11 @@ Formatting, exact-link repair, mechanical index updates, and clearly specified l
 
 ### Substantial
 
-Cross-file behavior, public interfaces, persistent formats, tests, dependency changes, component creation, file relocation, and ownership movement require an explicit plan and focused validation.
+Cross-file behavior, public interfaces, persistent formats, tests, dependency changes, component creation, file relocation, ownership movement, and cross-session plan execution require an explicit plan and focused validation.
 
 ### Critical
 
-CUDA execution, synchronization, atomics, memory layout, allocator/reclamation behavior, JIT/ABI, schema semantics, state identity, transpositions, cycles, evaluator integration, numerical contracts, hot-path optimization, repository/component boundary changes, and full system-sanity claims require high reasoning and evidence. If the agent cannot demonstrate both, it must not edit or certify the boundary.
+CUDA execution, synchronization, atomics, memory layout, allocator/reclamation behavior, JIT/ABI, schema semantics, state identity, transpositions, cycles, evaluator integration, numerical contracts, hot-path optimization, repository/component boundary changes, coordinated invalid-intermediate-state execution, and full system-sanity claims require high reasoning and evidence. If the agent cannot demonstrate both, it must not edit or certify the boundary.
 
 ## Core execution loop
 
@@ -155,30 +174,33 @@ CUDA execution, synchronization, atomics, memory layout, allocator/reclamation b
 4. **Research** — inspect prior art, platform constraints, and decisive unknowns.
 5. **Design** — apply LEGO → SOLID → CUPID and prove total-system sufficiency.
 6. **Specify** — settle foundational behavior before production code.
-7. **Plan** — one coherent change derived from the accepted assessment.
-8. **Implement** — preserve ownership, public surfaces, and dependency direction.
+7. **Plan** — one coherent dependency-ordered change derived from the accepted assessment.
+8. **Execute** — prove node readiness; state expected effects and falsifier; apply one coherent operation; inspect, falsify, reconcile, and classify.
 9. **Validate** — structure checks, focused checks, integration, failure paths, complete relevant suite.
 10. **Sanity-check** — freeze the subject, size focused review branches, interrogate changed semantic units, and reconcile the declared system surface.
-11. **Author-review when integrating** — inspect the exact complete PR head and affected integration before readiness.
+11. **Author-review when integrating** — inspect the exact complete PR head, plan-execution fidelity, and affected integration before readiness.
 12. **Independent-review when triggered** — review the frozen head without quietly repairing it.
 13. **Guarded merge when integrating** — revalidate current state and integrate the exact accepted head.
 14. **Post-merge verify when integrating** — confirm target SHA/tree, closure, branch, and dependent work.
-15. **Reconcile** — update authority, manifests, indexes, registry, findings, and archived history.
-16. **Hand off** — completed work, evidence, reviewed head/integrated SHA when applicable, claim limits, risks, and one next boundary.
+15. **Reconcile** — update authority, plan/execution state, manifests, indexes, registry, findings, and archived history.
+16. **Hand off** — completed work, evidence, partial-state status, reviewed head/integrated SHA when applicable, claim limits, risks, and one next boundary.
 
 If the task deliberately ends without repository integration, skip the PR/merge steps and state the verified non-integrating outcome explicitly.
 
-Detailed procedures are in `general_foundation/WORKFLOW.md`; use `CONTEXT_ROUTING.md` to limit stale context, `PROJECT_ORGANIZATION.md` before structural changes, `SANITY_CHECKING.md` for coverage claims, `PULL_REQUEST_REVIEW_AND_MERGE.md` for integration, and `REVIEW.md` for general review standards.
+Detailed procedures are in `general_foundation/WORKFLOW.md`; use `PLAN_EXECUTION.md` for material node execution, `CONTEXT_ROUTING.md` to limit stale context, `PROJECT_ORGANIZATION.md` before structural changes, `SANITY_CHECKING.md` for coverage claims, `PULL_REQUEST_REVIEW_AND_MERGE.md` for integration, and `REVIEW.md` for general review standards.
 
 ## Completion definition
 
 A task is complete only when:
 
-- the assessment disposition permits the completed work and the strongest material objections were resolved or bounded;
+- the assessment disposition permits the work and the strongest material objections were resolved or bounded;
+- every executed node was dependency-ready under the current plan version and authority;
+- expected and actual effects, variations, deviations, validation, and downstream outputs are reconciled;
 - the intended owned behavior or authorized non-integrating deliverable exists;
+- no invalid partial state, competing authority, stale generated artifact, abandoned resource, or false downstream precondition remains;
 - any triggered sanity claim names the exact revision, accounts for its declared surface at justified depth, uses focused leaf branches, interrogates every material unit, reconciles integration/lifecycle/design, and states its limits;
 - actionable independent findings have durable disposition and affected evidence was revalidated;
-- review-created state is intentionally disposed;
+- execution-created and review-created state is intentionally disposed;
 - when repository integration is part of the task, one exact PR head received phase/risk-appropriate review and all blockers/questions were resolved;
 - when repository integration is part of the task, the exact accepted head was merged through a guarded transaction and the target/resulting SHA was verified;
 - when repository integration is part of the task, issue closure, source-branch, dependent-work, and review-record effects are accurate;
@@ -188,7 +210,7 @@ A task is complete only when:
 - complexity allegedly removed has not merely been exported to consumers or lifecycle;
 - applicable invariants and failure behavior are verified;
 - no test or gate was weakened to obtain success;
-- authoritative documentation, component manifests, and registry entries agree with the result;
+- authoritative documentation, plan state, component manifests, registry entries, and downstream nodes agree with the result;
 - superseded material is handled with provenance;
 - repository state is intentional and reported accurately;
 - unresolved work is explicit in `next_step.yaml` rather than hidden in prose.
@@ -204,4 +226,4 @@ Every important statement should be identifiable as one of:
 - proposal;
 - unresolved assumption.
 
-Never present an inference as a measurement, a proposal as accepted, a sampled review as complete coverage, author-side review as independent approval, a stale-head approval as current, a local commit as published remote state, or a merge response as verified target integration.
+Never present a plan as authority, an inference as a measurement, a proposal as accepted, a sampled review as complete coverage, author-side review as independent approval, a stale-head approval as current, a local commit as published remote state, or a merge response as verified target integration.

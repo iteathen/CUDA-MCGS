@@ -7,6 +7,7 @@ The canonical development system is [`../../agent_files/README.md`](../../agent_
 The project method is:
 
 - proportional adversarial assessment before planning substantial or critical work;
+- governed plan execution through ready nodes, coherent operations, expected-versus-actual inspection, evidence-driven deviations, and no invalid partial state;
 - proportional sanity checking with exact claims, semantic interrogation, boundary/path reconciliation, and durable findings;
 - exact-head author-side PR review, independent review when triggered, a separate guarded merge transaction, and verified target integration;
 - purpose, bounds, and contextual design weighting before architecture;
@@ -22,6 +23,8 @@ The project method is:
 
 Assessment and planning are governed by [`../decisions/ADR-0006-adversarial-assessment-and-planning.md`](../decisions/ADR-0006-adversarial-assessment-and-planning.md) and [`../../agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](../../agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md).
 
+Plan execution is governed by [`../decisions/ADR-0009-governed-plan-execution.md`](../decisions/ADR-0009-governed-plan-execution.md) and [`../../agent_files/general_foundation/PLAN_EXECUTION.md`](../../agent_files/general_foundation/PLAN_EXECUTION.md).
+
 Sanity checking is governed by [`../decisions/ADR-0007-proportional-sanity-checking.md`](../decisions/ADR-0007-proportional-sanity-checking.md), [`../../agent_files/general_foundation/SANITY_CHECKING.md`](../../agent_files/general_foundation/SANITY_CHECKING.md), and [`../../agent_files/general_foundation/SEMANTIC_INTERROGATION.md`](../../agent_files/general_foundation/SEMANTIC_INTERROGATION.md).
 
 PR review and merge are governed by [`../decisions/ADR-0008-exact-head-pr-review-and-guarded-merge.md`](../decisions/ADR-0008-exact-head-pr-review-and-guarded-merge.md) and [`../../agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](../../agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md).
@@ -32,4 +35,4 @@ Organization is governed by [`../decisions/ADR-0004-large-project-organization.m
 
 Project-specific guardrails are in [`../../agent_files/application_specific/UMCGS_PROFILE.md`](../../agent_files/application_specific/UMCGS_PROFILE.md).
 
-Use the combined assessment template only when durable planning is needed. Use sanity and PR-review templates only when the claim, independence, consequence, dispute, or cross-session continuation requires persistent evidence. Routine self-sanity and author-side PR review belong in the PR/task result.
+Use the combined assessment template only when durable planning is needed. Use the plan-execution template only when coordinated, cross-session, high-consequence, or invalid-intermediate-state execution needs unique operation evidence. Use sanity and PR-review templates only when the claim, independence, consequence, dispute, or cross-session continuation requires persistent evidence. Routine execution, self-sanity, and author-side PR review belong in the issue, PR, or task result.

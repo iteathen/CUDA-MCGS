@@ -1,7 +1,9 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "updated": "2026-08-10",
   "status": "ready",
+  "plan_version": 1,
+  "node_id": "SPEC-V0",
   "objective": "Specify the version-0 universal contract set and normalized Search IR before production implementation.",
   "ownership_boundary": "docs/specs: framework contracts and conformance boundary",
   "authority": [
@@ -10,15 +12,17 @@
     "docs/decisions/ADR-0001-prior-art-disposition.md",
     "docs/decisions/ADR-0002-universal-contracts-specialized-engines.md",
     "docs/decisions/ADR-0003-device-resident-active-search.md",
-    "docs/decisions/ADR-0005-lego-design-hierarchy.md",
-    "agent_files/general_foundation/PRINCIPLES.md",
     "docs/decisions/ADR-0004-large-project-organization.md",
-    "agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md",
+    "docs/decisions/ADR-0005-lego-design-hierarchy.md",
     "docs/decisions/ADR-0006-adversarial-assessment-and-planning.md",
-    "agent_files/general_foundation/SANITY_CHECKING.md",
     "docs/decisions/ADR-0007-proportional-sanity-checking.md",
-    "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
     "docs/decisions/ADR-0008-exact-head-pr-review-and-guarded-merge.md",
+    "docs/decisions/ADR-0009-governed-plan-execution.md",
+    "agent_files/general_foundation/PRINCIPLES.md",
+    "agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md",
+    "agent_files/general_foundation/PLAN_EXECUTION.md",
+    "agent_files/general_foundation/SANITY_CHECKING.md",
+    "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
     "agent_files/application_specific/REPOSITORY_ORGANIZATION.md",
     "docs/specs/SPEC-0000-framework-requirements.md (proposal input, not authority)",
     "docs/architecture/FRAMEWORK_OVERVIEW.md (proposal input, not authority)"
@@ -30,7 +34,20 @@
     "All new artifacts must enter the mature-scale product-area/component organization.",
     "Project license selection is deferred and does not block original private pre-release work.",
     "The version-0 specification set must be derived from a proportional adversarial assessment, not the first plausible schema shape.",
+    "Execution proceeds through dependency-ready specification nodes; a listed deliverable is not automatically ready.",
     "The resulting specification PR must receive exact-head author-side review and guarded target verification; independent review follows objective risk/policy triggers."
+  ],
+  "preconditions": [
+    "The accepted charter and ADRs remain current.",
+    "The prior-art evidence and proposal inputs are available at recorded revisions.",
+    "No production runtime component is created before its owning contracts are accepted."
+  ],
+  "dependency_outputs_and_revisions": [],
+  "expected_local_effects": [
+    "Decision-ready proposal specifications for Search IR, domain, policy, evaluator, resources, graph semantics, and conformance."
+  ],
+  "expected_wider_effects": [
+    "A proposed component ownership/dependency map derived from contracts rather than first-implementation convenience."
   ],
   "deliverables": [
     "Search IR v0 specification",
@@ -42,14 +59,20 @@
     "Synthetic conformance-domain plan",
     "Proposed component ownership map derived from the accepted contracts"
   ],
-  "validation": [
+  "acceptance_criteria": [
     "Each expected domain dimension is representable without hidden game or neural assumptions.",
     "All capacities and exhaustion states are explicit.",
     "Device-closure requirements are testable.",
     "Prior-art gaps are converted into conformance cases.",
     "Every proposed implementation boundary maps to a durable component with acyclic dependencies.",
+    "The assessment records the strongest credible alternative/counterexample and decisive falsifiers without duplicating authority."
+  ],
+  "cheapest_decisive_falsifier": "A synthetic second domain, evaluator mode, graph/cycle case, or finite-resource profile requires a foundational contract redesign rather than an already-declared extension.",
+  "rollback_recovery_or_safe_stop": "Keep specifications in Proposal status, record the blocking counterexample or authority conflict, invalidate dependent nodes, and do not begin production implementation.",
+  "validation": [
+    "Cross-specification terminology and ownership reconciliation.",
+    "Synthetic conformance cases covering hidden-assumption risks.",
     "./scripts/verify-docs.sh",
-    "The assessment records the strongest credible alternative/counterexample and decisive falsifiers without duplicating authority.",
     "The final PR records the exact reviewed head, current-head checks, review mode, merge method, integrated target SHA, and claim limits."
   ],
   "blockers": [],

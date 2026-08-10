@@ -1,5 +1,5 @@
 name: Implementation
-description: Implement an accepted UMCGS specification
+description: Implement an accepted UMCGS specification through a governed plan node
 title: "[Implementation]: "
 labels: ["implementation"]
 body:
@@ -24,19 +24,26 @@ body:
       description: Link the assessment/plan or summarize its disposition, strongest credible objection, integrated resolution, sound fundamentals, and decisive falsifier. Do not duplicate accepted authority.
     validations:
       required: true
+  - type: textarea
+    id: plan-node
+    attributes:
+      label: Plan version, node, readiness, and execution contract
+      description: State plan record/version/node, owner, dependencies and expected revisions, frozen head/environment, expected local/wider effects, outputs, acceptance, cheapest falsifier, rollback/safe stop, material deviation triggers, and whether a durable execution record is required.
+    validations:
+      required: true
   - type: dropdown
     id: reasoning
     attributes:
       label: Reasoning level
       options:
         - Substantial
-        - Critical (CUDA, concurrency, memory, ABI, persistent state, hot path, component boundary, or foundational contract)
+        - Critical (CUDA, concurrency, memory, ABI, persistent state, hot path, component boundary, foundational contract, coordinated or invalid-intermediate-state execution)
     validations:
       required: true
   - type: textarea
     id: validation
     attributes:
       label: Completion evidence, validation, and stop conditions
-      description: Pair validation with the mechanisms claimed; include resource/failure/compatibility checks and evidence that would halt or redesign the work.
+      description: Pair validation with the mechanisms claimed; include expected-versus-actual inspection, resource/failure/compatibility checks, affected boundary/path reconciliation, downstream outputs, and evidence that would pause, revise, rollback, or fail the node.
     validations:
       required: true

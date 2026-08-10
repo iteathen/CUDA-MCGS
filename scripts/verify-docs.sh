@@ -30,6 +30,7 @@ required=(
   agent_files/DESIGN_ALIGNMENT_CARD.md
   agent_files/general_foundation/PRINCIPLES.md
   agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md
+  agent_files/general_foundation/PLAN_EXECUTION.md
   agent_files/general_foundation/SANITY_CHECKING.md
   agent_files/general_foundation/SEMANTIC_INTERROGATION.md
   agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md
@@ -61,6 +62,7 @@ required=(
   agent_files/application_specific/RESEARCH_POLICY.md
   agent_files/templates/component-manifest.template.yaml
   agent_files/templates/assessment-and-plan.template.md
+  agent_files/templates/plan-execution.template.yaml
   agent_files/templates/sanity-check.template.yaml
   agent_files/templates/semantic-review.template.yaml
   agent_files/templates/pr-review.template.md
@@ -90,6 +92,7 @@ required=(
   docs/decisions/ADR-0006-adversarial-assessment-and-planning.md
   docs/decisions/ADR-0007-proportional-sanity-checking.md
   docs/decisions/ADR-0008-exact-head-pr-review-and-guarded-merge.md
+  docs/decisions/ADR-0009-governed-plan-execution.md
   docs/development/README.md
   docs/research/README.md
   docs/research/prior-art/README.md

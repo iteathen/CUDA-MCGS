@@ -1,7 +1,8 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "title": "<task title>",
-  "status": "proposal",
+  "status": "proposal|accepted|active|paused|complete|superseded",
+  "plan_version": 1,
   "objective": "<owned result>",
   "product_area": "<top-level product area>",
   "component": "<stable component id or governance boundary>",
@@ -20,11 +21,39 @@
   "invariants": [],
   "public_contract_effects": [],
   "dependency_effects": [],
-  "coherent_steps": [],
-  "validation": [],
+  "nodes": [
+    {
+      "id": "N-001",
+      "status": "planned|ready|active|paused|accepted|rolled_back|failed|superseded|invalidated",
+      "owner": "",
+      "objective_or_truth_to_establish": "",
+      "preconditions": [],
+      "dependencies_and_expected_revisions": [],
+      "scope": [],
+      "non_goals": [],
+      "expected_local_effects": [],
+      "expected_wider_effects": [],
+      "expected_outputs_and_revisions": [],
+      "downstream_nodes": [],
+      "acceptance_criteria": [],
+      "cheapest_decisive_falsifier": "",
+      "broader_reconciliation_and_validation": [],
+      "rollback_recovery_or_safe_stop": "",
+      "stop_and_escalation_conditions": [],
+      "execution_record_required": false
+    }
+  ],
+  "cross_node_validation": [],
   "migration_or_compatibility": [],
   "manifest_registry_updates": [],
   "risks_and_unknowns": [],
-  "stop_conditions": [],
+  "plan_level_stop_conditions": [],
+  "expected_pr_review_and_merge": {
+    "review_mode": "author_side|independent|owner_exact_head_authorization|not_applicable",
+    "required_checks_reviews_and_protection": [],
+    "merge_method_and_reason": "",
+    "issue_closure_branch_and_dependent_work_effects": [],
+    "post_merge_verification": []
+  },
   "handoff_target": "<next boundary>"
 }

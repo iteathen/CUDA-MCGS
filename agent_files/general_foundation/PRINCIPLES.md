@@ -38,6 +38,18 @@ Simplicity is considered only after the fundamentals are sound. Administrative a
 
 See [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md).
 
+## Governed plan execution
+
+A plan is a hypothesis under current authority. Execute only a current dependency-ready node with explicit ownership, expected outputs, acceptance, runnable falsification, rollback/safe stop, and trustworthy repository/environment state.
+
+Before each material operation, state expected local and wider effects. Apply one coherent ownership-sized action, inspect exact actual effects immediately, run the cheapest decisive falsifier, reconcile material contracts/resources/lifecycle/design, and classify the outcome.
+
+A non-material variation may remain inside the node. A material change to cause, owner, authority, public contract, schema, ABI, consequence horizon, resource model, risk, acceptance, rollback, output, or downstream order requires plan revision. No node is accepted while invalid partial state, stale generated forms, abandoned resources, or false downstream preconditions remain.
+
+Use one durable execution record only when coordination, continuation, invalid intermediate states, high consequence, or another evidence consumer requires it.
+
+See [`PLAN_EXECUTION.md`](PLAN_EXECUTION.md).
+
 ## LEGO boundary
 
 Every substantial component is a movable brick with:
@@ -93,14 +105,16 @@ Represent essential domain complexity directly. Remove accidental complexity. Re
 - Universal contracts do not embed chess, games, one evaluator shape, one action shape, one graph model, or one GPU.
 - Generated hot paths may be highly specialized and may eliminate unused abstractions.
 - Performance changes require measured mechanism evidence plus semantic and search-quality guardrails.
+- Plan execution must not introduce hidden first-domain, host-control, memory, graph, evaluator, JIT/ABI, or resource assumptions.
 
-## Design stop conditions
+## Design and execution stop conditions
 
-Stop and resolve the boundary before implementation when ownership is ambiguous, dependencies cycle, a public contract leaks unstable/private types, state has multiple writers, a name implies unsupported generality, the expected second instance forces redesign, resource exhaustion is undefined, or alleged simplicity merely exports the problem.
+Stop and resolve the boundary before implementation or dependent continuation when ownership is ambiguous, dependencies are incomplete, authority conflicts, the plan version is stale, expected effects or falsifiers are unknown, public contracts leak unstable/private types, state has multiple writers, a name implies unsupported generality, the expected second instance forces redesign, resource exhaustion is undefined, actual effects materially diverge, or alleged simplicity merely exports the problem.
 
 ## Triggered detailed doctrine
 
 - [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md)
+- [`PLAN_EXECUTION.md`](PLAN_EXECUTION.md)
 - [`LEGO_ARCHITECTURE.md`](LEGO_ARCHITECTURE.md)
 - [`COMPONENT_STANDARD.md`](COMPONENT_STANDARD.md)
 - [`CONTRACT_STANDARD.md`](CONTRACT_STANDARD.md)
@@ -111,4 +125,4 @@ Stop and resolve the boundary before implementation when ownership is ambiguous,
 - [`COMPATIBILITY_AND_EVOLUTION.md`](COMPATIBILITY_AND_EVOLUTION.md)
 - [`FORBIDDEN_DESIGN_PATTERNS.md`](FORBIDDEN_DESIGN_PATTERNS.md)
 
-Use [`../templates/design-review.template.md`](../templates/design-review.template.md) for a durable design review and [`../templates/naming-analysis.template.yaml`](../templates/naming-analysis.template.yaml) for foundational reusable names.
+Use [`../templates/plan-execution.template.yaml`](../templates/plan-execution.template.yaml) only for durable coordinated/high-consequence execution, [`../templates/design-review.template.md`](../templates/design-review.template.md) for a durable design review, and [`../templates/naming-analysis.template.yaml`](../templates/naming-analysis.template.yaml) for foundational reusable names.
