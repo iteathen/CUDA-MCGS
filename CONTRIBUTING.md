@@ -1,6 +1,6 @@
 # Contributing to UMCGS
 
-UMCGS is currently documentation-first. Read [`AGENTS.md`](AGENTS.md) and [`agent_files/README.md`](agent_files/README.md) before opening a change.
+UMCGS is currently documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), and [`agent_files/README.md`](agent_files/README.md) before opening a change.
 
 ## Before production implementation
 
@@ -8,6 +8,8 @@ A change needs:
 
 - a clear ownership boundary;
 - a durable product-area/component home;
+- a LEGO ownership boundary with one state/lifecycle owner, meaningful ports, injected dependencies, and owned adapters;
+- domain-appropriate ranges and a total-system simplicity analysis;
 - accepted governing specifications, or an explicitly authorized disposable experiment;
 - defined invariants, ranges, lifecycle, resource limits, and failure behavior;
 - declared public/internal boundaries and dependencies;

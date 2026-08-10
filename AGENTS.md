@@ -8,11 +8,12 @@ Before changing anything:
 
 1. Read this file.
 2. Read [`agent_files/AGENTS.md`](agent_files/AGENTS.md) and [`agent_files/AI_RULES.md`](agent_files/AI_RULES.md).
-3. Read [`agent_files/SYSTEM_REGISTRY.md`](agent_files/SYSTEM_REGISTRY.md) to identify the owning boundary and source of truth.
-4. Read [`agent_files/general_foundation/PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and the UMCGS layout in [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md) before creating, moving, or splitting project artifacts.
-5. Read the accepted ADRs and specifications relevant to the task.
-6. Inspect repository status, existing work, and current project state.
-7. Apply the reasoning gate before editing.
+3. Read the compact mandatory design doctrine in [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md).
+4. Read [`agent_files/SYSTEM_REGISTRY.md`](agent_files/SYSTEM_REGISTRY.md) to identify the owning boundary and source of truth.
+5. Read [`agent_files/general_foundation/PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and the UMCGS layout in [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md) before creating, moving, or splitting project artifacts.
+6. Read the accepted ADRs and specifications relevant to the task. Load detailed design doctrine linked from `PRINCIPLES.md` when the task changes a component, contract, dependency, foundational representation, compatibility boundary, or reusable name.
+7. Inspect repository status, existing work, and current project state.
+8. Apply the reasoning gate before editing.
 
 ## Authority order
 
@@ -39,6 +40,9 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 
 ## Non-negotiable project invariants
 
+- Apply the accepted design hierarchy: domain truth and authority → purpose/bounds/contextual weighting → LEGO boundaries → SOLID responsibilities → CUPID quality → simplest sufficient total system → measured validation.
+- One authoritative fact/state/lifecycle has one visible owner; consumers use meaningful public contracts rather than internal mutation.
+- Dependencies are explicit and injected; platform, compatibility, domain-instance, and model-instance details remain behind owned adapters.
 - Organize the repository from the beginning as though it will become a very large project. Current file count is never justification for a flat, unowned, or temporary layout.
 - Universal at contracts and compilation boundaries; specialized in generated hot paths.
 - Every concrete engine is finite and has an explicit GPU-memory and resource plan.
@@ -50,7 +54,7 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 - Cross-component dependencies must be declared, acyclic, and made through public contracts rather than deep imports.
 - Tests, safety checks, validation gates, and benchmark requirements may not be weakened to make a change pass.
 
-See [`agent_files/application_specific/UMCGS_PROFILE.md`](agent_files/application_specific/UMCGS_PROFILE.md), [`ARCHITECTURE_GUARDRAILS.md`](agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md), and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
+See [`agent_files/general_foundation/LEGO_ARCHITECTURE.md`](agent_files/general_foundation/LEGO_ARCHITECTURE.md), [`agent_files/application_specific/UMCGS_PROFILE.md`](agent_files/application_specific/UMCGS_PROFILE.md), [`ARCHITECTURE_GUARDRAILS.md`](agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md), and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
 
 ## Large-project organization rule
 
@@ -78,6 +82,8 @@ The gate is not permission to abandon hard work. Research, inspect, test, and na
 
 - Work in the largest safe coherent unit owned by one boundary; avoid repeated tiny passes that cause context drift.
 - Decide the artifact's organizational home before writing it.
+- Before creating a reusable concept, state its owned invariant, intended equivalence class, exclusions, second-instance result, and first-consumer deletion result.
+- Before calling a design simple, account for complexity exported to callers, adapters, generated code, device memory, synchronization, migration, recovery, operations, diagnostics, testing, and expected integrations.
 - Diagnose before repairing: observe, compare with the contract, locate ownership, make one coherent repair, retest.
 - Never apply speculative fixes or optimize an unmeasured symptom.
 - Preserve raw evidence and label claims as owner requirement, accepted authority, verified observation, inference, proposal, or unresolved assumption.

@@ -8,15 +8,16 @@ Load the smallest authoritative context sufficient for the task. Repeatedly read
 
 ## Retrieval sequence
 
-1. Read root `AGENTS.md` and canonical agent rules.
+1. Read root `AGENTS.md`, canonical agent rules, and the compact `PRINCIPLES.md`.
 2. Read `STATUS.md` and `next_step.yaml` for current state.
 3. Identify the exact product area, component, and ownership boundary in `SYSTEM_REGISTRY.md`.
 4. For structural work, read the general and application-specific organization guides plus affected component manifests.
-5. Read accepted ADRs that govern the boundary.
-6. Read the accepted specification for the behavior.
-7. Inspect implementation, persistent state, tests, and benchmarks owned by that component.
-8. Read architecture or research only when rationale, alternatives, or external facts are material.
-9. Consult archive only for provenance.
+5. For component/contract/dependency/foundation/compatibility/naming work, load only the detailed design doctrine triggered by the task.
+6. Read accepted ADRs that govern the boundary.
+7. Read the accepted specification for the behavior.
+8. Inspect implementation, persistent state, tests, and benchmarks owned by that component.
+9. Read architecture or research only when rationale, alternatives, or external facts are material.
+10. Consult archive only for provenance.
 
 ## Freshness checks
 

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "visible_first_example": "",
+  "exact_owned_invariant": "",
+  "intended_equivalence_class": [],
+  "permitted_variation": [],
+  "excluded_cases": [],
+  "accidental_specificity_removed": [],
+  "candidate_names": [],
+  "selected_name": "",
+  "why_more_specific_names_are_wrong": "",
+  "why_more_general_names_are_wrong": "",
+  "second_instance_test": "",
+  "first_consumer_deletion_test": "",
+  "provisional_or_authoritative": ""
+}

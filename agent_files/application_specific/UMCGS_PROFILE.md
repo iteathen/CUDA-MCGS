@@ -14,6 +14,8 @@ The project is defining governance, organization, prior-art disposition, Search 
 
 ## Hard constraints
 
+- Apply ADR-0005 and the LEGO → SOLID → CUPID design hierarchy.
+- One authoritative graph/search/schema/resource fact has one visible owner; concrete composition is explicit.
 - Organize as a very large project from the first implementation.
 - Universal contracts; specialized generated hot paths.
 - Complete device closure after active-search ignition.
@@ -28,6 +30,8 @@ The project is defining governance, organization, prior-art disposition, Search 
 
 Follow:
 
+- [`../general_foundation/PRINCIPLES.md`](../general_foundation/PRINCIPLES.md)
+- [`../general_foundation/LEGO_ARCHITECTURE.md`](../general_foundation/LEGO_ARCHITECTURE.md)
 - [`../general_foundation/PROJECT_ORGANIZATION.md`](../general_foundation/PROJECT_ORGANIZATION.md)
 - [`REPOSITORY_ORGANIZATION.md`](REPOSITORY_ORGANIZATION.md)
 - [`../SYSTEM_REGISTRY.md`](../SYSTEM_REGISTRY.md)

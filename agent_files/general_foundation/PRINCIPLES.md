@@ -1,44 +1,103 @@
 # Engineering Principles
 
-**Scope:** Reusable foundation.
+**Scope:** Compact mandatory design alignment for UMCGS. Read this during startup, then load only the detailed doctrine triggered by the task.
 
-## Purpose before principle
+This design system is adapted from the project owner’s Ars Thaumaturgica foundation at commit `c3e25ad1032a1927c9709580fb415ffc48b91020`. UMCGS files are authoritative here; the source repository records provenance rather than an external dependency.
 
-Establish purpose, operating environment, expected ranges, correctness and safety tolerances, performance/memory limits, recovery, observability, and dominant concerns before choosing an architecture.
+## Governing design hierarchy
 
-Correctness, performance, safety, recoverability, usability, trust, and architecture are sibling concerns. Their weights are contextual.
+```text
+domain truth and project authority
+        ↓
+purpose, bounds, and contextual design weighting
+        ↓
+LEGO component ownership and boundaries
+        ↓
+SOLID internal responsibility structure
+        ↓
+CUPID implementation quality
+        ↓
+simplest sufficient total system
+        ↓
+measured validation and evolution
+```
 
-## Organize for mature scale from the first implementation
+A lower level may improve a design only inside the valid envelope established above it. “Simple” never means omitting required correctness, finite-resource behavior, lifecycle, compatibility, recovery, or expected-domain capacity.
 
-Repository and component organization should assume the project will become very large even when it currently contains few files.
+## Purpose before architecture
 
-Create stable product areas, ownership boundaries, dependency direction, public surfaces, registries, and validation homes early. Do not wait for root clutter, deep imports, and mixed ownership to force a disruptive reorganization.
+Establish outcome, authority, owner, operating environment, intended equivalence class, expected ranges, correctness/safety tolerances, finite memory/performance limits, lifecycle, recovery, compatibility, observability, and dominant concerns before selecting a representation or component structure.
 
-This is not permission to build speculative runtime abstractions. **Organizational readiness and implementation complexity are separate decisions.** Establish the correct place and boundary now; implement only the behavior currently justified.
+## LEGO boundary
+
+Every substantial component is a movable brick with:
+
+- one coherent owned invariant or lifecycle responsibility;
+- one visible owner for authoritative state and mutation;
+- small meaningful domain-named ports;
+- constructor- or composition-visible dependencies;
+- unstable platform, CUDA, version, format, domain-instance, and model-instance details behind adapters;
+- explicit lifecycle, cancellation, failure, and resource behavior where material;
+- isolated contract tests and replaceability without consumer rewrites.
+
+Consumers request changes through contracts. They do not mutate another component’s internals or deep-import private files.
+
+## SOLID and CUPID inside the brick
+
+SOLID separates responsibilities where meaning, ownership, change, testing, substitution, concurrency, or lifetime requires it. It does not require ceremonial decomposition.
+
+CUPID makes the valid implementation composable, idiomatic, predictable, domain-based, and pleasant to work with.
+
+## Universal without vague genericity
+
+UMCGS is universal at contracts and compilation boundaries, not through one giant optional-field runtime object.
+
+- Name the widest truthful invariant, not the first domain or consumer.
+- State intended members, permitted variation, and excluded cases.
+- Apply the second-instance test: another intended use should fit by configuration, profile, adapter, or an already-permitted extension—not foundational redesign.
+- Apply the first-consumer deletion test: a foundation should remain meaningful if its first consumer disappears.
+- Reject broad `Manager`, `System`, `Common`, `Shared`, `Generic`, `Data`, `Util`, `Helper`, `Processor`, or `Handler` owners that do not state one exact responsibility.
 
 ## Domain-appropriate foundations
 
-Foundational schemas, ranges, numeric types, identifiers, capacities, and interfaces must survive likely expansion within reasonable performance and complexity bounds. Do not encode accidental limits from the first example.
+Before choosing a type, width, identity, schema, collection, queue, precision, or layout, define semantic meaning, units, valid range, cardinality/growth, lifetime, concurrency, persistence/versioning, failure behavior, and memory/performance budget.
 
-YAGNI may reject speculative features. It may not justify an obviously narrow foundation that cannot represent expected domains or a flat organization that cannot represent expected project scale.
+Choose cheap durable capacity across the reasonably expected domain. Reject both ordinary-growth migration traps and speculative subsystems.
 
-## LEGO architecture
+## Composition and adapters
 
-At system boundaries:
+The composition root selects concrete domain, policy, evaluator, CUDA/platform, persistence, and compatibility adapters. It owns wiring and lifecycle, not domain/search rules. Dependencies point toward stable contracts.
 
-- inject dependencies;
-- use explicit ports/adapters;
-- make configuration and policy data-driven;
-- version contracts;
-- keep components replaceable and reusable;
-- minimize the radius of change.
+Physical inlining or linking into a generated engine does not erase conceptual ownership or contract conformance.
 
-Inside a component, prefer simple, idiomatic, cohesive code. Do not create micro-abstractions solely to imitate boundary modularity.
+## Simplest sufficient total system
 
-## Universal boundaries, specialized internals
+Measure complexity across callers, adapters, generation, persistence, migration, failure, recovery, operations, diagnostics, tests, device memory, synchronization, and expected second instances. Complexity moved elsewhere is not removed.
 
-Universality belongs in contracts, schemas, and compilation. A concrete runtime should eliminate unused fields, branches, layouts, and abstractions. Permanent runtime interpretation or oversized universal records require measured justification.
+Represent essential domain complexity directly. Remove accidental complexity. Reject ceremony that protects no invariant, boundary, responsibility, or useful operating property.
 
-## Trustworthy uncertainty
+## UMCGS non-negotiables
 
-Hard or open problems are not reasons to stop. Work them. But label assumptions, incomplete evidence, and uncertainty rather than manufacturing confidence.
+- Concrete engines are finite and memory-planned.
+- Production active search remains device-closed after ignition.
+- Universal contracts do not embed chess, games, one evaluator shape, one action shape, one graph model, or one GPU.
+- Generated hot paths may be highly specialized and may eliminate unused abstractions.
+- Performance changes require measured mechanism evidence plus semantic and search-quality guardrails.
+
+## Design stop conditions
+
+Stop and resolve the boundary before implementation when ownership is ambiguous, dependencies cycle, a public contract leaks unstable/private types, state has multiple writers, a name implies unsupported generality, the expected second instance forces redesign, resource exhaustion is undefined, or alleged simplicity merely exports the problem.
+
+## Triggered detailed doctrine
+
+- [`LEGO_ARCHITECTURE.md`](LEGO_ARCHITECTURE.md)
+- [`COMPONENT_STANDARD.md`](COMPONENT_STANDARD.md)
+- [`CONTRACT_STANDARD.md`](CONTRACT_STANDARD.md)
+- [`COMPOSITION_AND_DEPENDENCIES.md`](COMPOSITION_AND_DEPENDENCIES.md)
+- [`DOMAIN_APPROPRIATE_FOUNDATIONS.md`](DOMAIN_APPROPRIATE_FOUNDATIONS.md)
+- [`CONTEXTUAL_DESIGN_WEIGHTING.md`](CONTEXTUAL_DESIGN_WEIGHTING.md)
+- [`MAXIMUM_ACCURATE_GENERALITY.md`](MAXIMUM_ACCURATE_GENERALITY.md)
+- [`COMPATIBILITY_AND_EVOLUTION.md`](COMPATIBILITY_AND_EVOLUTION.md)
+- [`FORBIDDEN_DESIGN_PATTERNS.md`](FORBIDDEN_DESIGN_PATTERNS.md)
+
+Use [`../templates/design-review.template.md`](../templates/design-review.template.md) for a durable design review and [`../templates/naming-analysis.template.yaml`](../templates/naming-analysis.template.yaml) for foundational reusable names.

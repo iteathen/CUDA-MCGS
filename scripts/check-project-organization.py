@@ -136,6 +136,7 @@ def validate_component(path: Path, expected_area: str) -> None:
         "product_area",
         "path",
         "purpose",
+        "design",
         "public_contracts",
         "allowed_dependencies",
         "validation",
@@ -147,6 +148,29 @@ def validate_component(path: Path, expected_area: str) -> None:
             f"{manifest.relative_to(ROOT)} missing component keys: "
             + ", ".join(missing)
         )
+
+    design = component.get("design")
+    if not isinstance(design, dict):
+        fail(f"manifest missing design object: {manifest.relative_to(ROOT)}")
+    else:
+        design_required = {
+            "owned_invariant",
+            "intended_equivalence_class",
+            "excluded_cases",
+            "authoritative_state_owner",
+            "public_ports",
+            "injected_dependencies",
+            "adapter_boundaries",
+            "second_instance",
+            "first_consumer_deletion",
+            "simplest_sufficient_total_system",
+        }
+        design_missing = sorted(design_required - set(design))
+        if design_missing:
+            fail(
+                f"{manifest.relative_to(ROOT)} missing design keys: "
+                + ", ".join(design_missing)
+            )
 
     declared_path = component.get("path")
     actual_path = path.relative_to(ROOT).as_posix()

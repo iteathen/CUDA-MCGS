@@ -11,6 +11,17 @@ Review the complete owned change, not isolated lines.
 - One source of truth remains for every changed behavior.
 - No unrelated cleanup or hidden ownership movement entered the change.
 
+## Design hierarchy and simplicity
+
+- Domain truth, authority, purpose, operating bounds, and concern weighting are explicit.
+- The component has one coherent responsibility and one visible owner of state/lifecycle.
+- LEGO ports, injected dependencies, adapters, and replacement/test boundaries are valid.
+- SOLID responsibilities are separated where meaning/change/testing requires it, without ceremonial decomposition.
+- CUPID qualities are present: composable, focused, predictable, idiomatic, and domain-based.
+- The design is the simplest sufficient **total system**; complexity was not merely moved to callers, generated code, memory, synchronization, recovery, diagnostics, or tests.
+- Reusable concepts pass maximum-accurate-generality, second-instance, first-consumer deletion, and inclusion/exclusion tests.
+- No forbidden broad manager, service locator, hidden registry, false abstraction, or unbounded resource was introduced.
+
 ## Organization and ownership
 
 - Every artifact has a durable product area and component.

@@ -7,6 +7,18 @@
     "product_area": "components|adapters|conformance|benchmarks|tools|packaging",
     "path": "<repository-relative path>",
     "purpose": "<one coherent lifecycle responsibility>",
+    "design": {
+      "owned_invariant": "<one authoritative truth or stable function>",
+      "intended_equivalence_class": [],
+      "excluded_cases": [],
+      "authoritative_state_owner": "<component/subsystem>",
+      "public_ports": [],
+      "injected_dependencies": [],
+      "adapter_boundaries": [],
+      "second_instance": "<how another intended instance fits without foundational redesign>",
+      "first_consumer_deletion": "<why the component remains foundational or is consumer-owned>",
+      "simplest_sufficient_total_system": "<essential complexity, removed accidental complexity, and material complexity exported elsewhere>"
+    },
     "roles": [
       "build|host-runtime|device-runtime|schema|data|tool|adapter|test|benchmark|packaging"
     ],

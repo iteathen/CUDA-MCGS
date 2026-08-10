@@ -25,6 +25,20 @@ body:
     validations:
       required: true
   - type: textarea
+    id: design
+    attributes:
+      label: LEGO boundary and simplest sufficient total system
+      description: State authoritative owner, ports, injected dependencies, adapters, SOLID responsibility structure, CUPID qualities, and complexity moved elsewhere.
+    validations:
+      required: true
+  - type: textarea
+    id: foundations
+    attributes:
+      label: Domain-appropriate foundations and accurate-generality tests
+      description: State ranges/precision/capacities plus second-instance, first-consumer deletion, and included/excluded cases for reusable concepts.
+    validations:
+      required: true
+  - type: textarea
     id: contracts
     attributes:
       label: Invariants, lifecycle, resources, and failure behavior

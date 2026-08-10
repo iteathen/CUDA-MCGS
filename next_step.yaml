@@ -10,6 +10,8 @@
     "docs/decisions/ADR-0001-prior-art-disposition.md",
     "docs/decisions/ADR-0002-universal-contracts-specialized-engines.md",
     "docs/decisions/ADR-0003-device-resident-active-search.md",
+    "docs/decisions/ADR-0005-lego-design-hierarchy.md",
+    "agent_files/general_foundation/PRINCIPLES.md",
     "docs/decisions/ADR-0004-large-project-organization.md",
     "agent_files/application_specific/REPOSITORY_ORGANIZATION.md",
     "docs/specs/SPEC-0000-framework-requirements.md (proposal input, not authority)",

@@ -2,6 +2,22 @@
 
 **Scope:** Project-specific architectural constraints for specifications, components, generated engines, adapters, and runtime work.
 
+## LEGO ownership map
+
+UMCGS contracts and components must remain independently owned bricks. In particular:
+
+- schema/IR meaning is owned separately from parsing, compilation, generated layout, and execution;
+- the composition/compiler layer selects concrete domain, policy, evaluator, storage, scheduling, and resource implementations but does not own their domain rules;
+- graph storage owns node/edge/state/action arena validity, not selection or domain semantics;
+- transposition behavior owns lookup/claim/publication/collision contracts, not domain identity itself;
+- domain adapters own state identity, transition, terminal, history, and cycle meaning;
+- search-policy adapters own selection, reservation, widening, backup, and ranking meaning;
+- evaluator adapters own encoding, resident execution contract, and output interpretation;
+- host lifecycle owns loading/allocation/launch/cancellation/completion, not active-search decisions;
+- diagnostics observe bounded facts and never become a second control plane or state owner.
+
+Concrete implementations may be linked/inlined into one generated binary without erasing these ownership boundaries. Physical fusion is permitted when measured; semantic ownership and contracts remain separate.
+
 ## Universal core boundary
 
 The core may know about generic search concepts only through accepted contracts and Search IR. It must not embed:
@@ -54,7 +70,7 @@ Cross-component dependencies must be public, declared, directional, and acyclic.
 - examples and conformance suites consume public surfaces only;
 - diagnostics cannot become an alternate control plane.
 
-Do not create generic `common`, `shared`, or `utils` components to conceal unclear ownership.
+Do not create generic `common`, `shared`, or `utils` components to conceal unclear ownership. Do not create a broad `SearchManager`, service locator, callback registry, or universal event bus to bypass explicit composition.
 
 ## Graph semantics
 

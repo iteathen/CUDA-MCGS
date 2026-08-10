@@ -8,20 +8,22 @@ Produce trustworthy, reusable engineering progress without allowing the first do
 
 ## Required orientation
 
-1. Read the root `AGENTS.md` and `AI_RULES.md`.
+1. Read the root `AGENTS.md`, `AI_RULES.md`, and `general_foundation/PRINCIPLES.md`.
 2. Identify the task class: research, specification, decision, organization, implementation, debugging, review, validation, migration, or publication.
 3. Use `SYSTEM_REGISTRY.md` to identify the owning boundary and authoritative documents.
 4. For any new or moved artifact, read `general_foundation/PROJECT_ORGANIZATION.md` and `application_specific/REPOSITORY_ORGANIZATION.md`.
-5. Inspect repository state and unrelated work before editing.
-6. Establish purpose, expected ranges, invariants, resource limits, lifecycle, failures, organizational home, dependencies, and evidence requirements.
-7. Apply the reasoning gate.
+5. For component, contract, dependency, foundational type/schema, compatibility, or reusable-name work, load the triggered detailed doctrine linked from `general_foundation/PRINCIPLES.md`.
+6. Inspect repository state and unrelated work before editing.
+7. Establish purpose, expected ranges, invariants, resource limits, lifecycle, failures, organizational home, dependencies, design weighting, and evidence requirements.
+8. Apply the reasoning gate.
 
 ## Task routing
 
 | Task | Required authority before editing |
 |---|---|
 | Research | Research policy, exact sources, revision, and license |
-| Foundational design | Charter, prior ADRs, decision-ready alternatives |
+| Foundational design | Charter, ADR-0005, `PRINCIPLES.md`, triggered design doctrine, prior ADRs, decision-ready alternatives |
+| Component or contract design | LEGO/component/contract/composition standards, accepted owning specification, registry and manifest |
 | Project organization | ADR-0004, organization guides, registry, affected component manifests |
 | Normative contract | Accepted owner direction and specification scope |
 | Production implementation | Accepted specification and component ownership for the boundary |
@@ -46,6 +48,23 @@ If the answers are missing, establish the organization in the same change before
 
 Large-project organization does **not** mean inventing runtime layers, microservices, or separate repositories without need. It means stable hierarchy, ownership, dependency direction, and discoverability from the first implementation.
 
+## Design gate
+
+Before accepting a component or public contract, establish:
+
+1. exact domain truth, purpose, operating bounds, and concern weighting;
+2. one coherent owner of state, lifecycle, and rules;
+3. LEGO public ports, injected dependencies, adapters, and non-responsibilities;
+4. SOLID internal responsibility boundaries without ceremonial decomposition;
+5. CUPID implementation qualities;
+6. domain-appropriate ranges, precision, capacities, identities, and failure behavior;
+7. maximum-accurate-generality tests for reusable concepts and names;
+8. compatibility/evolution placement;
+9. total-system simplicity, including complexity moved elsewhere;
+10. decisive validation and revisit triggers.
+
+Use `templates/design-review.template.md` for foundational or contested designs.
+
 ## Reasoning levels
 
 ### Routine
@@ -63,15 +82,16 @@ CUDA execution, synchronization, atomics, memory layout, allocator/reclamation b
 ## Core execution loop
 
 1. **Orient** — authority, state, scope, organization, prior work.
-2. **Bound** — purpose, ownership, contracts, ranges, failures, resources, dependencies.
-3. **Research** — inspect relevant prior art and platform constraints.
-4. **Specify** — settle foundational behavior before production code.
-5. **Plan** — one coherent change, placement, validation, migration, documentation.
-6. **Implement** — preserve ownership, public surfaces, and dependency direction.
-7. **Validate** — structure checks, focused checks, integration, failure paths, complete relevant suite.
-8. **Reconcile** — update authority, manifests, indexes, registry, and archived history.
-9. **Publish** — inspect status/diff, commit coherently, record exact state.
-10. **Hand off** — completed work, evidence, risks, and one next boundary.
+2. **Bound** — purpose, ownership, contracts, ranges, failures, resources, dependencies, and concern weighting.
+3. **Research** — inspect relevant prior art and platform constraints that could change the boundary.
+4. **Design** — apply LEGO → SOLID → CUPID and prove total-system sufficiency.
+5. **Specify** — settle foundational behavior before production code.
+6. **Plan** — one coherent change, placement, validation, migration, documentation.
+7. **Implement** — preserve ownership, public surfaces, and dependency direction.
+8. **Validate** — structure checks, focused checks, integration, failure paths, complete relevant suite.
+9. **Reconcile** — update authority, manifests, indexes, registry, and archived history.
+10. **Publish** — inspect status/diff, commit coherently, record exact state.
+11. **Hand off** — completed work, evidence, risks, and one next boundary.
 
 Detailed procedures are in `general_foundation/WORKFLOW.md`; use `CONTEXT_ROUTING.md` to limit stale context, `PROJECT_ORGANIZATION.md` before structural changes, and `REVIEW.md` before publication.
 
@@ -82,6 +102,8 @@ A task is complete only when:
 - the intended owned behavior exists;
 - the artifact is in the correct durable product area and component;
 - public/internal boundaries and dependencies are explicit;
+- the design follows the accepted hierarchy and names the owned invariant at the correct scale;
+- complexity allegedly removed has not merely been exported to consumers or lifecycle;
 - applicable invariants and failure behavior are verified;
 - no test or gate was weakened to obtain success;
 - authoritative documentation, component manifests, and registry entries agree with the result;

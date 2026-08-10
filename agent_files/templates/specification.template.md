@@ -8,6 +8,16 @@
 
 ## Scope / out of scope
 
+## LEGO ownership and design boundary
+
+### Exact owned invariant and state owner
+
+### Intended equivalence class, permitted variation, and exclusions
+
+### Public ports, injected dependencies, and adapters
+
+### Second-instance / first-consumer deletion / total-system simplicity
+
 ## Terms
 
 ## Inputs and outputs

@@ -10,5 +10,6 @@ Accepted ADRs are immutable records. A later ADR may supersede an earlier one, b
 - [`ADR-0002-universal-contracts-specialized-engines.md`](ADR-0002-universal-contracts-specialized-engines.md) — preserve universality in contracts and compile specialized engines.
 - [`ADR-0003-device-resident-active-search.md`](ADR-0003-device-resident-active-search.md) — keep the active production search device-closed after ignition.
 - [`ADR-0004-large-project-organization.md`](ADR-0004-large-project-organization.md) — organize repository and components for mature scale from inception.
+- [`ADR-0005-lego-design-hierarchy.md`](ADR-0005-lego-design-hierarchy.md) — apply domain authority → LEGO → SOLID → CUPID → simplest sufficient total-system design.
 
 Use [`../../agent_files/templates/decision-record.template.md`](../../agent_files/templates/decision-record.template.md). Each ADR states status, context, decision, evidence, consequences, alternatives, and revisit triggers.

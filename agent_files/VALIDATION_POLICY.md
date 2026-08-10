@@ -20,7 +20,23 @@ Required for every repository change that touches durable project state:
 
 This verifies required authority, status markers, relative links, structured records, issue forms, project topology, and component manifest placement.
 
-### 2. Schema and generated artifacts
+### 2. Design and component boundaries
+
+A component, public contract, dependency, foundational representation, compatibility boundary, or reusable naming change must verify:
+
+- governing purpose, operating bounds, and contextual concern weighting;
+- singular state/lifecycle ownership and explicit non-responsibilities;
+- LEGO ports, injected dependencies, adapters, and replacement/test boundary;
+- SOLID internal responsibilities without ceremonial decomposition;
+- CUPID implementation quality;
+- domain-appropriate ranges, precision, capacity, and exhaustion behavior;
+- second-instance, first-consumer deletion, and inclusion/exclusion tests for reusable concepts;
+- total-system simplicity, including complexity moved elsewhere;
+- compatibility/evolution and decisive falsifying evidence.
+
+Use `agent_files/templates/design-review.template.md` for foundational or contested designs.
+
+### 3. Schema and generated artifacts
 
 A schema/compiler change must verify:
 
@@ -32,15 +48,15 @@ A schema/compiler change must verify:
 - backward/forward compatibility rules;
 - exact range, alignment, precision, and layout probes where applicable.
 
-### 3. Component-local behavior
+### 4. Component-local behavior
 
 Every component owns focused tests for public contracts, internal invariants, failure states, lifecycle, concurrency, and resource exhaustion. The component manifest lists commands.
 
-### 4. Cross-component integration
+### 5. Cross-component integration
 
 The repository integration suite verifies only public surfaces and declared dependency direction. It must include failure propagation and incompatible-version behavior.
 
-### 5. Reference and conformance
+### 6. Reference and conformance
 
 Complex search behavior requires deterministic reference cases and synthetic domains that expose:
 
@@ -53,7 +69,7 @@ Complex search behavior requires deterministic reference cases and synthetic dom
 - resource pressure and exhaustion;
 - rerooting/persistence where selected.
 
-### 6. CUDA/device correctness
+### 7. CUDA/device correctness
 
 Device changes require relevant combinations of:
 
@@ -66,7 +82,7 @@ Device changes require relevant combinations of:
 - cancellation and failure injection;
 - explicit proof that production search does not depend on host-produced intermediate decisions.
 
-### 7. Performance
+### 8. Performance
 
 Performance claims require:
 
@@ -82,7 +98,7 @@ Performance claims require:
 
 A faster result that changes search quality, domain semantics, resource limits, or stopping behavior is not automatically an improvement.
 
-### 8. Release/publication
+### 9. Release/publication
 
 Before publishing:
 

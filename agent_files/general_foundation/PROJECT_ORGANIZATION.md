@@ -56,7 +56,7 @@ A product area groups components by durable responsibility, such as runtime, com
 
 ### Component
 
-A component is the smallest independently owned, contract-bearing unit. It has:
+A component is the smallest independently owned, contract-bearing LEGO unit. Follow [`LEGO_ARCHITECTURE.md`](LEGO_ARCHITECTURE.md) and [`COMPONENT_STANDARD.md`](COMPONENT_STANDARD.md). It has:
 
 - one stable identifier;
 - one primary purpose;
@@ -152,7 +152,7 @@ A component may expose:
 - a data format;
 - a test/conformance protocol.
 
-Consumers depend on that declared surface. They must not import private files by relative path, depend on private symbols, or infer layout from implementation.
+Consumers depend on that declared surface, which follows [`CONTRACT_STANDARD.md`](CONTRACT_STANDARD.md). They must not import private files by relative path, depend on private symbols, or infer layout from implementation.
 
 Internal refactoring should not require unrelated consumers to change.
 

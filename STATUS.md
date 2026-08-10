@@ -16,6 +16,7 @@ Framework definition and evidence gathering. No production runtime implementatio
 - Contracts are universal; hot paths are specialized.
 - UMCGS will be built as a new framework while using prior art as references and benchmarks.
 - Repository and component organization assumes mature large-project scale from inception.
+- LEGO macroscopic ownership, SOLID internal responsibility, CUPID implementation quality, and total-system simplicity govern design.
 - Canonical agent governance lives in `agent_files/`.
 - Project license selection is deferred and does not block original private pre-release work.
 
@@ -26,6 +27,7 @@ Framework definition and evidence gathering. No production runtime implementatio
 - ADR-0002 universal contracts / specialized engines: accepted.
 - ADR-0003 device-resident active search: accepted.
 - ADR-0004 large-project organization: accepted.
+- ADR-0005 LEGO design hierarchy: accepted.
 - Framework architecture overview and specification map: proposals.
 - Detailed normative Search IR/domain/policy/evaluator/resource specifications: not yet accepted.
 

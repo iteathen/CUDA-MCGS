@@ -6,6 +6,10 @@
 
 ## Public surface and dependency direction
 
+## LEGO / SOLID / CUPID design and total-system simplicity
+
+## Domain-appropriate foundations and naming tests
+
 ## What changed and why
 
 ## Invariants, lifecycle, and failure behavior

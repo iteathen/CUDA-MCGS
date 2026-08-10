@@ -8,6 +8,18 @@
 
 ## Purpose
 
+## LEGO design boundary
+
+### Owned invariant and authoritative state owner
+
+### Intended equivalence class and exclusions
+
+### Public ports, injected dependencies, and adapters
+
+### Second-instance and first-consumer deletion results
+
+### Simplest sufficient total-system analysis
+
 ## Entrypoints
 
 ## Ownership and source of truth

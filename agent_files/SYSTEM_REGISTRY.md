@@ -18,6 +18,7 @@ This registry tells developers and agents where durable information and future i
 | Boundary ID | Owns | Authoritative location | Status |
 |---|---|---|---|
 | `governance.agent` | Agent workflow, reasoning gates, organization, validation | [`agent_files/`](README.md) | Active |
+| `governance.design` | LEGO design hierarchy, components, contracts, composition, foundations, naming, compatibility | [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md) and its linked triggered doctrine | Accepted |
 | `governance.owner-entry` | Mandatory repository entry rules | [`../AGENTS.md`](../AGENTS.md) | Active |
 | `project.charter` | Mission, product boundary, first milestone | [`../docs/PROJECT_CHARTER.md`](../docs/PROJECT_CHARTER.md) | Accepted |
 | `project.decisions` | Cross-cutting accepted choices | [`../docs/decisions/`](../docs/decisions/README.md) | Active |

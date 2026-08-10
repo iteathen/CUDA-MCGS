@@ -1,16 +1,19 @@
-# Local/editor state
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Build and generated local output
+build/
+dist/
+out/
+.cache/
+
+# Editors and operating systems
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# Operating-system files
 .DS_Store
 Thumbs.db
-
-# Generated local output
-build/
-dist/
-out/
-.cache/

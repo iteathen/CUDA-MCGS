@@ -27,6 +27,15 @@ required=(
   agent_files/SYSTEM_REGISTRY.md
   agent_files/VALIDATION_POLICY.md
   agent_files/general_foundation/PRINCIPLES.md
+  agent_files/general_foundation/LEGO_ARCHITECTURE.md
+  agent_files/general_foundation/COMPONENT_STANDARD.md
+  agent_files/general_foundation/CONTRACT_STANDARD.md
+  agent_files/general_foundation/COMPOSITION_AND_DEPENDENCIES.md
+  agent_files/general_foundation/DOMAIN_APPROPRIATE_FOUNDATIONS.md
+  agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md
+  agent_files/general_foundation/MAXIMUM_ACCURATE_GENERALITY.md
+  agent_files/general_foundation/COMPATIBILITY_AND_EVOLUTION.md
+  agent_files/general_foundation/FORBIDDEN_DESIGN_PATTERNS.md
   agent_files/general_foundation/PROJECT_ORGANIZATION.md
   agent_files/general_foundation/WORKFLOW.md
   agent_files/general_foundation/CONTEXT_ROUTING.md
@@ -45,6 +54,8 @@ required=(
   agent_files/application_specific/MEMORY_AND_PERFORMANCE.md
   agent_files/application_specific/RESEARCH_POLICY.md
   agent_files/templates/component-manifest.template.yaml
+  agent_files/templates/design-review.template.md
+  agent_files/templates/naming-analysis.template.yaml
   agent_files/templates/decision-record.template.md
   agent_files/templates/specification.template.md
   agent_files/templates/research-note.template.md
@@ -65,6 +76,7 @@ required=(
   docs/decisions/ADR-0002-universal-contracts-specialized-engines.md
   docs/decisions/ADR-0003-device-resident-active-search.md
   docs/decisions/ADR-0004-large-project-organization.md
+  docs/decisions/ADR-0005-lego-design-hierarchy.md
   docs/development/README.md
   docs/research/README.md
   docs/research/prior-art/README.md
