@@ -12,10 +12,14 @@ Link the durable assessment/plan, or concisely state the disposition, strongest 
 
 ## Validation and evidence
 
+## Sanity / independent-review claim and limits
+
+State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name the reviewed revision/artifact, coverage boundary, critical leaves, actionable findings/issues, invalidated/rerun evidence, checks not run, and final claim limits. Link the canonical sanity record when one exists; do not duplicate it here.
+
 ## Performance and GPU-memory evidence
 
 ## Compatibility, migration, rollback, and cleanup
 
-## Documentation, registry, and archived material
+## Documentation, registry, findings, and archived material
 
 ## Remaining risks / assumptions / revisit triggers

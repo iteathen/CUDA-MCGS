@@ -20,6 +20,7 @@ required=(
   .github/ISSUE_TEMPLATE/config.yml
   .github/ISSUE_TEMPLATE/implementation.yml
   .github/ISSUE_TEMPLATE/research.yml
+  .github/ISSUE_TEMPLATE/sanity-finding.yml
   .github/ISSUE_TEMPLATE/specification.yml
   agent_files/README.md
   agent_files/AGENTS.md
@@ -29,6 +30,8 @@ required=(
   agent_files/DESIGN_ALIGNMENT_CARD.md
   agent_files/general_foundation/PRINCIPLES.md
   agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md
+  agent_files/general_foundation/SANITY_CHECKING.md
+  agent_files/general_foundation/SEMANTIC_INTERROGATION.md
   agent_files/general_foundation/LEGO_ARCHITECTURE.md
   agent_files/general_foundation/COMPONENT_STANDARD.md
   agent_files/general_foundation/CONTRACT_STANDARD.md
@@ -57,6 +60,8 @@ required=(
   agent_files/application_specific/RESEARCH_POLICY.md
   agent_files/templates/component-manifest.template.yaml
   agent_files/templates/assessment-and-plan.template.md
+  agent_files/templates/sanity-check.template.yaml
+  agent_files/templates/semantic-review.template.yaml
   agent_files/templates/design-review.template.md
   agent_files/templates/naming-analysis.template.yaml
   agent_files/templates/decision-record.template.md
@@ -81,6 +86,7 @@ required=(
   docs/decisions/ADR-0004-large-project-organization.md
   docs/decisions/ADR-0005-lego-design-hierarchy.md
   docs/decisions/ADR-0006-adversarial-assessment-and-planning.md
+  docs/decisions/ADR-0007-proportional-sanity-checking.md
   docs/development/README.md
   docs/research/README.md
   docs/research/prior-art/README.md

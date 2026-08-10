@@ -10,11 +10,12 @@ Before changing anything:
 2. Read [`agent_files/AGENTS.md`](agent_files/AGENTS.md) and [`agent_files/AI_RULES.md`](agent_files/AI_RULES.md).
 3. Read [`agent_files/DESIGN_ALIGNMENT_CARD.md`](agent_files/DESIGN_ALIGNMENT_CARD.md) and the compact doctrine in [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md).
 4. For substantial or critical work, read [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md) before committing to a design or implementation sequence.
-5. Read [`agent_files/SYSTEM_REGISTRY.md`](agent_files/SYSTEM_REGISTRY.md) to identify the owning boundary and source of truth.
-6. Read [`agent_files/general_foundation/PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and the UMCGS layout in [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md) before creating, moving, or splitting project artifacts.
-7. Read the accepted ADRs and specifications relevant to the task. Load detailed design doctrine linked from `PRINCIPLES.md` when the task changes a component, contract, dependency, foundational representation, compatibility boundary, or reusable name.
-8. Inspect repository status, existing work, and current project state.
-9. Apply the reasoning gate before editing.
+5. For a requested sanity check, audit, whole-project review, complete review, incident review, or release-readiness claim, read [`agent_files/general_foundation/SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md) and [`SEMANTIC_INTERROGATION.md`](agent_files/general_foundation/SEMANTIC_INTERROGATION.md) before deep inspection.
+6. Read [`agent_files/SYSTEM_REGISTRY.md`](agent_files/SYSTEM_REGISTRY.md) to identify the owning boundary and source of truth.
+7. Read [`agent_files/general_foundation/PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and the UMCGS layout in [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md) before creating, moving, or splitting project artifacts.
+8. Read the accepted ADRs and specifications relevant to the task. Load detailed design doctrine linked from `PRINCIPLES.md` when the task changes a component, contract, dependency, foundational representation, compatibility boundary, or reusable name.
+9. Inspect repository status, existing work, and current project state.
+10. Apply the reasoning gate before editing.
 
 ## Authority order
 
@@ -42,6 +43,8 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 ## Non-negotiable project invariants
 
 - Assess substantial and critical work before planning; use a strong adversary to expose hidden assumptions, unsound simplicity, and unnecessary machinery.
+- A sanity claim names an exact frozen revision or artifact and is explicitly `full`, `bounded`, or `sampled`; sampled evidence is never presented as complete coverage.
+- Full sanity means every declared surface is accounted for at risk-justified depth, followed by boundary, end-to-end, lifecycle, and findings reconciliation—not exhaustive paperwork for every low-risk leaf.
 - Apply the accepted design hierarchy: domain truth and authority → purpose/bounds/contextual weighting → LEGO boundaries → SOLID responsibilities → CUPID quality → simplest sufficient total system → measured validation.
 - One authoritative fact/state/lifecycle has one visible owner; consumers use meaningful public contracts rather than internal mutation.
 - Dependencies are explicit and injected; platform, compatibility, domain-instance, and model-instance details remain behind owned adapters.
@@ -56,7 +59,7 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 - Cross-component dependencies must be declared, acyclic, and made through public contracts rather than deep imports.
 - Tests, safety checks, validation gates, and benchmark requirements may not be weakened to make a change pass.
 
-See [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`LEGO_ARCHITECTURE.md`](agent_files/general_foundation/LEGO_ARCHITECTURE.md), [`agent_files/application_specific/UMCGS_PROFILE.md`](agent_files/application_specific/UMCGS_PROFILE.md), [`ARCHITECTURE_GUARDRAILS.md`](agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md), and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
+See [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md), [`LEGO_ARCHITECTURE.md`](agent_files/general_foundation/LEGO_ARCHITECTURE.md), [`agent_files/application_specific/UMCGS_PROFILE.md`](agent_files/application_specific/UMCGS_PROFILE.md), [`ARCHITECTURE_GUARDRAILS.md`](agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md), and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
 
 ## Large-project organization rule
 
@@ -80,11 +83,27 @@ Architecture, CUDA synchronization, memory layout, lifetimes, concurrency, JIT/A
 
 The gate is not permission to abandon hard work. Research, inspect, test, and narrow the uncertainty first.
 
+## Sanity gate
+
+When a sanity or audit claim is made:
+
+1. freeze the exact revision/artifact and declare `full`, `bounded`, or `sampled`;
+2. map coverage by semantic owner and integration boundary rather than file count;
+3. apply core, triggered-module, or exhaustive depth according to risk;
+4. interrogate material semantic units rather than merely describing them;
+5. reconcile component boundaries, critical end-to-end paths, cross-cutting lifecycle, contradictions, and findings;
+6. treat tests, analyzers, sanitizers, and benchmarks as evidence rather than substitutes for understanding;
+7. disclose checks not run, access limits, invalidated evidence, and claim limits;
+8. give actionable independent findings durable disposition instead of quietly repairing them.
+
+Routine implementation self-sanity may stay in the PR/task record. Use a separate sanity record only when the claim, duration, independence, parallelism, or continuation requires it.
+
 ## Work and evidence rules
 
 - Work in the largest safe coherent unit owned by one boundary; avoid repeated tiny passes that cause context drift.
 - Decide the artifact's organizational home before writing it.
 - Preserve one proportional assessment/plan by default; link existing authority rather than creating duplicate administrative ledgers.
+- Preserve one proportional sanity record only when the review claim needs one; do not create one form per file or function.
 - Before creating a reusable concept, state its owned invariant, intended equivalence class, exclusions, second-instance result, and first-consumer deletion result.
 - Before calling a design simple, account for complexity exported to callers, adapters, generated code, device memory, synchronization, migration, recovery, operations, diagnostics, testing, and expected integrations.
 - Diagnose before repairing: observe, compare with the contract, locate ownership, make one coherent repair, retest.

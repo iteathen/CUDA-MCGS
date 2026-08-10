@@ -34,7 +34,24 @@ Substantial and critical work must verify that:
 
 Use `agent_files/templates/assessment-and-plan.template.md` when a durable record is required.
 
-### 3. Design and component boundaries
+### 3. Sanity checking and independent review
+
+When a sanity, audit, complete-review, incident, or release-readiness claim is made, verify that:
+
+- the exact revision/artifact and `full`, `bounded`, or `sampled` claim are explicit;
+- included/excluded surfaces, owners, authority, risks, access limits, and review mode are declared;
+- every surface included in a full or bounded claim is accounted for at risk-justified depth;
+- material semantic units answer the mandatory core and every objectively triggered module;
+- component/producer-consumer boundaries, representative and critical end-to-end paths, cross-cutting lifecycle, contradictions, and invalidated evidence are reconciled;
+- tests, analyzers, sanitizers, profilers, benchmarks, and artifact checks are used as mechanism-relevant evidence rather than semantic substitutes;
+- confirmed violations and high-risk uncertainties have exact mechanism, consequence, owner, and durable disposition;
+- independent review did not quietly repair findings;
+- checks not run, missing access/evidence, temporary review state, and claim limits are explicit;
+- the final claim is no broader than the evidence.
+
+Routine implementation self-sanity may be recorded in the PR or task result. Use `agent_files/templates/sanity-check.template.yaml` only when a full, long-running bounded, multi-agent, independent, incident, release, or cross-session review needs durable coverage state. Use `semantic-review.template.yaml` only for critical or independently assigned leaves.
+
+### 4. Design and component boundaries
 
 A component, public contract, dependency, foundational representation, compatibility boundary, or reusable naming change must verify:
 
@@ -50,7 +67,7 @@ A component, public contract, dependency, foundational representation, compatibi
 
 Use `agent_files/templates/design-review.template.md` for foundational or contested designs.
 
-### 4. Schema and generated artifacts
+### 5. Schema and generated artifacts
 
 A schema/compiler change must verify:
 
@@ -62,15 +79,15 @@ A schema/compiler change must verify:
 - backward/forward compatibility rules;
 - exact range, alignment, precision, and layout probes where applicable.
 
-### 5. Component-local behavior
+### 6. Component-local behavior
 
 Every component owns focused tests for public contracts, internal invariants, failure states, lifecycle, concurrency, and resource exhaustion. The component manifest lists commands.
 
-### 6. Cross-component integration
+### 7. Cross-component integration
 
 The repository integration suite verifies only public surfaces and declared dependency direction. It must include failure propagation and incompatible-version behavior.
 
-### 7. Reference and conformance
+### 8. Reference and conformance
 
 Complex search behavior requires deterministic reference cases and synthetic domains that expose:
 
@@ -83,7 +100,7 @@ Complex search behavior requires deterministic reference cases and synthetic dom
 - resource pressure and exhaustion;
 - rerooting/persistence where selected.
 
-### 8. CUDA/device correctness
+### 9. CUDA/device correctness
 
 Device changes require relevant combinations of:
 
@@ -96,7 +113,7 @@ Device changes require relevant combinations of:
 - cancellation and failure injection;
 - explicit proof that production search does not depend on host-produced intermediate decisions.
 
-### 9. Performance
+### 10. Performance
 
 Performance claims require:
 
@@ -112,19 +129,19 @@ Performance claims require:
 
 A faster result that changes search quality, domain semantics, resource limits, or stopping behavior is not automatically an improvement.
 
-### 10. Release/publication
+### 11. Release/publication
 
 Before publishing:
 
 - inspect full diff and repository status;
 - stage only intended scope;
 - run all applicable layers;
-- update component manifests, registry, indexes, authority, and archive;
+- update component manifests, registry, indexes, authority, findings, and archive;
 - verify remote commit/PR and hosted checks;
 - record exact failures or skipped validation.
 
 ## Current phase
 
-UMCGS has no accepted production implementation yet. The mandatory current check is `./scripts/verify-docs.sh`, plus any task-specific research or specification validation.
+UMCGS has no accepted production implementation yet. The mandatory current check is `./scripts/verify-docs.sh`, plus any task-specific research, specification, assessment, sanity, or independent-review validation.
 
 Project license selection is deferred and does not block original private pre-release work. It remains a separate gate before public distribution and before implementation-level third-party reuse that requires compatibility analysis.

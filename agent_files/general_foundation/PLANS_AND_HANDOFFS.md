@@ -20,17 +20,18 @@ A durable plan states:
 - coherent steps ordered by dependency and uncertainty;
 - experiments before irreversible commitments;
 - validation paired with the mechanism each step claims;
+- required self-sanity or independent-review claim, frozen target, and coverage boundary when material;
 - migration, rollback, cleanup, risks, stop conditions, and handoff state.
 
 The plan must be specific enough that implementation does not need to invent foundational design, but it must not pretend to know details that a preceding experiment is meant to decide.
 
 ## Proportional administration
 
-One combined assessment-and-plan record is the default. Link accepted authority and existing evidence instead of copying them. Group related questions. Use a short reason for non-applicable modules. Do not create parallel risk registers, dependency ledgers, validation plans, daily status files, or duplicate checklists unless they have a distinct consumer, owner, and lifecycle.
+One combined assessment-and-plan record is the default. Link accepted authority and existing evidence instead of copying them. Group related questions. Use a short reason for non-applicable modules. Do not create parallel risk registers, dependency ledgers, validation plans, sanity ledgers, daily status files, or duplicate checklists unless they have a distinct consumer, owner, and lifecycle.
 
-Routine mechanical work does not require a standalone plan when the contract, owner, change, and validation are already unambiguous.
+Routine mechanical work does not require a standalone plan when the contract, owner, change, and validation are already unambiguous. Routine self-sanity does not require a standalone sanity artifact.
 
-Do not commit conversational scratch plans. Commit plans only when they are durable project state or necessary for another agent. Use [`../templates/assessment-and-plan.template.md`](../templates/assessment-and-plan.template.md) for a durable combined record and `next_step.yaml` for the one current coherent boundary.
+Do not commit conversational scratch plans. Commit plans only when they are durable project state or necessary for another agent. Use [`../templates/assessment-and-plan.template.md`](../templates/assessment-and-plan.template.md) for a durable combined record, [`../templates/sanity-check.template.yaml`](../templates/sanity-check.template.yaml) for a durable review claim when justified, and `next_step.yaml` for the one current coherent boundary.
 
 ## Handoffs
 
@@ -42,6 +43,7 @@ A handoff must allow continuation without reconstructing chat history. Include:
 - exact changes and rationale;
 - component manifest/registry/dependency changes;
 - validation commands and evidence;
+- sanity claim, frozen revision, coverage status, findings, and checks not run when triggered;
 - branch, commit, remote publication, and working-tree state;
 - open correctness/performance/licensing/design/organization risks;
 - failed approaches or contaminated tests;

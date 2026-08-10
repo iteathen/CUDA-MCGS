@@ -15,6 +15,7 @@ No production implementation should be inferred from the current repository.
 ## Current accepted direction
 
 - Adversarial assessment before planning, with proportional documentation and decisive falsifiers.
+- Proportional sanity checking with exact frozen targets, explicit full/bounded/sampled claims, risk-based semantic depth, integration reconciliation, and durable findings.
 - LEGO macroscopic ownership, SOLID internal responsibilities, CUPID implementation quality, and simplest sufficient total-system design.
 - Universal contracts and Search IR; generated/specialized hot paths.
 - Explicit finite GPU-memory planning before engine launch.
@@ -28,6 +29,8 @@ No production implementation should be inferred from the current repository.
 
 - Developers and coding agents: [`AGENTS.md`](AGENTS.md)
 - Canonical agent system: [`agent_files/README.md`](agent_files/README.md)
+- Assessment and planning: [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md)
+- Sanity checking: [`agent_files/general_foundation/SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md)
 - Repository organization: [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md)
 - Documentation index: [`docs/README.md`](docs/README.md)
 - Current project state: [`STATUS.md`](STATUS.md)

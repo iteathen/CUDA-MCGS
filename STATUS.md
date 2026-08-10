@@ -17,6 +17,7 @@ Framework definition and evidence gathering. No production runtime implementatio
 - UMCGS will be built as a new framework while using prior art as references and benchmarks.
 - Repository and component organization assumes mature large-project scale from inception.
 - Adversarial assessment precedes planning for substantial and critical work; one proportional combined record is the default.
+- Sanity checks freeze exact targets, declare full/bounded/sampled claims, use risk-justified semantic depth, reconcile integration/lifecycle, and preserve actionable findings without unnecessary per-file accounting.
 - LEGO macroscopic ownership, SOLID internal responsibility, CUPID implementation quality, and total-system simplicity govern design.
 - Canonical agent governance lives in `agent_files/`.
 - Project license selection is deferred and does not block original private pre-release work.
@@ -30,6 +31,7 @@ Framework definition and evidence gathering. No production runtime implementatio
 - ADR-0004 large-project organization: accepted.
 - ADR-0005 LEGO design hierarchy: accepted.
 - ADR-0006 adversarial assessment and planning: accepted.
+- ADR-0007 proportional sanity checking: accepted.
 - Framework architecture overview and specification map: proposals.
 - Detailed normative Search IR/domain/policy/evaluator/resource specifications: not yet accepted.
 

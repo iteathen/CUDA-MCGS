@@ -1,22 +1,23 @@
 # Canonical Agent Operating Manual
 
-**Scope:** All research, specification, implementation, review, debugging, documentation, and publication work in UMCGS.
+**Scope:** All research, specification, implementation, sanity checking, review, debugging, documentation, and publication work in UMCGS.
 
 ## Mission
 
-Produce trustworthy, reusable engineering progress without allowing the first domain, first model, first GPU, first implementation shortcut, or early repository size to become an accidental permanent constraint.
+Produce trustworthy, reusable engineering progress without allowing the first domain, first model, first GPU, first implementation shortcut, early repository size, or an unjustified review claim to become an accidental permanent constraint.
 
 ## Required orientation
 
 1. Read the root `AGENTS.md`, `AI_RULES.md`, `DESIGN_ALIGNMENT_CARD.md`, and `general_foundation/PRINCIPLES.md`.
 2. Identify the task class and assessment depth: routine, substantial, or critical.
 3. For substantial or critical work, read `general_foundation/ASSESSMENT_AND_PLANNING.md` and complete assessment before planning.
-4. Use `SYSTEM_REGISTRY.md` to identify the owning boundary and authoritative documents.
-5. For any new or moved artifact, read `general_foundation/PROJECT_ORGANIZATION.md` and `application_specific/REPOSITORY_ORGANIZATION.md`.
-6. For component, contract, dependency, foundational type/schema, compatibility, or reusable-name work, load the triggered detailed doctrine linked from `general_foundation/PRINCIPLES.md`.
-7. Inspect repository state and unrelated work before editing.
-8. Establish purpose, expected ranges, invariants, resource limits, lifecycle, failures, organizational home, dependencies, design weighting, and evidence requirements.
-9. Apply the reasoning gate.
+4. For requested sanity, audit, whole-project review, incident, or release-readiness work, read `general_foundation/SANITY_CHECKING.md` and `general_foundation/SEMANTIC_INTERROGATION.md` before deep inspection.
+5. Use `SYSTEM_REGISTRY.md` to identify the owning boundary and authoritative documents.
+6. For any new or moved artifact, read `general_foundation/PROJECT_ORGANIZATION.md` and `application_specific/REPOSITORY_ORGANIZATION.md`.
+7. For component, contract, dependency, foundational type/schema, compatibility, or reusable-name work, load the triggered detailed doctrine linked from `general_foundation/PRINCIPLES.md`.
+8. Inspect repository state and unrelated work before editing.
+9. Establish purpose, expected ranges, invariants, resource limits, lifecycle, failures, organizational home, dependencies, design weighting, and evidence requirements.
+10. Apply the reasoning gate.
 
 ## Task routing
 
@@ -28,6 +29,7 @@ Produce trustworthy, reusable engineering progress without allowing the first do
 | Project organization | ADR-0004, organization guides, registry, affected component manifests |
 | Normative contract | Accepted owner direction and specification scope |
 | Production implementation | Accepted specification/component ownership plus an assessment disposition that permits implementation |
+| Sanity check or audit | ADR-0007, frozen revision/artifact, explicit claim, semantic coverage map, risk-depth rules, and independent finding disposition where required |
 | Disposable experiment | Named question, disposal criteria, isolated experiment location, non-production label |
 | Debugging | Expected behavior, reproducible symptom, trustworthy state |
 | Performance work | Reproducible benchmark and profiler evidence |
@@ -80,6 +82,22 @@ Before accepting a component or public contract, establish:
 
 Use `templates/design-review.template.md` for foundational or contested designs.
 
+## Sanity gate
+
+Before making a sanity claim:
+
+1. freeze the exact revision, generated-engine identity, model/schema version, or immutable artifact;
+2. declare `full`, `bounded`, or `sampled`, and distinguish self-sanity from independent review;
+3. define included and excluded surfaces, authority, owners, risks, access limits, and review-created state;
+4. build coverage nodes by semantic ownership and integration;
+5. select `core`, `triggered_modules`, or `exhaustive` depth by risk;
+6. interrogate every material semantic leaf using `general_foundation/SEMANTIC_INTERROGATION.md`;
+7. reconcile component boundaries, end-to-end paths, triggered lifecycle concerns, contradictions, invalidations, and duplicate findings;
+8. durably disposition confirmed violations and high-risk uncertainties;
+9. state checks not run and ensure the final claim is no broader than the evidence.
+
+Full coverage does not mean uniform exhaustive depth. A sampled review is never full. Independent review does not quietly repair findings. Use one canonical record only when the claim needs durable continuation or coordination.
+
 ## Reasoning levels
 
 ### Routine
@@ -105,11 +123,12 @@ CUDA execution, synchronization, atomics, memory layout, allocator/reclamation b
 7. **Plan** — one coherent change derived from the accepted assessment.
 8. **Implement** — preserve ownership, public surfaces, and dependency direction.
 9. **Validate** — structure checks, focused checks, integration, failure paths, complete relevant suite.
-10. **Reconcile** — update authority, manifests, indexes, registry, and archived history.
-11. **Publish** — inspect status/diff, commit coherently, record exact state.
-12. **Hand off** — completed work, evidence, risks, and one next boundary.
+10. **Sanity-check** — interrogate changed semantic units and reconcile the declared review surface at proportional depth.
+11. **Reconcile** — update authority, manifests, indexes, registry, findings, and archived history.
+12. **Publish** — inspect status/diff, commit coherently, record exact state.
+13. **Hand off** — completed work, evidence, claim limits, risks, and one next boundary.
 
-Detailed procedures are in `general_foundation/WORKFLOW.md`; use `CONTEXT_ROUTING.md` to limit stale context, `PROJECT_ORGANIZATION.md` before structural changes, and `REVIEW.md` before publication.
+Detailed procedures are in `general_foundation/WORKFLOW.md`; use `CONTEXT_ROUTING.md` to limit stale context, `PROJECT_ORGANIZATION.md` before structural changes, `SANITY_CHECKING.md` for coverage claims, and `REVIEW.md` before publication.
 
 ## Completion definition
 
@@ -117,6 +136,8 @@ A task is complete only when:
 
 - the assessment disposition permits the completed work and the strongest material objections were resolved or bounded;
 - the intended owned behavior exists;
+- any triggered sanity claim names the exact revision, accounts for its declared surface at justified depth, and states its limits;
+- actionable independent findings have durable disposition;
 - the artifact is in the correct durable product area and component;
 - public/internal boundaries and dependencies are explicit;
 - the design follows the accepted hierarchy and names the owned invariant at the correct scale;
@@ -139,4 +160,4 @@ Every important statement should be identifiable as one of:
 - proposal;
 - unresolved assumption.
 
-Never present an inference as a measurement, a proposal as accepted, a local commit as published remote state, or temporary placement as the permanent organizational design.
+Never present an inference as a measurement, a proposal as accepted, a sampled review as complete coverage, a local commit as published remote state, or temporary placement as the permanent organizational design.
