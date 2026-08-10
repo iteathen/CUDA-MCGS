@@ -31,7 +31,11 @@ No production implementation should be inferred from the current repository.
 - Contextual value ordering and P0–P4 priority make tradeoffs, path selection, and scheduling reviewable.
 - LEGO macroscopic ownership, SOLID internals, CUPID quality, and simplest sufficient total system govern valid designs.
 - Adversarial assessment precedes planning; large work uses semantic focus branches and one integration spine.
-- Token-use discipline reserves context for testing, integration, cleanup, review, and handoff.
+- Token use is continuous backpressure on **every** task, including routine work.
+- Backpressure limits duplication, repeated evidence, fragmented work, cold context, optional breadth, and work in flight before it reduces scope—and reduces scope before it threatens rigor.
+- Every task retains a risk-appropriate minimum practice floor: authority/current-state inspection, coherent scope, decisive verification, actual-effect inspection, relevant testing, cleanup, and honest limits.
+- Routine work uses an implicit micro-budget; substantial/critical work preserves explicit reserves and split/handoff rules.
+- Soft token estimates trigger replanning rather than automatic stopping or reduced rigor; reduced evidence narrows the claim.
 - Consolidated testing banks intents, shares expensive setup, preserves case identity, reuses exact evidence, and repairs root-cause clusters.
 - Governed execution uses dependency-ready nodes, expected-before-actual inspection, explicit deviations, and no invalid partial state.
 - Cleanup, proportional sanity, exact-head review, guarded merge, and verified post-merge state are mandatory.
@@ -43,15 +47,16 @@ No production implementation should be inferred from the current repository.
 
 - [`AGENTS.md`](AGENTS.md)
 - [`agent_files/README.md`](agent_files/README.md)
+- [`agent_files/general_foundation/TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md)
 - [`agent_files/general_foundation/ENGINEERING_JUDGMENT.md`](agent_files/general_foundation/ENGINEERING_JUDGMENT.md)
 - [`agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md`](agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md)
 - [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md)
 - [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md)
 - [`agent_files/general_foundation/FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md)
-- [`agent_files/general_foundation/TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md)
 - [`agent_files/general_foundation/TESTING.md`](agent_files/general_foundation/TESTING.md)
 - [`docs/PROJECT_CHARTER.md`](docs/PROJECT_CHARTER.md)
 - [`docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md`](docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md)
+- [`docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md`](docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md)
 - [`docs/architecture/REPOSITORY_TOPOLOGY.md`](docs/architecture/REPOSITORY_TOPOLOGY.md)
 - [`STATUS.md`](STATUS.md)
 - [`next_step.yaml`](next_step.yaml)

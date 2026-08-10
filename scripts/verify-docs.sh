@@ -110,6 +110,7 @@ required=(
   docs/decisions/ADR-0013-consolidated-testing-and-repair-loop-efficiency.md
   docs/decisions/ADR-0014-extract-cuda-js-runtime.md
   docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md
+  docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md
   docs/development/README.md
   docs/research/README.md
   docs/research/2026-08-10-cuda-js-assumption-audit.md
@@ -180,4 +181,4 @@ if command -v ruby >/dev/null 2>&1; then
   ruby -e 'require "yaml"; Dir[".github/ISSUE_TEMPLATE/*.{yml,yaml}"].each { |f| YAML.safe_load_file(f, permitted_classes: [], aliases: false) }'
 fi
 
-printf 'documentation, organization, repository-boundary, engineering-judgment, focus-branch, token-discipline, testing, agent-governance, and cleanup checks passed\n'
+printf 'documentation, organization, engineering-judgment, focus-branch, universal-token-backpressure, testing, agent-governance, and cleanup checks passed\n'

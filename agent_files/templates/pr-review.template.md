@@ -60,16 +60,29 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Boundary/end-to-end integration evidence:
 - Final parent revision/artifact:
 
-## Token and context discipline review
+## Universal token backpressure and minimum practice floor review
 
-- Task class and telemetry availability:
-- Active context packet and source revisions:
-- Testing/validation/integration/cleanup/review/handoff reserve:
-- Loaded/excluded context and targeted retrieval/tool use:
+- Task class and posture: `implicit micro-budget | explicit`:
+- Minimum practice floor required by the claim/consequence:
+- Evidence that authority/current-state inspection, coherent scope, decisive verification, actual-effect inspection, relevant testing, cleanup, and honest limits remained intact:
+- Smallest coherent useful scope and any exclusions:
+- Telemetry availability, current context band, and reserve:
+- Pressure triggers encountered:
+- Reduction-ladder actions and their order:
+- Duplicated reads/retries/tests/agents/records removed:
+- Authority/evidence reused and work/tests batched:
+- Context/output narrowed and optional breadth/polish deferred:
+- Scope or claim reduced and corresponding claim-language change:
+- Split/rebranch/handoff or blocker:
+- Budget extensions and essential reason:
+- Unchanged retries/reassurance runs and new evidence expected:
+- Second-repair-cycle replan evidence:
+- Checkpoints for budget/scope/claim/deferral/split/handoff:
 - Large artifacts kept external by exact identity:
-- Context-band transitions, checkpoints, and compaction:
-- Repeated reads/retries/reconstruction:
 - Token debt and parent-acceptance effect:
+- Evidence that remaining capacity supported final testing, cleanup, review, and handoff:
+
+Reject token “efficiency” that preserves broad claims while cutting required practice. Routine work should not be penalized for omitting a ledger when its implicit posture and floor are evident.
 
 ## Testing and repair-loop review
 
@@ -115,7 +128,7 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 ## Cleanup and disposition review
 
 - Protected pre-existing/user/shared/authority/evidence/recovery state:
-- Decision records, local files, tracked/generated/build/cache/package state:
+- Decision/token records, local files, tracked/generated/build/cache/package state:
 - Provisional tests, fixtures, logs, instrumentation, and test artifacts:
 - Semantic/Git branches, worktrees, stashes, refs, and configuration:
 - Remote PR/issue/review/claim/dependent state:
@@ -129,7 +142,7 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Branch-output and cross-branch integration checks:
 - CI/workflows for exact head and duplicate/stale-run accounting:
 - Engineering-decision/specification evidence:
-- Token/context discipline evidence:
+- Token-backpressure/practice-floor evidence:
 - Cleanup verification evidence:
 - Checks not run and why:
 - Claim limits:
@@ -153,7 +166,7 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Required independent approval or owner exception:
 - Proposed merge method and rationale:
 - Required checks/protections/queue:
-- Engineering-decision/parent/focus-branch/test closure effect:
+- Engineering-decision/parent/focus-branch/test/token closure effect:
 - Issue closure effect:
 - Git branch/worktree/dependent/artifact/permission/cleanup effect:
 - Conditions invalidating this review:
@@ -162,8 +175,8 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 
 - Integrated target SHA and reviewed-head mapping:
 - Target tree/result verified:
-- Engineering-decision/parent/focus-branch/test maps point to integrated revision:
+- Engineering-decision/parent/focus-branch/test/token maps point to integrated revision:
 - Target checks/deployment/packaging verified:
 - Issue/branch/worktree/dependent state:
-- Temporary decision/test/diagnostic/process/device/credential/artifact/external-resource disposition:
+- Temporary decision/test/token/diagnostic/process/device/credential/artifact/external-resource disposition:
 - Retained state / decision debt / test debt / token debt / cleanup debt / remaining limits:

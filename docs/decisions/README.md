@@ -2,7 +2,7 @@
 
 **Status:** Informational
 
-Accepted ADRs are immutable records. A later ADR may supersede an earlier one, but both remain for provenance.
+Accepted ADRs are immutable records. A later ADR may supersede or extend an earlier one, but both remain for provenance.
 
 ## Current decisions
 
@@ -21,5 +21,6 @@ Accepted ADRs are immutable records. A later ADR may supersede an earlier one, b
 - [`ADR-0013-consolidated-testing-and-repair-loop-efficiency.md`](ADR-0013-consolidated-testing-and-repair-loop-efficiency.md) — bank test intents, consolidate owning capsules, reuse exact evidence, and repair failure clusters at the owner.
 - [`ADR-0014-extract-cuda-js-runtime.md`](ADR-0014-extract-cuda-js-runtime.md) — extract generic Node/CUDA runtime/toolchain behavior to independent `CUDA-JS`, retain search semantics and the adapter in UMCGS, and use versioned peer artifacts rather than source coupling.
 - [`ADR-0015-engineering-judgment-and-value-ordering.md`](ADR-0015-engineering-judgment-and-value-ordering.md) — map specifications into engineering contracts, eliminate gate-failing paths, order contextual values, compare credible alternatives, and prioritize by consequence, information, and dependency unlock.
+- [`ADR-0016-token-backpressure-and-practice-floor.md`](ADR-0016-token-backpressure-and-practice-floor.md) — apply token backpressure from the start of every task, reduce waste/optional breadth/scope before rigor, and preserve a risk-appropriate minimum practice floor.
 
 Use [`../../agent_files/templates/decision-record.template.md`](../../agent_files/templates/decision-record.template.md). Use [`../../agent_files/templates/engineering-decision.template.yaml`](../../agent_files/templates/engineering-decision.template.yaml) for proportional durable path/value decisions beneath accepted authority.

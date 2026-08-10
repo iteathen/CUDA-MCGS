@@ -1,5 +1,5 @@
 {
-  "schema_version": 7,
+  "schema_version": 8,
   "updated": "YYYY-MM-DD",
   "status": "ready|blocked|in_progress|complete|superseded|invalidated",
   "parent_task_id": "<canonical parent task>",
@@ -36,16 +36,36 @@
     "decision_debt": [],
     "durable_engineering_decision_record": ""
   },
-  "token_and_context": {
+  "token_backpressure_and_context": {
     "task_class": "routine|substantial|critical|large_complex",
+    "posture": "implicit_micro_budget|explicit",
     "telemetry_available": false,
     "current_band": "green|yellow|red|emergency|unknown",
+    "minimum_practice_floor": [],
+    "smallest_coherent_useful_scope": [],
     "validation_integration_cleanup_review_handoff_reserve_percent": 0,
     "reserve_rationale": "",
+    "soft_envelope": "",
+    "overrun_replan_signal_percent": 25,
+    "pressure_triggers": [],
+    "reduction_ladder": [
+      "remove_duplication",
+      "reuse_authority_and_evidence",
+      "batch_coherent_work_and_tests",
+      "narrow_context_and_output",
+      "defer_optional_breadth_and_polish",
+      "reduce_scope_or_claim",
+      "split_rebranch_or_handoff",
+      "pause_on_blocker"
+    ],
+    "optional_work_deferred_first": [],
+    "budget_extension_conditions": [],
+    "claim_reduction_rules": [],
     "context_layers_loaded": [],
     "context_explicitly_excluded": [],
     "large_artifacts_kept_out_of_prompt": [],
     "checkpoint_and_compaction_triggers": [],
+    "backpressure_actions_taken": [],
     "split_rebranch_or_handoff_triggers": [],
     "token_debt": [],
     "durable_token_budget_record": ""
@@ -61,6 +81,7 @@
     "expected_discovery_and_skip_counts": [],
     "shared_setup_and_mutable_state_isolation": [],
     "failure_clustering_and_root_cause_repair": [],
+    "second_repair_cycle_replan_rule": [],
     "consolidation_boundary": [],
     "provisional_and_duplicate_test_cleanup": [],
     "no_repeat_rules": [],

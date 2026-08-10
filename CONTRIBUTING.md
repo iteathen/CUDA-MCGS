@@ -16,7 +16,7 @@ A change needs:
 - a clear product-area/component owner and accepted contract authority;
 - a current plan version and dependency-ready node;
 - a focus-branch map when work exceeds one focused session or spans semantic owners/contracts/paths/unknowns;
-- a context/token strategy preserving capacity for inspection, validation, integration, cleanup, review, recovery, and handoff;
+- a token-backpressure strategy preserving the risk-appropriate practice floor and enough capacity for inspection, validation, integration, cleanup, review, recovery, and handoff;
 - a test strategy tied to owned invariants, authoritative oracles, case-intent banking, owning capsules, evidence invalidation, escalation tiers, and consolidation;
 - expected local/wider effects and downstream output revisions;
 - a LEGO boundary with explicit ports, injected dependencies, adapters, lifecycle, and replaceability;
@@ -57,11 +57,48 @@ Prioritize P0 containment, P1 gate/foundation, P2 information/risk/dependency un
 
 Routine work needs no separate decision record. Use [`agent_files/templates/engineering-decision.template.yaml`](agent_files/templates/engineering-decision.template.yaml) only for foundational, contested, cross-component, high-consequence, empirically uncertain, difficult-to-reverse, or cross-session choices.
 
-## Token, testing, focus branches, and cleanup
+## Universal token backpressure and minimum practice floor
 
-Optimize verified lifecycle progress rather than shortest output. Preserve required validation/integration/cleanup/handoff reserve. Decompose large work into semantic focus branches; do not confuse those with Git branches.
+Token backpressure applies to every contribution, including routine edits, from the first retrieval or mutation.
 
-Capture material test intents immediately, use minimal reproducers, consolidate cases into owning capsules, reuse exact evidence, cluster failures by root cause, and avoid unchanged reassurance runs.
+Every task establishes, at least implicitly:
+
+- exact outcome and authority;
+- relevant current-state inspection;
+- smallest coherent useful scope;
+- risk-appropriate minimum practice floor;
+- cheapest decisive verification;
+- enough reserve for actual-effect inspection, testing, cleanup, and truthful reporting;
+- pressure triggers and optional work to defer.
+
+The universal floor includes the request/constraints, current authority, coherent scope, expected result, decisive verification, actual-effect inspection, relevant testing, cleanup/reconciliation, and honest checks-not-run/risks. Substantial and critical work retain every objectively triggered specification, reasoning, safety/security, resource/failure, compatibility, recovery, review, and integration practice.
+
+When pressure rises, reduce in this order:
+
+```text
+remove duplication
+  → reuse authority and evidence
+  → batch coherent work and tests
+  → narrow context and output
+  → defer optional breadth and polish
+  → reduce scope or claim
+  → split, rebranch, or hand off
+  → pause on a blocker
+```
+
+Reduce waste before breadth and breadth before rigor. A broad claim may not be preserved by cutting required evidence; sampling or a lower tier narrows the claim.
+
+Routine work uses an implicit micro-budget and needs no token ledger. Substantial/critical work preserves explicit reserves and split/handoff triggers. Soft estimates are replan signals rather than authority. Essential evidence or cleanup may justify an explicit extension, followed by scope reduction or split to restore reserve.
+
+Do not continue because tokens have already been spent. Do not stop at a soft estimate while required in-scope safety, correctness, cleanup, or handoff remains incomplete and a sound extension or split is available.
+
+## Testing, focus branches, and cleanup
+
+Capture material test intents immediately, use minimal reproducers, consolidate cases into owning capsules, reuse exact evidence, cluster failures by root cause, and avoid unchanged reassurance runs. A second repair cycle without stronger first-divergence evidence or a changed root-cause hypothesis requires replan.
+
+Token pressure may remove duplicate tests, setup, and unnecessary tiers. It may not remove the authoritative oracle, evidence identity, discovery/skip accounting, required owner capsule, or integration evidence needed by the claim.
+
+Decompose large work into semantic focus branches; do not confuse those with Git branches. A focus branch must fit its complete mechanism, consequences, testing, cleanup, and handoff reserve.
 
 Protect user/pre-existing work, project authority, evidence, recovery state, shared resources, protected branches, and active dependents. Every material decision record, file, test artifact, branch, process, device resource, credential, backup, and external object receives an intentional verified disposition.
 
@@ -81,6 +118,8 @@ Run:
 ./scripts/verify-docs.sh
 ```
 
+Token pressure cannot waive objectively triggered validation.
+
 ## Pull requests
 
 Before requesting review:
@@ -88,11 +127,11 @@ Before requesting review:
 - freeze exact head/base and account for the complete changed surface;
 - show engineering-contract and specification traceability;
 - disclose hard gates, value order, credible candidates, selected path, alternatives rejected, priority, tradeoffs, confidence, and decision debt;
-- account for branch statuses/outputs, token/context discipline, test evidence, execution fidelity, cleanup, and affected contracts;
+- account for branch statuses/outputs, token practice floor/reserve/backpressure actions, test evidence, execution fidelity, cleanup, and affected contracts;
 - disclose authoritative oracles, evidence keys, discovery/skip counts, test intents, failure clusters, tiers, evidence reused/repeated, and checks not run;
 - rerun only evidence invalidated by head, base, specification, decision, shared contract, source/test revision, generated artifact, model, environment, fixture, seed, or resource profile;
-- disclose decision/test/token/cleanup debt, issue closure, Git branch/worktree effects, and merge method.
+- disclose any budget extension, narrowed claim, deferred work, split/handoff, decision/test/token/cleanup debt, issue closure, Git branch/worktree effects, and merge method.
 
 Every material PR receives author-side complete-diff review. Independent review is triggered by phase, policy, owner instruction, or objective consequence. Merge is a separate expected-head transaction followed by target, engineering-decision, focus-branch, test-evidence, dependency, debt, and cleanup verification.
 
-Do not describe a convenient implementation as the best path without gate/evidence comparison, branch-local work as integrated, raw test count as completeness, a short output as token-efficient without lifecycle evidence, author-side review as independent approval, or a merge response as verified completion.
+Do not describe low raw token use as efficiency without showing verified lifecycle progress and preserved practice, a convenient implementation as the best path without gate/evidence comparison, branch-local work as integrated, raw test count as completeness, author-side review as independent approval, or a merge response as verified completion.

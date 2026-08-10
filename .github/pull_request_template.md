@@ -50,19 +50,24 @@ For a large or complex task, state or link:
 
 State `not triggered` for work that genuinely fits one focused branch.
 
-## Token and context discipline
+## Universal token backpressure and minimum practice floor
 
-For substantial, critical, or large work, state or link:
+For every task, state proportionally:
 
-- active context packet and exact source revisions;
-- task class and telemetry availability;
-- validation/integration/cleanup/review/handoff reserve;
-- context layers loaded and excluded;
-- targeted retrieval/tool strategy;
-- current operational band and checkpoint/compaction actions;
-- token debt, repeated reconstruction, and claim limits.
+- task class and whether the token posture was an implicit micro-budget or explicit plan;
+- minimum practice floor preserved for the claim: request/authority/current-state inspection, coherent scope, expected result, decisive verification, actual-effect inspection, relevant testing, cleanup, and honest limits;
+- smallest coherent useful scope and context/evidence reserve;
+- telemetry availability and current green/yellow/red/emergency state when material;
+- pressure triggers encountered;
+- reduction-ladder actions used: duplication removed, evidence reused, work/tests batched, context/output narrowed, optional breadth/polish deferred, scope/claim reduced, split/handoff, or blocker;
+- unchanged rereads/retries/reassurance runs avoided or justified;
+- repair-cycle replanning and changed hypotheses;
+- any budget extension and why essential evidence/cleanup justified it;
+- any narrowed/sampled/bounded claim caused by reduced evidence;
+- checkpoints for budget, scope, claim, deferral, split, or handoff changes;
+- remaining token debt or reconstruction risk.
 
-State `routine / no durable budget record required` when appropriate.
+State `routine implicit micro-budget; no durable record required` when appropriate. Soft budgets are replan signals, not authority to reduce rigor. Do not claim efficiency from raw token count or short prose alone.
 
 ## Testing and repair-loop evidence
 
@@ -79,7 +84,7 @@ State or link:
 - provisional reproducers, duplicate tests, fixtures, diagnostics, and logs removed or retained;
 - checks not run, sampling limits, nondeterminism/statistical scope, and remaining test debt.
 
-Do not report raw test count as completeness.
+Do not report raw test count as completeness. Token pressure may remove duplicate runs and unnecessary tiers, but not the evidence required by the claim.
 
 ## Plan execution fidelity
 
@@ -93,15 +98,15 @@ State parent plan/version, engineering-decision version, focus-branch ID, node, 
 
 ## Cleanup and disposition
 
-State protected pre-existing/user/shared/authority/evidence/recovery state and account for material decision records, temporary/superseded/generated/diagnostic/local/remote/external/sensitive/coordination state, including provisional tests and duplicate fixtures.
+State protected pre-existing/user/shared/authority/evidence/recovery state and account for material decision/token records, temporary/superseded/generated/diagnostic/local/remote/external/sensitive/coordination state, including provisional tests and duplicate fixtures.
 
 ## Sanity / independent-review claim and limits
 
-State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name exact revision/artifact, coverage boundary, critical leaves, actionable findings, invalidated/rerun specification/decision/test evidence, focus-branch integration, token/test/cleanup state, checks not run, and final claim limits.
+State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name exact revision/artifact, coverage boundary, critical leaves, actionable findings, invalidated/rerun specification/decision/test evidence, focus-branch integration, token-practice-floor/test/cleanup state, checks not run, and final claim limits. Reduced evidence must narrow this claim.
 
 ## Ready-for-review head and review mode
 
-Record exact head SHA, intended base, review mode, checks not run, unresolved decision debt, unintegrated branches, test debt, token debt/context limits, deferred cleanup, and invalidation conditions. A later head, parent-plan, specification, engineering decision, value order, shared contract, source/test revision, oracle, artifact, environment, fixture, or material base change invalidates affected evidence.
+Record exact head SHA, intended base, review mode, checks not run, unresolved decision debt, unintegrated branches, test debt, token debt/context limits, deferred cleanup, budget/scope/claim changes, and invalidation conditions. A later head, parent-plan, specification, engineering decision, value order, shared contract, source/test revision, oracle, artifact, environment, fixture, or material base change invalidates affected evidence.
 
 ## Proposed merge and closure effects
 

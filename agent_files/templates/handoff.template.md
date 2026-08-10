@@ -40,14 +40,20 @@
 - Acceptance / falsifier / decision / testing / rollback / cleanup / integration obligations:
 - Other branches and statuses: `planned | ready | active | paused | blocked | accepted | invalidated | superseded | integrated | archived`
 
-## Token and context state
+## Universal token backpressure and context state
 
-- Task class and telemetry availability:
-- Current context band:
+- Task class and posture: `implicit micro-budget | explicit`:
+- Minimum practice floor preserved:
+- Smallest coherent useful scope and any exclusions:
+- Current context band and telemetry availability:
 - Testing/validation/integration/cleanup/review/handoff reserve:
+- Soft envelope and pressure triggers encountered:
+- Reduction-ladder actions: duplication removed, evidence reused, work/tests batched, context/output narrowed, optional breadth/polish deferred, scope/claim reduced, split/handoff, blocker:
+- Budget extensions and essential reason:
+- Narrowed/sampled/bounded claim changes:
 - Context loaded/excluded and large artifact identities:
-- Retrieval/tool strategy:
-- Checkpoints/compaction:
+- Retrieval/tool strategy and unchanged retry/read avoidance:
+- Checkpoints/compaction for budget/scope/claim/deferral/split/handoff:
 - Token debt or reconstruction remaining:
 - Why the next operation fits—or why handoff is required:
 
@@ -83,7 +89,7 @@
 ## Cleanup and disposition
 
 - Protected pre-existing/user/shared/authority/evidence/recovery state:
-- Decision records, local files, tracked/generated/build/cache/package state:
+- Decision/token records, local files, tracked/generated/build/cache/package state:
 - Provisional tests, fixtures, logs, instrumentation, and test artifacts:
 - Semantic focus branches, Git branches/worktrees/stashes/refs/config, and uncommitted state:
 - PRs/issues/reviews/claims/artifacts/releases/dependents:
@@ -96,7 +102,7 @@
 - Current Git branch/head and working-tree state:
 - PR/base/review mode and unresolved threads/checks:
 - Integrated target SHA when merged:
-- Engineering-decision/focus-branch/test-map and local/remote branch/worktree disposition:
+- Engineering-decision/focus-branch/test/token-map and local/remote branch/worktree disposition:
 - Issue closure and dependent-work state:
 
 ## Rollback, recovery, or irreversible state

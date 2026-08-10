@@ -20,7 +20,13 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - A subsystem may promote speed, accuracy, availability, or another concern into a higher gate only through explicit purpose, threshold, consequence, owner, evidence, and revisit trigger.
 - Credible no-change, minimal, proposed, materially different, experiment/staged, and fallback paths are compared where material; invalid and Pareto-dominated paths are removed for stated reasons.
 - Work is prioritized as P0 containment, P1 gate/foundation, P2 information/risk/dependency unlock, P3 mission value/measured efficiency, and P4 supporting quality/polish.
-- Adversarial assessment, focus branches, token reserves, consolidated test capsules, governed execution, cleanup, sanity, and exact-head guarded integration remain binding.
+- Token use is continuous backpressure on every task, including routine work.
+- Backpressure reduces duplicate context/evidence, fragmented work, optional breadth/polish, and scope before it threatens required rigor.
+- Every task preserves a risk-appropriate minimum practice floor: request/authority, current-state inspection, coherent scope, expected result, decisive verification, actual-effect inspection, relevant testing, cleanup, and honest limits.
+- Routine work uses an implicit micro-budget with no mandatory ledger. Substantial/critical work preserves explicit reserves and split/handoff triggers.
+- Soft token estimates are replan signals rather than authority to skip practices. Essential evidence, safety, correctness, cleanup, or handoff may justify an explicit extension followed by narrowing or split to restore reserve.
+- Reduced evidence narrows the claim; sampling or lower test tiers cannot support an unchanged complete/release-grade claim.
+- Adversarial assessment, focus branches, consolidated test capsules, governed execution, cleanup, sanity, and exact-head guarded integration remain binding.
 - Material decision debt, test debt, token debt, invalid partial state, unsafe cleanup debt, and unintegrated branch outputs block completion.
 - Repository and component organization assumes mature large-project scale from inception.
 - Project license selection is deferred and does not block original private pre-release work.
@@ -30,6 +36,7 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - Project charter: accepted and narrowed to UMCGS search ownership.
 - ADR-0001 through ADR-0014: accepted.
 - ADR-0015 engineering judgment, specification alignment, and value ordering: accepted.
+- ADR-0016 universal token backpressure and minimum practice floor: accepted.
 - Repository topology: accepted through ADR-0014 and documented in `docs/architecture/REPOSITORY_TOPOLOGY.md`.
 - Framework architecture overview and detailed version-zero contracts: proposals.
 - UMCGS-to-CUDA-JS execution-package contract: not yet accepted.
@@ -44,7 +51,7 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 
 ## Current next boundary
 
-Define and adversarially validate the version-zero UMCGS-to-CUDA-JS execution-package contract using the accepted engineering contract, obligation map, hard gates, contextual value ordering, candidate-path comparison, P1 priority, conformance ownership, and error/lifetime rules; revise the SPEC-V0 focus-branch/test map accordingly; publish the prepared CUDA-JS bootstrap when the private remote exists.
+Define and adversarially validate the version-zero UMCGS-to-CUDA-JS execution-package contract using the accepted engineering contract, obligation map, hard gates, contextual value ordering, candidate-path comparison, P1 priority, conformance ownership, error/lifetime rules, and universal token-backpressure practice floor; revise the SPEC-V0 focus-branch/test map accordingly; publish the prepared CUDA-JS bootstrap when the private remote exists.
 
 ## Current risks and unknowns
 

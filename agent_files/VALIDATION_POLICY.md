@@ -6,7 +6,7 @@
 
 Validation must observe the authority, engineering contract, mechanism, subject, test oracle, branch output, integration, and final state being claimed. Compilation, a plausible result, a large test count, green CI, a locally accepted branch, a cleanup command, PR approval, or merge response is not proof for an unobserved boundary.
 
-Specifications, hard gates, value ordering, tests, oracles, skip policy, protections, focus-branch constraints, token reserves, cleanup safeguards, and gates are never weakened merely to make work pass, look complete, look fast, or merge.
+Specifications, hard gates, value ordering, tests, oracles, skip policy, protections, focus-branch constraints, token-practice floors/reserves, cleanup safeguards, and gates are never weakened merely to make work pass, look complete, look fast, conserve tokens, or merge.
 
 ## 1. Organization and documentation
 
@@ -22,11 +22,11 @@ This verifies required authority, status markers, links, JSON-compatible records
 
 Substantial and critical work verifies that:
 
-- outcome, authority, evidence, scope, assumptions, cost of no change, engineering-decision consequences, test consequences, and cleanup were assessed before implementation;
+- outcome, authority, evidence, scope, assumptions, cost of no change, engineering-decision consequences, test consequences, token posture, and cleanup were assessed before implementation;
 - strong opposing explanations/designs were considered;
 - valid criticism changed design, value ordering, branch map, test strategy, sequencing, validation, cleanup, or disposition;
-- unknowns have evidence, falsifiers, experiments, accepted risks, blockers, decision debt, test debt, cleanup debt, or revisit triggers;
-- the plan defines owner boundaries, dependencies, exact outputs/consumers, path selection, testing, stop conditions, rollback, cleanup, and handoff;
+- unknowns have evidence, falsifiers, experiments, accepted risks, blockers, decision debt, test debt, token debt, cleanup debt, or revisit triggers;
+- the plan defines owner boundaries, dependencies, exact outputs/consumers, path selection, testing, backpressure/stop conditions, rollback, cleanup, and handoff;
 - records are proportional and link authority rather than duplicate it.
 
 ## 3. Engineering judgment and specification alignment
@@ -56,27 +56,68 @@ Use `engineering-decision.template.yaml` only when the decision is foundational,
 
 For large or complex work verify:
 
-- one canonical parent and integration spine own outcome, authority, engineering contract, invariants, value ordering, branch map, test map, invalidation, contradictions, cleanup, and closure;
+- one canonical parent and integration spine own outcome, authority, engineering contract, invariants, value ordering, branch map, test map, token posture, invalidation, contradictions, cleanup, and closure;
 - decomposition is semantic and every leaf fits full attention including testing/validation/cleanup/handoff reserve;
 - each leaf has stable ID, one primary owner/output, exact inputs, scope/write authority, output contract, decision/test obligations, acceptance/falsifier, rollback, cleanup, and integration;
-- shared-contract, engineering-decision, value-order, or oracle changes are versioned and invalidate dependent branches/evidence;
+- shared-contract, engineering-decision, value-order, oracle, or evidence-key changes are versioned and invalidate dependent branches/evidence;
 - parallel work has non-overlapping write/test ownership, compatible parent versions, acyclic dependencies, independent rollback/cleanup, and one integration owner;
 - `accepted` is distinct from `integrated`;
 - all branches are dispositioned and final cross-branch/end-to-end evidence belongs to one exact revision.
 
 Use `focus-branch.template.yaml` only when durable cross-session/parallel/high-consequence state is needed.
 
-## 5. Token and context discipline
+## 5. Universal token backpressure and context discipline
 
-Substantial/critical work verifies:
+Every task verifies proportionally that:
 
-- current authority, engineering decision, and exact revisions are present in the active packet;
-- context is layered and large artifacts remain external by exact identity;
-- targeted retrieval and changed-hypothesis retry rules were followed;
+- token backpressure was applied from orientation rather than only near context exhaustion;
+- the task had at least an implicit posture: exact outcome, smallest coherent useful scope, minimum practice floor, decisive verification, reserve, and pressure triggers;
+- the risk-appropriate practice floor remained intact;
+- token pressure reduced duplication, repeated evidence, fragmentation, cold context, optional polish/breadth, or scope before it reduced rigor;
+- reduced evidence, sampling, or a lower test tier narrowed the claim;
+- unchanged reads/retries/reassurance runs were avoided or justified by new evidence;
+- a second repair cycle without stronger first-divergence evidence or a changed root-cause hypothesis caused replan rather than broad repetition;
+- current authority, engineering decision, exact revisions, and evidence identities remained in the active packet;
+- context was layered and large artifacts remained external by exact identity;
 - enough reserve remained for testing, validation, integration, cleanup, review, recovery, and handoff;
 - yellow/red/emergency actions did not reduce rigor;
-- checkpoints preserved exact decisions, value ordering, rejected paths, failures, partial state, test evidence, cleanup, and next action;
+- meaningful overrun triggered an explicit extend, narrow, split, handoff, or pause decision;
+- no path continued merely because of sunk token cost;
+- checkpoints preserved exact decisions, value ordering, rejected paths, failures, scope/claim changes, test evidence, cleanup, and next action;
 - no material token debt remains.
+
+### Universal minimum practice floor
+
+Every task retains:
+
+- the actual request/constraints and current authority;
+- relevant current-state inspection;
+- coherent owned scope and explicit exclusions when material;
+- expected result and decisive verification;
+- operation within authority;
+- actual-effect inspection;
+- relevant testing/evidence;
+- cleanup/reconciliation;
+- truthful checks not run, claim limits, and remaining risk.
+
+Substantial and critical work also retain all objectively triggered specification, dependency/integration, failure/resource, rollback/recovery, safety/security, testing, review, and guarded-integration practices.
+
+### Backpressure reduction order
+
+When pressure occurred, evidence should show this order was respected:
+
+1. remove duplication;
+2. reuse authority/evidence;
+3. batch coherent work/tests;
+4. narrow context/output;
+5. defer optional polish/breadth;
+6. reduce scope/claim;
+7. split/rebranch/handoff;
+8. pause on a blocker.
+
+A soft budget estimate or approximately 25% soft-envelope overrun is a replan signal—not authority to skip required practice. A budget extension is valid when essential evidence, safety, correctness, cleanup, or handoff has high marginal value and reserve is restored through narrowing or split.
+
+Routine work needs no durable token record; requiring one without a consumer is itself a validation defect.
 
 ## 6. Testing and repair-loop evidence
 
@@ -154,8 +195,11 @@ Focused fast is the inner loop. Owner capsules run after coherent repair batches
 - One root-cause hypothesis and cheapest decisive falsifier are stated.
 - The authoritative owner is repaired in a coherent batch.
 - The minimal affected cluster reruns first, then the owning capsule once, then required integration smoke once.
+- A second repair cycle without stronger first-divergence evidence or a changed root-cause hypothesis triggers replan before more broad testing.
 - Deep/forensic escalation occurs only when the claim remains unresolved or risk requires it.
 - Raw logs remain artifacts; active evidence is bounded to causal intervals and exact locations.
+
+Token backpressure may eliminate duplicate tests, setup, and unnecessary tiers. It may not remove required oracles, discovery/skip accounting, evidence identity, owner capsules, or integration evidence for the claim.
 
 ### Test debt
 
@@ -169,7 +213,7 @@ A material node/branch verifies:
 
 - exact parent plan/version, engineering-decision version, branch/node, owner, environment, and frozen revision;
 - dependency outputs/revisions and readiness;
-- authority, hard gates, selected path, value ordering, contracts, test oracles/capsules/evidence keys, generated inputs, and runtime trust;
+- authority, hard gates, selected path, value ordering, minimum practice floor/reserve, contracts, test oracles/capsules/evidence keys, generated inputs, and runtime trust;
 - expected effects, outputs, acceptance, falsifier, testing, rollback, cleanup, integration, and escalation before mutation;
 - coherent owner-sized operations with immediate actual-effect inspection;
 - new obligations/decision changes/test intents and invalidation are recorded;
@@ -179,19 +223,19 @@ A material node/branch verifies:
 
 ## 8. Cleanup and artifact disposition
 
-Verify protected state remains intact, every material local/remote/generated/decision/test/diagnostic/sensitive/external item has an intentional disposition, destructive actions use exact safeguards, remote/asynchronous state is read back, retained state has owners/triggers, and cleanup debt does not hide unsafe or incomplete work.
+Verify protected state remains intact, every material local/remote/generated/decision/test/diagnostic/sensitive/external item has an intentional disposition, destructive actions use exact safeguards, remote/asynchronous state is read back, retained state has owners/triggers, and cleanup debt does not hide unsafe or incomplete work. Token pressure cannot justify skipping cleanup or retained-state reporting.
 
 ## 9. Sanity checking and independent review
 
-A sanity/audit claim verifies exact frozen target and claim type, complete semantic coverage, full-attention review leaves, risk-justified depth, triggered modules, specification/engineering-decision/boundary/end-to-end reconciliation, test evidence/invalidation, findings, cleanup, checks not run, and claim limits. Passing leaves or capsules do not prove integrated coherence.
+A sanity/audit claim verifies exact frozen target and claim type, complete semantic coverage, full-attention review leaves, risk-justified depth, triggered modules, specification/engineering-decision/boundary/end-to-end reconciliation, test evidence/invalidation, token-practice-floor adherence, findings, cleanup, checks not run, and claim limits. Passing leaves or capsules do not prove integrated coherence. Reduced evidence narrows the claim.
 
 ## 10. Pull-request review and guarded merge
 
 A material PR verifies:
 
 - exact PR/base/head/comparison and review mode;
-- complete changed/renamed/deleted/generated/dependency/workflow/package/decision/test/cleanup surface;
-- agreement with authority, obligation map, hard gates, value ordering, selected path, priority, parent/branch map, execution, test evidence, cleanup, and closure;
+- complete changed/renamed/deleted/generated/dependency/workflow/package/decision/test/token/cleanup surface;
+- agreement with authority, obligation map, hard gates, value ordering, selected path, priority, parent/branch map, execution, test evidence, token backpressure/practice floor, cleanup, and closure;
 - rejected-path rationale, tradeoffs, exact evidence keys, discovery/skip counts, failure clusters, test intents consolidated, test tiers, evidence reuse, and remaining debt;
 - current-head checks capable of falsifying the claim;
 - discussion, requested changes, blockers, invalidated decisions/branches/evidence, decision/test/token/cleanup debt;
@@ -201,7 +245,7 @@ The merge transaction revalidates exact accepted head, target, mergeability, pro
 
 ## 11. Design and component boundaries
 
-Components/contracts verify engineering contract, purpose/bounds, singular ownership, LEGO ports/adapters, justified SOLID/CUPID internals, domain-appropriate ranges, accurate generality, lifecycle/cleanup, hard gates/objectives, test owner/oracles/capsules/invalidation, compatibility/evolution, total-system simplicity, and decisive falsification.
+Components/contracts verify engineering contract, purpose/bounds, singular ownership, LEGO ports/adapters, justified SOLID/CUPID internals, domain-appropriate ranges, accurate generality, lifecycle/cleanup, hard gates/objectives, test owner/oracles/capsules/invalidation, compatibility/evolution, total-system simplicity, token/practice-floor fit, and decisive falsification.
 
 ## 12. Schema and generated artifacts
 
@@ -229,6 +273,6 @@ Before publication/release, inspect final diff/state, run all triggered tiers, u
 
 ## Current phase
 
-UMCGS has no accepted production implementation or public release. The mandatory current check is `./scripts/verify-docs.sh`, plus task-specific engineering judgment, assessment, focus-branch, token, testing, execution, cleanup, sanity, PR-review, merge, or specialist validation.
+UMCGS has no accepted production implementation or public release. The mandatory current check is `./scripts/verify-docs.sh`, plus task-specific engineering judgment, assessment, focus-branch, token-backpressure, testing, execution, cleanup, sanity, PR-review, merge, or specialist validation.
 
 Project license selection remains deferred for original private pre-release work; third-party implementation reuse and public distribution still require provenance/license compatibility and donor-artifact disposition.
