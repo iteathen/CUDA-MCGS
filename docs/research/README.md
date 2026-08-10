@@ -4,6 +4,10 @@
 
 Research records external evidence that may affect UMCGS. It does not govern the project until converted into an accepted ADR or specification.
 
+## CUDA-JS runtime boundary
+
+- [`2026-08-10-cuda-js-assumption-audit.md`](2026-08-10-cuda-js-assumption-audit.md) — official-source audit of the initial CUDA-JS sketch, including Node-API/JIT boundaries, NVRTC scope, managed/mapped memory, host micro-batching, atomic publication, and CUDA context-health implications.
+
 ## Prior art
 
 - [`prior-art/README.md`](prior-art/README.md) — review index and method.
