@@ -79,3 +79,15 @@
 75. Do not leave stale authority, plan state, cleanup state, indexes, component manifests, registry entries, findings, invalidated execution/review evidence, execution-created or review-created state, review threads, PR state, remote branches, credentials, artifacts, external resources, or handoff state after a change.
 76. Record genuine blockers and the next coherent action in `next_step.yaml` or a cleanup-debt issue as appropriate.
 77. Prefer a complete coherent result over many tiny context-reloading cycles.
+78. When a task exceeds one focused session, spans multiple semantic owners/contracts/paths, contains independent unknowns, crosses agents/sessions, or would force sampling or skimming, create a focus-branch map before deep execution.
+79. Treat a focus branch as a semantic work packet, not automatically a Git branch, issue, PR, component, directory, or document.
+80. Keep one canonical parent task and integration spine owning the global outcome, authority, invariants, vocabulary, dependency graph, invalidation, contradictions, cleanup, and closure.
+81. Size each leaf focus branch so one qualified agent can retain its owner, mechanism, dependencies, failure/resource/cleanup behavior, evidence, consequence horizon, and integration obligation without sampling or skimming.
+82. Split focus branches by semantic ownership, independent output, validation, rollback, cleanup, and consequence—not equal file count, line count, token count, or agent count.
+83. Every material focus branch must state stable ID, parent-plan version, owner, exact inputs/revisions, scope/non-goals, write permissions, preserved global invariants, output contract, acceptance/falsifier, invalidation, cleanup, and integration obligations.
+84. Normally own only one active focus branch at a time; checkpoint exact revision, partial state, evidence, cleanup, and next action before switching.
+85. Do not let a focus branch silently redefine parent-level terminology, ownership, schema meaning, ABI, identity, units, ranges, resource budgets, compatibility promises, or acceptance criteria; route shared changes through the integration spine and invalidate dependents explicitly.
+86. Parallelize focus branches only when owners and write surfaces do not overlap, shared contracts are frozen or coordinated, dependencies are acyclic, acceptance/rollback/cleanup are independent, and one integration owner reconciles all outputs.
+87. Do not treat locally accepted focus branches as proof of parent completion; centrally reconcile exact outputs, contradictions, boundaries, end-to-end behavior, lifecycle, resources, compatibility, security, performance, and cleanup against one final revision.
+88. Create separate Git branches, issues, PRs, worktrees, or documents for focus branches only when isolation, owner, deliverable, risk, dependency, review, transport, rollback, or closure is independently meaningful.
+89. Rebranch when evidence reveals the task’s true shape; preserve prior branch IDs and dispositions, version changed dependencies/outputs, and invalidate affected work rather than silently rewriting the map.
