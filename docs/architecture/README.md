@@ -2,10 +2,13 @@
 
 **Status:** Informational
 
-Architecture documents explain component boundaries, data flow, specialization, memory layout, execution, and runtime models. They are normative only when reflected in an accepted ADR and specification.
+Architecture documents explain UMCGS search boundaries, data flow, specialization, memory planning, generated device programs, peer-runtime integration, and execution models. They are normative only when reflected in an accepted ADR and specification.
 
-No production architecture or source layout has been accepted. The next boundary is the version-0 contract set and Search IR described in [`../../next_step.yaml`](../../next_step.yaml).
+The generic Node/CUDA runtime boundary is accepted through ADR-0014. Detailed UMCGS component decomposition, Search IR, package contract, and scheduling remain proposal work.
 
-## Current proposals
+## Current documents
 
-- [`FRAMEWORK_OVERVIEW.md`](FRAMEWORK_OVERVIEW.md) — search-compiler plus finite device-runtime model; not yet normative.
+- [`REPOSITORY_TOPOLOGY.md`](REPOSITORY_TOPOLOGY.md) — accepted peer-repository ownership and artifact-flow explanation.
+- [`FRAMEWORK_OVERVIEW.md`](FRAMEWORK_OVERVIEW.md) — proposed search compiler, generated device program, UMCGS adapter, and external CUDA-JS runtime model.
+
+The next boundary is the version-zero UMCGS-to-CUDA-JS package/compatibility contract and revised SPEC-V0 branch/test map described in [`../../next_step.yaml`](../../next_step.yaml).

@@ -89,6 +89,7 @@ required=(
   docs/PROJECT_CHARTER.md
   docs/architecture/README.md
   docs/architecture/FRAMEWORK_OVERVIEW.md
+  docs/architecture/REPOSITORY_TOPOLOGY.md
   docs/specs/README.md
   docs/specs/SPEC-0000-framework-requirements.md
   docs/decisions/README.md
@@ -105,8 +106,10 @@ required=(
   docs/decisions/ADR-0011-focus-branch-decomposition-and-integration.md
   docs/decisions/ADR-0012-token-use-and-context-discipline.md
   docs/decisions/ADR-0013-consolidated-testing-and-repair-loop-efficiency.md
+  docs/decisions/ADR-0014-extract-cuda-js-runtime.md
   docs/development/README.md
   docs/research/README.md
+  docs/research/2026-08-10-cuda-js-assumption-audit.md
   docs/research/prior-art/README.md
   docs/research/prior-art/2026-08-10-landscape.md
   docs/research/prior-art/source-register.yaml
@@ -174,4 +177,4 @@ if command -v ruby >/dev/null 2>&1; then
   ruby -e 'require "yaml"; Dir[".github/ISSUE_TEMPLATE/*.{yml,yaml}"].each { |f| YAML.safe_load_file(f, permitted_classes: [], aliases: false) }'
 fi
 
-printf 'documentation, organization, focus-branch, token-discipline, testing, agent-governance, and cleanup checks passed\n'
+printf 'documentation, organization, repository-boundary, focus-branch, token-discipline, testing, agent-governance, and cleanup checks passed\n'
