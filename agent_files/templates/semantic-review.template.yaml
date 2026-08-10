@@ -1,32 +1,46 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "semantic_review": {
     "id": "",
-    "status": "active|supported|violated|blocked|invalidated",
+    "status": "active|supported|supported_with_limits|violated|blocked|invalidated",
     "reviewer": "",
-    "coverage_node": ""
+    "coverage_branch": ""
   },
   "subject": {
     "repository": "",
     "revision": "",
     "file_symbol_artifact_or_range": "",
     "semantic_unit": "",
-    "component_and_owner": ""
+    "component_and_owner": "",
+    "governing_authority": []
   },
   "core": {
     "purpose_and_authority": "",
-    "owner_and_boundary": "",
-    "inputs_outputs_state_resources_and_effects": [],
+    "owner_layer_and_lego_boundary": "",
+    "inputs_outputs_and_effects": [],
     "caller_and_dependency_assumptions": [],
-    "failure_pressure_cancellation_and_terminal_behavior": [],
+    "state_identity_and_lifetime": [],
+    "contract_and_foundational_alignment": [],
+    "design_principle_alignment": {
+      "singular_ownership": "",
+      "lego_ports_adapters_and_dependency_direction": "",
+      "solid_responsibilities": "",
+      "cupid_quality": "",
+      "maximum_accurate_generality": "",
+      "second_instance_and_first_consumer_deletion": "",
+      "simplest_sufficient_total_system": ""
+    },
+    "ordering_resources_and_pressure": [],
+    "failure_cancellation_cleanup_and_terminal_behavior": [],
     "simplest_credible_counterexample": "",
     "cheapest_decisive_evidence": [],
-    "wider_change_impact": []
+    "wider_consequence_horizon_and_ten_x_scale": []
   },
   "triggered_modules": {
-    "persistence_migration_recovery": {"triggered": false, "evidence": [], "findings": []},
-    "security_trust_privacy_executable_capability": {"triggered": false, "evidence": [], "findings": []},
-    "concurrency_ordering_publication": {"triggered": false, "evidence": [], "findings": []},
+    "design_universality_specialization": {"triggered": false, "evidence": [], "findings": []},
+    "persistence_migration_cache_recovery": {"triggered": false, "evidence": [], "findings": []},
+    "security_trust_privacy_native_execution_credentials": {"triggered": false, "evidence": [], "findings": []},
+    "concurrency_ordering_publication_progress": {"triggered": false, "evidence": [], "findings": []},
     "external_io_resources_cleanup": {"triggered": false, "evidence": [], "findings": []},
     "performance_hot_path": {"triggered": false, "evidence": [], "findings": []},
     "identity_lineage": {"triggered": false, "evidence": [], "findings": []},
@@ -35,23 +49,32 @@
     "destructive_difficult_to_reverse": {"triggered": false, "evidence": [], "findings": []},
     "gpu_device_closure_finite_resources": {"triggered": false, "evidence": [], "findings": []},
     "graph_search_semantics": {"triggered": false, "evidence": [], "findings": []},
-    "exhaustive_depth": {"triggered": false, "reason": "", "evidence": [], "findings": []}
+    "evaluator_model_numeric_semantics": {"triggered": false, "evidence": [], "findings": []},
+    "diagnostics_accountability": {"triggered": false, "evidence": [], "findings": []},
+    "exhaustive_depth": {"triggered": false, "reason": "", "additional_question_families": [], "evidence": [], "findings": []}
   },
   "findings": [
     {
       "classification": "blocking|non_blocking|question|informational",
-      "expected_invariant": "",
+      "severity": "critical|high|medium|low|informational",
+      "expected_authority_and_invariant": "",
       "actual_or_uncertain_mechanism": "",
-      "consequence": "",
+      "consequence_and_affected_paths": "",
       "evidence": [],
       "acceptable_outcome_or_evidence": "",
-      "owner_and_manifestations": []
+      "owner_and_manifestations": [],
+      "required_revalidation": []
     }
   ],
   "conclusion": {
+    "mandatory_core_complete": false,
+    "triggered_modules_complete_or_blocked": false,
+    "material_counterexamples_tested_or_bounded": false,
+    "specifications_and_design_principles_reconciled_to_mechanism": false,
+    "wider_reconciliation_obligations": [],
     "checks_not_run_and_reason": [],
     "claim_limits": [],
-    "result": "supported|violated|blocked|invalidated",
+    "result": "supported|supported_with_limits|violated|blocked|invalidated",
     "summary": ""
   }
 }

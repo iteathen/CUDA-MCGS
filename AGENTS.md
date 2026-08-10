@@ -44,7 +44,8 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 
 - Assess substantial and critical work before planning; use a strong adversary to expose hidden assumptions, unsound simplicity, and unnecessary machinery.
 - A sanity claim names an exact frozen revision or artifact and is explicitly `full`, `bounded`, or `sampled`; sampled evidence is never presented as complete coverage.
-- Full sanity means every declared surface is accounted for at risk-justified depth, followed by boundary, end-to-end, lifecycle, and findings reconciliation—not exhaustive paperwork for every low-risk leaf.
+- Before detailed sanity review, split the complete semantic coverage map into leaf review branches small enough for one focused session and full attention to every material semantic unit.
+- Full sanity means every declared surface is accounted for at risk-justified depth, followed by boundary, end-to-end, design, lifecycle, and findings reconciliation—not exhaustive paperwork for every low-risk unit.
 - Apply the accepted design hierarchy: domain truth and authority → purpose/bounds/contextual weighting → LEGO boundaries → SOLID responsibilities → CUPID quality → simplest sufficient total system → measured validation.
 - One authoritative fact/state/lifecycle has one visible owner; consumers use meaningful public contracts rather than internal mutation.
 - Dependencies are explicit and injected; platform, compatibility, domain-instance, and model-instance details remain behind owned adapters.
@@ -59,7 +60,7 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 - Cross-component dependencies must be declared, acyclic, and made through public contracts rather than deep imports.
 - Tests, safety checks, validation gates, and benchmark requirements may not be weakened to make a change pass.
 
-See [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md), [`LEGO_ARCHITECTURE.md`](agent_files/general_foundation/LEGO_ARCHITECTURE.md), [`agent_files/application_specific/UMCGS_PROFILE.md`](agent_files/application_specific/UMCGS_PROFILE.md), [`ARCHITECTURE_GUARDRAILS.md`](agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md), and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
+See [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md), [`SEMANTIC_INTERROGATION.md`](agent_files/general_foundation/SEMANTIC_INTERROGATION.md), [`LEGO_ARCHITECTURE.md`](agent_files/general_foundation/LEGO_ARCHITECTURE.md), [`agent_files/application_specific/UMCGS_PROFILE.md`](agent_files/application_specific/UMCGS_PROFILE.md), [`ARCHITECTURE_GUARDRAILS.md`](agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md), and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
 
 ## Large-project organization rule
 
@@ -79,7 +80,7 @@ Do not create root-level source files, catch-all `utils`, `common`, `shared`, `m
 
 ## Reasoning gate
 
-Architecture, CUDA synchronization, memory layout, lifetimes, concurrency, JIT/ABI work, schemas, persistent state, hot-path changes, component creation, dependency-direction changes, and repository splits require a completed critical assessment plus high-confidence reasoning supported by authority and evidence. An agent that cannot establish the required reasoning must not edit that boundary. It must record a decision-ready blocker and next action in `next_step.yaml`.
+Architecture, CUDA synchronization, memory layout, lifetimes, concurrency, JIT/ABI work, schemas, persistent state, hot-path changes, component creation, dependency-direction changes, repository splits, and full system-sanity claims require a completed critical assessment plus high-confidence reasoning supported by authority and evidence. An agent that cannot establish the required reasoning must not edit or certify that boundary. It must record a decision-ready blocker and next action in `next_step.yaml`.
 
 The gate is not permission to abandon hard work. Research, inspect, test, and narrow the uncertainty first.
 
@@ -88,22 +89,24 @@ The gate is not permission to abandon hard work. Research, inspect, test, and na
 When a sanity or audit claim is made:
 
 1. freeze the exact revision/artifact and declare `full`, `bounded`, or `sampled`;
-2. map coverage by semantic owner and integration boundary rather than file count;
-3. apply core, triggered-module, or exhaustive depth according to risk;
-4. interrogate material semantic units rather than merely describing them;
-5. reconcile component boundaries, critical end-to-end paths, cross-cutting lifecycle, contradictions, and findings;
-6. treat tests, analyzers, sanitizers, and benchmarks as evidence rather than substitutes for understanding;
-7. disclose checks not run, access limits, invalidated evidence, and claim limits;
-8. give actionable independent findings durable disposition instead of quietly repairing them.
+2. define included/excluded surfaces, authority, environment, external state, risks, and access limits;
+3. build the complete coverage map by semantic owner and integration boundary rather than file count;
+4. split the map into owner, boundary, path, cross-cutting, or artifact review branches small enough for one focused session and full attention without sampling or skimming;
+5. inventory every material semantic unit in each leaf branch;
+6. apply core, triggered-module, or exhaustive depth according to risk;
+7. interrogate every material unit against specifications, ownership, foundations, LEGO/SOLID/CUPID, universality, resources, failure behavior, counterexamples, evidence, and wider consequences;
+8. reconcile component boundaries, critical end-to-end paths, design principles, cross-cutting lifecycle, contradictions, invalidated evidence, and findings;
+9. treat tests, analyzers, sanitizers, and benchmarks as evidence rather than substitutes for understanding;
+10. disclose checks not run, dispose of review-created state, and give actionable independent findings durable disposition instead of quietly repairing them.
 
-Routine implementation self-sanity may stay in the PR/task record. Use a separate sanity record only when the claim, duration, independence, parallelism, or continuation requires it.
+A review branch is a semantic coverage packet, not automatically a Git branch. Passing leaf branches do not prove integrated system coherence. Routine implementation self-sanity may stay in the PR/task record; use a separate sanity record only when the claim, duration, independence, parallelism, or continuation requires it.
 
 ## Work and evidence rules
 
 - Work in the largest safe coherent unit owned by one boundary; avoid repeated tiny passes that cause context drift.
 - Decide the artifact's organizational home before writing it.
 - Preserve one proportional assessment/plan by default; link existing authority rather than creating duplicate administrative ledgers.
-- Preserve one proportional sanity record only when the review claim needs one; do not create one form per file or function.
+- Preserve one proportional sanity record only when the review claim needs one; do not create one form, issue, document, or Git branch per function.
 - Before creating a reusable concept, state its owned invariant, intended equivalence class, exclusions, second-instance result, and first-consumer deletion result.
 - Before calling a design simple, account for complexity exported to callers, adapters, generated code, device memory, synchronization, migration, recovery, operations, diagnostics, testing, and expected integrations.
 - Diagnose before repairing: observe, compare with the contract, locate ownership, make one coherent repair, retest.

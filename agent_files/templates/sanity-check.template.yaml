@@ -1,8 +1,8 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "sanity": {
     "id": "",
-    "status": "active|blocked|concluded",
+    "status": "active|blocked|reconciliation|concluded|invalidated",
     "claim": "full|bounded|sampled",
     "mode": "self_sanity|independent",
     "owner": "",
@@ -16,20 +16,45 @@
     "declared_surface": [],
     "material_risks": [],
     "exclusions_and_reason": [],
-    "access_or_evidence_limits": []
+    "access_or_evidence_limits": [],
+    "review_created_state_requiring_disposition": []
   },
-  "coverage": [
+  "coverage_branches": [
     {
       "id": "",
-      "subject_and_owner": "",
+      "parent_id": "",
+      "branch_type": "owner|boundary|path|cross_cutting|artifact",
+      "subject_and_primary_owner": "",
       "exact_anchors": [],
+      "included_surface": [],
+      "exclusions": [],
+      "dependencies_consumers_and_reconciliation": [],
       "risk": "low|medium|high|critical",
       "depth": "core|triggered_modules|exhaustive",
       "depth_reason": "",
-      "dependencies_and_consumers": [],
+      "branch_sizing": {
+        "one_primary_semantic_owner_or_one_coherent_path": false,
+        "fits_one_focused_review_session": false,
+        "all_material_semantic_units_inventoried": false,
+        "sampling_or_skimming_required": false,
+        "mechanism_and_consequence_horizon_fit_active_context": false,
+        "split_or_size_justification": ""
+      },
+      "semantic_units": [
+        {
+          "id": "",
+          "file_symbol_artifact_or_operation": "",
+          "triggered_modules": [],
+          "evidence": [],
+          "status": "supported|supported_with_limits|violated|blocked|invalidated",
+          "findings": []
+        }
+      ],
+      "required_evidence": [],
       "evidence": [],
-      "status": "supported|violated|blocked|excluded|invalidated",
-      "findings": []
+      "status": "supported|supported_with_limits|violated|blocked|excluded|invalidated",
+      "findings": [],
+      "review_created_state": []
     }
   ],
   "reconciliation": {
@@ -37,6 +62,7 @@
     "component_and_boundaries": [],
     "end_to_end_paths": [],
     "cross_cutting_and_lifecycle": [],
+    "design_principles_and_specifications": [],
     "contradictions_and_invalidations": [],
     "broad_claims_with_exact_anchors": []
   },
@@ -45,27 +71,36 @@
       "id": "",
       "classification": "confirmed_violation|high_risk_uncertainty|weak_lead|informational",
       "severity": "critical|high|medium|low|informational",
+      "coverage_branches": [],
       "frozen_revision_and_exact_evidence": [],
       "authority_and_failed_or_uncertain_invariant": "",
+      "expected_behavior": "",
       "actual_mechanism_and_consequence": "",
-      "affected_owners_consumers_and_manifestations": [],
+      "affected_owners_consumers_paths_and_manifestations": [],
       "root_cause_and_duplicate_reconciliation": "",
       "smallest_coherent_remediation_boundary": "",
       "durable_disposition": "",
+      "required_revalidation": [],
       "claim_limits": []
     }
   ],
   "review_state": {
     "checks_not_run_and_reason": [],
-    "temporary_artifacts_access_or_instrumentation": [],
-    "retained_evidence_and_retention_trigger": [],
+    "temporary_git_branches_worktrees_and_local_state": [],
+    "downloaded_generated_reports_and_artifacts": [],
+    "instrumentation_debug_flags_and_device_state": [],
+    "credentials_permissions_and_external_resources": [],
+    "retained_evidence_owner_lifetime_and_trigger": [],
     "cleanup_or_access_debt": []
   },
   "closure": {
     "every_declared_surface_accounted_for": false,
+    "every_leaf_branch_sized_for_full_attention": false,
+    "all_material_semantic_units_inventoried": false,
+    "mandatory_core_and_triggered_modules_complete_or_blocked": false,
     "depth_justified_by_risk": false,
-    "semantic_and_triggered_modules_complete_or_blocked": false,
-    "boundary_and_path_reconciliation_complete_or_blocked": false,
+    "boundary_path_lifecycle_and_design_reconciliation_complete_or_blocked": false,
+    "contradictions_and_invalidated_evidence_resolved": false,
     "findings_durably_dispositioned": false,
     "review_state_intentional": false,
     "final_revision_or_artifact": "",
