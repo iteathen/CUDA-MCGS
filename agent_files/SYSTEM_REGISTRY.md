@@ -10,6 +10,7 @@ This registry tells developers and agents where durable information and future i
 - One kind of durable truth has one authoritative location.
 - Product components must have a manifest and README before production code enters them.
 - Planned boundaries are not implementation authorization.
+- Focus branches are semantic work packets, not new ownership boundaries unless authority explicitly creates one.
 - Cross-component dependencies must be declared in both the component manifest and governing architecture/specification where material.
 - Archived and superseded locations never regain authority merely because an agent finds them.
 - Retained temporary, evidence, recovery, archive, and cleanup-debt state has an owner and objective disposition trigger.
@@ -21,6 +22,7 @@ This registry tells developers and agents where durable information and future i
 | `governance.agent` | Agent workflow, reasoning gates, organization, validation | [`agent_files/`](README.md) | Active |
 | `governance.design` | LEGO design hierarchy, components, contracts, composition, foundations, naming, compatibility | [`DESIGN_ALIGNMENT_CARD.md`](DESIGN_ALIGNMENT_CARD.md), [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md), and linked doctrine | Accepted |
 | `governance.assessment` | Adversarial assessment before planning and proportional planning records | [`general_foundation/ASSESSMENT_AND_PLANNING.md`](general_foundation/ASSESSMENT_AND_PLANNING.md) | Accepted |
+| `governance.focus-branches` | Large-task semantic decomposition, full-attention sizing, parent integration spine, context packets, parallelism, invalidation, and reconciliation | [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) | Accepted |
 | `governance.execution` | Plan-node readiness, coherent operation execution, deviation handling, recovery, acceptance, and continuation state | [`general_foundation/PLAN_EXECUTION.md`](general_foundation/PLAN_EXECUTION.md) | Accepted |
 | `governance.cleanup` | Cleanup inventory, protected state, local/remote disposition, destructive safeguards, verification, and cleanup debt | [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md) | Accepted |
 | `governance.sanity` | Sanity/audit claims, semantic coverage, risk-based depth, reconciliation, and findings | [`general_foundation/SANITY_CHECKING.md`](general_foundation/SANITY_CHECKING.md) and [`general_foundation/SEMANTIC_INTERROGATION.md`](general_foundation/SEMANTIC_INTERROGATION.md) | Accepted |
@@ -33,7 +35,7 @@ This registry tells developers and agents where durable information and future i
 | `project.research` | Prior-art and external evidence | [`../docs/research/`](../docs/research/README.md) | Active |
 | `project.archive` | Superseded documentation provenance | [`../docs/archive/`](../docs/archive/README.md) | Active |
 | `project.state` | Current phase and authority summary | [`../STATUS.md`](../STATUS.md) | Active |
-| `project.next-step` | One coherent next boundary | [`../next_step.yaml`](../next_step.yaml) | Active |
+| `project.next-step` | One coherent next boundary or active focus-branch packet | [`../next_step.yaml`](../next_step.yaml) | Active |
 
 ## Repository product areas
 
@@ -86,4 +88,4 @@ A coherent change must include:
 7. validation owner;
 8. cleanup, migration, archive, or supersession record.
 
-Use [`templates/component-manifest.template.yaml`](templates/component-manifest.template.yaml) for product components and follow [`general_foundation/PROJECT_ORGANIZATION.md`](general_foundation/PROJECT_ORGANIZATION.md) and [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md).
+Use [`templates/component-manifest.template.yaml`](templates/component-manifest.template.yaml) for product components and follow [`general_foundation/PROJECT_ORGANIZATION.md`](general_foundation/PROJECT_ORGANIZATION.md) and [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md). Use [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) for large-task work decomposition without inventing new component ownership.
