@@ -30,6 +30,7 @@ required=(
   agent_files/VALIDATION_POLICY.md
   agent_files/DESIGN_ALIGNMENT_CARD.md
   agent_files/general_foundation/PRINCIPLES.md
+  agent_files/general_foundation/ENGINEERING_JUDGMENT.md
   agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md
   agent_files/general_foundation/FOCUS_BRANCHES.md
   agent_files/general_foundation/TOKEN_DISCIPLINE.md
@@ -65,6 +66,7 @@ required=(
   agent_files/application_specific/MEMORY_AND_PERFORMANCE.md
   agent_files/application_specific/RESEARCH_POLICY.md
   agent_files/templates/component-manifest.template.yaml
+  agent_files/templates/engineering-decision.template.yaml
   agent_files/templates/assessment-and-plan.template.md
   agent_files/templates/focus-branch.template.yaml
   agent_files/templates/token-budget.template.yaml
@@ -107,6 +109,7 @@ required=(
   docs/decisions/ADR-0012-token-use-and-context-discipline.md
   docs/decisions/ADR-0013-consolidated-testing-and-repair-loop-efficiency.md
   docs/decisions/ADR-0014-extract-cuda-js-runtime.md
+  docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md
   docs/development/README.md
   docs/research/README.md
   docs/research/2026-08-10-cuda-js-assumption-audit.md
@@ -177,4 +180,4 @@ if command -v ruby >/dev/null 2>&1; then
   ruby -e 'require "yaml"; Dir[".github/ISSUE_TEMPLATE/*.{yml,yaml}"].each { |f| YAML.safe_load_file(f, permitted_classes: [], aliases: false) }'
 fi
 
-printf 'documentation, organization, repository-boundary, focus-branch, token-discipline, testing, agent-governance, and cleanup checks passed\n'
+printf 'documentation, organization, repository-boundary, engineering-judgment, focus-branch, token-discipline, testing, agent-governance, and cleanup checks passed\n'

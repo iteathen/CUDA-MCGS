@@ -142,3 +142,27 @@
 138. Use a durable test-batch record only when several intents/capsules/failure clusters cross sessions or agents, expensive setup must be coordinated, or completeness/skip/invalidation evidence has a real consumer.
 139. Do not spend validation reserve on repeated reassurance runs; save tokens through selection, batching, consolidation, failure clustering, and exact evidence reuse—not by skipping required tiers.
 140. Stop testing when further evidence cannot materially change the claim, risk, repair decision, escalation, or next action, and state checks not run and claim limits exactly.
+141. Before selecting a material path, build an engineering contract: owned outcome, consumer, authority, semantics, bounds, resources, lifecycle/failure/recovery/cleanup, compatibility, non-goals, and completion evidence.
+142. Normalize every material specification obligation and map it to an authoritative owner, mechanism, failure consequence, and evidence/test capsule.
+143. Do not treat implementation code, existing tests, comments, plans, examples, or prior agent output as automatic specification authority.
+144. Classify specification problems as ambiguity, conflict, gap, stale authority, unimplementable obligation, or oracle mismatch; do not resolve them silently in code or tests.
+145. Distinguish hard gates, mission objectives, supporting qualities, and process costs before claiming a tradeoff.
+146. Translate safety, correctness, accuracy, speed, reliability, memory, compatibility, simplicity, and delivery into thresholds, prohibited states, optimization directions, or explicit ordinal rules; do not rank slogans.
+147. Eliminate candidate paths that violate authority, unacceptable-harm boundaries, semantic correctness, explicit accuracy/deadline/resource/compatibility bounds, or required lifecycle/failure behavior before comparing preferences.
+148. Do not use weighted scoring to compensate for a failed hard gate; use numerical weights only when metrics and stakeholder utility are real and comparable.
+149. When no more specific ordering exists, apply the accepted fallback: authority/legality/ethics → unacceptable irreversible harm → semantic correctness and hard mission bounds → mission-sustaining reliability/compatibility/operability → mission quality/performance → supporting qualities → delivery/process convenience.
+150. A subsystem may promote another concern into a higher gate only with explicit purpose, authority, threshold, consequence, accepting owner, evidence, and revisit trigger.
+151. Before accepting a value sacrifice, consider credible architectural separation such as profiles, offline/online paths, adapters, bounded approximation, staging/rollback, asynchronous work, or safe fallback.
+152. Generate credible no-change, minimal-repair, proposed, materially different, experiment, staged, or fallback paths where material; do not compare one detailed proposal with an undefined alternative.
+153. Eliminate Pareto-dominated valid paths and record why every rejected path lost.
+154. When architecture-changing uncertainty is material and a bounded experiment is cheaper than choosing incorrectly, run the experiment before irreversible commitment.
+155. Prefer reversible paths under low confidence and high consequence; prefer direct implementation when authority, mechanism, and evidence are already clear and an experiment would teach nothing.
+156. Apply design principles in order—authority/domain truth, purpose/bounds/value ordering, LEGO, SOLID, CUPID, simplest sufficient total system—not as equal votes.
+157. Prioritize work as P0 containment, P1 gate/foundation, P2 information/risk/dependency unlock, P3 mission value/measured efficiency, and P4 supporting quality/polish.
+158. Within a priority class, order by dependency unlock, consequence/risk reduction, information value, cost of delay, exposure, reversibility/recovery cost, then effort.
+159. Do not prioritize by easiest file, loudest symptom, newest request, largest diff, sunk cost, or agent preference.
+160. Before each material operation, state the obligation/decision, owner, chosen path, expected effects, preserved value ordering, falsifier, evidence, rollback, and cleanup.
+161. Treat a change to specification meaning, hard gates, value ordering, selected path, priority, or accepted tradeoff as a material deviation requiring reassessment and dependent invalidation.
+162. Material decision debt—unmapped obligations, silent spec gaps, unstated gates, unexamined alternatives, unsupported value ordering, or unexplained path selection—blocks completion.
+163. Use a durable engineering-decision record only for foundational, contested, cross-component, high-consequence, empirically uncertain, difficult-to-reverse, or cross-session decisions.
+164. Stop engineering analysis when further reasoning cannot materially change the candidate set, value ordering, selected path, evidence, risk, priority, or next action.

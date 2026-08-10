@@ -1,5 +1,5 @@
 name: Implementation
-description: Implement an accepted UMCGS specification through a governed focus branch and plan node with explicit token, testing, cleanup, and integration discipline
+description: Implement an accepted UMCGS specification through governed engineering judgment, focus branches, testing, cleanup, and integration
 title: "[Implementation]: "
 labels: ["implementation"]
 body:
@@ -8,6 +8,20 @@ body:
     attributes:
       label: Accepted specification
       placeholder: docs/specs/...
+    validations:
+      required: true
+  - type: textarea
+    id: engineering-contract
+    attributes:
+      label: Engineering contract and specification alignment
+      description: State required outcome/consumers, governing authority and exact clauses, material obligations and derived requirements, semantics/units/ranges/identity/versions, finite resources/deadlines/accuracy/quality bounds, lifecycle/failure/recovery/cleanup, compatibility/migration, non-goals, completion evidence, and any ambiguity/conflict/gap/stale/unimplementable authority or oracle mismatch. Map obligations to owners, mechanisms, and tests.
+    validations:
+      required: true
+  - type: textarea
+    id: engineering-judgment
+    attributes:
+      label: Engineering judgment, value ordering, candidate paths, and priority
+      description: Identify hard gates, mission objectives, supporting qualities, process costs, context-specific ordering of safety/correctness/accuracy/speed/reliability/resources/compatibility/simplicity/delivery, credible alternative paths, gate results, false-tradeoff separation, decisive evidence, reversibility, total lifecycle cost, selected path, why alternatives lost, accepted tradeoffs, confidence/revisit triggers, priority P0–P4, and whether a durable engineering-decision record is required.
     validations:
       required: true
   - type: textarea
@@ -21,42 +35,42 @@ body:
     id: assessment
     attributes:
       label: Assessment and strongest adversarial challenge
-      description: Link the assessment/plan or summarize its disposition, strongest credible objection, integrated resolution, sound fundamentals, decisive falsifier, context constraints, testing risks, and cleanup implications. Do not duplicate accepted authority.
+      description: Link the assessment/plan or summarize disposition, strongest overengineering/underengineering objections, concrete counterexample, integrated revision, decisive falsifier, context constraints, testing risks, and cleanup implications. Do not duplicate accepted authority.
     validations:
       required: true
   - type: textarea
     id: focus-branch
     attributes:
       label: Parent task and focus-branch contract
-      description: State whether focus branches are triggered. For large/complex work, identify parent task/plan version, integration owner, global invariants, focus-branch ID/type/owner, full-attention sizing, exact input revisions, minimal context packet, scope/non-goals, write surface, dependencies, expected output, downstream consumers, acceptance/falsifier, test obligations, invalidation, cleanup, and integration obligations. Do not substitute a Git branch name for this semantic contract.
+      description: State whether focus branches are triggered. For large/complex work, identify parent task/plan and engineering-decision version, integration owner, global invariants/value order, branch ID/type/owner, full-attention sizing, exact inputs, context packet, scope/non-goals, write surface, dependencies, output/consumers, acceptance/falsifier, decision/test obligations, invalidation, cleanup, and integration. Do not substitute a Git branch name for this semantic contract.
     validations:
       required: true
   - type: textarea
     id: token-discipline
     attributes:
       label: Token and context discipline
-      description: State task class, telemetry availability, context packet, loaded/excluded layers, validation/integration/cleanup/review/handoff reserve, yellow/red-state triggers, checkpoint/compaction plan, large artifacts kept outside prompt context, and split/rebranch/handoff conditions. State why no durable token-budget record is needed for routine work.
+      description: State task class, telemetry, context packet, loaded/excluded layers, reserve, yellow/red triggers, checkpoints/compaction, large artifacts kept external, and split/rebranch/handoff conditions. State why no durable token-budget record is needed for routine work.
     validations:
       required: true
   - type: textarea
     id: testing
     attributes:
       label: Testing and repair-loop strategy
-      description: Identify authoritative oracles, coverage map, pending test intents, owning capsules, exact evidence keys/invalidation, preflight/fast/owner/integration/deep/forensic tiers, expected discovery/skip counts, shared setup and case isolation, failure-cluster/root-cause process, no-repeat rules, consolidation boundary, provisional-test cleanup, and whether a durable test-batch record is required.
+      description: Identify authoritative oracles aligned with the engineering contract, coverage map, test intents, owning capsules, exact evidence keys/invalidation, execution tiers, expected discovery/skip counts, shared setup and isolation, failure-cluster/root-cause process, no-repeat rules, consolidation boundary, provisional-test cleanup, and whether a durable test-batch record is required.
     validations:
       required: true
   - type: textarea
     id: plan-node
     attributes:
       label: Plan version, node, readiness, and execution contract
-      description: State plan record/version/node, focus-branch ID, owner, dependencies and expected revisions, frozen head/environment, expected local/wider effects, outputs, acceptance, cheapest falsifier, rollback/safe stop, testing/cleanup obligations, material deviation triggers, and whether durable focus-branch/token/test/execution/cleanup records are required.
+      description: State plan/engineering-decision version, node, focus branch, owner, dependencies/revisions, frozen head/environment, obligations/selected path/value order implemented, expected effects/outputs, acceptance/falsifier, rollback, testing/cleanup, material deviation triggers, and required durable records.
     validations:
       required: true
   - type: textarea
     id: cleanup
     attributes:
       label: Cleanup inventory, protected state, and final disposition
-      description: Identify protected user/shared/authority/evidence/recovery state; expected local files/folders, provisional tests/fixtures/logs, semantic/Git branches/worktrees/stashes, remote PR/issues/reviews, generated/build artifacts, processes/ports/containers/device state, credentials/permissions, backups/persistence, and external resources. State planned dispositions, dependency order, safeguards, verification, post-merge cleanup, and permitted cleanup debt.
+      description: Identify protected user/shared/authority/evidence/recovery state; expected decision records, local files, provisional tests/fixtures/logs, semantic/Git branches/worktrees/stashes, remote PR/issues/reviews, generated/build artifacts, processes/ports/containers/device state, credentials/permissions, backups/persistence, and external resources. State dispositions, dependency order, safeguards, verification, post-merge cleanup, and permitted cleanup debt.
     validations:
       required: true
   - type: dropdown
@@ -65,13 +79,13 @@ body:
       label: Reasoning level
       options:
         - Substantial
-        - Critical (CUDA, concurrency, memory, ABI, persistent state, hot path, component boundary, foundational contract, cross-branch shared contract, context-constrained execution, high-consequence test oracle, coordinated/invalid-intermediate-state execution, destructive cleanup, sensitive/external/recovery state)
+        - Critical (foundational specification/engineering decision, safety/security, CUDA, concurrency, memory, ABI, persistent state, hot path, component boundary, cross-branch shared contract, high-consequence oracle, irreversible migration, destructive cleanup, sensitive/external/recovery state)
     validations:
       required: true
   - type: textarea
     id: validation
     attributes:
-      label: Completion evidence, branch integration, token reserve, test evidence, cleanup verification, and stop conditions
-      description: Include expected-versus-actual inspection, authoritative oracles, exact evidence keys, discovery/pass/fail/skip counts, test intents consolidated, failure clusters and changed hypotheses, branch output/integration checks, resource/failure/compatibility checks, owning-system cleanup verification, remaining test/token debt, and evidence that would pause, split, revise, invalidate, rollback, fail, or block acceptance.
+      label: Completion evidence and stop conditions
+      description: Include obligation/gate satisfaction, selected-path falsifiers, expected-versus-actual inspection, authoritative oracles, exact evidence keys, discovery/pass/fail/skip counts, intents consolidated, failure clusters/changed hypotheses, branch integration, resource/failure/compatibility checks, cleanup verification, remaining decision/test/token debt, and evidence that would pause, split, revise, invalidate, rollback, fail, or block acceptance.
     validations:
       required: true

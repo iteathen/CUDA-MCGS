@@ -9,7 +9,7 @@ This design system is adapted from the project owner’s Ars Thaumaturgica found
 ```text
 domain truth and project authority
         ↓
-purpose, bounds, and contextual design weighting
+engineering contract, purpose, bounds, and value ordering
         ↓
 LEGO component ownership and boundaries
         ↓
@@ -28,11 +28,32 @@ A lower level may improve a design only inside the valid envelope established ab
 
 ## Purpose before architecture
 
-Establish outcome, authority, owner, operating environment, intended equivalence class, expected ranges, correctness/safety tolerances, finite memory/performance limits, lifecycle, recovery, compatibility, cleanup/disposition, observability, test oracles/capsules, token/context constraints, and dominant concerns before selecting a representation or component structure.
+Establish outcome, consumer, authority, owner, operating environment, intended equivalence class, expected ranges, correctness/safety/accuracy/deadline tolerances, finite memory/performance limits, lifecycle, recovery, compatibility, cleanup/disposition, observability, test oracles/capsules, token/context constraints, and dominant mission objectives before selecting a representation or component structure.
+
+## Engineering judgment before path selection
+
+Translate accepted specifications into an engineering contract and obligation map before choosing an implementation.
+
+Classify material concerns as:
+
+- hard gates;
+- mission objectives;
+- supporting qualities;
+- process costs or tie-breakers.
+
+Eliminate paths that violate authority, unacceptable harm boundaries, semantic correctness, explicit accuracy/deadline/resource/compatibility bounds, or required lifecycle/failure behavior. Only then compare valid paths using contextual value ordering, evidence, reversibility, information value, dependency unlock, and total lifecycle cost.
+
+Apply design principles in order: authority/domain truth → purpose/bounds/value ordering → LEGO → SOLID → CUPID → simplest sufficient total system. Principles are lenses, not equal votes. Weighted scoring cannot make a failed gate valid.
+
+When no subsystem-specific ordering exists, use the fallback in [`ENGINEERING_JUDGMENT.md`](ENGINEERING_JUDGMENT.md) and [`CONTEXTUAL_DESIGN_WEIGHTING.md`](CONTEXTUAL_DESIGN_WEIGHTING.md): authority and unacceptable irreversible harm before semantic correctness/hard mission bounds, then mission-sustaining reliability, mission quality/performance, supporting qualities, and finally delivery/process convenience.
+
+A value may change role by context. Latency can be a preference in an offline tool and a correctness/safety gate in a real-time path. Accuracy can be a minimum bound or the mission objective. State the role, threshold, consequence, owner, evidence, and revisit trigger rather than relying on slogans.
+
+See [`ENGINEERING_JUDGMENT.md`](ENGINEERING_JUDGMENT.md).
 
 ## Assessment before planning
 
-For substantial and critical work, do not promote the first plausible idea directly into an implementation plan. Assess authority, evidence, ownership, domain foundations, alternatives, resources, failures, testing, cleanup, context budget, and validation; then attack the answers from the strongest credible opposing position. Resolve valid objections by changing the design, narrowing scope, running an experiment, splitting a focus branch, or rejecting the proposal.
+For substantial and critical work, do not promote the first plausible idea directly into an implementation plan. Assess authority, evidence, ownership, domain foundations, alternatives, resources, failures, testing, cleanup, context budget, value ordering, and validation; then attack the answers from the strongest credible opposing position. Resolve valid objections by changing the design, narrowing scope, running an experiment, splitting a focus branch, or rejecting the proposal.
 
 Simplicity is considered only after the fundamentals are sound. Administrative accounting is itself system complexity: keep one authoritative assessment/plan by default, link existing facts, group related answers, and preserve only information that changes decisions, enables execution, supports testing/validation/cleanup, or prevents costly reconstruction.
 
@@ -46,7 +67,7 @@ Keep one canonical parent task and integration spine. Split work into semantic f
 
 A focus branch is not automatically a Git branch. Git branches, issues, PRs, worktrees, documents, and test files are created only when isolation, collaboration, review, transport, rollback, dependency, or closure justifies them.
 
-Size leaves by full attention, not file/test/agent count. Shared-contract and oracle changes route through the integration spine and invalidate dependents explicitly. Locally accepted branches or passing capsules do not prove parent completion; exact outputs and evidence must be centrally reconciled.
+Size leaves by full attention, not file/test/agent count. Shared-contract, engineering-decision, value-order, and oracle changes route through the integration spine and invalidate dependents explicitly. Locally accepted branches or passing capsules do not prove parent completion; exact outputs and evidence must be centrally reconciled.
 
 See [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md).
 
@@ -58,9 +79,9 @@ Before substantial mutation, reserve enough context to inspect actual effects, t
 
 Load context in layers: operating kernel, owning authority, local mechanism, material consequence horizon, then rationale/provenance. Search before broad reading, prefer exact diffs/ranges and contiguous owning sections, batch independent retrievals, and keep large artifacts/logs external when exact identity and targeted sections suffice.
 
-Yellow means no new scope; red means stop new mutation and checkpoint; emergency means preserve exact state only. Never solve pressure by omitting authority, test evidence, failure behavior, cleanup, or handoff.
+Yellow means no new scope; red means stop new mutation and checkpoint; emergency means preserve exact state only. Never solve pressure by omitting authority, engineering-decision evidence, test evidence, failure behavior, cleanup, or handoff.
 
-Checkpoints preserve exact revisions, decisions, contradictions, failed hypotheses, test state, partial state, checks run/not run, cleanup, and next safe action. Material token debt blocks completion.
+Checkpoints preserve exact revisions, decisions, value ordering, rejected paths, contradictions, failed hypotheses, test state, partial state, checks run/not run, cleanup, and next safe action. Material token debt blocks completion.
 
 See [`TOKEN_DISCIPLINE.md`](TOKEN_DISCIPLINE.md) and [`CONTEXT_ROUTING.md`](CONTEXT_ROUTING.md).
 
@@ -90,9 +111,9 @@ See [`TESTING.md`](TESTING.md) and [`DEBUGGING.md`](DEBUGGING.md).
 
 A plan is a hypothesis under current authority. Execute only a current dependency-ready node with explicit ownership, expected outputs, acceptance, runnable falsification, testing, rollback/safe stop, cleanup, integration, and trustworthy repository/environment/context state.
 
-Before each material operation, state expected local/wider effects. Apply one coherent ownership-sized action, inspect actual effects, register created/modified/obsolete state and test intents, run the cheapest decisive falsifier, reconcile contracts/resources/lifecycle/design/testing/cleanup, and classify the outcome.
+Before each material operation, state the obligation/decision it implements, expected local/wider effects, preserved value ordering, and decisive evidence. Apply one coherent ownership-sized action, inspect actual effects, register created/modified/obsolete state and test intents, run the cheapest decisive falsifier, reconcile contracts/resources/lifecycle/design/testing/cleanup, and classify the outcome.
 
-A material change to cause, owner, authority, public contract, schema, ABI, consequence horizon, resource model, risk, acceptance, rollback, output, downstream order, oracle/evidence invalidation, cleanup, or context fit requires plan revision. No node is accepted with invalid partial state, stale generated forms, abandoned resources, unresolved test debt, token debt, unowned residue, or false downstream preconditions.
+A material change to cause, owner, authority, public contract, schema, ABI, consequence horizon, resource model, risk, value ordering, priority, acceptance, rollback, output, downstream order, oracle/evidence invalidation, cleanup, or context fit requires plan revision. No node is accepted with invalid partial state, stale generated forms, abandoned resources, unresolved decision/test/token debt, unowned residue, or false downstream preconditions.
 
 See [`PLAN_EXECUTION.md`](PLAN_EXECUTION.md).
 
@@ -164,7 +185,7 @@ Represent essential domain complexity directly. Remove accidental complexity. Re
 - Universal contracts/capsules do not embed chess, games, one evaluator/action/graph shape, or one GPU.
 - Generated hot paths may specialize and eliminate unused abstractions.
 - Performance changes require mechanism evidence plus semantic/search-quality guardrails.
-- Focus branches may not independently drift Search IR, graph, policy, evaluator, resource, schema/JIT/ABI, device-closure, test-oracle, or search-quality meaning.
+- Focus branches may not independently drift Search IR, graph, policy, evaluator, resource, schema/JIT/ABI, device-closure, engineering-decision, test-oracle, or search-quality meaning.
 - Test evidence keys include all material source/schema/generator/compiler/model/adapter/hardware/runtime/configuration/fixture dimensions.
 - Device contexts, allocations, queues, modules, IPC/shared memory, diagnostics, test state, and host resources are released or deliberately retained and verified.
 - Large docs/traces/generated engines/models/logs remain external artifacts with exact identities unless targeted content is required.
@@ -172,10 +193,11 @@ Represent essential domain complexity directly. Remove accidental complexity. Re
 
 ## Stop conditions
 
-Stop before implementation, testing, deletion, acceptance, or dependent continuation when ownership is ambiguous; a large task lacks a focus map; branches overlap write/test authority; shared contracts/oracles can drift; dependencies are incomplete; authority conflicts; plan/evidence identity is stale; expected effects/falsifiers/testing/cleanup are unknown; token reserve cannot support owner-capsule/integration/handoff; context is red/emergency; required tests are undiscovered/skipped; the oracle is untrusted; repeated runs lack invalidation; resource exhaustion/teardown is undefined; actual effects diverge; protected state may be destroyed; or alleged simplicity merely exports the problem.
+Stop before implementation, testing, deletion, acceptance, or dependent continuation when ownership or specification meaning is ambiguous; hard gates and value ordering are unstated; credible alternatives are absent; a large task lacks a focus map; branches overlap write/test authority; shared contracts/decisions/oracles can drift; dependencies are incomplete; authority conflicts; plan/evidence identity is stale; expected effects/falsifiers/testing/cleanup are unknown; token reserve cannot support owner-capsule/integration/handoff; context is red/emergency; required tests are undiscovered/skipped; the oracle is untrusted; repeated runs lack invalidation; resource exhaustion/teardown is undefined; actual effects diverge; protected state may be destroyed; or alleged simplicity merely exports the problem.
 
 ## Triggered detailed doctrine
 
+- [`ENGINEERING_JUDGMENT.md`](ENGINEERING_JUDGMENT.md)
 - [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md)
 - [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md)
 - [`TOKEN_DISCIPLINE.md`](TOKEN_DISCIPLINE.md)
@@ -196,4 +218,4 @@ Stop before implementation, testing, deletion, acceptance, or dependent continua
 - [`COMPATIBILITY_AND_EVOLUTION.md`](COMPATIBILITY_AND_EVOLUTION.md)
 - [`FORBIDDEN_DESIGN_PATTERNS.md`](FORBIDDEN_DESIGN_PATTERNS.md)
 
-Use [`../templates/test-batch.template.yaml`](../templates/test-batch.template.yaml) only for durable multi-intent/cross-session/expensive-setup/failure-cluster state; other specialist templates remain proportional to their real consumers.
+Use [`../templates/engineering-decision.template.yaml`](../templates/engineering-decision.template.yaml) only for durable foundational/contested/high-consequence decision state and [`../templates/test-batch.template.yaml`](../templates/test-batch.template.yaml) only for durable multi-intent/cross-session/expensive-setup/failure-cluster test state; other specialist templates remain proportional to their real consumers.

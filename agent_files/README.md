@@ -15,6 +15,7 @@ This directory is the durable operating system for development. The root [`AGENT
 ## Reusable foundation
 
 - [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md) — compact mandatory design hierarchy.
+- [`general_foundation/ENGINEERING_JUDGMENT.md`](general_foundation/ENGINEERING_JUDGMENT.md) — specification alignment, reasoning, candidate-path selection, value ordering, tradeoffs, and priority.
 - [`general_foundation/ASSESSMENT_AND_PLANNING.md`](general_foundation/ASSESSMENT_AND_PLANNING.md) — proportional adversarial assessment and executable planning.
 - [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) — parent-task integration spines, full-attention branch sizing, context packets, parallelism, invalidation, and reconciliation for large or complex work.
 - [`general_foundation/TOKEN_DISCIPLINE.md`](general_foundation/TOKEN_DISCIPLINE.md) — token reserves, context layers, retrieval/tool discipline, operational bands, lossless checkpoints, and token-debt prevention.
@@ -55,8 +56,8 @@ This directory is the durable operating system for development. The root [`AGENT
 
 ## Templates
 
-Use [`templates/`](templates/) for ADRs, specifications, component manifests, combined assessment/plans, durable focus-branch packets, token/context budgets, consolidated test batches, governed plan execution, cleanup/disposition, sanity checks, critical semantic reviews, durable PR reviews, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning.
+Use [`templates/`](templates/) for engineering decisions, ADRs, specifications, component manifests, combined assessment/plans, durable focus-branch packets, token/context budgets, consolidated test batches, governed plan execution, cleanup/disposition, sanity checks, critical semantic reviews, durable PR reviews, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning.
 
-Routine work needs no test ledger. Use [`templates/test-batch.template.yaml`](templates/test-batch.template.yaml) when several test intents must be accumulated/consolidated, expensive setup must be shared, a failure cluster crosses sessions/agents, or completeness/skip/invalidation evidence has a real consumer. Routine task-owned scratch cleanup, single-session execution, simple focus branches, self-sanity, and ordinary PR review should remain in the canonical issue/plan/PR rather than forcing standalone artifacts.
+Routine work needs no engineering-decision or test ledger. Use [`templates/engineering-decision.template.yaml`](templates/engineering-decision.template.yaml) for foundational, contested, cross-component, high-consequence, empirically uncertain, difficult-to-reverse, or cross-session decisions. Use [`templates/test-batch.template.yaml`](templates/test-batch.template.yaml) when several test intents must be accumulated/consolidated, expensive setup must be shared, a failure cluster crosses sessions/agents, or completeness/skip/invalidation evidence has a real consumer. Routine task-owned scratch cleanup, single-session execution, simple focus branches, self-sanity, and ordinary PR review should remain in the canonical issue/plan/PR rather than forcing standalone artifacts.
 
 Tool adapters such as `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md` must point here and remain thin.

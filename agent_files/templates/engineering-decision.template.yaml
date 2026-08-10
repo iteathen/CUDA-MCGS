@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "engineering_decision": {
+    "id": "",
+    "title": "",
+    "status": "proposal|accepted|active|blocked|superseded|rejected",
+    "owner": "",
+    "parent_task": "",
+    "parent_plan_version": 1,
+    "focus_branch_id": "",
+    "exact_subject_revision": "",
+    "decision_horizon": "local|component|cross_component|repository|cross_repository|release"
+  },
+  "engineering_contract": {
+    "required_outcome": "",
+    "consumers_and_cost_of_no_change": [],
+    "operating_environment_and_profiles": [],
+    "owned_state_rules_and_lifecycle": [],
+    "units_ranges_precision_identity_versions_and_memory_spaces": [],
+    "finite_resource_and_deadline_bounds": [],
+    "failure_pressure_cancellation_recovery_and_cleanup": [],
+    "compatibility_migration_persistence_and_provenance": [],
+    "non_goals_and_exclusions": [],
+    "completion_evidence": []
+  },
+  "authority_and_spec_alignment": {
+    "owner_instruction": [],
+    "accepted_adrs_specs_contracts_and_standards": [],
+    "obligations": [
+      {
+        "id": "OBL-001",
+        "source_and_clause": "",
+        "normalized_obligation": "",
+        "normative_strength": "must|must_not|should|may|derived",
+        "decision_role": "hard_gate|mission_target|supporting_quality|process_cost|tie_breaker",
+        "authoritative_owner": "",
+        "implementation_or_design_mechanism": [],
+        "failure_consequence": [],
+        "evidence_or_test_capsule": [],
+        "status": "satisfied|unsatisfied|experiment_required|accepted_risk|blocked|not_applicable"
+      }
+    ],
+    "derived_requirements_and_derivation": [],
+    "ambiguities_conflicts_gaps_stale_or_unimplementable_authority": [],
+    "authority_decisions_required": [],
+    "traceability_limitations": []
+  },
+  "reasoning_state": {
+    "verified_facts_and_observations": [],
+    "external_source_claims": [],
+    "inferences": [],
+    "assumptions": [],
+    "unknowns": [],
+    "causal_model_and_first_divergence": [],
+    "empirical_questions_and_cheapest_decisive_evidence": [],
+    "confidence_and_basis": "",
+    "reasoning_stop_condition": ""
+  },
+  "design_alignment": {
+    "lego_owner_ports_dependencies_and_adapters": [],
+    "solid_internal_responsibilities": [],
+    "cupid_quality": [],
+    "domain_appropriate_foundations": [],
+    "accurate_generality_second_instance_and_first_consumer_deletion": [],
+    "simplest_sufficient_total_system": [],
+    "principle_conflicts_and_resolution": []
+  },
+  "value_ordering": {
+    "hard_gates": [
+      {
+        "value": "",
+        "metric_or_ordinal_rule": "",
+        "threshold_or_prohibited_state": "",
+        "failure_consequence": [],
+        "evidence": []
+      }
+    ],
+    "mission_objectives": [
+      {
+        "value": "",
+        "optimization_direction": "maximize|minimize|target|balance",
+        "metric_or_ordinal_rule": "",
+        "acceptable_envelope": "",
+        "evidence": []
+      }
+    ],
+    "supporting_qualities": [],
+    "process_costs_and_tie_breakers": [],
+    "default_fallback_order_used": false,
+    "context_specific_order": [],
+    "deviations_from_default_and_authority": [],
+    "severity_likelihood_exposure_blast_radius_reversibility_detectability_uncertainty_cost_of_delay": [],
+    "false_tradeoff_separation_options_considered": []
+  },
+  "candidate_paths": [
+    {
+      "id": "PATH-A",
+      "description": "",
+      "classification": "no_change|minimal_repair|proposed|alternative_architecture|experiment|staged_or_fallback",
+      "spec_and_gate_results": [],
+      "mechanism_and_expected_effects": [],
+      "evidence_and_uncertainty": [],
+      "ownership_and_design_alignment": [],
+      "resource_lifecycle_failure_recovery_and_cleanup": [],
+      "compatibility_migration_security_and_provenance": [],
+      "mission_objective_results": [],
+      "supporting_quality_and_process_cost": [],
+      "reversibility_and_option_value": [],
+      "total_lifecycle_complexity": [],
+      "dominated_by": "",
+      "disposition": "retain|eliminate_gate_failure|eliminate_dominated|experiment_first|select|defer|reject",
+      "disposition_reason": ""
+    }
+  ],
+  "adversarial_challenge": {
+    "strongest_case_against_selected_or_leading_path": [],
+    "strongest_overengineering_case": [],
+    "strongest_underengineering_case": [],
+    "credible_counterexamples": [],
+    "premortem_failure_causes": [],
+    "evidence_concessions_and_design_revisions": [],
+    "unresolved_challenges_and_disposition": []
+  },
+  "selection": {
+    "selected_path": "",
+    "why_it_wins": [],
+    "why_other_paths_lost": [],
+    "accepted_tradeoffs": [
+      {
+        "value_reduced": "",
+        "value_gained": "",
+        "operating_boundary": "",
+        "worst_credible_consequence": "",
+        "accepting_owner": "",
+        "evidence_detection_and_containment": [],
+        "rollback_redesign_or_expiry_trigger": ""
+      }
+    ],
+    "priority_class": "P0|P1|P2|P3|P4",
+    "priority_reason": [],
+    "dependency_unlock_information_value_cost_of_delay_and_effort": [],
+    "decision_confidence": "high|medium|low",
+    "revisit_triggers": []
+  },
+  "execution_alignment": {
+    "obligation_to_operation_to_evidence_map": [],
+    "material_variations_allowed_without_redecision": [],
+    "changes_requiring_reassessment_and_invalidation": [],
+    "rollback_safe_stop_and_cleanup": [],
+    "downstream_branches_nodes_consumers_and_evidence_to_update": []
+  },
+  "completion": {
+    "all_material_obligations_dispositioned": false,
+    "hard_gates_satisfied_or_path_eliminated": false,
+    "credible_alternatives_compared": false,
+    "value_ordering_explicit_and_evidence_based": false,
+    "selected_path_aligns_with_specs_and_design_principles": false,
+    "priority_is_dependency_and_consequence_based": false,
+    "tradeoffs_confidence_and_revisit_triggers_explicit": false,
+    "implementation_testing_integration_cleanup_and_handoff_traceable": false,
+    "remaining_blockers_or_debt": [],
+    "next_safe_action": ""
+  }
+}

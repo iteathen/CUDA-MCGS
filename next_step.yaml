@@ -1,9 +1,9 @@
 {
-  "schema_version": 7,
+  "schema_version": 8,
   "updated": "2026-08-10",
   "status": "ready",
   "parent_task_id": "SPEC-V0",
-  "parent_plan_version": 5,
+  "parent_plan_version": 6,
   "integration_owner": "docs/specs: UMCGS search-contract and peer-runtime integration spine",
   "focus_branch": {
     "id": "SPEC-V0-CUDAJS",
@@ -12,19 +12,105 @@
     "status": "ready",
     "owner": "UMCGS interop-contract owner",
     "primary_question_or_output": "Define a versioned package and compatibility contract that lets UMCGS execute a specialized device-closed search program through generic CUDA-JS without leaking search semantics into the runtime or generic Driver concerns into UMCGS.",
-    "exact_input_revision": "main after ADR-0014 integration",
+    "exact_input_revision": "main after ADR-0015 integration",
     "write_surface_and_authority": [
       "docs/specs and schemas proposals",
-      "SPEC-V0 focus-branch/dependency/test map",
+      "SPEC-V0 engineering-decision/focus-branch/dependency/test map",
       "adapters/runtimes proposal ownership",
       "no production native runtime or search implementation"
     ],
     "integration_obligations": [
-      "Revise SPEC-V0 around the accepted two-repository boundary.",
-      "Define exact conformance ownership and compatible UMCGS/CUDA-JS evidence identity.",
-      "Preserve UMCGS device closure, finite search-memory ownership, and search-semantic authority.",
-      "Preserve CUDA-JS independence from Search IR and UMCGS source."
+      "Revise SPEC-V0 around the accepted two-repository boundary and engineering-judgment doctrine.",
+      "Define exact obligation ownership, hard gates, conformance ownership, and compatible UMCGS/CUDA-JS evidence identity.",
+      "Preserve UMCGS device closure, finite search-memory ownership, search-semantic authority, and value ordering.",
+      "Preserve CUDA-JS independence from Search IR and UMCGS private source."
     ]
+  },
+  "engineering_judgment": {
+    "required_outcome_and_consumer": [
+      "UMCGS specialization and runtime-adapter owners can create, validate, execute, diagnose, cancel, and tear down a versioned search execution package through public CUDA-JS capabilities.",
+      "CUDA-JS can validate and execute the package without understanding Search IR, graph search, evaluator semantics, or UMCGS private source."
+    ],
+    "material_specification_obligations": [
+      "ADR-0014 one-way peer-repository ownership and no source coupling.",
+      "ADR-0003 device-owned active-search progress after ignition.",
+      "ADR-0002 universal UMCGS contracts with finite specialized engines.",
+      "One authoritative owner for every package field, lifecycle transition, error class, resource, compatibility dimension, and conformance claim.",
+      "Opaque runtime resources and no raw/private CUDA-JS handle persistence in UMCGS schemas.",
+      "Complete package/runtime/platform/cache/provenance identity and bounded lifecycle/teardown."
+    ],
+    "ambiguities_conflicts_gaps_or_oracle_mismatches": [
+      "The exact public CUDA-JS v0 capability schema is not yet accepted; UMCGS may propose required semantics but cannot invent peer-private representation.",
+      "Managed-memory, host-microbatch, JIT/Node-API, mock/native, publication, and deferred-error behavior remain open peer-runtime design questions and cannot be assumed by this contract.",
+      "Remote CUDA-JS repository publication is blocked, but the prepared bootstrap and repository-boundary authority are sufficient for proposal work."
+    ],
+    "hard_gates": [
+      "One-way dependency: UMCGS may depend on versioned CUDA-JS public artifacts; CUDA-JS may not depend on UMCGS.",
+      "CUDA-JS remains coherent after deleting UMCGS and contains no Search IR/MCGS semantics.",
+      "UMCGS active search needs no host-produced intermediate decision after ignition.",
+      "Every field and lifecycle transition has exactly one owner.",
+      "No private-source path, Git submodule, raw native pointer, or persistent private handle crosses the boundary.",
+      "Finite search-resource semantics, cancellation, deferred error, context health, completion, and teardown are unambiguous.",
+      "Compatibility/cache identity includes every material package, runtime, platform, model/adapter, schema/generator, and resource-profile input.",
+      "Mocks and references cannot support native CUDA or search-semantic claims they do not observe.",
+      "Each repository owns its internal conformance; the public boundary is tested once with exact compatible artifact identities."
+    ],
+    "mission_objectives": [
+      "Make the public package contract stable, explicit, deterministic, and independently evolvable.",
+      "Minimize integration latency and overhead without compromising device closure or ownership.",
+      "Provide precise capability negotiation, error provenance, diagnostics, cancellation, and teardown.",
+      "Permit generated specialization and unused-capability elimination."
+    ],
+    "supporting_qualities": [
+      "LEGO replaceability, maintainability, testability, observability, portability across supported CUDA/Node profiles, and developer usability."
+    ],
+    "process_costs_and_tie_breakers": [
+      "Specification effort, token/test cost, cross-repository release coordination, delivery speed, and bootstrap publication convenience."
+    ],
+    "context_specific_value_order": [
+      "Accepted repository ownership and security/capability boundaries.",
+      "Device closure, semantic correctness, finite resources, complete lifecycle, compatibility/cache identity, and recoverability.",
+      "Reliable diagnosability and cross-repository conformance.",
+      "Search/runtime mission quality and measured performance.",
+      "Maintainability, portability, usability, and extensibility.",
+      "Delivery speed and process convenience."
+    ],
+    "candidate_paths_and_gate_results": [
+      "PATH-A selected: versioned UMCGS execution package plus UMCGS-owned public CUDA-JS adapter; passes the repository and first-consumer-deletion gates.",
+      "PATH-B rejected: private-source coupling or Git submodule; fails dependency, compatibility, and independent-lifecycle gates.",
+      "PATH-C deferred: third adapter repository; no independent owner/release/consumer lifecycle exists.",
+      "PATH-D rejected: implement both sides before contract acceptance; creates competing meaning and expensive rework.",
+      "PATH-E conditional experiment: bounded schema/capability prototype only for questions that remain empirically undecidable after the contract envelope is explicit."
+    ],
+    "selected_path_and_why_it_wins": [
+      "A versioned peer-artifact boundary preserves exact ownership, allows CUDA-JS reuse by unrelated consumers, keeps UMCGS search semantics authoritative, supports independent conformance, and offers reversible staged implementation without source coupling."
+    ],
+    "why_alternatives_lost": [
+      "Source coupling fails hard gates.",
+      "A third repository adds lifecycle and release complexity without a current independent owner or consumer.",
+      "Implementation-first sequencing commits to ambiguous shared semantics before evidence and contracts exist.",
+      "A broad prototype cannot replace the accepted specification and conformance boundary."
+    ],
+    "accepted_tradeoffs": [
+      "Up-front contract and compatibility work delays initial coding but reduces irreversible cross-repository coupling and duplicated repair/testing later.",
+      "Opaque generic runtime resources reduce direct low-level convenience in UMCGS but preserve safety, versionability, and runtime ownership.",
+      "Independent internal conformance plus one public-boundary capsule creates release coordination cost but avoids duplicated or contradictory test authority."
+    ],
+    "priority_class": "P1",
+    "priority_reason": [
+      "The public interop contract is a foundational gate for both UMCGS implementation leaves and CUDA-JS runtime leaves.",
+      "Proceeding without it would create ownership, compatibility, device-closure, cache-identity, and conformance ambiguity across repositories."
+    ],
+    "decision_confidence": "high",
+    "revisit_triggers": [
+      "A second CUDA-JS consumer cannot use the public contract without UMCGS knowledge.",
+      "A UMCGS search package cannot express required execution semantics without peer-private representation.",
+      "Measured boundary overhead violates an accepted mission bound after semantic equivalence is proven.",
+      "The adapter gains independent owners/consumers/release cadence sufficient for a separate repository decision.",
+      "Official platform constraints invalidate a hard capability or lifecycle assumption."
+    ],
+    "decision_debt": [],
+    "durable_engineering_decision_record": "Use agent_files/templates/engineering-decision.template.yaml if the proposal discovers a contested ownership/value/path decision that cannot be contained in the canonical specification assessment."
   },
   "objective": "Specify and adversarially validate the version-zero UMCGS-to-CUDA-JS execution-package, capability, compatibility, conformance, error, lifetime, and teardown contract before production implementation.",
   "product_area": "docs/specs and schemas",
@@ -40,6 +126,9 @@
     "docs/decisions/ADR-0012-token-use-and-context-discipline.md",
     "docs/decisions/ADR-0013-consolidated-testing-and-repair-loop-efficiency.md",
     "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
+    "docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md",
+    "agent_files/general_foundation/ENGINEERING_JUDGMENT.md",
+    "agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md",
     "docs/architecture/REPOSITORY_TOPOLOGY.md",
     "docs/research/2026-08-10-cuda-js-assumption-audit.md",
     "agent_files/SYSTEM_REGISTRY.md",
@@ -59,7 +148,7 @@
     "validation_integration_cleanup_review_handoff_reserve_percent": 40,
     "context_layers_loaded": [
       "Operating kernel and exact main revision.",
-      "Charter, ADR-0002/0003/0004/0014, registry, topology, spec proposal, and technical audit.",
+      "Engineering-judgment, charter, ADR-0002/0003/0004/0014/0015, registry, topology, spec proposal, and technical audit.",
       "Focus-branch, token, testing, execution, cleanup, sanity, and PR doctrine as triggered."
     ],
     "context_explicitly_excluded": [
@@ -73,6 +162,7 @@
   "testing": {
     "claims_and_authoritative_oracles": [
       "Repository ownership follows ADR-0014.",
+      "Value ordering, gate treatment, and path selection follow ADR-0015.",
       "Search package semantics follow accepted UMCGS specifications.",
       "Generic runtime fields follow the future accepted CUDA-JS public contract.",
       "Device closure follows ADR-0003 and cannot be inferred from a mock."
@@ -84,7 +174,8 @@
       "Active search requires no host-produced intermediate decision.",
       "Memory/lifetime/teardown/deferred-error ownership is unambiguous.",
       "Cache and compatibility identity changes for every material input.",
-      "Mocks cannot satisfy unobserved native or search-semantic claims."
+      "Mocks cannot satisfy unobserved native or search-semantic claims.",
+      "A gate-failing package or capability combination is rejected rather than compensated by performance or convenience."
     ],
     "owning_capsules": [
       "UMCGS package schema/normalization capsule.",
@@ -99,7 +190,7 @@
     "test_debt": []
   },
   "preconditions": [
-    "ADR-0014 and narrowed charter/registry/topology are integrated into main.",
+    "ADR-0014/0015 and narrowed charter/registry/topology are integrated into main.",
     "No generic CUDA-JS production implementation is added to UMCGS.",
     "The prepared CUDA-JS bootstrap remains available until published or superseded."
   ],
@@ -110,41 +201,42 @@
     "Prior-art and official-source technical evidence."
   ],
   "expected_local_effects": [
-    "A proposal interop specification with one owner for every field/lifecycle transition.",
-    "A revised SPEC-V0 branch/dependency/test map that assigns no generic native runtime work to UMCGS.",
+    "A proposal interop specification with one owner for every field/lifecycle transition and traceability from every material gate to evidence.",
+    "A revised SPEC-V0 engineering-decision/branch/dependency/test map assigning no generic native runtime work to UMCGS.",
     "A planned adapters/runtimes boundary without premature production code."
   ],
   "expected_wider_effects": [
     "CUDA-JS can evolve for unrelated consumers without importing UMCGS.",
     "UMCGS agents can focus on search correctness and generated device behavior.",
-    "Cross-repository release, cache, compatibility, conformance, and cleanup become explicit."
+    "Cross-repository release, cache, compatibility, conformance, value ordering, and cleanup become explicit."
   ],
   "deliverables": [
-    "UMCGS-to-CUDA-JS execution-package v0 proposal.",
+    "UMCGS-to-CUDA-JS execution-package v0 proposal and obligation map.",
     "Capability/version negotiation and compatibility manifest.",
     "Opaque resource/memory, module, argument, launch, completion, cancellation, error, and teardown ownership map.",
     "Complete artifact/cache/provenance identity dimensions.",
     "UMCGS semantic versus CUDA-JS generic error classification.",
     "Cross-repository test ownership and no-repeat evidence policy.",
-    "Revised SPEC-V0 branch/dependency/test architecture.",
+    "Revised SPEC-V0 engineering-decision/branch/dependency/test architecture.",
     "Publication handoff for the prepared CUDA-JS bootstrap."
   ],
   "acceptance_criteria": [
-    "Every field and lifecycle transition has exactly one UMCGS or CUDA-JS owner.",
+    "Every material specification obligation, field, and lifecycle transition has exactly one owner and evidence path.",
+    "All hard gates are explicit and satisfied; no weighted preference masks a failure.",
     "CUDA-JS can validate/execute the package without Search IR knowledge.",
     "UMCGS preserves device-owned progress and finite search-resource semantics.",
     "No raw/private CUDA-JS handle enters persistent UMCGS schemas.",
     "Compatibility/cache identity includes every material package/runtime/platform input.",
     "Each side is tested independently and the public boundary is tested once.",
-    "No third repository, submodule, source-path dependency, duplicate oracle, or material debt is introduced."
+    "No third repository, submodule, source-path dependency, duplicate oracle, or material decision/test/token/cleanup debt is introduced."
   ],
-  "cheapest_decisive_falsifier": "A second unrelated CUDA-JS consumer requires Search IR changes, or UMCGS cannot express/load a package without CUDA-JS private source, raw handles, host-driven search progress, or incomplete compatibility/cache identity.",
-  "rollback_recovery_or_safe_stop": "Keep the interop specification in Proposal status, preserve the counterexample, revise ownership through a new ADR if needed, and do not begin production implementation.",
+  "cheapest_decisive_falsifier": "A second unrelated CUDA-JS consumer requires Search IR changes, or UMCGS cannot express/load a package without CUDA-JS private source, raw handles, host-driven search progress, incomplete ownership, failed hard gates, or incomplete compatibility/cache identity.",
+  "rollback_recovery_or_safe_stop": "Keep the interop specification in Proposal status, preserve the counterexample, revise ownership/value ordering through a new ADR or engineering decision if needed, and do not begin production implementation.",
   "cleanup_and_disposition": {
     "planned_dispositions": [
-      "Retain accepted ADR/topology/audit as authority/evidence.",
+      "Retain accepted ADR/topology/audit/engineering-decision doctrine as authority/evidence.",
       "Retain the prepared CUDA-JS bootstrap until published or superseded.",
-      "Remove duplicate sketches after unique meaning is incorporated.",
+      "Remove duplicate sketches and temporary decision records after unique meaning is incorporated.",
       "Delete task branches after verified integration when safe."
     ],
     "verification": [
@@ -156,6 +248,7 @@
     "cleanup_debt": []
   },
   "validation": [
+    "Engineering-contract, obligation-map, gate, value-order, candidate-path, priority, and tradeoff review.",
     "Adversarial ownership and first-consumer-deletion review.",
     "Schema/field/lifecycle owner matrix review.",
     "Capability/cache/provenance completeness review.",
@@ -174,7 +267,8 @@
     "Treat managed memory as a universal zero-copy arena.",
     "Use host micro-batch relaunch as required active-search progress.",
     "Let a mock define native CUDA or UMCGS semantic truth.",
-    "Begin production implementation before both sides' contracts are accepted."
+    "Use speed, convenience, or simplicity to override a hard ownership/device-closure/security/correctness/compatibility gate.",
+    "Begin production implementation before both sides' engineering contracts and specifications are accepted."
   ],
   "completion_evidence": [],
   "handoff_to_next_focus_branch_or_integration_spine": "After interop and revised SPEC-V0 acceptance, select separately owned UMCGS search-contract and CUDA-JS runtime-contract leaves."
