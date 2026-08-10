@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "updated": "YYYY-MM-DD",
   "status": "ready|blocked|in_progress|complete|superseded|invalidated",
   "parent_task_id": "<canonical parent task>",
@@ -29,6 +29,23 @@
     "split_rebranch_or_handoff_triggers": [],
     "token_debt": [],
     "durable_token_budget_record": ""
+  },
+  "testing": {
+    "claims_and_authoritative_oracles": [],
+    "coverage_map": [],
+    "pending_test_intents": [],
+    "owning_capsules": [],
+    "evidence_key_dimensions": [],
+    "test_invalidation_inputs": [],
+    "execution_tiers_and_escalation": [],
+    "expected_discovery_and_skip_counts": [],
+    "shared_setup_and_mutable_state_isolation": [],
+    "failure_clustering_and_root_cause_repair": [],
+    "consolidation_boundary": [],
+    "provisional_and_duplicate_test_cleanup": [],
+    "no_repeat_rules": [],
+    "test_debt": [],
+    "durable_test_batch_record": ""
   },
   "node_id": "<stable node id>",
   "objective": "<one coherent next boundary>",

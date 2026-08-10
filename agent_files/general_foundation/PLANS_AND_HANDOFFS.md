@@ -1,109 +1,127 @@
-# Plans, Focus Branches, Execution, Cleanup, and Handoffs
+# Plans, Focus Branches, Testing, Execution, Cleanup, and Handoffs
 
 **Scope:** Reusable foundation.
 
 ## Assessment before plan
 
-A plan is executable sequencing for a decision-ready boundary. It is not the place to conceal unresolved ownership, identity, lifecycle, resource, compatibility, security, architecture, integration, retention, cleanup, or decomposition decisions.
+A plan sequences a decision-ready boundary. It may not conceal unresolved ownership, identity, lifecycle, resources, compatibility, security, architecture, integration, testing, retention, cleanup, or decomposition.
 
-Substantial and critical work first follows [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md). The assessment may conclude that the work should proceed, become a bounded experiment, require research, be revised, be rejected, or remain blocked.
+Substantial and critical work first follows [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md).
 
 ## Plan quality
 
 A durable plan states:
 
-- the owned outcome and completion evidence;
-- product area, component, ownership, and authority;
-- the integrated assessment and strongest surviving objection;
-- contracts, invariants, ranges, lifecycle, resources, failures, compatibility, security, retention, and cleanup affected;
-- public/dependency effects and organizational placement;
-- whether focus branches are required under [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md);
-- the canonical parent task, integration owner, global invariants, branch map, dependency graph, invalidation rules, and closure criteria when decomposition is required;
-- coherent nodes and focus branches ordered by dependency and uncertainty;
-- exact branch/node inputs, outputs, revisions, downstream consumers, and statuses;
+- owned outcome and closure evidence;
+- product area/component/owners/authority;
+- integrated assessment and strongest objection;
+- contracts, invariants, ranges, lifecycle, resources, failure, compatibility, security, retention, testing, and cleanup;
+- public/dependency/organizational effects;
+- focus-branch trigger, parent, integration owner, branch map, dependencies, invalidation, and statuses;
+- exact branch/node inputs, outputs, revisions, consumers, acceptance/falsifiers, rollback, cleanup, and integration;
+- token/context layers, reserve, checkpoints, and split/handoff triggers;
+- authoritative test oracles, coverage map, initial case bank, owning capsules, evidence-key dimensions, invalidation graph, tiers/escalation, expected discovery/skips, shared setup/isolation, failure clustering, consolidation, and test-debt rules;
 - experiments before irreversible commitments;
-- validation and cheapest falsifiers paired with the mechanisms they prove;
-- protected pre-existing/user/shared/authority/evidence/recovery state;
-- expected task-created, temporary, generated, external, remote, sensitive, and coordination state;
-- planned disposition, verification, and cleanup-debt conditions;
-- required self-sanity or independent-review claim, frozen target, and coverage boundary when material;
-- expected PR review mode, protection/check requirements, merge method, issue closure, focus/Git branch/worktree/dependent-work effects, and post-merge cleanup when material;
-- migration, rollback, cleanup, risks, stop conditions, and handoff state.
+- protected pre-existing state and expected task-created state;
+- self-sanity/independent review and PR/merge/post-merge cleanup;
+- risks, stop conditions, and handoff.
 
-Each material focus branch states one primary question/output, owner, parent-plan version, exact inputs, scope/non-goals, write permissions, preserved global invariants, acceptance/falsifier, rollback/cleanup, output contract, and integration obligation.
+A branch/node is not ready if execution would need to invent foundational design, shared contracts, oracle, test ownership, evidence identity, branch boundary, or cleanup policy.
 
-A branch or node listed in a plan is not automatically ready. The plan must be specific enough that execution does not invent foundational design, shared contracts, branch boundaries, or cleanup policy.
+## Focus-branch and testing planning
 
-## Focus-branch planning
+Create focus branches when work exceeds one focused session, spans semantic owners/contracts/paths/artifacts/unknowns, crosses agents/sessions, supports parallelism, or would force sampling/skimming.
 
-Create a focus-branch map before deep execution when the task exceeds one focused session, spans semantic owners/contracts/paths/artifact families, contains independent unknowns, crosses agents/sessions, supports parallel work, or would force sampling or skimming.
+Each leaf includes one primary owner/output, exact inputs, full-attention/token fit, write authority, test obligations, output contract, and integration.
 
-Keep one canonical parent task and integration spine. Size each leaf so one qualified agent can retain its owner, mechanism, dependencies, resource/failure/cleanup behavior, evidence, consequence horizon, and integration obligation with full attention.
+For every material owned invariant, plan:
 
-Do not split by equal file count, line count, token count, or agent count. Do not create a Git branch, issue, PR, worktree, or document merely because a semantic focus branch exists.
+- oracle and sensitivity where required;
+- normal/boundary/invalid/lifecycle/failure/resource/concurrency/compatibility/security/cleanup/integration/performance coverage as applicable;
+- case-intent capture and consolidation owner;
+- canonical fast/owner/integration/deep/forensic capsules;
+- expected discovery and skip classes;
+- evidence identity and invalidation;
+- setup sharing with mutable-state isolation;
+- failure-cluster/root-cause repair sequence;
+- provisional/duplicate artifact cleanup.
 
-Branch statuses must distinguish `accepted` from `integrated`. Shared-contract changes produce a new parent/contract version and invalidate dependent branches explicitly.
-
-Use [`../templates/focus-branch.template.yaml`](../templates/focus-branch.template.yaml) only when a branch crosses sessions/agents, runs in parallel, has high consequence, or needs independent continuation/review.
+Do not create one Git branch, issue, PR, document, test file, fixture, command, or ledger per example merely because a semantic branch or case exists.
 
 ## Implementing a plan
 
-Execution follows [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md), [`PLAN_EXECUTION.md`](PLAN_EXECUTION.md), and [`CLEANUP_AND_DISPOSITION.md`](CLEANUP_AND_DISPOSITION.md).
+Execution follows [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md), [`TOKEN_DISCIPLINE.md`](TOKEN_DISCIPLINE.md), [`PLAN_EXECUTION.md`](PLAN_EXECUTION.md), [`TESTING.md`](TESTING.md), [`DEBUGGING.md`](DEBUGGING.md), and [`CLEANUP_AND_DISPOSITION.md`](CLEANUP_AND_DISPOSITION.md).
 
-Before mutation, prove the current parent-plan version, focus branch, and node are dependency-ready. Load the minimal context packet. Record expected effects, the cheapest decisive falsifier, rollback/safe stop, cleanup, and integration obligations.
+Before mutation, prove current parent/branch/node/input revisions, context reserve, oracle/test capsule/evidence-key readiness, environment trust, rollback, and cleanup.
 
-Apply one coherent ownership-sized operation inside the branch write boundary, inspect exact actual effects immediately, register created/modified/obsolete state, falsify locally, reconcile wider consequences, and classify the outcome.
+During each coherent operation:
 
-A material change to cause, owner, authority, public contract, schema, ABI, shared terminology, consequence horizon, resource model, risk, acceptance, rollback, output, downstream ordering, or cleanup disposition requires parent-plan revision and explicit invalidation of affected branches.
+- state expected effects and cheapest falsifier;
+- record new test intents before repair;
+- inspect actual effects immediately;
+- run focused evidence only;
+- cluster failures before editing again;
+- revise parent state and invalidate dependent branches/test evidence for material changes;
+- checkpoint before switching branches or under context pressure.
 
-Normally one agent owns one active focus branch. Before switching, preserve a continuation checkpoint. Do not accept a branch while invalid partial state, stale generated forms, abandoned resources, unowned residue, unresolved contradictions, or false downstream preconditions remain.
+A branch cannot be accepted with invalid partial state, stale generated forms, abandoned resources, unresolved contradictions, pending critical test intents, hidden skips, contaminated evidence, test/token/cleanup debt, or false downstream preconditions.
+
+## Test consolidation and repair batches
+
+Capture every material test need immediately but delay permanent structural expansion until the cause and owner are understood.
+
+At the coherent consolidation boundary:
+
+1. group intents by owner/oracle/setup/environment/tier;
+2. fold them into parameterized/property/generated capsules;
+3. preserve stable case IDs, isolated state, direct selection, and per-case results;
+4. share expensive immutable build/device/model/fixture setup safely;
+5. run minimal failure cluster, then owning capsule once, then integration smoke once;
+6. escalate only on risk/mismatch/stabilization/release trigger;
+7. remove/archive provisional scripts, duplicate cases/fixtures, diagnostics, and logs.
+
+Identical evidence keys are reused. Every rerun has an invalidation, contamination, replication, or statistical reason.
 
 ## Integration
 
-The integration spine owns cross-branch reconciliation. It must account for every planned branch and reconcile exact outputs, terminology, ownership, dependencies, units, ranges, precision, identity, versions, memory spaces, lifecycle, publication, failure, recovery, cleanup, contracts, generated forms, persistence, compatibility, security, provenance, resources, performance, and search quality.
+The integration spine accounts for every branch and test intent and reconciles exact outputs/evidence across terminology, ownership, dependencies, units/ranges/precision/identity/versions/memory spaces, lifecycle/order/publication/failure/recovery/cleanup, contracts/generated forms/persistence/compatibility/security/provenance/resources/performance/search quality, and end-to-end paths.
 
-Local branch acceptance is not parent completion. Parent completion requires rerun of invalidated evidence, contradiction disposition, boundary/end-to-end validation, cleanup, and proof against one exact final revision or artifact.
+Local branch acceptance and passing owner capsules do not prove parent completion. Parent completion requires invalidated evidence rerun, contradiction disposition, cross-boundary evidence, cleanup, and one exact final revision/artifact.
 
 ## Proportional records
 
-One combined assessment/plan and one canonical branch map are the default. Link accepted authority and evidence instead of copying them.
+Use one combined assessment/plan and one canonical branch/test map by default. Link authority/evidence rather than copy them.
 
-Routine reversible single-session execution, simple focus branches, and ordinary task-owned scratch cleanup do not need standalone records when the parent issue/plan/PR already carries the necessary truth.
+Specialist records are used only when they own unique continuation/evidence:
 
-Use specialist records only when they own unique continuation or evidence:
+- focus branch packet for cross-session/parallel/high-consequence branches;
+- token budget for material telemetry/context constraints;
+- test batch for multiple intents/capsules/failure clusters/expensive setup/completeness accounting;
+- execution record for coordinated/high-consequence operations;
+- cleanup record for material lifecycle evidence;
+- sanity/PR review records when claims require persistence.
 
-- [`../templates/focus-branch.template.yaml`](../templates/focus-branch.template.yaml) for durable cross-session/parallel/high-consequence branch packets;
-- [`../templates/plan-execution.template.yaml`](../templates/plan-execution.template.yaml) for coordinated/high-consequence operation state;
-- [`../templates/cleanup-disposition.template.yaml`](../templates/cleanup-disposition.template.yaml) for material lifecycle evidence;
-- sanity and PR-review templates when their claim or independence requires persistence.
-
-Do not create parallel risk registers, dependency ledgers, branch ledgers, validation plans, execution logs, cleanup ledgers, daily status files, or duplicate checklists without a distinct consumer, owner, and lifecycle.
+Routine tests and local repair cycles remain in the parent task/PR. Do not create duplicate branch/test/validation/execution/status ledgers.
 
 ## Handoffs
 
-A handoff must allow continuation without reconstructing chat history. Include:
+A continuation-ready handoff includes:
 
-- parent objective, plan version, focus-branch map, active branch ID/type/status, integration owner, and owned boundary;
-- authority, frozen revision, minimal context packet, dependency inputs, and readiness proof;
-- branch objective, scope, non-goals, write surface, global invariants, and output contract;
-- operations completed, expected-versus-actual effects, and current partial state;
-- accepted outputs/revisions and downstream branch/node changes;
-- material variations, deviations, shared-contract changes, contradictions, reassessments, and invalidations;
-- branches accepted, integrated, paused, blocked, invalidated, superseded, deferred, or made ready;
-- component manifest/registry/dependency changes;
-- validation commands/evidence and checks not run;
-- cleanup inventory, verified dispositions, protected state, retained evidence/recovery, and cleanup debt;
-- local files/folders, worktree, stash, focus/Git branch, and uncommitted state;
-- remote branches, PRs, issues, reviews, claims, workflow/release/package artifacts, and dependency state;
-- active processes, ports, containers, locks, GPU/device state, credentials, permissions, and external resources;
-- sanity claim, frozen revision, coverage status, findings, and claim limits when triggered;
-- PR number, intended base, current/reviewed head, review mode/result, unresolved threads/checks, merge method/authorization, and branch state;
-- rollback, recovery, or irreversible-state status;
-- resulting integrated target SHA and verified issue/branch/worktree/dependent-work/cleanup effects after merge;
-- open correctness/performance/licensing/design/organization/integration/decomposition/cleanup risks;
-- failed approaches or contaminated tests;
-- exact integration obligation and one next executable, analytical, integration, or cleanup branch.
+- parent objective/plan/branch map/active branch/integration owner;
+- authority, exact revisions, context packet, token band/reserve;
+- branch scope/write authority/output contract;
+- operations and expected-versus-actual effects;
+- accepted outputs/revisions, contradictions, invalidations, and downstream effects;
+- test claims/oracles/evidence keys/coverage/case bank/capsules/tiers/discovery-skips;
+- failure clusters, first divergence, hypotheses, repair cycles, changed-hypothesis retries, and evidence reused;
+- intents consolidated/superseded/blocked/out of scope and remaining test debt;
+- checks run/not run and claim limits;
+- provisional tests/fixtures/logs/diagnostics and cleanup;
+- Git/GitHub/process/device/credential/artifact/external-resource state;
+- rollback/recovery/irreversible state;
+- reviewed/integrated SHAs and issue/dependent effects;
+- one next executable, testing, analytical, integration, cleanup, or context-restoration boundary.
 
-Do not imply unperformed work is running in the background, that a locally accepted branch is integrated, that an unverified merge is complete, or that a cleanup command proves final state.
+Do not imply a local pass is integration, an identical rerun is new evidence, unperformed work is running, or an API/merge/cleanup command proves final state.
 
 For artifact names, use a short project acronym so unique identifiers remain visible on mobile. Include checksums when appropriate.

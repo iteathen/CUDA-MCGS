@@ -1,195 +1,211 @@
 # Validation Policy
 
-**Scope:** Evidence required before a UMCGS change, focus-branch result, plan-node acceptance, cleanup claim, review claim, or integration may be considered complete.
+**Scope:** Evidence required before a UMCGS change, test result, focus-branch result, plan-node acceptance, cleanup claim, review claim, or integration may be considered complete.
 
 ## Principle
 
-Validation must observe the mechanism, branch output, integration, and state being claimed. A passing unrelated test, successful compilation, plausible output, locally accepted branch, cleanup command, PR approval, or merge response is not evidence of correctness or final disposition for an unobserved boundary.
+Validation must observe the mechanism, subject, test oracle, branch output, integration, and final state being claimed. Compilation, a plausible result, a large test count, green CI, a locally accepted branch, a cleanup command, PR approval, or merge response is not proof for an unobserved boundary.
 
-Tests, protections, focus-branch constraints, cleanup safeguards, and gates are never weakened merely to make a change pass, look complete, look clean, or merge.
+Tests, oracles, skip policy, protections, focus-branch constraints, token reserves, cleanup safeguards, and gates are never weakened merely to make work pass, look complete, look fast, or merge.
 
-## Validation layers
+## 1. Organization and documentation
 
-### 1. Organization and documentation
-
-Required for every repository change that touches durable project state:
+Every durable repository change runs:
 
 ```bash
 ./scripts/verify-docs.sh
 ```
 
-This verifies required authority, status markers, relative links, structured records, issue forms, project topology, component manifest placement, and focus-branch/cleanup governance presence.
+This verifies required authority, status markers, links, JSON-compatible records, issue forms, project topology, manifests, and governance presence.
 
-### 2. Assessment and planning
+## 2. Assessment and planning
 
-Substantial and critical work must verify that:
+Substantial and critical work verifies that:
 
-- outcome, authority, evidence, scope, assumptions, cost of doing nothing, and cleanup consequences were assessed before implementation planning;
-- every applicable canonical question group was answered directly or linked to current authority;
-- the strongest credible opposing design or explanation was steelmanned;
-- valid criticism changed design, scope, branch map, experiment, validation, cleanup, or disposition;
-- consequential unknowns have evidence, falsifiers, bounded assumptions, experiments, blockers, cleanup debt, or revisit triggers;
-- the plan follows coherent ownership boundaries, orders nodes/branches by dependency and uncertainty, defines exact outputs/downstream consumers, pairs validation with mechanisms, defines cleanup/disposition, and defines stop conditions;
-- planning records are proportional and do not duplicate authority or create unowned accounting.
+- outcome, authority, evidence, scope, assumptions, cost of no change, test consequences, and cleanup were assessed before implementation;
+- strong opposing explanations/designs were considered;
+- valid criticism changed design, branch map, test strategy, sequencing, validation, cleanup, or disposition;
+- unknowns have evidence, falsifiers, experiments, accepted risks, blockers, test debt, cleanup debt, or revisit triggers;
+- the plan defines owner boundaries, dependencies, exact outputs/consumers, testing, stop conditions, rollback, cleanup, and handoff;
+- records are proportional and link authority rather than duplicate it.
 
-Use `agent_files/templates/assessment-and-plan.template.md` when a durable record is required.
+## 3. Focus-branch decomposition and integration
 
-### 3. Focus-branch decomposition and integration
+For large or complex work verify:
 
-When a task is large or complex, verify that:
+- one canonical parent and integration spine own outcome, authority, invariants, vocabulary, branch map, test map, invalidation, contradictions, cleanup, and closure;
+- decomposition is semantic and every leaf fits full attention including testing/validation/cleanup/handoff reserve;
+- each leaf has stable ID, one primary owner/output, exact inputs, scope/write authority, output contract, test obligations, acceptance/falsifier, rollback, cleanup, and integration;
+- shared-contract or oracle changes are versioned and invalidate dependent branches/evidence;
+- parallel work has non-overlapping write and test ownership, compatible parent versions, acyclic dependencies, independent rollback/cleanup, and one integration owner;
+- `accepted` is distinct from `integrated`;
+- all branches are dispositioned and final cross-branch/end-to-end evidence belongs to one exact revision.
 
-- one canonical parent task and integration spine own final outcome, authority, plan version, global invariants, shared vocabulary, dependency graph, invalidation, contradictions, cleanup, and closure;
-- the decomposition trigger is attention, semantic ownership, independent unknowns, specialist risk, cross-session work, parallelism, or integration complexity—not merely file count;
-- every material leaf has a stable ID, type, status, one primary semantic owner, one primary question/output, exact inputs/revisions, minimal context packet, scope/non-goals, write permissions, preserved global invariants, expected output, downstream consumers, acceptance/falsifier, rollback, cleanup, and integration obligations;
-- every leaf fits one focused session without sampling or skimming and keeps mechanism plus material consequence horizon active in context;
-- branches are split/combined by semantic ownership, output, validation, rollback, cleanup, and validity transition rather than equal file/line/token/agent counts;
-- a semantic focus branch is not confused with a Git branch, issue, PR, component, directory, or document;
-- branch switching preserved an exact continuation checkpoint;
-- shared-contract changes were routed through the integration spine, versioned, and used to invalidate every dependent branch/evidence set;
-- parallel branches used one compatible parent version, non-overlapping owners/write surfaces, frozen or coordinated shared contracts/generated sources, acyclic dependencies, independent acceptance/rollback/cleanup, and one integration owner;
-- each branch output has an exact revision, authority/confidence, assumptions/exclusions, evidence, checks not run, claim limits, cleanup state, and downstream effect;
-- every planned branch is integrated, blocked, invalidated, superseded, authoritatively deferred, or removed from scope with a reason;
-- local `accepted` status is distinguished from parent `integrated` status;
-- integration reconciles terminology, ownership, dependencies, units, ranges, precision, identity, versions, memory spaces, lifecycle, ordering, failure, recovery, cleanup, contracts, generated forms, persistence, compatibility, security, provenance, resources, performance, and search quality;
-- contradictions and invalidated evidence were resolved or exactly bounded;
-- boundary and end-to-end validation proves the parent result against one exact final revision/artifact;
-- Git/GitHub objects were created and retained only when isolation, owner, deliverable, risk, dependency, review, transport, rollback, or closure justified them.
+Use `focus-branch.template.yaml` only when durable cross-session/parallel/high-consequence state is needed.
 
-Use `agent_files/templates/focus-branch.template.yaml` only when a branch crosses sessions/agents, runs in parallel, carries high consequence, or needs independent continuation/review.
+## 4. Token and context discipline
 
-### 4. Governed plan execution
+Substantial/critical work verifies:
 
-A material plan node/focus branch must verify that:
+- current authority and exact revisions are present in the active packet;
+- context is layered and large artifacts remain external by exact identity;
+- targeted retrieval and changed-hypothesis retry rules were followed;
+- enough reserve remained for testing, validation, integration, cleanup, review, recovery, and handoff;
+- yellow/red/emergency actions did not reduce rigor;
+- checkpoints preserved exact decisions, failures, partial state, test evidence, cleanup, and next action;
+- no material token debt remains.
 
-- exact parent plan/version, focus-branch ID, node ID, owner, Git branch/environment, and frozen revision are known;
-- branch/node is explicitly ready and dependencies or authorized waivers are evidenced;
-- dependency outputs/revisions match expectations;
-- authority, specifications, contracts, schemas, manifests, and tests are current and non-contradictory;
-- repository/worktree, generated inputs, model/profile, toolchain, driver/hardware, and test/runtime state are trustworthy where material;
-- expected local/wider effects, outputs, acceptance, falsifier, rollback/safe stop, cleanup, integration, and escalation were recorded before mutation;
-- newly triggered design, persistence, compatibility, security, concurrency, memory, graph/search, evaluator, performance, generated/JIT/ABI, focus-branch, cleanup, sanity, packaging, or release rules were applied;
-- each operation was one coherent ownership-sized validity transition inside the branch write boundary;
-- actual effects were inspected immediately and compared with expectations;
-- focused falsification and affected component/contract/boundary/path/lifecycle/design/cleanup/integration reconciliation occurred before continuation;
-- variations/deviations were classified, with material changes revising the parent plan and invalidating affected branches;
-- coordinated/irreversible work defined valid pre/post states, intermediate visibility, publication, rollback/recovery, cleanup, and acceptance;
-- no invalid partial state, competing authority, stale generated form, abandoned resource, unowned residue, half-active branch, or false downstream precondition remains;
-- every acceptance criterion has exact evidence and downstream consumers receive exact outputs/revisions;
-- records are proportional and do not duplicate issue, parent plan, branch map, execution, cleanup, PR, and handoff history.
+## 5. Testing and repair-loop evidence
 
-Use `agent_files/templates/plan-execution.template.yaml` only when durable operation state is justified.
+A material testing claim must verify all applicable items below.
 
-### 5. Cleanup and artifact disposition
+### Accuracy and oracle
 
-A material cleanup/disposition claim must verify that:
+- Each claim has an authoritative oracle.
+- The oracle is independent where practical and does not simply duplicate implementation logic.
+- Critical tests demonstrate sensitivity to plausible defects when consequence warrants it.
+- Exact subject, test, binary/generated/package/model/schema, environment, configuration, fixture/dataset, seed/schedule, resource profile, command, and tier identity are proven.
+- Test/runtime state is uncontaminated or contamination is recorded and invalidated.
 
-- task-created, temporarily modified, superseded, partial, generated, diagnostic, local, remote, external, sensitive, and coordination state was inventoried where triggered;
-- protected user/pre-existing/uncommitted/shared/authority/evidence/provenance/recovery state remains intact;
-- every material item has one explicit disposition;
-- cleanup order preserves focus/Git branch dependencies, evidence, rollback, recovery, tests, releases, PRs, and downstream consumers;
-- destructive operations used exact targets, narrow selectors, preview/dry-run where available, authority, recovery safeguards, and immediate actual-effect inspection;
-- repository, local files, generated/build/test/cache/package output, branches/worktrees/stashes/Git operations, remote refs/PRs/issues/reviews/claims, workflow/release artifacts, processes/ports/containers/locks/leases, GPU/device state, credentials/permissions, persistence/backups, research/evidence, and external/paid resources were reconciled where applicable;
-- historically useful stale material was archived with provenance rather than silently deleted;
-- possible secret exposure caused revocation/rotation and bounded incident handling;
-- local and remote final state was verified through the owning system;
-- retained temporary state and cleanup debt have owners, reasons, protection, objective triggers, and next actions;
-- cleanup debt does not hide unmet acceptance or unsafe residue;
-- canonical parent/focus-branch/issue/plan/execution/PR/status/handoff records describe retained state accurately.
+### Discovery and skip accounting
 
-Use `agent_files/templates/cleanup-disposition.template.yaml` only when durable lifecycle evidence is justified.
+- Expected, discovered, executed, passed, failed, required-skipped, conditional-skipped, optional-skipped, and not-discovered counts are explicit.
+- Zero discovery of required tests fails.
+- Required skips fail.
+- Conditional skips name the absent capability/condition.
+- Optional/informational tests do not support stronger acceptance claims.
 
-### 6. Sanity checking and independent review
+### Completeness
 
-When a sanity, audit, complete-review, incident, release-readiness, or system-wide claim is made, verify that:
+Coverage is mapped from owned invariants/contracts and applicable risks:
 
-- exact revision/artifact and `full`, `bounded`, or `sampled` claim are explicit;
-- included/excluded surfaces, owners, authority, risks, access limits, environment, external state, and review mode are declared;
-- a complete semantic coverage map exists before deep inspection;
-- review branches are stable semantic focus branches by owner, boundary, path, cross-cutting concern, or artifact rather than file count;
-- every review leaf has one primary owner/coherent path, complete semantic-unit inventory, and full-attention sizing rationale;
-- every included surface is accounted for at risk-justified depth;
-- every material semantic unit answers the mandatory core and objectively triggered modules;
-- component/producer-consumer boundaries, end-to-end paths, parent/focus-branch outputs, lifecycle, design, cleanup, contradictions, and invalidated evidence are reconciled;
-- tools are mechanism-relevant evidence rather than semantic substitutes;
-- passing leaves are not treated as integrated proof;
-- violations/high-risk uncertainties have exact mechanism, consequence, owner, disposition, and revalidation;
-- independent review did not quietly repair findings;
-- changed revisions/contracts invalidate and rerun affected branch/boundary/path/cleanup evidence;
-- checks not run, missing access/evidence, review-created state, cleanup, and claim limits are explicit;
-- final claim is no broader than reconciled evidence.
+- normal and boundary behavior;
+- invalid/hostile/unknown inputs;
+- lifecycle, cancellation, retry, restart, and cleanup;
+- partial failure, rollback, recovery, and persistence;
+- finite-resource pressure/exhaustion;
+- concurrency, ordering, publication, duplication, loss, and stale state;
+- compatibility/migration/versioning;
+- security/privacy/provenance/permissions;
+- producer-consumer and end-to-end integration;
+- representative performance and search-quality degradation.
 
-### 7. Pull-request review and guarded merge
+Equivalence partitions, boundaries, pairwise/risk-driven combinations, properties, metamorphic relations, deterministic samples, and synthetic domains may compress coverage. Sampling remains disclosed and cannot support a full claim.
 
-Every material PR must verify:
+### Test-intent banking and capsule consolidation
 
-- PR identity, target, exact reviewed head, relevant base/merge base, comparison, and review mode;
-- complete changed surface, ancestry, generated/manifest/schema/dependency/workflow/packaging/cleanup effects;
-- agreement with owner instruction, ADRs/specifications, assessment, focus-branch map, governed execution, ownership, contracts, cleanup, and closure;
-- every represented focus branch is accounted for by status and exact output revision;
-- semantic review and reconciliation cover callers, dependencies, state, resources, lifecycle, compatibility, cleanup, and end-to-end paths;
-- discussion, requested changes, threads, bot findings, linked blockers, invalidated/unintegrated branches, and cleanup debt are reconciled;
-- focused tests/checks, branch integration, and cleanup evidence belong to exact head;
-- review independence is labeled honestly;
-- head, material base, parent-plan, or shared-contract changes invalidate/review affected evidence;
-- no unresolved blocker, question, required gate, unintegrated material branch, unsafe residue, or unknown closure effect remains.
+- Material test intents are recorded when discovered.
+- Provisional reproducers remain temporary unless they are the correct durable owner.
+- Related intents are consolidated into canonical owner/contract/conformance/integration capsules before branch acceptance.
+- Capsules share expensive immutable setup when safe while preserving stable case IDs, independent inputs/expected results, isolated mutable state, direct single-case execution, and per-case results.
+- Consolidation does not hide independent failures or stop after the first unrelated assertion.
+- Pending intents are consolidated, proven already covered, superseded by stronger evidence, blocked with authority, or explicitly out of scope.
+- Provisional scripts, duplicate tests/fixtures, diagnostics, and logs are removed, archived, or retained intentionally.
 
-The merge transaction revalidates current head, target, ancestry/mergeability, required reviews/checks/protection/queue, discussion, issue closure, semantic/Git branch/worktree disposition, stacked/dependent work, cleanup debt, and conflicts. Use expected-head protection and never bypass target history/protection.
+### Tier selection
 
-Post-merge verification records target SHA, proves tree/result and parent branch-map integration, reconciles issue/branch/worktree/dependent effects, completes or tracks cleanup, and states uncompleted checks.
+Evidence escalates proportionally:
 
-### 8. Design and component boundaries
+1. preflight identity/static/discovery checks;
+2. focused fast regression/owner-local cases;
+3. complete owner/contract capsule;
+4. affected integration smoke;
+5. deep property/fuzz/sanitizer/race/stress/migration/performance evidence;
+6. forensic/release evidence.
 
-A component, public contract, dependency, foundational representation, compatibility boundary, or reusable name must verify:
+Focused fast is the inner loop. Owner capsules run after coherent repair batches, integration smoke after local acceptance, and deep/forensic tiers only on risk, mismatch, stabilization, release, or explicit plan trigger.
 
-- governing purpose, bounds, concern weighting, lifecycle, and disposition;
-- singular state/lifecycle ownership and non-responsibilities;
-- LEGO ports, injected dependencies, adapters, and replacement/test boundary;
-- justified SOLID responsibilities and CUPID quality;
-- domain-appropriate ranges, precision, capacity, and exhaustion;
-- accurate-generality tests;
-- total-system simplicity including focus-branch coordination and cleanup;
-- compatibility/evolution, archive/supersession, and decisive falsification.
+### Evidence reuse and no-repeat
 
-### 9. Schema and generated artifacts
+- An evidence key defines result identity completely.
+- Identical evidence is reused rather than rerun for reassurance.
+- Every repeated run has material invalidation, contamination/incompleteness, independent-replication, or statistical reason.
+- Failed tests/commands are retried only after changed hypothesis, input, source/test revision, environment, configuration, or transport.
+- Duplicate fast validation for one head is avoided; workflow ownership is disjoint where practical and stale runs are cancelled.
 
-Verify schema syntax/versioning, normalization, invalid/boundary cases, deterministic generation, source/generated correspondence, compatibility, range/alignment/precision/layout, cache identity, and stale-output disposition.
+### Failure clustering and repair
 
-### 10. Component-local behavior
+- One trusted reproduction and baseline are frozen.
+- Failures are clustered by first divergence, violated invariant, owner, and signature.
+- Primary causes are separated from cascades.
+- One root-cause hypothesis and cheapest decisive falsifier are stated.
+- The authoritative owner is repaired in a coherent batch.
+- The minimal affected cluster reruns first, then the owning capsule once, then required integration smoke once.
+- Deep/forensic escalation occurs only when the claim remains unresolved or risk requires it.
+- Raw logs remain artifacts; active evidence is bounded to causal intervals and exact locations.
 
-Each component owns focused tests for public contracts, internal invariants, failure, lifecycle, concurrency, resource exhaustion, and cleanup. The manifest lists commands.
+### Test debt
 
-### 11. Cross-component integration
+Material pending intents, provisional-only regressions, missing evidence identity, hidden skips, duplicated oracle authority, contaminated state, or unowned test artifacts are test debt. Test debt blocks acceptance unless explicitly authorized, contained, owned, and independently actionable.
 
-Integration tests use public surfaces and declared dependency direction, including failure propagation, incompatible versions, resource transfer, cleanup, and exact focus-branch output integration where relevant.
+Use `test-batch.template.yaml` only when several intents/capsules/failure clusters cross sessions or agents, expensive setup must be coordinated, or completeness/skip/invalidation evidence has a real consumer.
 
-### 12. Reference and conformance
+## 6. Governed plan execution
 
-Complex search behavior requires deterministic reference/synthetic cases exposing transpositions, cycles/history, chance, lazy/large actions, evaluator modes, backup/reduction, pressure/exhaustion, reroot/persistence, termination/cancellation/teardown, and retained-state cleanup.
+A material node/branch verifies:
 
-### 13. CUDA/device correctness
+- exact parent plan/version, branch/node, owner, environment, and frozen revision;
+- dependency outputs/revisions and readiness;
+- authority, contracts, test oracles/capsules/evidence keys, generated inputs, and runtime trust;
+- expected effects, outputs, acceptance, falsifier, testing, rollback, cleanup, integration, and escalation before mutation;
+- coherent owner-sized operations with immediate actual-effect inspection;
+- new test intents and invalidation are recorded;
+- focused falsification and affected boundary/path/lifecycle/design/testing/cleanup reconciliation occur before continuation;
+- material deviations revise parent state and invalidate dependent branches/evidence;
+- no invalid partial state, stale output, test debt, token debt, abandoned resource, unowned residue, or false downstream precondition remains.
 
-Use relevant sanitizer, publication/race, deterministic, host-reference, capability, lifetime/leak, cancellation/teardown/device-loss/IPC/shared-memory/failure tests. Verify contexts, modules, allocations, queues, event/stream/graph state, and diagnostics are released or deliberately retained, and prove active search does not depend on host-produced intermediate decisions.
+## 7. Cleanup and artifact disposition
 
-### 14. Performance
+Verify protected state remains intact, every material local/remote/generated/test/diagnostic/sensitive/external item has an intentional disposition, destructive actions use exact safeguards, remote/asynchronous state is read back, retained state has owners/triggers, and cleanup debt does not hide unsafe or incomplete work.
 
-Performance claims require exact commit/generated-engine identity, hardware/software/model/resource profile, workload, warmup/synchronization/sample/statistics, raw results, quality/correctness guardrails, fair baseline, profiler mechanism evidence, and disposition of temporary instrumentation/artifacts/resources.
+## 8. Sanity checking and independent review
 
-A faster result that changes semantics, quality, resource limits, stopping behavior, or cleanup is not automatically an improvement.
+A sanity/audit claim verifies exact frozen target and claim type, complete semantic coverage, full-attention review leaves, risk-justified depth, triggered modules, boundary/end-to-end reconciliation, test evidence/invalidation, findings, cleanup, checks not run, and claim limits. Passing leaves or capsules do not prove integrated coherence.
 
-### 15. Publication and release
+## 9. Pull-request review and guarded merge
 
-Before claiming publication/release:
+A material PR verifies:
 
-- inspect final diff and repository state;
-- stage only intended scope;
-- run all applicable validation/cleanup layers;
-- update parent/focus-branch/plan/execution/cleanup state, manifests, registry, indexes, authority, findings, and archive;
-- complete exact-head review/guarded merge when integrating;
-- verify remote target, checks, artifacts, issue closure, semantic/Git branch/worktree disposition, permissions, packages/releases, external resources, and dependents;
-- record failures, skipped validation, retained state, cleanup debt, and claim limits.
+- exact PR/base/head/comparison and review mode;
+- complete changed/renamed/deleted/generated/dependency/workflow/package/test/cleanup surface;
+- agreement with authority, parent/branch map, execution, test evidence, cleanup, and closure;
+- exact evidence keys, discovery/skip counts, failure clusters, test intents consolidated, test tiers, evidence reuse, and remaining test debt;
+- current-head checks capable of falsifying the claim;
+- discussion, requested changes, blockers, invalidated branches/evidence, test/token/cleanup debt;
+- review invalidation after head/base/parent/shared-contract/oracle/test/artifact/environment/fixture changes.
+
+The merge transaction revalidates exact accepted head, target, mergeability, protections/checks/reviews, discussion, issue closure, branch/worktree/dependent state, debt, and conflicts. Post-merge verification proves target SHA/tree, parent/branch/test map, issue/dependent effects, and cleanup.
+
+## 10. Design and component boundaries
+
+Components/contracts verify purpose/bounds, singular ownership, LEGO ports/adapters, justified SOLID/CUPID internals, domain-appropriate ranges, accurate generality, lifecycle/cleanup, test owner/oracles/capsules/invalidation, compatibility/evolution, total-system simplicity, and decisive falsification.
+
+## 11. Schema and generated artifacts
+
+Verify syntax/version negotiation, normalization, invalid/boundary cases, deterministic generation, source/generated correspondence, compatibility, range/alignment/precision/layout, complete cache/evidence identity, and stale-output/test-artifact disposition.
+
+## 12. Component-local and cross-component behavior
+
+Each component owns fast and complete capsules for public contracts, invariants, failure, lifecycle, concurrency, exhaustion, and cleanup. Cross-component suites use public surfaces and verify failure propagation, incompatible versions, resource transfer, cleanup, and exact branch/test integration.
+
+## 13. Reference and conformance
+
+Use deterministic references and synthetic domains to expose transpositions, cycles/history, stochastic/chance behavior, lazy/large/empty action spaces, evaluator modes, backup/reduction, pressure/exhaustion, reroot/persistence, cancellation/teardown, and cleanup. Synthetic cases share a public conformance runner while retaining domain/case identity.
+
+## 14. CUDA/device correctness
+
+Use triggered combinations of deterministic host-reference parity, publication/race checks, sanitizer tools, capability probes, lifetime/leak checks, cancellation/teardown/device-loss/IPC/shared-memory/failure injection, and explicit proof of device closure. Group compatible cases by complete generated-engine/model/architecture/driver/toolkit/resource evidence identity and isolate mutable search state.
+
+## 15. Performance and search quality
+
+Performance claims require exact identity, representative workload, baseline/target, warmup/synchronization/sample/statistics, raw results, profiler mechanism, resource bounds, semantic equivalence, stopping equivalence, and search-quality guardrails. Performance evidence is separate from correctness evidence. Temporary instrumentation/artifacts are dispositioned.
+
+## 16. Publication and release
+
+Before publication/release, inspect final diff/state, run all triggered tiers, update parent/branch/token/test/execution/cleanup authority, complete exact-head review/guarded merge, verify remote target/checks/artifacts/packages/issue/branch/dependent state, and record skipped evidence, retained state, debt, and claim limits.
 
 ## Current phase
 
-UMCGS has no accepted production implementation or public release yet. The mandatory current check is `./scripts/verify-docs.sh`, plus task-specific research, specification, assessment, focus-branch, execution, cleanup, sanity, PR-review, merge, or independent-review validation.
+UMCGS has no accepted production implementation or public release. The mandatory current check is `./scripts/verify-docs.sh`, plus task-specific assessment, focus-branch, token, testing, execution, cleanup, sanity, PR-review, merge, or specialist validation.
 
-Project license selection is deferred and does not block original private pre-release work. It remains a separate gate before public distribution and before implementation-level third-party reuse requiring compatibility analysis and donor-artifact disposition.
+Project license selection remains deferred for original private pre-release work; third-party implementation reuse and public distribution still require provenance/license compatibility and donor-artifact disposition.

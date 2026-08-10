@@ -1,5 +1,5 @@
 name: Implementation
-description: Implement an accepted UMCGS specification through a governed focus branch and plan node with explicit token, cleanup, and integration discipline
+description: Implement an accepted UMCGS specification through a governed focus branch and plan node with explicit token, testing, cleanup, and integration discipline
 title: "[Implementation]: "
 labels: ["implementation"]
 body:
@@ -14,42 +14,49 @@ body:
     id: boundary
     attributes:
       label: Coherent ownership and organization boundary
-      description: Identify product area, component, manifest/registry entry, public surface, dependencies, in-scope responsibilities, explicit non-responsibilities, lifecycle owner, and eventual disposition.
+      description: Identify product area, component, manifest/registry entry, public surface, dependencies, in-scope responsibilities, explicit non-responsibilities, lifecycle owner, test owner, canonical capsule, and eventual disposition.
     validations:
       required: true
   - type: textarea
     id: assessment
     attributes:
       label: Assessment and strongest adversarial challenge
-      description: Link the assessment/plan or summarize its disposition, strongest credible objection, integrated resolution, sound fundamentals, decisive falsifier, context constraints, and cleanup implications. Do not duplicate accepted authority.
+      description: Link the assessment/plan or summarize its disposition, strongest credible objection, integrated resolution, sound fundamentals, decisive falsifier, context constraints, testing risks, and cleanup implications. Do not duplicate accepted authority.
     validations:
       required: true
   - type: textarea
     id: focus-branch
     attributes:
       label: Parent task and focus-branch contract
-      description: State whether focus branches are triggered. For large/complex work, identify parent task/plan version, integration owner, global invariants, focus-branch ID/type/owner, full-attention sizing, exact input revisions, minimal context packet, scope/non-goals, write surface, dependencies, expected output, downstream consumers, acceptance/falsifier, invalidation, cleanup, and integration obligations. Do not substitute a Git branch name for this semantic contract.
+      description: State whether focus branches are triggered. For large/complex work, identify parent task/plan version, integration owner, global invariants, focus-branch ID/type/owner, full-attention sizing, exact input revisions, minimal context packet, scope/non-goals, write surface, dependencies, expected output, downstream consumers, acceptance/falsifier, test obligations, invalidation, cleanup, and integration obligations. Do not substitute a Git branch name for this semantic contract.
     validations:
       required: true
   - type: textarea
     id: token-discipline
     attributes:
       label: Token and context discipline
-      description: State task class, exact telemetry availability, context packet, deliberately loaded/excluded layers, validation/integration/cleanup/review/handoff reserve, yellow/red-state triggers, checkpoint/compaction plan, large artifacts kept outside prompt context, and conditions requiring split/rebranch/handoff. State why no durable token-budget record is needed for routine work.
+      description: State task class, telemetry availability, context packet, loaded/excluded layers, validation/integration/cleanup/review/handoff reserve, yellow/red-state triggers, checkpoint/compaction plan, large artifacts kept outside prompt context, and split/rebranch/handoff conditions. State why no durable token-budget record is needed for routine work.
+    validations:
+      required: true
+  - type: textarea
+    id: testing
+    attributes:
+      label: Testing and repair-loop strategy
+      description: Identify authoritative oracles, coverage map, pending test intents, owning capsules, exact evidence keys/invalidation, preflight/fast/owner/integration/deep/forensic tiers, expected discovery/skip counts, shared setup and case isolation, failure-cluster/root-cause process, no-repeat rules, consolidation boundary, provisional-test cleanup, and whether a durable test-batch record is required.
     validations:
       required: true
   - type: textarea
     id: plan-node
     attributes:
       label: Plan version, node, readiness, and execution contract
-      description: State plan record/version/node, focus-branch ID, owner, dependencies and expected revisions, frozen head/environment, expected local/wider effects, outputs, acceptance, cheapest falsifier, rollback/safe stop, cleanup obligations, material deviation triggers, and whether durable focus-branch/token/execution/cleanup records are required.
+      description: State plan record/version/node, focus-branch ID, owner, dependencies and expected revisions, frozen head/environment, expected local/wider effects, outputs, acceptance, cheapest falsifier, rollback/safe stop, testing/cleanup obligations, material deviation triggers, and whether durable focus-branch/token/test/execution/cleanup records are required.
     validations:
       required: true
   - type: textarea
     id: cleanup
     attributes:
       label: Cleanup inventory, protected state, and final disposition
-      description: Identify protected user/shared/authority/evidence/recovery state; expected local files/folders, semantic/Git branches/worktrees/stashes, remote PR/issues/reviews, generated/build artifacts, processes/ports/containers/device state, credentials/permissions, backups/persistence, and external resources. State planned dispositions, dependency order, safeguards, verification, post-merge cleanup, and any permitted cleanup debt.
+      description: Identify protected user/shared/authority/evidence/recovery state; expected local files/folders, provisional tests/fixtures/logs, semantic/Git branches/worktrees/stashes, remote PR/issues/reviews, generated/build artifacts, processes/ports/containers/device state, credentials/permissions, backups/persistence, and external resources. State planned dispositions, dependency order, safeguards, verification, post-merge cleanup, and permitted cleanup debt.
     validations:
       required: true
   - type: dropdown
@@ -58,13 +65,13 @@ body:
       label: Reasoning level
       options:
         - Substantial
-        - Critical (CUDA, concurrency, memory, ABI, persistent state, hot path, component boundary, foundational contract, cross-branch shared contract, context-constrained execution, coordinated/invalid-intermediate-state execution, destructive cleanup, sensitive/external/recovery state)
+        - Critical (CUDA, concurrency, memory, ABI, persistent state, hot path, component boundary, foundational contract, cross-branch shared contract, context-constrained execution, high-consequence test oracle, coordinated/invalid-intermediate-state execution, destructive cleanup, sensitive/external/recovery state)
     validations:
       required: true
   - type: textarea
     id: validation
     attributes:
-      label: Completion evidence, branch integration, token reserve, validation, cleanup verification, and stop conditions
-      description: Pair validation with claimed mechanisms; include expected-versus-actual inspection, branch output/integration checks, resource/failure/compatibility checks, affected boundary/path reconciliation, downstream outputs, owning-system cleanup verification, remaining token debt, and evidence that would pause, split, revise, invalidate, rollback, fail, or block acceptance.
+      label: Completion evidence, branch integration, token reserve, test evidence, cleanup verification, and stop conditions
+      description: Include expected-versus-actual inspection, authoritative oracles, exact evidence keys, discovery/pass/fail/skip counts, test intents consolidated, failure clusters and changed hypotheses, branch output/integration checks, resource/failure/compatibility checks, owning-system cleanup verification, remaining test/token debt, and evidence that would pause, split, revise, invalidate, rollback, fail, or block acceptance.
     validations:
       required: true

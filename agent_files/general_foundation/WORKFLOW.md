@@ -4,205 +4,156 @@
 
 ## 1. Orient
 
-Read authority, inspect repository state, identify task class, existing decisions, related work, unrelated local changes, and the current product-area/component organization.
+Read authority, exact repository state, current plan/focus branch, related and unrelated work, organization, protected state, token band, and existing test evidence.
 
-If the request is a sanity check, audit, whole-project review, complete review, incident review, or release-readiness claim, freeze the target and route to [`SANITY_CHECKING.md`](SANITY_CHECKING.md) before deep inspection.
+Route sanity work to [`SANITY_CHECKING.md`](SANITY_CHECKING.md), PR work to [`PULL_REQUEST_REVIEW_AND_MERGE.md`](PULL_REQUEST_REVIEW_AND_MERGE.md), and material test/repair work to [`TESTING.md`](TESTING.md) and [`DEBUGGING.md`](DEBUGGING.md).
 
-If the request is PR readiness, review, approval, or merge, freeze the PR identity/head and route to [`PULL_REQUEST_REVIEW_AND_MERGE.md`](PULL_REQUEST_REVIEW_AND_MERGE.md) before acting.
+## 2. Assess
 
-Identify protected pre-existing/user/shared state before creating or deleting files, branches, processes, credentials, artifacts, or remote resources.
-
-## 2. Frame the assessment
-
-State the required outcome, authority, evidence, ownership boundary, expected operating domain, constraints, assumptions, completion evidence, cleanup consequences, and cost of doing nothing. Distinguish observed facts from inferences and proposals.
-
-Use [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md). Routine work may use a brief in-place assessment; substantial and critical work require the proportional durable record described there.
+State outcome, authority, evidence, owner, domain/bounds, assumptions, risks, completion evidence, test oracle/coverage implications, token/context constraints, cleanup, and cost of no change. Use [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md).
 
 ## 3. Inspect prior art and current behavior
 
-When repository behavior, mature work, standards, papers, hardware behavior, or current libraries may change the design, inspect them before committing to an architecture. Record exact revisions, licenses, raw observations, unresolved gaps, and intended donor/evidence disposition.
+Inspect current mechanism, existing tests/capsules, exact revisions, generated artifacts, external sources/licenses, and known evidence before choosing architecture or adding tests. Record unresolved gaps and provenance/disposition.
 
-## 4. Run the adversarial assessment
+## 4. Adversarially challenge
 
-Answer every applicable assessment question, then attack the answers from the strongest credible opposing position. Challenge both unsound simplification and unnecessary machinery. Resolve each material objection through evidence, redesign, a bounded experiment, explicit assumption, blocker, cleanup debt, or rejection.
+Attack problem framing, ownership, boundaries, generality, resources, failures, test oracles/completeness, alternatives, simplicity, token use, cleanup, and validation. Resolve objections through evidence, redesign, experiment, branch split, blocker/debt, or rejection.
 
-Do not plan production implementation until the assessment disposition permits it.
+## 5. Decide focus branching
 
-## 5. Decide whether focus branches are required
-
-Use [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md).
-
-Before deep planning or execution, ask whether one qualified agent can retain the objective, authority, mechanism, dependencies, risks, and material consequence horizon in one focused session without sampling or skimming.
-
-Create a focus-branch map when the task:
-
-- spans multiple semantic owners, public contracts, paths, artifact families, or lifecycle stages;
-- contains independent unknowns, experiments, decisions, or specialist risks;
-- crosses sessions, agents, teams, repositories, or operators;
-- supports parallel work;
-- requires different validation, rollback, cleanup, or security boundaries;
-- would otherwise dilute attention or leave local work without system integration.
-
-Keep one canonical parent task and integration spine. A focus branch is semantic, not automatically a Git branch.
+Use [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md). Create one canonical parent/integration spine and full-attention leaves when the task spans owners/contracts/paths/unknowns, crosses sessions/agents, supports parallelism, or would force sampling/skimming. Each leaf includes test and token fit.
 
 ## 6. Apply the design hierarchy
 
-For component, contract, dependency, foundational representation, compatibility, reusable-name, or lifecycle/disposition work:
+Establish domain truth/purpose/bounds; LEGO owner/ports/adapters; justified SOLID internals; CUPID quality; domain-appropriate foundations; accurate generality; total-system simplicity including test/setup/runtime/context/cleanup; and decisive falsifiers/revisit triggers.
 
-1. establish domain truth, authority, purpose, bounds, and contextual concern weighting;
-2. define the LEGO owner, state/lifecycle ownership, ports, injected dependencies, adapters, non-responsibilities, and teardown/disposition;
-3. define SOLID internal responsibilities only where meaning, change, testing, concurrency, resource lifetime, cleanup, or substitution requires separation;
-4. define CUPID quality expectations;
-5. prove domain-appropriate ranges/capacities and maximum-accurate-generality;
-6. compare total-system complexity, including focus-branch coordination, cleanup, and complexity moved elsewhere;
-7. identify decisive falsifiers, disposition triggers, and revisit triggers.
+## 7. Specify unsettled foundations and test contracts
 
-Use `templates/design-review.template.md` when the design is foundational, contested, or difficult to reconstruct.
+Before production code, settle public contracts, identity, memory, synchronization, ABI, lifecycle, persistence, compatibility, security, resource pressure, cleanup, test oracle, capsule owner, evidence-key dimensions, invalidation, and escalation behavior.
 
-## 7. Specify unsettled foundations
+Experiments name their question, provisional reproducer, evidence, promotion/disposal, and test-consolidation conditions.
 
-Persistent layouts, public contracts, synchronization, memory policies, lifecycle, state identity, ABI, cross-component ownership, dependency direction, retention, migration, and cleanup/reclamation require an accepted specification or ADR before production implementation.
+## 8. Build one parent plan, branch map, and test map
 
-A disposable experiment must name the question it answers, live under the experiment product area, and state deletion, archive, quarantine, or promotion conditions.
+The plan includes:
 
-## 8. Build one coherent parent plan and focus-branch map
+- objective, authority, invariants, vocabulary, closure, and integration owner;
+- branch IDs/owners/dependencies/exact inputs/outputs/status/invalidation;
+- contract-to-test-capsule ownership and authoritative oracles;
+- coverage by invariant/risk, test intents, evidence keys, expected discovery/skips, tier/escalation, failure clustering, setup sharing/isolation, and consolidation boundary;
+- token reserve/context layers/checkpoints;
+- coherent operations and experiments;
+- rollback/recovery/cleanup/PR integration/handoff.
 
-Build the plan from the integrated assessment, not from the original proposal. Include:
+A branch/node is not ready if it would need to invent contract, oracle, test ownership, or cleanup meaning during implementation.
 
-- parent objective, authority, global invariants, shared vocabulary, closure evidence, and integration owner;
-- product area/component placement;
-- public/internal contract and dependency effects;
-- focus-branch map, branch IDs, owners, types, dependencies, exact inputs/outputs, statuses, and invalidation rules when triggered;
-- leaf sizing evidence showing each branch fits full attention;
-- coherent nodes ordered by dependency and uncertainty;
-- decisive experiments before irreversible structure;
-- validation and cheapest falsifiers paired with the mechanisms they prove;
-- failure, recovery, cancellation, resource pressure, compatibility, migration, rollback, cleanup/disposition, and documentation;
-- protected pre-existing state and expected task-created state;
-- expected PR review mode, required gates, merge/closure effects, source-branch/worktree disposition, and post-merge verification when material;
-- stop conditions and handoff state.
+## 9. Execute a dependency-ready branch/node
 
-A node or focus branch must be decision-complete enough that execution does not invent foundational meaning, shared contracts, or cleanup policy. Listing it does not make it ready.
+Use [`PLAN_EXECUTION.md`](PLAN_EXECUTION.md).
 
-Prefer one combined assessment/plan and one canonical branch map. Do not create duplicate risk, dependency, branch, validation, execution, cleanup, review, or status ledgers.
+1. Prove parent/branch/node/input revisions, authority, full-attention/token fit, repository/environment, test/runtime trust, cleanup, and resource readiness.
+2. Load the minimal context packet.
+3. State expected effects/output, test intent/falsifier, rollback, cleanup, integration, and stop conditions.
+4. Prepare only necessary fixtures, checkpoints, generated inputs, bounded diagnostics, test case bank, and cleanup inventory.
+5. Apply one coherent owner-sized operation.
+6. Inspect actual effects immediately and register new/invalidated test intents/evidence.
+7. Run the cheapest focused falsifier.
+8. Reconcile owner/contracts/paths/resources/lifecycle/design/testing/cleanup/integration.
+9. Classify continue/accept/pause/revise/rollback/fail/supersede/integrate.
+10. Revise parent state and invalidate dependents for material changes.
 
-## 9. Execute dependency-ready focus branches and nodes
+Normally one agent owns one active branch and checkpoints before switching.
 
-Use [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md), [`PLAN_EXECUTION.md`](PLAN_EXECUTION.md), and [`CLEANUP_AND_DISPOSITION.md`](CLEANUP_AND_DISPOSITION.md).
+## 10. Run the efficient test–repair loop
 
-For each active branch/node:
+Use [`TESTING.md`](TESTING.md) and [`DEBUGGING.md`](DEBUGGING.md).
 
-1. identify the current parent plan version, focus-branch ID, node, owner, frozen revision, and dependency outputs;
-2. prove authority, branch sizing, repository/environment, operational, falsification, rollback, cleanup, and resource readiness;
-3. load the minimal context packet and scan for newly triggered doctrine;
-4. state expected local/wider effects, outputs, acceptance, falsifier, safe stop, cleanup obligations, integration obligation, and material deviation conditions;
-5. prepare only necessary checkpoints, gates, fixtures, generated inputs, bounded instrumentation, and cleanup inventory;
-6. apply one coherent ownership-sized operation inside the branch write boundary;
-7. inspect exact actual effects immediately, compare expected versus actual, and register created/modified/obsolete state;
-8. run the focused falsifier and reconcile material owners, contracts, artifacts, paths, resources, lifecycle, design principles, and cleanup dispositions;
-9. escalate shared-contract changes to the integration spine and invalidate dependent branches explicitly;
-10. classify continue, accept, pause, revise, rollback, fail, supersede, or integrate;
-11. update durable branch/execution/cleanup truth only when another consumer needs the changed state.
+### Before repair
 
-Normally one agent owns one active focus branch. Before switching, leave an exact continuation checkpoint. Do not silently fix adjacent branches.
+- record expected behavior and authoritative oracle;
+- freeze exact evidence key and one minimal reproducer;
+- record every discovered case as a test intent;
+- run one baseline at the cheapest decisive tier;
+- cluster failures by first divergence, owner, and cause.
 
-## 10. Coordinate parallel branches only when sound
+### Repair
 
-Parallel focus branches require:
+- form one root-cause hypothesis and cheapest falsifier;
+- repair the authoritative owner in one coherent batch;
+- avoid assertion-by-assertion and unrelated fixes;
+- retry only after changed hypothesis/input/code/test/environment/transport.
 
-- one compatible parent-plan/authority version;
-- non-overlapping semantic owners and write surfaces;
-- frozen or explicitly coordinated shared contracts and generated sources;
-- acyclic dependencies;
-- independent falsification, acceptance, rollback, and cleanup;
-- one integration owner;
-- explicit collision, contradiction, and invalidation routing.
+### Retest
 
-If branches repeatedly require each other’s in-progress state, combine them or define an atomic group.
+1. minimal affected failure cluster;
+2. complete owning capsule once;
+3. affected integration smoke once;
+4. deep/forensic tiers only when triggered.
 
-## 11. Validate branch outputs
+Reuse unchanged evidence by complete key. Do not run full suites after every edit.
 
-Progress from organization/documentation checks through branch readiness, operation-level falsifiers, focused component/contract checks, failure/exhaustion, cleanup verification, architecture-specific checks, benchmarks, and the full relevant suite.
+### Consolidate
 
-A focus branch is locally accepted only when its output contract and exact revision are established. This does not prove parent completion.
+Before branch acceptance:
 
-## 12. Reconcile focus branches through the integration spine
+- fold related intents into parameterized/property/generated owning capsules;
+- share compatible immutable setup while isolating mutable state;
+- preserve case IDs/direct selection/per-case results;
+- disposition every material intent;
+- remove/archive provisional reproducers, duplicate tests/fixtures, diagnostics, and redundant logs.
 
-For every accepted branch, reconcile:
+## 11. Coordinate parallel branches and tests only when sound
 
-- exact output, revision, authority, assumptions, exclusions, and claim limits;
-- terminology, ownership, dependency direction, units, ranges, precision, identity, versions, and memory spaces;
-- lifecycle, ordering, publication, pressure, failure, recovery, and cleanup;
-- public contracts, generated forms, caches, persistence, compatibility, security, provenance, resources, performance, and search quality;
-- downstream branches and critical end-to-end paths.
+Parallel branches require compatible parent versions, non-overlapping write/test ownership, coordinated shared contracts/oracles/generated sources, acyclic dependencies, independent acceptance/rollback/cleanup, bounded resources, and one integration owner.
 
-Account for every planned branch as integrated, blocked, invalidated, superseded, authoritatively deferred, or removed from scope with a reason. Rerun evidence invalidated by shared changes. Reconciliation is synthesis, not concatenation.
+Parallel test cases require isolated state and bounded shared setup. Stale or duplicate CI runs are cancelled; one head should not run the same fast capsule through several workflows without reason.
 
-## 13. Reconcile cleanup before acceptance
+## 12. Validate branch output
 
-Use [`CLEANUP_AND_DISPOSITION.md`](CLEANUP_AND_DISPOSITION.md).
+Verify exact output revision and test evidence key; oracle accuracy/sensitivity; discovery/pass/fail/skip counts; coverage/claim limits; test intents/capsule consolidation; no-repeat reasoning; failure clusters; owner/contract and required integration tiers; cleanup; and remaining test/token debt.
 
-Before branch or parent acceptance, handoff, PR readiness, pause, failure, rollback, or abandonment:
+Local acceptance does not prove parent integration.
 
-- inventory material task-created, temporarily modified, superseded, partial, generated, diagnostic, local, remote, external, sensitive, and coordination state;
-- identify protected user/pre-existing/shared/authority/evidence/recovery state;
-- assign remove, restore, retain authority/evidence/recovery, archive, quarantine, transfer, supersede, temporary retention with owner/trigger, or protect-unchanged disposition;
-- order cleanup by dependencies and preserve evidence/rollback until boundaries pass;
-- use exact destructive safeguards;
-- verify local workspace/Git, focus/Git branches, worktrees, remote PRs/issues/reviews, processes/ports/containers/device state, credentials/permissions, artifacts/caches/releases, persistence/backups, and external resources where triggered;
-- create bounded cleanup debt only when immediate cleanup is less safe than retained state;
-- block acceptance when residue can corrupt behavior, expose data, incur uncontrolled cost, mislead authority, defeat recovery, or contaminate later work.
+## 13. Reconcile through the integration spine
 
-## 14. Perform proportional self-sanity or independent sanity
+Reconcile exact branch outputs and test evidence across terminology, ownership, dependencies, units/ranges/identity/versions/memory spaces, lifecycle/order/publication/failure/recovery/cleanup, contracts/generated forms/persistence/compatibility/security/provenance/resources/performance/search quality, and end-to-end paths.
 
-For material implementation, interrogate changed semantic units through [`SEMANTIC_INTERROGATION.md`](SEMANTIC_INTERROGATION.md) and reconcile affected boundaries, paths, lifecycle, cleanup, and focus-branch outputs.
+Account for every branch and test intent. Rerun only evidence invalidated by shared-contract/oracle/source/test/artifact/environment/fixture/resource changes. Synthesis—not concatenation—proves the parent.
 
-When the request or risk requires a declared full, bounded, sampled, independent, incident, or release claim, use [`SANITY_CHECKING.md`](SANITY_CHECKING.md). Its review branches are specialized focus branches for coverage, not automatically Git branches.
+## 14. Reconcile cleanup
 
-Do not force standalone branch, sanity, or cleanup records for small reversible work. Do not call a sampled review full.
+Use [`CLEANUP_AND_DISPOSITION.md`](CLEANUP_AND_DISPOSITION.md). Disposition provisional tests, fixtures, logs, instrumentation, build/cache artifacts, branches/worktrees, processes/device state, credentials, persistence, and external resources. Block acceptance on unsafe residue or debt.
 
-## 15. Prepare the PR and perform author-side review when integrating
+## 15. Self-sanity or independent sanity
 
-When the task publishes repository changes, create one coherent PR whose description is an integration summary rather than duplicated authority.
+Interrogate changed semantic units and reconciled test evidence. For declared claims, use complete coverage maps, full-attention review branches, risk depth, boundary/end-to-end reconciliation, findings, invalidation, cleanup, and exact claim limits.
 
-Before marking it ready:
+## 16. Prepare and author-review the PR
 
-- record the intended target and exact ready head;
-- inspect ancestry and the complete changed-file surface;
-- verify authority, component ownership, contracts, parent/focus-branch execution fidelity, generated/manifest/schema/dependency effects, preserved behavior, and cleanup state;
-- account for all branches as integrated, blocked, invalidated, superseded, deferred, or out of scope;
-- reconcile affected semantic units and integration paths;
-- inspect tests/checks and cleanup evidence for relevance and current-head identity;
-- remove temporary/debug/stale branch state or track safe bounded debt;
-- disclose checks not run, retained state, issue closure, local/remote Git branch/worktree effects, and proposed merge method;
-- perform a final whole-diff, focus-branch, and disposition pass.
+Before ready-for-review:
 
-Each head or material shared-contract/base change invalidates affected review and branch evidence.
+- freeze exact head/base;
+- account for complete diff/ancestry and all branch outputs;
+- record oracles, evidence keys, discovery/skip counts, test intents consolidated, tiers, failure clusters, evidence reused/repeated, checks not run, and test debt;
+- reconcile execution, token, cleanup, contracts, and end-to-end paths;
+- remove temporary test/debug state;
+- perform a final whole-diff/branch/test/disposition pass.
 
-## 16. Obtain independent review when triggered
+## 17. Independent review when triggered
 
-When phase, policy, CODEOWNERS/protection, owner instruction, or objective consequence requires independence, freeze the exact head and review the parent/focus-branch integration without quietly repairing it.
+Freeze exact head. The independent reviewer examines authority, branch integration, test-oracle accuracy, capsule completeness/efficiency, no-repeat evidence, failure repair, cleanup, and claim limits without quietly repairing the head.
 
-Resolve blockers through author changes, then re-review changed/invalidated branches and the complete integration.
+## 18. Guarded merge
 
-## 17. Execute the guarded merge transaction when integrating
+Revalidate exact accepted head, target, mergeability, checks/reviews/protection, discussion, issue closure, branch/test/token/cleanup debt, dependents, and conflicts. Use expected-head protection. Do not weaken tests or delete branches to simplify merge.
 
-Immediately before merge, re-read current PR metadata, exact head, target/base, discussion, required reviews/checks/protection/queue, mergeability, issue closure, focus/Git branch and worktree plan, cleanup debt, dependent work, and conflicting/superseding work.
+## 19. Verify integration and post-merge cleanup
 
-Abort on changed or unresolved state. Use the expected-head guard. Never force-update the target or delete a branch to simplify integration.
+Verify target SHA/tree and parent/branch/test map; issue/dependent state; target checks/artifacts; and source branch/worktree disposition. Remove or safely track temporary tests, logs, diagnostics, resources, permissions, and artifacts.
 
-## 18. Verify integration and perform post-merge cleanup
+A merge response is not integration, testing, or cleanup completion.
 
-Verify the PR is merged; record the resulting target SHA; inspect the intended tree/result; confirm the parent task and branch map point to the integrated revision; reconcile issue closure, target checks/artifacts, stacked/dependent work, and handoff state.
+## 20. Reconcile authority and hand off
 
-Then remove task-owned local/remote Git branches and worktrees when safe, release temporary resources/permissions, retarget dependents, and complete or safely track delayed cleanup.
-
-A merge response alone is neither integration nor cleanup completion.
-
-## 19. Reconcile authority and history
-
-Update specifications, ADRs, parent/focus-branch map, plan/execution/cleanup state, component manifests, registry, indexes, findings, and archived superseded material in the same coherent change. Remove temporary branch packets when their unique durable state has moved to the correct authority.
-
-## 20. Hand off
-
-Record parent objective, plan version, focus-branch ID/status, owner, authority, context inputs, expected-versus-actual effects, accepted outputs/revisions, contradictions, invalidated/unblocked branches, integration obligation, partial/rollback state, cleanup, validation, sanity limits, reviewed head/integrated SHA when applicable, Git/GitHub state, risks, and one next executable, analytical, integration, or cleanup boundary.
+Update specifications, ADRs, parent/branch/token/test/execution/cleanup state, manifests, registry, indexes, findings, and archive. The handoff records exact output/evidence keys, test intents/capsules/failure clusters/debt, checks not run, partial/recovery/cleanup state, reviewed/integrated revisions, and one next executable/testing/integration/cleanup boundary.

@@ -18,5 +18,6 @@ Accepted ADRs are immutable records. A later ADR may supersede an earlier one, b
 - [`ADR-0010-cleanup-reconciliation-and-artifact-disposition.md`](ADR-0010-cleanup-reconciliation-and-artifact-disposition.md) — protect pre-existing state; explicitly disposition and verify local, remote, generated, sensitive, external, partial, and coordination state.
 - [`ADR-0011-focus-branch-decomposition-and-integration.md`](ADR-0011-focus-branch-decomposition-and-integration.md) — use semantic full-attention focus branches for large/complex work and reconcile them through one parent integration spine.
 - [`ADR-0012-token-use-and-context-discipline.md`](ADR-0012-token-use-and-context-discipline.md) — optimize verified coherent progress per token, reserve context for proof/handoff, route context in layers, and block material token debt.
+- [`ADR-0013-consolidated-testing-and-repair-loop-efficiency.md`](ADR-0013-consolidated-testing-and-repair-loop-efficiency.md) — bank test intents, consolidate cases into owning capsules, reuse exact evidence, and repair failure clusters at their authoritative owner.
 
 Use [`../../agent_files/templates/decision-record.template.md`](../../agent_files/templates/decision-record.template.md). Each ADR states status, context, decision, evidence, consequences, alternatives, and revisit triggers.

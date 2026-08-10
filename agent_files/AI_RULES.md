@@ -112,3 +112,33 @@
 108. Use a durable token-budget record only when cross-session/agent work, telemetry, high consequence, parallelism, or repeated context pressure gives it a real consumer.
 109. Do not evaluate agent quality by raw token count alone; evaluate correctness, verified progress, rework, repeated retrieval, missed integration, and continuation cost.
 110. Stop token spending when additional context, reasoning, generation, or tool use cannot materially change the result, evidence, risk, or next action.
+111. Before writing or running a material test, identify the owned claim, authoritative oracle, exact subject/test/artifact/environment identity, expected discovery count, and invalidation conditions.
+112. Capture every material regression, boundary, counterexample, or risk as a test intent immediately; do not leave critical test knowledge only in chat or TODO prose.
+113. Use the smallest provisional reproducer during diagnosis, then consolidate it into the canonical owning capsule before branch acceptance.
+114. Consolidate related cases by owner, oracle, setup, environment, and tier using parameterized, table-driven, property, metamorphic, generated, or conformance capsules.
+115. Consolidation may share execution/setup but must preserve stable case IDs, independent inputs/expected results, isolated mutable state, direct case selection, and per-case pass/fail/skip reporting.
+116. Do not create one permanent test file, command, fixture, process launch, model load, or device initialization per discovered example when one owning capsule can cover them accurately.
+117. Do not create an opaque monolithic test that stops at the first assertion or hides which independent cases ran.
+118. Map completeness from owned invariants and risk-triggered conditions, not raw test count, file count, line coverage, or blind Cartesian products.
+119. Use equivalence partitions, boundary cases, pairwise/risk-driven combinations, properties, metamorphic relations, deterministic sampling, and synthetic domains to compress coverage without weakening it.
+120. Required test discovery of zero cases fails. Required skips fail; conditional and optional skips must be counted and cannot support stronger claims.
+121. Existing tests, expected values, comments, and implementation behavior are evidence—not automatic oracle authority.
+122. For critical tests, demonstrate sensitivity to plausible violations through a known-bad case, mutation, negative control, corrupted artifact, or fault injection when consequence justifies it.
+123. Use the focused fast capsule as the inner loop; run the complete owner/contract capsule after a coherent repair batch, then affected integration smoke once.
+124. Do not run the full suite, deep fuzzing, sanitizers, compatibility matrices, or forensic instrumentation after every edit; require risk, mismatch, stabilization, release, or explicit plan triggers.
+125. Build/generate/load immutable artifacts, models, devices, containers, datasets, and fixtures once per complete evidence key; reset or recreate mutable state between cases.
+126. Do not reuse setup, caches, global state, device memory, random streams, persistence, or prior case state when contamination would invalidate attribution.
+127. An identical evidence key is not rerun for reassurance. Record material invalidation, contamination/incompleteness, independent replication, or statistical reason for every repeat.
+128. Do not retry a failing test or command without a changed hypothesis, input, source/test revision, environment, configuration, or transport.
+129. Freeze one reproduction and baseline, then cluster failures by first divergence, violated invariant, owner, and signature; separate primary failures from cascades.
+130. Repair the authoritative owner in one coherent batch; rerun the minimal affected cluster, then the owning capsule once, then required integration smoke once.
+131. Do not repair failing assertions independently when one root cause explains the cluster, and do not use broad-suite repetition to compensate for missing localization.
+132. Preserve raw logs/traces as artifacts and keep only bounded causal intervals, stable case/cluster IDs, first divergence, and evidence locations in active context.
+133. Define a test invalidation graph mapping changed owners/contracts/artifacts/oracles/fixtures/environments to the capsules that must rerun; do not choose tests only from memory.
+134. Avoid duplicate fast suites across workflows for one head; use canonical commands, disjoint workflow ownership, stale-run cancellation, and exact evidence reuse.
+135. Before acceptance, disposition every material test intent and remove or archive provisional reproducers, duplicate tests/fixtures, temporary diagnostics, and redundant logs after durable equivalent coverage is proven.
+136. Material test debt—pending critical intents, provisional-only regressions, missing evidence identity, hidden skips, duplicate oracle authority, or unreconciled contamination—blocks completion.
+137. Do not evaluate testing by raw case count alone; evaluate oracle accuracy, failure discrimination, completeness, runtime/setup cost, repeated evidence, repair cycles, token/log cost, and escaped defects.
+138. Use a durable test-batch record only when several intents/capsules/failure clusters cross sessions or agents, expensive setup must be coordinated, or completeness/skip/invalidation evidence has a real consumer.
+139. Do not spend validation reserve on repeated reassurance runs; save tokens through selection, batching, consolidation, failure clustering, and exact evidence reuse—not by skipping required tiers.
+140. Stop testing when further evidence cannot materially change the claim, risk, repair decision, escalation, or next action, and state checks not run and claim limits exactly.
