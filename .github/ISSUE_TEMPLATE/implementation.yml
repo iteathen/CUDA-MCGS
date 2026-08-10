@@ -1,5 +1,5 @@
 name: Implementation
-description: Implement an accepted UMCGS specification through a governed focus branch and plan node with explicit cleanup and disposition
+description: Implement an accepted UMCGS specification through a governed focus branch and plan node with explicit token, cleanup, and integration discipline
 title: "[Implementation]: "
 labels: ["implementation"]
 body:
@@ -21,7 +21,7 @@ body:
     id: assessment
     attributes:
       label: Assessment and strongest adversarial challenge
-      description: Link the assessment/plan or summarize its disposition, strongest credible objection, integrated resolution, sound fundamentals, decisive falsifier, and material cleanup implications. Do not duplicate accepted authority.
+      description: Link the assessment/plan or summarize its disposition, strongest credible objection, integrated resolution, sound fundamentals, decisive falsifier, context constraints, and cleanup implications. Do not duplicate accepted authority.
     validations:
       required: true
   - type: textarea
@@ -32,10 +32,17 @@ body:
     validations:
       required: true
   - type: textarea
+    id: token-discipline
+    attributes:
+      label: Token and context discipline
+      description: State task class, exact telemetry availability, context packet, deliberately loaded/excluded layers, validation/integration/cleanup/review/handoff reserve, yellow/red-state triggers, checkpoint/compaction plan, large artifacts kept outside prompt context, and conditions requiring split/rebranch/handoff. State why no durable token-budget record is needed for routine work.
+    validations:
+      required: true
+  - type: textarea
     id: plan-node
     attributes:
       label: Plan version, node, readiness, and execution contract
-      description: State plan record/version/node, focus-branch ID, owner, dependencies and expected revisions, frozen head/environment, expected local/wider effects, outputs, acceptance, cheapest falsifier, rollback/safe stop, cleanup obligations, material deviation triggers, and whether durable focus-branch/execution/cleanup records are required.
+      description: State plan record/version/node, focus-branch ID, owner, dependencies and expected revisions, frozen head/environment, expected local/wider effects, outputs, acceptance, cheapest falsifier, rollback/safe stop, cleanup obligations, material deviation triggers, and whether durable focus-branch/token/execution/cleanup records are required.
     validations:
       required: true
   - type: textarea
@@ -51,13 +58,13 @@ body:
       label: Reasoning level
       options:
         - Substantial
-        - Critical (CUDA, concurrency, memory, ABI, persistent state, hot path, component boundary, foundational contract, cross-branch shared contract, coordinated/invalid-intermediate-state execution, destructive cleanup, sensitive/external/recovery state)
+        - Critical (CUDA, concurrency, memory, ABI, persistent state, hot path, component boundary, foundational contract, cross-branch shared contract, context-constrained execution, coordinated/invalid-intermediate-state execution, destructive cleanup, sensitive/external/recovery state)
     validations:
       required: true
   - type: textarea
     id: validation
     attributes:
-      label: Completion evidence, branch integration, validation, cleanup verification, and stop conditions
-      description: Pair validation with the mechanisms claimed; include expected-versus-actual inspection, branch output and integration checks, resource/failure/compatibility checks, affected boundary/path reconciliation, downstream outputs, owning-system cleanup verification, and evidence that would pause, revise, invalidate, rollback, fail, or block acceptance.
+      label: Completion evidence, branch integration, token reserve, validation, cleanup verification, and stop conditions
+      description: Pair validation with claimed mechanisms; include expected-versus-actual inspection, branch output/integration checks, resource/failure/compatibility checks, affected boundary/path reconciliation, downstream outputs, owning-system cleanup verification, remaining token debt, and evidence that would pause, split, revise, invalidate, rollback, fail, or block acceptance.
     validations:
       required: true

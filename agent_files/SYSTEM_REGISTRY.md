@@ -13,7 +13,7 @@ This registry tells developers and agents where durable information and future i
 - Focus branches are semantic work packets, not new ownership boundaries unless authority explicitly creates one.
 - Cross-component dependencies must be declared in both the component manifest and governing architecture/specification where material.
 - Archived and superseded locations never regain authority merely because an agent finds them.
-- Retained temporary, evidence, recovery, archive, and cleanup-debt state has an owner and objective disposition trigger.
+- Retained temporary, evidence, recovery, archive, cleanup-debt, and token-budget state has an owner and objective lifecycle trigger.
 
 ## Governance and documentation boundaries
 
@@ -23,6 +23,7 @@ This registry tells developers and agents where durable information and future i
 | `governance.design` | LEGO design hierarchy, components, contracts, composition, foundations, naming, compatibility | [`DESIGN_ALIGNMENT_CARD.md`](DESIGN_ALIGNMENT_CARD.md), [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md), and linked doctrine | Accepted |
 | `governance.assessment` | Adversarial assessment before planning and proportional planning records | [`general_foundation/ASSESSMENT_AND_PLANNING.md`](general_foundation/ASSESSMENT_AND_PLANNING.md) | Accepted |
 | `governance.focus-branches` | Large-task semantic decomposition, full-attention sizing, parent integration spine, context packets, parallelism, invalidation, and reconciliation | [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) | Accepted |
+| `governance.token-discipline` | Token reserves, context layers, retrieval/tool discipline, operational bands, compaction, handoff, and token-debt prevention | [`general_foundation/TOKEN_DISCIPLINE.md`](general_foundation/TOKEN_DISCIPLINE.md) and [`general_foundation/CONTEXT_ROUTING.md`](general_foundation/CONTEXT_ROUTING.md) | Accepted |
 | `governance.execution` | Plan-node readiness, coherent operation execution, deviation handling, recovery, acceptance, and continuation state | [`general_foundation/PLAN_EXECUTION.md`](general_foundation/PLAN_EXECUTION.md) | Accepted |
 | `governance.cleanup` | Cleanup inventory, protected state, local/remote disposition, destructive safeguards, verification, and cleanup debt | [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md) | Accepted |
 | `governance.sanity` | Sanity/audit claims, semantic coverage, risk-based depth, reconciliation, and findings | [`general_foundation/SANITY_CHECKING.md`](general_foundation/SANITY_CHECKING.md) and [`general_foundation/SEMANTIC_INTERROGATION.md`](general_foundation/SEMANTIC_INTERROGATION.md) | Accepted |
@@ -88,4 +89,4 @@ A coherent change must include:
 7. validation owner;
 8. cleanup, migration, archive, or supersession record.
 
-Use [`templates/component-manifest.template.yaml`](templates/component-manifest.template.yaml) for product components and follow [`general_foundation/PROJECT_ORGANIZATION.md`](general_foundation/PROJECT_ORGANIZATION.md) and [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md). Use [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) for large-task work decomposition without inventing new component ownership.
+Use [`templates/component-manifest.template.yaml`](templates/component-manifest.template.yaml) for product components and follow [`general_foundation/PROJECT_ORGANIZATION.md`](general_foundation/PROJECT_ORGANIZATION.md) and [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md). Use [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) for large-task work decomposition and [`general_foundation/TOKEN_DISCIPLINE.md`](general_foundation/TOKEN_DISCIPLINE.md) for proportional context budgeting without inventing new product ownership.

@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "parent_task": {
     "id": "",
     "title": "",
@@ -14,7 +14,7 @@
     "global_invariants_and_shared_definitions": [],
     "included_surface": [],
     "excluded_surface_and_reason": [],
-    "global_validation_and_cleanup": []
+    "global_validation_cleanup_and_token_constraints": []
   },
   "focus_branch": {
     "id": "",
@@ -33,13 +33,16 @@
     "global_invariants_to_preserve": [],
     "material_consequence_horizon": []
   },
-  "full_attention_sizing": {
+  "full_attention_and_token_fit": {
     "one_primary_semantic_owner": false,
     "one_primary_question_or_output": false,
-    "fits_one_focused_session_without_sampling_or_skimming": false,
+    "complete_packet_execution_validation_cleanup_and_handoff_fit_one_window": false,
     "mechanism_and_material_consequences_fit_active_context": false,
+    "required_validation_integration_cleanup_review_handoff_reserve_remains": false,
     "independent_acceptance_rollback_and_cleanup_are_understandable": false,
-    "split_or_combination_reason": ""
+    "telemetry_available": false,
+    "reserve_percent_or_semantic_headroom": "",
+    "split_rebranch_or_combination_reason": ""
   },
   "context_packet": {
     "governing_authority": [],
@@ -47,8 +50,21 @@
     "dependency_inputs_and_revisions": [],
     "shared_terms_units_ranges_identity_and_versions": [],
     "local_mechanism_and_state": [],
+    "material_consequence_horizon": [],
     "specialist_doctrine_triggered": [],
-    "context_explicitly_not_loaded": []
+    "context_explicitly_not_loaded": [],
+    "large_artifacts_kept_out_of_prompt": [],
+    "freshness_and_reread_triggers": []
+  },
+  "token_discipline": {
+    "task_class": "routine|substantial|critical|large_complex",
+    "current_band": "green|yellow|red|emergency|unknown",
+    "path_changing_questions": [],
+    "retrieval_and_tool_plan": [],
+    "checkpoint_and_compaction_triggers": [],
+    "yellow_red_and_emergency_actions": [],
+    "token_debt_blocking_conditions": [],
+    "durable_token_budget_record": ""
   },
   "dependencies_and_coordination": {
     "upstream_focus_branches": [],
@@ -67,7 +83,8 @@
     "cheapest_decisive_falsifier": "",
     "broader_reconciliation_required": [],
     "rollback_recovery_and_safe_stop": [],
-    "cleanup_and_disposition": []
+    "cleanup_and_disposition": [],
+    "lossless_handoff_fields": []
   },
   "execution": {
     "readiness_evidence": [],
@@ -77,7 +94,8 @@
     "contradictions_and_cross_branch_findings": [],
     "variations_deviations_and_parent_plan_changes": [],
     "current_partial_state": [],
-    "cleanup_state": []
+    "cleanup_state": [],
+    "context_pressure_rebranch_or_handoff_events": []
   },
   "branch_result": {
     "classification": "continue|accept|pause|block|invalidate|supersede|integrate",
@@ -85,6 +103,7 @@
     "assumptions_exclusions_and_claim_limits": [],
     "parent_or_sibling_branches_invalidated_unblocked_or_made_ready": [],
     "integration_obligations": [],
+    "remaining_token_debt": [],
     "handoff_or_next_safe_action": ""
   },
   "integration": {
@@ -94,6 +113,7 @@
     "units_ranges_precision_identity_versions_and_memory_spaces_reconciled": false,
     "lifecycle_failure_recovery_and_cleanup_reconciled": false,
     "resource_performance_security_compatibility_and_provenance_reconciled": false,
+    "token_debt_and_context_reconstruction_reconciled": false,
     "boundary_and_end_to_end_validation": [],
     "contradictions_and_dispositions": [],
     "final_parent_revision_or_artifact": ""

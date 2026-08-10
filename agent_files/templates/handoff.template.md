@@ -15,6 +15,18 @@
 - Acceptance / falsifier / rollback / cleanup / integration obligations:
 - Other branches and statuses: `planned | ready | active | paused | blocked | accepted | invalidated | superseded | integrated | archived`
 
+## Token and context state
+
+- Task class and exact telemetry availability:
+- Current context band: `green | yellow | red | emergency | unknown`
+- Validation/integration/cleanup/review/handoff reserve and rationale:
+- Context layers loaded and explicitly excluded:
+- Large artifacts kept outside prompt context with exact identities:
+- Retrieval/tool strategy and expensive-call triggers:
+- Checkpoints/compaction performed:
+- Token debt or repeated reconstruction still remaining:
+- Why the next operation fits—or why handoff is required now:
+
 ## Ownership boundary and authority
 
 ## Changes and expected-versus-actual effects
@@ -59,4 +71,4 @@
 
 ## Failed approaches / contaminated or quarantined state
 
-## Next executable, analytical, focus-branch, integration, or cleanup boundary
+## Next executable, analytical, focus-branch, integration, cleanup, or context-restoration boundary

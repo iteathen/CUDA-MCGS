@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "updated": "YYYY-MM-DD",
   "status": "ready|blocked|in_progress|complete|superseded|invalidated",
   "parent_task_id": "<canonical parent task>",
@@ -15,6 +15,20 @@
     "exact_input_revision": "",
     "write_surface_and_authority": [],
     "integration_obligations": []
+  },
+  "token_and_context": {
+    "task_class": "routine|substantial|critical|large_complex",
+    "telemetry_available": false,
+    "current_band": "green|yellow|red|emergency|unknown",
+    "validation_integration_cleanup_review_handoff_reserve_percent": 0,
+    "reserve_rationale": "",
+    "context_layers_loaded": [],
+    "context_explicitly_excluded": [],
+    "large_artifacts_kept_out_of_prompt": [],
+    "checkpoint_and_compaction_triggers": [],
+    "split_rebranch_or_handoff_triggers": [],
+    "token_debt": [],
+    "durable_token_budget_record": ""
   },
   "node_id": "<stable node id>",
   "objective": "<one coherent next boundary>",

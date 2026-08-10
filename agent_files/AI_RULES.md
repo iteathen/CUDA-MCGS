@@ -91,3 +91,24 @@
 87. Do not treat locally accepted focus branches as proof of parent completion; centrally reconcile exact outputs, contradictions, boundaries, end-to-end behavior, lifecycle, resources, compatibility, security, performance, and cleanup against one final revision.
 88. Create separate Git branches, issues, PRs, worktrees, or documents for focus branches only when isolation, owner, deliverable, risk, dependency, review, transport, rollback, or closure is independently meaningful.
 89. Rebranch when evidence reveals the task’s true shape; preserve prior branch IDs and dispositions, version changed dependencies/outputs, and invalidate affected work rather than silently rewriting the map.
+90. Optimize verified coherent progress per total lifecycle token; do not optimize for the shortest answer or the most generated code.
+91. Never save tokens by omitting material authority, exact revisions, shared-contract meaning, failure/resource behavior, evidence, cleanup, review, or handoff state.
+92. Before substantial mutation, reserve enough context for actual-effect inspection, falsification, integration, cleanup, review, handoff, and one bounded recovery cycle.
+93. Use 30% remaining-context reserve as the default for substantial work and 40% after packet loading for critical, large, or cross-branch work unless a different reserve is demonstrably sufficient.
+94. Do not consume the validation/integration/cleanup/handoff reserve to add scope, speculative architecture, optimization, or polish.
+95. Load context in layers: operating kernel, owning authority, local mechanism, material consequence horizon, then rationale/provenance only when needed.
+96. Search/index before broad reading; prefer exact diffs, contiguous owning sections, targeted ranges, filtered logs, and batched independent retrievals.
+97. Do not repeatedly reread unchanged authority or reload sibling branch transcripts; record exact revisions and consume accepted branch outputs as contracts.
+98. Do not retry a failed command, API, build, workflow, or transport without a changed hypothesis, input, environment, or transport.
+99. Keep large logs, profiler traces, model packages, datasets, and generated engines outside prompt context when exact identity and targeted sections suffice.
+100. Treat context state as green, yellow, red, or emergency according to whether complete act/inspect/falsify/reconcile/checkpoint cycles and a handoff still fit.
+101. In yellow state, open no new focus branch or broad unknown; finish or safely pause current work, validate claims, and checkpoint.
+102. In red state, stop new mutation; preserve exact state, run only bounded classification checks, clean up/quarantine unsafe partial state, and hand off.
+103. In emergency state, use remaining capacity only to preserve authority, revisions, partial state, failures, cleanup, and next safe action.
+104. Checkpoint losslessly at branch switches, material decisions, accepted outputs, yellow state, compaction, risky operations, failures/rollbacks, and shared-contract invalidation.
+105. Never compact away exact identifiers, unresolved contradictions, failed hypotheses, checks not run, unsafe partial state, credentials/resources, or cleanup obligations.
+106. Treat summaries as derivative context, not authority; invalidate them when source revision or shared meaning changes.
+107. Material token debt—future reconstruction caused by missing durable decisions, branch outputs, failure evidence, partial state, or cleanup information—blocks completion.
+108. Use a durable token-budget record only when cross-session/agent work, telemetry, high consequence, parallelism, or repeated context pressure gives it a real consumer.
+109. Do not evaluate agent quality by raw token count alone; evaluate correctness, verified progress, rework, repeated retrieval, missed integration, and continuation cost.
+110. Stop token spending when additional context, reasoning, generation, or tool use cannot materially change the result, evidence, risk, or next action.

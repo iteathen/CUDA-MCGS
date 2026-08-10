@@ -1,9 +1,9 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "updated": "2026-08-10",
   "status": "ready",
   "parent_task_id": "SPEC-V0",
-  "parent_plan_version": 2,
+  "parent_plan_version": 3,
   "integration_owner": "docs/specs: version-0 contract integration spine",
   "focus_branch": {
     "id": "SPEC-V0-MAP",
@@ -11,21 +11,59 @@
     "type": "decision",
     "status": "ready",
     "owner": "docs/specs planning owner",
-    "primary_question_or_output": "What semantic focus-branch map can produce the version-0 universal contract set without hidden cross-contract drift, attention dilution, or premature component design?",
-    "exact_input_revision": "main after ADR-0011 integration",
+    "primary_question_or_output": "What semantic focus-branch map can produce the version-0 universal contract set without hidden cross-contract drift, attention dilution, token starvation, or premature component design?",
+    "exact_input_revision": "main after ADR-0012 integration",
     "write_surface_and_authority": [
       "next_step.yaml and the canonical assessment/plan for SPEC-V0",
       "proposal-level docs/specs planning and terminology records",
       "no production component, runtime, schema implementation, or generated engine"
     ],
     "integration_obligations": [
-      "Define the parent objective, global invariants, shared vocabulary, branch dependencies, exact output contracts, invalidation rules, integration owner, and final closure evidence.",
-      "Produce leaf branches sized for full attention and distinguish local acceptance from parent integration.",
-      "Preserve ADR-0001 through ADR-0011 and the accepted project charter."
+      "Define the parent objective, global invariants, shared vocabulary, branch dependencies, exact output contracts, invalidation rules, integration owner, token/context envelope, and final closure evidence.",
+      "Produce leaf branches sized for full attention with validation/integration/cleanup/handoff reserve and distinguish local acceptance from parent integration.",
+      "Preserve ADR-0001 through ADR-0012 and the accepted project charter."
     ]
   },
+  "token_and_context": {
+    "task_class": "large_complex",
+    "telemetry_available": false,
+    "current_band": "green",
+    "validation_integration_cleanup_review_handoff_reserve_percent": 40,
+    "reserve_rationale": "The branch defines several interdependent universal contracts and must retain substantial capacity for adversarial map validation, cross-contract reconciliation, exact-head review, cleanup, and a continuation-ready first-leaf packet.",
+    "context_layers_loaded": [
+      "Operating kernel: AGENTS, AI_RULES, PRINCIPLES, STATUS, this next-step packet, exact main revision.",
+      "Governing authority: charter, ADRs 0001 through 0012, registry, organization, focus-branch, token/context, execution, cleanup, sanity, and PR doctrines.",
+      "Proposal inputs: SPEC-0000, framework overview, prior-art landscape, and source register at exact revisions.",
+      "No production implementation context except targeted examples required to expose contract consequences."
+    ],
+    "context_explicitly_excluded": [
+      "Unrelated project history and merged PR transcripts.",
+      "Complete donor repositories and full CUDA documentation.",
+      "All domain adapters, model packages, generated engines, profiler traces, and large logs.",
+      "Sibling focus-branch transcripts before those branches exist and produce accepted output contracts."
+    ],
+    "large_artifacts_kept_out_of_prompt": [
+      "CUDA documentation is referenced by exact capability/version and targeted section only.",
+      "Prior-art repositories are referenced by exact commit and targeted evidence rather than copied wholesale.",
+      "Future generated engines, models, traces, and conformance outputs remain external artifacts with exact identities."
+    ],
+    "checkpoint_and_compaction_triggers": [
+      "After the parent shared vocabulary and invariants are accepted.",
+      "After the initial branch map and dependency graph are accepted.",
+      "Before selecting the first executable leaf.",
+      "On any shared-contract change, yellow context state, branch split/combine, or handoff."
+    ],
+    "split_rebranch_or_handoff_triggers": [
+      "One proposed leaf cannot keep its mechanism, material consequences, validation, cleanup, and handoff reserve in one focused window.",
+      "Repeated rereading is required to retain the branch map.",
+      "The 40% reserve would be consumed before map acceptance and first-leaf handoff.",
+      "An independent unknown or semantic owner competes with the active map decision."
+    ],
+    "token_debt": [],
+    "durable_token_budget_record": "Use agent_files/templates/token-budget.template.yaml only if exact telemetry, cross-session continuation, or repeated context pressure makes a separate record necessary."
+  },
   "node_id": "SPEC-V0-MAP-N1",
-  "objective": "Produce and adversarially validate the focus-branch map, shared contract envelope, dependency graph, and integration spine for the version-0 specification set before drafting individual contract specifications.",
+  "objective": "Produce and adversarially validate the focus-branch map, shared contract envelope, dependency graph, integration spine, and token/context budget for the version-0 specification set before drafting individual contract specifications.",
   "product_area": "docs/specs",
   "component": "project.specifications",
   "ownership_boundary": "version-0 contract planning and cross-contract integration",
@@ -43,9 +81,12 @@
     "docs/decisions/ADR-0009-governed-plan-execution.md",
     "docs/decisions/ADR-0010-cleanup-reconciliation-and-artifact-disposition.md",
     "docs/decisions/ADR-0011-focus-branch-decomposition-and-integration.md",
+    "docs/decisions/ADR-0012-token-use-and-context-discipline.md",
     "agent_files/general_foundation/PRINCIPLES.md",
     "agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md",
     "agent_files/general_foundation/FOCUS_BRANCHES.md",
+    "agent_files/general_foundation/TOKEN_DISCIPLINE.md",
+    "agent_files/general_foundation/CONTEXT_ROUTING.md",
     "agent_files/general_foundation/PLAN_EXECUTION.md",
     "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
     "agent_files/general_foundation/SANITY_CHECKING.md",
@@ -60,14 +101,15 @@
     "Concrete engines must be finite, device-closed, and specialized.",
     "The specification effort spans Search IR, domain, graph, policy, evaluator, resources, conformance, generated/JIT/ABI concerns, and cross-contract integration; it cannot be safely executed as one undifferentiated task.",
     "A focus branch is semantic and does not automatically require a Git branch, issue, PR, component, directory, or document.",
-    "Individual specifications may not drift shared terminology, ownership, identity, units, resource behavior, device-closure meaning, or compatibility rules independently.",
+    "Individual specifications may not drift shared terminology, ownership, identity, units, resource behavior, device-closure meaning, compatibility rules, or token/context assumptions independently.",
     "Project license selection is deferred and does not block original private pre-release specification work."
   ],
   "minimal_context_packet": [
-    "Accepted charter and ADRs 0001 through 0011.",
+    "Accepted charter and ADRs 0001 through 0012.",
     "Current proposal framework requirements and architecture overview.",
-    "Prior-art landscape and source register at their exact revisions.",
+    "Prior-art landscape and source register at exact revisions.",
     "Current system registry and repository organization rules.",
+    "Token/context reserve, loaded/excluded layers, checkpoint triggers, and no-token-debt completion rule.",
     "No production implementation context except where needed to expose contract consequences."
   ],
   "global_invariants_to_preserve": [
@@ -76,7 +118,9 @@
     "Production active search remains device-closed after ignition.",
     "Shared terms, identity, units, ranges, precision, lifecycle, failure, cleanup, compatibility, and generated/cache identity have one authoritative meaning.",
     "Every leaf focus branch has one primary owner/output and fits one focused session without sampling or skimming.",
-    "Locally accepted branch outputs do not become parent authority until centrally reconciled and integrated."
+    "Every leaf retains sufficient token/context reserve for validation, integration obligations, cleanup, and handoff.",
+    "Locally accepted branch outputs do not become parent authority until centrally reconciled and integrated.",
+    "Material token debt blocks parent completion."
   ],
   "durable_paths": [
     "canonical SPEC-V0 assessment/plan and focus-branch map",
@@ -84,7 +128,7 @@
     "next_step.yaml"
   ],
   "preconditions": [
-    "ADR-0011 and FOCUS_BRANCHES.md are integrated into main.",
+    "ADR-0011, ADR-0012, FOCUS_BRANCHES.md, TOKEN_DISCIPLINE.md, and CONTEXT_ROUTING.md are integrated into main.",
     "Accepted charter and ADRs remain current.",
     "Prior-art evidence and proposal inputs are available at recorded revisions.",
     "No production runtime component is created before its owning contracts are accepted."
@@ -92,9 +136,11 @@
   "dependency_outputs_and_revisions": [],
   "parallel_siblings_and_non_overlapping_write_surfaces": [],
   "invalidation_inputs": [
-    "Any accepted change to the project charter or ADRs governing universality, device closure, organization, design, execution, cleanup, or focus-branching.",
+    "Any accepted change to the charter or ADRs governing universality, device closure, organization, design, execution, cleanup, focus-branching, or token discipline.",
+    "Any source revision change that invalidates the active context packet.",
     "Any discovered shared semantic that cannot be owned by the proposed integration spine.",
-    "Any branch decomposition that requires two leaves to mutate the same authoritative contract or consume each other's unaccepted in-progress output."
+    "Any branch decomposition that requires two leaves to mutate the same authoritative contract or consume each other's unaccepted in-progress output.",
+    "Any branch packet that cannot fit one evidence cycle and required reserve."
   ],
   "protected_preexisting_user_shared_authority_evidence_and_recovery_state": [
     "Accepted charter, ADRs, indexed authority, and current project history.",
@@ -103,44 +149,48 @@
   ],
   "expected_local_effects": [
     "A canonical parent contract for SPEC-V0 and a decision-ready focus-branch map.",
-    "Stable branch IDs, types, owners, dependencies, context packets, output contracts, acceptance/falsifiers, cleanup, and integration obligations.",
-    "An explicit integration spine for shared vocabulary, ownership, identity, resources, lifecycle, compatibility, and conformance."
+    "Stable branch IDs, types, owners, dependencies, context packets, output contracts, acceptance/falsifiers, cleanup, integration obligations, and token reserves.",
+    "An explicit integration spine for shared vocabulary, ownership, identity, resources, lifecycle, compatibility, conformance, and context invalidation."
   ],
   "expected_wider_effects": [
     "Individual specification branches can proceed independently without inventing shared meaning.",
-    "Parallel work can be authorized only where write surfaces and dependencies are non-overlapping.",
-    "Cross-contract contradictions and invalidation become visible before production implementation."
+    "Parallel work can be authorized only where write surfaces, dependencies, and token/context packets are non-overlapping and sufficient.",
+    "Cross-contract contradictions, invalidation, and context pressure become visible before production implementation."
   ],
   "expected_created_modified_superseded_or_retained_state": [
-    "A canonical SPEC-V0 branch map and parent-plan version 2.",
+    "A canonical SPEC-V0 branch map and parent-plan version 3.",
+    "A token/context envelope and lossless first-leaf handoff requirements.",
     "Potentially superseded proposal sequencing that must be archived or clearly replaced rather than left as competing work guidance.",
     "No production source, schemas, generated engines, packages, processes, device state, credentials, or external services."
   ],
   "deliverables": [
     "Parent SPEC-V0 objective, authority, global invariants, shared vocabulary, included/excluded surface, integration owner, and closure criteria.",
     "Focus-branch map covering evidence/decisions/contracts/paths/risks/validation/cleanup needed for the version-0 specification set.",
-    "Full-attention sizing proof for every leaf.",
+    "Full-attention and token-fit proof for every leaf.",
     "Acyclic dependency graph and exact expected branch inputs/outputs.",
-    "Shared-contract change and invalidation policy.",
+    "Shared-contract change, source-freshness, and dependent-invalidation policy.",
     "Parallelism and Git/GitHub mapping policy.",
+    "Context layer, reserve, checkpoint, compaction, large-artifact, and token-debt policy for the parent and leaves.",
     "Cross-branch reconciliation and final conformance plan.",
-    "The next dependency-ready focus branch selected with an exact packet."
+    "The next dependency-ready focus branch selected with an exact lossless packet."
   ],
   "acceptance_criteria": [
     "Every proposed leaf has one primary semantic owner and one primary question/output.",
-    "Every leaf fits one focused session without sampling or skimming and has understandable independent acceptance, rollback, cleanup, and integration obligations.",
+    "Every leaf fits one focused session without sampling/skimming and leaves sufficient reserve for independent acceptance, rollback, cleanup, integration obligations, and handoff.",
     "No two parallelizable leaves overlap authoritative write surfaces.",
     "Dependencies are acyclic and no leaf consumes an unaccepted sibling output.",
     "Shared terminology, identity, units, ranges, resources, lifecycle, failure, compatibility, device closure, and conformance have an explicit integration-spine owner.",
-    "The map includes explicit invalidation rules for shared-contract changes.",
+    "The map includes explicit invalidation rules for shared-contract and source-revision changes.",
+    "Large artifacts remain external with exact identities and targeted retrieval plans.",
+    "No material token debt or duplicate active authority is created.",
     "The map does not prematurely turn illustrative branches into accepted production components.",
     "The next focus branch can execute without reconstructing the entire parent discussion."
   ],
-  "cheapest_decisive_falsifier": "A proposed leaf requires another leaf's in-progress state, overlaps authoritative write ownership, cannot be accepted or rolled back independently, or cannot fit its mechanism and material consequence horizon into one focused session.",
-  "rollback_recovery_or_safe_stop": "Keep the branch map in proposal status, preserve the counterexample, revise or combine/split affected branches, increment the parent-plan version, invalidate dependent packets, and do not begin individual specification drafting until the map is coherent.",
+  "cheapest_decisive_falsifier": "A proposed leaf requires a sibling's in-progress state, overlaps authoritative write ownership, cannot be accepted/rolled back independently, cannot fit mechanism plus material consequences into one focused window, or consumes the reserve before validation and handoff.",
+  "rollback_recovery_or_safe_stop": "Keep the branch map in proposal status, preserve the counterexample and exact context state, revise/combine/split affected branches, increment the parent-plan version, invalidate dependent packets, checkpoint losslessly, and do not begin individual specification drafting until the map and token envelope are coherent.",
   "cleanup_and_disposition": {
     "planned_dispositions": [
-      "Remove pure scratch branch maps and duplicate planning notes after the canonical map is accepted.",
+      "Remove pure scratch branch maps, duplicate planning notes, and redundant context summaries after the canonical map is accepted.",
       "Archive historically useful superseded sequencing or branch maps with date, reason, and successor.",
       "Retain accepted parent/branch contracts as work authority; retain cited evidence in bounded form.",
       "Remove task-owned Git branches/worktrees after verified integration when no review, stack, recovery, or provenance dependency remains."
@@ -154,13 +204,13 @@
       "Use exact paths/refs and preserve current authority, evidence, protected branches, and unrelated user work."
     ],
     "verification": [
-      "Branch-map and authority/index comparison.",
+      "Branch-map, token packet, and authority/index comparison.",
       "JSON-compatible structured-data validation.",
       "Documentation/link checks.",
       "Exact-head PR, target SHA/tree, and branch/dependent-state verification when integrated."
     ],
     "expected_final_local_remote_and_external_state": [
-      "One canonical SPEC-V0 parent plan and branch map, one selected next branch packet, and no duplicate active sequencing authority.",
+      "One canonical SPEC-V0 parent plan/branch map/token envelope, one selected next branch packet, and no duplicate active sequencing or context authority.",
       "No temporary process, credential, device allocation, generated output, package, or external resource remains."
     ],
     "post_merge_release_or_delayed_cleanup": [
@@ -170,30 +220,34 @@
     "cleanup_debt": []
   },
   "dependency_and_focus_branch_effects": [
-    "No individual specification branch becomes ready until this map accepts its input/output contract and dependencies.",
-    "Changes to shared semantics invalidate every dependent specification branch and its evidence."
+    "No individual specification branch becomes ready until this map accepts its input/output contract, dependencies, context packet, and reserve.",
+    "Changes to shared semantics or source revisions invalidate every dependent specification branch, summary, and evidence set."
   ],
   "validation": [
-    "Adversarial branch-map review from over-decomposition, under-decomposition, shared-contract drift, parallel collision, and integration-failure perspectives.",
-    "Full-attention sizing review for each leaf.",
+    "Adversarial branch-map review from over-decomposition, under-decomposition, shared-contract drift, parallel collision, token starvation, context flooding, and integration-failure perspectives.",
+    "Full-attention and token-fit review for each leaf.",
     "Dependency-cycle and overlapping-write-surface review.",
-    "Cross-branch terminology, ownership, resource, lifecycle, compatibility, and cleanup reconciliation plan.",
+    "Context layer, source freshness, reserve, checkpoint, and token-debt review.",
+    "Cross-branch terminology, ownership, resource, lifecycle, compatibility, cleanup, and conformance reconciliation plan.",
     "./scripts/verify-docs.sh",
-    "The integration PR records the exact reviewed head, branch-map statuses, checks, review mode, cleanup state, merge method, integrated target SHA, and post-merge branch disposition."
+    "The integration PR records exact reviewed head, branch-map statuses, token/context limits, checks, review mode, cleanup state, merge method, integrated target SHA, and post-merge branch disposition."
   ],
   "blockers": [],
   "do_not": [
     "Draft all version-0 specifications inside one undifferentiated branch.",
     "Split work by equal file count, equal agent count, or speculative component names.",
-    "Create one Git branch, issue, PR, worktree, or document per focus branch without an independent lifecycle reason.",
-    "Allow individual contract branches to redefine shared vocabulary, identity, units, resource behavior, device closure, compatibility, or conformance independently.",
+    "Create one Git branch, issue, PR, worktree, document, or token ledger per focus branch without an independent lifecycle reason.",
+    "Allow individual contract branches to redefine shared vocabulary, identity, units, resource behavior, device closure, compatibility, conformance, or context assumptions independently.",
     "Treat locally accepted branches as proof that the parent specification set is integrated.",
+    "Load entire donor repositories, CUDA documentation, logs, model packages, or generated engines when targeted evidence suffices.",
+    "Consume the 40% validation/integration/cleanup/review/handoff reserve to add scope or speculative design.",
+    "Continue mutation in red/emergency context state.",
     "Create a chess-shaped universal node or fixed policy vector.",
     "Choose a CUDA scheduler before the abstract execution contract is defined.",
     "Begin production runtime implementation from proposal-only interfaces.",
     "Delete user/pre-existing work, evidence, current authority, protected/shared branches, or rollback state as cleanup.",
-    "Merge a head different from the one reviewed or bypass repository, focus-branch, validation, or cleanup gates."
+    "Merge a head different from the one reviewed or bypass repository, focus-branch, token, validation, or cleanup gates."
   ],
   "completion_evidence": [],
-  "handoff_to_next_focus_branch_or_integration_spine": "Select the first dependency-ready leaf from the accepted SPEC-V0 map and publish its exact focus-branch packet."
+  "handoff_to_next_focus_branch_or_integration_spine": "Select the first dependency-ready leaf from the accepted SPEC-V0 map and publish its exact focus-branch/context packet with required reserve."
 }

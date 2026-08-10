@@ -21,18 +21,18 @@ sound fundamentals verified
         ↓
 simplest sufficient total system
         ↓
-measured validation, cleanup, and evolution
+measured validation, token discipline, cleanup, and evolution
 ```
 
-A lower level may improve a design only inside the valid envelope established above it. Soundness is a gate, not a preference: “simple” never means omitting required correctness, finite-resource behavior, lifecycle, compatibility, recovery, cleanup, or expected-domain capacity.
+A lower level may improve a design only inside the valid envelope established above it. Soundness is a gate, not a preference: “simple” never means omitting required correctness, finite-resource behavior, lifecycle, compatibility, recovery, evidence, cleanup, or expected-domain capacity.
 
 ## Purpose before architecture
 
-Establish outcome, authority, owner, operating environment, intended equivalence class, expected ranges, correctness/safety tolerances, finite memory/performance limits, lifecycle, recovery, compatibility, cleanup/disposition, observability, and dominant concerns before selecting a representation or component structure.
+Establish outcome, authority, owner, operating environment, intended equivalence class, expected ranges, correctness/safety tolerances, finite memory/performance limits, lifecycle, recovery, compatibility, cleanup/disposition, observability, token/context constraints, and dominant concerns before selecting a representation or component structure.
 
 ## Assessment before planning
 
-For substantial and critical work, do not promote the first plausible idea directly into an implementation plan. Assess authority, evidence, ownership, domain foundations, alternatives, resources, failures, cleanup, and validation; then attack the answers from the strongest credible opposing position. Resolve valid objections by changing the design, narrowing the scope, running an experiment, or rejecting the proposal.
+For substantial and critical work, do not promote the first plausible idea directly into an implementation plan. Assess authority, evidence, ownership, domain foundations, alternatives, resources, failures, cleanup, context budget, and validation; then attack the answers from the strongest credible opposing position. Resolve valid objections by changing the design, narrowing the scope, running an experiment, splitting a focus branch, or rejecting the proposal.
 
 Simplicity is considered only after the fundamentals are sound. Administrative accounting is itself system complexity: keep one authoritative assessment/plan by default, link existing facts, group related answers, and preserve only information that changes decisions, enables execution, supports validation/cleanup, or prevents costly reconstruction.
 
@@ -52,13 +52,27 @@ Use one canonical branch map and one active branch per agent by default. Rebranc
 
 See [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md).
 
+## Token-use and context discipline
+
+Tokens are a finite engineering resource, but minimum token count is not the objective. Optimize verified coherent progress across the entire lifecycle, including retrieval, reasoning, generation, tool use, validation, integration, cleanup, review, recovery, and handoff.
+
+Before substantial mutation, reserve enough context to inspect actual effects, falsify important claims, reconcile integration, clean up, review, and hand off. Default reserves are 30% for substantial work and 40% for critical/large/cross-branch work after the branch packet is loaded, unless a different reserve is demonstrably sufficient.
+
+Load context in layers: compact operating kernel, owning authority, local mechanism, material consequence horizon, then rationale/provenance only when needed. Search before broad reading, prefer exact diffs/ranges and contiguous owning sections, batch independent retrievals, and keep large artifacts outside prompt context when exact identity and targeted sections suffice.
+
+Treat context pressure as an execution state. Yellow means no new scope; red means stop new mutation and checkpoint; emergency means preserve exact state only. Never solve pressure by omitting authority, evidence, failure behavior, cleanup, or handoff.
+
+Checkpoints preserve exact revisions, decisions, contradictions, failed hypotheses, partial state, checks run/not run, cleanup, and next safe action. Summaries are derivative context, not authority. Material token debt—future reconstruction caused by missing durable truth—blocks completion.
+
+See [`TOKEN_DISCIPLINE.md`](TOKEN_DISCIPLINE.md) and [`CONTEXT_ROUTING.md`](CONTEXT_ROUTING.md).
+
 ## Governed plan execution
 
-A plan is a hypothesis under current authority. Execute only a current dependency-ready node with explicit ownership, expected outputs, acceptance, runnable falsification, rollback/safe stop, cleanup obligations, and trustworthy repository/environment state.
+A plan is a hypothesis under current authority. Execute only a current dependency-ready node with explicit ownership, expected outputs, acceptance, runnable falsification, rollback/safe stop, cleanup obligations, integration obligations, and trustworthy repository/environment/context state.
 
 Before each material operation, state expected local and wider effects. Apply one coherent ownership-sized action, inspect exact actual effects immediately, register created/modified/obsolete state, run the cheapest decisive falsifier, reconcile material contracts/resources/lifecycle/design/cleanup, and classify the outcome.
 
-A non-material variation may remain inside the node. A material change to cause, owner, authority, public contract, schema, ABI, consequence horizon, resource model, risk, acceptance, rollback, output, downstream order, or cleanup disposition requires plan revision. No node is accepted while invalid partial state, stale generated forms, abandoned resources, unowned residue, or false downstream preconditions remain.
+A non-material variation may remain inside the node. A material change to cause, owner, authority, public contract, schema, ABI, consequence horizon, resource model, risk, acceptance, rollback, output, downstream order, cleanup disposition, or context fit requires plan revision. No node is accepted while invalid partial state, stale generated forms, abandoned resources, unowned residue, token debt, or false downstream preconditions remain.
 
 Use one durable execution record only when coordination, continuation, invalid intermediate states, high consequence, or another evidence consumer requires it.
 
@@ -127,11 +141,11 @@ Choose cheap durable capacity across the reasonably expected domain. Reject both
 
 The composition root selects concrete domain, policy, evaluator, CUDA/platform, persistence, and compatibility adapters. It owns wiring, lifecycle, and coordinated teardown—not domain/search rules. Dependencies point toward stable contracts.
 
-Physical inlining or linking into a generated engine does not erase conceptual ownership, contract conformance, or cleanup obligations.
+Physical inlining or linking into a generated engine does not erase conceptual ownership, contract conformance, cleanup obligations, or the need to keep large artifacts outside active context.
 
 ## Simplest sufficient total system
 
-Measure complexity across callers, adapters, generation, persistence, migration, failure, recovery, cleanup, operations, diagnostics, tests, device memory, synchronization, and expected second instances. Complexity moved elsewhere is not removed.
+Measure complexity across callers, adapters, generation, persistence, migration, failure, recovery, cleanup, operations, diagnostics, tests, context reconstruction, device memory, synchronization, and expected second instances. Complexity moved elsewhere is not removed.
 
 Represent essential domain complexity directly. Remove accidental complexity. Reject ceremony that protects no invariant, boundary, responsibility, or useful operating property.
 
@@ -143,18 +157,21 @@ Represent essential domain complexity directly. Remove accidental complexity. Re
 - Generated hot paths may be highly specialized and may eliminate unused abstractions.
 - Performance changes require measured mechanism evidence plus semantic and search-quality guardrails.
 - Focus branches must not independently drift shared Search IR, graph, policy, evaluator, resource, schema/JIT/ABI, device-closure, or search-quality meaning.
-- Plan execution must not introduce hidden first-domain, host-control, memory, graph, evaluator, JIT/ABI, resource, or cleanup assumptions.
+- Plan execution must not introduce hidden first-domain, host-control, memory, graph, evaluator, JIT/ABI, resource, cleanup, or context assumptions.
 - Device contexts, allocations, queues, modules, IPC/shared-memory state, diagnostics, and host resources are released or deliberately retained and verified.
+- Large CUDA docs, profiler traces, generated engines, model packages, and logs remain external artifacts with exact identities unless targeted content is required.
 - Local and remote branches, PR/issue state, artifacts, credentials, and external resources are intentional after completion.
 
-## Design, decomposition, execution, and cleanup stop conditions
+## Design, decomposition, execution, token, and cleanup stop conditions
 
-Stop and resolve the boundary before implementation, deletion, acceptance, or dependent continuation when ownership is ambiguous, the task exceeds full attention without a focus-branch map, branches overlap write authority, shared contracts can drift independently, dependencies are incomplete, authority conflicts, the plan version is stale, expected effects/falsifiers/cleanup are unknown, public contracts leak unstable/private types, state has multiple writers, a name implies unsupported generality, the expected second instance forces redesign, resource exhaustion or teardown is undefined, actual effects materially diverge, protected state may be destroyed, cleanup cannot be verified, or alleged simplicity merely exports the problem.
+Stop and resolve the boundary before implementation, deletion, acceptance, or dependent continuation when ownership is ambiguous, the task exceeds full attention without a focus-branch map, branches overlap write authority, shared contracts can drift independently, dependencies are incomplete, authority conflicts, the plan version is stale, expected effects/falsifiers/cleanup are unknown, token reserve cannot support validation and handoff, context pressure is red/emergency, public contracts leak unstable/private types, state has multiple writers, a name implies unsupported generality, the expected second instance forces redesign, resource exhaustion or teardown is undefined, actual effects materially diverge, protected state may be destroyed, cleanup cannot be verified, or alleged simplicity merely exports the problem.
 
 ## Triggered detailed doctrine
 
 - [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md)
 - [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md)
+- [`TOKEN_DISCIPLINE.md`](TOKEN_DISCIPLINE.md)
+- [`CONTEXT_ROUTING.md`](CONTEXT_ROUTING.md)
 - [`PLAN_EXECUTION.md`](PLAN_EXECUTION.md)
 - [`CLEANUP_AND_DISPOSITION.md`](CLEANUP_AND_DISPOSITION.md)
 - [`SANITY_CHECKING.md`](SANITY_CHECKING.md)
@@ -169,4 +186,4 @@ Stop and resolve the boundary before implementation, deletion, acceptance, or de
 - [`COMPATIBILITY_AND_EVOLUTION.md`](COMPATIBILITY_AND_EVOLUTION.md)
 - [`FORBIDDEN_DESIGN_PATTERNS.md`](FORBIDDEN_DESIGN_PATTERNS.md)
 
-Use [`../templates/focus-branch.template.yaml`](../templates/focus-branch.template.yaml) only for durable cross-session/parallel/high-consequence branches, [`../templates/plan-execution.template.yaml`](../templates/plan-execution.template.yaml) only for durable coordinated/high-consequence execution, [`../templates/cleanup-disposition.template.yaml`](../templates/cleanup-disposition.template.yaml) only for material lifecycle evidence, [`../templates/design-review.template.md`](../templates/design-review.template.md) for a durable design review, and [`../templates/naming-analysis.template.yaml`](../templates/naming-analysis.template.yaml) for foundational reusable names.
+Use [`../templates/token-budget.template.yaml`](../templates/token-budget.template.yaml) only for durable cross-session/telemetry/high-consequence budget state, [`../templates/focus-branch.template.yaml`](../templates/focus-branch.template.yaml) only for durable cross-session/parallel/high-consequence branches, [`../templates/plan-execution.template.yaml`](../templates/plan-execution.template.yaml) only for durable coordinated/high-consequence execution, [`../templates/cleanup-disposition.template.yaml`](../templates/cleanup-disposition.template.yaml) only for material lifecycle evidence, [`../templates/design-review.template.md`](../templates/design-review.template.md) for a durable design review, and [`../templates/naming-analysis.template.yaml`](../templates/naming-analysis.template.yaml) for foundational reusable names.

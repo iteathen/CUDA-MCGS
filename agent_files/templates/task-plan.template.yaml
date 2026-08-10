@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "title": "<task title>",
   "status": "proposal|accepted|active|paused|complete|superseded",
   "plan_version": 1,
@@ -23,9 +23,24 @@
     "shared_vocabulary_and_semantics": [],
     "global_invariants": [],
     "units_ranges_precision_identity_versions_and_memory_spaces": [],
-    "resource_security_compatibility_and_cleanup_constraints": [],
+    "resource_security_compatibility_cleanup_and_context_constraints": [],
     "included_surface": [],
     "excluded_surface_and_reason": []
+  },
+  "token_and_context_discipline": {
+    "task_class": "routine|substantial|critical|large_complex",
+    "telemetry_available": false,
+    "context_layers_to_load": [],
+    "context_explicitly_excluded": [],
+    "validation_integration_cleanup_review_handoff_reserve_percent": 0,
+    "recovery_cycles_reserved": 1,
+    "reserve_rationale": "",
+    "large_artifacts_kept_out_of_prompt": [],
+    "search_range_diff_and_batch_retrieval_plan": [],
+    "yellow_red_and_emergency_triggers": [],
+    "checkpoint_and_compaction_plan": [],
+    "token_debt_blocking_conditions": [],
+    "durable_token_budget_record_required": false
   },
   "focus_branching": {
     "required": false,
@@ -57,13 +72,14 @@
         "cheapest_decisive_falsifier": "",
         "rollback_recovery_and_cleanup": [],
         "integration_obligations": [],
-        "full_attention_sizing": {
+        "full_attention_and_token_fit": {
           "one_primary_semantic_owner": false,
           "one_primary_question_or_output": false,
-          "fits_one_focused_session_without_sampling_or_skimming": false,
+          "packet_execution_validation_cleanup_and_handoff_fit_one_window": false,
           "mechanism_and_material_consequence_horizon_fit_active_context": false,
+          "required_reserve_remains_after_packet_load": false,
           "independent_acceptance_rollback_and_cleanup_are_understandable": false,
-          "split_or_combination_reason": ""
+          "split_rebranch_or_combination_reason": ""
         },
         "durable_focus_branch_record_required": false
       }
@@ -93,6 +109,7 @@
       "cheapest_decisive_falsifier": "",
       "broader_reconciliation_and_validation": [],
       "rollback_recovery_or_safe_stop": "",
+      "context_and_token_stop_conditions": [],
       "cleanup": {
         "expected_created_modified_superseded_or_retained_state": [],
         "planned_dispositions": [],
@@ -113,6 +130,7 @@
     "shared_semantics_ownership_and_dependency_reconciliation": [],
     "boundary_and_end_to_end_validation": [],
     "invalidated_evidence_rerun": [],
+    "token_debt_and_context_reconstruction_check": [],
     "final_revision_or_artifact": ""
   },
   "cross_node_validation": [],
@@ -131,6 +149,7 @@
     "review_mode": "author_side|independent|owner_exact_head_authorization|not_applicable",
     "required_checks_reviews_and_protection": [],
     "focus_branch_integration_evidence": [],
+    "token_context_and_handoff_evidence": [],
     "merge_method_and_reason": "",
     "issue_closure_branch_worktree_and_dependent_work_effects": [],
     "post_merge_verification_and_cleanup": []

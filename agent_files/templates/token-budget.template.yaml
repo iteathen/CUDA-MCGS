@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "token_discipline": {
+    "id": "",
+    "status": "proposal|active|paused|complete|superseded",
+    "owner": "",
+    "parent_task": "",
+    "parent_plan_version": 1,
+    "focus_branch_id": "",
+    "node_id": "",
+    "exact_repository_or_artifact_revision": "",
+    "task_class": "routine|substantial|critical|large_complex",
+    "telemetry_available": false,
+    "total_usable_context_tokens": 0,
+    "current_remaining_tokens": 0
+  },
+  "objective": {
+    "verified_progress_to_establish": "",
+    "path_changing_questions": [],
+    "minimum_sound_evidence": [],
+    "work_explicitly_not_worth_token_spend": []
+  },
+  "reserve": {
+    "validation_integration_cleanup_review_handoff_percent": 0,
+    "recovery_cycles_reserved": 1,
+    "reserve_rationale": "",
+    "operations_forbidden_to_consume_reserve": [],
+    "semantic_reserve_when_telemetry_unavailable": []
+  },
+  "context_layers": {
+    "operating_kernel_always_loaded": [],
+    "governing_authority": [],
+    "local_mechanism": [],
+    "material_consequence_horizon": [],
+    "rationale_provenance_on_demand": [],
+    "cold_or_excluded_context": []
+  },
+  "freshness_and_identity": {
+    "authority_status_and_owner": [],
+    "exact_revisions_hashes_versions_and_profiles": [],
+    "summaries_that_must_be_invalidated_on_change": [],
+    "reread_triggers": []
+  },
+  "retrieval_plan": {
+    "search_and_indexes_first": [],
+    "targeted_files_symbols_ranges_diffs_and_logs": [],
+    "whole_sections_required_and_reason": [],
+    "batched_independent_reads": [],
+    "large_artifacts_kept_out_of_prompt": [],
+    "raw_evidence_locations": []
+  },
+  "phase_budget": [
+    {
+      "phase": "orient|assess|branch_map|research|design|implement|validate|integrate|cleanup|review|handoff",
+      "expected_decision_or_output": "",
+      "soft_token_ceiling_or_qualitative_limit": "",
+      "exit_evidence": [],
+      "stop_or_rebranch_trigger": []
+    }
+  ],
+  "tool_discipline": {
+    "cheapest_decisive_tools": [],
+    "calls_to_batch": [],
+    "expensive_calls_and_acceptance_trigger": [],
+    "retry_requires_changed_hypothesis_input_environment_or_transport": true,
+    "polling_stop_conditions": [],
+    "output_filters_ranges_and_log_windows": []
+  },
+  "reasoning_discipline": {
+    "adversarial_questions_that_can_change_the_path": [],
+    "accepted_decisions_not_to_reargue_without_trigger": [],
+    "cheapest_decisive_falsifiers": [],
+    "analysis_stop_conditions": []
+  },
+  "focus_branch_fit": {
+    "complete_packet_execution_validation_cleanup_and_handoff_fit_one_window": false,
+    "mechanism_and_material_consequences_fit_together": false,
+    "one_active_branch_per_agent": true,
+    "split_rebranch_or_handoff_triggers": [],
+    "sibling_outputs_consumed_as_contracts_not_transcripts": []
+  },
+  "checkpoints": [
+    {
+      "trigger": "branch_switch|material_decision|accepted_output|yellow_state|before_compaction|before_irreversible_action|failure|rollback|shared_contract_change",
+      "location": "",
+      "must_preserve": [],
+      "safe_to_discard_after_transfer": []
+    }
+  ],
+  "operational_state": {
+    "current_band": "green|yellow|red|emergency|unknown",
+    "evidence_for_band": [],
+    "new_scope_allowed": false,
+    "mutation_allowed": false,
+    "required_next_action": ""
+  },
+  "compression_and_handoff": {
+    "lossless_fields": [],
+    "derivative_summaries": [],
+    "token_debt_items": [],
+    "handoff_trigger": "",
+    "continuation_packet_location": ""
+  },
+  "actuals": {
+    "repeated_reads_or_reconstruction_avoided": [],
+    "retries_and_changed_hypotheses": [],
+    "scope_reduced_rebranched_or_handed_off_due_to_pressure": [],
+    "validation_integration_cleanup_review_and_handoff_completed": [],
+    "checks_not_run_and_claim_limits": [],
+    "remaining_token_debt": []
+  },
+  "completion": {
+    "required_context_was_not_omitted_for_brevity": false,
+    "retrieval_and_tool_use_were_targeted": false,
+    "exact_outputs_and_revisions_were_checkpointed": false,
+    "reserve_was_preserved_or_deviation_justified": false,
+    "context_pressure_did_not_reduce_rigor": false,
+    "no_material_token_debt_remains": false,
+    "further_token_spend_would_not_change_result_evidence_risk_or_next_action": false
+  }
+}
