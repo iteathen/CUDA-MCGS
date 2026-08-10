@@ -1,6 +1,6 @@
 # Contributing to UMCGS
 
-UMCGS is currently private and documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`agent_files/general_foundation/PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md), [`agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md`](agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md), and [`agent_files/README.md`](agent_files/README.md) before opening a material implementation change.
+UMCGS is private and documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md), [`PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md), [`CLEANUP_AND_DISPOSITION.md`](agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md), and [`agent_files/README.md`](agent_files/README.md) before a material change.
 
 ## Before production implementation
 
@@ -8,45 +8,52 @@ A change needs:
 
 - a proportional assessment whose disposition permits implementation;
 - the strongest credible objection and its resolution, evidence, experiment, or blocker;
-- an accepted current plan version and an explicitly ready node;
-- evidenced dependency outputs and current authority;
-- a clear ownership boundary and durable product-area/component home;
-- expected local/wider effects, outputs, acceptance, cheapest falsifier, rollback/safe stop, cleanup obligations, and material deviation conditions before mutation;
-- a LEGO ownership boundary with one state/lifecycle/disposition owner, meaningful ports, injected dependencies, and owned adapters;
-- domain-appropriate ranges and a total-system simplicity analysis including cleanup;
-- accepted governing specifications, or an explicitly authorized disposable experiment;
-- defined invariants, ranges, lifecycle, resource limits, pressure/failure behavior, teardown, and cleanup;
-- declared public/internal boundaries and dependencies;
-- protected pre-existing/user/shared/authority/evidence/recovery state;
-- expected task-created local/remote/generated/sensitive/external state and planned disposition;
-- validation and cleanup verification paired with each claimed mechanism;
-- prior-art inspection and donor-artifact disposition when existing work may avoid duplication or change the design.
+- a clear product-area/component owner and accepted contract authority;
+- a current plan version and dependency-ready node;
+- a focus-branch map when the task exceeds one focused session, spans semantic owners/contracts/paths, contains independent unknowns, crosses sessions/agents, supports parallel work, or would require sampling/skimming;
+- for each material focus branch: stable ID, one primary owner/output, exact input revision, minimal context, scope/non-goals, write authority, dependencies, output contract, acceptance/falsifier, rollback, cleanup, and integration obligation;
+- expected local/wider effects and downstream output revisions;
+- a LEGO ownership boundary with explicit ports, injected dependencies, and adapters;
+- domain-appropriate ranges and total-system simplicity, including branch coordination and cleanup;
+- defined lifecycle, resource pressure, failure, recovery, teardown, compatibility, and cleanup;
+- validation capable of falsifying local branch outputs and final integrated behavior;
+- prior-art/provenance inspection where it can reshape the design.
 
-During execution, apply one coherent ownership-sized operation at a time, inspect actual effects immediately, register created/modified/obsolete state, reconcile wider consequences, and revise the plan for material deviation. Do not leave invalid partial state, abandoned resources, unowned residue, or false downstream preconditions.
+A focus branch is semantic. Do not create a Git branch, issue, PR, component, directory, or document merely because a semantic branch exists.
+
+## Focus-branch execution
+
+For large or complex work:
+
+- keep one canonical parent task and integration spine;
+- size leaves for full attention rather than equal file or agent counts;
+- normally assign one active branch per agent and checkpoint before switching;
+- parallelize only non-overlapping owners/write surfaces under one compatible parent version;
+- route shared-contract changes through the integration spine and invalidate dependents explicitly;
+- distinguish locally `accepted` branches from parent `integrated` branches;
+- reconcile exact outputs, contradictions, boundaries, lifecycle, resources, compatibility, security, performance, and cleanup before parent completion.
+
+Use the focus-branch template only when cross-session, parallel, high-consequence, or independent continuation/review needs a durable packet.
 
 ## Cleanup and artifact disposition
 
-Cleanup means intentional disposition, not deleting everything outside the final diff.
+Protect user/pre-existing work, project authority, evidence, recovery state, shared resources, protected branches, and active dependents.
 
-Protect user/pre-existing work, project authority, evidence, recovery state, shared resources, protected branches, and active dependents. For material state, choose and verify one disposition: remove, restore, retain as authority/evidence/recovery, archive, quarantine, transfer, supersede, retain temporarily with owner/trigger, or protect unchanged.
+For material state, choose and verify one disposition: remove, restore, retain authority/evidence/recovery, archive, quarantine, transfer, supersede, retain temporarily with owner/trigger, or protect unchanged.
 
-Account for local files/folders, tracked and generated files, build/test/cache/package output, branches/worktrees/stashes, remote branches/PRs/issues/reviews, processes/ports/containers/GPU state, credentials/permissions, persistence/backups, workflow/release artifacts, and external resources where triggered.
+Account for local files/folders, semantic/Git branches, worktrees/stashes, remote PR/issues/reviews, generated/build/cache/package output, processes/ports/containers/GPU state, credentials/permissions, persistence/backups, artifacts/releases, and external resources where triggered.
 
-Historically useful stale material is archived with provenance instead of silently deleted. Secret exposure requires revocation or rotation. Cleanup debt is permitted only when immediate cleanup is less safe and the residue is exact, contained, owned, visible, objectively triggered, and independently actionable.
-
-Routine task-owned scratch may be cleaned and reported inline. Use the cleanup template only when another consumer needs durable lifecycle evidence.
+Historically useful stale material is archived with provenance. Secret exposure requires revocation or rotation. Cleanup debt is allowed only when immediate cleanup is less safe and the residue is exact, contained, owned, visible, objectively triggered, and independently actionable.
 
 ## Organization
 
-UMCGS is organized as a very large project from inception. Follow [`agent_files/general_foundation/PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
+UMCGS is organized for large-project scale from inception. Follow [`PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
 
-A new production component requires `README.md`, `component.yaml`, registry entry, dependency declaration, public contract, validation ownership, teardown, and disposition. Do not place production source at root or in catch-all helper directories.
+New production components require `README.md`, `component.yaml`, registry entry, dependency declaration, public contract, validation ownership, teardown, and disposition. Focus branches do not justify new components by themselves.
 
-## Documentation
+## Documentation and validation
 
-Substantial Markdown below `docs/` must carry a recognized status. Update indexes, plan/execution/cleanup state, and registry entries in the same change. Archive historically useful stale guidance with date, reason, successor, and removal context rather than silently deleting it.
-
-## Validation
+Substantial Markdown below `docs/` must carry a recognized status. Update indexes, parent/focus-branch/plan/execution/cleanup state, and registry entries in the same coherent change. Archive useful stale guidance rather than silently deleting it.
 
 Run:
 
@@ -54,23 +61,21 @@ Run:
 ./scripts/verify-docs.sh
 ```
 
-Implementation changes add boundary-specific readiness, operation-level falsification, component/contract, integration, failure/pressure, cleanup, and sanity evidence under accepted specifications and component manifests.
+Implementation adds branch-specific readiness/falsification, component/contract, integration, failure/pressure, cleanup, and sanity evidence under accepted specifications and manifests.
 
 ## Pull requests
 
-Follow [`agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md).
+Follow [`PULL_REQUEST_REVIEW_AND_MERGE.md`](agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md).
 
 Before requesting review:
 
-- record the exact ready-for-review head and intended base;
+- record exact head and intended base;
 - ensure the PR is one coherent integration;
-- account for the complete changed surface, plan-execution fidelity, cleanup/disposition, and affected contracts;
+- account for complete changed surface, parent/focus-branch map, branch statuses and exact outputs, execution fidelity, cleanup, and affected contracts;
+- rerun evidence invalidated by head, base, parent-plan, or shared-contract changes;
 - run focused validation and proportional self-sanity;
-- remove or safely track temporary local/remote state;
-- disclose checks not run, retained state, cleanup debt, limitations, issue closure, local/remote branch/worktree effects, and proposed merge method.
+- disclose checks not run, unintegrated/deferred branches, cleanup debt, issue closure, Git branch/worktree effects, and merge method.
 
-Every material PR receives author-side complete-diff review. Independent review is required by phase, protection/CODEOWNERS, owner instruction, or objective consequence. A changed head invalidates affected review and cleanup evidence.
+Every material PR receives author-side complete-diff review. Independent review is triggered by phase, policy, owner instruction, or objective consequence. Merge is a separate expected-head transaction followed by target, focus-branch integration, dependency, and cleanup verification.
 
-Merge is a separate guarded transaction. Revalidate the exact accepted head, target, checks/reviews/protection, discussion, mergeability, issue closure, local/remote branch/worktree/dependent-work effects, cleanup debt, and merge method; use an expected-head guard where supported; then verify the target/resulting SHA, tree, and post-merge cleanup through the owning systems.
-
-Do not describe local-only work as published, author-side review as independent approval, a merge response as verified integration, or a successful cleanup command as verified final state.
+Do not describe branch-local work as integrated, local-only work as published, author-side review as independent approval, a merge response as verified integration, or a cleanup command as verified final state.
