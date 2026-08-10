@@ -1,5 +1,5 @@
 name: Implementation
-description: Implement an accepted UMCGS specification through a governed plan node
+description: Implement an accepted UMCGS specification through a governed plan node with explicit cleanup and disposition
 title: "[Implementation]: "
 labels: ["implementation"]
 body:
@@ -14,21 +14,28 @@ body:
     id: boundary
     attributes:
       label: Coherent ownership and organization boundary
-      description: Identify product area, component, manifest/registry entry, public surface, dependencies, in-scope responsibilities, and explicit non-responsibilities.
+      description: Identify product area, component, manifest/registry entry, public surface, dependencies, in-scope responsibilities, explicit non-responsibilities, lifecycle owner, and eventual disposition.
     validations:
       required: true
   - type: textarea
     id: assessment
     attributes:
       label: Assessment and strongest adversarial challenge
-      description: Link the assessment/plan or summarize its disposition, strongest credible objection, integrated resolution, sound fundamentals, and decisive falsifier. Do not duplicate accepted authority.
+      description: Link the assessment/plan or summarize its disposition, strongest credible objection, integrated resolution, sound fundamentals, decisive falsifier, and material cleanup implications. Do not duplicate accepted authority.
     validations:
       required: true
   - type: textarea
     id: plan-node
     attributes:
       label: Plan version, node, readiness, and execution contract
-      description: State plan record/version/node, owner, dependencies and expected revisions, frozen head/environment, expected local/wider effects, outputs, acceptance, cheapest falsifier, rollback/safe stop, material deviation triggers, and whether a durable execution record is required.
+      description: State plan record/version/node, owner, dependencies and expected revisions, frozen head/environment, expected local/wider effects, outputs, acceptance, cheapest falsifier, rollback/safe stop, cleanup obligations, material deviation triggers, and whether durable execution/cleanup records are required.
+    validations:
+      required: true
+  - type: textarea
+    id: cleanup
+    attributes:
+      label: Cleanup inventory, protected state, and final disposition
+      description: Identify protected user/shared/authority/evidence/recovery state; expected local files/folders, Git branches/worktrees/stashes, remote branches/PR/issues/reviews, generated/build artifacts, processes/ports/containers/device state, credentials/permissions, backups/persistence, and external resources. State planned dispositions, dependency order, destructive safeguards, verification, post-merge cleanup, and any permitted cleanup debt.
     validations:
       required: true
   - type: dropdown
@@ -37,13 +44,13 @@ body:
       label: Reasoning level
       options:
         - Substantial
-        - Critical (CUDA, concurrency, memory, ABI, persistent state, hot path, component boundary, foundational contract, coordinated or invalid-intermediate-state execution)
+        - Critical (CUDA, concurrency, memory, ABI, persistent state, hot path, component boundary, foundational contract, coordinated/invalid-intermediate-state execution, destructive cleanup, sensitive/external/recovery state)
     validations:
       required: true
   - type: textarea
     id: validation
     attributes:
-      label: Completion evidence, validation, and stop conditions
-      description: Pair validation with the mechanisms claimed; include expected-versus-actual inspection, resource/failure/compatibility checks, affected boundary/path reconciliation, downstream outputs, and evidence that would pause, revise, rollback, or fail the node.
+      label: Completion evidence, validation, cleanup verification, and stop conditions
+      description: Pair validation with the mechanisms claimed; include expected-versus-actual inspection, resource/failure/compatibility checks, affected boundary/path reconciliation, downstream outputs, owning-system cleanup verification, and evidence that would pause, revise, rollback, fail, or block acceptance.
     validations:
       required: true

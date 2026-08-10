@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "cleanup": {
+    "id": "",
+    "status": "not_started|active|blocked|verified|superseded",
+    "owner": "",
+    "parent_issue_plan_execution_pr_or_release": [],
+    "frozen_revision_or_artifact": "",
+    "canonical_record": ""
+  },
+  "trigger": {
+    "why_inline_local_cleanup_is_insufficient": "",
+    "cleanup_consequence": "low|medium|high|critical",
+    "protected_user_shared_authority_evidence_and_recovery_state": [],
+    "external_sensitive_asynchronous_or_long_lived_state": []
+  },
+  "expected_final_state": {
+    "repository_and_workspace": [],
+    "git_and_github": [],
+    "process_device_and_external_resources": [],
+    "credentials_permissions_and_sensitive_data": [],
+    "generated_build_package_release_and_evidence": [],
+    "persistence_backups_and_recovery": [],
+    "canonical_work_records": []
+  },
+  "items": [
+    {
+      "id": "CLN-001",
+      "category": "tracked_file|local_file_or_folder|generated_or_build_artifact|local_branch|remote_branch|worktree|stash|git_state|pull_request|issue|review_or_claim|workflow_artifact_or_cache|release_or_package|process_or_service|port_socket_lock_or_lease|container_vm_or_job|gpu_context_allocation_or_ipc|database_or_persisted_state|backup_or_recovery|credential_permission_or_sensitive_data|external_or_paid_resource|diagnostic_or_instrumentation|research_prototype_or_evidence|other",
+      "exact_local_or_remote_location": "",
+      "preexisting": false,
+      "protected": false,
+      "owner": "",
+      "active_dependents_and_shared_users": [],
+      "purpose_and_creation_or_mutation_operation": "",
+      "expected_lifetime": "",
+      "disposition": "remove|restore|retain_authority|retain_evidence|retain_recovery|archive|quarantine|transfer|supersede|retain_temporary|protect_unchanged",
+      "dependency_expiry_merge_release_retention_or_recovery_trigger": "",
+      "cleanup_method": [],
+      "required_authority_or_permission": [],
+      "evidence_and_rollback_dependency": [],
+      "security_privacy_provenance_cost_and_data_loss_risk": [],
+      "verification": [],
+      "status": "planned|active|removed|restored|retained|archived|quarantined|transferred|superseded|protected|blocked",
+      "verification_evidence": []
+    }
+  ],
+  "destructive_safeguards": {
+    "exact_target_identity_and_owner_verified": false,
+    "preexisting_user_shared_and_dependent_state_checked": false,
+    "narrow_selector_and_working_directory_verified": false,
+    "preview_or_dry_run_completed_when_available": false,
+    "backup_recovery_or_point_of_no_return_addressed": false,
+    "expected_effect_and_decisive_verification_stated": false,
+    "symlink_glob_environment_and_recursive_expansion_risk_checked": false,
+    "force_necessity_and_authority_verified": false,
+    "actual_effects_inspected": false
+  },
+  "git_and_github_reconciliation": {
+    "local_branches_worktrees_stashes_and_in_progress_operations": [],
+    "remote_branches_and_active_dependents": [],
+    "pr_issue_review_request_thread_label_milestone_assignment_and_claim_state": [],
+    "closing_keywords_and_actual_issue_acceptance": [],
+    "stacked_or_dependent_prs_and_branches": [],
+    "merged_closed_abandoned_or_superseded_state": [],
+    "post_merge_or_post_close_branch_disposition": [],
+    "remote_verification": []
+  },
+  "external_and_sensitive_state": {
+    "processes_services_ports_containers_locks_leases_mounts_and_jobs": [],
+    "gpu_contexts_modules_allocations_ipc_and_shared_memory": [],
+    "credentials_sessions_permissions_accounts_and_private_data": [],
+    "databases_storage_queues_webhooks_deployments_and_paid_resources": [],
+    "revocation_rotation_restoration_and_remote_verification": []
+  },
+  "artifacts_evidence_and_recovery": {
+    "generated_source_build_test_cache_and_package_state": [],
+    "workflow_remote_release_and_registry_artifacts": [],
+    "retained_evidence_provenance_and_access_controls": [],
+    "backups_checkpoints_journals_and_rollback_boundaries": [],
+    "archive_quarantine_and_supersession_records": []
+  },
+  "cleanup_debt": [
+    {
+      "issue": "",
+      "exact_remaining_item": "",
+      "why_cleanup_is_unsafe_or_impossible_now": "",
+      "owner": "",
+      "containment_and_risk": "",
+      "removal_restoration_transfer_or_expiry_trigger": "",
+      "cleanup_method_and_verification": [],
+      "parent_acceptance_authority_and_reason": "",
+      "next_safe_action": ""
+    }
+  ],
+  "closure": {
+    "all_material_items_accounted_for": false,
+    "protected_state_intact": false,
+    "every_item_intentionally_dispositioned": false,
+    "local_workspace_and_git_state_intentional": false,
+    "remote_branches_prs_issues_reviews_and_claims_intentional": false,
+    "process_device_credential_and_external_state_intentional": false,
+    "generated_artifact_evidence_and_recovery_state_intentional": false,
+    "all_dispositions_verified_through_owning_system": false,
+    "no_accidental_authority_or_test_build_release_contamination": false,
+    "cleanup_debt_safe_bounded_owned_and_visible": false,
+    "checks_not_run_and_claim_limits": [],
+    "final_state_summary": [],
+    "next_safe_action": ""
+  }
+}

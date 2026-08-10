@@ -2,7 +2,7 @@
 
 **Scope:** Canonical ownership and source-of-truth registry.
 
-This registry tells developers and agents where durable information and future implementation belong. It is updated in the same change that creates, moves, supersedes, or removes an ownership boundary.
+This registry tells developers and agents where durable information and future implementation belong. It is updated in the same change that creates, moves, supersedes, archives, or removes an ownership boundary.
 
 ## Registry rules
 
@@ -12,6 +12,7 @@ This registry tells developers and agents where durable information and future i
 - Planned boundaries are not implementation authorization.
 - Cross-component dependencies must be declared in both the component manifest and governing architecture/specification where material.
 - Archived and superseded locations never regain authority merely because an agent finds them.
+- Retained temporary, evidence, recovery, archive, and cleanup-debt state has an owner and objective disposition trigger.
 
 ## Governance and documentation boundaries
 
@@ -21,8 +22,9 @@ This registry tells developers and agents where durable information and future i
 | `governance.design` | LEGO design hierarchy, components, contracts, composition, foundations, naming, compatibility | [`DESIGN_ALIGNMENT_CARD.md`](DESIGN_ALIGNMENT_CARD.md), [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md), and linked doctrine | Accepted |
 | `governance.assessment` | Adversarial assessment before planning and proportional planning records | [`general_foundation/ASSESSMENT_AND_PLANNING.md`](general_foundation/ASSESSMENT_AND_PLANNING.md) | Accepted |
 | `governance.execution` | Plan-node readiness, coherent operation execution, deviation handling, recovery, acceptance, and continuation state | [`general_foundation/PLAN_EXECUTION.md`](general_foundation/PLAN_EXECUTION.md) | Accepted |
+| `governance.cleanup` | Cleanup inventory, protected state, local/remote disposition, destructive safeguards, verification, and cleanup debt | [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md) | Accepted |
 | `governance.sanity` | Sanity/audit claims, semantic coverage, risk-based depth, reconciliation, and findings | [`general_foundation/SANITY_CHECKING.md`](general_foundation/SANITY_CHECKING.md) and [`general_foundation/SEMANTIC_INTERROGATION.md`](general_foundation/SEMANTIC_INTERROGATION.md) | Accepted |
-| `governance.pr-integration` | Exact-head PR readiness/review, guarded merge, and post-merge verification | [`general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) | Accepted |
+| `governance.pr-integration` | Exact-head PR readiness/review, guarded merge, post-merge verification, and branch/coordination disposition | [`general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) | Accepted |
 | `governance.owner-entry` | Mandatory repository entry rules | [`../AGENTS.md`](../AGENTS.md) | Active |
 | `project.charter` | Mission, product boundary, first milestone | [`../docs/PROJECT_CHARTER.md`](../docs/PROJECT_CHARTER.md) | Accepted |
 | `project.decisions` | Cross-cutting accepted choices | [`../docs/decisions/`](../docs/decisions/README.md) | Active |
@@ -71,7 +73,7 @@ The following IDs are planning anchors only. Their exact contracts, names, and i
 | `runtime.diagnostics` | Bounded device/host observability | Future accepted component specification |
 | `sdk.adapters` | Stable adapter-facing contracts/tooling | Future accepted component specification |
 
-## Adding or changing a registry entry
+## Adding, changing, archiving, or removing a registry entry
 
 A coherent change must include:
 
@@ -82,6 +84,6 @@ A coherent change must include:
 5. public contracts and dependencies;
 6. lifecycle/compatibility status;
 7. validation owner;
-8. migration or supersession record.
+8. cleanup, migration, archive, or supersession record.
 
-Use [`templates/component-manifest.template.yaml`](templates/component-manifest.template.yaml) for product components and follow [`general_foundation/PROJECT_ORGANIZATION.md`](general_foundation/PROJECT_ORGANIZATION.md).
+Use [`templates/component-manifest.template.yaml`](templates/component-manifest.template.yaml) for product components and follow [`general_foundation/PROJECT_ORGANIZATION.md`](general_foundation/PROJECT_ORGANIZATION.md) and [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md).

@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "updated": "2026-08-10",
   "status": "ready",
   "plan_version": 1,
@@ -18,9 +18,11 @@
     "docs/decisions/ADR-0007-proportional-sanity-checking.md",
     "docs/decisions/ADR-0008-exact-head-pr-review-and-guarded-merge.md",
     "docs/decisions/ADR-0009-governed-plan-execution.md",
+    "docs/decisions/ADR-0010-cleanup-reconciliation-and-artifact-disposition.md",
     "agent_files/general_foundation/PRINCIPLES.md",
     "agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md",
     "agent_files/general_foundation/PLAN_EXECUTION.md",
+    "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
     "agent_files/general_foundation/SANITY_CHECKING.md",
     "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
     "agent_files/application_specific/REPOSITORY_ORGANIZATION.md",
@@ -35,19 +37,32 @@
     "Project license selection is deferred and does not block original private pre-release work.",
     "The version-0 specification set must be derived from a proportional adversarial assessment, not the first plausible schema shape.",
     "Execution proceeds through dependency-ready specification nodes; a listed deliverable is not automatically ready.",
-    "The resulting specification PR must receive exact-head author-side review and guarded target verification; independent review follows objective risk/policy triggers."
+    "Task-created local, remote, generated, retained, sensitive, and coordination state must have planned disposition and verification.",
+    "The resulting specification PR must receive exact-head author-side review, guarded target verification, and post-merge cleanup; independent review follows objective risk/policy triggers."
   ],
   "preconditions": [
     "The accepted charter and ADRs remain current.",
     "The prior-art evidence and proposal inputs are available at recorded revisions.",
-    "No production runtime component is created before its owning contracts are accepted."
+    "No production runtime component is created before its owning contracts are accepted.",
+    "Protected pre-existing/user/shared/authority/evidence/recovery state is identified before creating or deleting material artifacts."
   ],
   "dependency_outputs_and_revisions": [],
+  "protected_preexisting_user_shared_authority_evidence_and_recovery_state": [
+    "Accepted charter, ADRs, and current indexed authority.",
+    "Prior-art research evidence and exact source revisions.",
+    "Existing proposal inputs until their useful meaning is superseded or archived."
+  ],
   "expected_local_effects": [
     "Decision-ready proposal specifications for Search IR, domain, policy, evaluator, resources, graph semantics, and conformance."
   ],
   "expected_wider_effects": [
     "A proposed component ownership/dependency map derived from contracts rather than first-implementation convenience."
+  ],
+  "expected_created_modified_superseded_or_retained_state": [
+    "New or revised proposal specifications and supporting conformance examples.",
+    "Assessment/execution evidence needed for review.",
+    "Potentially superseded proposal language that must be archived or clearly replaced rather than left as competing authority.",
+    "A short-lived feature branch and PR when repository integration begins."
   ],
   "deliverables": [
     "Search IR v0 specification",
@@ -65,15 +80,55 @@
     "Device-closure requirements are testable.",
     "Prior-art gaps are converted into conformance cases.",
     "Every proposed implementation boundary maps to a durable component with acyclic dependencies.",
-    "The assessment records the strongest credible alternative/counterexample and decisive falsifiers without duplicating authority."
+    "The assessment records the strongest credible alternative/counterexample and decisive falsifiers without duplicating authority.",
+    "Proposal, execution, cleanup, review, and indexed authority agree on the final revision and no stale competing proposal remains active."
   ],
   "cheapest_decisive_falsifier": "A synthetic second domain, evaluator mode, graph/cycle case, or finite-resource profile requires a foundational contract redesign rather than an already-declared extension.",
-  "rollback_recovery_or_safe_stop": "Keep specifications in Proposal status, record the blocking counterexample or authority conflict, invalidate dependent nodes, and do not begin production implementation.",
+  "rollback_recovery_or_safe_stop": "Keep specifications in Proposal status, preserve decisive counterexamples/evidence, archive or supersede stale drafts with provenance, invalidate dependent nodes, clean temporary branches/artifacts when safe, and do not begin production implementation.",
+  "cleanup_and_disposition": {
+    "planned_dispositions": [
+      "Remove pure scratch drafts, downloaded duplicates, temporary logs, and generated outputs that have no evidence or continuation value.",
+      "Retain bounded cited prior-art evidence with exact revision and provenance.",
+      "Archive historically useful superseded proposal text with date, reason, and successor rather than leaving competing authority.",
+      "Retain accepted specifications as authority only after acceptance; keep unresolved specifications explicitly Proposal.",
+      "After verified merge, remove task-owned local/remote feature branches and worktrees only when no stacked/dependent/recovery need remains."
+    ],
+    "dependency_order": [
+      "Do not remove research evidence before specifications and review cite durable sources.",
+      "Do not archive or remove proposal inputs before the replacement meaning is complete and indexed.",
+      "Do not delete the source branch before exact-head merge and post-merge verification.",
+      "Do not close issues solely because the specification PR merged unless their acceptance criteria are complete."
+    ],
+    "destructive_safeguards": [
+      "Use exact paths/refs and protect current authority, evidence, recovery state, protected branches, and unrelated user work.",
+      "Verify remote branch/PR/issue/artifact changes through GitHub rather than command success."
+    ],
+    "verification": [
+      "Repository diff/status and documentation/link/structured-data checks.",
+      "Current authority/index comparison and stale-proposal search.",
+      "Exact-head PR, target SHA/tree, issue/branch/worktree/dependent-state verification when integrated.",
+      "Owning-system verification for any external artifact, credential, process, or remote resource created."
+    ],
+    "expected_final_local_remote_and_external_state": [
+      "Only accepted/proposal specification artifacts, cited bounded evidence, and intentionally retained archive remain.",
+      "No temporary process, credential, device allocation, build output, duplicate evidence, or unowned external resource remains.",
+      "Task-owned feature branches/worktrees are removed after safe verified integration or explicitly tracked if tooling/permissions block cleanup.",
+      "PR/issues/reviews/labels/claims truthfully reflect final state and dependents use the integrated revision."
+    ],
+    "post_merge_release_or_delayed_cleanup": [
+      "Delete safe obsolete local/remote feature branches and worktrees after integration verification.",
+      "Remove or archive temporary review artifacts and evidence duplicates after durable citations exist.",
+      "Record unsupported remote deletion or retention constraints as exact bounded cleanup debt only when material."
+    ],
+    "cleanup_record_required": false,
+    "cleanup_debt": []
+  },
   "validation": [
     "Cross-specification terminology and ownership reconciliation.",
     "Synthetic conformance cases covering hidden-assumption risks.",
+    "Cleanup inventory and final-state verification for material created/retained/obsolete state.",
     "./scripts/verify-docs.sh",
-    "The final PR records the exact reviewed head, current-head checks, review mode, merge method, integrated target SHA, and claim limits."
+    "The final PR records exact reviewed head, current-head checks, review mode, cleanup state, merge method, integrated target SHA, post-merge branch/resource disposition, and claim limits."
   ],
   "blockers": [],
   "do_not": [
@@ -82,7 +137,9 @@
     "Begin production runtime implementation from proposal-only interfaces.",
     "Place implementation in the repository root or an unowned generic directory.",
     "Treat the deferred project license as a blocker to original private pre-release work.",
-    "Merge a specification head different from the one reviewed or bypass required repository gates."
+    "Delete user/pre-existing work, evidence, current authority, protected/shared branches, or rollback state as cleanup.",
+    "Leave stale proposal text, duplicate generated artifacts, temporary branches, misleading PR/issue state, or unowned remote resources after completion.",
+    "Merge a specification head different from the one reviewed or bypass required repository/cleanup gates."
   ],
   "completion_evidence": []
 }
