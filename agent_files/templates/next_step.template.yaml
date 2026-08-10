@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "updated": "YYYY-MM-DD",
+  "status": "ready|blocked|in_progress|complete",
+  "objective": "<one coherent next boundary>",
+  "ownership_boundary": "<owner>",
+  "authority": [],
+  "context": [],
+  "deliverables": [],
+  "validation": [],
+  "blockers": [],
+  "do_not": [],
+  "completion_evidence": []
+}

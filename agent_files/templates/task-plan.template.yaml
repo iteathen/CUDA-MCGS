@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "title": "<task title>",
+  "status": "proposal",
+  "objective": "<owned result>",
+  "ownership_boundary": "<component or contract>",
+  "authority": [],
+  "constraints": [],
+  "invariants": [],
+  "coherent_steps": [],
+  "validation": [],
+  "migration_or_compatibility": [],
+  "risks_and_unknowns": [],
+  "stop_conditions": [],
+  "handoff_target": "<next boundary>"
+}

@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "inspected_date": "2026-08-10",
+  "candidates": [
+    {
+      "name": "Mctx",
+      "repository": "https://github.com/google-deepmind/mctx",
+      "revision": "b53073fd5035618228a717e29254e36ceb6f0645",
+      "license": "Apache-2.0",
+      "inspected_paths": [
+        "README.md",
+        "mctx/_src/tree.py",
+        "mctx/_src/search.py",
+        "LICENSE"
+      ],
+      "disposition": "reference_and_benchmark",
+      "revisit_trigger": "native graph/transposition support or bounded persistent-memory architecture"
+    },
+    {
+      "name": "MCTS-NC",
+      "repository": "https://github.com/pklesk/mcts_numba_cuda",
+      "revision": "533b0c2165aff2b85c1651c92379b6d9df75f724",
+      "license": "CC-BY-4.0",
+      "inspected_paths": [
+        "README.md",
+        "src/mctsnc.py",
+        "LICENSE"
+      ],
+      "disposition": "benchmark_and_kernel_reference_no_code_reuse_without_decision",
+      "revisit_trigger": "all-device graph runtime with evaluator contract and permissive software licensing"
+    },
+    {
+      "name": "CrazyAra",
+      "repository": "https://github.com/QueensGambit/CrazyAra",
+      "revision": "bb3b5b65ba16200f743d68e3bb4da465732bc4ea",
+      "license": "GPL-3.0",
+      "inspected_paths": [
+        "README.md",
+        "engine/src/searchthread.cpp",
+        "LICENSE"
+      ],
+      "disposition": "algorithmic_reference_no_default_code_reuse",
+      "revisit_trigger": "separable permissively licensed generic MCGS core"
+    },
+    {
+      "name": "LightZero",
+      "repository": "https://github.com/opendilab/LightZero",
+      "revision": "78cd91ac6722c0500c70a0edbaf02cca173179a9",
+      "license": "Apache-2.0",
+      "inspected_paths": [
+        "README.md",
+        "LICENSE"
+      ],
+      "disposition": "taxonomy_and_benchmark_reference",
+      "revisit_trigger": "device-resident graph-search backend with generic finite resource model"
+    },
+    {
+      "name": "OpenSpiel",
+      "repository": "https://github.com/google-deepmind/open_spiel",
+      "revision": "112b77704631fc2ce7ad8e4581f6ca09798ce15a",
+      "license": "Apache-2.0",
+      "inspected_paths": [
+        "README.md",
+        "LICENSE"
+      ],
+      "disposition": "domain_contract_and_conformance_reference",
+      "revisit_trigger": "accelerator-native universal search runtime"
+    },
+    {
+      "name": "Pgx",
+      "repository": "https://github.com/sotetsuk/pgx",
+      "revision": "87278d2d6e677fd87248c457207b59cfa42e578d",
+      "license": "Apache-2.0",
+      "inspected_paths": [
+        "README.md",
+        "LICENSE"
+      ],
+      "disposition": "accelerator_domain_reference",
+      "revisit_trigger": "persistent graph-search and resource-planning support"
+    },
+    {
+      "name": "POMCGraphSearch.jl",
+      "repository": "https://github.com/ori-goals/POMCGraphSearch.jl",
+      "revision": "e4e381363cb990240f462a7cb8beca174f57b32b",
+      "license": "MIT",
+      "inspected_paths": [
+        "Readme.md",
+        "LICENSE"
+      ],
+      "disposition": "graph_semantics_and_progressive_widening_reference",
+      "revisit_trigger": "GPU-resident generic runtime implementation"
+    },
+    {
+      "name": "CuFusion-MCTS",
+      "source": "https://doi.org/10.1109/ICCIDS69108.2026.11407819",
+      "version": "ICCIDS 2026 paper",
+      "license": "publication_copyright_unknown_for_code",
+      "implementation_public": false,
+      "disposition": "track_and_request_full_source",
+      "revisit_trigger": "public code or full architecture demonstrating complete UMCGS criteria"
+    },
+    {
+      "name": "Improving AlphaZero Using Monte-Carlo Graph Search",
+      "source": "https://doi.org/10.1609/icaps.v31i1.15952",
+      "version": "ICAPS 2021 paper",
+      "license": "publication_only",
+      "disposition": "primary_mcgs_algorithm_reference",
+      "revisit_trigger": "new public generic implementation"
+    }
+  ]
+}

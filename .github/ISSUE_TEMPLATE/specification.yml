@@ -1,0 +1,37 @@
+name: Specification or contract
+description: Propose or revise a normative UMCGS boundary
+title: "[Specification]: "
+labels: ["specification"]
+body:
+  - type: textarea
+    id: purpose
+    attributes:
+      label: Purpose and owning boundary
+    validations:
+      required: true
+  - type: textarea
+    id: authority
+    attributes:
+      label: Current authority, conflict, and prior art
+    validations:
+      required: true
+  - type: textarea
+    id: contract
+    attributes:
+      label: Proposed contract
+      description: Inputs, outputs, invariants, ranges, lifecycle, concurrency, versioning, and security.
+    validations:
+      required: true
+  - type: textarea
+    id: resources
+    attributes:
+      label: Resource, pressure, and device-closure behavior
+    validations:
+      required: true
+  - type: textarea
+    id: conformance
+    attributes:
+      label: Conformance and failure evidence
+      description: Explain how a correct implementation can be distinguished from a plausible one.
+    validations:
+      required: true

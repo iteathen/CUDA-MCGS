@@ -1,0 +1,40 @@
+name: Implementation
+description: Implement an accepted UMCGS specification
+title: "[Implementation]: "
+labels: ["implementation"]
+body:
+  - type: input
+    id: specification
+    attributes:
+      label: Accepted specification
+      placeholder: docs/specs/...
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Coherent ownership boundary
+      description: State components in scope and explicitly out of scope.
+    validations:
+      required: true
+  - type: textarea
+    id: contracts
+    attributes:
+      label: Invariants, lifecycle, resources, and failure behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: reasoning
+    attributes:
+      label: Reasoning level
+      options:
+        - Substantial
+        - Critical (CUDA, concurrency, memory, ABI, persistent state, or hot path)
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation and performance guardrails
+    validations:
+      required: true

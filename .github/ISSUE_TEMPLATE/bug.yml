@@ -1,0 +1,36 @@
+name: Bug report
+description: Report a reproducible mismatch from accepted behavior
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: expectation
+    attributes:
+      label: Governing expectation
+      description: Cite the owning specification/decision and state the expected raw behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed raw behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction and environment
+      description: Include revision, commands, hardware/software/resource profile, model/schema identity, and seed when relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Frozen evidence
+      description: Logs, raw boundary captures, sanitizer/profiler output, or failing test.
+    validations:
+      required: true
+  - type: textarea
+    id: hypotheses
+    attributes:
+      label: Candidate causes already falsified

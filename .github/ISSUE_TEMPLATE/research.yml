@@ -1,0 +1,36 @@
+name: Research or prior-art review
+description: Investigate evidence needed before a specification or implementation decision
+title: "[Research]: "
+labels: ["research"]
+body:
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision this research must support
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Evaluation criteria
+      description: Include the complete owned boundary, not only feature similarity.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Primary sources, exact revisions, and licenses
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Verified facts, source claims, inferences, and unknowns
+    validations:
+      required: true
+  - type: textarea
+    id: disposition
+    attributes:
+      label: Proposed disposition and revisit trigger
+    validations:
+      required: true

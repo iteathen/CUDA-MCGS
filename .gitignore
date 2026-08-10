@@ -1,0 +1,16 @@
+# Local/editor state
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Generated local output
+build/
+dist/
+out/
+.cache/

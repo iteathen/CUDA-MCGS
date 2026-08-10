@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "updated": "2026-08-10",
+  "status": "ready",
+  "objective": "Specify the version-0 universal contract set and normalized Search IR before production implementation.",
+  "ownership_boundary": "docs/specs: framework contracts and conformance boundary",
+  "authority": [
+    "AGENTS.md",
+    "docs/PROJECT_CHARTER.md",
+    "docs/decisions/ADR-0001-prior-art-disposition.md",
+    "docs/decisions/ADR-0002-universal-contracts-specialized-engines.md",
+    "docs/decisions/ADR-0003-device-resident-active-search.md",
+    "docs/specs/SPEC-0000-framework-requirements.md (proposal input, not authority)",
+    "docs/architecture/FRAMEWORK_OVERVIEW.md (proposal input, not authority)"
+  ],
+  "context": [
+    "The generic framework is the first product.",
+    "Prior art provides useful parts but no adequate foundation.",
+    "Concrete engines must be finite, device-closed, and specialized."
+  ],
+  "deliverables": [
+    "Search IR v0 specification",
+    "Domain contract v0",
+    "Search-policy contract v0",
+    "Evaluator contract v0",
+    "Resource/memory-plan contract v0",
+    "Graph identity/transposition/cycle contract v0",
+    "Synthetic conformance-domain plan"
+  ],
+  "validation": [
+    "Each expected domain dimension is representable without hidden game or neural assumptions.",
+    "All capacities and exhaustion states are explicit.",
+    "Device-closure requirements are testable.",
+    "Prior-art gaps are converted into conformance cases.",
+    "./scripts/verify-docs.sh"
+  ],
+  "blockers": [
+    "Project license decision is required before implementation-level third-party reuse."
+  ],
+  "do_not": [
+    "Create a chess-shaped universal node or fixed policy vector.",
+    "Choose a CUDA scheduler before the abstract execution contract is defined.",
+    "Begin production runtime implementation from proposal-only interfaces."
+  ],
+  "completion_evidence": []
+}
