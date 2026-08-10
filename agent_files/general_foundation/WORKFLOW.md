@@ -46,7 +46,7 @@ Persistent layouts, public contracts, synchronization, memory policies, lifecycl
 
 A disposable experiment must name the question it answers, live under the experiment product area, and state deletion or promotion conditions.
 
-## 7. Plan one coherent change
+## 7. Plan one coherent dependency graph
 
 Build the plan from the integrated assessment, not from the original proposal. Include:
 
@@ -54,25 +54,42 @@ Build the plan from the integrated assessment, not from the original proposal. I
 - product area/component placement;
 - component manifest and registry changes;
 - public/internal contract effects;
-- dependency graph changes;
-- coherent implementation steps ordered by dependency and uncertainty;
+- dependency graph and exact node outputs/downstream consumers;
+- coherent nodes ordered by dependency and uncertainty;
 - decisive experiments before irreversible structure;
-- validation paired with the steps it proves;
+- validation and cheapest falsifiers paired with the mechanisms they prove;
 - failure, recovery, cancellation, resource pressure, compatibility, migration, rollback, cleanup, and documentation;
-- expected PR review mode, required gates, and merge/closure effects when material;
+- expected PR review mode, required gates, merge/closure effects, and post-merge verification when material;
 - stop conditions and handoff state.
 
-Prefer one combined assessment-and-plan artifact. Do not create duplicate risk, dependency, validation, review, or status ledgers when the same authoritative record can serve them.
+A node must be decision-complete enough that execution does not invent foundational meaning. Listing a node does not make it ready.
 
-## 8. Implement
+Prefer one combined assessment-and-plan artifact. Do not create duplicate risk, dependency, validation, execution, review, or status ledgers when the same authoritative record can serve them.
 
-Preserve the declared boundary. Avoid unrelated cleanup. Make limits and failures explicit. Do not erase evidence needed for correctness. Do not introduce root-level source, deep imports, generic dumping grounds, or unregistered components.
+## 8. Execute dependency-ready nodes
 
-When implementation exposes a new foundational question, stop the dependent work and revise the assessment rather than silently inventing architecture.
+Use [`PLAN_EXECUTION.md`](PLAN_EXECUTION.md).
+
+For each material node:
+
+1. identify the current plan version/node, owner, frozen revision, and dependency outputs;
+2. prove authority, repository/environment, operational, falsification, rollback, and resource readiness;
+3. scan for newly triggered doctrine;
+4. state expected local/wider effects, outputs, acceptance, falsifier, safe stop, and material deviation conditions;
+5. prepare only necessary checkpoints, gates, fixtures, generated inputs, and bounded instrumentation;
+6. apply one coherent ownership-sized operation;
+7. inspect exact actual effects immediately and compare expected versus actual;
+8. run the focused falsifier and reconcile material owners, contracts, artifacts, paths, resources, lifecycle, and design principles;
+9. classify continue, accept, pause, revise, rollback, fail, or supersede;
+10. update durable execution truth only when another consumer needs the changed state.
+
+A material deviation requires reassessment and a new plan version. Do not leave invalid partial state, stale downstream assumptions, or abandoned execution-created resources.
 
 ## 9. Validate
 
-Progress from organization/documentation checks through focused checks, integration, failure/exhaustion, architecture-specific checks, benchmarks, and the full relevant suite. Validation must be capable of falsifying the important claims from the assessment.
+Progress from organization/documentation checks through readiness evidence, operation-level falsifiers, focused component/contract checks, integration, failure/exhaustion, architecture-specific checks, benchmarks, and the full relevant suite. Validation must be capable of falsifying the important claims from the assessment and execution node.
+
+Node acceptance requires exact evidence for every criterion and exact outputs/revisions for downstream consumers.
 
 ## 10. Perform proportional self-sanity or independent sanity
 
@@ -98,10 +115,10 @@ Before marking it ready:
 
 - record the intended target and exact ready head;
 - inspect ancestry and the complete changed-file surface;
-- verify authority, component ownership, contracts, generated/manifest/schema/dependency effects, and preserved behavior;
+- verify authority, component ownership, contracts, plan-execution fidelity, generated/manifest/schema/dependency effects, and preserved behavior;
 - reconcile affected semantic units and integration paths;
 - inspect tests/checks for relevance and current-head identity;
-- remove temporary/debug/stale material;
+- remove temporary/debug/stale execution material;
 - disclose checks not run, limitations, issue closure, branch effects, and proposed merge method;
 - perform a final whole-diff pass.
 
@@ -135,8 +152,8 @@ If the task intentionally ends without repository integration, skip steps 11–1
 
 ## 15. Reconcile authority and history
 
-Update specifications, ADRs, component manifests, registry, indexes, subsystem READMEs, actionable findings, and archived superseded material in the same coherent change. Remove temporary planning/review records once their durable decisions, findings, and execution state have moved to the correct authorities.
+Update specifications, ADRs, plan/execution state, component manifests, registry, indexes, subsystem READMEs, actionable findings, and archived superseded material in the same coherent change. Remove temporary planning/execution/review records once their unique durable decisions, outputs, findings, and continuation state have moved to the correct authorities.
 
 ## 16. Hand off
 
-Record objective, product area/component, authority, integrated decision, strongest remaining objection, changes, validation, sanity claim/limits when triggered, reviewed head and integrated target SHA when applicable, issue/branch effects, actionable findings, repository state, risks, failed approaches, and one coherent next boundary.
+Record objective, plan record/version/node, product area/component, authority, readiness, expected-versus-actual effects, accepted outputs/revisions, deviations, partial-state/rollback status, validation, sanity claim/limits when triggered, reviewed head and integrated target SHA when applicable, issue/branch effects, actionable findings, repository state, risks, failed approaches, and one coherent next boundary.

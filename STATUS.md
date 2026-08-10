@@ -17,6 +17,7 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - UMCGS will be built as a new framework while using prior art as references and benchmarks.
 - Repository and component organization assumes mature large-project scale from inception.
 - Adversarial assessment precedes planning for substantial and critical work; one proportional combined record is the default.
+- Material plans execute through current dependency-ready nodes with expected-before-actual operations, explicit falsifiers/deviations, and no invalid partial state.
 - Sanity checks freeze exact targets, declare full/bounded/sampled claims, use risk-justified semantic depth, reconcile integration/lifecycle, and preserve actionable findings without unnecessary per-file accounting.
 - Material PRs receive complete exact-head author-side review; independent review follows phase/risk/policy triggers; merge is a separate guarded transaction with post-merge target verification.
 - LEGO macroscopic ownership, SOLID internal responsibility, CUPID implementation quality, and total-system simplicity govern design.
@@ -34,6 +35,7 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - ADR-0006 adversarial assessment and planning: accepted.
 - ADR-0007 proportional sanity checking: accepted.
 - ADR-0008 exact-head PR review and guarded merge: accepted.
+- ADR-0009 governed plan execution: accepted.
 - Framework architecture overview and specification map: proposals.
 - Detailed normative Search IR/domain/policy/evaluator/resource specifications: not yet accepted.
 

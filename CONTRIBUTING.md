@@ -1,6 +1,6 @@
 # Contributing to UMCGS
 
-UMCGS is currently private and documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), and [`agent_files/README.md`](agent_files/README.md) before opening a change.
+UMCGS is currently private and documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`agent_files/general_foundation/PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md), and [`agent_files/README.md`](agent_files/README.md) before opening a material implementation change.
 
 ## Before production implementation
 
@@ -8,15 +8,19 @@ A change needs:
 
 - a proportional assessment whose disposition permits implementation;
 - the strongest credible objection and its resolution, evidence, experiment, or blocker;
-- a clear ownership boundary;
-- a durable product-area/component home;
+- an accepted current plan version and an explicitly ready node;
+- evidenced dependency outputs and current authority;
+- a clear ownership boundary and durable product-area/component home;
+- expected local/wider effects, outputs, acceptance, cheapest falsifier, rollback/safe stop, and material deviation conditions before mutation;
 - a LEGO ownership boundary with one state/lifecycle owner, meaningful ports, injected dependencies, and owned adapters;
 - domain-appropriate ranges and a total-system simplicity analysis;
 - accepted governing specifications, or an explicitly authorized disposable experiment;
-- defined invariants, ranges, lifecycle, resource limits, and failure behavior;
+- defined invariants, ranges, lifecycle, resource limits, pressure/failure behavior, and cleanup;
 - declared public/internal boundaries and dependencies;
-- a validation plan;
+- validation paired with each claimed mechanism;
 - prior-art inspection when existing work may avoid duplication or change the design.
+
+During execution, apply one coherent ownership-sized operation at a time, inspect actual effects immediately, reconcile wider consequences, and revise the plan for material deviation. Do not leave invalid partial state or abandoned resources.
 
 ## Organization
 
@@ -26,7 +30,7 @@ A new production component requires `README.md`, `component.yaml`, registry entr
 
 ## Documentation
 
-Substantial Markdown below `docs/` must carry a recognized status. Update indexes and registry entries in the same change. Supersede or archive historically useful stale guidance rather than silently deleting it.
+Substantial Markdown below `docs/` must carry a recognized status. Update indexes, plan/execution state, and registry entries in the same change. Supersede or archive historically useful stale guidance rather than silently deleting it.
 
 ## Validation
 
@@ -36,7 +40,7 @@ Run:
 ./scripts/verify-docs.sh
 ```
 
-Implementation changes add boundary-specific validation under accepted specifications and component manifests.
+Implementation changes add boundary-specific readiness, operation-level falsification, component/contract, integration, failure/pressure, and sanity evidence under accepted specifications and component manifests.
 
 ## Pull requests
 
@@ -46,7 +50,7 @@ Before requesting review:
 
 - record the exact ready-for-review head and intended base;
 - ensure the PR is one coherent integration;
-- account for the complete changed surface and affected contracts;
+- account for the complete changed surface, plan-execution fidelity, and affected contracts;
 - run focused validation and proportional self-sanity;
 - disclose checks not run, limitations, issue closure, branch effects, and proposed merge method.
 

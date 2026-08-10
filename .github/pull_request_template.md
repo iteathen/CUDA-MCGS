@@ -6,6 +6,10 @@
 
 Link the durable assessment/plan, or concisely state the disposition, strongest credible objection, integrated resolution, and decisive falsifier. Do not duplicate accepted authority.
 
+## Plan execution fidelity
+
+State plan record/version/node, frozen head/environment, readiness evidence, expected local/wider effects, operations performed, actual effects, focused falsifiers, variations/deviations, affected boundary/path/lifecycle reconciliation, node outcome, downstream outputs/revisions, partial-state status, and checks not run. Link the execution record when one exists; do not duplicate it here.
+
 ## What changed and why
 
 ## Contracts, invariants, lifecycle, resources, and failure behavior
@@ -26,8 +30,8 @@ State the proposed merge method and why, linked issue relationship (`Closes` onl
 
 ## Performance and GPU-memory evidence
 
-## Compatibility, migration, rollback, and cleanup
+## Compatibility, migration, rollback, cleanup, and execution-created state
 
-## Documentation, registry, findings, and archived material
+## Documentation, plan state, registry, findings, and archived material
 
 ## Remaining risks / assumptions / revisit triggers

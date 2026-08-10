@@ -1,8 +1,8 @@
 # Review Standard
 
-**Scope:** Reusable foundation for design review, change review, sanity claims, and pull-request review.
+**Scope:** Reusable foundation for design review, plan-execution review, change review, sanity claims, and pull-request review.
 
-Review the complete owned change, not isolated lines.
+Review the complete owned change, its execution fidelity, and its actual effects—not isolated lines.
 
 Ordinary change/PR review, a declared sanity/audit claim, and merge authorization are related but distinct:
 
@@ -14,6 +14,7 @@ Ordinary change/PR review, a declared sanity/audit claim, and merge authorizatio
 
 - Owner intent and accepted authority are satisfied.
 - Proposals/archives were not treated as current authority.
+- The plan did not override accepted doctrine, ADRs, specifications, contracts, schemas, manifests, or tests.
 - One source of truth remains for every changed behavior.
 - No unrelated cleanup or hidden ownership movement entered the change.
 
@@ -24,9 +25,26 @@ Ordinary change/PR review, a declared sanity/audit claim, and merge authorizatio
 - The strongest credible case against the proposal is stated fairly rather than caricatured.
 - Valid criticism changed the design, scope, sequencing, validation, or disposition.
 - Important claims have evidence or decisive falsifiers; implementation is not being used to avoid an unresolved design.
-- The plan follows one coherent ownership boundary, orders work by dependency and uncertainty, and pairs validation with each material step.
+- The plan follows coherent ownership boundaries, orders nodes by dependency and uncertainty, and defines exact outputs/downstream consumers.
 - Stop, rollback, migration, failure, recovery, and cleanup conditions are explicit where material.
 - The record is proportional: existing authority is linked, duplicate ledgers are absent, and ongoing manual accounting has a named owner and real decision value.
+
+## Plan execution fidelity
+
+- The exact plan record/version/node, owner, branch/environment, and frozen head are stated.
+- The node was explicitly ready; dependencies and expected dependency revisions were satisfied.
+- Authority, specifications, repository state, environment, generated inputs, and test/runtime state were trustworthy before mutation.
+- Expected local/wider effects, acceptance, cheapest decisive falsifier, rollback/safe stop, and stop conditions were recorded before each material operation.
+- Newly triggered doctrine was applied even when the original plan omitted it.
+- Operations were ownership-sized coherent validity transitions rather than arbitrary file batches.
+- Actual effects were inspected immediately and compared with expected effects.
+- Focused falsification and affected component/contract/boundary/path/lifecycle/design reconciliation occurred before continuation.
+- Variations and deviations were classified; material deviations revised the plan and invalidated affected nodes.
+- Coordinated or irreversible operations defined valid pre/post states, intermediate visibility, publication, rollback/recovery, and acceptance.
+- Parallel execution used non-overlapping owners/write surfaces and one integration owner.
+- Node acceptance has exact evidence for every criterion and exact outputs/revisions for downstream consumers.
+- No invalid partial state, stale generated form, abandoned resource, competing authority, unresolved contradiction, or false downstream precondition remains.
+- The execution record is proportional and does not duplicate issue, plan, PR, and handoff history.
 
 ## Sanity claim and semantic review
 
@@ -56,7 +74,7 @@ For a material PR:
 
 - PR/base/head/comparison identity and review mode are exact;
 - the complete changed surface, ancestry, generated/dependency/workflow/packaging effects, and unavailable changes are accounted for;
-- the PR description is verified against authority and actual implementation rather than trusted as proof;
+- the PR description is verified against authority, plan-execution evidence, and actual implementation rather than trusted as proof;
 - material semantic units and affected callers, dependencies, state, resources, lifecycle, compatibility, and end-to-end paths are reviewed;
 - tests/checks belong to the current head and can falsify the claimed behavior;
 - conversation, review submissions, inline threads, bot findings, and linked blockers are reconciled;
@@ -119,7 +137,7 @@ Before merge:
 
 ## Documentation and publication
 
-- Status, indexes, registry, component manifests, specifications/ADRs, findings, review state, and supersession are reconciled.
+- Status, indexes, registry, plan/execution state, component manifests, specifications/ADRs, findings, review state, and supersession are reconciled.
 - Third-party provenance and licensing are recorded.
 - Final diff/status are intentional.
 - The remote target and resulting integrated SHA are verified before publication/merge completion is claimed.

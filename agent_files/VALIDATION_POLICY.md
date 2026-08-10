@@ -1,6 +1,6 @@
 # Validation Policy
 
-**Scope:** Evidence required before a UMCGS change, review claim, or integration may be considered complete.
+**Scope:** Evidence required before a UMCGS change, plan-node acceptance, review claim, or integration may be considered complete.
 
 ## Principle
 
@@ -29,12 +29,34 @@ Substantial and critical work must verify that:
 - the strongest credible opposing design or explanation was steelmanned;
 - valid criticism changed the design, scope, experiment, validation, or disposition;
 - consequential unknowns have evidence, falsifiers, bounded assumptions, experiments, blockers, or revisit triggers;
-- the plan follows one coherent boundary, orders work by dependency/uncertainty, pairs validation with steps, and defines stop conditions;
+- the plan follows coherent ownership boundaries, orders nodes by dependency/uncertainty, defines exact outputs/downstream consumers, pairs validation with mechanisms, and defines stop conditions;
 - planning records are proportional and do not duplicate authority or create unowned accounting.
 
 Use `agent_files/templates/assessment-and-plan.template.md` when a durable record is required.
 
-### 3. Sanity checking and independent review
+### 3. Governed plan execution
+
+A material plan node must verify that:
+
+- the exact plan record, plan version, node ID, owner, branch/environment, and frozen revision are known;
+- the node is explicitly ready and every dependency or authorized waiver is evidenced;
+- dependency outputs and revisions match what the node expects;
+- governing authority, accepted specifications, contracts, schemas, manifests, and tests are current and non-contradictory;
+- repository/worktree state, generated inputs, model/profile, toolchain, driver/hardware assumptions, and test/runtime state are trustworthy where material;
+- expected local and wider effects, outputs, acceptance, cheapest decisive falsifier, rollback/safe stop, and escalation conditions were recorded before mutation;
+- every newly triggered design, persistence, compatibility, security, concurrency, memory, graph/search, evaluator, performance, generated/JIT/ABI, sanity, packaging, or release rule was applied;
+- each operation was one coherent ownership-sized validity transition rather than an arbitrary file batch;
+- actual effects were inspected immediately and compared with expected effects;
+- focused falsification and affected component/contract/boundary/path/lifecycle/design reconciliation were performed before continuing;
+- every variation or deviation was classified, with material deviations causing plan revision and downstream invalidation;
+- coordinated or irreversible work defined valid pre/post states, intermediate visibility, publication, rollback/recovery, and acceptance;
+- no invalid partial state, competing authority, stale generated form, abandoned resource, or false downstream precondition remains;
+- every acceptance criterion has exact evidence and downstream consumers received the correct outputs/revisions;
+- the execution record is proportional and does not duplicate issue, plan, PR, or handoff history.
+
+Use `agent_files/templates/plan-execution.template.yaml` only when cross-session, multi-agent, coordinated, high-consequence, invalid-intermediate-state, or evidence-gated execution needs durable operation state.
+
+### 4. Sanity checking and independent review
 
 When a sanity, audit, complete-review, incident, release-readiness, or system-wide claim is made, verify that:
 
@@ -57,13 +79,13 @@ When a sanity, audit, complete-review, incident, release-readiness, or system-wi
 
 Routine implementation self-sanity may be recorded in the PR or task result. Use `agent_files/templates/sanity-check.template.yaml` only when a full, long-running bounded, multi-agent, independent, incident, release, or cross-session review needs durable coverage state. Use `semantic-review.template.yaml` only for critical or independently assigned leaf branches.
 
-### 4. Pull-request review and guarded merge
+### 5. Pull-request review and guarded merge
 
 Every material PR must verify:
 
 - PR identity, intended target, exact reviewed head, relevant base/merge base, comparison range, and review mode;
 - complete changed-file, rename, deletion, generated, manifest, schema, dependency, workflow, packaging, and ancestry accounting;
-- agreement with owner instruction, ADRs/specifications, assessment, component ownership, public contracts, and closure criteria;
+- agreement with owner instruction, ADRs/specifications, assessment, governed plan execution, component ownership, public contracts, and closure criteria;
 - semantic review of material changed units and reconciliation of affected callers, dependencies, state, resources, lifecycle, compatibility, and end-to-end paths;
 - current discussion, requested changes, inline threads, bot findings, and linked blocking issues;
 - focused tests and checks that belong to the exact head, with checks not run and infrastructure limitations explicit;
@@ -85,7 +107,7 @@ Post-merge verification must record the resulting target SHA, prove the intended
 
 Routine author-side review belongs in the PR. Use `agent_files/templates/pr-review.template.md` only when independent/high-consequence review, stabilization/release, dispute, or cross-session continuation needs unique durable evidence.
 
-### 5. Design and component boundaries
+### 6. Design and component boundaries
 
 A component, public contract, dependency, foundational representation, compatibility boundary, or reusable naming change must verify:
 
@@ -101,7 +123,7 @@ A component, public contract, dependency, foundational representation, compatibi
 
 Use `agent_files/templates/design-review.template.md` for foundational or contested designs.
 
-### 6. Schema and generated artifacts
+### 7. Schema and generated artifacts
 
 A schema/compiler change must verify:
 
@@ -113,15 +135,15 @@ A schema/compiler change must verify:
 - backward/forward compatibility rules;
 - exact range, alignment, precision, and layout probes where applicable.
 
-### 7. Component-local behavior
+### 8. Component-local behavior
 
 Every component owns focused tests for public contracts, internal invariants, failure states, lifecycle, concurrency, and resource exhaustion. The component manifest lists commands.
 
-### 8. Cross-component integration
+### 9. Cross-component integration
 
 The repository integration suite verifies only public surfaces and declared dependency direction. It must include failure propagation and incompatible-version behavior.
 
-### 9. Reference and conformance
+### 10. Reference and conformance
 
 Complex search behavior requires deterministic reference cases and synthetic domains that expose:
 
@@ -134,7 +156,7 @@ Complex search behavior requires deterministic reference cases and synthetic dom
 - resource pressure and exhaustion;
 - rerooting/persistence where selected.
 
-### 10. CUDA/device correctness
+### 11. CUDA/device correctness
 
 Device changes require relevant combinations of:
 
@@ -147,7 +169,7 @@ Device changes require relevant combinations of:
 - cancellation and failure injection;
 - explicit proof that production search does not depend on host-produced intermediate decisions.
 
-### 11. Performance
+### 12. Performance
 
 Performance claims require:
 
@@ -163,20 +185,20 @@ Performance claims require:
 
 A faster result that changes search quality, domain semantics, resource limits, or stopping behavior is not automatically an improvement.
 
-### 12. Publication and release
+### 13. Publication and release
 
 Before claiming publication or release:
 
 - inspect the full final diff and repository state;
 - stage only intended scope;
 - run all applicable validation layers;
-- update component manifests, registry, indexes, authority, findings, and archive;
+- update plan/execution state, component manifests, registry, indexes, authority, findings, and archive;
 - complete exact-head PR review and guarded merge when repository integration is part of the work;
 - verify the remote target commit/PR, hosted checks, artifacts, issue closure, and branch effects;
 - record exact failures, skipped validation, or claim limits.
 
 ## Current phase
 
-UMCGS has no accepted production implementation or public release yet. The mandatory current check is `./scripts/verify-docs.sh`, plus any task-specific research, specification, assessment, sanity, PR-review, merge, or independent-review validation.
+UMCGS has no accepted production implementation or public release yet. The mandatory current check is `./scripts/verify-docs.sh`, plus any task-specific research, specification, assessment, execution, sanity, PR-review, merge, or independent-review validation.
 
 Project license selection is deferred and does not block original private pre-release work. It remains a separate gate before public distribution and before implementation-level third-party reuse that requires compatibility analysis.

@@ -10,13 +10,14 @@ Before changing anything:
 2. Read [`agent_files/AGENTS.md`](agent_files/AGENTS.md) and [`agent_files/AI_RULES.md`](agent_files/AI_RULES.md).
 3. Read [`agent_files/DESIGN_ALIGNMENT_CARD.md`](agent_files/DESIGN_ALIGNMENT_CARD.md) and the compact doctrine in [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md).
 4. For substantial or critical work, read [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md) before committing to a design or implementation sequence.
-5. For a requested sanity check, audit, whole-project review, complete review, incident review, or release-readiness claim, read [`agent_files/general_foundation/SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md) and [`SEMANTIC_INTERROGATION.md`](agent_files/general_foundation/SEMANTIC_INTERROGATION.md) before deep inspection.
-6. For PR readiness, review, approval, or merge work, read [`agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) before acting on the PR.
-7. Read [`agent_files/SYSTEM_REGISTRY.md`](agent_files/SYSTEM_REGISTRY.md) to identify the owning boundary and source of truth.
-8. Read [`agent_files/general_foundation/PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and the UMCGS layout in [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md) before creating, moving, or splitting project artifacts.
-9. Read the accepted ADRs and specifications relevant to the task. Load detailed design doctrine linked from `PRINCIPLES.md` when the task changes a component, contract, dependency, foundational representation, compatibility boundary, or reusable name.
-10. Inspect repository status, existing work, and current project state.
-11. Apply the reasoning gate before editing.
+5. Before executing a material plan node, read [`agent_files/general_foundation/PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md).
+6. For a requested sanity check, audit, whole-project review, complete review, incident review, or release-readiness claim, read [`agent_files/general_foundation/SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md) and [`SEMANTIC_INTERROGATION.md`](agent_files/general_foundation/SEMANTIC_INTERROGATION.md) before deep inspection.
+7. For PR readiness, review, approval, or merge work, read [`agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) before acting on the PR.
+8. Read [`agent_files/SYSTEM_REGISTRY.md`](agent_files/SYSTEM_REGISTRY.md) to identify the owning boundary and source of truth.
+9. Read [`agent_files/general_foundation/PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and the UMCGS layout in [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md) before creating, moving, or splitting project artifacts.
+10. Read the accepted ADRs and specifications relevant to the task. Load detailed design doctrine linked from `PRINCIPLES.md` when the task changes a component, contract, dependency, foundational representation, compatibility boundary, or reusable name.
+11. Inspect repository status, existing work, and current project state.
+12. Apply the reasoning and execution-readiness gates before editing.
 
 ## Authority order
 
@@ -31,13 +32,14 @@ When instructions conflict, apply this order:
 7. Accepted application-specific agent guidance.
 8. Architecture explanations.
 9. Research notes and proposals.
-10. Archived or superseded material.
+10. Plans, execution records, and summaries.
+11. Archived or superseded material.
 
-Do not silently resolve a contradiction in favor of the easiest implementation. Report it and stop at the reasoning gate when it affects correctness, architecture, safety, memory, synchronization, ABI, lifecycle, ownership, or dependency direction.
+A plan organizes work beneath authority. Do not silently resolve a contradiction in favor of the easiest implementation or stale plan wording. Report it and stop the affected node when it changes correctness, architecture, safety, memory, synchronization, ABI, lifecycle, ownership, dependency direction, acceptance, or downstream outputs.
 
 ## Current phase
 
-UMCGS is private, pre-release, documentation-first, and defining a universal GPU-resident Monte Carlo Graph Search framework. Production implementation may begin only for a clearly owned boundary with accepted governing specifications or an explicitly authorized disposable experiment.
+UMCGS is private, pre-release, documentation-first, and defining a universal GPU-resident Monte Carlo Graph Search framework. Production implementation may begin only for a clearly owned boundary with accepted governing specifications, an assessment disposition that permits implementation, and a dependency-ready plan node—or an explicitly authorized disposable experiment.
 
 The first product is the generic framework, not a chess engine. Chess, Go, text search, planning, optimization, policy-only search, evaluation-only search, partially observable search, and other workloads are adapters or conformance domains. None may permanently shape the core.
 
@@ -46,6 +48,8 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 ## Non-negotiable project invariants
 
 - Assess substantial and critical work before planning; use a strong adversary to expose hidden assumptions, unsound simplicity, and unnecessary machinery.
+- Execute only a current dependency-ready plan node under current authority; state expected effects, falsifier, rollback/safe stop, and material stop conditions before mutation.
+- Inspect actual effects immediately after each coherent operation, classify deviations, and never accept invalid partial state or abandoned execution-created resources.
 - A sanity claim names an exact frozen revision or artifact and is explicitly `full`, `bounded`, or `sampled`; sampled evidence is never presented as complete coverage.
 - Before detailed sanity review, split the complete semantic coverage map into leaf review branches small enough for one focused session and full attention to every material semantic unit.
 - Full sanity means every declared surface is accounted for at risk-justified depth, followed by boundary, end-to-end, design, lifecycle, and findings reconciliation—not exhaustive paperwork for every low-risk unit.
@@ -65,7 +69,7 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 - Cross-component dependencies must be declared, acyclic, and made through public contracts rather than deep imports.
 - Tests, safety checks, validation gates, branch protection, CODEOWNERS, and benchmark requirements may not be weakened to make a change pass or merge.
 
-See [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md), [`SEMANTIC_INTERROGATION.md`](agent_files/general_foundation/SEMANTIC_INTERROGATION.md), [`PULL_REQUEST_REVIEW_AND_MERGE.md`](agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md), [`LEGO_ARCHITECTURE.md`](agent_files/general_foundation/LEGO_ARCHITECTURE.md), [`agent_files/application_specific/UMCGS_PROFILE.md`](agent_files/application_specific/UMCGS_PROFILE.md), [`ARCHITECTURE_GUARDRAILS.md`](agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md), and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
+See [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md), [`SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md), [`SEMANTIC_INTERROGATION.md`](agent_files/general_foundation/SEMANTIC_INTERROGATION.md), [`PULL_REQUEST_REVIEW_AND_MERGE.md`](agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md), [`LEGO_ARCHITECTURE.md`](agent_files/general_foundation/LEGO_ARCHITECTURE.md), [`agent_files/application_specific/UMCGS_PROFILE.md`](agent_files/application_specific/UMCGS_PROFILE.md), [`ARCHITECTURE_GUARDRAILS.md`](agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md), and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
 
 ## Large-project organization rule
 
@@ -85,9 +89,26 @@ Do not create root-level source files, catch-all `utils`, `common`, `shared`, `m
 
 ## Reasoning gate
 
-Architecture, CUDA synchronization, memory layout, lifetimes, concurrency, JIT/ABI work, schemas, persistent state, hot-path changes, component creation, dependency-direction changes, repository splits, and full system-sanity claims require a completed critical assessment plus high-confidence reasoning supported by authority and evidence. An agent that cannot establish the required reasoning must not edit or certify that boundary. It must record a decision-ready blocker and next action in `next_step.yaml`.
+Architecture, CUDA synchronization, memory layout, lifetimes, concurrency, JIT/ABI work, schemas, persistent state, hot-path changes, component creation, dependency-direction changes, repository splits, coordinated high-consequence plan execution, and full system-sanity claims require a completed critical assessment plus high-confidence reasoning supported by authority and evidence. An agent that cannot establish the required reasoning must not edit or certify that boundary. It must record a decision-ready blocker and next action in `next_step.yaml`.
 
 The gate is not permission to abandon hard work. Research, inspect, test, and narrow the uncertainty first.
+
+## Plan execution gate
+
+Before executing a material node:
+
+1. identify the current plan record, version, node ID, owner, branch, and frozen head;
+2. prove dependencies, expected dependency revisions, authority, specifications, environment, and operational preconditions;
+3. state the owned outcome, scope, non-goals, expected local/wider effects, acceptance criteria, cheapest decisive falsifier, rollback/safe stop, and escalation conditions;
+4. scan for newly triggered design, persistence, security, concurrency, memory, graph/search, evaluator, performance, generated/JIT/ABI, sanity, packaging, or release doctrine;
+5. perform one coherent ownership-sized operation rather than an arbitrary file batch;
+6. inspect exact actual effects immediately, compare expected and actual, and run the focused falsifier;
+7. reconcile affected owners, contracts, callers, artifacts, runtime paths, resources, lifecycle, and design principles;
+8. classify the outcome as continue, accept, pause, revise, rollback, fail, or supersede;
+9. revise the plan for material deviation rather than silently expanding scope;
+10. leave no invalid partial state, stale downstream assumption, or abandoned execution-created resource.
+
+Routine reversible single-session work does not require a separate execution ledger. Use one durable plan-execution record only when coordination, continuation, invalid intermediate states, high consequence, or another evidence consumer requires it.
 
 ## Sanity gate
 
@@ -126,6 +147,7 @@ Never force-update the target, bypass protection, merge a different head from th
 - Work in the largest safe coherent unit owned by one boundary; avoid repeated tiny passes that cause context drift.
 - Decide the artifact's organizational home before writing it.
 - Preserve one proportional assessment/plan by default; link existing authority rather than creating duplicate administrative ledgers.
+- Preserve one proportional execution record only when another consumer or high-consequence gate needs operation-level state.
 - Preserve one proportional sanity or PR-review record only when the claim needs one; do not create one form, issue, document, or Git branch per function.
 - Before creating a reusable concept, state its owned invariant, intended equivalence class, exclusions, second-instance result, and first-consumer deletion result.
 - Before calling a design simple, account for complexity exported to callers, adapters, generated code, device memory, synchronization, migration, recovery, operations, diagnostics, testing, and expected integrations.

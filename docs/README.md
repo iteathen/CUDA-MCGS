@@ -23,7 +23,8 @@
 - Assess before planning, use adversarial synthesis, and keep administrative records proportional to risk. See [`decisions/ADR-0006-adversarial-assessment-and-planning.md`](decisions/ADR-0006-adversarial-assessment-and-planning.md).
 - Use exact frozen targets, explicit full/bounded/sampled claims, risk-proportional semantic review, integration reconciliation, and durable findings for sanity checks. See [`decisions/ADR-0007-proportional-sanity-checking.md`](decisions/ADR-0007-proportional-sanity-checking.md).
 - Review one exact PR head, require independence according to phase/risk, perform a separate guarded merge transaction, and verify the integrated target. See [`decisions/ADR-0008-exact-head-pr-review-and-guarded-merge.md`](decisions/ADR-0008-exact-head-pr-review-and-guarded-merge.md).
+- Execute plans through current dependency-ready nodes, expected-before-actual operations, immediate falsification/reconciliation, and explicit deviation handling. See [`decisions/ADR-0009-governed-plan-execution.md`](decisions/ADR-0009-governed-plan-execution.md).
 
 ## Authority
 
-Accepted ADRs and specifications govern their scopes. Research notes provide evidence but do not become architecture until accepted through the decision/specification process. Archived material is not current authority.
+Accepted ADRs and specifications govern their scopes. Research notes provide evidence but do not become architecture until accepted through the decision/specification process. Plans organize work beneath authority. Archived material is not current authority.
