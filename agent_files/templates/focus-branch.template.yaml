@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "parent_task": {
     "id": "",
     "title": "",
@@ -14,7 +14,7 @@
     "global_invariants_and_shared_definitions": [],
     "included_surface": [],
     "excluded_surface_and_reason": [],
-    "global_validation_cleanup_and_token_constraints": []
+    "global_validation_testing_cleanup_and_token_constraints": []
   },
   "focus_branch": {
     "id": "",
@@ -36,9 +36,9 @@
   "full_attention_and_token_fit": {
     "one_primary_semantic_owner": false,
     "one_primary_question_or_output": false,
-    "complete_packet_execution_validation_cleanup_and_handoff_fit_one_window": false,
+    "complete_packet_execution_testing_validation_cleanup_and_handoff_fit_one_window": false,
     "mechanism_and_material_consequences_fit_active_context": false,
-    "required_validation_integration_cleanup_review_handoff_reserve_remains": false,
+    "required_testing_validation_integration_cleanup_review_handoff_reserve_remains": false,
     "independent_acceptance_rollback_and_cleanup_are_understandable": false,
     "telemetry_available": false,
     "reserve_percent_or_semantic_headroom": "",
@@ -66,6 +66,22 @@
     "token_debt_blocking_conditions": [],
     "durable_token_budget_record": ""
   },
+  "testing": {
+    "claims_and_authoritative_oracles": [],
+    "coverage_map": [],
+    "pending_test_intents": [],
+    "owning_capsules": [],
+    "evidence_key_dimensions": [],
+    "test_invalidation_inputs": [],
+    "execution_tiers_and_escalation": [],
+    "expected_discovery_and_skip_counts": [],
+    "shared_setup_and_mutable_state_isolation": [],
+    "failure_clustering_and_root_cause_repair": [],
+    "test_consolidation_and_provisional_cleanup": [],
+    "no_repeat_rules": [],
+    "test_debt_blocking_conditions": [],
+    "durable_test_batch_record": ""
+  },
   "dependencies_and_coordination": {
     "upstream_focus_branches": [],
     "downstream_focus_branches": [],
@@ -83,12 +99,15 @@
     "cheapest_decisive_falsifier": "",
     "broader_reconciliation_required": [],
     "rollback_recovery_and_safe_stop": [],
+    "testing_evidence_and_case_consolidation": [],
     "cleanup_and_disposition": [],
     "lossless_handoff_fields": []
   },
   "execution": {
     "readiness_evidence": [],
     "operations_and_exact_effects": [],
+    "tests_capsules_tiers_and_evidence_keys": [],
+    "failure_clusters_and_changed_hypotheses": [],
     "checks_and_evidence": [],
     "checks_not_run_and_reason": [],
     "contradictions_and_cross_branch_findings": [],
@@ -101,6 +120,7 @@
     "classification": "continue|accept|pause|block|invalidate|supersede|integrate",
     "accepted_output_and_revision": [],
     "assumptions_exclusions_and_claim_limits": [],
+    "test_intents_consolidated_and_remaining_test_debt": [],
     "parent_or_sibling_branches_invalidated_unblocked_or_made_ready": [],
     "integration_obligations": [],
     "remaining_token_debt": [],
@@ -113,6 +133,7 @@
     "units_ranges_precision_identity_versions_and_memory_spaces_reconciled": false,
     "lifecycle_failure_recovery_and_cleanup_reconciled": false,
     "resource_performance_security_compatibility_and_provenance_reconciled": false,
+    "test_capsules_evidence_invalidation_and_test_debt_reconciled": false,
     "token_debt_and_context_reconstruction_reconciled": false,
     "boundary_and_end_to_end_validation": [],
     "contradictions_and_dispositions": [],

@@ -20,6 +20,8 @@ This directory is the durable operating system for development. The root [`AGENT
 - [`general_foundation/TOKEN_DISCIPLINE.md`](general_foundation/TOKEN_DISCIPLINE.md) — token reserves, context layers, retrieval/tool discipline, operational bands, lossless checkpoints, and token-debt prevention.
 - [`general_foundation/CONTEXT_ROUTING.md`](general_foundation/CONTEXT_ROUTING.md) — authoritative context loading, freshness, compaction, and retirement.
 - [`general_foundation/PLAN_EXECUTION.md`](general_foundation/PLAN_EXECUTION.md) — readiness proof, coherent operations, expected-versus-actual inspection, deviation handling, recovery, and acceptance.
+- [`general_foundation/TESTING.md`](general_foundation/TESTING.md) — accurate and complete test design, test-intent banking, consolidated capsules, no-repeat evidence, failure clustering, and efficient repair loops.
+- [`general_foundation/DEBUGGING.md`](general_foundation/DEBUGGING.md) — first-divergence diagnosis and root-cause repair using the testing discipline.
 - [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md) — local/remote cleanup, protected state, artifact disposition, GitHub lifecycle, destructive safeguards, verification, and cleanup debt.
 - [`general_foundation/SANITY_CHECKING.md`](general_foundation/SANITY_CHECKING.md) — proportional coverage-accounted sanity checks and audit claims.
 - [`general_foundation/SEMANTIC_INTERROGATION.md`](general_foundation/SEMANTIC_INTERROGATION.md) — semantic-leaf review core and triggered risk modules.
@@ -36,8 +38,6 @@ This directory is the durable operating system for development. The root [`AGENT
 - [`general_foundation/PROJECT_ORGANIZATION.md`](general_foundation/PROJECT_ORGANIZATION.md)
 - [`general_foundation/WORKFLOW.md`](general_foundation/WORKFLOW.md)
 - [`general_foundation/DEVELOPMENT.md`](general_foundation/DEVELOPMENT.md)
-- [`general_foundation/TESTING.md`](general_foundation/TESTING.md)
-- [`general_foundation/DEBUGGING.md`](general_foundation/DEBUGGING.md)
 - [`general_foundation/PLANS_AND_HANDOFFS.md`](general_foundation/PLANS_AND_HANDOFFS.md)
 - [`general_foundation/ACCOUNTABILITY.md`](general_foundation/ACCOUNTABILITY.md)
 - [`general_foundation/SECURITY.md`](general_foundation/SECURITY.md)
@@ -55,8 +55,8 @@ This directory is the durable operating system for development. The root [`AGENT
 
 ## Templates
 
-Use [`templates/`](templates/) for ADRs, specifications, component manifests, combined assessment/plans, durable focus-branch packets, token/context budgets, governed plan execution, cleanup/disposition, sanity checks, critical semantic reviews, durable PR reviews, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning.
+Use [`templates/`](templates/) for ADRs, specifications, component manifests, combined assessment/plans, durable focus-branch packets, token/context budgets, consolidated test batches, governed plan execution, cleanup/disposition, sanity checks, critical semantic reviews, durable PR reviews, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning.
 
-Routine work needs no token ledger. Use the token-budget template only when cross-session/agent work, exact telemetry, high consequence, parallelism, or repeated context pressure makes reserve/compaction evidence useful. Routine task-owned scratch cleanup, single-session execution, simple focus branches, self-sanity, and ordinary PR review should remain in the canonical issue/plan/PR rather than forcing standalone artifacts.
+Routine work needs no test ledger. Use [`templates/test-batch.template.yaml`](templates/test-batch.template.yaml) when several test intents must be accumulated/consolidated, expensive setup must be shared, a failure cluster crosses sessions/agents, or completeness/skip/invalidation evidence has a real consumer. Routine task-owned scratch cleanup, single-session execution, simple focus branches, self-sanity, and ordinary PR review should remain in the canonical issue/plan/PR rather than forcing standalone artifacts.
 
 Tool adapters such as `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md` must point here and remain thin.

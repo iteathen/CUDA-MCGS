@@ -35,6 +35,8 @@ required=(
   agent_files/general_foundation/TOKEN_DISCIPLINE.md
   agent_files/general_foundation/CONTEXT_ROUTING.md
   agent_files/general_foundation/PLAN_EXECUTION.md
+  agent_files/general_foundation/TESTING.md
+  agent_files/general_foundation/DEBUGGING.md
   agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md
   agent_files/general_foundation/SANITY_CHECKING.md
   agent_files/general_foundation/SEMANTIC_INTERROGATION.md
@@ -51,8 +53,6 @@ required=(
   agent_files/general_foundation/PROJECT_ORGANIZATION.md
   agent_files/general_foundation/WORKFLOW.md
   agent_files/general_foundation/DEVELOPMENT.md
-  agent_files/general_foundation/TESTING.md
-  agent_files/general_foundation/DEBUGGING.md
   agent_files/general_foundation/PLANS_AND_HANDOFFS.md
   agent_files/general_foundation/ACCOUNTABILITY.md
   agent_files/general_foundation/SECURITY.md
@@ -68,6 +68,7 @@ required=(
   agent_files/templates/assessment-and-plan.template.md
   agent_files/templates/focus-branch.template.yaml
   agent_files/templates/token-budget.template.yaml
+  agent_files/templates/test-batch.template.yaml
   agent_files/templates/plan-execution.template.yaml
   agent_files/templates/cleanup-disposition.template.yaml
   agent_files/templates/sanity-check.template.yaml
@@ -103,6 +104,7 @@ required=(
   docs/decisions/ADR-0010-cleanup-reconciliation-and-artifact-disposition.md
   docs/decisions/ADR-0011-focus-branch-decomposition-and-integration.md
   docs/decisions/ADR-0012-token-use-and-context-discipline.md
+  docs/decisions/ADR-0013-consolidated-testing-and-repair-loop-efficiency.md
   docs/development/README.md
   docs/research/README.md
   docs/research/prior-art/README.md
@@ -172,4 +174,4 @@ if command -v ruby >/dev/null 2>&1; then
   ruby -e 'require "yaml"; Dir[".github/ISSUE_TEMPLATE/*.{yml,yaml}"].each { |f| YAML.safe_load_file(f, permitted_classes: [], aliases: false) }'
 fi
 
-printf 'documentation, organization, focus-branch, token-discipline, agent-governance, and cleanup checks passed\n'
+printf 'documentation, organization, focus-branch, token-discipline, testing, agent-governance, and cleanup checks passed\n'

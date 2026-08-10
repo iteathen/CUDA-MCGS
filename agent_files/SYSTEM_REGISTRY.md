@@ -11,9 +11,10 @@ This registry tells developers and agents where durable information and future i
 - Product components must have a manifest and README before production code enters them.
 - Planned boundaries are not implementation authorization.
 - Focus branches are semantic work packets, not new ownership boundaries unless authority explicitly creates one.
+- Test capsules belong to the owner whose invariant or contract they validate; cross-component/system tests live under the existing `tests` product area.
 - Cross-component dependencies must be declared in both the component manifest and governing architecture/specification where material.
 - Archived and superseded locations never regain authority merely because an agent finds them.
-- Retained temporary, evidence, recovery, archive, cleanup-debt, and token-budget state has an owner and objective lifecycle trigger.
+- Retained temporary, evidence, recovery, archive, cleanup-debt, token-budget, and test-batch state has an owner and objective lifecycle trigger.
 
 ## Governance and documentation boundaries
 
@@ -25,6 +26,7 @@ This registry tells developers and agents where durable information and future i
 | `governance.focus-branches` | Large-task semantic decomposition, full-attention sizing, parent integration spine, context packets, parallelism, invalidation, and reconciliation | [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) | Accepted |
 | `governance.token-discipline` | Token reserves, context layers, retrieval/tool discipline, operational bands, compaction, handoff, and token-debt prevention | [`general_foundation/TOKEN_DISCIPLINE.md`](general_foundation/TOKEN_DISCIPLINE.md) and [`general_foundation/CONTEXT_ROUTING.md`](general_foundation/CONTEXT_ROUTING.md) | Accepted |
 | `governance.execution` | Plan-node readiness, coherent operation execution, deviation handling, recovery, acceptance, and continuation state | [`general_foundation/PLAN_EXECUTION.md`](general_foundation/PLAN_EXECUTION.md) | Accepted |
+| `governance.testing` | Test accuracy/completeness, test-intent banking, consolidated capsules, tier selection, evidence reuse, failure clustering, and repair-loop efficiency | [`general_foundation/TESTING.md`](general_foundation/TESTING.md) and [`general_foundation/DEBUGGING.md`](general_foundation/DEBUGGING.md) | Accepted |
 | `governance.cleanup` | Cleanup inventory, protected state, local/remote disposition, destructive safeguards, verification, and cleanup debt | [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md) | Accepted |
 | `governance.sanity` | Sanity/audit claims, semantic coverage, risk-based depth, reconciliation, and findings | [`general_foundation/SANITY_CHECKING.md`](general_foundation/SANITY_CHECKING.md) and [`general_foundation/SEMANTIC_INTERROGATION.md`](general_foundation/SEMANTIC_INTERROGATION.md) | Accepted |
 | `governance.pr-integration` | Exact-head PR readiness/review, guarded merge, post-merge verification, and branch/coordination disposition | [`general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) | Accepted |
@@ -43,15 +45,15 @@ This registry tells developers and agents where durable information and future i
 | Product area | Owns | Location | Current status |
 |---|---|---|---|
 | `schemas` | Versioned machine-readable contracts and metaschemas | [`../schemas/`](../schemas/README.md) | Reserved |
-| `components` | Production framework components | [`../components/`](../components/README.md) | Reserved; no implementation authorized |
-| `adapters` | Domain, policy, evaluator, and output adapters | [`../adapters/`](../adapters/README.md) | Reserved |
-| `conformance` | Reference backend, synthetic domains, contract suites | [`../conformance/`](../conformance/README.md) | Reserved |
+| `components` | Production framework components and their owner-local tests | [`../components/`](../components/README.md) | Reserved; no implementation authorized |
+| `adapters` | Domain, policy, evaluator, and output adapters with owner-local conformance tests | [`../adapters/`](../adapters/README.md) | Reserved |
+| `conformance` | Reference backend, synthetic domains, public-contract capsules | [`../conformance/`](../conformance/README.md) | Reserved |
 | `benchmarks` | Cross-component reproducible performance suites | [`../benchmarks/`](../benchmarks/README.md) | Reserved |
-| `experiments` | Disposable research/prototypes | [`../experiments/`](../experiments/README.md) | Reserved |
+| `experiments` | Disposable research/prototypes and provisional reproducers | [`../experiments/`](../experiments/README.md) | Reserved |
 | `examples` | Minimal public-surface usage examples | [`../examples/`](../examples/README.md) | Reserved |
-| `tools` | Reusable developer/build/generation tools | [`../tools/`](../tools/README.md) | Reserved |
+| `tools` | Reusable developer/build/generation/test orchestration tools | [`../tools/`](../tools/README.md) | Reserved |
 | `scripts` | Thin repository task entry points | [`../scripts/`](../scripts/) | Active |
-| `tests` | Cross-component/system/end-to-end tests only | [`../tests/`](../tests/README.md) | Reserved |
+| `tests` | Cross-component/system/end-to-end capsules only | [`../tests/`](../tests/README.md) | Reserved |
 | `packaging` | Release composition, manifests, distribution metadata | [`../packaging/`](../packaging/README.md) | Reserved |
 | `third-party` | Vendored external material and provenance | [`../third_party/`](../third_party/README.md) | Reserved |
 
@@ -86,7 +88,7 @@ A coherent change must include:
 4. governing authority;
 5. public contracts and dependencies;
 6. lifecycle/compatibility status;
-7. validation owner;
+7. validation/test owner and canonical capsule commands;
 8. cleanup, migration, archive, or supersession record.
 
-Use [`templates/component-manifest.template.yaml`](templates/component-manifest.template.yaml) for product components and follow [`general_foundation/PROJECT_ORGANIZATION.md`](general_foundation/PROJECT_ORGANIZATION.md) and [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md). Use [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) for large-task work decomposition and [`general_foundation/TOKEN_DISCIPLINE.md`](general_foundation/TOKEN_DISCIPLINE.md) for proportional context budgeting without inventing new product ownership.
+Use [`templates/component-manifest.template.yaml`](templates/component-manifest.template.yaml) for product components. Use [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) for large-task decomposition, [`general_foundation/TOKEN_DISCIPLINE.md`](general_foundation/TOKEN_DISCIPLINE.md) for context budgeting, and [`general_foundation/TESTING.md`](general_foundation/TESTING.md) for accurate consolidated test ownership without inventing duplicate test hierarchies.

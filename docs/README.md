@@ -27,7 +27,8 @@
 - Give local, remote, generated, sensitive, external, partial, and coordination state explicit protected-state analysis, disposition, verification, and bounded cleanup debt. See [`decisions/ADR-0010-cleanup-reconciliation-and-artifact-disposition.md`](decisions/ADR-0010-cleanup-reconciliation-and-artifact-disposition.md).
 - Decompose large or complex tasks into semantic focus branches sized for full attention, with one parent integration spine, explicit invalidation, constrained parallelism, and central reconciliation. See [`decisions/ADR-0011-focus-branch-decomposition-and-integration.md`](decisions/ADR-0011-focus-branch-decomposition-and-integration.md).
 - Optimize verified progress per lifecycle token, reserve capacity for evidence and handoff, route context in layers, and prevent material token debt. See [`decisions/ADR-0012-token-use-and-context-discipline.md`](decisions/ADR-0012-token-use-and-context-discipline.md).
+- Capture test intents immediately, consolidate related cases into owning capsules, reuse exact evidence, cluster failures by cause, and keep broad suites out of the inner repair loop. See [`decisions/ADR-0013-consolidated-testing-and-repair-loop-efficiency.md`](decisions/ADR-0013-consolidated-testing-and-repair-loop-efficiency.md).
 
 ## Authority
 
-Accepted ADRs and specifications govern their scopes. Research notes provide evidence but do not become architecture until accepted through the decision/specification process. Plans, focus-branch packets, token-budget records, and cleanup records organize work beneath authority. Archived material is not current authority.
+Accepted ADRs and specifications govern their scopes. Research notes provide evidence but do not become architecture until accepted through the decision/specification process. Plans, focus-branch packets, token-budget records, test-batch records, and cleanup records organize work beneath authority. Archived material is not current authority.

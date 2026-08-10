@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "title": "<task title>",
   "status": "proposal|accepted|active|paused|complete|superseded",
   "plan_version": 1,
@@ -23,7 +23,7 @@
     "shared_vocabulary_and_semantics": [],
     "global_invariants": [],
     "units_ranges_precision_identity_versions_and_memory_spaces": [],
-    "resource_security_compatibility_cleanup_and_context_constraints": [],
+    "resource_security_compatibility_cleanup_context_and_testing_constraints": [],
     "included_surface": [],
     "excluded_surface_and_reason": []
   },
@@ -41,6 +41,24 @@
     "checkpoint_and_compaction_plan": [],
     "token_debt_blocking_conditions": [],
     "durable_token_budget_record_required": false
+  },
+  "testing_strategy": {
+    "authoritative_oracles": [],
+    "coverage_map_by_owner_invariant_and_risk": [],
+    "initial_test_intents": [],
+    "owning_capsules": [],
+    "evidence_key_dimensions": [],
+    "test_invalidation_graph": [],
+    "execution_tiers_and_escalation": [],
+    "expected_discovery_and_skip_accounting": [],
+    "shared_build_setup_device_model_fixture_plan": [],
+    "mutable_state_isolation": [],
+    "failure_clustering_and_root_cause_repair_loop": [],
+    "test_intent_consolidation_boundary": [],
+    "provisional_and_duplicate_test_cleanup": [],
+    "no_repeat_rules": [],
+    "test_debt_blocking_conditions": [],
+    "durable_test_batch_record_required": false
   },
   "focus_branching": {
     "required": false,
@@ -70,12 +88,13 @@
         "downstream_consumers": [],
         "acceptance_criteria": [],
         "cheapest_decisive_falsifier": "",
+        "testing_and_evidence_obligations": [],
         "rollback_recovery_and_cleanup": [],
         "integration_obligations": [],
         "full_attention_and_token_fit": {
           "one_primary_semantic_owner": false,
           "one_primary_question_or_output": false,
-          "packet_execution_validation_cleanup_and_handoff_fit_one_window": false,
+          "packet_execution_testing_validation_cleanup_and_handoff_fit_one_window": false,
           "mechanism_and_material_consequence_horizon_fit_active_context": false,
           "required_reserve_remains_after_packet_load": false,
           "independent_acceptance_rollback_and_cleanup_are_understandable": false,
@@ -107,9 +126,10 @@
       "downstream_nodes_and_focus_branches": [],
       "acceptance_criteria": [],
       "cheapest_decisive_falsifier": "",
+      "test_intents_capsules_and_tiers": [],
       "broader_reconciliation_and_validation": [],
       "rollback_recovery_or_safe_stop": "",
-      "context_and_token_stop_conditions": [],
+      "context_token_and_test_stop_conditions": [],
       "cleanup": {
         "expected_created_modified_superseded_or_retained_state": [],
         "planned_dispositions": [],
@@ -128,9 +148,10 @@
     "branch_status_accounting": [],
     "cross_branch_contradiction_resolution": [],
     "shared_semantics_ownership_and_dependency_reconciliation": [],
+    "test_capsule_and_evidence_reconciliation": [],
     "boundary_and_end_to_end_validation": [],
     "invalidated_evidence_rerun": [],
-    "token_debt_and_context_reconstruction_check": [],
+    "test_debt_token_debt_and_context_reconstruction_check": [],
     "final_revision_or_artifact": ""
   },
   "cross_node_validation": [],
@@ -150,6 +171,7 @@
     "required_checks_reviews_and_protection": [],
     "focus_branch_integration_evidence": [],
     "token_context_and_handoff_evidence": [],
+    "testing_evidence_case_counts_failure_clusters_and_test_debt": [],
     "merge_method_and_reason": "",
     "issue_closure_branch_worktree_and_dependent_work_effects": [],
     "post_merge_verification_and_cleanup": []

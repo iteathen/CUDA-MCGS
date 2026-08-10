@@ -12,35 +12,50 @@ For a large or complex task, state or link:
 
 - canonical parent task, plan version, integration owner, global invariants, and closure criteria;
 - why focus branches were required;
-- branch map with IDs, types, owners, exact input/output revisions, dependencies, and statuses;
-- full-attention sizing rationale for each material leaf;
+- branch map with IDs, owners, exact input/output revisions, dependencies, and statuses;
+- full-attention sizing rationale;
 - shared-contract changes and branches/evidence invalidated;
-- parallel ownership/write-surface evidence where used;
+- parallel ownership/write-surface evidence;
 - branches accepted, integrated, blocked, invalidated, superseded, deferred, or removed from scope;
-- contradiction, boundary, end-to-end, lifecycle, resource, compatibility, security, performance, and cleanup reconciliation;
+- cross-branch and end-to-end reconciliation;
 - one exact final revision proving the parent result.
 
-State `not triggered` for work that genuinely fits one focused branch. Do not use Git branch names as a substitute for the semantic branch map.
+State `not triggered` for work that genuinely fits one focused branch.
 
 ## Token and context discipline
 
 For substantial, critical, or large work, state or link:
 
 - active context packet and exact source revisions;
-- task class and whether exact token telemetry was available;
-- validation/integration/cleanup/review/handoff reserve and any justified deviation from the 30%/40% defaults;
-- context layers intentionally loaded and excluded;
-- targeted retrieval/tool strategy and expensive-call triggers;
-- current operational band and any yellow/red-state action;
-- checkpoints/compaction performed;
-- token debt, repeated reconstruction, or checks skipped because of context limits;
-- why remaining context was sufficient for final validation, cleanup, review, and handoff.
+- task class and telemetry availability;
+- validation/integration/cleanup/review/handoff reserve;
+- context layers loaded and excluded;
+- targeted retrieval/tool strategy;
+- current operational band and checkpoint/compaction actions;
+- token debt, repeated reconstruction, and claim limits.
 
-State `routine / no durable budget record required` when the work was genuinely bounded. Do not claim efficiency from raw token count or short prose alone.
+State `routine / no durable budget record required` when appropriate.
+
+## Testing and repair-loop evidence
+
+State or link:
+
+- claims/invariants tested and authoritative oracles;
+- exact subject/test/generated/model/environment/fixture/seed evidence keys;
+- expected/discovered/executed/pass/fail/required-skip/conditional-skip/optional-skip counts;
+- test intents added, consolidated, superseded, blocked, or remaining as test debt;
+- owning capsules and execution tiers run: preflight, focused fast, owner/contract, integration smoke, deep, or forensic/release;
+- shared build/setup/device/model/fixture work and mutable-state isolation;
+- failure clusters, first divergences, root-cause hypotheses, coherent repair batches, and changed hypotheses before retries;
+- unchanged evidence reused and every repeated-run reason;
+- provisional reproducers, duplicate tests, fixtures, diagnostics, and logs removed or retained;
+- checks not run, sampling limits, nondeterminism/statistical scope, and remaining test debt.
+
+Do not report raw test count as completeness. Do not claim a repeated run as new evidence without an invalidation or statistical reason. Link `test-batch.template.yaml` records when one exists; do not duplicate them here.
 
 ## Plan execution fidelity
 
-State parent plan/version, focus-branch ID, node, frozen head/environment, readiness evidence, minimal context packet, expected local/wider effects, operations performed, actual effects, focused falsifiers, variations/deviations, affected boundary/path/lifecycle reconciliation, branch/node outcome, downstream outputs/revisions, partial-state status, and checks not run. Link durable branch/execution/token records when they exist; do not duplicate them here.
+State parent plan/version, focus-branch ID, node, frozen head/environment, readiness evidence, minimal context packet, expected local/wider effects, operations performed, actual effects, falsifiers, variations/deviations, affected boundary/path/lifecycle reconciliation, branch/node outcome, downstream outputs/revisions, partial-state status, and checks not run. Link durable branch/token/test/execution records when they exist.
 
 ## What changed and why
 
@@ -50,36 +65,24 @@ State parent plan/version, focus-branch ID, node, frozen head/environment, readi
 
 ## Cleanup and disposition
 
-State the protected pre-existing/user/shared/authority/evidence/recovery state and account for material task-created, temporarily modified, superseded, partial, generated, diagnostic, local, remote, external, sensitive, and coordination state.
-
-Include, as applicable:
-
-- tracked/untracked/ignored local files and folders;
-- generated/build/test/cache/package/release/workflow artifacts;
-- semantic focus branches and local/remote Git branches, worktrees, stashes, refs, remotes, and interrupted Git operations;
-- PRs, issues, reviews, claims, labels, milestones, assignments, closing effects, stacked/dependent work, and source-branch disposition;
-- processes, ports, containers, jobs, locks, GPU/device state, credentials, permissions, persistence/backups, and external/paid resources;
-- remove/restore/retain authority/evidence/recovery/archive/quarantine/transfer/supersede/temporary-retention/protect-unchanged decisions;
-- destructive safeguards, local/remote verification, retained-state owners/triggers, and cleanup-debt issues.
-
-Link the cleanup record when one exists; do not duplicate it. A clean diff or successful command is not sufficient remote/sensitive cleanup evidence.
+State protected pre-existing/user/shared/authority/evidence/recovery state and account for material task-created, temporary, superseded, generated, diagnostic, local, remote, external, sensitive, and coordination state, including provisional tests and duplicate fixtures.
 
 ## Sanity / independent-review claim and limits
 
-State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name the reviewed revision/artifact, coverage boundary, critical leaves, actionable findings/issues, invalidated/rerun evidence, focus-branch integration, token/context and cleanup state, checks not run, and final claim limits. Link the canonical sanity record when one exists; do not duplicate it here.
+State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name exact revision/artifact, coverage boundary, critical leaves, actionable findings, invalidated/rerun evidence, focus-branch integration, token/test/cleanup state, checks not run, and final claim limits.
 
 ## Ready-for-review head and review mode
 
-Before requesting review, record the exact head SHA, intended base, whether author-side or independent review is required, checks not run, focus branches not yet integrated, token debt/context limits, cleanup still deferred, and any state that would invalidate review. A later head, parent-plan, shared-contract, source-revision, or material base change invalidates affected review, branch, token, and cleanup evidence until refreshed.
+Record exact head SHA, intended base, review mode, checks not run, unintegrated branches, test debt, token debt/context limits, deferred cleanup, and invalidation conditions. A later head, parent-plan, shared-contract, source/test revision, oracle, artifact, environment, fixture, or material base change invalidates affected evidence.
 
 ## Proposed merge and closure effects
 
-State the proposed merge method and why, linked issue relationship (`Closes` only when merge satisfies full closure), semantic focus-branch disposition, source local/remote Git branch and worktree retention/deletion needs, stacked/dependent PR effects, required checks/protection/queue, cleanup/token debt, and post-merge verification/cleanup beyond target-tree confirmation.
+State merge method, issue relationship, semantic focus-branch disposition, local/remote Git branch/worktree effects, stacked/dependent PR effects, required checks/protection/queue, test/token/cleanup debt, and post-merge verification beyond target-tree confirmation.
 
 ## Performance and GPU-memory evidence
 
 ## Compatibility, migration, rollback, recovery, and retained state
 
-## Documentation, parent/focus-branch/token/plan/cleanup state, registry, findings, and archived material
+## Documentation, parent/focus-branch/token/test/plan/cleanup state, registry, findings, and archived material
 
 ## Remaining risks / assumptions / revisit triggers

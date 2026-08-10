@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "component": {
     "id": "<stable.dotted.component-id>",
     "name": "<human-readable name>",
@@ -32,12 +32,28 @@
     "owns": [],
     "persistent_state": [],
     "generated_artifacts": [],
+    "testing": {
+      "test_owner": "",
+      "authoritative_oracles": [],
+      "coverage_map_location": [],
+      "focused_fast_capsules_and_commands": [],
+      "owner_contract_capsules_and_commands": [],
+      "integration_smoke_dependencies": [],
+      "deep_forensic_and_release_triggers": [],
+      "expected_discovery_and_skip_policy": [],
+      "evidence_key_dimensions": [],
+      "test_invalidation_inputs": [],
+      "shared_setup_and_mutable_state_isolation": [],
+      "failure_cluster_and_repair_owner": "",
+      "test_intent_consolidation_and_debt_policy": [],
+      "runtime_output_and_resource_budgets": []
+    },
     "lifecycle_and_cleanup": {
       "startup_and_acquisition": [],
       "steady_state_ownership": [],
       "cancellation_and_failure": [],
       "teardown_and_resource_release": [],
-      "generated_cache_package_and_diagnostic_disposition": [],
+      "generated_cache_package_test_and_diagnostic_disposition": [],
       "persistence_migration_backup_and_recovery_retention": [],
       "archive_deprecation_and_supersession": [],
       "cleanup_verification": []
@@ -50,7 +66,7 @@
       "unit": "monorepo|independent",
       "compatibility": "<versioning/compatibility policy>",
       "distribution": "private|internal|public",
-      "artifact_retention_and_cleanup": "<retention, archive, revocation, and cleanup policy>"
+      "artifact_and_test_evidence_retention_cleanup": "<retention, archive, revocation, and cleanup policy>"
     },
     "owner": "<owner or unassigned>",
     "notes": []

@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "test_batch": {
+    "id": "",
+    "title": "",
+    "status": "planned|ready|active|paused|blocked|accepted|invalidated|superseded|integrated|archived",
+    "owner": "",
+    "parent_task": "",
+    "parent_plan_version": 1,
+    "focus_branch_id": "",
+    "node_id": "",
+    "subject_revision": "",
+    "test_revision": "",
+    "claim_to_falsify": "",
+    "execution_tier": "preflight|focused_fast|owner_contract|integration_smoke|deep|forensic_release"
+  },
+  "accuracy": {
+    "authoritative_oracles": [],
+    "oracle_independence": [],
+    "known_bad_negative_controls_or_mutations": [],
+    "subject_binary_generated_model_schema_package_identity": [],
+    "environment_hardware_driver_toolkit_runtime_profile": [],
+    "required_conditional_optional_skip_policy": [],
+    "test_discovery_and_expected_case_counts": []
+  },
+  "coverage_map": [
+    {
+      "owner_or_contract": "",
+      "invariant_or_claim": "",
+      "normal": [],
+      "boundary": [],
+      "invalid_or_hostile": [],
+      "lifecycle": [],
+      "failure_recovery_and_cleanup": [],
+      "resource_pressure_and_exhaustion": [],
+      "concurrency_order_and_publication": [],
+      "compatibility_migration_and_persistence": [],
+      "security_privacy_and_provenance": [],
+      "integration_and_end_to_end": [],
+      "performance_or_quality": [],
+      "coverage_depth": "exact|property|deterministic_sample|statistical|not_applicable",
+      "claim_limit": ""
+    }
+  ],
+  "case_bank": [
+    {
+      "case_id": "TC-001",
+      "status": "pending|provisional|consolidated|passing|failing|blocked|retired|superseded",
+      "invariant_or_failure_mode": "",
+      "oracle": "",
+      "input_state_fixture_and_version": [],
+      "expected_result": [],
+      "conditions_and_risk_tags": [],
+      "owning_capsule": "",
+      "execution_tier": "",
+      "invalidation_keys": [],
+      "provisional_reproducer": "",
+      "durable_case_location": "",
+      "disposition_reason": ""
+    }
+  ],
+  "capsules": [
+    {
+      "capsule_id": "CAP-001",
+      "owner": "",
+      "oracle_and_contract": [],
+      "shared_immutable_setup": [],
+      "mutable_state_isolation": [],
+      "artifact_environment_and_resource_profile": [],
+      "case_ids": [],
+      "parameterization_property_or_generation_strategy": "",
+      "direct_single_case_selection": "",
+      "command": "",
+      "expected_case_count": 0,
+      "runtime_and_output_budget": "",
+      "parallelism_and_resource_bounds": [],
+      "cleanup_and_teardown": [],
+      "escalation_trigger": []
+    }
+  ],
+  "evidence_key": {
+    "subject_revision": "",
+    "test_revision": "",
+    "binary_generated_package_or_cache_identity": [],
+    "schema_model_evaluator_adapter_versions": [],
+    "hardware_driver_toolkit_runtime": [],
+    "configuration_and_resource_profile": [],
+    "fixture_dataset_and_content_hashes": [],
+    "seed_schedule_or_trial_identity": [],
+    "command_and_tier": ""
+  },
+  "selection_and_invalidation": {
+    "changed_owners_artifacts_and_contracts": [],
+    "direct_fast_capsules": [],
+    "public_contract_capsules": [],
+    "affected_callers_consumers_and_paths": [],
+    "triggered_lifecycle_resource_security_compatibility_capsules": [],
+    "integration_smoke_capsules": [],
+    "deep_or_forensic_triggers": [],
+    "evidence_invalidated_by_change": [],
+    "unchanged_evidence_reused": [],
+    "repeated_run_reason": []
+  },
+  "failure_clusters": [
+    {
+      "cluster_id": "FC-001",
+      "status": "open|hypothesis_ready|repairing|retest_ready|resolved|blocked|superseded",
+      "case_ids": [],
+      "first_divergence": "",
+      "violated_invariant": "",
+      "failure_signature": "",
+      "authoritative_owner": "",
+      "primary_vs_cascade_classification": [],
+      "root_cause_hypothesis": "",
+      "cheapest_decisive_falsifier": "",
+      "evidence": [],
+      "repair_batch": [],
+      "affected_capsules": [],
+      "changed_hypothesis_or_input_for_retry": ""
+    }
+  ],
+  "repair_cycles": [
+    {
+      "cycle_id": "RC-001",
+      "cluster_ids": [],
+      "frozen_reproduction_and_expected_behavior": [],
+      "baseline_run_evidence": [],
+      "root_cause_and_owner": "",
+      "coherent_repair_scope": [],
+      "minimal_cluster_retest": [],
+      "owner_capsule_result": [],
+      "integration_smoke_result": [],
+      "escalation_or_close_decision": "",
+      "new_case_intents": [],
+      "tests_consolidated_or_retired": [],
+      "tokens_logs_and_repeated_runs_avoided": []
+    }
+  ],
+  "execution_results": [
+    {
+      "run_id": "RUN-001",
+      "evidence_key": "",
+      "capsules": [],
+      "expected_discovered_executed_counts": [],
+      "pass_fail_and_skip_counts": [],
+      "duration_and_expensive_setup_count": [],
+      "failure_clusters": [],
+      "first_divergence_and_owner": [],
+      "raw_evidence_artifact_locations": [],
+      "checks_not_run_and_claim_limits": [],
+      "invalidation_and_escalation_decision": ""
+    }
+  ],
+  "consolidation": {
+    "pending_intents_grouped_by_owner_oracle_setup_and_tier": [],
+    "shared_build_setup_device_model_or_fixture_work": [],
+    "cases_folded_into_parameterized_property_or_generated_capsules": [],
+    "case_level_identity_and_reporting_preserved": false,
+    "provisional_reproducers_removed_or_archived": [],
+    "duplicate_cases_or_oracles_retired": [],
+    "pending_material_test_debt": []
+  },
+  "token_and_output_discipline": {
+    "test_matrix_and_case_bank_written_once": false,
+    "one_capsule_command_replaces_repetitive_commands": false,
+    "failure_clusters_built_before_log_expansion_or_repair": false,
+    "bounded_causal_logs_and_raw_artifact_links": [],
+    "unchanged_evidence_not_rerun": false,
+    "validation_integration_cleanup_handoff_reserve_preserved": false,
+    "context_pressure_actions": [],
+    "remaining_token_debt": []
+  },
+  "completion": {
+    "oracles_and_sensitivity_validated": false,
+    "coverage_map_complete_at_justified_depth": false,
+    "subject_and_environment_identity_proven": false,
+    "discovery_and_skip_accounting_complete": false,
+    "pending_material_intents_dispositioned": false,
+    "direct_owner_and_required_integration_tiers_pass": false,
+    "every_repeat_has_invalidation_or_statistical_reason": false,
+    "failure_clusters_and_repair_hypotheses_reconciled": false,
+    "provisional_and_duplicate_test_artifacts_cleaned": false,
+    "no_test_debt_token_debt_or_contamination_remains": false,
+    "checks_not_run_and_claim_limits": [],
+    "further_testing_would_not_change_claim_risk_or_next_action": false
+  }
+}

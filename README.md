@@ -8,7 +8,7 @@ The intended boundary includes chess, Go, text search, planning, optimization, p
 
 ## Current phase
 
-The project is private, pre-release, and in **framework-definition phase**. The repository is establishing development governance, mature-scale organization, versioned contracts, architectural decisions, resource constraints, prior-art evidence, and conformance strategy before production implementation.
+The project is private, pre-release, and in **framework-definition phase**. The repository is establishing development governance, mature-scale organization, versioned contracts, architectural decisions, resource constraints, prior-art evidence, conformance strategy, and test architecture before production implementation.
 
 No production implementation should be inferred from the current repository.
 
@@ -17,6 +17,7 @@ No production implementation should be inferred from the current repository.
 - Adversarial assessment before planning, with proportional documentation and decisive falsifiers.
 - Semantic focus branches for large or complex tasks: one canonical parent and integration spine, full-attention leaves, explicit branch outputs/invalidation, constrained parallelism, and central reconciliation.
 - Token-use discipline that optimizes verified progress rather than raw brevity, reserves context for validation/integration/cleanup/handoff, and uses layered retrieval, operational bands, and lossless checkpoints.
+- Consolidated testing: capture test intents immediately, fold related cases into parameterized owning capsules, share expensive setup, preserve case-level identity, reuse exact evidence, and repair failure clusters by root cause.
 - Governed plan execution through dependency-ready nodes, expected-before-actual operations, immediate falsification/reconciliation, explicit deviation handling, and no invalid partial state.
 - Cleanup and artifact disposition across local, Git, GitHub, device, credential, generated, retained, remote, and external state, with protected-state safeguards and verified cleanup debt.
 - Proportional sanity checking with exact frozen targets, explicit full/bounded/sampled claims, risk-based semantic depth, integration/cleanup reconciliation, and durable findings.
@@ -37,6 +38,8 @@ No production implementation should be inferred from the current repository.
 - Assessment and planning: [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md)
 - Focus branches: [`agent_files/general_foundation/FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md)
 - Token and context discipline: [`agent_files/general_foundation/TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md)
+- Testing and repair loops: [`agent_files/general_foundation/TESTING.md`](agent_files/general_foundation/TESTING.md)
+- Debugging: [`agent_files/general_foundation/DEBUGGING.md`](agent_files/general_foundation/DEBUGGING.md)
 - Context routing: [`agent_files/general_foundation/CONTEXT_ROUTING.md`](agent_files/general_foundation/CONTEXT_ROUTING.md)
 - Plan execution: [`agent_files/general_foundation/PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md)
 - Cleanup and disposition: [`agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md`](agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md)
