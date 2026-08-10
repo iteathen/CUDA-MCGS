@@ -1,12 +1,13 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "title": "<task title>",
   "status": "proposal|accepted|active|paused|complete|superseded",
   "plan_version": 1,
-  "objective": "<owned result>",
+  "objective": "<owned parent result>",
   "product_area": "<top-level product area>",
   "component": "<stable component id or governance boundary>",
-  "ownership_boundary": "<component or contract>",
+  "ownership_boundary": "<parent owner>",
+  "integration_owner": "<owner of cross-branch reconciliation and closure>",
   "durable_paths": [],
   "authority": [],
   "assessment": {
@@ -17,6 +18,57 @@
     "evidence_or_falsifier": [],
     "residual_assumptions": []
   },
+  "global_contract": {
+    "closure_criteria": [],
+    "shared_vocabulary_and_semantics": [],
+    "global_invariants": [],
+    "units_ranges_precision_identity_versions_and_memory_spaces": [],
+    "resource_security_compatibility_and_cleanup_constraints": [],
+    "included_surface": [],
+    "excluded_surface_and_reason": []
+  },
+  "focus_branching": {
+    "required": false,
+    "trigger_reason": [],
+    "canonical_branch_map_location": "",
+    "integration_spine": [],
+    "parallelism_policy": [],
+    "shared_contract_change_and_invalidation_policy": [],
+    "git_github_mapping_policy": [],
+    "branches": [
+      {
+        "id": "FB-001",
+        "title": "",
+        "type": "evidence|decision|owner|contract|path|risk|implementation|validation|cleanup|integration",
+        "status": "planned|ready|active|paused|blocked|accepted|invalidated|superseded|integrated|archived",
+        "owner": "",
+        "primary_question_or_output": "",
+        "parent_plan_version": 1,
+        "exact_input_revisions": [],
+        "scope": [],
+        "non_goals": [],
+        "write_surface_and_authority": [],
+        "global_invariants_to_preserve": [],
+        "minimal_context_packet": [],
+        "dependencies": [],
+        "expected_output_and_revision": [],
+        "downstream_consumers": [],
+        "acceptance_criteria": [],
+        "cheapest_decisive_falsifier": "",
+        "rollback_recovery_and_cleanup": [],
+        "integration_obligations": [],
+        "full_attention_sizing": {
+          "one_primary_semantic_owner": false,
+          "one_primary_question_or_output": false,
+          "fits_one_focused_session_without_sampling_or_skimming": false,
+          "mechanism_and_material_consequence_horizon_fit_active_context": false,
+          "independent_acceptance_rollback_and_cleanup_are_understandable": false,
+          "split_or_combination_reason": ""
+        },
+        "durable_focus_branch_record_required": false
+      }
+    ]
+  },
   "constraints": [],
   "invariants": [],
   "public_contract_effects": [],
@@ -25,6 +77,7 @@
   "nodes": [
     {
       "id": "N-001",
+      "focus_branch_id": "FB-001",
       "status": "planned|ready|active|paused|accepted|rolled_back|failed|superseded|invalidated",
       "owner": "",
       "objective_or_truth_to_establish": "",
@@ -35,7 +88,7 @@
       "expected_local_effects": [],
       "expected_wider_effects": [],
       "expected_outputs_and_revisions": [],
-      "downstream_nodes": [],
+      "downstream_nodes_and_focus_branches": [],
       "acceptance_criteria": [],
       "cheapest_decisive_falsifier": "",
       "broader_reconciliation_and_validation": [],
@@ -54,6 +107,14 @@
       "execution_record_required": false
     }
   ],
+  "integration": {
+    "branch_status_accounting": [],
+    "cross_branch_contradiction_resolution": [],
+    "shared_semantics_ownership_and_dependency_reconciliation": [],
+    "boundary_and_end_to_end_validation": [],
+    "invalidated_evidence_rerun": [],
+    "final_revision_or_artifact": ""
+  },
   "cross_node_validation": [],
   "cross_node_cleanup_and_final_state": {
     "expected_final_local_workspace_and_git_state": [],
@@ -69,9 +130,10 @@
   "expected_pr_review_and_merge": {
     "review_mode": "author_side|independent|owner_exact_head_authorization|not_applicable",
     "required_checks_reviews_and_protection": [],
+    "focus_branch_integration_evidence": [],
     "merge_method_and_reason": "",
     "issue_closure_branch_worktree_and_dependent_work_effects": [],
     "post_merge_verification_and_cleanup": []
   },
-  "handoff_target": "<next boundary>"
+  "handoff_target": "<next focus branch, integration boundary, or parent state>"
 }

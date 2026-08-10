@@ -1,6 +1,6 @@
 # Pull-request review record
 
-Use this only when review evidence must survive beyond the normal GitHub review/comment: independent or high-consequence review, stabilization/release, cross-session continuation, disputed findings, material cleanup debt, or an exact-head owner authorization.
+Use this only when review evidence must survive beyond the normal GitHub review/comment: independent or high-consequence review, stabilization/release, cross-session continuation, disputed findings, material cleanup debt, large focus-branch integration, or exact-head owner authorization.
 
 ## Review identity
 
@@ -15,10 +15,26 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 
 ## Authority and intended outcome
 
-- Linked issue/task/plan node:
+- Parent task / plan version:
+- Linked issue/task:
 - Governing ADRs/specifications/contracts:
 - Intended integration outcome:
+- Global invariants and closure criteria:
 - Explicit non-goals and closure effect:
+
+## Focus-branch decomposition and integration
+
+- Why focus branching was triggered or not triggered:
+- Integration owner and integration spine:
+- Branch map / exact branch IDs, types, owners, inputs, outputs, dependencies, and statuses:
+- Full-attention sizing evidence:
+- Shared contracts and generated sources:
+- Parallel branches and non-overlapping write surfaces:
+- Branches accepted / integrated / blocked / invalidated / superseded / deferred / removed from scope:
+- Shared-contract changes and invalidated evidence:
+- Contradictions and dispositions:
+- Boundary/end-to-end integration evidence:
+- Final parent revision/artifact:
 
 ## Changed-surface and ancestry accounting
 
@@ -27,11 +43,13 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Generated/schema/manifest/dependency/workflow/packaging effects:
 - Binary, unavailable, truncated, or excluded surfaces:
 
-## Plan-execution fidelity
+## Plan/focus-branch execution fidelity
 
-- Readiness and frozen execution state:
+- Active focus branch / node / owner / exact input revision:
+- Branch readiness and minimal context packet:
 - Expected versus actual effects:
-- Operations, falsifiers, variations, deviations, and node outcome:
+- Operations, falsifiers, variations, deviations, and branch/node outcome:
+- Shared-contract changes, parent-plan revisions, and dependent invalidations:
 - Downstream outputs/revisions and partial-state status:
 
 ## Semantic and integration review
@@ -47,7 +65,8 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 
 - Protected pre-existing/user/shared/authority/evidence/recovery state:
 - Material local files/folders and tracked/generated/build/cache/package state:
-- Local Git branches/worktrees/stashes/refs/config and remote branches:
+- Semantic focus branches and local Git branches/worktrees/stashes/refs/config:
+- Remote branches and active dependents:
 - PR/issue/review/claim/label/milestone/assignment/closure/dependent state:
 - Processes/ports/containers/locks/GPU-device/credential/permission/persistence/external resources:
 - Dispositions and dependency-safe ordering:
@@ -59,7 +78,8 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 ## Evidence
 
 - Focused tests and smoke/integration checks:
-- CI/workflows for the exact head:
+- Branch-output and cross-branch integration checks:
+- CI/workflows for exact head:
 - Sanitizer/profiler/benchmark/artifact evidence:
 - Cleanup verification evidence:
 - Checks not run and why:
@@ -71,6 +91,7 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 |---|---|---|---|---|---|
 
 - Requested changes/review threads reconciled:
+- Invalidated/unintegrated focus branches reconciled:
 - Cleanup debt reconciled:
 - Related findings/issues and duplicate reconciliation:
 
@@ -80,8 +101,9 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Required independent approval or owner exception:
 - Proposed merge method and rationale:
 - Required checks/protections/queue:
+- Parent/focus-branch closure effect:
 - Issue closure effect:
-- Local/remote branch, worktree, dependent-PR, artifact, permission, and cleanup effect:
+- Local/remote Git branch, worktree, dependent-PR, artifact, permission, and cleanup effect:
 - Conditions that invalidate this review:
 
 ## Post-merge verification and cleanup
@@ -89,6 +111,7 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Integrated target SHA:
 - Reviewed-head to integrated-commit mapping:
 - Target tree/result verified:
+- Parent/focus-branch map points to integrated revision:
 - Target checks/deployment/packaging verified:
 - Issue and local/remote branch/worktree disposition:
 - Dependent work updated:

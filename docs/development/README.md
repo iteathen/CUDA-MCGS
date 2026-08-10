@@ -7,6 +7,7 @@ The canonical development system is [`../../agent_files/README.md`](../../agent_
 The project method is:
 
 - proportional adversarial assessment before planning substantial or critical work;
+- semantic focus-branch decomposition for large/complex tasks, with one parent integration spine, full-attention leaves, exact branch contracts, explicit invalidation, constrained parallelism, and central reconciliation;
 - governed plan execution through ready nodes, coherent operations, expected-versus-actual inspection, evidence-driven deviations, and no invalid partial state;
 - explicit cleanup and artifact disposition across local, Git, GitHub, device, credential, generated, retained, remote, and external state;
 - proportional sanity checking with exact claims, semantic interrogation, boundary/path/lifecycle/cleanup reconciliation, and durable findings;
@@ -15,7 +16,7 @@ The project method is:
 - LEGO component ownership, SOLID internal responsibilities, CUPID implementation quality, and simplest sufficient total-system design;
 - mature-scale organization from the first implementation;
 - reusable contracts with specialized internals;
-- coherent work by ownership boundary;
+- coherent work by semantic ownership boundary rather than physical file count;
 - specification-first foundational changes;
 - evidence-first debugging and performance work;
 - validation, protection, and cleanup gates that are never weakened for convenience;
@@ -23,6 +24,8 @@ The project method is:
 - provenance-preserving documentation, archive, and handoffs.
 
 Assessment and planning are governed by [`../decisions/ADR-0006-adversarial-assessment-and-planning.md`](../decisions/ADR-0006-adversarial-assessment-and-planning.md) and [`../../agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](../../agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md).
+
+Focus-branch decomposition and integration are governed by [`../decisions/ADR-0011-focus-branch-decomposition-and-integration.md`](../decisions/ADR-0011-focus-branch-decomposition-and-integration.md) and [`../../agent_files/general_foundation/FOCUS_BRANCHES.md`](../../agent_files/general_foundation/FOCUS_BRANCHES.md).
 
 Plan execution is governed by [`../decisions/ADR-0009-governed-plan-execution.md`](../decisions/ADR-0009-governed-plan-execution.md) and [`../../agent_files/general_foundation/PLAN_EXECUTION.md`](../../agent_files/general_foundation/PLAN_EXECUTION.md).
 
@@ -38,4 +41,4 @@ Organization is governed by [`../decisions/ADR-0004-large-project-organization.m
 
 Project-specific guardrails are in [`../../agent_files/application_specific/UMCGS_PROFILE.md`](../../agent_files/application_specific/UMCGS_PROFILE.md).
 
-Use the combined assessment template only when durable planning is needed. Use the plan-execution template only when coordinated, cross-session, high-consequence, or invalid-intermediate-state execution needs unique operation evidence. Use the cleanup template only when shared, external, sensitive, retained, recovery-critical, long-lived, atomic, difficult-to-verify, or independently blocked state needs durable lifecycle evidence. Use sanity and PR-review templates only when the claim, independence, consequence, dispute, or cross-session continuation requires persistent evidence. Routine execution, task-owned scratch cleanup, self-sanity, and author-side PR review belong in the issue, PR, or task result.
+Use the combined assessment template only when durable planning is needed. Use the focus-branch template only when a branch crosses sessions/agents, runs in parallel, carries high consequence, or needs independent continuation/review. Use the plan-execution template only when coordinated, cross-session, high-consequence, or invalid-intermediate-state execution needs unique operation evidence. Use the cleanup template only when shared, external, sensitive, retained, recovery-critical, long-lived, atomic, difficult-to-verify, or independently blocked state needs durable lifecycle evidence. Use sanity and PR-review templates only when the claim, independence, consequence, dispute, or cross-session continuation requires persistent evidence. Routine focus branches, execution, task-owned scratch cleanup, self-sanity, and author-side PR review belong in the parent issue, plan, PR, or task result.

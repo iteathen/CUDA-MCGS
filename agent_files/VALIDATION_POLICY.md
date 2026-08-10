@@ -1,12 +1,12 @@
 # Validation Policy
 
-**Scope:** Evidence required before a UMCGS change, plan-node acceptance, cleanup claim, review claim, or integration may be considered complete.
+**Scope:** Evidence required before a UMCGS change, focus-branch result, plan-node acceptance, cleanup claim, review claim, or integration may be considered complete.
 
 ## Principle
 
-Validation must observe the mechanism and state being claimed. A passing unrelated test, successful compilation, plausible output, cleanup command, PR approval, or merge response is not evidence of correctness or final disposition for an unobserved boundary.
+Validation must observe the mechanism, branch output, integration, and state being claimed. A passing unrelated test, successful compilation, plausible output, locally accepted branch, cleanup command, PR approval, or merge response is not evidence of correctness or final disposition for an unobserved boundary.
 
-Tests, protections, cleanup safeguards, and gates are never weakened merely to make a change pass, look clean, or merge.
+Tests, protections, focus-branch constraints, cleanup safeguards, and gates are never weakened merely to make a change pass, look complete, look clean, or merge.
 
 ## Validation layers
 
@@ -18,211 +18,178 @@ Required for every repository change that touches durable project state:
 ./scripts/verify-docs.sh
 ```
 
-This verifies required authority, status markers, relative links, structured records, issue forms, project topology, component manifest placement, and cleanup-governance presence.
+This verifies required authority, status markers, relative links, structured records, issue forms, project topology, component manifest placement, and focus-branch/cleanup governance presence.
 
 ### 2. Assessment and planning
 
 Substantial and critical work must verify that:
 
-- the required outcome, authority, evidence, scope, assumptions, cost of doing nothing, and cleanup consequences were assessed before implementation planning;
-- every applicable canonical question group was answered directly or by link to current authority;
+- outcome, authority, evidence, scope, assumptions, cost of doing nothing, and cleanup consequences were assessed before implementation planning;
+- every applicable canonical question group was answered directly or linked to current authority;
 - the strongest credible opposing design or explanation was steelmanned;
-- valid criticism changed the design, scope, experiment, validation, cleanup, or disposition;
+- valid criticism changed design, scope, branch map, experiment, validation, cleanup, or disposition;
 - consequential unknowns have evidence, falsifiers, bounded assumptions, experiments, blockers, cleanup debt, or revisit triggers;
-- the plan follows coherent ownership boundaries, orders nodes by dependency/uncertainty, defines exact outputs/downstream consumers, pairs validation with mechanisms, defines cleanup/disposition, and defines stop conditions;
+- the plan follows coherent ownership boundaries, orders nodes/branches by dependency and uncertainty, defines exact outputs/downstream consumers, pairs validation with mechanisms, defines cleanup/disposition, and defines stop conditions;
 - planning records are proportional and do not duplicate authority or create unowned accounting.
 
 Use `agent_files/templates/assessment-and-plan.template.md` when a durable record is required.
 
-### 3. Governed plan execution
+### 3. Focus-branch decomposition and integration
 
-A material plan node must verify that:
+When a task is large or complex, verify that:
 
-- the exact plan record, plan version, node ID, owner, branch/environment, and frozen revision are known;
-- the node is explicitly ready and every dependency or authorized waiver is evidenced;
-- dependency outputs and revisions match what the node expects;
-- governing authority, accepted specifications, contracts, schemas, manifests, and tests are current and non-contradictory;
-- repository/worktree state, generated inputs, model/profile, toolchain, driver/hardware assumptions, and test/runtime state are trustworthy where material;
-- expected local and wider effects, outputs, acceptance, cheapest decisive falsifier, rollback/safe stop, cleanup obligations, and escalation conditions were recorded before mutation;
-- every newly triggered design, persistence, compatibility, security, concurrency, memory, graph/search, evaluator, performance, generated/JIT/ABI, cleanup, sanity, packaging, or release rule was applied;
-- each operation was one coherent ownership-sized validity transition rather than an arbitrary file batch;
-- actual effects were inspected immediately and compared with expected effects;
-- focused falsification and affected component/contract/boundary/path/lifecycle/design/cleanup reconciliation were performed before continuing;
-- every variation or deviation was classified, with material deviations causing plan revision and downstream invalidation;
-- coordinated or irreversible work defined valid pre/post states, intermediate visibility, publication, rollback/recovery, cleanup, and acceptance;
-- no invalid partial state, competing authority, stale generated form, abandoned resource, unowned residue, or false downstream precondition remains;
-- every acceptance criterion has exact evidence and downstream consumers received the correct outputs/revisions;
-- the execution record is proportional and does not duplicate issue, plan, cleanup, PR, or handoff history.
+- one canonical parent task and integration spine own final outcome, authority, plan version, global invariants, shared vocabulary, dependency graph, invalidation, contradictions, cleanup, and closure;
+- the decomposition trigger is attention, semantic ownership, independent unknowns, specialist risk, cross-session work, parallelism, or integration complexity—not merely file count;
+- every material leaf has a stable ID, type, status, one primary semantic owner, one primary question/output, exact inputs/revisions, minimal context packet, scope/non-goals, write permissions, preserved global invariants, expected output, downstream consumers, acceptance/falsifier, rollback, cleanup, and integration obligations;
+- every leaf fits one focused session without sampling or skimming and keeps mechanism plus material consequence horizon active in context;
+- branches are split/combined by semantic ownership, output, validation, rollback, cleanup, and validity transition rather than equal file/line/token/agent counts;
+- a semantic focus branch is not confused with a Git branch, issue, PR, component, directory, or document;
+- branch switching preserved an exact continuation checkpoint;
+- shared-contract changes were routed through the integration spine, versioned, and used to invalidate every dependent branch/evidence set;
+- parallel branches used one compatible parent version, non-overlapping owners/write surfaces, frozen or coordinated shared contracts/generated sources, acyclic dependencies, independent acceptance/rollback/cleanup, and one integration owner;
+- each branch output has an exact revision, authority/confidence, assumptions/exclusions, evidence, checks not run, claim limits, cleanup state, and downstream effect;
+- every planned branch is integrated, blocked, invalidated, superseded, authoritatively deferred, or removed from scope with a reason;
+- local `accepted` status is distinguished from parent `integrated` status;
+- integration reconciles terminology, ownership, dependencies, units, ranges, precision, identity, versions, memory spaces, lifecycle, ordering, failure, recovery, cleanup, contracts, generated forms, persistence, compatibility, security, provenance, resources, performance, and search quality;
+- contradictions and invalidated evidence were resolved or exactly bounded;
+- boundary and end-to-end validation proves the parent result against one exact final revision/artifact;
+- Git/GitHub objects were created and retained only when isolation, owner, deliverable, risk, dependency, review, transport, rollback, or closure justified them.
 
-Use `agent_files/templates/plan-execution.template.yaml` only when cross-session, multi-agent, coordinated, high-consequence, invalid-intermediate-state, or evidence-gated execution needs durable operation state.
+Use `agent_files/templates/focus-branch.template.yaml` only when a branch crosses sessions/agents, runs in parallel, carries high consequence, or needs independent continuation/review.
 
-### 4. Cleanup and artifact disposition
+### 4. Governed plan execution
+
+A material plan node/focus branch must verify that:
+
+- exact parent plan/version, focus-branch ID, node ID, owner, Git branch/environment, and frozen revision are known;
+- branch/node is explicitly ready and dependencies or authorized waivers are evidenced;
+- dependency outputs/revisions match expectations;
+- authority, specifications, contracts, schemas, manifests, and tests are current and non-contradictory;
+- repository/worktree, generated inputs, model/profile, toolchain, driver/hardware, and test/runtime state are trustworthy where material;
+- expected local/wider effects, outputs, acceptance, falsifier, rollback/safe stop, cleanup, integration, and escalation were recorded before mutation;
+- newly triggered design, persistence, compatibility, security, concurrency, memory, graph/search, evaluator, performance, generated/JIT/ABI, focus-branch, cleanup, sanity, packaging, or release rules were applied;
+- each operation was one coherent ownership-sized validity transition inside the branch write boundary;
+- actual effects were inspected immediately and compared with expectations;
+- focused falsification and affected component/contract/boundary/path/lifecycle/design/cleanup/integration reconciliation occurred before continuation;
+- variations/deviations were classified, with material changes revising the parent plan and invalidating affected branches;
+- coordinated/irreversible work defined valid pre/post states, intermediate visibility, publication, rollback/recovery, cleanup, and acceptance;
+- no invalid partial state, competing authority, stale generated form, abandoned resource, unowned residue, half-active branch, or false downstream precondition remains;
+- every acceptance criterion has exact evidence and downstream consumers receive exact outputs/revisions;
+- records are proportional and do not duplicate issue, parent plan, branch map, execution, cleanup, PR, and handoff history.
+
+Use `agent_files/templates/plan-execution.template.yaml` only when durable operation state is justified.
+
+### 5. Cleanup and artifact disposition
 
 A material cleanup/disposition claim must verify that:
 
 - task-created, temporarily modified, superseded, partial, generated, diagnostic, local, remote, external, sensitive, and coordination state was inventoried where triggered;
-- protected user/pre-existing/uncommitted/shared/authority/evidence/provenance/recovery state was identified and remains intact;
-- every material item has one explicit disposition: remove, restore, retain authority/evidence/recovery, archive, quarantine, transfer, supersede, retain temporarily with owner/trigger, or protect unchanged;
-- cleanup order preserves active dependencies, evidence, rollback, recovery, tests, releases, PRs, branches, and downstream consumers;
-- destructive operations used exact targets, narrow selectors, preview/dry-run where available, required authority, recovery safeguards, and immediate actual-effect inspection;
-- repository files, local files/folders, generated/build/test/cache/package output, branches/worktrees/stashes/Git operations, remote branches/refs, PRs/issues/reviews/claims, workflow/release/package artifacts, processes/ports/containers/locks/leases, GPU/device state, credentials/permissions, persistence/backups, research/evidence, and external/paid resources were reconciled where applicable;
-- historically useful stale material was archived with provenance, date, reason, successor, and removal context rather than silently deleted;
-- secret exposure, if possible, caused revocation/rotation and bounded incident handling rather than deletion alone;
-- local and remote final state was verified through the owning system rather than inferred from command success;
-- retained temporary state has an owner, location, reason, protection, risk, expiry/removal trigger, and next action;
-- cleanup debt is exact, safe, bounded, visible, independently actionable, and explicit about parent acceptance;
-- cleanup debt does not hide an unmet acceptance criterion or residue that can corrupt behavior, expose data, incur uncontrolled cost, mislead authority, defeat recovery, or contaminate later work;
-- canonical issue, plan/execution, PR, status, and handoff records accurately describe retained state and remaining cleanup.
+- protected user/pre-existing/uncommitted/shared/authority/evidence/provenance/recovery state remains intact;
+- every material item has one explicit disposition;
+- cleanup order preserves focus/Git branch dependencies, evidence, rollback, recovery, tests, releases, PRs, and downstream consumers;
+- destructive operations used exact targets, narrow selectors, preview/dry-run where available, authority, recovery safeguards, and immediate actual-effect inspection;
+- repository, local files, generated/build/test/cache/package output, branches/worktrees/stashes/Git operations, remote refs/PRs/issues/reviews/claims, workflow/release artifacts, processes/ports/containers/locks/leases, GPU/device state, credentials/permissions, persistence/backups, research/evidence, and external/paid resources were reconciled where applicable;
+- historically useful stale material was archived with provenance rather than silently deleted;
+- possible secret exposure caused revocation/rotation and bounded incident handling;
+- local and remote final state was verified through the owning system;
+- retained temporary state and cleanup debt have owners, reasons, protection, objective triggers, and next actions;
+- cleanup debt does not hide unmet acceptance or unsafe residue;
+- canonical parent/focus-branch/issue/plan/execution/PR/status/handoff records describe retained state accurately.
 
-Routine task-owned scratch and ordinary verified branch cleanup may be reported inline. Use `agent_files/templates/cleanup-disposition.template.yaml` only when shared, external, sensitive, retained, recovery-critical, long-lived, atomic, or independently blocked state needs durable lifecycle evidence.
+Use `agent_files/templates/cleanup-disposition.template.yaml` only when durable lifecycle evidence is justified.
 
-### 5. Sanity checking and independent review
+### 6. Sanity checking and independent review
 
 When a sanity, audit, complete-review, incident, release-readiness, or system-wide claim is made, verify that:
 
-- the exact revision/artifact and `full`, `bounded`, or `sampled` claim are explicit;
+- exact revision/artifact and `full`, `bounded`, or `sampled` claim are explicit;
 - included/excluded surfaces, owners, authority, risks, access limits, environment, external state, and review mode are declared;
 - a complete semantic coverage map exists before deep inspection;
-- the map is split into stable review branches by owner, boundary, path, cross-cutting concern, or artifact rather than arbitrary file count;
-- every leaf branch has one primary semantic owner or one coherent path, a complete semantic-unit inventory, and a sizing rationale showing it fits one focused session without sampling or skimming;
-- every surface included in a full or bounded claim is accounted for at risk-justified depth;
-- every material semantic unit answers the full mandatory core: purpose/specification, owner/LEGO boundary, inputs/outputs/effects, callers/dependencies, state/identity/lifetime, foundations/ranges, design-principle alignment, ordering/resources/pressure, failure/cleanup, counterexample, decisive evidence, and wider consequence horizon;
-- every objectively triggered specialist module is resolved or explicitly blocked;
-- component/producer-consumer boundaries, representative and critical end-to-end paths, cross-cutting lifecycle, design principles, cleanup state, contradictions, and invalidated evidence are reconciled;
-- tests, analyzers, sanitizers, profilers, benchmarks, artifact checks, and cleanup checks are used as mechanism-relevant evidence rather than semantic substitutes;
-- passing leaf branches are not treated as integrated proof;
-- confirmed violations and high-risk uncertainties have exact mechanism, consequence, owner, durable disposition, and required revalidation;
+- review branches are stable semantic focus branches by owner, boundary, path, cross-cutting concern, or artifact rather than file count;
+- every review leaf has one primary owner/coherent path, complete semantic-unit inventory, and full-attention sizing rationale;
+- every included surface is accounted for at risk-justified depth;
+- every material semantic unit answers the mandatory core and objectively triggered modules;
+- component/producer-consumer boundaries, end-to-end paths, parent/focus-branch outputs, lifecycle, design, cleanup, contradictions, and invalidated evidence are reconciled;
+- tools are mechanism-relevant evidence rather than semantic substitutes;
+- passing leaves are not treated as integrated proof;
+- violations/high-risk uncertainties have exact mechanism, consequence, owner, disposition, and revalidation;
 - independent review did not quietly repair findings;
-- changed revisions invalidated and reran affected branch, boundary, path, and cleanup evidence;
-- checks not run, missing access/evidence, review-created state, cleanup state, and claim limits are explicit;
-- the final claim is no broader than the reconciled evidence.
+- changed revisions/contracts invalidate and rerun affected branch/boundary/path/cleanup evidence;
+- checks not run, missing access/evidence, review-created state, cleanup, and claim limits are explicit;
+- final claim is no broader than reconciled evidence.
 
-Routine implementation self-sanity may be recorded in the PR or task result. Use `agent_files/templates/sanity-check.template.yaml` only when a full, long-running bounded, multi-agent, independent, incident, release, or cross-session review needs durable coverage state. Use `semantic-review.template.yaml` only for critical or independently assigned leaf branches.
-
-### 6. Pull-request review and guarded merge
+### 7. Pull-request review and guarded merge
 
 Every material PR must verify:
 
-- PR identity, intended target, exact reviewed head, relevant base/merge base, comparison range, and review mode;
-- complete changed-file, rename, deletion, generated, manifest, schema, dependency, workflow, packaging, cleanup, and ancestry accounting;
-- agreement with owner instruction, ADRs/specifications, assessment, governed plan execution, component ownership, public contracts, cleanup doctrine, and closure criteria;
-- semantic review of material changed units and reconciliation of affected callers, dependencies, state, resources, lifecycle, compatibility, cleanup, and end-to-end paths;
-- current discussion, requested changes, inline threads, bot findings, linked blocking issues, and cleanup debt;
-- focused tests/checks and cleanup verification that belong to the exact head, with checks not run and infrastructure limitations explicit;
-- honest classification as author-side, independent, or exact-head owner authorization;
-- invalidation/re-review when the head or material base state changes;
-- no unresolved blocker, question, required review/check/protection, unsafe cleanup residue, or unknown mergeability/closure effect before merge.
+- PR identity, target, exact reviewed head, relevant base/merge base, comparison, and review mode;
+- complete changed surface, ancestry, generated/manifest/schema/dependency/workflow/packaging/cleanup effects;
+- agreement with owner instruction, ADRs/specifications, assessment, focus-branch map, governed execution, ownership, contracts, cleanup, and closure;
+- every represented focus branch is accounted for by status and exact output revision;
+- semantic review and reconciliation cover callers, dependencies, state, resources, lifecycle, compatibility, cleanup, and end-to-end paths;
+- discussion, requested changes, threads, bot findings, linked blockers, invalidated/unintegrated branches, and cleanup debt are reconciled;
+- focused tests/checks, branch integration, and cleanup evidence belong to exact head;
+- review independence is labeled honestly;
+- head, material base, parent-plan, or shared-contract changes invalidate/review affected evidence;
+- no unresolved blocker, question, required gate, unintegrated material branch, unsafe residue, or unknown closure effect remains.
 
-The merge transaction must independently revalidate:
+The merge transaction revalidates current head, target, ancestry/mergeability, required reviews/checks/protection/queue, discussion, issue closure, semantic/Git branch/worktree disposition, stacked/dependent work, cleanup debt, and conflicts. Use expected-head protection and never bypass target history/protection.
 
-- the PR is open, non-draft, and targets the intended branch;
-- the current head exactly matches the accepted head;
-- ancestry, current base/mergeability, required reviews/checks/CODEOWNERS/protection/queue, and blocking discussion are current;
-- issue closure, source local/remote branch and worktree disposition, stacked/dependent work, cleanup debt, and conflicting/superseding work are correct;
-- the merge method is deliberate;
-- an expected-head guard is used where supported;
-- target history/protection is not bypassed or force-updated.
+Post-merge verification records target SHA, proves tree/result and parent branch-map integration, reconciles issue/branch/worktree/dependent effects, completes or tracks cleanup, and states uncompleted checks.
 
-Post-merge verification must record the resulting target SHA, prove the intended tree/result is integrated, reconcile issue/branch/worktree/dependent-work effects, complete or track post-merge cleanup, and state checks not completed.
+### 8. Design and component boundaries
 
-Routine author-side review belongs in the PR. Use `agent_files/templates/pr-review.template.md` only when independent/high-consequence review, stabilization/release, dispute, or cross-session continuation needs unique durable evidence.
+A component, public contract, dependency, foundational representation, compatibility boundary, or reusable name must verify:
 
-### 7. Design and component boundaries
-
-A component, public contract, dependency, foundational representation, compatibility boundary, or reusable naming change must verify:
-
-- governing purpose, operating bounds, contextual concern weighting, lifecycle, and disposition;
-- singular state/lifecycle ownership and explicit non-responsibilities;
+- governing purpose, bounds, concern weighting, lifecycle, and disposition;
+- singular state/lifecycle ownership and non-responsibilities;
 - LEGO ports, injected dependencies, adapters, and replacement/test boundary;
-- SOLID internal responsibilities without ceremonial decomposition;
-- CUPID implementation quality;
-- domain-appropriate ranges, precision, capacity, and exhaustion behavior;
-- second-instance, first-consumer deletion, and inclusion/exclusion tests for reusable concepts;
-- total-system simplicity, including cleanup and complexity moved elsewhere;
-- compatibility/evolution, archive/supersession, and decisive falsifying evidence.
+- justified SOLID responsibilities and CUPID quality;
+- domain-appropriate ranges, precision, capacity, and exhaustion;
+- accurate-generality tests;
+- total-system simplicity including focus-branch coordination and cleanup;
+- compatibility/evolution, archive/supersession, and decisive falsification.
 
-Use `agent_files/templates/design-review.template.md` for foundational or contested designs.
+### 9. Schema and generated artifacts
 
-### 8. Schema and generated artifacts
+Verify schema syntax/versioning, normalization, invalid/boundary cases, deterministic generation, source/generated correspondence, compatibility, range/alignment/precision/layout, cache identity, and stale-output disposition.
 
-A schema/compiler change must verify:
+### 10. Component-local behavior
 
-- schema syntax and version negotiation;
-- canonical normalization;
-- invalid and boundary cases;
-- deterministic generation;
-- source/generated correspondence;
-- backward/forward compatibility rules;
-- exact range, alignment, precision, and layout probes where applicable;
-- stale generated forms, caches, packages, and temporary outputs are removed, archived, quarantined, or intentionally retained.
+Each component owns focused tests for public contracts, internal invariants, failure, lifecycle, concurrency, resource exhaustion, and cleanup. The manifest lists commands.
 
-### 9. Component-local behavior
+### 11. Cross-component integration
 
-Every component owns focused tests for public contracts, internal invariants, failure states, lifecycle, concurrency, resource exhaustion, and cleanup. The component manifest lists commands.
+Integration tests use public surfaces and declared dependency direction, including failure propagation, incompatible versions, resource transfer, cleanup, and exact focus-branch output integration where relevant.
 
-### 10. Cross-component integration
+### 12. Reference and conformance
 
-The repository integration suite verifies only public surfaces and declared dependency direction. It must include failure propagation, incompatible-version behavior, and cleanup/resource transfer across boundaries.
+Complex search behavior requires deterministic reference/synthetic cases exposing transpositions, cycles/history, chance, lazy/large actions, evaluator modes, backup/reduction, pressure/exhaustion, reroot/persistence, termination/cancellation/teardown, and retained-state cleanup.
 
-### 11. Reference and conformance
+### 13. CUDA/device correctness
 
-Complex search behavior requires deterministic reference cases and synthetic domains that expose:
+Use relevant sanitizer, publication/race, deterministic, host-reference, capability, lifetime/leak, cancellation/teardown/device-loss/IPC/shared-memory/failure tests. Verify contexts, modules, allocations, queues, event/stream/graph state, and diagnostics are released or deliberately retained, and prove active search does not depend on host-produced intermediate decisions.
 
-- transpositions;
-- cycles/history;
-- stochastic/chance nodes;
-- lazy/large action spaces;
-- evaluator modes;
-- backup/reduction modes;
-- resource pressure and exhaustion;
-- rerooting/persistence where selected;
-- termination, cancellation, teardown, and retained-state cleanup.
+### 14. Performance
 
-### 12. CUDA/device correctness
+Performance claims require exact commit/generated-engine identity, hardware/software/model/resource profile, workload, warmup/synchronization/sample/statistics, raw results, quality/correctness guardrails, fair baseline, profiler mechanism evidence, and disposition of temporary instrumentation/artifacts/resources.
 
-Device changes require relevant combinations of:
+A faster result that changes semantics, quality, resource limits, stopping behavior, or cleanup is not automatically an improvement.
 
-- compute-sanitizer tools;
-- race/publication-order tests;
-- deterministic small cases;
-- host reference differential tests;
-- architecture and capability probes;
-- memory-leak/lifetime checks;
-- cancellation, teardown, device-loss, IPC/shared-memory, and failure injection;
-- verification that contexts, modules, allocations, queues, event/stream/graph state, and diagnostic buffers are released or deliberately retained;
-- explicit proof that production search does not depend on host-produced intermediate decisions.
+### 15. Publication and release
 
-### 13. Performance
+Before claiming publication/release:
 
-Performance claims require:
-
-- exact commit and generated-engine identity;
-- GPU/CPU, driver, toolkit, runtime, clocks/power profile where material;
-- model/evaluator and resource profile;
-- workload distribution;
-- warmup, synchronization boundary, sample count, statistics;
-- raw results;
-- correctness/quality guardrails;
-- fair baseline;
-- profiler evidence explaining the mechanism;
-- disposition of temporary instrumentation, traces, dumps, benchmark artifacts, caches, and external resources.
-
-A faster result that changes search quality, domain semantics, resource limits, stopping behavior, or cleanup obligations is not automatically an improvement.
-
-### 14. Publication and release
-
-Before claiming publication or release:
-
-- inspect the full final diff and repository state;
+- inspect final diff and repository state;
 - stage only intended scope;
-- run all applicable validation and cleanup layers;
-- update plan/execution/cleanup state, component manifests, registry, indexes, authority, findings, and archive;
-- complete exact-head PR review and guarded merge when repository integration is part of the work;
-- verify the remote target commit/PR, hosted checks, artifacts, issue closure, local/remote branch disposition, temporary permissions, packages/releases, external resources, and dependent work;
-- record exact failures, skipped validation, retained state, cleanup debt, or claim limits.
+- run all applicable validation/cleanup layers;
+- update parent/focus-branch/plan/execution/cleanup state, manifests, registry, indexes, authority, findings, and archive;
+- complete exact-head review/guarded merge when integrating;
+- verify remote target, checks, artifacts, issue closure, semantic/Git branch/worktree disposition, permissions, packages/releases, external resources, and dependents;
+- record failures, skipped validation, retained state, cleanup debt, and claim limits.
 
 ## Current phase
 
-UMCGS has no accepted production implementation or public release yet. The mandatory current check is `./scripts/verify-docs.sh`, plus any task-specific research, specification, assessment, execution, cleanup, sanity, PR-review, merge, or independent-review validation.
+UMCGS has no accepted production implementation or public release yet. The mandatory current check is `./scripts/verify-docs.sh`, plus task-specific research, specification, assessment, focus-branch, execution, cleanup, sanity, PR-review, merge, or independent-review validation.
 
-Project license selection is deferred and does not block original private pre-release work. It remains a separate gate before public distribution and before implementation-level third-party reuse that requires compatibility analysis and donor-artifact disposition.
+Project license selection is deferred and does not block original private pre-release work. It remains a separate gate before public distribution and before implementation-level third-party reuse requiring compatibility analysis and donor-artifact disposition.

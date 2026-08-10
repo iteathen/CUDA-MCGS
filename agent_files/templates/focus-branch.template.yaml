@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "parent_task": {
+    "id": "",
+    "title": "",
+    "plan_record": "",
+    "plan_version": 1,
+    "status": "proposal|active|paused|blocked|complete|superseded",
+    "owner": "",
+    "integration_owner": "",
+    "frozen_revision_or_artifact": "",
+    "objective": "",
+    "closure_criteria": [],
+    "global_invariants_and_shared_definitions": [],
+    "included_surface": [],
+    "excluded_surface_and_reason": [],
+    "global_validation_and_cleanup": []
+  },
+  "focus_branch": {
+    "id": "",
+    "title": "",
+    "type": "evidence|decision|owner|contract|path|risk|implementation|validation|cleanup|integration",
+    "status": "planned|ready|active|paused|blocked|accepted|invalidated|superseded|integrated|archived",
+    "owner": "",
+    "integration_owner": "",
+    "git_branch_or_worktree": "",
+    "exact_base_or_input_revision": "",
+    "primary_question_or_outcome": "",
+    "scope": [],
+    "non_goals": [],
+    "prohibited_changes": [],
+    "write_surface_and_authority": [],
+    "global_invariants_to_preserve": [],
+    "material_consequence_horizon": []
+  },
+  "full_attention_sizing": {
+    "one_primary_semantic_owner": false,
+    "one_primary_question_or_output": false,
+    "fits_one_focused_session_without_sampling_or_skimming": false,
+    "mechanism_and_material_consequences_fit_active_context": false,
+    "independent_acceptance_rollback_and_cleanup_are_understandable": false,
+    "split_or_combination_reason": ""
+  },
+  "context_packet": {
+    "governing_authority": [],
+    "exact_files_symbols_schemas_artifacts_paths_or_external_ids": [],
+    "dependency_inputs_and_revisions": [],
+    "shared_terms_units_ranges_identity_and_versions": [],
+    "local_mechanism_and_state": [],
+    "specialist_doctrine_triggered": [],
+    "context_explicitly_not_loaded": []
+  },
+  "dependencies_and_coordination": {
+    "upstream_focus_branches": [],
+    "downstream_focus_branches": [],
+    "shared_contracts_or_generated_sources": [],
+    "parallel_siblings_and_non_overlapping_write_surfaces": [],
+    "atomic_group": "",
+    "invalidation_inputs": [],
+    "collision_and_escalation_route": ""
+  },
+  "output_contract": {
+    "expected_output": "",
+    "output_format_or_location": [],
+    "downstream_consumers": [],
+    "acceptance_criteria": [],
+    "cheapest_decisive_falsifier": "",
+    "broader_reconciliation_required": [],
+    "rollback_recovery_and_safe_stop": [],
+    "cleanup_and_disposition": []
+  },
+  "execution": {
+    "readiness_evidence": [],
+    "operations_and_exact_effects": [],
+    "checks_and_evidence": [],
+    "checks_not_run_and_reason": [],
+    "contradictions_and_cross_branch_findings": [],
+    "variations_deviations_and_parent_plan_changes": [],
+    "current_partial_state": [],
+    "cleanup_state": []
+  },
+  "branch_result": {
+    "classification": "continue|accept|pause|block|invalidate|supersede|integrate",
+    "accepted_output_and_revision": [],
+    "assumptions_exclusions_and_claim_limits": [],
+    "parent_or_sibling_branches_invalidated_unblocked_or_made_ready": [],
+    "integration_obligations": [],
+    "handoff_or_next_safe_action": ""
+  },
+  "integration": {
+    "status": "not_started|active|blocked|integrated|rejected",
+    "shared_semantics_reconciled": false,
+    "ownership_and_dependency_direction_reconciled": false,
+    "units_ranges_precision_identity_versions_and_memory_spaces_reconciled": false,
+    "lifecycle_failure_recovery_and_cleanup_reconciled": false,
+    "resource_performance_security_compatibility_and_provenance_reconciled": false,
+    "boundary_and_end_to_end_validation": [],
+    "contradictions_and_dispositions": [],
+    "final_parent_revision_or_artifact": ""
+  }
+}
