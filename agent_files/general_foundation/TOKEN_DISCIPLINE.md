@@ -1,423 +1,569 @@
-# Token-Use and Context Discipline
+# Token-Use, Context, and Backpressure Discipline
 
-**Scope:** All agent research, assessment, planning, focus-branch work, implementation, debugging, validation, review, integration, cleanup, and handoff in UMCGS.
+**Scope:** Every agent task in UMCGS, including routine edits, research, assessment, planning, engineering decisions, focus-branch work, implementation, debugging, testing, validation, review, integration, cleanup, and handoff.
 
 ## Purpose
 
-Tokens are a finite engineering resource. They carry authority, evidence, local mechanism, reasoning, tool results, generated text, and continuation state inside a bounded context window. Poor token discipline fails in two opposite ways:
+Tokens are a finite engineering resource and therefore a source of **backpressure** on all work. Backpressure should prevent uncontrolled context growth, repeated retrieval, speculative scope, fragmented repair loops, duplicated documentation, and tests whose cost exceeds their decision value.
 
-- **token waste** — repeatedly loading history, copying authority, narrating obvious work, retrying unchanged hypotheses, generating unused scaffolding, and keeping several branches active at once;
-- **token starvation** — compressing or skipping authority, evidence, failure analysis, validation, integration, cleanup, or handoff merely to produce a short answer or more code.
+Token pressure must not become an excuse to omit the practices that make the result trustworthy.
 
 The governing rule is:
 
-> Maximize verified coherent progress per token. Spend tokens on facts and reasoning that can change the path; preserve enough context for validation, integration, cleanup, and handoff; and never trade correctness, safety, authority, or recoverability for apparent brevity.
+> Use token cost as continuous backpressure on scope, work in flight, retrieval, reasoning, generation, testing, and administration. Reduce waste and optional breadth before reducing rigor. Preserve a risk-appropriate minimum practice floor for every claim and operation.
 
-The goal is not the smallest token count. The goal is the least total token cost that produces a trustworthy result, including rework avoided.
+The goal is not the lowest token count. The goal is the least total lifecycle token cost that produces a correct, safe, specification-aligned, verified, integrated, recoverable, and continuation-ready result.
 
-## What the budget includes
-
-Treat all of the following as parts of one attention budget:
-
-- input and retrieved context;
-- hidden/internal reasoning capacity where the runtime exposes or limits it;
-- user-visible prose and code generation;
-- tool calls and returned data;
-- repeated reads, retries, and branch switching;
-- durable records and generated artifacts;
-- validation, review, integration, cleanup, and handoff.
-
-A short response can still be wasteful if it causes another agent to reconstruct missing state. A long response can be efficient if it becomes durable authority that prevents repeated rediscovery. Judge total lifecycle cost.
-
-## Authority and correctness floor
-
-Token discipline is subordinate to project authority and sound engineering.
-
-Never save tokens by omitting material:
-
-- owner instruction or accepted authority;
-- exact revisions, identifiers, units, ranges, versions, or memory spaces;
-- shared-contract meaning;
-- critical preconditions or dependencies;
-- failure, pressure, cancellation, recovery, migration, compatibility, security, or cleanup behavior;
-- decisive evidence, contradictory evidence, or checks not run;
-- exact partial state and next safe action;
-- required independent review or merge protection.
-
-If the available budget cannot support the minimum sound work, reduce scope, split into focus branches, pause mutation, or hand off. Do not produce an under-reasoned implementation and label it efficient.
-
-## Token objective
+## Core model
 
 Optimize for:
 
 ```text
-verified coherent progress
-────────────────────────────
-total tokens across the lifecycle
+quality-adjusted verified coherent progress
+─────────────────────────────────────────
+       total lifecycle token cost
 ```
 
-“Verified coherent progress” means an accepted decision, evidence-producing experiment, valid state transition, resolved defect, integrated branch output, or continuation-ready handoff. Activity, text volume, tool-call count, files touched, and code generated are not progress by themselves.
+The numerator includes:
 
-## Task classes and proportional rigor
+- accepted decisions and specifications;
+- valid state transitions;
+- resolved root causes;
+- accurate test evidence;
+- integrated branch outputs;
+- verified cleanup;
+- continuation-ready checkpoints and handoffs.
+
+The denominator includes:
+
+- retrieved context;
+- reasoning and generated text/code;
+- tool calls and returned output;
+- repeated reads and retries;
+- testing and repair cycles;
+- review, integration, cleanup, and handoff;
+- future reconstruction and rework caused by missing state.
+
+A short answer can be expensive if another agent must reconstruct what was omitted. A long durable specification can be efficient if it prevents repeated rediscovery. Judge total lifecycle cost.
+
+## Token backpressure applies to every task
+
+Every task, including routine work, has a token posture. It need not have a formal ledger.
+
+Before acting, establish at least:
+
+1. the exact owned outcome;
+2. the minimum practice floor required by the claim and consequence;
+3. the smallest coherent scope that can produce useful verified progress;
+4. the cheapest decisive evidence;
+5. enough reserve to inspect actual effects, validate, clean up, and report truthfully;
+6. the signals that will cause batching, narrowing, splitting, handoff, or stop.
+
+For routine work this may take only a sentence of internal orientation. For substantial or critical work it belongs in the task, plan, focus-branch, or token-budget packet.
+
+Backpressure begins with the first retrieval or mutation. It is not a late reaction after the context window is nearly exhausted.
+
+## The minimum practice floor
+
+Token pressure controls **how much work is attempted at once**. It does not lower the truth standard for the work that remains in scope.
+
+### Universal floor for every task
+
+Every task preserves:
+
+- the user’s actual request and explicit constraints;
+- the authoritative owner and current source of truth;
+- inspection of relevant current state before mutation;
+- a coherent owned scope and explicit exclusions when material;
+- expected result and cheapest decisive verification;
+- execution within the owned boundary;
+- immediate inspection of actual effects;
+- relevant verification capable of detecting a plausible failure;
+- reconciliation of created, modified, partial, remote, or obsolete state;
+- an honest result stating what was done, what was not checked, and any remaining risk.
+
+A mechanical edit may satisfy this floor very cheaply. It still may not skip current-state inspection or final verification.
+
+### Substantial-work additions
+
+When the task crosses files, contracts, components, persistent state, sessions, environments, or owners, also preserve:
+
+- dependency and downstream-consumer analysis;
+- specification alignment and material invariants;
+- failure, pressure, rollback, compatibility, and cleanup behavior;
+- a focused test or falsifier plan;
+- evidence identity and invalidation;
+- integration consequences and a continuation checkpoint.
+
+### Critical-work additions
+
+Critical work also preserves all objectively triggered requirements for:
+
+- engineering contract and adversarial assessment;
+- hard gates and value ordering;
+- credible alternative paths and decision evidence;
+- security, safety, concurrency, memory, persistence, ABI, migration, recovery, and destructive-operation review;
+- authoritative and preferably independent test oracles;
+- full-attention focus branches;
+- exact-head review, protected integration, and owning-system cleanup verification.
+
+No fixed token target can waive an objectively triggered practice.
+
+## Practice floor versus practice ceiling
+
+Good engineering contains both mandatory substance and optional ceremony.
+
+### Backpressure may reduce
+
+- repeated quotations of authority already linked;
+- duplicate summaries, ledgers, templates, and status records;
+- broad context not needed for the current consequence horizon;
+- speculative features, abstractions, compatibility layers, and future-proofing beyond the accepted domain;
+- optional polish, formatting, commentary, and alternative explorations after a decisive path is established;
+- duplicate tests, repeated evidence, redundant CI workflows, and unnecessary deep tiers;
+- parallel branches that duplicate context or create coordination cost;
+- the breadth of the current deliverable;
+- durable records that have no independent consumer.
+
+### Backpressure may not reduce
+
+- owner instruction or accepted authority;
+- exact revisions, identities, units, ranges, versions, memory spaces, and evidence keys;
+- hard safety, security, correctness, accuracy, deadline, resource, compatibility, recovery, or cleanup gates;
+- the reasoning needed to understand the owned mechanism and material consequences;
+- required specification mapping and shared-contract ownership;
+- the cheapest decisive falsifier or required test tier;
+- test discovery and skip accounting;
+- actual-effect inspection;
+- rollback, recovery, cancellation, teardown, and cleanup required by the state created;
+- required review independence or branch protection;
+- truthful claim limits, checks not run, partial state, and handoff information.
+
+Backpressure may narrow the claim. It may not preserve a broad claim while removing the evidence needed to support it.
+
+Sampling is permitted only when the claim is correspondingly labeled sampled or bounded. A reduced test tier cannot support a release-grade claim.
+
+## Backpressure reduction ladder
+
+When token cost exceeds the expected envelope or reserve begins to erode, apply these actions in order.
+
+### 1. Stop duplication
+
+- stop rereading unchanged authority;
+- stop reproducing the same facts in several artifacts;
+- stop unchanged retries and reassurance runs;
+- stop multiple agents from rediscovering the same context;
+- stop retaining sibling-branch transcripts when accepted outputs suffice.
+
+### 2. Reuse authoritative context and evidence
+
+- link instead of copy;
+- reuse exact evidence whose full key remains valid;
+- consume branch outputs as contracts;
+- preserve raw evidence once at an exact durable location;
+- use canonical commands and owning test capsules.
+
+### 3. Batch coherent work
+
+- batch independent reads needed for one decision;
+- combine compatible file changes under one owner;
+- bank related test intents and run one owning capsule;
+- cluster failures before repair;
+- share safe immutable setup;
+- perform one coherent review/integration pass rather than repeated micro-passes.
+
+### 4. Narrow context and output
+
+- keep only the operating kernel, governing authority, local mechanism, and material consequence horizon active;
+- filter logs and tool output;
+- avoid narrating low-level operations;
+- summarize only after preserving exact evidence and identifiers;
+- remove cold rationale and history from active context.
+
+### 5. Defer optional breadth and polish
+
+- postpone noncritical refactoring, extra alternatives, style polish, optional diagnostics, speculative optimization, and unrelated cleanup;
+- preserve them only when they have a real owner, priority, and revisit trigger.
+
+### 6. Reduce scope to a smaller coherent result
+
+- finish one owner boundary rather than several partial ones;
+- reduce a system-wide claim to a bounded claim;
+- choose the smallest experiment that answers the decision;
+- separate mandatory from optional acceptance criteria;
+- leave downstream work blocked rather than pretending it is complete.
+
+### 7. Split, rebranch, or hand off
+
+Use focus branches when the mechanism, consequences, testing, cleanup, and handoff reserve no longer fit together. Checkpoint exact state before switching.
+
+### 8. Pause and resolve the blocker
+
+If the remaining work cannot satisfy the practice floor because authority, evidence, environment, access, or recovery is missing, stop mutation and record a decision-ready blocker. Do not consume the remaining budget producing unsupported output.
+
+The reduction ladder removes waste and work in flight before it removes breadth, and removes breadth before it threatens rigor.
+
+## Backpressure triggers
+
+Re-evaluate scope and budget when any of the following occurs:
+
+- the first unchanged reread, retry, or reassurance run is proposed;
+- a second repair cycle begins without stronger first-divergence evidence or a changed root-cause hypothesis;
+- a new semantic owner, public contract, artifact family, or high-consequence risk enters the task;
+- actual work exceeds the planned operation/branch/test capsule boundary;
+- test execution expands beyond the planned tier without a new risk or invalidation trigger;
+- tool output or logs overwhelm the active causal context;
+- administrative records begin duplicating the actual authority or evidence;
+- the agent repeatedly loses exact revisions, status, or previously established facts;
+- optional polish is drawing from validation/integration/cleanup/handoff reserve;
+- exact telemetry shows meaningful overrun—about 25% beyond a stated soft envelope is a default replan signal, not a failure quota;
+- semantic evidence shows the reserve cannot support one more complete operation and handoff.
+
+When telemetry is unavailable, use semantic symptoms rather than pretending to know a number.
+
+## Budget elasticity
+
+Backpressure is not a hard cap that forces premature abandonment.
+
+Spend additional tokens when they have high marginal decision or evidence value and are necessary to meet the practice floor. Examples include:
+
+- resolving a specification conflict;
+- proving or disproving a safety/correctness gate;
+- finding first divergence;
+- completing required cleanup or recovery;
+- preserving a lossless handoff;
+- reviewing an irreversible or cross-repository decision.
+
+When the initial envelope is insufficient, choose explicitly among:
+
+- extend the budget with a stated reason;
+- narrow the scope or claim;
+- split/rebranch;
+- defer optional work;
+- hand off;
+- pause on a blocker.
+
+Do not continue merely because tokens have already been spent. Sunk token cost is not evidence that the current path should be completed.
+
+Do not stop merely because a soft estimate was exceeded when the remaining evidence is essential and can be completed soundly. Replan instead.
+
+## Task classes and proportional administration
 
 ### Routine
 
-A local, reversible, single-owner change with obvious authority and focused validation needs no formal token budget. Still retain enough capacity to inspect the actual effect, run the relevant check, clean up, and report exact state.
+Routine work uses an implicit micro-budget and the universal practice floor. It needs no percentage calculation or durable token record. Token pressure still discourages broad reading, duplicate tool calls, speculative fixes, and unbounded polish.
 
 ### Substantial
 
-Cross-file behavior, public interfaces, dependency changes, multi-step work, or cross-session continuation requires an explicit context packet and reserve. A durable token-budget record is optional unless another consumer needs it.
+Substantial work uses an explicit context packet, a reserve, and backpressure triggers. Record these in the task/plan/PR unless another consumer requires a separate token record.
 
 ### Critical or large/complex
 
-Foundational contracts, CUDA/concurrency/memory/JIT/ABI, persistence/security/compatibility, multi-owner work, parallel focus branches, invalid intermediate states, release, or full-system claims require an explicit budget strategy. Split the work if one branch cannot fit full mechanism, material consequences, validation, cleanup, and handoff inside one usable context window.
+Critical or large work uses an explicit budget strategy, full-attention focus branches, lossless checkpoints, and clear overrun/split/handoff rules.
 
-Use [`../templates/token-budget.template.yaml`](../templates/token-budget.template.yaml) only when the budget must survive across sessions/agents or when telemetry, parallelism, high consequence, or repeated context pressure makes it decision-relevant.
+Use [`../templates/token-budget.template.yaml`](../templates/token-budget.template.yaml) only when cross-session or cross-agent continuation, exact telemetry, high consequence, parallelism, repeated pressure, or audit/review gives the record a real consumer.
 
 ## Reserve before spending
 
-Before mutation, reserve capacity for the work that proves and preserves the result.
+Before mutation, reserve capacity for proof and preservation.
 
-A substantial or critical task must retain enough headroom for:
+A substantial or critical task retains enough headroom for:
 
 1. actual-effect inspection;
-2. focused falsification and relevant broader validation;
+2. focused falsification and required broader validation;
 3. integration and contradiction reconciliation;
 4. cleanup and final-state verification;
-5. exact-head review or handoff;
-6. one recovery cycle when a material assumption fails.
+5. exact-head review or continuation-ready handoff;
+6. at least one bounded recovery cycle when a material assumption fails.
 
-When exact token telemetry is available, default reserves are:
+Default telemetry safeguards are:
 
-- **substantial work:** keep at least 30% of the usable context for validation, integration, cleanup, review, and handoff;
-- **critical or cross-branch work:** keep at least 40% after the branch context packet is loaded;
-- **routine work:** no percentage requirement, but do not start an operation without enough capacity to inspect and validate it.
+- **substantial work:** at least 30% of usable context reserved;
+- **critical, large, or cross-branch work:** at least 40% after loading the branch packet;
+- **routine work:** no fixed percentage, but enough semantic headroom for inspection, verification, cleanup, and truthful reporting.
 
-These are safeguards, not performance quotas. Increase the reserve for destructive, uncertain, cross-system, or difficult-to-recover work. A smaller reserve is acceptable only when the remaining operations and evidence are demonstrably bounded.
+These are defaults, not quotas. Increase the reserve for destructive, uncertain, cross-system, or difficult-to-recover work. A smaller reserve requires bounded remaining operations and evidence.
 
-Do not consume the reserve to add scope or polish.
+The reserve is not available for new scope or optional polish.
 
 ## Operational context states
 
-Use runtime telemetry when available. Otherwise infer state from the ability to retain mechanism and consequences without rereading or forgetting.
+Use runtime telemetry when available. Otherwise infer state from the number of complete evidence cycles that still fit.
 
 ### Green
 
-Enough capacity remains to complete at least two full cycles of:
+Enough capacity remains for at least two full cycles:
 
 ```text
 act → inspect → falsify → reconcile → checkpoint
 ```
 
-New dependency-ready work may begin.
+Dependency-ready scope may begin, subject to the practice floor.
 
 ### Yellow
 
-Capacity is below roughly 35%, or there is room for only one complete cycle plus a handoff.
+Capacity is below roughly 35%, or only one complete cycle plus handoff remains.
 
-- do not open a new focus branch or broad unknown;
+- open no new branch, owner, or broad unknown;
 - finish or safely pause the current coherent operation;
-- refresh the compact task packet;
-- validate material claims already made;
-- prepare integration or handoff.
+- apply the reduction ladder;
+- validate claims already made;
+- compact and prepare integration or handoff.
 
 ### Red
 
-Capacity is below roughly 20%, or there is not enough room for one complete operation, validation, cleanup, and handoff.
+Capacity is below roughly 20%, or one complete operation plus validation, cleanup, and handoff no longer fits.
 
 - stop new mutation;
 - preserve exact state and evidence;
-- run only bounded verification needed to classify the current state;
+- run only bounded classification/containment checks;
 - clean up or quarantine unsafe partial state;
 - produce a continuation-ready checkpoint.
 
 ### Emergency
 
-Capacity is below roughly 10% or the runtime is truncating/replacing context.
+Capacity is below roughly 10% or context is being truncated or replaced.
 
-Use remaining capacity only to preserve exact authority, revision, partial state, failures, cleanup, and next safe action. Do not attempt a new fix, architecture decision, broad review, or merge.
+Use remaining capacity only to preserve authority, exact revisions, decisions, partial state, failures, evidence locations, cleanup, and next safe action. Do not start a new fix, architecture decision, broad test, review, or merge.
 
-Percentages are default telemetry signals. The semantic rule—enough capacity for a full evidence cycle and handoff—takes precedence.
+The semantic rule takes precedence over percentages.
 
 ## Context layers
 
-Load context in layers. Do not treat the repository as one prompt.
+Load context in layers:
 
-### Layer 1: operating kernel
+1. **Operating kernel:** root/canonical agent rules, compact principles, current status/next step, active task/focus packet, exact repository state.
+2. **Governing authority:** only the accepted ADRs, specifications, contracts, manifests, and triggered specialist doctrine that own the question.
+3. **Local mechanism:** exact files, symbols, schemas, tests, generated inputs, traces, and callers needed to understand the operation.
+4. **Material consequence horizon:** callers/callees, boundaries, lifecycle, resources, compatibility, security, performance, testing, recovery, and cleanup that can change the decision.
+5. **Rationale and provenance:** architecture explanation, research, history, and archive only when alternatives, external facts, provenance, or supersession are material.
 
-Keep compact and current:
-
-- root and canonical agent rules;
-- compact engineering principles;
-- current `STATUS.md` and `next_step.yaml`;
-- active parent/focus-branch packet;
-- exact repository/branch/revision state.
-
-### Layer 2: governing authority
-
-Load only authority that owns the current question:
-
-- accepted ADRs and specifications;
-- component manifests and public contracts;
-- security, compatibility, persistence, release, or cleanup doctrine objectively triggered by the work.
-
-### Layer 3: local mechanism
-
-Load exact files, symbols, schemas, tests, generated sources, traces, and callers required to understand the operation.
-
-### Layer 4: material consequence horizon
-
-Widen only to callers, callees, boundaries, end-to-end paths, lifecycle, resources, compatibility, security, performance, and cleanup that can change the decision.
-
-### Layer 5: rationale and provenance
-
-Read architecture explanation, research, history, and archive only when alternatives, external facts, provenance, or supersession are material.
-
-Cold context does not remain loaded merely because it was once useful.
+Cold context does not remain active merely because it was once useful.
 
 ## Retrieval discipline
 
-### Search before broad reading
-
-- use repository search, indexes, registry, exact identifiers, and dependency information to find the owner;
+- search indexes and the registry before broad reading;
 - fetch the smallest contiguous section that preserves semantics;
-- read the whole owning contract or function when a snippet would hide invariants or control flow;
-- prefer exact diff/patch and affected context over rereading unchanged files;
-- inspect generated source and its canonical input together when correspondence matters;
-- batch independent retrievals when their results are all needed for one decision.
+- read the complete owner/contract/function when snippets would hide control flow or invariants;
+- prefer exact diffs and affected context over unchanged files;
+- batch independent retrievals needed for one decision;
+- filter logs and tool output to the causal interval;
+- preserve source status, owner, exact revision, and reread trigger;
+- keep large artifacts external with exact identity and targeted retrieval.
 
-### Record freshness
-
-In the task packet, preserve exact revision, document status, owner, and why the source matters. Reread only when:
-
-- the revision or shared contract changed;
-- the previous read was partial or ambiguous;
-- new evidence invalidated the summary;
-- the decision now reaches a wider consequence horizon.
-
-Repeatedly rereading unchanged authority is waste. Relying on a stale summary after the revision changes is token starvation.
-
-### Avoid context flooding
-
-Do not load:
-
-- every repository file;
-- every historical plan or PR;
-- every sibling focus branch;
-- entire logs when a bounded interval and causal context suffice;
-- full generated artifacts when identity, source correspondence, and targeted sections answer the question;
-- archive material as current guidance.
-
-When a whole file, chapter, log, or dataset is genuinely required, state why and keep unrelated material cold.
+Reread when revision, shared meaning, evidence validity, or consequence horizon changes—not merely because the task is long.
 
 ## Reasoning discipline
 
 Spend reasoning tokens on path-changing questions:
 
-- authority and ownership;
+- authority, ownership, and specification meaning;
 - hidden assumptions and counterexamples;
+- hard gates and value ordering;
 - identity, units, ranges, versions, memory spaces, and lifetimes;
 - dependency and integration order;
 - resource pressure and failure behavior;
-- concurrency/publication/cancellation;
+- concurrency, publication, and cancellation;
 - compatibility, migration, recovery, security, and cleanup;
-- cheapest decisive evidence.
+- test oracle and cheapest decisive evidence.
 
-Do not repeatedly reargue accepted decisions without a revisit trigger. Do not run a full adversarial design exercise on a purely mechanical edit. Do not substitute long speculative reasoning for one cheap falsifying observation.
+Do not repeatedly reargue accepted decisions without a revisit trigger. Do not perform a full architecture exercise for a mechanical edit. Do not replace one cheap observation with prolonged speculation.
 
-Stop analysis when additional reasoning cannot change the decision, validation, scope, or risk classification.
+Stop analysis when another pass cannot materially change the candidate set, decision, scope, evidence, risk, priority, or next action.
 
 ## Tool-call discipline
 
-- choose the cheapest tool capable of producing decisive evidence;
-- batch independent reads/searches/calculations that serve one decision;
-- avoid serial micro-calls whose only purpose is to rediscover context already known;
-- do not retry an unchanged failing command, API, build, or workflow without a changed hypothesis, input, environment, or transport;
-- inspect local/focused checks before expensive CI or broad system scans;
-- use find/filter/range/log-window operations instead of dumping full outputs;
-- preserve exact raw evidence once, then cite or link it rather than copying it repeatedly;
-- verify remote/asynchronous state through the owning system, but do not poll without a bounded reason and stop condition.
+- use the cheapest tool capable of decisive evidence;
+- batch independent operations serving one decision;
+- avoid serial micro-calls that reconstruct already known context;
+- never retry an unchanged failure without a changed hypothesis, input, source/test revision, environment, configuration, or transport;
+- use focused local checks before expensive CI or broad scans;
+- reuse exact evidence while its key remains valid;
+- poll asynchronous state only with a reason and stop condition;
+- inspect actual remote state after mutation.
 
-Tool-call count is not itself a quality metric. One giant indiscriminate call can waste more tokens than several targeted calls.
+One indiscriminate call can be more wasteful than several targeted calls. Raw call count is not the metric.
+
+## Testing and repair-loop backpressure
+
+Testing is a major token-pressure source. Apply [`TESTING.md`](TESTING.md):
+
+- bank test intents rather than creating one permanent test per discovery;
+- consolidate related cases into owning capsules;
+- share compatible immutable setup while isolating mutable state;
+- reuse unchanged evidence;
+- cluster failures before repair;
+- rerun minimal cluster, owning capsule once, then required integration smoke;
+- escalate to deep/forensic tiers only on objective triggers;
+- keep full logs external and active evidence bounded.
+
+Token pressure may remove duplicate tests and unnecessary tiers. It may not remove the required oracle, relevant owner capsule, discovery/skip accounting, evidence identity, or integration tier needed by the claim.
+
+When repair cycles expand, stop broad reruns and re-establish first divergence and root cause. Do not burn the reserve on repeated reassurance.
 
 ## Writing and generation discipline
 
-### Durable text
+### Durable records
 
-- link accepted authority instead of copying it into every plan, branch packet, PR, and handoff;
-- store each durable fact in one authoritative location;
-- write integration summaries that contain unique decisions, evidence, status, and limits—not transcripts;
-- use machine-readable packets when another agent or tool needs exact fields;
-- archive or supersede stale durable text rather than carrying both versions in active context.
+- link accepted authority instead of copying it;
+- store each durable fact in one owner;
+- record unique decisions, evidence, status, and claim limits—not transcripts;
+- use structured packets only when another consumer needs exact fields;
+- archive or supersede stale records.
 
 ### Code and configuration
 
-- generate only the coherent owned change that current authority permits;
-- do not scaffold speculative components, compatibility layers, or generic abstractions to “save a future pass”;
-- reuse existing idioms, generators, and contracts rather than emitting near-duplicates;
-- comments explain invariant, reason, or non-obvious failure—not syntax;
-- do not paste large generated outputs into discussion when exact artifact identity and targeted differences suffice.
+- generate only the coherent change current authority permits;
+- avoid speculative components and generic abstractions meant only to avoid a future pass;
+- reuse idioms, contracts, and generators;
+- comment invariants, reasons, and non-obvious failures rather than syntax;
+- keep generated output external when identity and targeted differences suffice.
 
 ### User-visible responses
 
-State the result, evidence, exact state, limits, and next boundary. Avoid narrating every tool call, repeating the request, or reproducing documents the user can open. Brevity is useful only when it preserves what the user needs to decide or continue.
+State result, evidence, exact state, limitations, and the next boundary. Do not repeat the request or narrate every tool call. Do not omit a material limitation merely to be concise.
 
-## Checkpoints and context compaction
+## Checkpoints and compaction
 
-Create a compact checkpoint:
+Checkpoint at:
 
-- at each focus-branch switch;
-- after a material decision or accepted output;
-- before context compaction or model/session handoff;
-- on entering yellow state;
-- before a risky or irreversible operation;
-- after rollback, failure, or shared-contract invalidation.
+- branch switches;
+- material decisions and accepted outputs;
+- entry into yellow state;
+- context compaction or session/model handoff;
+- risky or irreversible operations;
+- failures, rollback, and shared-contract invalidation;
+- budget extension, scope reduction, or backpressure-driven deferral.
 
 A lossless checkpoint preserves:
 
-- parent task, plan version, focus branch, node, owner, and status;
-- exact repository/artifact revisions;
-- current authority and shared definitions;
-- decisions and rationale that remain path-changing;
-- accepted outputs and exact downstream consumers;
-- assumptions, exclusions, contradictions, and unresolved questions;
-- failed hypotheses and why they failed;
-- operations performed and exact partial state;
-- checks run, raw evidence locations, checks not run, and claim limits;
-- cleanup, rollback, recovery, credentials/resources, and Git/GitHub state;
-- next safe action and its preconditions.
+- parent task/plan/branch/node/owner/status;
+- exact repository and artifact revisions;
+- authority and shared definitions;
+- decisions, value ordering, accepted/rejected paths, and rationale that remains path-changing;
+- outputs and consumers;
+- assumptions, exclusions, contradictions, and failed hypotheses;
+- operations and partial state;
+- tests/evidence run, evidence locations, checks not run, and claim limits;
+- rollback, recovery, cleanup, credentials/resources, and Git/GitHub state;
+- token band, backpressure action, and next safe action.
 
-Safe to compress or discard after durable transfer:
+Safe to discard after durable transfer:
 
-- conversational narration;
-- repeated quotes from authority;
-- superseded scratch drafts;
-- successful low-level command chatter with no decision value;
+- narration;
+- repeated authority quotations;
 - duplicate summaries;
-- tool output already preserved at an exact durable location.
+- superseded scratch;
+- low-value successful command chatter;
+- tool output already preserved at an exact location.
 
-A summary is derivative context, not authority. Never compact away exact identifiers, unresolved contradictions, failed approaches, checks not run, or unsafe partial state.
+Summaries are derivative context, not authority.
 
-## Focus-branch token discipline
+## Focus branches and delegation
 
-A focus branch is valid only when its complete context packet plus execution, validation, cleanup, and handoff reserve fit one usable window.
+A focus branch is valid only when its complete packet, mechanism, material consequences, execution, testing, validation, cleanup, and handoff reserve fit one usable context window.
 
 Split or rebranch when:
 
-- the branch cannot keep local mechanism and material consequences active together;
-- repeated rereading is required to continue;
-- the reserve would be consumed before branch acceptance;
-- independent unknowns or owners compete for the same context;
-- integration meaning is being postponed to “later.”
+- mechanism and consequence can no longer remain active together;
+- repeated rereading is required;
+- the reserve will be consumed before acceptance;
+- independent owners or unknowns compete for context;
+- integration is repeatedly postponed.
 
-Normally one agent keeps one active branch. Do not load sibling branch transcripts. Consume their accepted output contracts, exact revisions, evidence, assumptions, and integration obligations.
+Normally one agent owns one active branch. Sibling results are consumed as exact output contracts, not transcripts.
 
-The integration spine receives branch results, not every branch’s conversational history.
-
-## Delegation and parallel agents
-
-- give each agent a minimal authoritative packet with exact inputs and output contract;
-- do not ask several agents to rediscover the same context unless independent replication is the objective;
-- parallelize only non-overlapping semantic owners and write surfaces;
-- centralize shared-contract changes and invalidation;
-- require concise branch outputs with evidence and limits;
-- retire or archive completed packets after integration so stale branch context does not remain active.
-
-Parallel token use is still total token use. More agents are efficient only when they reduce critical-path time or improve independent evidence without duplicating work.
+Parallel token use is still total token use. More agents are efficient only when they reduce critical-path time or improve independent evidence without duplicating discovery, context, or work.
 
 ## Recovery from context pressure
 
-Symptoms of context pressure include:
+Symptoms include lost revisions, repeated questions, branch/authority confusion, vague summaries replacing mechanism, several incomplete fixes, validation being skipped to finish, output truncation, or contradictory stale packets.
 
-- repeatedly asking or searching for facts already established;
-- confusing branch-local and parent authority;
-- losing exact revisions or status;
-- broad summaries replacing mechanism;
-- accumulating several incomplete fixes;
-- skipping validation to “finish”; 
-- output truncation or tool-result eviction;
-- contradictory claims from stale packets.
-
-When these appear:
+When they appear:
 
 1. stop new scope;
-2. freeze exact current state;
-3. rebuild the compact authoritative packet from durable sources;
-4. classify what is accepted, partial, invalidated, or unknown;
-5. split the branch or hand off if one full evidence cycle no longer fits;
-6. resume only after reserve and authority are restored.
+2. freeze exact state;
+3. rebuild the compact authoritative packet;
+4. classify accepted, partial, invalidated, and unknown state;
+5. apply the reduction ladder;
+6. split, hand off, or pause when a full evidence cycle no longer fits;
+7. resume only after practice floor and reserve are restored.
 
-Do not solve context pressure by deleting inconvenient evidence or lowering rigor.
+Do not delete inconvenient evidence or lower rigor to make the context look manageable.
 
 ## Token debt
 
-**Token debt** is future context reconstruction created by failing to preserve unique state now.
+Token debt is future reconstruction created by failing to preserve unique state now.
 
 Examples:
 
-- a design decision exists only in chat;
-- a branch output lacks exact revision or assumptions;
-- a failure was fixed but the causal evidence was not recorded;
-- partial state is left without continuation instructions;
-- the same authority is copied into several drifting files;
-- a PR description is the only place explaining a public contract;
+- a decision exists only in chat;
+- branch output lacks exact revision or assumptions;
+- a failure was fixed without preserving causal evidence;
+- partial state lacks continuation instructions;
+- authority was copied into several drifting records;
+- a PR description is the only explanation of a public contract;
 - cleanup or external-resource state is omitted from handoff.
 
-Token debt blocks completion when another agent would need to repeat material research, reconstruct unsafe state, or guess authority. Pay it by moving unique durable truth to the correct owner, not by creating another generic summary.
+Material token debt blocks completion. Pay it by moving unique truth to the correct owner, not by adding another generic summary.
 
 ## UMCGS-specific discipline
 
-For UMCGS:
-
-- do not load or design every domain adapter while defining one universal contract; use synthetic counterexamples and exact second instances;
+- do not load every domain adapter while defining one universal contract; use synthetic counterexamples and exact second instances;
 - do not ingest entire CUDA documentation when one capability, ABI, launch, memory, or synchronization question is decisive;
-- keep driver/toolkit/architecture/model/resource-profile identities exact in generated/JIT/cache work;
-- keep Search IR, domain, graph, policy, evaluator, resource, and conformance branches separate enough for full attention but integrate their shared semantics centrally;
-- reserve substantial capacity for cross-contract reconciliation, finite-memory behavior, device closure, cancellation/teardown, and search-quality equivalence;
-- treat profiler traces, generated engines, model packages, and large logs as artifacts with exact identities, not prompt text;
-- do not spend the validation reserve on speculative CUDA optimization or first-domain convenience.
+- keep driver/toolkit/architecture/model/resource/evidence identities exact;
+- keep Search IR, domain, graph, policy, evaluator, resource, conformance, and CUDA-JS interop branches separate enough for full attention while integrating shared meaning centrally;
+- reserve capacity for cross-contract reconciliation, finite memory, device closure, cancellation/teardown, JIT/ABI/cache identity, and search-quality equivalence;
+- treat profiler traces, generated engines, models, datasets, and large logs as artifacts rather than prompt text;
+- do not spend the validation reserve on speculative CUDA optimization or first-domain convenience;
+- do not use token pressure to justify host participation, incomplete memory/lifecycle contracts, weak compatibility identity, or duplicated UMCGS/CUDA-JS ownership.
 
 ## Prohibited patterns
 
-- “Use as few tokens as possible” as a substitute for engineering judgment.
-- Reading the entire repository before identifying the owner.
-- Repeating full authority in every artifact.
+- “Use as few tokens as possible” as a substitute for judgment.
+- Treating a soft token estimate as authority to skip required practice.
+- Preserving broad scope while cutting evidence.
+- Starting optional work before reserving proof and cleanup.
+- Reading the entire repository before finding the owner.
+- Repeating authority in every artifact.
 - Keeping all historical context active.
-- Starting a new branch in yellow or red state.
-- Continuing mutation when there is not enough room to validate and hand off.
-- Generating broad code before path-changing unknowns are resolved.
-- Repeated tool retries without a changed hypothesis.
+- Starting new scope in yellow or red state.
+- Continuing mutation when validation and handoff no longer fit.
+- Repeated retries or test runs without new evidence.
 - Using CI as the first debugger for locally detectable failures.
-- Summarizing away contradictions, exact revisions, failed hypotheses, or partial state.
-- Creating a durable token ledger for trivial work.
-- Claiming efficiency because output is short while another agent must reconstruct the work.
-- Claiming thoroughness because output is long while no decision or evidence changed.
+- Creating formal token ledgers for trivial work.
+- Declaring efficiency from short output or low raw token count.
+- Declaring thoroughness from long output with no changed decision or evidence.
+- Continuing a failing path because of sunk token cost.
+- Stopping at a soft budget boundary while required in-scope safety, correctness, cleanup, or handoff remains incomplete and a sound split/extension is available.
 
 ## Validation of token discipline
 
-A material task demonstrates token discipline when:
+A task demonstrates token discipline when:
 
-- the active context packet contains only current path-relevant authority and evidence;
-- required context was not omitted for brevity;
-- retrieval and tool use were targeted and non-repetitive;
-- phase/focus-branch outputs and exact revisions were checkpointed;
-- validation, integration, cleanup, review, and handoff reserve remained available;
-- shared context was linked rather than duplicated;
-- context pressure caused scope reduction, rebranching, or handoff rather than reduced rigor;
+- backpressure was applied from orientation, not only near exhaustion;
+- the risk-appropriate practice floor was explicit or evident and remained intact;
+- the active packet contained current path-relevant authority and evidence;
+- retrieval, reasoning, generation, testing, and tool use were targeted and non-repetitive;
+- duplicate work and evidence were reused or consolidated;
+- reserve remained available or a deliberate extend/narrow/split/handoff decision was made;
+- optional scope and ceremony were reduced before rigor;
+- context pressure did not weaken the claim’s required evidence;
+- checkpoints preserve exact state and backpressure decisions;
 - no material token debt remains;
-- the final result required less total reconstruction and rework than plausible alternatives.
+- further token spending would not materially change the result, evidence, risk, priority, cleanup, or next action.
 
-Do not evaluate individual agents by raw token count alone. Evaluate verified progress, correctness, rework, missed integration, repeated retrieval, and continuation cost.
+Do not evaluate agents by raw token count. Evaluate correctness, escaped defects, rework, repeated retrieval, repair cycles, missed integration, unsafe residue, and continuation cost.
 
 ## Completion
 
-Token-use discipline is satisfied when:
+Token backpressure is satisfied when:
 
-- the task used a proportional context/budget strategy;
-- authority, mechanism, consequences, and exact state remained available at the point of decision;
-- every operation retained enough capacity for inspection and falsification;
-- validation, integration, cleanup, review, and handoff were completed rather than starved;
-- compaction preserved all path-changing facts and removed duplicate/stale context;
-- focus branches fit full attention and handed off exact outputs rather than transcripts;
-- no material token debt, hidden partial state, or unreconstructable decision remains;
-- further token spending would not materially change the result, evidence, risk, or next action.
+- every task used at least an implicit budget posture and reserve;
+- work in flight remained within a coherent owner and evidence envelope;
+- the reduction ladder was applied when pressure appeared;
+- scope was narrowed or split rather than verified practice being silently removed;
+- all required authority, reasoning, tests, actual-effect inspection, integration, cleanup, review, and handoff were completed for the claim made;
+- budget extensions or deviations were explicit and justified;
+- no material token debt or unreconstructable state remains;
+- additional token use would not materially improve the verified result or next decision.

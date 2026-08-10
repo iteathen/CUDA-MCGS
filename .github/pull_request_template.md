@@ -4,86 +4,51 @@
 
 ## Engineering contract and specification alignment
 
-State or link:
-
-- required outcome, consumers, operating envelope, non-goals, and completion evidence;
-- accepted owner instruction, ADRs, specifications, contracts, and exact revisions;
-- material obligation map: source/clause → normalized obligation → gate/objective/quality/cost → owner → mechanism → failure consequence → evidence/test;
-- derived requirements and their derivation;
-- ambiguities, conflicts, gaps, stale/unimplementable authority, or oracle mismatches and their disposition;
-- specification, decision, branch, generated-artifact, test, and review evidence invalidated by any shared change.
+State or link required outcome/consumers, operating envelope, accepted authority/revisions, material obligation map, derived requirements, non-goals, completion evidence, and any ambiguity/conflict/gap/stale or unimplementable authority/oracle mismatch.
 
 Do not treat existing code, tests, comments, examples, plans, or previous agent output as automatic authority.
 
 ## Engineering judgment, value ordering, and priority
 
-State or link:
+State hard gates, mission objectives, supporting qualities, process costs, contextual value order, credible paths, gate failures/Pareto dominance, decisive evidence, reversibility, total lifecycle comparison, selected path, rejected-path reasons, confidence, tradeoffs, priority P0–P4, revisit triggers, and decision debt.
 
-- hard gates, mission objectives, supporting qualities, and process costs/tie-breakers;
-- measurable thresholds, prohibited states, optimization directions, or ordinal rules for safety, correctness, accuracy, speed, reliability, resources, compatibility, simplicity, delivery, and other material values;
-- context-specific value order and any deviation from the accepted fallback;
-- credible no-change, minimal, proposed, materially different, experiment/staged, or fallback paths;
-- gate failures, Pareto dominance, uncertainty/evidence, reversibility/option value, false-tradeoff separation, and total lifecycle comparison;
-- selected path, why it wins, why alternatives lost, decision confidence, accepted tradeoffs, and revisit triggers;
-- priority class `P0 | P1 | P2 | P3 | P4` and its dependency/consequence/information/cost-of-delay basis;
-- remaining decision debt.
-
-Weighted scores may compare only gate-passing paths. They may not conceal failed authority, safety, correctness, accuracy, deadline, resource, compatibility, lifecycle, or evidence requirements.
+Weighted scores may compare only gate-passing paths.
 
 ## Assessment and adversarial resolution
 
-Link the durable assessment/plan, or concisely state its disposition, strongest credible overengineering and underengineering objections, counterexamples, resulting revisions, and decisive falsifiers. Do not duplicate accepted authority.
+Link the durable assessment/plan or state disposition, strongest overengineering/underengineering objections, counterexamples, resulting revisions, and decisive falsifiers.
 
 ## Focus-branch decomposition and integration
 
-For a large or complex task, state or link:
+For large/complex work, state or link parent task/version, integration owner, branch map/statuses, full-attention sizing, shared changes/invalidation, parallel ownership, accepted/integrated/blocked/deferred branches, cross-branch reconciliation, and exact final revision. State `not triggered` when appropriate.
 
-- canonical parent task, plan/engineering-decision version, integration owner, global invariants/value order, and closure criteria;
-- why focus branches were required;
-- branch map with IDs, owners, exact input/output revisions, dependencies, and statuses;
-- full-attention sizing rationale;
-- shared-contract/decision/oracle changes and branches/evidence invalidated;
-- parallel ownership/write-surface evidence;
-- branches accepted, integrated, blocked, invalidated, superseded, deferred, or removed from scope;
-- cross-branch and end-to-end reconciliation;
-- one exact final revision proving the parent result.
+## Universal token backpressure and minimum practice floor
 
-State `not triggered` for work that genuinely fits one focused branch.
+For **every task**, state proportionally:
 
-## Token and context discipline
+- task class and whether the token posture was implicit or explicit;
+- minimum practice floor preserved for the claim: authority/current-state inspection, coherent scope, expected result, decisive verification, actual-effect inspection, relevant testing, cleanup, and honest limits;
+- context/evidence reserve and whether telemetry was available;
+- pressure triggers encountered;
+- reduction-ladder actions used: duplication removed, evidence reused, work/tests batched, context/output narrowed, optional polish/breadth deferred, scope/claim reduced, split/handoff, or blocker;
+- unchanged rereads/retries/reassurance runs avoided or justified;
+- repair-cycle replanning and changed hypotheses;
+- any budget extension and why essential evidence/cleanup justified it;
+- any narrowed/sampled/bounded claim caused by reduced evidence;
+- checkpoints for scope, claim, deferral, split, or handoff;
+- remaining token debt or reconstruction risk.
 
-For substantial, critical, or large work, state or link:
-
-- active context packet and exact source revisions;
-- task class and telemetry availability;
-- validation/integration/cleanup/review/handoff reserve;
-- context layers loaded and excluded;
-- targeted retrieval/tool strategy;
-- current operational band and checkpoint/compaction actions;
-- token debt, repeated reconstruction, and claim limits.
-
-State `routine / no durable budget record required` when appropriate.
+State `routine implicit micro-budget; no durable record required` when appropriate. Do not claim efficiency from raw token count or use a soft budget to justify reduced rigor.
 
 ## Testing and repair-loop evidence
 
-State or link:
-
-- claims/invariants tested and authoritative oracles aligned with the engineering contract;
-- exact subject/test/generated/model/environment/fixture/seed evidence keys;
-- expected/discovered/executed/pass/fail/required-skip/conditional-skip/optional-skip counts;
-- test intents added, consolidated, superseded, blocked, or remaining as test debt;
-- owning capsules and execution tiers run;
-- shared build/setup/device/model/fixture work and mutable-state isolation;
-- failure clusters, first divergences, root-cause hypotheses, coherent repair batches, and changed hypotheses before retries;
-- unchanged evidence reused and every repeated-run reason;
-- provisional reproducers, duplicate tests, fixtures, diagnostics, and logs removed or retained;
-- checks not run, sampling limits, nondeterminism/statistical scope, and remaining test debt.
+State claims/oracles, exact evidence keys, discovery/execution/pass/fail/skip counts, coverage/claim limits, intents/capsules, shared setup/isolation, tiers, failure clusters/root-cause repair, evidence reused, repeated-run reasons, provisional/duplicate artifact disposition, checks not run, and test debt.
 
 Do not report raw test count as completeness.
 
 ## Plan execution fidelity
 
-State parent plan/version, engineering-decision version, focus-branch ID, node, frozen head/environment, readiness evidence, obligation/decision implemented, selected path, preserved value ordering, expected local/wider effects, operations performed, actual effects, falsifiers, variations/deviations, affected boundary/path/lifecycle reconciliation, branch/node outcome, downstream outputs/revisions, partial-state status, and checks not run. Link durable records when they exist.
+State parent/decision/branch/node versions, frozen head/environment, readiness, obligation/selected path/value order, expected and actual effects, operations, falsifiers, variations/deviations, boundary/path/lifecycle reconciliation, outcome, downstream outputs, partial state, and checks not run.
 
 ## What changed and why
 
@@ -93,24 +58,24 @@ State parent plan/version, engineering-decision version, focus-branch ID, node, 
 
 ## Cleanup and disposition
 
-State protected pre-existing/user/shared/authority/evidence/recovery state and account for material decision records, temporary/superseded/generated/diagnostic/local/remote/external/sensitive/coordination state, including provisional tests and duplicate fixtures.
+State protected state and account for decision records, temporary/superseded/generated/diagnostic/local/remote/external/sensitive/coordination state, including provisional tests and duplicate fixtures.
 
 ## Sanity / independent-review claim and limits
 
-State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name exact revision/artifact, coverage boundary, critical leaves, actionable findings, invalidated/rerun specification/decision/test evidence, focus-branch integration, token/test/cleanup state, checks not run, and final claim limits.
+State claim type, exact target, coverage boundary, findings, invalidated/rerun evidence, branch integration, token-practice-floor/test/cleanup state, checks not run, and final limits.
 
 ## Ready-for-review head and review mode
 
-Record exact head SHA, intended base, review mode, checks not run, unresolved decision debt, unintegrated branches, test debt, token debt/context limits, deferred cleanup, and invalidation conditions. A later head, parent-plan, specification, engineering decision, value order, shared contract, source/test revision, oracle, artifact, environment, fixture, or material base change invalidates affected evidence.
+Record exact head/base, review mode, checks not run, decision/test/token/cleanup debt, unintegrated work, deferred cleanup, and invalidation conditions. Changes to head/base/parent/specification/decision/shared contract/source/test/oracle/artifact/environment/fixture/resource profile invalidate affected evidence.
 
 ## Proposed merge and closure effects
 
-State merge method, issue relationship, engineering-decision and semantic focus-branch disposition, local/remote Git branch/worktree effects, stacked/dependent PR effects, required checks/protection/queue, decision/test/token/cleanup debt, and post-merge verification beyond target-tree confirmation.
+State merge method, issue relationship, decision/focus-branch disposition, local/remote branch/worktree effects, dependent PR effects, required gates, debts, and post-merge verification.
 
 ## Performance and GPU-memory evidence
 
 ## Compatibility, migration, rollback, recovery, and retained state
 
-## Documentation, engineering-decision/parent/focus-branch/token/test/plan/cleanup state, registry, findings, and archived material
+## Documentation, decision/parent/focus-branch/token/test/plan/cleanup state, registry, findings, and archived material
 
 ## Remaining risks / assumptions / revisit triggers

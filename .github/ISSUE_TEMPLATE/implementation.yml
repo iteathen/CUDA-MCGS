@@ -1,5 +1,5 @@
 name: Implementation
-description: Implement an accepted UMCGS specification through governed engineering judgment, focus branches, testing, cleanup, and integration
+description: Implement an accepted UMCGS specification through governed engineering judgment, token backpressure, focus branches, testing, cleanup, and integration
 title: "[Implementation]: "
 labels: ["implementation"]
 body:
@@ -14,63 +14,63 @@ body:
     id: engineering-contract
     attributes:
       label: Engineering contract and specification alignment
-      description: State required outcome/consumers, governing authority and exact clauses, material obligations and derived requirements, semantics/units/ranges/identity/versions, finite resources/deadlines/accuracy/quality bounds, lifecycle/failure/recovery/cleanup, compatibility/migration, non-goals, completion evidence, and any ambiguity/conflict/gap/stale/unimplementable authority or oracle mismatch. Map obligations to owners, mechanisms, and tests.
+      description: State required outcome/consumers, governing authority/clauses, material obligations/derived requirements, semantics/units/ranges/identity/versions, finite resources/deadlines/accuracy/quality bounds, lifecycle/failure/recovery/cleanup, compatibility/migration, non-goals, completion evidence, and any authority/oracle problem. Map obligations to owners, mechanisms, and tests.
     validations:
       required: true
   - type: textarea
     id: engineering-judgment
     attributes:
       label: Engineering judgment, value ordering, candidate paths, and priority
-      description: Identify hard gates, mission objectives, supporting qualities, process costs, context-specific ordering of safety/correctness/accuracy/speed/reliability/resources/compatibility/simplicity/delivery, credible alternative paths, gate results, false-tradeoff separation, decisive evidence, reversibility, total lifecycle cost, selected path, why alternatives lost, accepted tradeoffs, confidence/revisit triggers, priority P0–P4, and whether a durable engineering-decision record is required.
+      description: Identify gates, objectives, supporting qualities, costs, contextual value order, credible paths, gate results, false-tradeoff separation, decisive evidence, reversibility, total lifecycle cost, selected path, alternatives rejected, tradeoffs, confidence/revisit triggers, priority P0–P4, and whether a durable decision record is required.
     validations:
       required: true
   - type: textarea
     id: boundary
     attributes:
       label: Coherent ownership and organization boundary
-      description: Identify product area, component, manifest/registry entry, public surface, dependencies, in-scope responsibilities, explicit non-responsibilities, lifecycle owner, test owner, canonical capsule, and eventual disposition.
+      description: Identify product area, component, manifest/registry entry, public surface, dependencies, responsibilities/non-responsibilities, lifecycle/test owners, canonical capsules, and disposition.
     validations:
       required: true
   - type: textarea
     id: assessment
     attributes:
       label: Assessment and strongest adversarial challenge
-      description: Link the assessment/plan or summarize disposition, strongest overengineering/underengineering objections, concrete counterexample, integrated revision, decisive falsifier, context constraints, testing risks, and cleanup implications. Do not duplicate accepted authority.
+      description: Link the assessment/plan or summarize disposition, strongest overengineering/underengineering objections, counterexample, revision, falsifier, testing risks, and cleanup implications.
     validations:
       required: true
   - type: textarea
     id: focus-branch
     attributes:
       label: Parent task and focus-branch contract
-      description: State whether focus branches are triggered. For large/complex work, identify parent task/plan and engineering-decision version, integration owner, global invariants/value order, branch ID/type/owner, full-attention sizing, exact inputs, context packet, scope/non-goals, write surface, dependencies, output/consumers, acceptance/falsifier, decision/test obligations, invalidation, cleanup, and integration. Do not substitute a Git branch name for this semantic contract.
+      description: State whether focus branches are triggered. For large work identify parent/version, integration owner, global invariants/value order, branch ID/owner, full-attention sizing, exact inputs, context, scope/write surface, dependencies, output/consumers, acceptance/falsifier, testing, invalidation, cleanup, and integration.
     validations:
       required: true
   - type: textarea
-    id: token-discipline
+    id: token-backpressure
     attributes:
-      label: Token and context discipline
-      description: State task class, telemetry, context packet, loaded/excluded layers, reserve, yellow/red triggers, checkpoints/compaction, large artifacts kept external, and split/rebranch/handoff conditions. State why no durable token-budget record is needed for routine work.
+      label: Universal token backpressure and minimum practice floor
+      description: State task class, implicit or explicit token posture, minimum practice floor, smallest coherent scope, decisive verification, reserve, pressure triggers, reduction-ladder actions, optional breadth/polish to defer, unchanged retry/read rules, repair-cycle replan rule, extend/narrow/split/handoff conditions, claim changes if evidence is reduced, checkpoints, and token debt. Routine work may state that no durable budget record is required.
     validations:
       required: true
   - type: textarea
     id: testing
     attributes:
       label: Testing and repair-loop strategy
-      description: Identify authoritative oracles aligned with the engineering contract, coverage map, test intents, owning capsules, exact evidence keys/invalidation, execution tiers, expected discovery/skip counts, shared setup and isolation, failure-cluster/root-cause process, no-repeat rules, consolidation boundary, provisional-test cleanup, and whether a durable test-batch record is required.
+      description: Identify authoritative oracles, coverage, test intents, owning capsules, evidence keys/invalidation, tiers, expected discovery/skips, shared setup/isolation, failure clustering/root-cause repair, no-repeat rules, consolidation, provisional-test cleanup, and test debt.
     validations:
       required: true
   - type: textarea
     id: plan-node
     attributes:
       label: Plan version, node, readiness, and execution contract
-      description: State plan/engineering-decision version, node, focus branch, owner, dependencies/revisions, frozen head/environment, obligations/selected path/value order implemented, expected effects/outputs, acceptance/falsifier, rollback, testing/cleanup, material deviation triggers, and required durable records.
+      description: State plan/decision/branch/node versions, owner, dependencies/revisions, frozen head/environment, obligations/path/value order, expected effects/outputs, acceptance/falsifier, rollback, testing/cleanup, pressure/deviation triggers, and required durable records.
     validations:
       required: true
   - type: textarea
     id: cleanup
     attributes:
       label: Cleanup inventory, protected state, and final disposition
-      description: Identify protected user/shared/authority/evidence/recovery state; expected decision records, local files, provisional tests/fixtures/logs, semantic/Git branches/worktrees/stashes, remote PR/issues/reviews, generated/build artifacts, processes/ports/containers/device state, credentials/permissions, backups/persistence, and external resources. State dispositions, dependency order, safeguards, verification, post-merge cleanup, and permitted cleanup debt.
+      description: Identify protected state; expected decision records, files, provisional tests/fixtures/logs, branches/worktrees/stashes, remote PR/issues/reviews, generated/build artifacts, processes/device state, credentials, backups/persistence, external resources, dispositions, safeguards, verification, and debt.
     validations:
       required: true
   - type: dropdown
@@ -78,14 +78,14 @@ body:
     attributes:
       label: Reasoning level
       options:
-        - Substantial
-        - Critical (foundational specification/engineering decision, safety/security, CUDA, concurrency, memory, ABI, persistent state, hot path, component boundary, cross-branch shared contract, high-consequence oracle, irreversible migration, destructive cleanup, sensitive/external/recovery state)
+        - Routine or Substantial
+        - Critical (foundational specification/decision, safety/security, CUDA/concurrency/memory/ABI, persistence/migration, hot path, component/repository boundary, high-consequence oracle, destructive or sensitive state)
     validations:
       required: true
   - type: textarea
     id: validation
     attributes:
       label: Completion evidence and stop conditions
-      description: Include obligation/gate satisfaction, selected-path falsifiers, expected-versus-actual inspection, authoritative oracles, exact evidence keys, discovery/pass/fail/skip counts, intents consolidated, failure clusters/changed hypotheses, branch integration, resource/failure/compatibility checks, cleanup verification, remaining decision/test/token debt, and evidence that would pause, split, revise, invalidate, rollback, fail, or block acceptance.
+      description: Include obligation/gate satisfaction, selected-path falsifiers, actual-effect inspection, test evidence/counts/intents/clusters, branch integration, token-practice-floor adherence, backpressure actions, resource/failure/compatibility checks, cleanup verification, debts, and conditions to pause/narrow/split/revise/invalidate/rollback/fail/block.
     validations:
       required: true

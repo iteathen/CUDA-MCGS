@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "token_discipline": {
     "id": "",
     "status": "proposal|active|paused|complete|superseded",
@@ -10,22 +10,57 @@
     "node_id": "",
     "exact_repository_or_artifact_revision": "",
     "task_class": "routine|substantial|critical|large_complex",
+    "record_required_reason": "cross_session|cross_agent|telemetry|high_consequence|parallel|repeated_pressure|audit_review",
     "telemetry_available": false,
     "total_usable_context_tokens": 0,
     "current_remaining_tokens": 0
   },
   "objective": {
     "verified_progress_to_establish": "",
+    "smallest_coherent_useful_scope": [],
     "path_changing_questions": [],
-    "minimum_sound_evidence": [],
     "work_explicitly_not_worth_token_spend": []
+  },
+  "minimum_practice_floor": {
+    "request_constraints_and_authority": [],
+    "current_state_inspection": [],
+    "coherent_scope_and_exclusions": [],
+    "expected_result_and_cheapest_decisive_verification": [],
+    "actual_effect_inspection": [],
+    "required_testing_and_evidence_identity": [],
+    "failure_recovery_and_cleanup": [],
+    "review_integration_and_handoff": [],
+    "practices_objectively_triggered_by_risk": [],
+    "practices_that_may_not_be_cut": []
   },
   "reserve": {
     "validation_integration_cleanup_review_handoff_percent": 0,
     "recovery_cycles_reserved": 1,
     "reserve_rationale": "",
+    "semantic_reserve_when_telemetry_unavailable": [],
     "operations_forbidden_to_consume_reserve": [],
-    "semantic_reserve_when_telemetry_unavailable": []
+    "conditions_allowing_a_smaller_reserve": []
+  },
+  "backpressure": {
+    "soft_envelope": "",
+    "overrun_replan_signal_percent": 25,
+    "pressure_triggers": [],
+    "reduction_ladder": [
+      "remove_duplication",
+      "reuse_authority_and_evidence",
+      "batch_coherent_work",
+      "narrow_context_and_output",
+      "defer_optional_polish_and_breadth",
+      "reduce_scope_or_claim",
+      "split_rebranch_or_handoff",
+      "pause_on_blocker"
+    ],
+    "optional_practices_or_scope_to_defer_first": [],
+    "scope_or_claim_reductions_permitted": [],
+    "required_practices_protected": [],
+    "budget_extension_conditions": [],
+    "sunk_cost_stop_conditions": [],
+    "sampling_or_lower_tier_claim_adjustments": []
   },
   "context_layers": {
     "operating_kernel_always_loaded": [],
@@ -37,7 +72,7 @@
   },
   "freshness_and_identity": {
     "authority_status_and_owner": [],
-    "exact_revisions_hashes_versions_and_profiles": [],
+    "exact_revisions_hashes_versions_profiles_and_evidence_keys": [],
     "summaries_that_must_be_invalidated_on_change": [],
     "reread_triggers": []
   },
@@ -51,39 +86,46 @@
   },
   "phase_budget": [
     {
-      "phase": "orient|assess|branch_map|research|design|implement|validate|integrate|cleanup|review|handoff",
+      "phase": "orient|assess|decide|branch_map|research|design|implement|test|validate|integrate|cleanup|review|handoff",
       "expected_decision_or_output": "",
       "soft_token_ceiling_or_qualitative_limit": "",
+      "minimum_practice_floor_for_phase": [],
       "exit_evidence": [],
-      "stop_or_rebranch_trigger": []
+      "pressure_trigger": [],
+      "reduction_or_split_action": []
     }
   ],
-  "tool_discipline": {
-    "cheapest_decisive_tools": [],
-    "calls_to_batch": [],
-    "expensive_calls_and_acceptance_trigger": [],
-    "retry_requires_changed_hypothesis_input_environment_or_transport": true,
+  "tool_and_testing_discipline": {
+    "cheapest_decisive_tools_and_tests": [],
+    "calls_and_cases_to_batch": [],
+    "evidence_to_reuse": [],
+    "expensive_calls_or_test_tiers_and_trigger": [],
+    "retry_requires_changed_hypothesis_input_revision_environment_configuration_or_transport": true,
+    "second_repair_cycle_replan_rule": [],
     "polling_stop_conditions": [],
-    "output_filters_ranges_and_log_windows": []
+    "output_filters_ranges_log_windows_and_artifact_locations": []
   },
   "reasoning_discipline": {
-    "adversarial_questions_that_can_change_the_path": [],
+    "questions_that_can_change_the_path": [],
     "accepted_decisions_not_to_reargue_without_trigger": [],
     "cheapest_decisive_falsifiers": [],
-    "analysis_stop_conditions": []
+    "analysis_stop_conditions": [],
+    "budget_extension_for_essential_reasoning": []
   },
   "focus_branch_fit": {
-    "complete_packet_execution_validation_cleanup_and_handoff_fit_one_window": false,
+    "complete_packet_execution_testing_validation_cleanup_and_handoff_fit_one_window": false,
     "mechanism_and_material_consequences_fit_together": false,
+    "required_reserve_remains": false,
     "one_active_branch_per_agent": true,
     "split_rebranch_or_handoff_triggers": [],
     "sibling_outputs_consumed_as_contracts_not_transcripts": []
   },
   "checkpoints": [
     {
-      "trigger": "branch_switch|material_decision|accepted_output|yellow_state|before_compaction|before_irreversible_action|failure|rollback|shared_contract_change",
+      "trigger": "branch_switch|material_decision|accepted_output|yellow_state|before_compaction|before_irreversible_action|failure|rollback|shared_contract_change|budget_extension|scope_reduction|claim_reduction|deferral|handoff",
       "location": "",
       "must_preserve": [],
+      "backpressure_decision_and_rationale": [],
       "safe_to_discard_after_transfer": []
     }
   ],
@@ -92,6 +134,7 @@
     "evidence_for_band": [],
     "new_scope_allowed": false,
     "mutation_allowed": false,
+    "practice_floor_intact": false,
     "required_next_action": ""
   },
   "compression_and_handoff": {
@@ -102,20 +145,29 @@
     "continuation_packet_location": ""
   },
   "actuals": {
-    "repeated_reads_or_reconstruction_avoided": [],
+    "duplicate_work_removed": [],
+    "evidence_reused": [],
+    "work_batched_or_consolidated": [],
+    "optional_scope_or_ceremony_deferred": [],
+    "scope_or_claim_reduced": [],
+    "budget_extensions_and_reason": [],
+    "splits_rebranches_or_handoffs": [],
     "retries_and_changed_hypotheses": [],
-    "scope_reduced_rebranched_or_handed_off_due_to_pressure": [],
     "validation_integration_cleanup_review_and_handoff_completed": [],
     "checks_not_run_and_claim_limits": [],
     "remaining_token_debt": []
   },
   "completion": {
+    "backpressure_applied_from_orientation": false,
+    "risk_appropriate_practice_floor_preserved": false,
     "required_context_was_not_omitted_for_brevity": false,
-    "retrieval_and_tool_use_were_targeted": false,
+    "retrieval_tool_and_testing_use_were_targeted": false,
+    "duplicate_work_and_evidence_were_reused_or_consolidated": false,
     "exact_outputs_and_revisions_were_checkpointed": false,
-    "reserve_was_preserved_or_deviation_justified": false,
-    "context_pressure_did_not_reduce_rigor": false,
+    "reserve_preserved_or_extend_narrow_split_handoff_decision_justified": false,
+    "optional_scope_reduced_before_rigor": false,
+    "context_pressure_did_not_reduce_claim_support": false,
     "no_material_token_debt_remains": false,
-    "further_token_spend_would_not_change_result_evidence_risk_or_next_action": false
+    "further_token_spend_would_not_change_result_evidence_risk_cleanup_priority_or_next_action": false
   }
 }

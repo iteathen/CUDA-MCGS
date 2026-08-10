@@ -166,3 +166,21 @@
 162. Material decision debt—unmapped obligations, silent spec gaps, unstated gates, unexamined alternatives, unsupported value ordering, or unexplained path selection—blocks completion.
 163. Use a durable engineering-decision record only for foundational, contested, cross-component, high-consequence, empirically uncertain, difficult-to-reverse, or cross-session decisions.
 164. Stop engineering analysis when further reasoning cannot materially change the candidate set, value ordering, selected path, evidence, risk, priority, or next action.
+165. Apply token backpressure to every task from the first retrieval or mutation, including routine work; routine work uses an implicit micro-budget rather than a mandatory ledger.
+166. Before optimizing token use, identify the risk-appropriate minimum practice floor for the claim: authority/current state, coherent scope, expected result, decisive verification, actual-effect inspection, cleanup, and honest limits.
+167. Reduce token pressure in this order: remove duplication, reuse authority/evidence, batch coherent work, narrow context/output, defer optional polish/breadth, reduce scope/claim, split or hand off, then pause on a blocker.
+168. Never preserve a broad claim by cutting the evidence, test tier, reasoning, review, recovery, or cleanup required to support it; narrow the claim instead.
+169. Token pressure may remove ceremony without a consumer, but may not remove objectively triggered safety, security, correctness, accuracy, deadline, resource, compatibility, lifecycle, evidence-identity, or cleanup practices.
+170. Treat the first proposed unchanged reread, retry, reassurance run, or duplicate agent effort as a backpressure signal; reuse or explain the new evidence expected.
+171. A second repair cycle without stronger first-divergence evidence or a changed root-cause hypothesis requires clustering, replanning, scope reduction, or handoff before more broad testing or repair.
+172. Do not spend validation/integration/cleanup/review/handoff reserve on optional scope, speculative architecture, unrelated refactoring, or presentation polish.
+173. Treat a meaningful soft-envelope overrun—roughly 25% when telemetry exists—as a replan signal, not a hard failure quota or permission to lower rigor.
+174. Soft budgets are not authority. Extend the budget when essential in-scope evidence, safety, correctness, cleanup, or handoff has high marginal value; state why and restore a sound reserve or split.
+175. Do not continue a path because tokens have already been spent. Sunk token cost does not justify an invalid owner, failed gate, weak hypothesis, or dominated design.
+176. When the original scope no longer fits the practice floor and reserve, finish a smaller coherent result, split/rebranch, or hand off rather than leaving several shallow partial results.
+177. Sampling, reduced test tiers, or deferred analysis must narrow the claim and be labeled accurately; they may not support the original complete or release-grade claim.
+178. Checkpoint any backpressure-driven budget extension, scope reduction, deferred work, branch split, handoff, or claim change with exact state and rationale.
+179. Do not create a token-budget document for trivial work; proportional backpressure should reduce administration, not add a form to every task.
+180. Evaluate token efficiency by quality-adjusted lifecycle progress, rework, escaped defects, repeated retrieval, repair cycles, missed integration, unsafe residue, and continuation cost—not raw token count.
+181. If token pressure would require violating the practice floor, stop mutation and narrow, split, extend, hand off, or report a blocker; never silently trade away required good practice.
+182. Stop spending only when further tokens cannot materially improve the verified result, evidence, risk, cleanup, priority, or next action—not merely because an initial estimate was reached.
