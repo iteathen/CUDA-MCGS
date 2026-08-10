@@ -1,6 +1,6 @@
 # Validation Policy
 
-**Scope:** Evidence required before a UMCGS change may be considered complete.
+**Scope:** Evidence required before a UMCGS change, review claim, or integration may be considered complete.
 
 ## Principle
 
@@ -36,20 +36,26 @@ Use `agent_files/templates/assessment-and-plan.template.md` when a durable recor
 
 ### 3. Sanity checking and independent review
 
-When a sanity, audit, complete-review, incident, or release-readiness claim is made, verify that:
+When a sanity, audit, complete-review, incident, release-readiness, or system-wide claim is made, verify that:
 
 - the exact revision/artifact and `full`, `bounded`, or `sampled` claim are explicit;
-- included/excluded surfaces, owners, authority, risks, access limits, and review mode are declared;
+- included/excluded surfaces, owners, authority, risks, access limits, environment, external state, and review mode are declared;
+- a complete semantic coverage map exists before deep inspection;
+- the map is split into stable review branches by owner, boundary, path, cross-cutting concern, or artifact rather than arbitrary file count;
+- every leaf branch has one primary semantic owner or one coherent path, a complete semantic-unit inventory, and a sizing rationale showing it fits one focused session without sampling or skimming;
 - every surface included in a full or bounded claim is accounted for at risk-justified depth;
-- material semantic units answer the mandatory core and every objectively triggered module;
-- component/producer-consumer boundaries, representative and critical end-to-end paths, cross-cutting lifecycle, contradictions, and invalidated evidence are reconciled;
+- every material semantic unit answers the full mandatory core: purpose/specification, owner/LEGO boundary, inputs/outputs/effects, callers/dependencies, state/identity/lifetime, foundations/ranges, design-principle alignment, ordering/resources/pressure, failure/cleanup, counterexample, decisive evidence, and wider consequence horizon;
+- every objectively triggered specialist module is resolved or explicitly blocked;
+- component/producer-consumer boundaries, representative and critical end-to-end paths, cross-cutting lifecycle, design principles, contradictions, and invalidated evidence are reconciled;
 - tests, analyzers, sanitizers, profilers, benchmarks, and artifact checks are used as mechanism-relevant evidence rather than semantic substitutes;
-- confirmed violations and high-risk uncertainties have exact mechanism, consequence, owner, and durable disposition;
+- passing leaf branches are not treated as integrated proof;
+- confirmed violations and high-risk uncertainties have exact mechanism, consequence, owner, durable disposition, and required revalidation;
 - independent review did not quietly repair findings;
-- checks not run, missing access/evidence, temporary review state, and claim limits are explicit;
-- the final claim is no broader than the evidence.
+- changed revisions invalidated and reran affected branch, boundary, and path evidence;
+- checks not run, missing access/evidence, review-created state, and claim limits are explicit;
+- the final claim is no broader than the reconciled evidence.
 
-Routine implementation self-sanity may be recorded in the PR or task result. Use `agent_files/templates/sanity-check.template.yaml` only when a full, long-running bounded, multi-agent, independent, incident, release, or cross-session review needs durable coverage state. Use `semantic-review.template.yaml` only for critical or independently assigned leaves.
+Routine implementation self-sanity may be recorded in the PR or task result. Use `agent_files/templates/sanity-check.template.yaml` only when a full, long-running bounded, multi-agent, independent, incident, release, or cross-session review needs durable coverage state. Use `semantic-review.template.yaml` only for critical or independently assigned leaf branches.
 
 ### 4. Pull-request review and guarded merge
 
@@ -67,11 +73,11 @@ Every material PR must verify:
 
 The merge transaction must independently revalidate:
 
-- PR is open, non-draft, and targets the intended branch;
-- current head exactly matches the accepted head;
+- the PR is open, non-draft, and targets the intended branch;
+- the current head exactly matches the accepted head;
 - ancestry, current base/mergeability, required reviews/checks/CODEOWNERS/protection/queue, and blocking discussion are current;
 - issue closure, source-branch deletion, stacked/dependent work, and conflicting/superseding work are correct;
-- merge method is deliberate;
+- the merge method is deliberate;
 - an expected-head guard is used where supported;
 - target history/protection is not bypassed or force-updated.
 
@@ -165,7 +171,7 @@ Before claiming publication or release:
 - stage only intended scope;
 - run all applicable validation layers;
 - update component manifests, registry, indexes, authority, findings, and archive;
-- complete exact-head PR review and guarded merge;
+- complete exact-head PR review and guarded merge when repository integration is part of the work;
 - verify the remote target commit/PR, hosted checks, artifacts, issue closure, and branch effects;
 - record exact failures, skipped validation, or claim limits.
 

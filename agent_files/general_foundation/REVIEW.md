@@ -7,7 +7,7 @@ Review the complete owned change, not isolated lines.
 Ordinary change/PR review, a declared sanity/audit claim, and merge authorization are related but distinct:
 
 - ordinary review may be bounded to the proposed change and affected integration;
-- a full sanity claim additionally requires complete coverage accounting under [`SANITY_CHECKING.md`](SANITY_CHECKING.md);
+- a full sanity claim additionally requires complete coverage accounting, focused review branches, semantic interrogation, and integrated reconciliation under [`SANITY_CHECKING.md`](SANITY_CHECKING.md);
 - PR review and merge follow exact-head and guarded-integration rules in [`PULL_REQUEST_REVIEW_AND_MERGE.md`](PULL_REQUEST_REVIEW_AND_MERGE.md).
 
 ## Authority and scope
@@ -34,16 +34,21 @@ When a sanity or audit claim is present:
 
 - the exact revision/artifact and `full`, `bounded`, or `sampled` claim are named;
 - self-sanity and independent review are distinguished;
+- included/excluded surfaces and the complete semantic coverage map are explicit;
+- coverage is split into review branches by owner, boundary, path, cross-cutting concern, or artifact;
+- every leaf branch has one primary semantic owner or coherent path, complete semantic-unit inventory, and a sizing rationale proving one focused session can cover it without sampling or skimming;
 - every declared surface is accounted for at risk-justified depth;
-- material semantic units address purpose/authority, owner/boundary, inputs/outputs/effects, callers/dependencies, failure/terminal behavior, a credible counterexample, decisive evidence, and wider impact;
-- objectively triggered GPU, memory, graph/search, concurrency, persistence, compatibility, security, generated/JIT/ABI, resource, or performance modules are resolved or blocked;
-- component boundaries and critical end-to-end paths are reconciled;
+- every material semantic unit addresses purpose/specification, owner/LEGO boundary, inputs/outputs/effects, callers/dependencies, state/identity/lifetime, foundational contracts/ranges, design-principle alignment, ordering/resources/pressure, failure/cleanup, a credible counterexample, decisive evidence, and wider impact;
+- objectively triggered design/universality, graph/search, evaluator/numeric, GPU/concurrency, finite-memory, persistence, compatibility, security, generated/JIT/ABI, external-resource, performance, destructive, and diagnostic modules are resolved or blocked;
+- specifications and design principles are compared to the actual mechanism rather than merely cited;
+- component boundaries, critical end-to-end paths, cross-cutting concerns, lifecycle, contradictions, and review-created state are reconciled;
+- passing leaf branches are not treated as integrated system proof;
 - tests and tools support rather than replace mechanism understanding;
-- changed revisions invalidate and rerun affected evidence;
+- changed revisions invalidate and rerun affected branch, boundary, and path evidence;
 - actionable independent findings are durable and were not quietly repaired;
 - checks not run and claim limits are explicit.
 
-A sampled or silently incomplete review cannot be approved as a full sanity claim. Full coverage does not require exhaustive review of unrelated low-risk leaves.
+A sampled, overbroad, or silently incomplete review cannot be approved as a full sanity claim. Full coverage does not require exhaustive review of unrelated low-risk units.
 
 ## Pull-request review and integration
 

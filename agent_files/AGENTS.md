@@ -22,7 +22,7 @@ Produce trustworthy, reusable engineering progress without allowing the first do
 
 ## Task routing
 
-| Task | Required authority before acting |
+| Task | Required authority before acting or claiming completion |
 |---|---|
 | Research | Research policy, exact sources, revision, and license |
 | Foundational design | Charter, ADR-0005, ADR-0006, `PRINCIPLES.md`, adversarial assessment, triggered design doctrine, prior ADRs, decision-ready alternatives |
@@ -30,7 +30,7 @@ Produce trustworthy, reusable engineering progress without allowing the first do
 | Project organization | ADR-0004, organization guides, registry, affected component manifests |
 | Normative contract | Accepted owner direction and specification scope |
 | Production implementation | Accepted specification/component ownership plus an assessment disposition that permits implementation |
-| Sanity check or audit | ADR-0007, frozen revision/artifact, explicit claim, semantic coverage map, risk-depth rules, and independent finding disposition where required |
+| Sanity check or audit | ADR-0007, frozen revision/artifact, explicit claim, complete coverage map, focused branch sizing, semantic interrogation, integrated reconciliation, and independent finding disposition where required |
 | PR readiness/review | ADR-0008, exact head/base, complete changed-surface accounting, phase/risk review mode, semantic/integration evidence, discussion reconciliation, and result |
 | Merge | ADR-0008, exact accepted head, correct target, current checks/reviews/protection, no blockers, deliberate merge method, expected-head guard, and post-merge verification |
 | Disposable experiment | Named question, disposal criteria, isolated experiment location, non-production label |
@@ -91,15 +91,17 @@ Before making a sanity claim:
 
 1. freeze the exact revision, generated-engine identity, model/schema version, or immutable artifact;
 2. declare `full`, `bounded`, or `sampled`, and distinguish self-sanity from independent review;
-3. define included and excluded surfaces, authority, owners, risks, access limits, and review-created state;
-4. build coverage nodes by semantic ownership and integration;
-5. select `core`, `triggered_modules`, or `exhaustive` depth by risk;
-6. interrogate every material semantic leaf using `general_foundation/SEMANTIC_INTERROGATION.md`;
-7. reconcile component boundaries, end-to-end paths, triggered lifecycle concerns, contradictions, invalidations, and duplicate findings;
-8. durably disposition confirmed violations and high-risk uncertainties;
-9. state checks not run and ensure the final claim is no broader than the evidence.
+3. define included and excluded surfaces, authority, owners, risks, access limits, environment, external state, and review-created state;
+4. build the complete semantic coverage map by ownership and integration;
+5. split the map into owner, boundary, path, cross-cutting, or artifact review branches;
+6. require each leaf branch to have one primary semantic owner or coherent path, a complete semantic-unit inventory, and a sizing rationale proving one focused session can review it without sampling or skimming;
+7. select `core`, `triggered_modules`, or `exhaustive` depth by risk;
+8. interrogate every material unit through specifications, ownership, state/identity/lifetime, foundations, design principles, resources/pressure, failure/cleanup, counterexamples, evidence, and wider consequences;
+9. reconcile component boundaries, end-to-end paths, triggered lifecycle concerns, design principles, contradictions, invalidations, review-created state, and duplicate findings;
+10. durably disposition confirmed violations and high-risk uncertainties;
+11. state checks not run and ensure the final claim is no broader than the evidence.
 
-Full coverage does not mean uniform exhaustive depth. A sampled review is never full. Independent review does not quietly repair findings. Use one canonical record only when the claim needs durable continuation or coordination.
+A review branch is a semantic coverage packet, not automatically a Git branch. Full coverage does not mean uniform exhaustive depth. A sampled review is never full. Passing leaf branches do not prove integrated coherence. Independent review does not quietly repair findings. Use one canonical record only when the claim needs durable continuation or coordination.
 
 ## PR review gate
 
@@ -143,7 +145,7 @@ Cross-file behavior, public interfaces, persistent formats, tests, dependency ch
 
 ### Critical
 
-CUDA execution, synchronization, atomics, memory layout, allocator/reclamation behavior, JIT/ABI, schema semantics, state identity, transpositions, cycles, evaluator integration, numerical contracts, hot-path optimization, and repository/component boundary changes require high reasoning and evidence. If the agent cannot demonstrate both, it must not edit the boundary.
+CUDA execution, synchronization, atomics, memory layout, allocator/reclamation behavior, JIT/ABI, schema semantics, state identity, transpositions, cycles, evaluator integration, numerical contracts, hot-path optimization, repository/component boundary changes, and full system-sanity claims require high reasoning and evidence. If the agent cannot demonstrate both, it must not edit or certify the boundary.
 
 ## Core execution loop
 
@@ -156,7 +158,7 @@ CUDA execution, synchronization, atomics, memory layout, allocator/reclamation b
 7. **Plan** — one coherent change derived from the accepted assessment.
 8. **Implement** — preserve ownership, public surfaces, and dependency direction.
 9. **Validate** — structure checks, focused checks, integration, failure paths, complete relevant suite.
-10. **Sanity-check** — interrogate changed semantic units and reconcile the declared review surface at proportional depth.
+10. **Sanity-check** — freeze the subject, size focused review branches, interrogate changed semantic units, and reconcile the declared system surface.
 11. **Author-review when integrating** — inspect the exact complete PR head and affected integration before readiness.
 12. **Independent-review when triggered** — review the frozen head without quietly repairing it.
 13. **Guarded merge when integrating** — revalidate current state and integrate the exact accepted head.
@@ -174,8 +176,9 @@ A task is complete only when:
 
 - the assessment disposition permits the completed work and the strongest material objections were resolved or bounded;
 - the intended owned behavior or authorized non-integrating deliverable exists;
-- any triggered sanity claim names the exact revision, accounts for its declared surface at justified depth, and states its limits;
-- actionable independent findings have durable disposition;
+- any triggered sanity claim names the exact revision, accounts for its declared surface at justified depth, uses focused leaf branches, interrogates every material unit, reconciles integration/lifecycle/design, and states its limits;
+- actionable independent findings have durable disposition and affected evidence was revalidated;
+- review-created state is intentionally disposed;
 - when repository integration is part of the task, one exact PR head received phase/risk-appropriate review and all blockers/questions were resolved;
 - when repository integration is part of the task, the exact accepted head was merged through a guarded transaction and the target/resulting SHA was verified;
 - when repository integration is part of the task, issue closure, source-branch, dependent-work, and review-record effects are accurate;

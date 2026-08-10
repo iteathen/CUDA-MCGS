@@ -1,33 +1,29 @@
-# Proportional Sanity Checking
+# Proportional System-Wide Sanity Checking
 
-**Scope:** Repository, component, contract, schema, implementation, generated artifact, migration, benchmark, integration, release-readiness, and system sanity checks.
+**Scope:** Repository, component, contract, schema, implementation, generated artifact, migration, benchmark, integration, release-readiness, incident, and system sanity checks.
 
 ## Purpose
 
-A sanity check determines whether a declared subject is coherent with its authority, ownership, contracts, actual behavior, evidence, failure handling, resource bounds, lifecycle, and integration consequences.
+A sanity check determines whether a declared subject is coherent with its authority, ownership, specifications, contracts, actual behavior, evidence, failure handling, resource bounds, lifecycle, and integration consequences.
 
-A sanity check is not merely:
-
-- running tests or linters;
-- reading a diff;
-- listing code smells;
-- sampling a few files;
-- restating what code appears to do;
-- or repairing whatever the reviewer notices.
-
-Those may provide evidence. They do not by themselves establish coherence.
+A sanity check is not merely running tests, reading a diff, listing code smells, sampling files, restating what code appears to do, or repairing whatever the reviewer notices. Those activities may produce evidence. They do not by themselves establish coherence.
 
 The governing rule is:
 
-> A proper sanity check accounts for every surface included in its claim at the depth justified by risk, interrogates the semantic behavior that matters, reconciles evidence across boundaries and end-to-end paths, and gives every actionable finding a durable disposition.
+> Freeze the exact subject, define the claim, partition the complete surface into semantic review branches small enough for full attention, interrogate every material semantic unit at risk-justified depth, reconcile the branches into the integrated system, and give every actionable finding a durable disposition.
+
+A system-wide review must succeed at two scales simultaneously:
+
+- **local mechanism:** every material unit is inspected closely enough to expose wrong assumptions and missing consequences;
+- **integrated system:** individually plausible units are reconciled across ownership, contracts, runtime paths, resources, failure, and lifecycle.
 
 ## Relationship to assessment and planning
 
 Assessment is prospective: it determines what problem and design should govern future work. Sanity checking is verificational: it determines whether an existing subject or completed change is actually coherent.
 
-A sanity check may reuse the assessment's authority, scope, risks, and expected outcomes by reference. It must not treat the plan or intended design as proof that the implementation satisfies them.
+A sanity check may reuse the assessment’s authority, scope, risks, and expected outcomes by reference. It must not treat the plan or intended design as proof that the implementation satisfies them.
 
-Do not duplicate one assessment into a second sanity record. Link it, then record only review-specific coverage, evidence, findings, reconciliation, and claim limits.
+Do not duplicate one assessment into a second sanity record. Link it, then record only review-specific scope, coverage branches, evidence, findings, reconciliation, and claim limits.
 
 ## Claim types
 
@@ -35,25 +31,19 @@ Every sanity check declares one claim type before deep inspection.
 
 ### Full
 
-Every declared surface is:
-
-- reviewed at justified depth;
-- excluded with a defensible reason;
-- or explicitly blocked by named missing access/evidence.
-
-Required component, boundary, end-to-end, cross-cutting, and findings reconciliation is complete or exactly blocked.
+Every declared surface is reviewed at justified depth, excluded with a defensible reason, or explicitly blocked by named missing access or evidence. Required component, boundary, end-to-end, cross-cutting, lifecycle, and findings reconciliation is complete or exactly blocked.
 
 **Full means complete coverage accounting, not identical exhaustive depth for every low-risk leaf.**
 
 ### Bounded
 
-Complete review of a deliberately limited subject, component, contract, path, artifact set, or change boundary. The limit must be precise enough that readers cannot mistake it for a repository-wide claim.
+Complete review of a deliberately limited subject, component, contract, path, artifact set, or change boundary. The boundary must be precise enough that readers cannot mistake it for a repository-wide claim.
 
 ### Sampled
 
 Representative, randomized, or risk-selected evidence. Sampling can discover defects and estimate risk; it cannot support a complete-surface claim.
 
-A sampled review must not be described as a full or complete sanity check.
+A sampled review must not be described as full, complete, or system-wide.
 
 ## Review modes
 
@@ -61,15 +51,15 @@ A sampled review must not be described as a full or complete sanity check.
 
 The implementation owner checks the completed change before handoff or publication. Authorized in-scope repairs may be made, but:
 
-- the frozen revision and changed revision must be distinguishable;
-- affected coverage nodes and reconciliation must be rerun;
-- evidence of the failed invariant must not disappear;
+- the frozen revision and changed revision remain distinguishable;
+- affected branches, boundaries, and paths are invalidated and rerun;
+- evidence of the failed invariant does not disappear;
 - a repair that expands ownership or scope requires reassessment;
 - unresolved actionable findings receive durable disposition.
 
 ### Independent sanity check or audit
 
-The reviewer evaluates the declared subject independently. The review does not quietly repair findings. Remediation is a separate authorized work node so the review conclusion remains trustworthy.
+The reviewer evaluates the declared subject independently. The review does not quietly repair findings. Remediation is a separate authorized work node so the reviewed subject and conclusion remain trustworthy.
 
 Independence is required when the owner requests an audit, release gate, incident review, full-system claim, or another policy requires separation.
 
@@ -79,39 +69,39 @@ Use the smallest complete process that protects the actual claim and failure mod
 
 ### Core depth
 
-Use for low-risk, locally understandable leaves. Apply the mandatory core in [`SEMANTIC_INTERROGATION.md`](SEMANTIC_INTERROGATION.md).
+Use for low-risk, locally understandable semantic units. Apply the mandatory core in [`SEMANTIC_INTERROGATION.md`](SEMANTIC_INTERROGATION.md).
 
 ### Triggered-module depth
 
-Use when the leaf changes, depends on, or makes a material claim about persistence, security, concurrency, external resources, performance, identity, compatibility, provenance/generated content, destructive behavior, GPU/device closure, finite memory, schema/JIT/ABI, or graph/search semantics.
+Use when the unit changes, depends on, or makes a material claim about design/universality, graph/search semantics, evaluator/numerics, persistence, security, concurrency, external resources, performance, identity, compatibility, provenance/generated content, destructive behavior, GPU/device closure, finite memory, schema/JIT/ABI, or diagnostics.
 
 ### Exhaustive depth
 
 Use for critical trust or data-loss boundaries, incidents, hostile audits, difficult concurrency/recovery, opaque high-blast-radius mechanisms, or an explicitly justified critical leaf.
 
-State why exhaustive depth is needed and what decision it supports. Exhaustive questionnaires are not the default definition of diligence.
+State why exhaustive depth is needed and what decision it supports. Questionnaire length is not the definition of diligence.
 
-Risk controls review order and depth. A low-risk node in a full review may receive a concise core review, but it may not silently disappear from coverage.
+Risk controls review order and depth. A low-risk unit in a full review may receive a concise core review, but it may not silently disappear from coverage.
 
-## 1. Freeze revision and declare the claim
+## Step 1: Freeze revision and define scope
 
-Record:
+Record before deep inspection:
 
-- repository, branch, commit, generated-engine identity, model/schema version, immutable artifact, or other exact review target;
-- subject kind and declared claim: full, bounded, or sampled;
+- repository, branch, exact commit, generated-engine identity, model/schema version, immutable artifact, or other exact target;
+- `full`, `bounded`, or `sampled` claim;
 - self-sanity or independent mode;
-- governing authority, owner, consumers, and expected behavior;
-- material risks and consequence horizon;
-- included surfaces and explicit exclusions;
-- access limits, environment, hardware/toolchain profile, and unavailable evidence;
-- canonical issue/record when the work spans sessions, reviewers, or actionable findings;
-- temporary access, branches, downloads, instrumentation, credentials, or artifacts requiring later disposition.
+- governing authority, specifications, contracts, schemas, owner, consumers, and expected behavior;
+- included product areas, components, adapters, generated forms, runtime environments, hardware/toolchain profiles, and external state;
+- explicit exclusions and why they cannot invalidate the claim;
+- material risks, consequence horizon, access limits, and unavailable evidence;
+- canonical issue or record when the work spans sessions, reviewers, or actionable findings;
+- temporary access, Git branches, downloads, instrumentation, credentials, reports, restore copies, or artifacts requiring later disposition.
 
 If the subject changes, mark affected evidence invalid. A final full claim must name one exact final revision. Reuse unaffected evidence only when the dependency and invalidation argument is explicit.
 
-## 2. Build a semantic coverage map
+## Step 2: Build a complete semantic coverage map
 
-Partition the subject by ownership and integration rather than by arbitrary file count.
+Partition by semantic ownership and integration rather than arbitrary file count.
 
 A UMCGS repository/system map may include:
 
@@ -127,44 +117,85 @@ authority, organization, and source-of-truth records
 → memory plan, pressure, cancellation, recovery, and teardown
 → representative and critical end-to-end search paths
 → diagnostics, conformance, benchmarks, packaging, and release artifacts
+→ retained external and review-created state
 ```
 
-This is an example, not a mandatory checklist for every bounded subject.
+This is an example, not a mandatory list for every bounded subject. Planned components are not reviewed as implemented code.
 
-Each coverage node records:
+Each coverage entry initially records:
 
 - stable coverage ID;
-- subject and semantic owner;
-- exact files/symbols/artifacts/runtime paths;
-- risk and chosen depth;
-- why that depth is sufficient;
-- dependencies and downstream consumers;
-- evidence and status;
-- findings and invalidation state.
+- subject, semantic owner, and branch type;
+- exact files, symbols, schemas, generated artifacts, runtime paths, or external state;
+- upstream/downstream dependencies and required reconciliation;
+- risk and candidate depth;
+- material semantic units;
+- required evidence;
+- exclusions, status, findings, and invalidation state.
 
-Status is one of:
+## Step 3: Break coverage into manageable review branches
 
-- `supported`;
-- `violated`;
-- `blocked`;
-- `excluded`;
-- `invalidated`.
+A **review branch** is a semantic coverage packet. It is not automatically a Git branch. Create a Git branch only when isolated remediation, transport, or coordination actually requires one.
 
-Do not use `not inspected` inside a full claim except as an explicit blocker that limits the final conclusion.
+### Branch types
 
-## 3. Perform the required passes
+- **Owner branch** — one component or authoritative contract owner.
+- **Boundary branch** — one producer/consumer, ABI, schema, adapter, or resource-transfer boundary.
+- **Path branch** — one end-to-end control, data, failure, or recovery path.
+- **Cross-cutting branch** — one triggered concern such as security, persistence, concurrency, performance, provenance, or release.
+- **Artifact branch** — one generated, packaged, deployed, restored, cached, or externally retained artifact family.
+
+### Full-attention sizing rule
+
+A leaf branch is small enough only when one reviewer can hold, in one focused review session and without sampling or skimming:
+
+- its purpose, authority, owner, and exclusions;
+- every material semantic unit and relevant specification;
+- inputs, outputs, callers, dependencies, state, identity, and lifetime;
+- invariants, units, ranges, precision, resources, ordering, and pressure behavior;
+- normal, failure, cancellation, cleanup, and recovery behavior;
+- applicable LEGO, SOLID, CUPID, universality, foundation, and simplicity questions;
+- decisive evidence, counterexamples, boundary obligations, and wider consequences.
+
+Split a branch before detailed review when:
+
+- it has more than one primary semantic owner;
+- unrelated contracts, artifacts, or runtime paths are mixed;
+- the reviewer would have to sample, skim, or defer material units;
+- materially different triggered modules dominate different portions;
+- a finding cannot be assigned to a clear owner;
+- the mechanism and consequence horizon cannot remain simultaneously active in context;
+- one section could change without invalidating evidence for the others.
+
+Do not split solely by line count or file count. A small concurrency protocol, migration, or allocator may deserve its own critical branch. A large low-risk declarative surface may remain one branch when a single owner, contract, and evidence set govern it.
+
+Parent branches may organize the coverage tree, but detailed review occurs in leaf branches. Each leaf records its semantic-unit inventory before review begins. If the inventory no longer fits one focused session, split again.
+
+### Coverage completeness versus branch size
+
+Small branches do not authorize narrow thinking. Each leaf records its upstream/downstream reconciliation obligations, and the overall coverage map must include boundary, path, cross-cutting, lifecycle, and artifact branches needed to reassemble system meaning.
+
+## Step 4: Perform the required passes
 
 ### Inventory and authority pass
 
-Verify the declared subject, frozen revision, authoritative documents, component owners, manifests/registry entries, generated forms, build profiles, external state, exclusions, and review access.
+Verify the frozen subject, authoritative documents, component owners, manifests and registry entries, generated forms, build profiles, external state, exclusions, and review access.
 
-Look for duplicated authority, obsolete compatibility copies, generated artifacts being treated as source, unowned components, and code that is not active in the claimed configuration.
+Look for duplicated authority, stale compatibility copies, generated artifacts being treated as source, unowned components, and code that is not active in the claimed configuration.
 
-### Semantic-leaf pass
+### Semantic branch pass
 
-Review every coverage leaf at its justified depth using [`SEMANTIC_INTERROGATION.md`](SEMANTIC_INTERROGATION.md).
+For every leaf review branch:
 
-Write expected behavior before accepting actual behavior. Preserve contradictions, counterexamples, missing evidence, and the earliest failed invariant.
+1. confirm its size still permits full attention;
+2. inventory every material semantic unit;
+3. review each unit using [`SEMANTIC_INTERROGATION.md`](SEMANTIC_INTERROGATION.md);
+4. apply every objectively triggered module;
+5. write expected behavior before accepting actual behavior;
+6. preserve contradictions, counterexamples, earliest failed invariants, missing evidence, and exact findings;
+7. conclude `supported`, `supported_with_limits`, `violated`, `blocked`, or `invalidated`.
+
+Inspect the complete branch surface, not only code that already looks suspicious.
 
 ### Component and boundary reconciliation
 
@@ -178,35 +209,48 @@ Reconcile across producers and consumers:
 - adapter translation and compatibility behavior;
 - generated/source correspondence.
 
-A set of locally correct leaves can still form an incoherent component boundary.
+A set of locally correct branches can still form an incoherent boundary.
 
 ### End-to-end path reconciliation
 
-Trace representative and critical paths from input/configuration and authority through transition, state, failure, and resource behavior to observable output and terminal cleanup.
+Trace representative and critical paths from input/configuration and authority through transition, state, scheduling, evaluation, failure, and resource behavior to observable output and terminal cleanup.
 
 For UMCGS, selected paths may include:
 
 - schema/profile → normalized IR → memory/layout plan → generated engine → load/launch;
 - root input → selection/transition/lookup/evaluation/backup → output;
-- queue or arena pressure → deterministic degradation/termination;
+- queue or arena pressure → deterministic degradation or termination;
 - cancellation or launch failure → completion, release, and observable result;
 - reroot/persistence path where supported;
 - incompatible driver/model/schema/profile → safe rejection.
 
-Tests are useful only when they exercise the actual path and claimed mechanism.
+For production search, explicitly prove whether any active decision depends on host progress after ignition.
 
 ### Cross-cutting and lifecycle reconciliation
 
-Review only triggered concerns, such as:
+Review only triggered concerns, including:
 
-- persistence, migration, rollback, and recovery;
-- security, trust, executable schemas/native capabilities, and privacy;
-- concurrency, publication, wakeup, and cancellation;
-- finite memory, saturation, reclamation, and device loss;
-- public compatibility and deprecation;
-- provenance, generated content, and third-party material;
-- performance and search-quality equivalence;
-- packaging, installation, release, and external resource lifecycle.
+- startup, steady state, pressure, cancellation, teardown, restart, and recovery;
+- persistence, migration, rollback, compatibility, and cache invalidation;
+- security, trust, executable schemas/native capabilities, privacy, and provenance;
+- concurrency, publication, wakeup, progress, and backpressure;
+- finite memory, saturation, reclamation, device loss, and workspace failure;
+- performance, quality equivalence, degradation, and scale;
+- diagnostics, packaging, installation, release, and external-resource lifecycle.
+
+### Design-principle reconciliation
+
+Across all branches, verify:
+
+- singular ownership of authoritative facts, mutation, and lifecycle;
+- LEGO component boundaries and explicit injected dependencies;
+- SOLID internal responsibilities without ceremonial fragmentation;
+- CUPID composability, predictability, idiomatic implementation, and domain-based names;
+- domain-appropriate units, ranges, precision, identity, and deliberate finite limits;
+- maximum accurate generality, second-instance, first-consumer deletion, and explicit exclusions;
+- universal contracts with generated specialization of unused capabilities;
+- simplest sufficient total system without hidden complexity exported to callers, memory, synchronization, migration, recovery, diagnostics, or tests;
+- conformance to accepted specifications, contracts, schemas, and ADRs.
 
 ### Findings reconciliation
 
@@ -223,43 +267,44 @@ Confirmed violations and high-risk uncertainties that require action receive dur
 
 ### Review-state disposition
 
-Remove, restore, archive, transfer, or intentionally retain review-created branches, downloads, generated reports, instrumentation, credentials, temporary access, datasets, logs, restore copies, and local modifications.
+Remove, restore, archive, transfer, or intentionally retain review-created branches, downloads, generated reports, instrumentation, credentials, temporary access, datasets, logs, restore copies, allocations, and local modifications.
 
-Track only material review-created state. Do not create a cleanup ledger for artifacts that never existed or require no decision.
+Track only material review-created state. A clean working tree does not prove remote, external, or device-side cleanup.
 
-## 4. Findings standard
+## Findings standard
 
 A finding states:
 
-- exact frozen revision, location, artifact, or runtime path;
+- exact frozen revision, coverage branch, location, artifact, or runtime path;
 - governing authority and expected invariant;
 - actual conflicting or uncertain mechanism;
 - decisive evidence and confidence;
-- consequence and affected owners/consumers;
+- consequence and affected owners, consumers, and manifestations;
 - severity;
-- root-cause/duplicate reconciliation;
+- root-cause and duplicate reconciliation;
 - smallest coherent remediation boundary;
 - durable issue or explicit non-action disposition;
-- checks not run and evidence that could change the conclusion.
+- checks not run and evidence that could change the conclusion;
+- affected branches, boundaries, and paths requiring revalidation.
 
-Do not file a vague recommendation, hypothetical redesign, or style preference as a defect. Do not bury a confirmed problem inside an enormous questionnaire.
+Do not file vague recommendations, hypothetical redesigns, or style preferences as defects. Do not bury confirmed problems inside enormous questionnaires.
 
-## 5. Parallel and staged sanity checks
+## Parallel and staged sanity checks
 
 Parallel review requires:
 
 - one frozen revision and claim;
-- stable coverage IDs;
-- non-overlapping primary ownership;
-- common depth and finding rules;
-- explicit dependency handoffs;
-- central contradiction, boundary, path, and findings reconciliation.
+- stable coverage and branch IDs;
+- non-overlapping primary branch ownership;
+- common sizing, depth, and finding rules;
+- explicit dependency and reconciliation handoffs;
+- central contradiction, boundary, path, design, and findings reconciliation.
 
 Parallel leaf completion is not proof of integrated coherence.
 
-A staged review may close low-risk nodes early, but its final claim remains open until all declared surfaces and required reconciliation are accounted for.
+A staged review may close low-risk branches early, but its final claim remains open until all declared surfaces and required reconciliation are accounted for.
 
-## 6. Evidence discipline
+## Evidence discipline
 
 Tests, compilers, static analyzers, sanitizers, schemas, traces, profilers, logs, benchmarks, artifact inspectors, and reference implementations are evidence sources. None substitutes for understanding the mechanism and its integration surface.
 
@@ -267,25 +312,27 @@ Use the cheapest decisive evidence first. Expand only while a material claim rem
 
 For performance, distinguish throughput from useful search work and preserve semantic, quality, resource, and stopping equivalence. For CUDA/device work, identify the actual synchronization boundary and prove that active progress does not depend on a host-produced intermediate decision.
 
-## 7. Administrative restraint
+## Administrative restraint
 
 - Routine self-sanity may live in the PR or task response; no separate record is required.
-- Use one canonical sanity record for a full review, long-running bounded review, multi-agent review, audit, incident, or cross-session continuation.
-- Low-risk leaves may be grouped in one coverage node when they share owner, risk, contract, and evidence.
-- Do not create one form per file or function.
+- Use one canonical sanity record for a full review, long-running bounded review, multi-agent review, audit, incident, release, or cross-session continuation.
+- Keep review branches as sections or linked packets in that record; do not create one document, issue, or Git branch per function.
+- Low-risk units may be grouped only when they share owner, contract, risk, evidence, and branch sizing remains valid.
 - Link authority, assessment, tests, findings, and issues instead of copying them.
 - Create issues only for actionable independent findings or explicitly justified high-risk uncertainties.
 - Do not maintain a second risk register, plan, or status ledger inside the sanity record.
-- Stop expanding the review when the declared claim is supported or exactly limited and additional work cannot change a material decision.
+- Stop when the declared claim is supported or exactly limited and additional work cannot change a material decision.
 
 The record exists to make the claim trustworthy and continuable, not to prove that paperwork occurred.
 
-## 8. Prohibited claims
+## Prohibited claims
 
 Do not claim full or complete sanity when:
 
 - declared surfaces are missing or silently sampled;
 - the target revision or artifact is unclear;
+- review branches were too broad for full attention;
+- mandatory core questions or triggered modules were skipped;
 - depth is unrelated to risk;
 - critical callers, dependencies, state, contracts, resources, or lifecycle were ignored;
 - component/boundary or end-to-end reconciliation was skipped;
@@ -296,20 +343,21 @@ Do not claim full or complete sanity when:
 - checks not run or access limits are hidden;
 - the final claim is broader than the evidence.
 
-Do not reject a full claim merely because low-risk nodes used concise core review instead of exhaustive interrogation.
+Do not reject a full claim merely because low-risk units used concise core review instead of exhaustive interrogation.
 
 ## Completion
 
 A sanity check concludes when:
 
 - every declared surface is accounted for;
+- every leaf review branch is small enough for full attention and has a justified result;
+- each material semantic unit received the mandatory core and all triggered modules;
 - each depth choice is justified by risk;
-- semantic leaves and objectively triggered modules are resolved or blocked;
-- component, boundary, end-to-end, and triggered lifecycle reconciliation is complete or exactly limited;
+- component, boundary, end-to-end, design, and triggered lifecycle reconciliation is complete or exactly limited;
 - contradictions and invalidated evidence are resolved;
 - actionable findings have durable disposition;
 - material review-created state is intentional;
 - checks not run and claim limits are explicit;
 - the final claim names the exact revision and is no broader than the evidence.
 
-Use [`../templates/sanity-check.template.yaml`](../templates/sanity-check.template.yaml) when a durable record is justified. Use [`../templates/semantic-review.template.yaml`](../templates/semantic-review.template.yaml) only for critical leaves or continuation that cannot be captured concisely in the coverage node.
+Use [`../templates/sanity-check.template.yaml`](../templates/sanity-check.template.yaml) when a durable record is justified. Use [`../templates/semantic-review.template.yaml`](../templates/semantic-review.template.yaml) only for critical leaves or continuation that cannot be captured concisely in the coverage branch.
