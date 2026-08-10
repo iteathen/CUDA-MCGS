@@ -1,0 +1,90 @@
+name: Sanity or audit finding
+description: File a confirmed violation or credible high-risk uncertainty from a sanity check or independent audit.
+title: "[Finding]: "
+labels: ["sanity-finding"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Independent sanity and audit work records actionable findings rather than quietly repairing them. Reconcile duplicate manifestations before filing separate issues.
+  - type: textarea
+    id: review-context
+    attributes:
+      label: Review record, claim, and frozen revision
+      description: Link the canonical sanity/audit record; state full, bounded, or sampled claim; review mode; exact revision/artifact; and coverage node IDs.
+    validations:
+      required: true
+  - type: dropdown
+    id: classification
+    attributes:
+      label: Classification
+      options:
+        - Confirmed violation
+        - Credible high-risk uncertainty
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Critical
+        - High
+        - Medium
+        - Low
+        - Informational
+    validations:
+      required: true
+  - type: textarea
+    id: authority
+    attributes:
+      label: Governing authority and failed or uncertain invariant
+      description: Link the exact doctrine, ADR, specification, contract, schema, test oracle, or policy and state the expected invariant.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Actual mechanism and exact evidence
+      description: Provide file/symbol/range, runtime path, artifact, trace, test, log, sanitizer/profiler output, or measurement with revision and confidence.
+    validations:
+      required: true
+  - type: textarea
+    id: consequence
+    attributes:
+      label: Consequence, owners, consumers, and manifestations
+      description: Identify affected components, callers, runtime paths, resources, lifecycle, distinct manifestations, and consequence horizon.
+    validations:
+      required: true
+  - type: textarea
+    id: reconciliation
+    attributes:
+      label: Root-cause and duplicate reconciliation
+      description: Link related findings/issues and explain why this issue is canonical or independently owned.
+    validations:
+      required: true
+  - type: textarea
+    id: remediation
+    attributes:
+      label: Smallest coherent remediation boundary
+      description: State likely owner/scope, authority or evidence needed first, dependencies, rollback/recovery concerns, and whether remediation is ready or blocked. Do not prescribe speculative redesign.
+    validations:
+      required: true
+  - type: textarea
+    id: limits
+    attributes:
+      label: Claim limits and checks not run
+      description: State missing access/evidence, uninspected scales, uncertainty, and what could change the conclusion.
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Finding checks
+      options:
+        - label: Duplicate manifestations were reconciled before filing this issue.
+          required: true
+        - label: This independent finding was not quietly repaired inside the review node.
+          required: true
+        - label: Severity, confidence, evidence, and claim limits are explicit.
+          required: true

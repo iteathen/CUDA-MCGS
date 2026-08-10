@@ -4,6 +4,8 @@
 
 Review the complete owned change, not isolated lines.
 
+Ordinary PR review and a declared sanity/audit claim are not identical. PR review may be bounded to the change. A full sanity claim additionally requires complete coverage accounting and reconciliation under [`SANITY_CHECKING.md`](SANITY_CHECKING.md).
+
 ## Authority and scope
 
 - Owner intent and accepted authority are satisfied.
@@ -21,6 +23,23 @@ Review the complete owned change, not isolated lines.
 - The plan follows one coherent ownership boundary, orders work by dependency and uncertainty, and pairs validation with each material step.
 - Stop, rollback, migration, failure, recovery, and cleanup conditions are explicit where material.
 - The record is proportional: existing authority is linked, duplicate ledgers are absent, and ongoing manual accounting has a named owner and real decision value.
+
+## Sanity claim and semantic review
+
+When a sanity or audit claim is present:
+
+- the exact revision/artifact and `full`, `bounded`, or `sampled` claim are named;
+- self-sanity and independent review are distinguished;
+- every declared surface is accounted for at risk-justified depth;
+- material semantic units address purpose/authority, owner/boundary, inputs/outputs/effects, callers/dependencies, failure/terminal behavior, a credible counterexample, decisive evidence, and wider impact;
+- objectively triggered GPU, memory, graph/search, concurrency, persistence, compatibility, security, generated/JIT/ABI, resource, or performance modules are resolved or blocked;
+- component boundaries and critical end-to-end paths are reconciled;
+- tests and tools support rather than replace mechanism understanding;
+- changed revisions invalidate and rerun affected evidence;
+- actionable independent findings are durable and were not quietly repaired;
+- checks not run and claim limits are explicit.
+
+A sampled or silently incomplete review cannot be approved as a full sanity claim. Full coverage does not require exhaustive review of unrelated low-risk leaves.
 
 ## Design hierarchy and simplicity
 
@@ -67,7 +86,7 @@ Review the complete owned change, not isolated lines.
 
 ## Documentation and publication
 
-- Status, indexes, registry, component manifests, specifications/ADRs, and supersession are reconciled.
+- Status, indexes, registry, component manifests, specifications/ADRs, findings, and supersession are reconciled.
 - Third-party provenance and licensing are recorded.
 - Final diff/status are intentional.
 - The remote state is verified before publication is claimed.

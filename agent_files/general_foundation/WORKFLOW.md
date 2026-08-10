@@ -6,6 +6,8 @@
 
 Read authority, inspect repository state, identify task class, existing decisions, related work, unrelated local changes, and the current product-area/component organization.
 
+If the request is a sanity check, audit, whole-project review, complete review, incident review, or release-readiness claim, freeze the target and route to [`SANITY_CHECKING.md`](SANITY_CHECKING.md) before deep inspection.
+
 ## 2. Frame the assessment
 
 State the required outcome, authority, evidence, ownership boundary, expected operating domain, constraints, assumptions, completion evidence, and cost of doing nothing. Distinguish observed facts from inferences and proposals.
@@ -69,14 +71,30 @@ When implementation exposes a new foundational question, stop the dependent work
 
 Progress from organization/documentation checks through focused checks, integration, failure/exhaustion, architecture-specific checks, benchmarks, and the full relevant suite. Validation must be capable of falsifying the important claims from the assessment.
 
-## 10. Reconcile authority and history
+## 10. Perform proportional self-sanity or independent sanity
 
-Update specifications, ADRs, component manifests, registry, indexes, subsystem READMEs, and archived superseded material in the same coherent change. Remove temporary planning records once their durable decisions and execution state have moved to the correct authorities.
+For material implementation, interrogate the changed semantic units through [`SEMANTIC_INTERROGATION.md`](SEMANTIC_INTERROGATION.md) and reconcile the actual affected boundaries and paths.
 
-## 11. Publish intentionally
+When the request or risk requires a declared full, bounded, sampled, independent, incident, or release claim, use [`SANITY_CHECKING.md`](SANITY_CHECKING.md):
+
+- freeze the exact final revision/artifact;
+- account for the declared coverage surface;
+- select depth by risk;
+- reconcile components, end-to-end paths, lifecycle, contradictions, and findings;
+- rerun invalidated coverage after authorized self-sanity repairs;
+- keep independent review separate from remediation;
+- state checks not run and final claim limits.
+
+Do not force a standalone sanity record for a small reversible self-check. Do not call a sampled review full.
+
+## 11. Reconcile authority and history
+
+Update specifications, ADRs, component manifests, registry, indexes, subsystem READMEs, actionable findings, and archived superseded material in the same coherent change. Remove temporary planning/review records once their durable decisions, findings, and execution state have moved to the correct authorities.
+
+## 12. Publish intentionally
 
 Inspect status and diff, stage only intended files, commit coherently, push through a verified transport, and verify the remote result.
 
-## 12. Hand off
+## 13. Hand off
 
-Record objective, product area/component, authority, integrated decision, strongest remaining objection, changes, evidence, repository state, risks, failed approaches, and one coherent next boundary.
+Record objective, product area/component, authority, integrated decision, strongest remaining objection, changes, validation, sanity claim/limits when triggered, actionable findings, repository state, risks, failed approaches, and one coherent next boundary.

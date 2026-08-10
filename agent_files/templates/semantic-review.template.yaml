@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "semantic_review": {
+    "id": "",
+    "status": "active|supported|violated|blocked|invalidated",
+    "reviewer": "",
+    "coverage_node": ""
+  },
+  "subject": {
+    "repository": "",
+    "revision": "",
+    "file_symbol_artifact_or_range": "",
+    "semantic_unit": "",
+    "component_and_owner": ""
+  },
+  "core": {
+    "purpose_and_authority": "",
+    "owner_and_boundary": "",
+    "inputs_outputs_state_resources_and_effects": [],
+    "caller_and_dependency_assumptions": [],
+    "failure_pressure_cancellation_and_terminal_behavior": [],
+    "simplest_credible_counterexample": "",
+    "cheapest_decisive_evidence": [],
+    "wider_change_impact": []
+  },
+  "triggered_modules": {
+    "persistence_migration_recovery": {"triggered": false, "evidence": [], "findings": []},
+    "security_trust_privacy_executable_capability": {"triggered": false, "evidence": [], "findings": []},
+    "concurrency_ordering_publication": {"triggered": false, "evidence": [], "findings": []},
+    "external_io_resources_cleanup": {"triggered": false, "evidence": [], "findings": []},
+    "performance_hot_path": {"triggered": false, "evidence": [], "findings": []},
+    "identity_lineage": {"triggered": false, "evidence": [], "findings": []},
+    "compatibility_public_contract": {"triggered": false, "evidence": [], "findings": []},
+    "provenance_generated_jit_abi": {"triggered": false, "evidence": [], "findings": []},
+    "destructive_difficult_to_reverse": {"triggered": false, "evidence": [], "findings": []},
+    "gpu_device_closure_finite_resources": {"triggered": false, "evidence": [], "findings": []},
+    "graph_search_semantics": {"triggered": false, "evidence": [], "findings": []},
+    "exhaustive_depth": {"triggered": false, "reason": "", "evidence": [], "findings": []}
+  },
+  "findings": [
+    {
+      "classification": "blocking|non_blocking|question|informational",
+      "expected_invariant": "",
+      "actual_or_uncertain_mechanism": "",
+      "consequence": "",
+      "evidence": [],
+      "acceptable_outcome_or_evidence": "",
+      "owner_and_manifestations": []
+    }
+  ],
+  "conclusion": {
+    "checks_not_run_and_reason": [],
+    "claim_limits": [],
+    "result": "supported|violated|blocked|invalidated",
+    "summary": ""
+  }
+}

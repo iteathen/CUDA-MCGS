@@ -21,6 +21,7 @@
 - Organize the repository and components for mature project scale from the beginning. See [`decisions/ADR-0004-large-project-organization.md`](decisions/ADR-0004-large-project-organization.md).
 - Apply the LEGO design hierarchy, require sound fundamentals, and judge simplicity across the total affected system. See [`decisions/ADR-0005-lego-design-hierarchy.md`](decisions/ADR-0005-lego-design-hierarchy.md).
 - Assess before planning, use adversarial synthesis, and keep administrative records proportional to risk. See [`decisions/ADR-0006-adversarial-assessment-and-planning.md`](decisions/ADR-0006-adversarial-assessment-and-planning.md).
+- Use exact frozen targets, explicit full/bounded/sampled claims, risk-proportional semantic review, integration reconciliation, and durable findings for sanity checks. See [`decisions/ADR-0007-proportional-sanity-checking.md`](decisions/ADR-0007-proportional-sanity-checking.md).
 
 ## Authority
 

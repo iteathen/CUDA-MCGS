@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "sanity": {
+    "id": "",
+    "status": "active|blocked|concluded",
+    "claim": "full|bounded|sampled",
+    "mode": "self_sanity|independent",
+    "owner": "",
+    "canonical_record": ""
+  },
+  "subject": {
+    "kind": "repository|component|contract|schema|implementation|artifact|migration|benchmark|release|system|other",
+    "frozen_revision_or_artifact": "",
+    "environment_and_profile": [],
+    "governing_authority": [],
+    "declared_surface": [],
+    "material_risks": [],
+    "exclusions_and_reason": [],
+    "access_or_evidence_limits": []
+  },
+  "coverage": [
+    {
+      "id": "",
+      "subject_and_owner": "",
+      "exact_anchors": [],
+      "risk": "low|medium|high|critical",
+      "depth": "core|triggered_modules|exhaustive",
+      "depth_reason": "",
+      "dependencies_and_consumers": [],
+      "evidence": [],
+      "status": "supported|violated|blocked|excluded|invalidated",
+      "findings": []
+    }
+  ],
+  "reconciliation": {
+    "inventory_and_authority": [],
+    "component_and_boundaries": [],
+    "end_to_end_paths": [],
+    "cross_cutting_and_lifecycle": [],
+    "contradictions_and_invalidations": [],
+    "broad_claims_with_exact_anchors": []
+  },
+  "findings": [
+    {
+      "id": "",
+      "classification": "confirmed_violation|high_risk_uncertainty|weak_lead|informational",
+      "severity": "critical|high|medium|low|informational",
+      "frozen_revision_and_exact_evidence": [],
+      "authority_and_failed_or_uncertain_invariant": "",
+      "actual_mechanism_and_consequence": "",
+      "affected_owners_consumers_and_manifestations": [],
+      "root_cause_and_duplicate_reconciliation": "",
+      "smallest_coherent_remediation_boundary": "",
+      "durable_disposition": "",
+      "claim_limits": []
+    }
+  ],
+  "review_state": {
+    "checks_not_run_and_reason": [],
+    "temporary_artifacts_access_or_instrumentation": [],
+    "retained_evidence_and_retention_trigger": [],
+    "cleanup_or_access_debt": []
+  },
+  "closure": {
+    "every_declared_surface_accounted_for": false,
+    "depth_justified_by_risk": false,
+    "semantic_and_triggered_modules_complete_or_blocked": false,
+    "boundary_and_path_reconciliation_complete_or_blocked": false,
+    "findings_durably_dispositioned": false,
+    "review_state_intentional": false,
+    "final_revision_or_artifact": "",
+    "final_claim_and_limits": "",
+    "next_action": ""
+  }
+}
