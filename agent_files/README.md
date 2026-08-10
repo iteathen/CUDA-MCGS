@@ -16,6 +16,7 @@ This directory is the durable operating system for development. The root [`AGENT
 
 - [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md) — compact mandatory design hierarchy.
 - [`general_foundation/ASSESSMENT_AND_PLANNING.md`](general_foundation/ASSESSMENT_AND_PLANNING.md) — proportional adversarial assessment and executable planning.
+- [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) — parent-task integration spines, full-attention branch sizing, context packets, parallelism, invalidation, and reconciliation for large or complex work.
 - [`general_foundation/PLAN_EXECUTION.md`](general_foundation/PLAN_EXECUTION.md) — readiness proof, coherent operations, expected-versus-actual inspection, deviation handling, recovery, and acceptance.
 - [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md) — local/remote cleanup, protected state, artifact disposition, GitHub lifecycle, destructive safeguards, verification, and cleanup debt.
 - [`general_foundation/SANITY_CHECKING.md`](general_foundation/SANITY_CHECKING.md) — proportional coverage-accounted sanity checks and audit claims.
@@ -53,8 +54,8 @@ This directory is the durable operating system for development. The root [`AGENT
 
 ## Templates
 
-Use [`templates/`](templates/) for ADRs, specifications, component manifests, combined assessment/plans, governed plan execution, cleanup/disposition, sanity checks, critical semantic reviews, durable PR reviews, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning.
+Use [`templates/`](templates/) for ADRs, specifications, component manifests, combined assessment/plans, durable focus-branch packets, governed plan execution, cleanup/disposition, sanity checks, critical semantic reviews, durable PR reviews, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning.
 
-Routine task-owned scratch cleanup, single-session execution, self-sanity, and ordinary PR review should remain in the issue/PR rather than forcing standalone artifacts. Use the cleanup template only when shared, external, sensitive, retained, recovery-critical, long-lived, atomic, or independently blocked state requires durable lifecycle evidence.
+Routine task-owned scratch cleanup, single-session execution, simple focus branches, self-sanity, and ordinary PR review should remain in the canonical issue/plan/PR rather than forcing standalone artifacts. Use the focus-branch template only for branches that cross sessions/agents, run in parallel, carry high consequence, or need independent continuation/review. Use the cleanup template only when shared, external, sensitive, retained, recovery-critical, long-lived, atomic, or independently blocked state requires durable lifecycle evidence.
 
 Tool adapters such as `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md` must point here and remain thin.
