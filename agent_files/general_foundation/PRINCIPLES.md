@@ -38,6 +38,20 @@ Simplicity is considered only after the fundamentals are sound. Administrative a
 
 See [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md).
 
+## Focus branches for large or complex work
+
+When one agent cannot retain the task’s objective, authority, mechanism, dependencies, risks, and material consequence horizon with full attention in one focused session, decompose the task before deep execution.
+
+Keep one canonical parent task and integration spine. Split work into semantic focus branches with one primary question or output, one primary owner, exact inputs/revisions, minimal context, independent falsification, cleanup, and a declared integration obligation.
+
+A focus branch is not automatically a Git branch. Git branches, issues, PRs, worktrees, and documents are created only when isolation, collaboration, review, transport, rollback, dependency, or closure justifies them.
+
+Size leaves by the full-attention rule, not file count or agent count. Shared-contract changes route through the integration spine and invalidate dependents explicitly. Locally accepted branches do not prove parent completion; exact outputs must be centrally reconciled across ownership, contracts, end-to-end behavior, resources, failure, lifecycle, compatibility, security, performance, and cleanup.
+
+Use one canonical branch map and one active branch per agent by default. Rebranch when evidence reveals the task’s true shape rather than silently expanding scope or preserving a bad decomposition.
+
+See [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md).
+
 ## Governed plan execution
 
 A plan is a hypothesis under current authority. Execute only a current dependency-ready node with explicit ownership, expected outputs, acceptance, runnable falsification, rollback/safe stop, cleanup obligations, and trustworthy repository/environment state.
@@ -128,17 +142,19 @@ Represent essential domain complexity directly. Remove accidental complexity. Re
 - Universal contracts do not embed chess, games, one evaluator shape, one action shape, one graph model, or one GPU.
 - Generated hot paths may be highly specialized and may eliminate unused abstractions.
 - Performance changes require measured mechanism evidence plus semantic and search-quality guardrails.
+- Focus branches must not independently drift shared Search IR, graph, policy, evaluator, resource, schema/JIT/ABI, device-closure, or search-quality meaning.
 - Plan execution must not introduce hidden first-domain, host-control, memory, graph, evaluator, JIT/ABI, resource, or cleanup assumptions.
 - Device contexts, allocations, queues, modules, IPC/shared-memory state, diagnostics, and host resources are released or deliberately retained and verified.
 - Local and remote branches, PR/issue state, artifacts, credentials, and external resources are intentional after completion.
 
-## Design, execution, and cleanup stop conditions
+## Design, decomposition, execution, and cleanup stop conditions
 
-Stop and resolve the boundary before implementation, deletion, acceptance, or dependent continuation when ownership is ambiguous, dependencies are incomplete, authority conflicts, the plan version is stale, expected effects/falsifiers/cleanup are unknown, public contracts leak unstable/private types, state has multiple writers, a name implies unsupported generality, the expected second instance forces redesign, resource exhaustion or teardown is undefined, actual effects materially diverge, protected state may be destroyed, cleanup cannot be verified, or alleged simplicity merely exports the problem.
+Stop and resolve the boundary before implementation, deletion, acceptance, or dependent continuation when ownership is ambiguous, the task exceeds full attention without a focus-branch map, branches overlap write authority, shared contracts can drift independently, dependencies are incomplete, authority conflicts, the plan version is stale, expected effects/falsifiers/cleanup are unknown, public contracts leak unstable/private types, state has multiple writers, a name implies unsupported generality, the expected second instance forces redesign, resource exhaustion or teardown is undefined, actual effects materially diverge, protected state may be destroyed, cleanup cannot be verified, or alleged simplicity merely exports the problem.
 
 ## Triggered detailed doctrine
 
 - [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md)
+- [`FOCUS_BRANCHES.md`](FOCUS_BRANCHES.md)
 - [`PLAN_EXECUTION.md`](PLAN_EXECUTION.md)
 - [`CLEANUP_AND_DISPOSITION.md`](CLEANUP_AND_DISPOSITION.md)
 - [`SANITY_CHECKING.md`](SANITY_CHECKING.md)
@@ -153,4 +169,4 @@ Stop and resolve the boundary before implementation, deletion, acceptance, or de
 - [`COMPATIBILITY_AND_EVOLUTION.md`](COMPATIBILITY_AND_EVOLUTION.md)
 - [`FORBIDDEN_DESIGN_PATTERNS.md`](FORBIDDEN_DESIGN_PATTERNS.md)
 
-Use [`../templates/plan-execution.template.yaml`](../templates/plan-execution.template.yaml) only for durable coordinated/high-consequence execution, [`../templates/cleanup-disposition.template.yaml`](../templates/cleanup-disposition.template.yaml) only for material lifecycle evidence, [`../templates/design-review.template.md`](../templates/design-review.template.md) for a durable design review, and [`../templates/naming-analysis.template.yaml`](../templates/naming-analysis.template.yaml) for foundational reusable names.
+Use [`../templates/focus-branch.template.yaml`](../templates/focus-branch.template.yaml) only for durable cross-session/parallel/high-consequence branches, [`../templates/plan-execution.template.yaml`](../templates/plan-execution.template.yaml) only for durable coordinated/high-consequence execution, [`../templates/cleanup-disposition.template.yaml`](../templates/cleanup-disposition.template.yaml) only for material lifecycle evidence, [`../templates/design-review.template.md`](../templates/design-review.template.md) for a durable design review, and [`../templates/naming-analysis.template.yaml`](../templates/naming-analysis.template.yaml) for foundational reusable names.
