@@ -8,7 +8,7 @@ Produce trustworthy, reusable engineering progress without allowing the first do
 
 ## Required orientation
 
-1. Read the root `AGENTS.md`, `AI_RULES.md`, and `general_foundation/PRINCIPLES.md`.
+1. Read the root `AGENTS.md`, `AI_RULES.md`, `DESIGN_ALIGNMENT_CARD.md`, and `general_foundation/PRINCIPLES.md`.
 2. Identify the task class: research, specification, decision, organization, implementation, debugging, review, validation, migration, or publication.
 3. Use `SYSTEM_REGISTRY.md` to identify the owning boundary and authoritative documents.
 4. For any new or moved artifact, read `general_foundation/PROJECT_ORGANIZATION.md` and `application_specific/REPOSITORY_ORGANIZATION.md`.

@@ -26,6 +26,7 @@ required=(
   agent_files/AI_RULES.md
   agent_files/SYSTEM_REGISTRY.md
   agent_files/VALIDATION_POLICY.md
+  agent_files/DESIGN_ALIGNMENT_CARD.md
   agent_files/general_foundation/PRINCIPLES.md
   agent_files/general_foundation/LEGO_ARCHITECTURE.md
   agent_files/general_foundation/COMPONENT_STANDARD.md

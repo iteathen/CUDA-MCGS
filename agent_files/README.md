@@ -10,6 +10,7 @@ This directory is the durable operating system for development. The root [`AGENT
 - [`AI_RULES.md`](AI_RULES.md) — hard behavioral rules.
 - [`SYSTEM_REGISTRY.md`](SYSTEM_REGISTRY.md) — ownership and source-of-truth registry.
 - [`VALIDATION_POLICY.md`](VALIDATION_POLICY.md) — evidence and completion requirements.
+- [`DESIGN_ALIGNMENT_CARD.md`](DESIGN_ALIGNMENT_CARD.md) — compact mandatory design alignment for material architecture and implementation work.
 
 ## Reusable foundation
 

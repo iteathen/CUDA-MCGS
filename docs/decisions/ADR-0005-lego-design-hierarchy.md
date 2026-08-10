@@ -55,7 +55,10 @@ Reusable concepts use maximum accurate generality: broad enough for the intended
 
 ## Authoritative doctrine
 
-The compact mandatory doctrine is `agent_files/general_foundation/PRINCIPLES.md`.
+The compact mandatory doctrine is:
+
+- `agent_files/DESIGN_ALIGNMENT_CARD.md`;
+- `agent_files/general_foundation/PRINCIPLES.md`
 
 Detailed triggered doctrine is:
 

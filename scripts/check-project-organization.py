@@ -161,8 +161,13 @@ def validate_component(path: Path, expected_area: str) -> None:
             "public_ports",
             "injected_dependencies",
             "adapter_boundaries",
+            "solid_responsibilities",
+            "cupid_qualities",
             "second_instance",
             "first_consumer_deletion",
+            "essential_complexity",
+            "accidental_complexity_rejected",
+            "complexity_moved_elsewhere",
             "simplest_sufficient_total_system",
         }
         design_missing = sorted(design_required - set(design))
