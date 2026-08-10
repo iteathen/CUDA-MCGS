@@ -22,9 +22,25 @@ For a large or complex task, state or link:
 
 State `not triggered` for work that genuinely fits one focused branch. Do not use Git branch names as a substitute for the semantic branch map.
 
+## Token and context discipline
+
+For substantial, critical, or large work, state or link:
+
+- active context packet and exact source revisions;
+- task class and whether exact token telemetry was available;
+- validation/integration/cleanup/review/handoff reserve and any justified deviation from the 30%/40% defaults;
+- context layers intentionally loaded and excluded;
+- targeted retrieval/tool strategy and expensive-call triggers;
+- current operational band and any yellow/red-state action;
+- checkpoints/compaction performed;
+- token debt, repeated reconstruction, or checks skipped because of context limits;
+- why remaining context was sufficient for final validation, cleanup, review, and handoff.
+
+State `routine / no durable budget record required` when the work was genuinely bounded. Do not claim efficiency from raw token count or short prose alone.
+
 ## Plan execution fidelity
 
-State parent plan/version, focus-branch ID, node, frozen head/environment, readiness evidence, minimal context packet, expected local/wider effects, operations performed, actual effects, focused falsifiers, variations/deviations, affected boundary/path/lifecycle reconciliation, branch/node outcome, downstream outputs/revisions, partial-state status, and checks not run. Link durable branch/execution records when they exist; do not duplicate them here.
+State parent plan/version, focus-branch ID, node, frozen head/environment, readiness evidence, minimal context packet, expected local/wider effects, operations performed, actual effects, focused falsifiers, variations/deviations, affected boundary/path/lifecycle reconciliation, branch/node outcome, downstream outputs/revisions, partial-state status, and checks not run. Link durable branch/execution/token records when they exist; do not duplicate them here.
 
 ## What changed and why
 
@@ -50,20 +66,20 @@ Link the cleanup record when one exists; do not duplicate it. A clean diff or su
 
 ## Sanity / independent-review claim and limits
 
-State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name the reviewed revision/artifact, coverage boundary, critical leaves, actionable findings/issues, invalidated/rerun evidence, focus-branch integration and cleanup state, checks not run, and final claim limits. Link the canonical sanity record when one exists; do not duplicate it here.
+State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name the reviewed revision/artifact, coverage boundary, critical leaves, actionable findings/issues, invalidated/rerun evidence, focus-branch integration, token/context and cleanup state, checks not run, and final claim limits. Link the canonical sanity record when one exists; do not duplicate it here.
 
 ## Ready-for-review head and review mode
 
-Before requesting review, record the exact head SHA, intended base, whether author-side or independent review is required, checks not run, focus branches not yet integrated, cleanup still deferred, and any state that would invalidate review. A later head, parent-plan, shared-contract, or material base change invalidates affected review, branch, and cleanup evidence until refreshed.
+Before requesting review, record the exact head SHA, intended base, whether author-side or independent review is required, checks not run, focus branches not yet integrated, token debt/context limits, cleanup still deferred, and any state that would invalidate review. A later head, parent-plan, shared-contract, source-revision, or material base change invalidates affected review, branch, token, and cleanup evidence until refreshed.
 
 ## Proposed merge and closure effects
 
-State the proposed merge method and why, linked issue relationship (`Closes` only when merge satisfies full closure), semantic focus-branch disposition, source local/remote Git branch and worktree retention/deletion needs, stacked/dependent PR effects, required checks/protection/queue, cleanup debt, and post-merge verification/cleanup beyond target-tree confirmation.
+State the proposed merge method and why, linked issue relationship (`Closes` only when merge satisfies full closure), semantic focus-branch disposition, source local/remote Git branch and worktree retention/deletion needs, stacked/dependent PR effects, required checks/protection/queue, cleanup/token debt, and post-merge verification/cleanup beyond target-tree confirmation.
 
 ## Performance and GPU-memory evidence
 
 ## Compatibility, migration, rollback, recovery, and retained state
 
-## Documentation, parent/focus-branch/plan/cleanup state, registry, findings, and archived material
+## Documentation, parent/focus-branch/token/plan/cleanup state, registry, findings, and archived material
 
 ## Remaining risks / assumptions / revisit triggers

@@ -1,6 +1,6 @@
 # Pull-request review record
 
-Use this only when review evidence must survive beyond the normal GitHub review/comment: independent or high-consequence review, stabilization/release, cross-session continuation, disputed findings, material cleanup debt, large focus-branch integration, or exact-head owner authorization.
+Use this only when review evidence must survive beyond the normal GitHub review/comment: independent or high-consequence review, stabilization/release, cross-session continuation, disputed findings, material cleanup debt, material token/context limits, large focus-branch integration, or exact-head owner authorization.
 
 ## Review identity
 
@@ -35,6 +35,20 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Contradictions and dispositions:
 - Boundary/end-to-end integration evidence:
 - Final parent revision/artifact:
+
+## Token and context discipline review
+
+- Task class and exact token telemetry availability:
+- Active context packet and source revisions:
+- Validation/integration/cleanup/review/handoff reserve and rationale:
+- Context layers loaded and intentionally excluded:
+- Targeted retrieval, ranges/diffs/log windows, and batched tool use:
+- Large artifacts kept outside prompt context with exact identities:
+- Green/yellow/red/emergency state transitions and actions:
+- Checkpoints and lossless compaction:
+- Repeated reads, retries, reconstruction, or speculative generation:
+- Token debt and parent-acceptance effect:
+- Evidence that enough reserve remained for final review, cleanup, and handoff:
 
 ## Changed-surface and ancestry accounting
 
@@ -81,6 +95,7 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Branch-output and cross-branch integration checks:
 - CI/workflows for exact head:
 - Sanitizer/profiler/benchmark/artifact evidence:
+- Token/context discipline evidence:
 - Cleanup verification evidence:
 - Checks not run and why:
 - Claim limits:
@@ -92,6 +107,7 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 
 - Requested changes/review threads reconciled:
 - Invalidated/unintegrated focus branches reconciled:
+- Token debt reconciled:
 - Cleanup debt reconciled:
 - Related findings/issues and duplicate reconciliation:
 
@@ -116,4 +132,4 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Issue and local/remote branch/worktree disposition:
 - Dependent work updated:
 - Temporary processes, device state, credentials, permissions, artifacts, and external resources disposition:
-- Retained state / cleanup debt / remaining limits:
+- Retained state / token debt / cleanup debt / remaining limits:

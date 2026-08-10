@@ -16,6 +16,7 @@ No production implementation should be inferred from the current repository.
 
 - Adversarial assessment before planning, with proportional documentation and decisive falsifiers.
 - Semantic focus branches for large or complex tasks: one canonical parent and integration spine, full-attention leaves, explicit branch outputs/invalidation, constrained parallelism, and central reconciliation.
+- Token-use discipline that optimizes verified progress rather than raw brevity, reserves context for validation/integration/cleanup/handoff, and uses layered retrieval, operational bands, and lossless checkpoints.
 - Governed plan execution through dependency-ready nodes, expected-before-actual operations, immediate falsification/reconciliation, explicit deviation handling, and no invalid partial state.
 - Cleanup and artifact disposition across local, Git, GitHub, device, credential, generated, retained, remote, and external state, with protected-state safeguards and verified cleanup debt.
 - Proportional sanity checking with exact frozen targets, explicit full/bounded/sampled claims, risk-based semantic depth, integration/cleanup reconciliation, and durable findings.
@@ -35,6 +36,8 @@ No production implementation should be inferred from the current repository.
 - Canonical agent system: [`agent_files/README.md`](agent_files/README.md)
 - Assessment and planning: [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md)
 - Focus branches: [`agent_files/general_foundation/FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md)
+- Token and context discipline: [`agent_files/general_foundation/TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md)
+- Context routing: [`agent_files/general_foundation/CONTEXT_ROUTING.md`](agent_files/general_foundation/CONTEXT_ROUTING.md)
 - Plan execution: [`agent_files/general_foundation/PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md)
 - Cleanup and disposition: [`agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md`](agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md)
 - Sanity checking: [`agent_files/general_foundation/SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md)
