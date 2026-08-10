@@ -1,6 +1,10 @@
 ## Objective and ownership boundary
 
+## Product area, component, and manifest
+
 ## Governing specification / ADR
+
+## Public surface and dependency direction
 
 ## What changed and why
 

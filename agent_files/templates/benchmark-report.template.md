@@ -2,7 +2,9 @@
 
 ## Question and hypothesis
 
-## Commit/configuration
+## Product area / component / boundary
+
+## Commit, generated-engine, and configuration identity
 
 ## Hardware and software profile
 
@@ -18,6 +20,8 @@
 
 ## Analysis and mechanism evidence
 
-## Correctness checks
+## Correctness and quality checks
+
+## Memory/resource effects
 
 ## Limitations and decision impact

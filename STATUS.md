@@ -6,7 +6,7 @@
 
 ## Phase
 
-Framework definition and evidence gathering. No production source layout or runtime implementation has been accepted.
+Framework definition and evidence gathering. No production runtime implementation or final component decomposition has been accepted.
 
 ## Accepted project state
 
@@ -15,7 +15,9 @@ Framework definition and evidence gathering. No production source layout or runt
 - Concrete engines are finite and resource-planned.
 - Contracts are universal; hot paths are specialized.
 - UMCGS will be built as a new framework while using prior art as references and benchmarks.
+- Repository and component organization assumes mature large-project scale from inception.
 - Canonical agent governance lives in `agent_files/`.
+- Project license selection is deferred and does not block original private pre-release work.
 
 ## Current authority
 
@@ -23,11 +25,12 @@ Framework definition and evidence gathering. No production source layout or runt
 - ADR-0001 prior-art disposition: accepted.
 - ADR-0002 universal contracts / specialized engines: accepted.
 - ADR-0003 device-resident active search: accepted.
+- ADR-0004 large-project organization: accepted.
 - Framework architecture overview and specification map: proposals.
 - Detailed normative Search IR/domain/policy/evaluator/resource specifications: not yet accepted.
 
 ## Current risks and unknowns
 
-- The project license has not been selected; no third-party implementation should be copied into the repository before that decision.
+- No project license has been selected. This is not a current blocker, but third-party implementation reuse still requires exact license/provenance review, and a release/distribution license must be selected before public release.
 - CUDA scheduling, JIT/linking, graph layout, memory-pressure, and evaluator ABI choices remain open pending specifications and experiments.
 - Candidate prior-art performance claims have not yet been reproduced on UMCGS target hardware.

@@ -4,11 +4,15 @@
 
 ## Purpose and owner
 
+## Product area, component, and durable path
+
 ## Scope / out of scope
 
 ## Terms
 
 ## Inputs and outputs
+
+## Public/internal boundary and dependencies
 
 ## Invariants
 

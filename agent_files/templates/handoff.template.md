@@ -1,10 +1,14 @@
 # <Handoff title>
 
-## Objective and ownership boundary
+## Objective, product area, and component
 
-## Authority
+## Ownership boundary and authority
 
 ## Changes
+
+## Public contract and dependency effects
+
+## Component manifest / registry state
 
 ## Evidence and validation
 

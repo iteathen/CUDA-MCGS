@@ -10,13 +10,17 @@
     "docs/decisions/ADR-0001-prior-art-disposition.md",
     "docs/decisions/ADR-0002-universal-contracts-specialized-engines.md",
     "docs/decisions/ADR-0003-device-resident-active-search.md",
+    "docs/decisions/ADR-0004-large-project-organization.md",
+    "agent_files/application_specific/REPOSITORY_ORGANIZATION.md",
     "docs/specs/SPEC-0000-framework-requirements.md (proposal input, not authority)",
     "docs/architecture/FRAMEWORK_OVERVIEW.md (proposal input, not authority)"
   ],
   "context": [
     "The generic framework is the first product.",
     "Prior art provides useful parts but no adequate foundation.",
-    "Concrete engines must be finite, device-closed, and specialized."
+    "Concrete engines must be finite, device-closed, and specialized.",
+    "All new artifacts must enter the mature-scale product-area/component organization.",
+    "Project license selection is deferred and does not block original private pre-release work."
   ],
   "deliverables": [
     "Search IR v0 specification",
@@ -25,22 +29,24 @@
     "Evaluator contract v0",
     "Resource/memory-plan contract v0",
     "Graph identity/transposition/cycle contract v0",
-    "Synthetic conformance-domain plan"
+    "Synthetic conformance-domain plan",
+    "Proposed component ownership map derived from the accepted contracts"
   ],
   "validation": [
     "Each expected domain dimension is representable without hidden game or neural assumptions.",
     "All capacities and exhaustion states are explicit.",
     "Device-closure requirements are testable.",
     "Prior-art gaps are converted into conformance cases.",
+    "Every proposed implementation boundary maps to a durable component with acyclic dependencies.",
     "./scripts/verify-docs.sh"
   ],
-  "blockers": [
-    "Project license decision is required before implementation-level third-party reuse."
-  ],
+  "blockers": [],
   "do_not": [
     "Create a chess-shaped universal node or fixed policy vector.",
     "Choose a CUDA scheduler before the abstract execution contract is defined.",
-    "Begin production runtime implementation from proposal-only interfaces."
+    "Begin production runtime implementation from proposal-only interfaces.",
+    "Place implementation in the repository root or an unowned generic directory.",
+    "Treat the deferred project license as a blocker to original private pre-release work."
   ],
   "completion_evidence": []
 }

@@ -2,6 +2,8 @@
 
 ## Symptom and reproduction
 
+## Product area / component / owning boundary
+
 ## Governing expectation
 
 ## Test-state trust
@@ -20,6 +22,6 @@
 
 ## Repair
 
-## Verification
+## Validation and organization reconciliation
 
 ## Remaining uncertainty

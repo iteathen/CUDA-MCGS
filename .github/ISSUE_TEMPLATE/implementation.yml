@@ -18,6 +18,13 @@ body:
     validations:
       required: true
   - type: textarea
+    id: organization
+    attributes:
+      label: Product area, component, and dependency direction
+      description: Identify the component manifest/registry entry and public surface. Explain why placement remains valid at large-project scale.
+    validations:
+      required: true
+  - type: textarea
     id: contracts
     attributes:
       label: Invariants, lifecycle, resources, and failure behavior
@@ -29,7 +36,7 @@ body:
       label: Reasoning level
       options:
         - Substantial
-        - Critical (CUDA, concurrency, memory, ABI, persistent state, or hot path)
+        - Critical (CUDA, concurrency, memory, ABI, persistent state, hot path, or component boundary)
     validations:
       required: true
   - type: textarea

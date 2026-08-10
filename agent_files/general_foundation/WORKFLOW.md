@@ -4,11 +4,24 @@
 
 ## 1. Orient
 
-Read authority, inspect repository state, identify task class, existing decisions, related work, and unrelated local changes.
+Read authority, inspect repository state, identify task class, existing decisions, related work, unrelated local changes, and the current product-area/component organization.
 
-## 2. Establish ownership and bounds
+## 2. Establish ownership, placement, and bounds
 
-Write down the owner, inputs, outputs, invariants, lifecycle, failures, expected ranges, memory/performance constraints, external dependencies, and out-of-scope behavior.
+Write down:
+
+- product area and component owner;
+- durable repository path;
+- public/internal surface;
+- allowed and affected dependencies;
+- purpose, inputs, outputs, invariants, and lifecycle;
+- expected ranges;
+- memory/performance constraints;
+- failures, recovery, and observability;
+- external dependencies;
+- out-of-scope behavior.
+
+If the component does not exist, apply the organization gate before implementation.
 
 ## 3. Inspect prior art
 
@@ -16,25 +29,37 @@ When mature work, standards, papers, hardware behavior, or current libraries may
 
 ## 4. Specify unsettled foundations
 
-Persistent layouts, public contracts, synchronization, memory policies, lifecycle, state identity, ABI, and cross-component ownership require an accepted specification or ADR before production implementation.
+Persistent layouts, public contracts, synchronization, memory policies, lifecycle, state identity, ABI, cross-component ownership, and dependency direction require an accepted specification or ADR before production implementation.
 
-A disposable experiment must name the question it answers and the conditions for deletion or promotion.
+A disposable experiment must name the question it answers, live under the experiment product area, and state deletion or promotion conditions.
 
 ## 5. Plan a coherent change
 
-Plan by ownership boundary. Include affected components, compatibility/migration, validation, failure handling, documentation, rollback, and known unknowns.
+Plan by ownership boundary. Include:
+
+- product area/component placement;
+- component manifest and registry changes;
+- public/internal contract effects;
+- dependency graph changes;
+- affected components;
+- compatibility/migration;
+- validation;
+- failure handling;
+- documentation;
+- rollback;
+- known unknowns.
 
 ## 6. Implement
 
-Preserve the declared boundary. Avoid unrelated cleanup. Make limits and failures explicit. Do not erase evidence needed for correctness.
+Preserve the declared boundary. Avoid unrelated cleanup. Make limits and failures explicit. Do not erase evidence needed for correctness. Do not introduce root-level source, deep imports, generic dumping grounds, or unregistered components.
 
 ## 7. Validate
 
-Progress from focused checks through integration, failure/exhaustion, architecture-specific checks, benchmarks, and the full relevant suite.
+Progress from organization/documentation checks through focused checks, integration, failure/exhaustion, architecture-specific checks, benchmarks, and the full relevant suite.
 
 ## 8. Reconcile authority and history
 
-Update specs, ADRs, registry, indexes, subsystem READMEs, and archived superseded material in the same coherent change.
+Update specifications, ADRs, component manifests, registry, indexes, subsystem READMEs, and archived superseded material in the same coherent change.
 
 ## 9. Publish intentionally
 
@@ -42,4 +67,4 @@ Inspect status and diff, stage only intended files, commit coherently, push thro
 
 ## 10. Hand off
 
-Record objective, authority, changes, evidence, state, risks, failed approaches, and one coherent next boundary.
+Record objective, product area/component, authority, changes, evidence, repository state, risks, failed approaches, and one coherent next boundary.

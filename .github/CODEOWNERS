@@ -1,0 +1,10 @@
+# Project owner remains the default owner until component ownership is delegated.
+* @iteathen
+
+# Foundational authority requires explicit owner review.
+/AGENTS.md @iteathen
+/agent_files/ @iteathen
+/docs/PROJECT_CHARTER.md @iteathen
+/docs/decisions/ @iteathen
+/docs/specs/ @iteathen
+/schemas/ @iteathen

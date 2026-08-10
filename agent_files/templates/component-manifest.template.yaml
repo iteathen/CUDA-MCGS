@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "component": {
+    "id": "<stable.dotted.component-id>",
+    "name": "<human-readable name>",
+    "status": "planned|experimental|production|deprecated|archived",
+    "product_area": "components|adapters|conformance|benchmarks|tools|packaging",
+    "path": "<repository-relative path>",
+    "purpose": "<one coherent lifecycle responsibility>",
+    "roles": [
+      "build|host-runtime|device-runtime|schema|data|tool|adapter|test|benchmark|packaging"
+    ],
+    "governing_authority": [],
+    "public_contracts": [],
+    "owns": [],
+    "persistent_state": [],
+    "generated_artifacts": [],
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [],
+    "known_consumers": [],
+    "validation": [],
+    "release": {
+      "unit": "monorepo|independent",
+      "compatibility": "<versioning/compatibility policy>",
+      "distribution": "private|internal|public"
+    },
+    "owner": "<owner or unassigned>",
+    "notes": []
+  }
+}

@@ -13,11 +13,12 @@
 - [`development/README.md`](development/README.md) — project-facing development index.
 - [`archive/README.md`](archive/README.md) — superseded-history policy.
 
-## Current accepted decision
+## Current accepted decisions
 
 - Build UMCGS as a new framework rather than fork a reviewed candidate; reuse prior art as bounded references, conformance sources, and benchmarks. See [`decisions/ADR-0001-prior-art-disposition.md`](decisions/ADR-0001-prior-art-disposition.md).
 - Preserve universality in versioned contracts while compiling finite specialized engines. See [`decisions/ADR-0002-universal-contracts-specialized-engines.md`](decisions/ADR-0002-universal-contracts-specialized-engines.md).
 - Keep the active production search device-resident after ignition. See [`decisions/ADR-0003-device-resident-active-search.md`](decisions/ADR-0003-device-resident-active-search.md).
+- Organize the repository and components for mature project scale from the beginning. See [`decisions/ADR-0004-large-project-organization.md`](decisions/ADR-0004-large-project-organization.md).
 
 ## Authority
 

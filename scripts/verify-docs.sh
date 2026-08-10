@@ -12,6 +12,7 @@ required=(
   CONTRIBUTING.md
   CLAUDE.md
   GEMINI.md
+  .github/CODEOWNERS
   .github/copilot-instructions.md
   .github/pull_request_template.md
   .github/workflows/docs.yml
@@ -26,6 +27,7 @@ required=(
   agent_files/SYSTEM_REGISTRY.md
   agent_files/VALIDATION_POLICY.md
   agent_files/general_foundation/PRINCIPLES.md
+  agent_files/general_foundation/PROJECT_ORGANIZATION.md
   agent_files/general_foundation/WORKFLOW.md
   agent_files/general_foundation/CONTEXT_ROUTING.md
   agent_files/general_foundation/DEVELOPMENT.md
@@ -38,9 +40,11 @@ required=(
   agent_files/general_foundation/REVIEW.md
   agent_files/general_foundation/DOCUMENTATION_GOVERNANCE.md
   agent_files/application_specific/UMCGS_PROFILE.md
+  agent_files/application_specific/REPOSITORY_ORGANIZATION.md
   agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md
   agent_files/application_specific/MEMORY_AND_PERFORMANCE.md
   agent_files/application_specific/RESEARCH_POLICY.md
+  agent_files/templates/component-manifest.template.yaml
   agent_files/templates/decision-record.template.md
   agent_files/templates/specification.template.md
   agent_files/templates/research-note.template.md
@@ -60,13 +64,26 @@ required=(
   docs/decisions/ADR-0001-prior-art-disposition.md
   docs/decisions/ADR-0002-universal-contracts-specialized-engines.md
   docs/decisions/ADR-0003-device-resident-active-search.md
+  docs/decisions/ADR-0004-large-project-organization.md
   docs/development/README.md
   docs/research/README.md
   docs/research/prior-art/README.md
   docs/research/prior-art/2026-08-10-landscape.md
   docs/research/prior-art/source-register.yaml
   docs/archive/README.md
+  adapters/README.md
+  benchmarks/README.md
+  components/README.md
+  conformance/README.md
+  examples/README.md
+  experiments/README.md
+  packaging/README.md
+  schemas/README.md
+  tests/README.md
+  third_party/README.md
+  tools/README.md
   scripts/check-doc-links.py
+  scripts/check-project-organization.py
   scripts/check-structured-data.py
 )
 
@@ -100,6 +117,7 @@ done
   exit 1
 }
 
+python3 scripts/check-project-organization.py
 python3 scripts/check-doc-links.py
 python3 scripts/check-structured-data.py
 
@@ -116,4 +134,4 @@ if command -v ruby >/dev/null 2>&1; then
   ruby -e 'require "yaml"; Dir[".github/ISSUE_TEMPLATE/*.{yml,yaml}"].each { |f| YAML.safe_load_file(f, permitted_classes: [], aliases: false) }'
 fi
 
-printf 'documentation and agent-governance checks passed\n'
+printf 'documentation, organization, and agent-governance checks passed\n'

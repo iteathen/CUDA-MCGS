@@ -1,6 +1,10 @@
-# <Subsystem>
+# <Component or subsystem>
 
 **Status:** Informational
+
+## Stable component ID
+
+## Product area and path
 
 ## Purpose
 
@@ -8,11 +12,19 @@
 
 ## Ownership and source of truth
 
+## Governing specifications / ADRs
+
+## Public contracts
+
+## Internal implementation boundary
+
 ## Allowed dependencies
 
-## Forbidden dependencies
+## Forbidden dependencies and deep imports
 
-## Public contracts and persistent state
+## Public consumers
+
+## Persistent and generated state
 
 ## Lifecycle and failure behavior
 
