@@ -1,10 +1,14 @@
 # Review Standard
 
-**Scope:** Reusable foundation.
+**Scope:** Reusable foundation for design review, change review, sanity claims, and pull-request review.
 
 Review the complete owned change, not isolated lines.
 
-Ordinary PR review and a declared sanity/audit claim are not identical. PR review may be bounded to the change. A full sanity claim additionally requires complete coverage accounting, focused review branches, semantic interrogation, and integrated reconciliation under [`SANITY_CHECKING.md`](SANITY_CHECKING.md).
+Ordinary change/PR review, a declared sanity/audit claim, and merge authorization are related but distinct:
+
+- ordinary review may be bounded to the proposed change and affected integration;
+- a full sanity claim additionally requires complete coverage accounting, focused review branches, semantic interrogation, and integrated reconciliation under [`SANITY_CHECKING.md`](SANITY_CHECKING.md);
+- PR review and merge follow exact-head and guarded-integration rules in [`PULL_REQUEST_REVIEW_AND_MERGE.md`](PULL_REQUEST_REVIEW_AND_MERGE.md).
 
 ## Authority and scope
 
@@ -45,6 +49,30 @@ When a sanity or audit claim is present:
 - checks not run and claim limits are explicit.
 
 A sampled, overbroad, or silently incomplete review cannot be approved as a full sanity claim. Full coverage does not require exhaustive review of unrelated low-risk units.
+
+## Pull-request review and integration
+
+For a material PR:
+
+- PR/base/head/comparison identity and review mode are exact;
+- the complete changed surface, ancestry, generated/dependency/workflow/packaging effects, and unavailable changes are accounted for;
+- the PR description is verified against authority and actual implementation rather than trusted as proof;
+- material semantic units and affected callers, dependencies, state, resources, lifecycle, compatibility, and end-to-end paths are reviewed;
+- tests/checks belong to the current head and can falsify the claimed behavior;
+- conversation, review submissions, inline threads, bot findings, and linked blockers are reconciled;
+- blocking defects, questions, non-blocking improvements, and informational comments are classified honestly;
+- unrelated cleanup and speculative future work are not disguised as blockers;
+- the final whole diff is re-read after changes;
+- the result names the exact reviewed head and is labeled author-side, independent, or owner authorization correctly.
+
+A changed head invalidates affected review. A material base change invalidates affected integration evidence.
+
+Before merge:
+
+- PR state, exact accepted head, target, current base/ancestry/mergeability, required checks/reviews/CODEOWNERS/protection/queue, blocking discussion, issue closure, branch/dependent work, and conflicting work are revalidated;
+- merge method is deliberate and an expected-head guard is used where supported;
+- target protection/history is not bypassed or force-updated;
+- post-merge target SHA/tree, issue/branch effects, and dependent work are verified.
 
 ## Design hierarchy and simplicity
 
@@ -91,7 +119,7 @@ A sampled, overbroad, or silently incomplete review cannot be approved as a full
 
 ## Documentation and publication
 
-- Status, indexes, registry, component manifests, specifications/ADRs, findings, and supersession are reconciled.
+- Status, indexes, registry, component manifests, specifications/ADRs, findings, review state, and supersession are reconciled.
 - Third-party provenance and licensing are recorded.
 - Final diff/status are intentional.
-- The remote state is verified before publication is claimed.
+- The remote target and resulting integrated SHA are verified before publication/merge completion is claimed.

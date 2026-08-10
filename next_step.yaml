@@ -15,6 +15,10 @@
     "docs/decisions/ADR-0004-large-project-organization.md",
     "agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md",
     "docs/decisions/ADR-0006-adversarial-assessment-and-planning.md",
+    "agent_files/general_foundation/SANITY_CHECKING.md",
+    "docs/decisions/ADR-0007-proportional-sanity-checking.md",
+    "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
+    "docs/decisions/ADR-0008-exact-head-pr-review-and-guarded-merge.md",
     "agent_files/application_specific/REPOSITORY_ORGANIZATION.md",
     "docs/specs/SPEC-0000-framework-requirements.md (proposal input, not authority)",
     "docs/architecture/FRAMEWORK_OVERVIEW.md (proposal input, not authority)"
@@ -25,7 +29,8 @@
     "Concrete engines must be finite, device-closed, and specialized.",
     "All new artifacts must enter the mature-scale product-area/component organization.",
     "Project license selection is deferred and does not block original private pre-release work.",
-    "The version-0 specification set must be derived from a proportional adversarial assessment, not the first plausible schema shape."
+    "The version-0 specification set must be derived from a proportional adversarial assessment, not the first plausible schema shape.",
+    "The resulting specification PR must receive exact-head author-side review and guarded target verification; independent review follows objective risk/policy triggers."
   ],
   "deliverables": [
     "Search IR v0 specification",
@@ -44,7 +49,8 @@
     "Prior-art gaps are converted into conformance cases.",
     "Every proposed implementation boundary maps to a durable component with acyclic dependencies.",
     "./scripts/verify-docs.sh",
-    "The assessment records the strongest credible alternative/counterexample and decisive falsifiers without duplicating authority."
+    "The assessment records the strongest credible alternative/counterexample and decisive falsifiers without duplicating authority.",
+    "The final PR records the exact reviewed head, current-head checks, review mode, merge method, integrated target SHA, and claim limits."
   ],
   "blockers": [],
   "do_not": [
@@ -52,7 +58,8 @@
     "Choose a CUDA scheduler before the abstract execution contract is defined.",
     "Begin production runtime implementation from proposal-only interfaces.",
     "Place implementation in the repository root or an unowned generic directory.",
-    "Treat the deferred project license as a blocker to original private pre-release work."
+    "Treat the deferred project license as a blocker to original private pre-release work.",
+    "Merge a specification head different from the one reviewed or bypass required repository gates."
   ],
   "completion_evidence": []
 }

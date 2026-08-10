@@ -8,6 +8,8 @@ Read authority, inspect repository state, identify task class, existing decision
 
 If the request is a sanity check, audit, whole-project review, complete review, incident review, or release-readiness claim, freeze the target and route to [`SANITY_CHECKING.md`](SANITY_CHECKING.md) before deep inspection.
 
+If the request is PR readiness, review, approval, or merge, freeze the PR identity/head and route to [`PULL_REQUEST_REVIEW_AND_MERGE.md`](PULL_REQUEST_REVIEW_AND_MERGE.md) before acting.
+
 ## 2. Frame the assessment
 
 State the required outcome, authority, evidence, ownership boundary, expected operating domain, constraints, assumptions, completion evidence, and cost of doing nothing. Distinguish observed facts from inferences and proposals.
@@ -57,9 +59,10 @@ Build the plan from the integrated assessment, not from the original proposal. I
 - decisive experiments before irreversible structure;
 - validation paired with the steps it proves;
 - failure, recovery, cancellation, resource pressure, compatibility, migration, rollback, cleanup, and documentation;
+- expected PR review mode, required gates, and merge/closure effects when material;
 - stop conditions and handoff state.
 
-Prefer one combined assessment-and-plan artifact. Do not create duplicate risk, dependency, validation, or status ledgers when the same authoritative record can serve them.
+Prefer one combined assessment-and-plan artifact. Do not create duplicate risk, dependency, validation, review, or status ledgers when the same authoritative record can serve them.
 
 ## 8. Implement
 
@@ -87,14 +90,53 @@ When the request or risk requires a declared full, bounded, sampled, independent
 
 Do not force a standalone sanity record for a small reversible self-check. Do not call a sampled review full.
 
-## 11. Reconcile authority and history
+## 11. Prepare the PR and perform author-side review when integrating
+
+When the task publishes repository changes, create one coherent PR whose description is an integration summary rather than duplicated authority.
+
+Before marking it ready:
+
+- record the intended target and exact ready head;
+- inspect ancestry and the complete changed-file surface;
+- verify authority, component ownership, contracts, generated/manifest/schema/dependency effects, and preserved behavior;
+- reconcile affected semantic units and integration paths;
+- inspect tests/checks for relevance and current-head identity;
+- remove temporary/debug/stale material;
+- disclose checks not run, limitations, issue closure, branch effects, and proposed merge method;
+- perform a final whole-diff pass.
+
+Author-side review may repair the branch. Each head change invalidates affected review evidence.
+
+## 12. Obtain independent review when triggered
+
+When repository integration is occurring and phase, policy, CODEOWNERS/protection, owner instruction, or objective consequence requires independence:
+
+- freeze the exact head;
+- ensure the reviewer did not implement or quietly repair it;
+- resolve blocking defects and questions through author changes;
+- re-review changed/invalidated surfaces and perform a final whole-diff integration pass;
+- record approval or a blocker against the exact head.
+
+When independent approval is structurally unavailable and policy permits, use the exact-head repository-owner authorization defined in the PR doctrine. Do not label it independent.
+
+## 13. Execute the guarded merge transaction when integrating
+
+Immediately before merge, re-read current PR metadata, exact head, target/base, discussion, required reviews/checks/CODEOWNERS/protection/queue, mergeability, issue closure, branch/dependent work, and conflicting/superseding work.
+
+Abort on any changed or unresolved state. Select the merge method deliberately and use an expected-head guard where supported. Never force-update the target or weaken a gate.
+
+## 14. Verify post-merge integration when integrating
+
+Verify the PR is merged; record the resulting target SHA; inspect the intended tree/result; reconcile issue closure, branch deletion/retention, stacked/dependent PRs, target checks/artifacts, status, and handoff state.
+
+A merge response alone is not completion.
+
+If the task intentionally ends without repository integration, skip steps 11–14 and state that boundary explicitly.
+
+## 15. Reconcile authority and history
 
 Update specifications, ADRs, component manifests, registry, indexes, subsystem READMEs, actionable findings, and archived superseded material in the same coherent change. Remove temporary planning/review records once their durable decisions, findings, and execution state have moved to the correct authorities.
 
-## 12. Publish intentionally
+## 16. Hand off
 
-Inspect status and diff, stage only intended files, commit coherently, push through a verified transport, and verify the remote result.
-
-## 13. Hand off
-
-Record objective, product area/component, authority, integrated decision, strongest remaining objection, changes, validation, sanity claim/limits when triggered, actionable findings, repository state, risks, failed approaches, and one coherent next boundary.
+Record objective, product area/component, authority, integrated decision, strongest remaining objection, changes, validation, sanity claim/limits when triggered, reviewed head and integrated target SHA when applicable, issue/branch effects, actionable findings, repository state, risks, failed approaches, and one coherent next boundary.

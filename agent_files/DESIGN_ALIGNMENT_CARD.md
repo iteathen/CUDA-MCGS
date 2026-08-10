@@ -1,6 +1,6 @@
 # UMCGS Design Alignment Card
 
-Read this before architecture, specification, component creation, implementation, or material design review. It intentionally repeats the rules most likely to prevent agent drift. Read deeper doctrine only when the task triggers it.
+Read this before architecture, specification, component creation, implementation, material design review, or PR integration. It intentionally repeats the rules most likely to prevent agent drift. Read deeper doctrine only when the task triggers it.
 
 ## Governing hierarchy
 
@@ -56,6 +56,18 @@ Measure complexity across callers, adapters, generation, persistence, migration,
 
 Represent essential domain complexity directly. Remove accidental complexity. Reject ceremony that protects no invariant, boundary, responsibility, or operating property.
 
+## Review and merge
+
+- Review the actual complete PR diff and affected integration at one exact head; the PR description and CI are evidence, not proof.
+- Every material PR receives complete author-side review. Independent review is required by phase, policy, owner instruction, or objective consequence.
+- Label author-side review honestly; it is not independent approval.
+- A head change invalidates affected review. A material base change invalidates affected integration evidence.
+- Blocking findings, questions, required checks/reviews/protection, and review threads must be resolved before merge.
+- Merge is a separate guarded transaction: recheck current head, target, mergeability, checks, protection, closure, branch/dependency effects, and conflicting work.
+- Use an expected-head guard where supported. Never force-update the target or bypass protections.
+- Squash is the private pre-release default for one coherent result; use another method only for a real history need.
+- Verify the resulting target SHA/tree and issue/branch/dependent-work effects before claiming completion.
+
 ## UMCGS non-negotiables
 
 - A concrete engine is finite and memory-planned.
@@ -68,6 +80,8 @@ Represent essential domain complexity directly. Remove accidental complexity. Re
 
 Stop and resolve the boundary before implementation when ownership is ambiguous, dependencies cycle, a public contract leaks platform/private types, state has multiple writers, a name implies unsupported generality, the expected second instance forces redesign, resource exhaustion is undefined, or alleged simplicity merely exports the problem.
 
+Stop PR integration when the reviewed head is stale, the changed surface is unaccounted, a blocker remains, required evidence/gates are missing, or the target result cannot be verified.
+
 ## Deeper doctrine
 
-Start with [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md), then load only the detailed design documents relevant to the task.
+Start with [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md), then load only the detailed documents relevant to the task, including [`general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) for PR integration.
