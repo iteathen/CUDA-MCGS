@@ -1,135 +1,200 @@
 # UMCGS Design Alignment Card
 
-Read this before architecture, specification, engineering decisions, implementation, testing/debugging, large-task decomposition, cleanup, or PR integration. Token backpressure applies even to routine work; load deeper doctrine only when triggered.
+Read this before architecture, specification, engineering decisions, implementation, material testing/debugging, large-task decomposition, cleanup/disposition, or PR integration. Token backpressure applies even to routine work. It intentionally repeats the rules most likely to prevent agent drift; load deeper doctrine only when the task triggers it.
 
 ## Governing hierarchy
 
 ```text
 project purpose, domain truth, and accepted authority
     → engineering contract, bounds, and value ordering
-    → LEGO ownership and boundaries
-    → SOLID internal responsibilities
+    → LEGO component ownership and boundaries
+    → SOLID responsibility structure inside each component
     → CUPID implementation quality
     → simplest sufficient total system
-    → accurate testing, token backpressure, validation, cleanup, and evolution
+    → accurate consolidated testing, token backpressure, validation, cleanup, and evolution
 ```
 
-“Simple” never means omitting correctness, resources, lifecycle, compatibility, recovery, accurate evidence, cleanup, or expected-domain capacity.
+A lower level may improve a design only inside the valid envelope established above it. “Simple” never means omitting required correctness, resources, lifecycle, compatibility, recovery, evidence, cleanup, or expected-domain capacity.
 
 ## Engineering judgment and specification alignment
 
 Before choosing a path:
 
-- state outcome, consumer, authority, environment, non-goals, and completion evidence;
-- map material specification obligations to owner, mechanism, failure consequence, and test/evidence;
-- classify ambiguity, conflict, gap, stale meaning, platform impossibility, or oracle mismatch rather than resolving it silently;
+- state the owned outcome, consumer, authority, environment, non-goals, and completion evidence;
+- map every material specification obligation to owner, mechanism, failure consequence, and test/evidence;
+- classify specification ambiguity, conflict, gap, stale meaning, platform impossibility, or oracle mismatch rather than resolving it silently in code;
 - distinguish hard gates, mission objectives, supporting qualities, and process costs;
-- translate material values into thresholds, prohibited states, optimization directions, or ordinal rules;
+- translate safety, correctness, accuracy, speed, reliability, memory, compatibility, simplicity, and delivery into thresholds, prohibited states, optimization directions, or explicit ordinal rules;
 - eliminate invalid paths before weighting preferences;
-- compare credible alternatives and challenge both overengineering and underengineering;
+- compare credible no-change, minimal, proposed, materially different, experiment, staged, or fallback paths where applicable;
+- challenge the leading path with overengineering and underengineering cases;
 - choose the lowest complete total system and record why alternatives lost;
-- assign P0–P4 priority by consequence, dependency unlock, information value, cost of delay, reversibility, and effort.
+- assign P0–P4 priority from consequence, dependency unlock, information value, cost of delay, reversibility, and effort.
 
-Weighted scoring may compare valid paths only. It cannot average away a failed gate.
+Weighted scoring may compare valid paths only. It may not average away a failed safety, correctness, resource, compatibility, ownership, or evidence gate.
 
-## Universal token backpressure and practice floor
+Default fallback ordering when the subsystem defines no better one:
 
-Every task has an implicit or explicit token posture.
+```text
+authority / legality / explicit ethics
+    → unacceptable irreversible harm
+    → semantic correctness and hard mission bounds
+    → mission-sustaining reliability / compatibility / operability
+    → mission quality and performance
+    → maintainability / usability / observability / portability
+    → delivery speed / token cost / convenience / polish
+```
+
+Purpose may promote another concern into a gate. State the deviation, authority, consequence, owner, evidence, and revisit trigger.
+
+## Universal token backpressure and minimum practice floor
+
+Every task has an implicit or explicit token posture from its first retrieval or mutation.
 
 Before work expands, identify:
 
 - exact outcome and authority;
+- relevant current state;
 - smallest coherent useful scope;
 - risk-appropriate minimum practice floor;
 - cheapest decisive evidence;
 - reserve for actual-effect inspection, testing, cleanup, and honest reporting;
 - pressure triggers and optional work to defer.
 
-The universal floor includes current-state inspection, coherent scope, expected result, decisive verification, actual-effect inspection, relevant testing, cleanup, and truthful limits. Substantial and critical work retain every objectively triggered specification, reasoning, safety/security, resource/failure, compatibility, recovery, review, and integration practice.
+The universal floor preserves request/constraints, authoritative current state, coherent scope, expected result, decisive verification, actual-effect inspection, relevant testing, cleanup/reconciliation, and truthful limits. Substantial and critical work preserve every objectively triggered specification, reasoning, safety/security, resource/failure, compatibility, recovery, review, and integration practice.
 
 When pressure rises:
 
 ```text
 remove duplication
-  → reuse authority/evidence
-  → batch coherent work/tests
-  → narrow context/output
-  → defer optional breadth/polish
-  → reduce scope/claim
-  → split/rebranch/handoff
-  → pause on blocker
+  → reuse authority and evidence
+  → batch coherent work and tests
+  → narrow context and output
+  → defer optional breadth and polish
+  → reduce scope or claim
+  → split, rebranch, or hand off
+  → pause on a blocker
 ```
 
-Reduce waste before breadth and breadth before rigor. Soft estimates are replan signals, not authority. Essential evidence or cleanup can justify a documented extension. Reduced evidence narrows the claim.
+Reduce waste before breadth and breadth before rigor. A broad claim may not be preserved by cutting required evidence. Sampling or a lower test tier narrows the claim.
 
-Routine work uses an implicit micro-budget and no ledger. Substantial work normally reserves about 30%; critical/large/cross-branch work about 40% after packet loading. Yellow opens no new scope; red stops mutation; emergency preserves exact state only.
+Routine work uses an implicit micro-budget and no ledger. Substantial work normally reserves about 30% and critical/large/cross-branch work about 40% after packet loading, unless a different reserve is demonstrably sufficient. Soft estimates are replan signals rather than authority. Essential evidence or cleanup may justify an extension, followed by narrowing or split to restore reserve.
 
-Do not continue because of sunk token cost. Do not stop at a soft estimate while required in-scope safety, correctness, cleanup, or handoff remains incomplete and a sound extension or split is available.
+Yellow opens no new scope; red stops mutation; emergency preserves exact state only. Do not continue because of sunk token cost. Checkpoint budget extensions, scope/claim changes, deferrals, splits, and handoffs.
 
 ## LEGO boundary
 
-Every substantial component has one owned invariant/lifecycle owner, meaningful ports, injected dependencies, adapters, explicit failure/resource/teardown/cleanup, and canonical owner test capsules. Consumers use public contracts rather than internal mutation.
+Every substantial component is a movable brick with:
 
-## Focus branches
+- one coherent owned invariant or lifecycle responsibility;
+- one visible owner for authoritative state, mutation, testing, and disposition;
+- small meaningful domain-named ports;
+- composition-visible injected dependencies;
+- unstable platform, CUDA, version, format, persistence, and compatibility details behind adapters;
+- explicit lifecycle, failure, cancellation, finite-resource, teardown, testing, and cleanup behavior where material;
+- isolated contract tests and replaceability without consumer rewrites.
 
-- One parent/integration spine owns authority, engineering contract, value ordering, dependency state, token posture, test map, contradictions, cleanup, and closure.
-- Focus branches are semantic work packets, not automatically Git branches, issues, PRs, components, directories, documents, or test files.
-- Decompose when one focused window cannot retain mechanism, consequences, testing, cleanup, and handoff reserve.
-- Each leaf has one owner/output, exact inputs, write authority, acceptance/falsifier, testing, cleanup, and integration.
-- `accepted` is local; `integrated` is parent-reconciled.
-- Shared contract/decision/value/oracle/evidence changes invalidate dependents.
-- Parallel branches require non-overlapping ownership, coordinated shared sources, acyclic dependencies, independent rollback/cleanup, and one integration owner.
+Consumers request changes through contracts. They do not mutate another component’s internals or deep-import private files.
 
-## Testing and repair loops
+## Focus branches for large or complex tasks
 
-- Identify the owned claim and authoritative oracle.
-- Capture material regressions/boundaries/counterexamples as test intents.
-- Use a minimal provisional reproducer for diagnosis.
-- Consolidate related intents into canonical parameterized/property/generated capsules.
-- Share safe immutable setup while preserving stable case IDs, isolated mutable state, direct selection, and per-case results.
-- Coverage follows owned invariants and risks, not raw counts.
-- Required discovery/skips are explicit.
-- Use focused fast → owner/contract → integration smoke → triggered deep/forensic tiers.
-- Reuse unchanged evidence; every repeat needs a reason.
-- Cluster failures by first divergence/root cause and repair the owner coherently.
-- Remove/archive provisional and duplicate test artifacts.
+- Keep one canonical parent task and integration spine owning global authority, engineering contract, value ordering, invariants, vocabulary, dependency state, testing, token posture, contradictions, cleanup, and closure.
+- A focus branch is a semantic work packet, not automatically a Git branch, issue, PR, component, directory, or document.
+- Decompose before deep execution when the task exceeds one focused session, spans owners/contracts/paths, contains independent unknowns, crosses agents/sessions, enables parallel work, or would require sampling/skimming.
+- Each leaf has one primary question/output, one owner, exact input revisions, minimal context, write permissions, acceptance/falsifier, testing, cleanup, and integration obligations.
+- Size leaves by full attention, not line/file/token/agent count.
+- A leaf must fit its complete packet, mechanism, material consequences, required testing, cleanup, and handoff reserve.
+- Normally give one agent one active branch and checkpoint before switching.
+- Shared-contract, engineering-decision, value-order, oracle, and evidence-key changes route through the integration spine and invalidate dependents.
+- Parallel branches require non-overlapping owners/write surfaces, coordinated shared sources, acyclic dependencies, independent rollback/cleanup, and one integration owner.
+- `accepted` means locally supported; `integrated` means reconciled into the parent result.
+- Create separate Git/GitHub objects only when isolation, review, transport, rollback, owner, risk, dependency, or closure is independently meaningful.
 
-Token pressure may remove duplicate runs and unnecessary tiers. It may not remove required oracles, evidence identity, discovery/skip accounting, owner capsules, or integration evidence.
+## Universality without vagueness
 
-**Consolidation merges execution overhead, not semantic accountability.**
+UMCGS is universal at contracts and compilation boundaries, not through one giant generic runtime object.
 
-## Universality and foundations
+- Name the widest truthful invariant, not the first domain or consumer.
+- State intended members, permitted variation, and excluded cases.
+- Apply the second-instance test: a second intended use should fit by configuration, profile, adapter, or already-permitted extension—not foundational redesign.
+- Apply the first-consumer deletion test: a foundation should remain coherent if its first consumer disappears.
+- Reject broad `Manager`, `System`, `Common`, `Shared`, `Generic`, `Data`, `Util`, and `Helper` owners that do not state one exact responsibility.
 
-Universal contracts/capsules do not embed the first game, model, evaluator/action/graph shape, or GPU. Define meaning, units, ranges, identity, cardinality, lifetime, concurrency, persistence, failure, testability, cleanup, memory/performance, and value role before choosing foundations.
+## Foundations and bounds
+
+Before choosing a type, width, identity, schema, collection, queue, precision, or layout, define semantic meaning, units, valid range, cardinality/growth, lifetime, concurrency, persistence/versioning, failure behavior, testability, cleanup/reclamation, and memory/performance budget.
+
+Choose cheap durable capacity across the reasonably expected domain. Reject ordinary-growth migration traps and speculative subsystems.
+
+## Composition
+
+The composition root selects concrete domain, policy, evaluator, CUDA/platform, persistence, and compatibility adapters. It owns wiring, lifecycle, coordinated teardown, and integrated capsule composition—not domain rules. Dependencies point toward stable contracts.
 
 ## Total-system simplicity
 
-Measure complexity across callers, adapters, generation, persistence, migration, failure, recovery, testing/setup/runtime, cleanup, diagnostics, context reconstruction, decision review, device memory, synchronization, and expected second instances. Complexity moved elsewhere is not removed.
+Measure complexity across callers, adapters, generation, persistence, migration, failure, recovery, cleanup, operations, diagnostics, tests/setup/runtime, focus-branch coordination, context reconstruction, device memory, synchronization, and expected second instances. Complexity moved elsewhere is not removed.
 
-## Cleanup
+Represent essential domain complexity directly. Remove accidental complexity. Reject ceremony that protects no invariant, boundary, responsibility, evidence, or operating property.
 
-Account for decisions, provisional tests, fixtures, logs, generated output, branches, processes/device state, credentials, persistence, artifacts, and external resources. Protect user/authority/evidence/recovery/shared state and verify explicit dispositions. Token pressure never justifies unsafe residue.
+## Testing and repair loops
+
+- Identify the owned claim and authoritative, preferably independent oracle.
+- Capture material regressions/boundaries/counterexamples as test intents immediately.
+- Use a minimal provisional reproducer during diagnosis.
+- Consolidate related intents into canonical parameterized/property/generated capsules before branch acceptance.
+- Share expensive immutable setup while preserving stable case IDs, isolated mutable state, direct selection, and per-case results.
+- Map coverage by owned invariants and risk, not raw test/file/line counts.
+- Required discovery and skips are explicit.
+- Use preflight → focused fast → owner/contract → integration smoke → triggered deep/forensic tiers.
+- Reuse exact unchanged evidence; every repeat needs a reason.
+- Cluster failures by first divergence/root cause; repair the owner coherently; rerun minimal cluster, owner capsule once, then required integration smoke.
+- Remove/archive provisional and duplicate test artifacts.
+- Material decision, test, and token debt block acceptance.
+
+Token pressure may remove duplicate tests and unnecessary tiers, but not required oracles, evidence identity, discovery/skip accounting, owner capsules, or integration evidence.
+
+Consolidation merges execution overhead, not semantic accountability.
+
+## Cleanup and disposition
+
+- Cleanup is explicit disposition, not automatic deletion.
+- Account for task-created, temporarily modified, superseded, generated, diagnostic, partial, local, remote, sensitive, external, and coordination state.
+- Protect user/pre-existing work, project authority, evidence, recovery state, shared resources, protected branches, and active dependents.
+- Use remove, restore, retain authority/evidence/recovery, archive, quarantine, transfer, supersede, temporary retention with owner/trigger, or protect unchanged.
+- Historically useful stale material is archived with provenance; pure task-owned scratch is removed.
+- Use narrow exact destructive targets, preview when available, preserve rollback/evidence, and verify actual local/remote state through the owning system.
+- Secret exposure requires revocation or rotation; deletion alone is insufficient.
+- Cleanup debt is allowed only when immediate cleanup is less safe and must be exact, bounded, contained, owned, visible, and objectively triggered.
+- A clean diff, green test, successful API response, or merged PR does not by itself prove cleanup.
+- Token pressure never justifies unsafe residue or omitted retained-state reporting.
 
 ## Review and merge
 
-Review one exact head and complete changed/decision/test/token/integration surface. Verify specification traceability, hard gates, value ordering, candidates, priority, tradeoffs, practice floor, backpressure actions, evidence keys, discovery/skips, failure clusters, tiers, evidence reuse, debts, and checks not run.
-
-Reduced evidence narrows the claim. Head/base/parent/specification/decision/oracle/test/artifact/environment/fixture changes invalidate affected evidence. Merge uses expected-head protection and post-merge verification.
+- Review the actual complete PR diff and affected integration at one exact head; the PR description and CI are evidence, not proof.
+- Account for the engineering contract, branch map, exact outputs, token practice floor/backpressure actions, invalidated/deferred work, and integration evidence when a PR represents substantial work.
+- Every material PR receives complete author-side review. Independent review is required by phase, policy, owner instruction, or objective consequence.
+- A head, material base, parent plan, shared contract, decision, oracle, or evidence-key change invalidates affected review.
+- Blocking findings, unsafe cleanup residue, required gates, and review threads must be resolved before merge.
+- Merge is a separate guarded transaction using an expected-head guard where supported.
+- Verify resulting target SHA/tree, issue/branch/worktree/dependent effects, branch integration state, and post-merge cleanup.
+- Reduced evidence narrows the claim; it does not preserve an unsupported full/release claim.
 
 ## UMCGS non-negotiables
 
-- Concrete engines are finite and memory-planned.
+- A concrete engine is finite and memory-planned.
 - Active production search remains device-closed after ignition.
-- Performance/search quality are separate from correctness and need equivalence guardrails.
-- UMCGS-to-CUDA-JS ownership, one-way dependency, opaque resources, compatibility identity, and no private-source coupling are hard gates.
-- GPU capsules share compatible immutable setup but isolate mutable search state and verify publication, cancellation, pressure, teardown, device loss, and leaks when triggered.
-- Generated/JIT/ABI/cache evidence identity is complete.
-- Large CUDA docs, traces, engines, models, datasets, and logs remain external artifacts unless targeted content is required.
-- Token conservation cannot weaken ownership, security, correctness, device closure, lifecycle, compatibility, evidence, or cleanup.
+- Universal contracts do not embed chess, games, one evaluator/action/graph shape, or one GPU.
+- Generated hot paths may specialize and eliminate unused abstractions.
+- No optimization is accepted without mechanism evidence and semantic/search-quality guardrails.
+- Focus branches may not independently drift Search IR, domain/graph/policy/evaluator/resource meaning, JIT/ABI/cache identity, device closure, engineering decisions, or test oracles.
+- Device contexts, allocations, modules, IPC/shared memory, queues, diagnostics, and host resources are released or deliberately retained and verified.
+- Token conservation cannot override ownership, device closure, security, correctness, finite-resource, compatibility, lifecycle, evidence, or cleanup gates.
 
 ## Stop conditions
 
-Stop when specification/ownership is ambiguous; gates/value ordering are unstated; credible alternatives are absent; branches overlap ownership; shared meaning drifts; evidence identity is incomplete; retries are unchanged; token pressure would violate the practice floor; reserve cannot support required owner capsule/integration/cleanup/handoff; context is red/emergency; tests are undiscovered/skipped; state is contaminated; or cleanup is unsafe.
+Stop and resolve the boundary before implementation/testing/cleanup when ownership is ambiguous, a large task lacks a full-attention map, branches overlap authority, shared meaning can drift, dependencies cycle, a public contract leaks private types, resource exhaustion/teardown is undefined, token pressure would violate the practice floor, reserve cannot support required testing/integration/cleanup/handoff, context is red/emergency, required tests are undiscovered/skipped, cleanup cannot be verified, or alleged simplicity exports the problem.
+
+Stop PR integration when the reviewed head is stale, changed surface/branch outputs/token decisions are unaccounted, a blocker or unsafe cleanup remains, required evidence/gates are missing, or target/post-merge state cannot be verified.
 
 ## Deeper doctrine
 

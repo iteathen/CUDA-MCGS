@@ -7,23 +7,32 @@ The canonical development system is [`../../agent_files/README.md`](../../agent_
 The project method is:
 
 - engineering contracts and specification-obligation mapping before implementation selection;
-- contextual value ordering, candidate-path comparison, explicit tradeoffs, and P0–P4 priority;
-- adversarial assessment before substantial/critical planning;
-- semantic focus branches for large/complex work;
-- **universal token backpressure for every task**, including routine work;
+- contextual value ordering that distinguishes hard gates, mission objectives, supporting qualities, and process costs;
+- credible candidate-path comparison, decisive evidence, reversibility, explicit tradeoffs, and P0–P4 priority;
+- proportional adversarial assessment before planning substantial or critical work;
+- semantic focus-branch decomposition for large/complex tasks, with one parent integration spine, exact branch contracts, invalidation, constrained parallelism, and central reconciliation;
+- universal token backpressure from the first retrieval or mutation of every task, including routine work;
 - a risk-appropriate minimum practice floor that token pressure cannot waive;
-- a reduction ladder that removes duplication, reuses evidence, batches work, narrows context, defers optional breadth, reduces scope, and splits/hands off before rigor is cut;
-- explicit reserves and green/yellow/red/emergency behavior for substantial/critical work;
-- consolidated testing that banks intents, shares safe setup, preserves case identity, reuses evidence, and repairs root-cause clusters;
-- governed plan execution with actual-effect inspection and evidence-driven deviations;
-- explicit cleanup/disposition, proportional sanity, exact-head review, guarded merge, and post-merge verification;
-- LEGO ownership, SOLID internals, CUPID quality, and simplest sufficient total-system design;
-- mature-scale organization and provenance-preserving documentation/handoffs.
+- a reduction ladder that removes duplication, reuses evidence, batches work, narrows context/output, defers optional breadth/polish, reduces scope/claim, and splits/hands off before rigor is cut;
+- explicit reserves and green/yellow/red/emergency behavior for substantial/critical work, with budget elasticity for essential evidence and cleanup;
+- testing discipline that captures intents, consolidates owning capsules, shares setup, preserves case identity, reuses exact evidence, and clusters failures by root cause;
+- governed plan execution through ready nodes, expected-versus-actual inspection, evidence-driven deviations, and no invalid partial state;
+- explicit cleanup and artifact disposition across local, Git, GitHub, device, credential, generated, retained, remote, and external state;
+- proportional sanity checking with exact claims, semantic interrogation, boundary/path/lifecycle/cleanup reconciliation, and durable findings;
+- exact-head author-side PR review, independent review when triggered, guarded merge, verified target integration, and post-merge cleanup;
+- LEGO component ownership, SOLID internal responsibilities, CUPID implementation quality, and simplest sufficient total-system design;
+- mature-scale organization, specification-first foundations, test architecture defined with contracts, evidence-first debugging/performance, and provenance-preserving documentation/handoffs.
 
-Token backpressure is governed by [`../decisions/ADR-0012-token-use-and-context-discipline.md`](../decisions/ADR-0012-token-use-and-context-discipline.md), [`../decisions/ADR-0016-token-backpressure-and-practice-floor.md`](../decisions/ADR-0016-token-backpressure-and-practice-floor.md), and [`../../agent_files/general_foundation/TOKEN_DISCIPLINE.md`](../../agent_files/general_foundation/TOKEN_DISCIPLINE.md).
+Engineering judgment and value ordering are governed by [`../decisions/ADR-0015-engineering-judgment-and-value-ordering.md`](../decisions/ADR-0015-engineering-judgment-and-value-ordering.md), [`../../agent_files/general_foundation/ENGINEERING_JUDGMENT.md`](../../agent_files/general_foundation/ENGINEERING_JUDGMENT.md), and [`../../agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md`](../../agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md).
 
-Routine tasks use an implicit micro-budget and require no token ledger. The minimum floor still includes authority/current-state inspection, coherent scope, decisive verification, actual-effect inspection, cleanup, and honest limits.
+Assessment and planning are governed by [`../decisions/ADR-0006-adversarial-assessment-and-planning.md`](../decisions/ADR-0006-adversarial-assessment-and-planning.md) and [`../../agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](../../agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md).
 
-Substantial and critical work preserve explicit reserves, objectively triggered engineering/testing/review practices, and split/handoff rules. Soft estimates are replan signals; essential evidence or cleanup can justify an explicit extension. Reduced evidence narrows the claim.
+Focus-branch decomposition and integration are governed by [`../decisions/ADR-0011-focus-branch-decomposition-and-integration.md`](../decisions/ADR-0011-focus-branch-decomposition-and-integration.md) and [`../../agent_files/general_foundation/FOCUS_BRANCHES.md`](../../agent_files/general_foundation/FOCUS_BRANCHES.md).
 
-Use specialist records only when their unique continuation/evidence state has a real consumer. Token backpressure must reduce administrative duplication rather than create a new form for every task.
+Token discipline is governed by [`../decisions/ADR-0012-token-use-and-context-discipline.md`](../decisions/ADR-0012-token-use-and-context-discipline.md), [`../decisions/ADR-0016-token-backpressure-and-practice-floor.md`](../decisions/ADR-0016-token-backpressure-and-practice-floor.md), and [`../../agent_files/general_foundation/TOKEN_DISCIPLINE.md`](../../agent_files/general_foundation/TOKEN_DISCIPLINE.md).
+
+Routine tasks use an implicit micro-budget and the universal practice floor without a separate ledger. Substantial/critical work preserves explicit reserves and every objectively triggered engineering/testing/review requirement. Soft estimates are replan signals rather than authority; reduced evidence narrows the claim.
+
+Testing/repair-loop discipline remains governed by ADR-0013 and its foundation files. Plan execution, cleanup, sanity, PR integration, design, and organization remain governed by ADR-0009/0010/0007/0008/0005/0004 and the canonical agent foundation.
+
+Use the combined assessment template only when durable planning is needed. Use `engineering-decision.template.yaml` only for foundational, contested, cross-component, high-consequence, empirically uncertain, difficult-to-reverse, or cross-session decisions. Use focus-branch, token-budget, test-batch, execution, cleanup, sanity, and PR-review records only when their unique evidence has a real consumer. Routine judgment, token posture, focus branches, tests, execution, scratch cleanup, self-sanity, and author-side PR review belong in the parent issue, plan, PR, or task result.
