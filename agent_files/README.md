@@ -10,7 +10,7 @@ This directory is the durable operating system for development. The root [`AGENT
 - [`AI_RULES.md`](AI_RULES.md) — hard behavioral rules.
 - [`SYSTEM_REGISTRY.md`](SYSTEM_REGISTRY.md) — ownership and source-of-truth registry.
 - [`VALIDATION_POLICY.md`](VALIDATION_POLICY.md) — evidence and completion requirements.
-- [`DESIGN_ALIGNMENT_CARD.md`](DESIGN_ALIGNMENT_CARD.md) — compact mandatory design alignment for material architecture and implementation work.
+- [`DESIGN_ALIGNMENT_CARD.md`](DESIGN_ALIGNMENT_CARD.md) — compact mandatory design and integration alignment.
 
 ## Reusable foundation
 
@@ -18,6 +18,7 @@ This directory is the durable operating system for development. The root [`AGENT
 - [`general_foundation/ASSESSMENT_AND_PLANNING.md`](general_foundation/ASSESSMENT_AND_PLANNING.md) — proportional adversarial assessment and executable planning.
 - [`general_foundation/SANITY_CHECKING.md`](general_foundation/SANITY_CHECKING.md) — proportional coverage-accounted sanity checks and audit claims.
 - [`general_foundation/SEMANTIC_INTERROGATION.md`](general_foundation/SEMANTIC_INTERROGATION.md) — semantic-leaf review core and triggered risk modules.
+- [`general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) — exact-head PR review, guarded merge, and post-merge verification.
 - [`general_foundation/LEGO_ARCHITECTURE.md`](general_foundation/LEGO_ARCHITECTURE.md)
 - [`general_foundation/COMPONENT_STANDARD.md`](general_foundation/COMPONENT_STANDARD.md)
 - [`general_foundation/CONTRACT_STANDARD.md`](general_foundation/CONTRACT_STANDARD.md)
@@ -50,6 +51,6 @@ This directory is the durable operating system for development. The root [`AGENT
 
 ## Templates
 
-Use [`templates/`](templates/) for ADRs, specifications, component manifests, combined assessment/plans, sanity checks, critical semantic reviews, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning. Routine self-sanity should remain concise rather than forcing a standalone template.
+Use [`templates/`](templates/) for ADRs, specifications, component manifests, combined assessment/plans, sanity checks, critical semantic reviews, durable PR reviews, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning. Routine self-sanity and ordinary PR review should remain in GitHub rather than forcing standalone artifacts.
 
 Tool adapters such as `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md` must point here and remain thin.

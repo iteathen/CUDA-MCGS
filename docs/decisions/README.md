@@ -13,5 +13,6 @@ Accepted ADRs are immutable records. A later ADR may supersede an earlier one, b
 - [`ADR-0005-lego-design-hierarchy.md`](ADR-0005-lego-design-hierarchy.md) — apply domain authority → LEGO → SOLID → CUPID → simplest sufficient total-system design.
 - [`ADR-0006-adversarial-assessment-and-planning.md`](ADR-0006-adversarial-assessment-and-planning.md) — assess before planning, challenge every material answer, and keep the record proportional.
 - [`ADR-0007-proportional-sanity-checking.md`](ADR-0007-proportional-sanity-checking.md) — freeze the target, account for coverage at risk-justified depth, reconcile integration, and preserve actionable findings.
+- [`ADR-0008-exact-head-pr-review-and-guarded-merge.md`](ADR-0008-exact-head-pr-review-and-guarded-merge.md) — review exact heads, apply phase/risk independence, perform guarded merge, and verify target integration.
 
 Use [`../../agent_files/templates/decision-record.template.md`](../../agent_files/templates/decision-record.template.md). Each ADR states status, context, decision, evidence, consequences, alternatives, and revisit triggers.

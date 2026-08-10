@@ -1,6 +1,6 @@
 # Contributing to UMCGS
 
-UMCGS is currently documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), and [`agent_files/README.md`](agent_files/README.md) before opening a change.
+UMCGS is currently private and documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), and [`agent_files/README.md`](agent_files/README.md) before opening a change.
 
 ## Before production implementation
 
@@ -36,8 +36,22 @@ Run:
 ./scripts/verify-docs.sh
 ```
 
-Implementation changes will add boundary-specific validation under accepted specifications and component manifests.
+Implementation changes add boundary-specific validation under accepted specifications and component manifests.
 
 ## Pull requests
 
-Explain objective, ownership, organizational placement, authority, public/internal boundary, dependencies, design, changes, validation, memory/performance effects, failure/exhaustion behavior, migration, and remaining risks. Do not describe local-only work as published.
+Follow [`agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md).
+
+Before requesting review:
+
+- record the exact ready-for-review head and intended base;
+- ensure the PR is one coherent integration;
+- account for the complete changed surface and affected contracts;
+- run focused validation and proportional self-sanity;
+- disclose checks not run, limitations, issue closure, branch effects, and proposed merge method.
+
+Every material PR receives author-side complete-diff review. Independent review is required by phase, protection/CODEOWNERS, owner instruction, or objective consequence. A changed head invalidates affected review.
+
+Merge is a separate guarded transaction. Revalidate the exact accepted head, target, checks/reviews/protection, discussion, mergeability, issue closure, branch/dependent work, and merge method; use an expected-head guard where supported; then verify the target/resulting SHA and tree.
+
+Do not describe local-only work as published, author-side review as independent approval, or a merge response as verified integration.

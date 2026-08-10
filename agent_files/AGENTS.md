@@ -1,10 +1,10 @@
 # Canonical Agent Operating Manual
 
-**Scope:** All research, specification, implementation, sanity checking, review, debugging, documentation, and publication work in UMCGS.
+**Scope:** All research, specification, implementation, sanity checking, pull-request review, merge, debugging, documentation, and publication work in UMCGS.
 
 ## Mission
 
-Produce trustworthy, reusable engineering progress without allowing the first domain, first model, first GPU, first implementation shortcut, early repository size, or an unjustified review claim to become an accidental permanent constraint.
+Produce trustworthy, reusable engineering progress without allowing the first domain, first model, first GPU, first implementation shortcut, early repository size, unjustified review claim, or stale PR approval to become an accidental permanent constraint.
 
 ## Required orientation
 
@@ -12,16 +12,17 @@ Produce trustworthy, reusable engineering progress without allowing the first do
 2. Identify the task class and assessment depth: routine, substantial, or critical.
 3. For substantial or critical work, read `general_foundation/ASSESSMENT_AND_PLANNING.md` and complete assessment before planning.
 4. For requested sanity, audit, whole-project review, incident, or release-readiness work, read `general_foundation/SANITY_CHECKING.md` and `general_foundation/SEMANTIC_INTERROGATION.md` before deep inspection.
-5. Use `SYSTEM_REGISTRY.md` to identify the owning boundary and authoritative documents.
-6. For any new or moved artifact, read `general_foundation/PROJECT_ORGANIZATION.md` and `application_specific/REPOSITORY_ORGANIZATION.md`.
-7. For component, contract, dependency, foundational type/schema, compatibility, or reusable-name work, load the triggered detailed doctrine linked from `general_foundation/PRINCIPLES.md`.
-8. Inspect repository state and unrelated work before editing.
-9. Establish purpose, expected ranges, invariants, resource limits, lifecycle, failures, organizational home, dependencies, design weighting, and evidence requirements.
-10. Apply the reasoning gate.
+5. For PR readiness, review, approval, or merge work, read `general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md` before acting.
+6. Use `SYSTEM_REGISTRY.md` to identify the owning boundary and authoritative documents.
+7. For any new or moved artifact, read `general_foundation/PROJECT_ORGANIZATION.md` and `application_specific/REPOSITORY_ORGANIZATION.md`.
+8. For component, contract, dependency, foundational type/schema, compatibility, or reusable-name work, load the triggered detailed doctrine linked from `general_foundation/PRINCIPLES.md`.
+9. Inspect repository state and unrelated work before editing.
+10. Establish purpose, expected ranges, invariants, resource limits, lifecycle, failures, organizational home, dependencies, design weighting, and evidence requirements.
+11. Apply the reasoning gate.
 
 ## Task routing
 
-| Task | Required authority before editing |
+| Task | Required authority before acting |
 |---|---|
 | Research | Research policy, exact sources, revision, and license |
 | Foundational design | Charter, ADR-0005, ADR-0006, `PRINCIPLES.md`, adversarial assessment, triggered design doctrine, prior ADRs, decision-ready alternatives |
@@ -30,6 +31,8 @@ Produce trustworthy, reusable engineering progress without allowing the first do
 | Normative contract | Accepted owner direction and specification scope |
 | Production implementation | Accepted specification/component ownership plus an assessment disposition that permits implementation |
 | Sanity check or audit | ADR-0007, frozen revision/artifact, explicit claim, semantic coverage map, risk-depth rules, and independent finding disposition where required |
+| PR readiness/review | ADR-0008, exact head/base, complete changed-surface accounting, phase/risk review mode, semantic/integration evidence, discussion reconciliation, and result |
+| Merge | ADR-0008, exact accepted head, correct target, current checks/reviews/protection, no blockers, deliberate merge method, expected-head guard, and post-merge verification |
 | Disposable experiment | Named question, disposal criteria, isolated experiment location, non-production label |
 | Debugging | Expected behavior, reproducible symptom, trustworthy state |
 | Performance work | Reproducible benchmark and profiler evidence |
@@ -98,6 +101,36 @@ Before making a sanity claim:
 
 Full coverage does not mean uniform exhaustive depth. A sampled review is never full. Independent review does not quietly repair findings. Use one canonical record only when the claim needs durable continuation or coordination.
 
+## PR review gate
+
+Before marking a PR ready or approving it:
+
+1. freeze the PR number, intended target, reviewed base/merge base when material, exact head SHA, and comparison range;
+2. identify project phase and whether author-side, independent, or owner exact-head authorization is permitted/required;
+3. inspect the complete patch, changed-file inventory, ancestry, generated/manifest/schema/dependency effects, and PR discussion;
+4. verify authority, assessment, ownership, contracts, preserved behavior, and closure criteria;
+5. review material semantic units and affected producer/consumer/end-to-end paths;
+6. verify focused evidence and current-head checks, including checks not run and infrastructure limits;
+7. classify blockers, questions, non-blocking improvements, and information precisely;
+8. perform a final whole-diff integration pass;
+9. state the result and exact reviewed head.
+
+A changed head invalidates affected review. A material base change invalidates affected integration evidence. Author-side review is not independent approval.
+
+## Merge gate
+
+Immediately before merge:
+
+1. confirm the PR is open, non-draft, and targets the intended branch;
+2. confirm the current head exactly equals the approved/ready/authorized head;
+3. recheck base/ancestry, mergeability, required reviews/checks/CODEOWNERS/protection/queue, and unresolved threads/findings;
+4. confirm issue closure keywords, branch deletion, stacked/dependent work, and conflicting/superseding work are correct;
+5. select squash, rebase, or merge commit for a stated historical reason;
+6. use the expected-head guard where supported and abort on any changed state;
+7. verify the PR is merged, the target/resulting SHA and tree are correct, issue/branch effects are accurate, and dependent work uses the integrated revision.
+
+Never force-update the target or bypass protections to complete a merge.
+
 ## Reasoning levels
 
 ### Routine
@@ -124,11 +157,14 @@ CUDA execution, synchronization, atomics, memory layout, allocator/reclamation b
 8. **Implement** — preserve ownership, public surfaces, and dependency direction.
 9. **Validate** — structure checks, focused checks, integration, failure paths, complete relevant suite.
 10. **Sanity-check** — interrogate changed semantic units and reconcile the declared review surface at proportional depth.
-11. **Reconcile** — update authority, manifests, indexes, registry, findings, and archived history.
-12. **Publish** — inspect status/diff, commit coherently, record exact state.
-13. **Hand off** — completed work, evidence, claim limits, risks, and one next boundary.
+11. **Author-review** — inspect the exact complete PR head and affected integration before readiness.
+12. **Independent-review when triggered** — review the frozen head without quietly repairing it.
+13. **Guarded merge** — revalidate current state and integrate the exact accepted head.
+14. **Post-merge verify** — confirm target SHA/tree, closure, branch, and dependent work.
+15. **Reconcile** — update authority, manifests, indexes, registry, findings, and archived history.
+16. **Hand off** — completed work, evidence, reviewed head, integrated SHA, claim limits, risks, and one next boundary.
 
-Detailed procedures are in `general_foundation/WORKFLOW.md`; use `CONTEXT_ROUTING.md` to limit stale context, `PROJECT_ORGANIZATION.md` before structural changes, `SANITY_CHECKING.md` for coverage claims, and `REVIEW.md` before publication.
+Detailed procedures are in `general_foundation/WORKFLOW.md`; use `CONTEXT_ROUTING.md` to limit stale context, `PROJECT_ORGANIZATION.md` before structural changes, `SANITY_CHECKING.md` for coverage claims, `PULL_REQUEST_REVIEW_AND_MERGE.md` for integration, and `REVIEW.md` for general review standards.
 
 ## Completion definition
 
@@ -138,6 +174,9 @@ A task is complete only when:
 - the intended owned behavior exists;
 - any triggered sanity claim names the exact revision, accounts for its declared surface at justified depth, and states its limits;
 - actionable independent findings have durable disposition;
+- one exact PR head received the phase/risk-appropriate review and all blockers/questions were resolved;
+- the exact accepted head was merged through a guarded transaction and the target/resulting SHA was verified;
+- issue closure, source-branch, dependent-work, and review-record effects are accurate;
 - the artifact is in the correct durable product area and component;
 - public/internal boundaries and dependencies are explicit;
 - the design follows the accepted hierarchy and names the owned invariant at the correct scale;
@@ -160,4 +199,4 @@ Every important statement should be identifiable as one of:
 - proposal;
 - unresolved assumption.
 
-Never present an inference as a measurement, a proposal as accepted, a sampled review as complete coverage, a local commit as published remote state, or temporary placement as the permanent organizational design.
+Never present an inference as a measurement, a proposal as accepted, a sampled review as complete coverage, author-side review as independent approval, a stale-head approval as current, a local commit as published remote state, or a merge response as verified target integration.

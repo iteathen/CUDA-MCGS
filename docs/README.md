@@ -22,6 +22,7 @@
 - Apply the LEGO design hierarchy, require sound fundamentals, and judge simplicity across the total affected system. See [`decisions/ADR-0005-lego-design-hierarchy.md`](decisions/ADR-0005-lego-design-hierarchy.md).
 - Assess before planning, use adversarial synthesis, and keep administrative records proportional to risk. See [`decisions/ADR-0006-adversarial-assessment-and-planning.md`](decisions/ADR-0006-adversarial-assessment-and-planning.md).
 - Use exact frozen targets, explicit full/bounded/sampled claims, risk-proportional semantic review, integration reconciliation, and durable findings for sanity checks. See [`decisions/ADR-0007-proportional-sanity-checking.md`](decisions/ADR-0007-proportional-sanity-checking.md).
+- Review one exact PR head, require independence according to phase/risk, perform a separate guarded merge transaction, and verify the integrated target. See [`decisions/ADR-0008-exact-head-pr-review-and-guarded-merge.md`](decisions/ADR-0008-exact-head-pr-review-and-guarded-merge.md).
 
 ## Authority
 
