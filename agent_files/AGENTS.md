@@ -157,12 +157,14 @@ CUDA execution, synchronization, atomics, memory layout, allocator/reclamation b
 8. **Implement** — preserve ownership, public surfaces, and dependency direction.
 9. **Validate** — structure checks, focused checks, integration, failure paths, complete relevant suite.
 10. **Sanity-check** — interrogate changed semantic units and reconcile the declared review surface at proportional depth.
-11. **Author-review** — inspect the exact complete PR head and affected integration before readiness.
+11. **Author-review when integrating** — inspect the exact complete PR head and affected integration before readiness.
 12. **Independent-review when triggered** — review the frozen head without quietly repairing it.
-13. **Guarded merge** — revalidate current state and integrate the exact accepted head.
-14. **Post-merge verify** — confirm target SHA/tree, closure, branch, and dependent work.
+13. **Guarded merge when integrating** — revalidate current state and integrate the exact accepted head.
+14. **Post-merge verify when integrating** — confirm target SHA/tree, closure, branch, and dependent work.
 15. **Reconcile** — update authority, manifests, indexes, registry, findings, and archived history.
-16. **Hand off** — completed work, evidence, reviewed head, integrated SHA, claim limits, risks, and one next boundary.
+16. **Hand off** — completed work, evidence, reviewed head/integrated SHA when applicable, claim limits, risks, and one next boundary.
+
+If the task deliberately ends without repository integration, skip the PR/merge steps and state the verified non-integrating outcome explicitly.
 
 Detailed procedures are in `general_foundation/WORKFLOW.md`; use `CONTEXT_ROUTING.md` to limit stale context, `PROJECT_ORGANIZATION.md` before structural changes, `SANITY_CHECKING.md` for coverage claims, `PULL_REQUEST_REVIEW_AND_MERGE.md` for integration, and `REVIEW.md` for general review standards.
 
@@ -171,12 +173,12 @@ Detailed procedures are in `general_foundation/WORKFLOW.md`; use `CONTEXT_ROUTIN
 A task is complete only when:
 
 - the assessment disposition permits the completed work and the strongest material objections were resolved or bounded;
-- the intended owned behavior exists;
+- the intended owned behavior or authorized non-integrating deliverable exists;
 - any triggered sanity claim names the exact revision, accounts for its declared surface at justified depth, and states its limits;
 - actionable independent findings have durable disposition;
-- one exact PR head received the phase/risk-appropriate review and all blockers/questions were resolved;
-- the exact accepted head was merged through a guarded transaction and the target/resulting SHA was verified;
-- issue closure, source-branch, dependent-work, and review-record effects are accurate;
+- when repository integration is part of the task, one exact PR head received phase/risk-appropriate review and all blockers/questions were resolved;
+- when repository integration is part of the task, the exact accepted head was merged through a guarded transaction and the target/resulting SHA was verified;
+- when repository integration is part of the task, issue closure, source-branch, dependent-work, and review-record effects are accurate;
 - the artifact is in the correct durable product area and component;
 - public/internal boundaries and dependencies are explicit;
 - the design follows the accepted hierarchy and names the owned invariant at the correct scale;
