@@ -14,6 +14,7 @@ No production implementation should be inferred from the current repository.
 
 ## Current accepted direction
 
+- Adversarial assessment before planning, with proportional documentation and decisive falsifiers.
 - LEGO macroscopic ownership, SOLID internal responsibilities, CUPID implementation quality, and simplest sufficient total-system design.
 - Universal contracts and Search IR; generated/specialized hot paths.
 - Explicit finite GPU-memory planning before engine launch.

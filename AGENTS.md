@@ -9,11 +9,12 @@ Before changing anything:
 1. Read this file.
 2. Read [`agent_files/AGENTS.md`](agent_files/AGENTS.md) and [`agent_files/AI_RULES.md`](agent_files/AI_RULES.md).
 3. Read [`agent_files/DESIGN_ALIGNMENT_CARD.md`](agent_files/DESIGN_ALIGNMENT_CARD.md) and the compact doctrine in [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md).
-4. Read [`agent_files/SYSTEM_REGISTRY.md`](agent_files/SYSTEM_REGISTRY.md) to identify the owning boundary and source of truth.
-5. Read [`agent_files/general_foundation/PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and the UMCGS layout in [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md) before creating, moving, or splitting project artifacts.
-6. Read the accepted ADRs and specifications relevant to the task. Load detailed design doctrine linked from `PRINCIPLES.md` when the task changes a component, contract, dependency, foundational representation, compatibility boundary, or reusable name.
-7. Inspect repository status, existing work, and current project state.
-8. Apply the reasoning gate before editing.
+4. For substantial or critical work, read [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md) before committing to a design or implementation sequence.
+5. Read [`agent_files/SYSTEM_REGISTRY.md`](agent_files/SYSTEM_REGISTRY.md) to identify the owning boundary and source of truth.
+6. Read [`agent_files/general_foundation/PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and the UMCGS layout in [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md) before creating, moving, or splitting project artifacts.
+7. Read the accepted ADRs and specifications relevant to the task. Load detailed design doctrine linked from `PRINCIPLES.md` when the task changes a component, contract, dependency, foundational representation, compatibility boundary, or reusable name.
+8. Inspect repository status, existing work, and current project state.
+9. Apply the reasoning gate before editing.
 
 ## Authority order
 
@@ -40,6 +41,7 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 
 ## Non-negotiable project invariants
 
+- Assess substantial and critical work before planning; use a strong adversary to expose hidden assumptions, unsound simplicity, and unnecessary machinery.
 - Apply the accepted design hierarchy: domain truth and authority → purpose/bounds/contextual weighting → LEGO boundaries → SOLID responsibilities → CUPID quality → simplest sufficient total system → measured validation.
 - One authoritative fact/state/lifecycle has one visible owner; consumers use meaningful public contracts rather than internal mutation.
 - Dependencies are explicit and injected; platform, compatibility, domain-instance, and model-instance details remain behind owned adapters.
@@ -54,7 +56,7 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 - Cross-component dependencies must be declared, acyclic, and made through public contracts rather than deep imports.
 - Tests, safety checks, validation gates, and benchmark requirements may not be weakened to make a change pass.
 
-See [`agent_files/general_foundation/LEGO_ARCHITECTURE.md`](agent_files/general_foundation/LEGO_ARCHITECTURE.md), [`agent_files/application_specific/UMCGS_PROFILE.md`](agent_files/application_specific/UMCGS_PROFILE.md), [`ARCHITECTURE_GUARDRAILS.md`](agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md), and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
+See [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`LEGO_ARCHITECTURE.md`](agent_files/general_foundation/LEGO_ARCHITECTURE.md), [`agent_files/application_specific/UMCGS_PROFILE.md`](agent_files/application_specific/UMCGS_PROFILE.md), [`ARCHITECTURE_GUARDRAILS.md`](agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md), and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
 
 ## Large-project organization rule
 
@@ -74,7 +76,7 @@ Do not create root-level source files, catch-all `utils`, `common`, `shared`, `m
 
 ## Reasoning gate
 
-Architecture, CUDA synchronization, memory layout, lifetimes, concurrency, JIT/ABI work, schemas, persistent state, hot-path changes, component creation, dependency-direction changes, and repository splits require high-confidence reasoning supported by authority and evidence. An agent that cannot establish the required reasoning must not edit that boundary. It must record a decision-ready blocker and next action in `next_step.yaml`.
+Architecture, CUDA synchronization, memory layout, lifetimes, concurrency, JIT/ABI work, schemas, persistent state, hot-path changes, component creation, dependency-direction changes, and repository splits require a completed critical assessment plus high-confidence reasoning supported by authority and evidence. An agent that cannot establish the required reasoning must not edit that boundary. It must record a decision-ready blocker and next action in `next_step.yaml`.
 
 The gate is not permission to abandon hard work. Research, inspect, test, and narrow the uncertainty first.
 
@@ -82,6 +84,7 @@ The gate is not permission to abandon hard work. Research, inspect, test, and na
 
 - Work in the largest safe coherent unit owned by one boundary; avoid repeated tiny passes that cause context drift.
 - Decide the artifact's organizational home before writing it.
+- Preserve one proportional assessment/plan by default; link existing authority rather than creating duplicate administrative ledgers.
 - Before creating a reusable concept, state its owned invariant, intended equivalence class, exclusions, second-instance result, and first-consumer deletion result.
 - Before calling a design simple, account for complexity exported to callers, adapters, generated code, device memory, synchronization, migration, recovery, operations, diagnostics, testing, and expected integrations.
 - Diagnose before repairing: observe, compare with the contract, locate ownership, make one coherent repair, retest.

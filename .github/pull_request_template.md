@@ -1,25 +1,21 @@
-## Objective and ownership boundary
+## Objective, authority, and ownership boundary
 
-## Product area, component, and manifest
+## Product area, component, manifest, and dependency direction
 
-## Governing specification / ADR
+## Assessment and adversarial resolution
 
-## Public surface and dependency direction
-
-## LEGO / SOLID / CUPID design and total-system simplicity
-
-## Domain-appropriate foundations and naming tests
+Link the durable assessment/plan, or concisely state the disposition, strongest credible objection, integrated resolution, and decisive falsifier. Do not duplicate accepted authority.
 
 ## What changed and why
 
-## Invariants, lifecycle, and failure behavior
+## Contracts, invariants, lifecycle, resources, and failure behavior
 
 ## Validation and evidence
 
 ## Performance and GPU-memory evidence
 
-## Compatibility / migration
+## Compatibility, migration, rollback, and cleanup
 
 ## Documentation, registry, and archived material
 
-## Remaining risks / unknowns
+## Remaining risks / assumptions / revisit triggers

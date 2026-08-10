@@ -6,28 +6,23 @@
 
 Read authority, inspect repository state, identify task class, existing decisions, related work, unrelated local changes, and the current product-area/component organization.
 
-## 2. Establish ownership, placement, and bounds
+## 2. Frame the assessment
 
-Write down:
+State the required outcome, authority, evidence, ownership boundary, expected operating domain, constraints, assumptions, completion evidence, and cost of doing nothing. Distinguish observed facts from inferences and proposals.
 
-- product area and component owner;
-- durable repository path;
-- public/internal surface;
-- allowed and affected dependencies;
-- purpose, inputs, outputs, invariants, and lifecycle;
-- expected ranges;
-- memory/performance constraints;
-- failures, recovery, and observability;
-- external dependencies;
-- out-of-scope behavior.
+Use [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md). Routine work may use a brief in-place assessment; substantial and critical work require the proportional durable record described there.
 
-If the component does not exist, apply the organization gate before implementation.
+## 3. Inspect prior art and current behavior
 
-## 3. Inspect prior art
+When repository behavior, mature work, standards, papers, hardware behavior, or current libraries may change the design, inspect them before committing to an architecture. Record exact revisions, licenses, raw observations, and unresolved gaps.
 
-When mature work, standards, papers, hardware behavior, or current libraries may change the design, inspect them before committing to an architecture. Record exact revisions and licenses.
+## 4. Run the adversarial assessment
 
-## 4. Apply the design hierarchy
+Answer every applicable assessment question, then attack the answers from the strongest credible opposing position. Challenge both unsound simplification and unnecessary machinery. Resolve each material objection through evidence, redesign, a bounded experiment, explicit assumption, blocker, or rejection.
+
+Do not plan production implementation until the assessment disposition permits it.
+
+## 5. Apply the design hierarchy
 
 For component, contract, dependency, foundational representation, compatibility, or reusable-name work:
 
@@ -41,44 +36,47 @@ For component, contract, dependency, foundational representation, compatibility,
 
 Use `templates/design-review.template.md` when the design is foundational, contested, or difficult to reconstruct.
 
-## 5. Specify unsettled foundations
+## 6. Specify unsettled foundations
 
 Persistent layouts, public contracts, synchronization, memory policies, lifecycle, state identity, ABI, cross-component ownership, and dependency direction require an accepted specification or ADR before production implementation.
 
 A disposable experiment must name the question it answers, live under the experiment product area, and state deletion or promotion conditions.
 
-## 6. Plan a coherent change
+## 7. Plan one coherent change
 
-Plan by ownership boundary. Include:
+Build the plan from the integrated assessment, not from the original proposal. Include:
 
+- objective and completion evidence;
 - product area/component placement;
 - component manifest and registry changes;
 - public/internal contract effects;
 - dependency graph changes;
-- affected components;
-- compatibility/migration;
-- validation;
-- failure handling;
-- documentation;
-- rollback;
-- known unknowns.
+- coherent implementation steps ordered by dependency and uncertainty;
+- decisive experiments before irreversible structure;
+- validation paired with the steps it proves;
+- failure, recovery, cancellation, resource pressure, compatibility, migration, rollback, cleanup, and documentation;
+- stop conditions and handoff state.
 
-## 7. Implement
+Prefer one combined assessment-and-plan artifact. Do not create duplicate risk, dependency, validation, or status ledgers when the same authoritative record can serve them.
+
+## 8. Implement
 
 Preserve the declared boundary. Avoid unrelated cleanup. Make limits and failures explicit. Do not erase evidence needed for correctness. Do not introduce root-level source, deep imports, generic dumping grounds, or unregistered components.
 
-## 8. Validate
+When implementation exposes a new foundational question, stop the dependent work and revise the assessment rather than silently inventing architecture.
 
-Progress from organization/documentation checks through focused checks, integration, failure/exhaustion, architecture-specific checks, benchmarks, and the full relevant suite.
+## 9. Validate
 
-## 9. Reconcile authority and history
+Progress from organization/documentation checks through focused checks, integration, failure/exhaustion, architecture-specific checks, benchmarks, and the full relevant suite. Validation must be capable of falsifying the important claims from the assessment.
 
-Update specifications, ADRs, component manifests, registry, indexes, subsystem READMEs, and archived superseded material in the same coherent change.
+## 10. Reconcile authority and history
 
-## 10. Publish intentionally
+Update specifications, ADRs, component manifests, registry, indexes, subsystem READMEs, and archived superseded material in the same coherent change. Remove temporary planning records once their durable decisions and execution state have moved to the correct authorities.
+
+## 11. Publish intentionally
 
 Inspect status and diff, stage only intended files, commit coherently, push through a verified transport, and verify the remote result.
 
-## 11. Hand off
+## 12. Hand off
 
-Record objective, product area/component, authority, changes, evidence, repository state, risks, failed approaches, and one coherent next boundary.
+Record objective, product area/component, authority, integrated decision, strongest remaining objection, changes, evidence, repository state, risks, failed approaches, and one coherent next boundary.

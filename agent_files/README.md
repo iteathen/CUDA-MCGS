@@ -15,6 +15,7 @@ This directory is the durable operating system for development. The root [`AGENT
 ## Reusable foundation
 
 - [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md) — compact mandatory design hierarchy.
+- [`general_foundation/ASSESSMENT_AND_PLANNING.md`](general_foundation/ASSESSMENT_AND_PLANNING.md) — proportional adversarial assessment and executable planning.
 - [`general_foundation/LEGO_ARCHITECTURE.md`](general_foundation/LEGO_ARCHITECTURE.md)
 - [`general_foundation/COMPONENT_STANDARD.md`](general_foundation/COMPONENT_STANDARD.md)
 - [`general_foundation/CONTRACT_STANDARD.md`](general_foundation/CONTRACT_STANDARD.md)
@@ -47,6 +48,6 @@ This directory is the durable operating system for development. The root [`AGENT
 
 ## Templates
 
-Use [`templates/`](templates/) for ADRs, specifications, component manifests, design reviews, naming analysis, research, plans, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning.
+Use [`templates/`](templates/) for ADRs, specifications, component manifests, combined assessment/plans, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning.
 
 Tool adapters such as `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md` must point here and remain thin.

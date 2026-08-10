@@ -28,6 +28,7 @@ required=(
   agent_files/VALIDATION_POLICY.md
   agent_files/DESIGN_ALIGNMENT_CARD.md
   agent_files/general_foundation/PRINCIPLES.md
+  agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md
   agent_files/general_foundation/LEGO_ARCHITECTURE.md
   agent_files/general_foundation/COMPONENT_STANDARD.md
   agent_files/general_foundation/CONTRACT_STANDARD.md
@@ -55,6 +56,7 @@ required=(
   agent_files/application_specific/MEMORY_AND_PERFORMANCE.md
   agent_files/application_specific/RESEARCH_POLICY.md
   agent_files/templates/component-manifest.template.yaml
+  agent_files/templates/assessment-and-plan.template.md
   agent_files/templates/design-review.template.md
   agent_files/templates/naming-analysis.template.yaml
   agent_files/templates/decision-record.template.md
@@ -78,6 +80,7 @@ required=(
   docs/decisions/ADR-0003-device-resident-active-search.md
   docs/decisions/ADR-0004-large-project-organization.md
   docs/decisions/ADR-0005-lego-design-hierarchy.md
+  docs/decisions/ADR-0006-adversarial-assessment-and-planning.md
   docs/development/README.md
   docs/research/README.md
   docs/research/prior-art/README.md

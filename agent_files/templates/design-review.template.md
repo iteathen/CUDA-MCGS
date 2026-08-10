@@ -1,5 +1,17 @@
 # <Design review title>
 
+## Assessment disposition
+
+`Proceed | Experiment | Research | Revise | Reject | Blocked`
+
+## Strongest adversarial case
+
+### Case against the proposal
+
+### Evidence, concessions, and integrated resolution
+
+### Decisive falsifiers and revisit triggers
+
 ## Authority, purpose, and operating bounds
 
 ## Contextual concern weighting

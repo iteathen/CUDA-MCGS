@@ -20,7 +20,21 @@ Required for every repository change that touches durable project state:
 
 This verifies required authority, status markers, relative links, structured records, issue forms, project topology, and component manifest placement.
 
-### 2. Design and component boundaries
+### 2. Assessment and planning
+
+Substantial and critical work must verify that:
+
+- the required outcome, authority, evidence, scope, assumptions, and cost of doing nothing were assessed before implementation planning;
+- every applicable canonical question group was answered directly or by link to current authority;
+- the strongest credible opposing design or explanation was steelmanned;
+- valid criticism changed the design, scope, experiment, validation, or disposition;
+- consequential unknowns have evidence, falsifiers, bounded assumptions, experiments, blockers, or revisit triggers;
+- the plan follows one coherent boundary, orders work by dependency/uncertainty, pairs validation with steps, and defines stop conditions;
+- planning records are proportional and do not duplicate authority or create unowned accounting.
+
+Use `agent_files/templates/assessment-and-plan.template.md` when a durable record is required.
+
+### 3. Design and component boundaries
 
 A component, public contract, dependency, foundational representation, compatibility boundary, or reusable naming change must verify:
 
@@ -36,7 +50,7 @@ A component, public contract, dependency, foundational representation, compatibi
 
 Use `agent_files/templates/design-review.template.md` for foundational or contested designs.
 
-### 3. Schema and generated artifacts
+### 4. Schema and generated artifacts
 
 A schema/compiler change must verify:
 
@@ -48,15 +62,15 @@ A schema/compiler change must verify:
 - backward/forward compatibility rules;
 - exact range, alignment, precision, and layout probes where applicable.
 
-### 4. Component-local behavior
+### 5. Component-local behavior
 
 Every component owns focused tests for public contracts, internal invariants, failure states, lifecycle, concurrency, and resource exhaustion. The component manifest lists commands.
 
-### 5. Cross-component integration
+### 6. Cross-component integration
 
 The repository integration suite verifies only public surfaces and declared dependency direction. It must include failure propagation and incompatible-version behavior.
 
-### 6. Reference and conformance
+### 7. Reference and conformance
 
 Complex search behavior requires deterministic reference cases and synthetic domains that expose:
 
@@ -69,7 +83,7 @@ Complex search behavior requires deterministic reference cases and synthetic dom
 - resource pressure and exhaustion;
 - rerooting/persistence where selected.
 
-### 7. CUDA/device correctness
+### 8. CUDA/device correctness
 
 Device changes require relevant combinations of:
 
@@ -82,7 +96,7 @@ Device changes require relevant combinations of:
 - cancellation and failure injection;
 - explicit proof that production search does not depend on host-produced intermediate decisions.
 
-### 8. Performance
+### 9. Performance
 
 Performance claims require:
 
@@ -98,7 +112,7 @@ Performance claims require:
 
 A faster result that changes search quality, domain semantics, resource limits, or stopping behavior is not automatically an improvement.
 
-### 9. Release/publication
+### 10. Release/publication
 
 Before publishing:
 

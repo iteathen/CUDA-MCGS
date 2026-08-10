@@ -8,6 +8,14 @@
   "ownership_boundary": "<component or contract>",
   "durable_paths": [],
   "authority": [],
+  "assessment": {
+    "disposition": "proceed|experiment|research|revise|reject|blocked",
+    "question_groups_resolved": [],
+    "strongest_objection": "<steel-manned case against the proposal>",
+    "integrated_resolution": "<what changed or why the proposal survives>",
+    "evidence_or_falsifier": [],
+    "residual_assumptions": []
+  },
   "constraints": [],
   "invariants": [],
   "public_contract_effects": [],

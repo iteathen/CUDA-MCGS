@@ -2,18 +2,43 @@
 
 **Scope:** Reusable foundation.
 
-## Plans
+## Assessment before plan
 
-A durable plan states objective, product area, component, ownership, authority, constraints, public/dependency effects, coherent steps, validation, migration, risks, and stop conditions. It must distinguish accepted work from proposals and unknowns.
+A plan is executable sequencing for a decision-ready boundary. It is not the place to conceal unresolved ownership, identity, lifecycle, resource, compatibility, security, or architecture decisions.
 
-Do not commit conversational scratch plans. Commit plans only when they are durable project state or necessary for another agent. Use `next_step.yaml` for the one current coherent boundary.
+Substantial and critical work first follows [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md). The assessment may conclude that the work should proceed, become a bounded experiment, require research, be revised, be rejected, or remain blocked.
+
+## Plan quality
+
+A durable plan states:
+
+- the owned outcome and completion evidence;
+- product area, component, ownership, and authority;
+- the integrated assessment and strongest surviving objection;
+- contracts, invariants, ranges, lifecycle, resources, failures, compatibility, and security affected;
+- public/dependency effects and organizational placement;
+- coherent steps ordered by dependency and uncertainty;
+- experiments before irreversible commitments;
+- validation paired with the mechanism each step claims;
+- migration, rollback, cleanup, risks, stop conditions, and handoff state.
+
+The plan must be specific enough that implementation does not need to invent foundational design, but it must not pretend to know details that a preceding experiment is meant to decide.
+
+## Proportional administration
+
+One combined assessment-and-plan record is the default. Link accepted authority and existing evidence instead of copying them. Group related questions. Use a short reason for non-applicable modules. Do not create parallel risk registers, dependency ledgers, validation plans, daily status files, or duplicate checklists unless they have a distinct consumer, owner, and lifecycle.
+
+Routine mechanical work does not require a standalone plan when the contract, owner, change, and validation are already unambiguous.
+
+Do not commit conversational scratch plans. Commit plans only when they are durable project state or necessary for another agent. Use [`../templates/assessment-and-plan.template.md`](../templates/assessment-and-plan.template.md) for a durable combined record and `next_step.yaml` for the one current coherent boundary.
 
 ## Handoffs
 
 A handoff must allow continuation without reconstructing chat history. Include:
 
 - objective, product area, component, and owned boundary;
-- authority and decisions used;
+- authority and integrated decision used;
+- strongest remaining objection, assumptions, and revisit triggers;
 - exact changes and rationale;
 - component manifest/registry/dependency changes;
 - validation commands and evidence;

@@ -1,11 +1,13 @@
 # Contributing to UMCGS
 
-UMCGS is currently documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), and [`agent_files/README.md`](agent_files/README.md) before opening a change.
+UMCGS is currently documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), and [`agent_files/README.md`](agent_files/README.md) before opening a change.
 
 ## Before production implementation
 
 A change needs:
 
+- a proportional assessment whose disposition permits implementation;
+- the strongest credible objection and its resolution, evidence, experiment, or blocker;
 - a clear ownership boundary;
 - a durable product-area/component home;
 - a LEGO ownership boundary with one state/lifecycle owner, meaningful ports, injected dependencies, and owned adapters;

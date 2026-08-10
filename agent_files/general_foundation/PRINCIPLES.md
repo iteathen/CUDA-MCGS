@@ -17,16 +17,26 @@ SOLID internal responsibility structure
         ↓
 CUPID implementation quality
         ↓
+sound fundamentals verified
+        ↓
 simplest sufficient total system
         ↓
 measured validation and evolution
 ```
 
-A lower level may improve a design only inside the valid envelope established above it. “Simple” never means omitting required correctness, finite-resource behavior, lifecycle, compatibility, recovery, or expected-domain capacity.
+A lower level may improve a design only inside the valid envelope established above it. Soundness is a gate, not a preference: “simple” never means omitting required correctness, finite-resource behavior, lifecycle, compatibility, recovery, or expected-domain capacity.
 
 ## Purpose before architecture
 
 Establish outcome, authority, owner, operating environment, intended equivalence class, expected ranges, correctness/safety tolerances, finite memory/performance limits, lifecycle, recovery, compatibility, observability, and dominant concerns before selecting a representation or component structure.
+
+## Assessment before planning
+
+For substantial and critical work, do not promote the first plausible idea directly into an implementation plan. Assess authority, evidence, ownership, domain foundations, alternatives, resources, failures, and validation; then attack the answers from the strongest credible opposing position. Resolve valid objections by changing the design, narrowing the scope, running an experiment, or rejecting the proposal.
+
+Simplicity is considered only after the fundamentals are sound. Administrative accounting is itself system complexity: keep one authoritative assessment/plan by default, link existing facts, group related answers, and preserve only information that changes decisions, enables execution, supports validation, or prevents costly reconstruction.
+
+See [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md).
 
 ## LEGO boundary
 
@@ -90,6 +100,7 @@ Stop and resolve the boundary before implementation when ownership is ambiguous,
 
 ## Triggered detailed doctrine
 
+- [`ASSESSMENT_AND_PLANNING.md`](ASSESSMENT_AND_PLANNING.md)
 - [`LEGO_ARCHITECTURE.md`](LEGO_ARCHITECTURE.md)
 - [`COMPONENT_STANDARD.md`](COMPONENT_STANDARD.md)
 - [`CONTRACT_STANDARD.md`](CONTRACT_STANDARD.md)

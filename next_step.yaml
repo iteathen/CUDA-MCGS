@@ -13,6 +13,8 @@
     "docs/decisions/ADR-0005-lego-design-hierarchy.md",
     "agent_files/general_foundation/PRINCIPLES.md",
     "docs/decisions/ADR-0004-large-project-organization.md",
+    "agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md",
+    "docs/decisions/ADR-0006-adversarial-assessment-and-planning.md",
     "agent_files/application_specific/REPOSITORY_ORGANIZATION.md",
     "docs/specs/SPEC-0000-framework-requirements.md (proposal input, not authority)",
     "docs/architecture/FRAMEWORK_OVERVIEW.md (proposal input, not authority)"
@@ -22,7 +24,8 @@
     "Prior art provides useful parts but no adequate foundation.",
     "Concrete engines must be finite, device-closed, and specialized.",
     "All new artifacts must enter the mature-scale product-area/component organization.",
-    "Project license selection is deferred and does not block original private pre-release work."
+    "Project license selection is deferred and does not block original private pre-release work.",
+    "The version-0 specification set must be derived from a proportional adversarial assessment, not the first plausible schema shape."
   ],
   "deliverables": [
     "Search IR v0 specification",
@@ -40,7 +43,8 @@
     "Device-closure requirements are testable.",
     "Prior-art gaps are converted into conformance cases.",
     "Every proposed implementation boundary maps to a durable component with acyclic dependencies.",
-    "./scripts/verify-docs.sh"
+    "./scripts/verify-docs.sh",
+    "The assessment records the strongest credible alternative/counterexample and decisive falsifiers without duplicating authority."
   ],
   "blockers": [],
   "do_not": [

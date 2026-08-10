@@ -11,6 +11,17 @@ Review the complete owned change, not isolated lines.
 - One source of truth remains for every changed behavior.
 - No unrelated cleanup or hidden ownership movement entered the change.
 
+## Assessment and plan
+
+- The assessment precedes the implementation plan for substantial or critical work.
+- Applicable question groups were resolved, linked to accepted authority, or explicitly assigned to research/experiment/blocker status.
+- The strongest credible case against the proposal is stated fairly rather than caricatured.
+- Valid criticism changed the design, scope, sequencing, validation, or disposition.
+- Important claims have evidence or decisive falsifiers; implementation is not being used to avoid an unresolved design.
+- The plan follows one coherent ownership boundary, orders work by dependency and uncertainty, and pairs validation with each material step.
+- Stop, rollback, migration, failure, recovery, and cleanup conditions are explicit where material.
+- The record is proportional: existing authority is linked, duplicate ledgers are absent, and ongoing manual accounting has a named owner and real decision value.
+
 ## Design hierarchy and simplicity
 
 - Domain truth, authority, purpose, operating bounds, and concern weighting are explicit.
