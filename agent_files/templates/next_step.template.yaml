@@ -1,8 +1,21 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "updated": "YYYY-MM-DD",
-  "status": "ready|blocked|in_progress|complete|superseded",
-  "plan_version": 1,
+  "status": "ready|blocked|in_progress|complete|superseded|invalidated",
+  "parent_task_id": "<canonical parent task>",
+  "parent_plan_version": 1,
+  "integration_owner": "<owner of parent reconciliation>",
+  "focus_branch": {
+    "id": "<stable focus-branch id>",
+    "title": "",
+    "type": "evidence|decision|owner|contract|path|risk|implementation|validation|cleanup|integration",
+    "status": "planned|ready|active|paused|blocked|accepted|invalidated|superseded|integrated|archived",
+    "owner": "",
+    "primary_question_or_output": "",
+    "exact_input_revision": "",
+    "write_surface_and_authority": [],
+    "integration_obligations": []
+  },
   "node_id": "<stable node id>",
   "objective": "<one coherent next boundary>",
   "product_area": "<product area>",
@@ -10,9 +23,13 @@
   "ownership_boundary": "<owner>",
   "authority": [],
   "context": [],
+  "minimal_context_packet": [],
+  "global_invariants_to_preserve": [],
   "durable_paths": [],
   "preconditions": [],
   "dependency_outputs_and_revisions": [],
+  "parallel_siblings_and_non_overlapping_write_surfaces": [],
+  "invalidation_inputs": [],
   "protected_preexisting_user_shared_authority_evidence_and_recovery_state": [],
   "expected_local_effects": [],
   "expected_wider_effects": [],
@@ -31,9 +48,10 @@
     "cleanup_record_required": false,
     "cleanup_debt": []
   },
-  "dependency_effects": [],
+  "dependency_and_focus_branch_effects": [],
   "validation": [],
   "blockers": [],
   "do_not": [],
-  "completion_evidence": []
+  "completion_evidence": [],
+  "handoff_to_next_focus_branch_or_integration_spine": ""
 }
