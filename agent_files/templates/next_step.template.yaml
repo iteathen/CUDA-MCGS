@@ -1,5 +1,5 @@
 {
-  "schema_version": 6,
+  "schema_version": 7,
   "updated": "YYYY-MM-DD",
   "status": "ready|blocked|in_progress|complete|superseded|invalidated",
   "parent_task_id": "<canonical parent task>",
@@ -15,6 +15,26 @@
     "exact_input_revision": "",
     "write_surface_and_authority": [],
     "integration_obligations": []
+  },
+  "engineering_judgment": {
+    "required_outcome_and_consumer": [],
+    "material_specification_obligations": [],
+    "ambiguities_conflicts_gaps_or_oracle_mismatches": [],
+    "hard_gates": [],
+    "mission_objectives": [],
+    "supporting_qualities": [],
+    "process_costs_and_tie_breakers": [],
+    "context_specific_value_order": [],
+    "candidate_paths_and_gate_results": [],
+    "selected_path_and_why_it_wins": [],
+    "why_alternatives_lost": [],
+    "accepted_tradeoffs": [],
+    "priority_class": "P0|P1|P2|P3|P4",
+    "priority_reason": [],
+    "decision_confidence": "high|medium|low",
+    "revisit_triggers": [],
+    "decision_debt": [],
+    "durable_engineering_decision_record": ""
   },
   "token_and_context": {
     "task_class": "routine|substantial|critical|large_complex",
@@ -55,7 +75,7 @@
   "authority": [],
   "context": [],
   "minimal_context_packet": [],
-  "global_invariants_to_preserve": [],
+  "global_invariants_and_value_order_to_preserve": [],
   "durable_paths": [],
   "preconditions": [],
   "dependency_outputs_and_revisions": [],
@@ -84,5 +104,5 @@
   "blockers": [],
   "do_not": [],
   "completion_evidence": [],
-  "handoff_to_next_focus_branch_or_integration_spine": ""
+  "handoff_to_next_decision_focus_branch_or_integration_spine": ""
 }

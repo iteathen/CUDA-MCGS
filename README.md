@@ -12,13 +12,11 @@ UMCGS owns search semantics, Search IR, finite search-memory planning, search-sp
 
 The independent private `iteathen/CUDA-JS` repository owns generic Node.js/CUDA Driver bindings, JIT/native host-call backends, opaque resources, generic memory capabilities, NVRTC/link/load, launch/completion/error/teardown, packaging, and runtime conformance.
 
-Dependency direction is one-way:
-
 ```text
 UMCGS execution package → UMCGS CUDA-JS adapter → CUDA-JS → CUDA Driver / GPU
 ```
 
-CUDA-JS must not know Search IR or MCGS. UMCGS must not reach into CUDA-JS private source. The adapter remains in UMCGS until it has an independent lifecycle. See [`docs/decisions/ADR-0014-extract-cuda-js-runtime.md`](docs/decisions/ADR-0014-extract-cuda-js-runtime.md).
+CUDA-JS must not know Search IR or MCGS. UMCGS must not reach into CUDA-JS private source. See [`docs/decisions/ADR-0014-extract-cuda-js-runtime.md`](docs/decisions/ADR-0014-extract-cuda-js-runtime.md).
 
 ## Current phase
 
@@ -28,32 +26,32 @@ No production implementation should be inferred from the current repository.
 
 ## Current accepted direction
 
-- Adversarial assessment before planning, with proportional documentation and decisive falsifiers.
-- Semantic focus branches for large or complex tasks, with one parent integration spine and central reconciliation.
-- Token-use discipline that reserves context for validation, integration, cleanup, and handoff.
-- Consolidated testing that banks intents, shares expensive setup, preserves case identity, reuses exact evidence, and repairs failure clusters by root cause.
-- Governed dependency-ready execution with expected-before-actual inspection and explicit deviations.
-- Explicit cleanup and artifact disposition across local, GitHub, device, credential, generated, and external state.
-- Proportional sanity checking, exact-head review, guarded merge, and verified post-merge state.
-- LEGO macroscopic ownership, SOLID internals, CUPID quality, and simplest sufficient total system.
-- Universal search contracts and Search IR with specialized generated hot paths.
-- Explicit finite GPU-memory planning before engine creation.
-- No CPU-produced intermediate decision after search ignition.
-- Search state, selected engine, resident evaluator/model, queues, and intermediate results remain device-resident during active search.
-- Generic Node/CUDA runtime work is extracted to CUDA-JS rather than shaping UMCGS foundations.
+- Engineering begins with an explicit contract and specification-obligation map, not a file list.
+- Candidate paths pass hard gates before safety, correctness, accuracy, speed, reliability, architecture, delivery, and process preferences are compared.
+- Contextual value ordering and P0–P4 priority make tradeoffs, path selection, and scheduling reviewable.
+- LEGO macroscopic ownership, SOLID internals, CUPID quality, and simplest sufficient total system govern valid designs.
+- Adversarial assessment precedes planning; large work uses semantic focus branches and one integration spine.
+- Token-use discipline reserves context for testing, integration, cleanup, review, and handoff.
+- Consolidated testing banks intents, shares expensive setup, preserves case identity, reuses exact evidence, and repairs root-cause clusters.
+- Governed execution uses dependency-ready nodes, expected-before-actual inspection, explicit deviations, and no invalid partial state.
+- Cleanup, proportional sanity, exact-head review, guarded merge, and verified post-merge state are mandatory.
+- Universal search contracts and Search IR compile into finite specialized hot paths.
+- Active search remains device-closed after ignition; no CPU-produced intermediate decision is permitted.
+- Generic Node/CUDA runtime work belongs to CUDA-JS rather than shaping UMCGS foundations.
 
 ## Start here
 
 - [`AGENTS.md`](AGENTS.md)
 - [`agent_files/README.md`](agent_files/README.md)
-- [`docs/PROJECT_CHARTER.md`](docs/PROJECT_CHARTER.md)
-- [`docs/decisions/ADR-0014-extract-cuda-js-runtime.md`](docs/decisions/ADR-0014-extract-cuda-js-runtime.md)
-- [`docs/architecture/REPOSITORY_TOPOLOGY.md`](docs/architecture/REPOSITORY_TOPOLOGY.md)
-- [`docs/architecture/FRAMEWORK_OVERVIEW.md`](docs/architecture/FRAMEWORK_OVERVIEW.md)
-- [`docs/research/2026-08-10-cuda-js-assumption-audit.md`](docs/research/2026-08-10-cuda-js-assumption-audit.md)
+- [`agent_files/general_foundation/ENGINEERING_JUDGMENT.md`](agent_files/general_foundation/ENGINEERING_JUDGMENT.md)
+- [`agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md`](agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md)
+- [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md)
 - [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md)
 - [`agent_files/general_foundation/FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md)
 - [`agent_files/general_foundation/TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md)
 - [`agent_files/general_foundation/TESTING.md`](agent_files/general_foundation/TESTING.md)
+- [`docs/PROJECT_CHARTER.md`](docs/PROJECT_CHARTER.md)
+- [`docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md`](docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md)
+- [`docs/architecture/REPOSITORY_TOPOLOGY.md`](docs/architecture/REPOSITORY_TOPOLOGY.md)
 - [`STATUS.md`](STATUS.md)
 - [`next_step.yaml`](next_step.yaml)

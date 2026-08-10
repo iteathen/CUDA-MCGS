@@ -2,19 +2,47 @@
 
 ## Product area, component, manifest, and dependency direction
 
+## Engineering contract and specification alignment
+
+State or link:
+
+- required outcome, consumers, operating envelope, non-goals, and completion evidence;
+- accepted owner instruction, ADRs, specifications, contracts, and exact revisions;
+- material obligation map: source/clause → normalized obligation → gate/objective/quality/cost → owner → mechanism → failure consequence → evidence/test;
+- derived requirements and their derivation;
+- ambiguities, conflicts, gaps, stale/unimplementable authority, or oracle mismatches and their disposition;
+- specification, decision, branch, generated-artifact, test, and review evidence invalidated by any shared change.
+
+Do not treat existing code, tests, comments, examples, plans, or previous agent output as automatic authority.
+
+## Engineering judgment, value ordering, and priority
+
+State or link:
+
+- hard gates, mission objectives, supporting qualities, and process costs/tie-breakers;
+- measurable thresholds, prohibited states, optimization directions, or ordinal rules for safety, correctness, accuracy, speed, reliability, resources, compatibility, simplicity, delivery, and other material values;
+- context-specific value order and any deviation from the accepted fallback;
+- credible no-change, minimal, proposed, materially different, experiment/staged, or fallback paths;
+- gate failures, Pareto dominance, uncertainty/evidence, reversibility/option value, false-tradeoff separation, and total lifecycle comparison;
+- selected path, why it wins, why alternatives lost, decision confidence, accepted tradeoffs, and revisit triggers;
+- priority class `P0 | P1 | P2 | P3 | P4` and its dependency/consequence/information/cost-of-delay basis;
+- remaining decision debt.
+
+Weighted scores may compare only gate-passing paths. They may not conceal failed authority, safety, correctness, accuracy, deadline, resource, compatibility, lifecycle, or evidence requirements.
+
 ## Assessment and adversarial resolution
 
-Link the durable assessment/plan, or concisely state the disposition, strongest credible objection, integrated resolution, and decisive falsifier. Do not duplicate accepted authority.
+Link the durable assessment/plan, or concisely state its disposition, strongest credible overengineering and underengineering objections, counterexamples, resulting revisions, and decisive falsifiers. Do not duplicate accepted authority.
 
 ## Focus-branch decomposition and integration
 
 For a large or complex task, state or link:
 
-- canonical parent task, plan version, integration owner, global invariants, and closure criteria;
+- canonical parent task, plan/engineering-decision version, integration owner, global invariants/value order, and closure criteria;
 - why focus branches were required;
 - branch map with IDs, owners, exact input/output revisions, dependencies, and statuses;
 - full-attention sizing rationale;
-- shared-contract changes and branches/evidence invalidated;
+- shared-contract/decision/oracle changes and branches/evidence invalidated;
 - parallel ownership/write-surface evidence;
 - branches accepted, integrated, blocked, invalidated, superseded, deferred, or removed from scope;
 - cross-branch and end-to-end reconciliation;
@@ -40,22 +68,22 @@ State `routine / no durable budget record required` when appropriate.
 
 State or link:
 
-- claims/invariants tested and authoritative oracles;
+- claims/invariants tested and authoritative oracles aligned with the engineering contract;
 - exact subject/test/generated/model/environment/fixture/seed evidence keys;
 - expected/discovered/executed/pass/fail/required-skip/conditional-skip/optional-skip counts;
 - test intents added, consolidated, superseded, blocked, or remaining as test debt;
-- owning capsules and execution tiers run: preflight, focused fast, owner/contract, integration smoke, deep, or forensic/release;
+- owning capsules and execution tiers run;
 - shared build/setup/device/model/fixture work and mutable-state isolation;
 - failure clusters, first divergences, root-cause hypotheses, coherent repair batches, and changed hypotheses before retries;
 - unchanged evidence reused and every repeated-run reason;
 - provisional reproducers, duplicate tests, fixtures, diagnostics, and logs removed or retained;
 - checks not run, sampling limits, nondeterminism/statistical scope, and remaining test debt.
 
-Do not report raw test count as completeness. Do not claim a repeated run as new evidence without an invalidation or statistical reason. Link `test-batch.template.yaml` records when one exists; do not duplicate them here.
+Do not report raw test count as completeness.
 
 ## Plan execution fidelity
 
-State parent plan/version, focus-branch ID, node, frozen head/environment, readiness evidence, minimal context packet, expected local/wider effects, operations performed, actual effects, falsifiers, variations/deviations, affected boundary/path/lifecycle reconciliation, branch/node outcome, downstream outputs/revisions, partial-state status, and checks not run. Link durable branch/token/test/execution records when they exist.
+State parent plan/version, engineering-decision version, focus-branch ID, node, frozen head/environment, readiness evidence, obligation/decision implemented, selected path, preserved value ordering, expected local/wider effects, operations performed, actual effects, falsifiers, variations/deviations, affected boundary/path/lifecycle reconciliation, branch/node outcome, downstream outputs/revisions, partial-state status, and checks not run. Link durable records when they exist.
 
 ## What changed and why
 
@@ -65,24 +93,24 @@ State parent plan/version, focus-branch ID, node, frozen head/environment, readi
 
 ## Cleanup and disposition
 
-State protected pre-existing/user/shared/authority/evidence/recovery state and account for material task-created, temporary, superseded, generated, diagnostic, local, remote, external, sensitive, and coordination state, including provisional tests and duplicate fixtures.
+State protected pre-existing/user/shared/authority/evidence/recovery state and account for material decision records, temporary/superseded/generated/diagnostic/local/remote/external/sensitive/coordination state, including provisional tests and duplicate fixtures.
 
 ## Sanity / independent-review claim and limits
 
-State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name exact revision/artifact, coverage boundary, critical leaves, actionable findings, invalidated/rerun evidence, focus-branch integration, token/test/cleanup state, checks not run, and final claim limits.
+State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name exact revision/artifact, coverage boundary, critical leaves, actionable findings, invalidated/rerun specification/decision/test evidence, focus-branch integration, token/test/cleanup state, checks not run, and final claim limits.
 
 ## Ready-for-review head and review mode
 
-Record exact head SHA, intended base, review mode, checks not run, unintegrated branches, test debt, token debt/context limits, deferred cleanup, and invalidation conditions. A later head, parent-plan, shared-contract, source/test revision, oracle, artifact, environment, fixture, or material base change invalidates affected evidence.
+Record exact head SHA, intended base, review mode, checks not run, unresolved decision debt, unintegrated branches, test debt, token debt/context limits, deferred cleanup, and invalidation conditions. A later head, parent-plan, specification, engineering decision, value order, shared contract, source/test revision, oracle, artifact, environment, fixture, or material base change invalidates affected evidence.
 
 ## Proposed merge and closure effects
 
-State merge method, issue relationship, semantic focus-branch disposition, local/remote Git branch/worktree effects, stacked/dependent PR effects, required checks/protection/queue, test/token/cleanup debt, and post-merge verification beyond target-tree confirmation.
+State merge method, issue relationship, engineering-decision and semantic focus-branch disposition, local/remote Git branch/worktree effects, stacked/dependent PR effects, required checks/protection/queue, decision/test/token/cleanup debt, and post-merge verification beyond target-tree confirmation.
 
 ## Performance and GPU-memory evidence
 
 ## Compatibility, migration, rollback, recovery, and retained state
 
-## Documentation, parent/focus-branch/token/test/plan/cleanup state, registry, findings, and archived material
+## Documentation, engineering-decision/parent/focus-branch/token/test/plan/cleanup state, registry, findings, and archived material
 
 ## Remaining risks / assumptions / revisit triggers

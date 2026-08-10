@@ -7,7 +7,7 @@ Accepted ADRs are immutable records. A later ADR may supersede an earlier one, b
 ## Current decisions
 
 - [`ADR-0001-prior-art-disposition.md`](ADR-0001-prior-art-disposition.md) — build a new framework; use reviewed projects as bounded references and benchmarks.
-- [`ADR-0002-universal-contracts-specialized-engines.md`](ADR-0002-universal-contracts-specialized-engines.md) — preserve universality in contracts and compile specialized engines.
+- [`ADR-0002-universal-contracts-specialized-engines.md`](ADR-0002-universal-contracts-specialized-engines.md) — preserve universality in contracts and compile finite specialized engines.
 - [`ADR-0003-device-resident-active-search.md`](ADR-0003-device-resident-active-search.md) — keep active production search device-closed after ignition.
 - [`ADR-0004-large-project-organization.md`](ADR-0004-large-project-organization.md) — organize repository and components for mature scale from inception.
 - [`ADR-0005-lego-design-hierarchy.md`](ADR-0005-lego-design-hierarchy.md) — apply domain authority → LEGO → SOLID → CUPID → simplest sufficient total system.
@@ -20,5 +20,6 @@ Accepted ADRs are immutable records. A later ADR may supersede an earlier one, b
 - [`ADR-0012-token-use-and-context-discipline.md`](ADR-0012-token-use-and-context-discipline.md) — optimize verified progress per token, reserve context, route it in layers, and block token debt.
 - [`ADR-0013-consolidated-testing-and-repair-loop-efficiency.md`](ADR-0013-consolidated-testing-and-repair-loop-efficiency.md) — bank test intents, consolidate owning capsules, reuse exact evidence, and repair failure clusters at the owner.
 - [`ADR-0014-extract-cuda-js-runtime.md`](ADR-0014-extract-cuda-js-runtime.md) — extract generic Node/CUDA runtime/toolchain behavior to independent `CUDA-JS`, retain search semantics and the adapter in UMCGS, and use versioned peer artifacts rather than source coupling.
+- [`ADR-0015-engineering-judgment-and-value-ordering.md`](ADR-0015-engineering-judgment-and-value-ordering.md) — map specifications into engineering contracts, eliminate gate-failing paths, order contextual values, compare credible alternatives, and prioritize by consequence, information, and dependency unlock.
 
-Use [`../../agent_files/templates/decision-record.template.md`](../../agent_files/templates/decision-record.template.md). Each ADR states status, context, decision, evidence, consequences, alternatives, and revisit triggers.
+Use [`../../agent_files/templates/decision-record.template.md`](../../agent_files/templates/decision-record.template.md). Use [`../../agent_files/templates/engineering-decision.template.yaml`](../../agent_files/templates/engineering-decision.template.yaml) for proportional durable path/value decisions beneath accepted authority.

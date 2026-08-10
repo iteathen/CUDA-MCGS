@@ -6,6 +6,7 @@
 
 - [`PROJECT_CHARTER.md`](PROJECT_CHARTER.md) — accepted UMCGS search mission and boundary.
 - [`../agent_files/README.md`](../agent_files/README.md) — canonical developer/agent system.
+- [`../agent_files/general_foundation/ENGINEERING_JUDGMENT.md`](../agent_files/general_foundation/ENGINEERING_JUDGMENT.md) — specification alignment, path selection, value ordering, tradeoffs, and priority.
 - [`decisions/README.md`](decisions/README.md) — accepted decisions.
 - [`architecture/README.md`](architecture/README.md) — explanatory architecture and repository topology.
 - [`specs/README.md`](specs/README.md) — normative search contracts, conformance requirements, and proposals.
@@ -29,6 +30,7 @@
 - Optimize verified lifecycle progress per token and prevent token debt. See [`decisions/ADR-0012-token-use-and-context-discipline.md`](decisions/ADR-0012-token-use-and-context-discipline.md).
 - Consolidate test intents into owning capsules and repair failure clusters by root cause. See [`decisions/ADR-0013-consolidated-testing-and-repair-loop-efficiency.md`](decisions/ADR-0013-consolidated-testing-and-repair-loop-efficiency.md).
 - Extract the generic Node/CUDA runtime into independent `CUDA-JS`; retain search semantics and the adapter in UMCGS. See [`decisions/ADR-0014-extract-cuda-js-runtime.md`](decisions/ADR-0014-extract-cuda-js-runtime.md).
+- Translate specifications into engineering contracts, eliminate gate-failing paths, order contextual values, compare credible alternatives, and prioritize work by consequence/dependency/information value. See [`decisions/ADR-0015-engineering-judgment-and-value-ordering.md`](decisions/ADR-0015-engineering-judgment-and-value-ordering.md).
 
 ## Repository split references
 
@@ -37,4 +39,4 @@
 
 ## Authority
 
-Accepted ADRs and specifications govern their scopes. Research notes provide evidence but do not become architecture until accepted through the decision/specification process. Plans, focus-branch packets, token/test records, and cleanup records organize work beneath authority. Archived material is not current authority.
+Accepted ADRs and specifications govern their scopes. Research notes provide evidence but do not become architecture until accepted through the decision/specification process. Engineering-decision records, plans, focus-branch packets, token/test records, and cleanup records organize work beneath authority. Archived material is not current authority.

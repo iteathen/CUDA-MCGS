@@ -1,5 +1,5 @@
 {
-  "schema_version": 6,
+  "schema_version": 7,
   "title": "<task title>",
   "status": "proposal|accepted|active|paused|complete|superseded",
   "plan_version": 1,
@@ -18,12 +18,71 @@
     "evidence_or_falsifier": [],
     "residual_assumptions": []
   },
+  "engineering_judgment": {
+    "engineering_contract": {
+      "required_outcome_and_consumers": [],
+      "operating_envelope": [],
+      "semantics_units_ranges_precision_identity_versions_and_memory_spaces": [],
+      "finite_resources_deadlines_accuracy_quality_and_availability_bounds": [],
+      "lifecycle_failure_pressure_recovery_and_cleanup": [],
+      "compatibility_migration_persistence_and_provenance": [],
+      "non_goals_and_exclusions": [],
+      "completion_evidence": []
+    },
+    "specification_obligations": [
+      {
+        "id": "OBL-001",
+        "source_and_clause": "",
+        "normalized_obligation": "",
+        "normative_strength": "must|must_not|should|may|derived",
+        "decision_role": "hard_gate|mission_target|supporting_quality|process_cost|tie_breaker",
+        "owner": "",
+        "design_or_implementation_mechanism": [],
+        "failure_consequence": [],
+        "evidence_or_test_capsule": [],
+        "status": "satisfied|unsatisfied|experiment_required|accepted_risk|blocked|not_applicable"
+      }
+    ],
+    "specification_ambiguities_conflicts_gaps_stale_or_unimplementable_authority": [],
+    "hard_gates": [],
+    "mission_objectives": [],
+    "supporting_qualities": [],
+    "process_costs_and_tie_breakers": [],
+    "context_specific_value_order": [],
+    "deviations_from_default_and_authority": [],
+    "candidate_paths": [
+      {
+        "id": "PATH-A",
+        "description": "",
+        "classification": "no_change|minimal_repair|proposed|alternative_architecture|experiment|staged_or_fallback",
+        "gate_results": [],
+        "evidence_and_uncertainty": [],
+        "mission_and_supporting_results": [],
+        "reversibility_and_option_value": [],
+        "total_lifecycle_complexity": [],
+        "disposition": "retain|eliminate_gate_failure|eliminate_dominated|experiment_first|select|defer|reject",
+        "disposition_reason": ""
+      }
+    ],
+    "consequence_and_uncertainty_factors": [],
+    "false_tradeoff_separation_options": [],
+    "strongest_adversarial_case": [],
+    "selected_path_and_why_it_wins": [],
+    "why_other_paths_lost": [],
+    "accepted_tradeoffs": [],
+    "priority_class": "P0|P1|P2|P3|P4",
+    "priority_reason": [],
+    "decision_confidence": "high|medium|low",
+    "revisit_triggers": [],
+    "decision_debt_blocking_conditions": [],
+    "durable_engineering_decision_record_required": false
+  },
   "global_contract": {
     "closure_criteria": [],
     "shared_vocabulary_and_semantics": [],
     "global_invariants": [],
     "units_ranges_precision_identity_versions_and_memory_spaces": [],
-    "resource_security_compatibility_cleanup_context_and_testing_constraints": [],
+    "resource_security_compatibility_cleanup_context_testing_and_decision_constraints": [],
     "included_surface": [],
     "excluded_surface_and_reason": []
   },
@@ -66,7 +125,7 @@
     "canonical_branch_map_location": "",
     "integration_spine": [],
     "parallelism_policy": [],
-    "shared_contract_change_and_invalidation_policy": [],
+    "shared_contract_decision_oracle_change_and_invalidation_policy": [],
     "git_github_mapping_policy": [],
     "branches": [
       {
@@ -81,14 +140,14 @@
         "scope": [],
         "non_goals": [],
         "write_surface_and_authority": [],
-        "global_invariants_to_preserve": [],
+        "global_invariants_and_value_order_to_preserve": [],
         "minimal_context_packet": [],
         "dependencies": [],
         "expected_output_and_revision": [],
         "downstream_consumers": [],
         "acceptance_criteria": [],
         "cheapest_decisive_falsifier": "",
-        "testing_and_evidence_obligations": [],
+        "engineering_decision_testing_and_evidence_obligations": [],
         "rollback_recovery_and_cleanup": [],
         "integration_obligations": [],
         "full_attention_and_token_fit": {
@@ -116,12 +175,14 @@
       "status": "planned|ready|active|paused|accepted|rolled_back|failed|superseded|invalidated",
       "owner": "",
       "objective_or_truth_to_establish": "",
+      "obligations_and_engineering_decisions_implemented": [],
       "preconditions": [],
       "dependencies_and_expected_revisions": [],
       "scope": [],
       "non_goals": [],
       "expected_local_effects": [],
       "expected_wider_effects": [],
+      "preserved_value_ordering": [],
       "expected_outputs_and_revisions": [],
       "downstream_nodes_and_focus_branches": [],
       "acceptance_criteria": [],
@@ -129,7 +190,7 @@
       "test_intents_capsules_and_tiers": [],
       "broader_reconciliation_and_validation": [],
       "rollback_recovery_or_safe_stop": "",
-      "context_token_and_test_stop_conditions": [],
+      "context_token_test_and_decision_stop_conditions": [],
       "cleanup": {
         "expected_created_modified_superseded_or_retained_state": [],
         "planned_dispositions": [],
@@ -145,13 +206,15 @@
     }
   ],
   "integration": {
+    "engineering_contract_and_obligation_reconciliation": [],
+    "selected_path_value_order_priority_and_tradeoff_reconciliation": [],
     "branch_status_accounting": [],
     "cross_branch_contradiction_resolution": [],
     "shared_semantics_ownership_and_dependency_reconciliation": [],
     "test_capsule_and_evidence_reconciliation": [],
     "boundary_and_end_to_end_validation": [],
-    "invalidated_evidence_rerun": [],
-    "test_debt_token_debt_and_context_reconstruction_check": [],
+    "invalidated_decision_and_evidence_rerun": [],
+    "decision_test_token_debt_and_context_reconstruction_check": [],
     "final_revision_or_artifact": ""
   },
   "cross_node_validation": [],
@@ -169,6 +232,7 @@
   "expected_pr_review_and_merge": {
     "review_mode": "author_side|independent|owner_exact_head_authorization|not_applicable",
     "required_checks_reviews_and_protection": [],
+    "engineering_judgment_and_spec_traceability_evidence": [],
     "focus_branch_integration_evidence": [],
     "token_context_and_handoff_evidence": [],
     "testing_evidence_case_counts_failure_clusters_and_test_debt": [],
@@ -176,5 +240,5 @@
     "issue_closure_branch_worktree_and_dependent_work_effects": [],
     "post_merge_verification_and_cleanup": []
   },
-  "handoff_target": "<next focus branch, integration boundary, or parent state>"
+  "handoff_target": "<next decision, focus branch, integration boundary, or parent state>"
 }

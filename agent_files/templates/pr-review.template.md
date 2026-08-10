@@ -1,6 +1,6 @@
 # Pull-request review record
 
-Use this only when review evidence must survive beyond the normal GitHub review/comment: independent or high-consequence review, stabilization/release, cross-session continuation, disputed findings, material test/token/cleanup debt, large focus-branch integration, or exact-head owner authorization.
+Use this only when review evidence must survive beyond the normal GitHub review/comment: independent or high-consequence review, stabilization/release, cross-session continuation, contested engineering decisions, disputed findings, material decision/test/token/cleanup debt, large focus-branch integration, or exact-head owner authorization.
 
 ## Review identity
 
@@ -16,11 +16,36 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 ## Authority and intended outcome
 
 - Parent task / plan version:
+- Engineering-decision record/version:
 - Linked issue/task:
-- Governing ADRs/specifications/contracts:
-- Intended integration outcome:
+- Governing owner instruction, ADRs, specifications, contracts, and exact revisions:
+- Intended integration outcome and consumers:
 - Global invariants and closure criteria:
 - Explicit non-goals and closure effect:
+
+## Engineering contract and specification alignment
+
+- Outcome, operating envelope, finite bounds, lifecycle/failure/recovery/cleanup, compatibility, and completion evidence:
+- Material obligation map and derived requirements:
+- Obligation owners, mechanisms, failure consequences, and evidence/test capsules:
+- Ambiguities, conflicts, gaps, stale/unimplementable authority, and oracle mismatches:
+- Specification/decision changes and invalidated branches/artifacts/tests/review evidence:
+- Remaining specification or decision debt:
+
+## Engineering judgment, value ordering, and priority
+
+- Hard gates and exact thresholds/prohibited states:
+- Mission objectives and metrics/ordinal rules:
+- Supporting qualities:
+- Process costs/tie-breakers:
+- Context-specific value ordering and deviations from fallback:
+- Candidate paths and gate results:
+- Pareto-dominated/rejected paths and reasons:
+- Decisive evidence, uncertainty, confidence, reversibility, and option value:
+- False-tradeoff separation alternatives considered:
+- Selected path and why it wins:
+- Accepted tradeoffs, accepting owner, detection/containment, rollback/revisit:
+- Priority `P0 | P1 | P2 | P3 | P4` and dependency/consequence/information/cost-of-delay basis:
 
 ## Focus-branch decomposition and integration
 
@@ -28,91 +53,82 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Integration owner and integration spine:
 - Branch map / exact branch IDs, owners, inputs, outputs, dependencies, and statuses:
 - Full-attention sizing evidence:
-- Shared contracts and generated sources:
-- Parallel branches and non-overlapping write surfaces:
+- Shared contracts, decisions, value order, oracles, and generated sources:
+- Parallel branches and non-overlapping write/test surfaces:
 - Branches accepted / integrated / blocked / invalidated / superseded / deferred / removed from scope:
-- Shared-contract changes and invalidated evidence:
 - Contradictions and dispositions:
 - Boundary/end-to-end integration evidence:
 - Final parent revision/artifact:
 
 ## Token and context discipline review
 
-- Task class and exact token telemetry availability:
+- Task class and telemetry availability:
 - Active context packet and source revisions:
-- Testing/validation/integration/cleanup/review/handoff reserve and rationale:
-- Context layers loaded and intentionally excluded:
-- Targeted retrieval, ranges/diffs/log windows, and batched tool use:
-- Large artifacts kept outside prompt context with exact identities:
-- Green/yellow/red/emergency transitions and actions:
-- Checkpoints and lossless compaction:
-- Repeated reads, retries, reconstruction, or speculative generation:
+- Testing/validation/integration/cleanup/review/handoff reserve:
+- Loaded/excluded context and targeted retrieval/tool use:
+- Large artifacts kept external by exact identity:
+- Context-band transitions, checkpoints, and compaction:
+- Repeated reads/retries/reconstruction:
 - Token debt and parent-acceptance effect:
-- Evidence that enough reserve remained for final testing, review, cleanup, and handoff:
 
 ## Testing and repair-loop review
 
-- Claims/invariants and authoritative oracles:
-- Oracle independence and sensitivity/negative-control evidence:
-- Exact subject/test/generated/model/environment/fixture/seed evidence keys:
-- Test discovery and expected/executed/pass/fail/skip accounting:
-- Coverage map by owner/invariant/risk and claim limits:
-- Test intents captured, owning capsules, and consolidation status:
-- Shared build/setup/device/model/fixture work and mutable-state isolation:
-- Tiers run and escalation triggers:
-- Failure clusters, first divergences, owners, root-cause hypotheses, and repair batches:
-- Changed hypothesis/input/source/environment before every retry:
-- Unchanged evidence reused and repeated-run reasons:
-- Provisional reproducers, duplicate cases/fixtures, diagnostics, logs, and workflow duplication removed or retained:
-- Remaining test debt and parent-acceptance effect:
-- Evidence that capsule consolidation preserved case identity, direct selection, isolation, and per-case reporting:
+- Claims/invariants and engineering-contract-aligned authoritative oracles:
+- Oracle independence/sensitivity:
+- Exact evidence keys:
+- Discovery/execution/pass/fail/skip accounting:
+- Coverage map and claim limits:
+- Test intents, owning capsules, and consolidation:
+- Shared setup and mutable-state isolation:
+- Tiers and escalation triggers:
+- Failure clusters, first divergence, root-cause repair, and changed retry hypotheses:
+- Evidence reused and repeated-run reasons:
+- Provisional/duplicate test state disposition:
+- Remaining test debt:
 
 ## Changed-surface and ancestry accounting
 
 - Changed files/renames/deletions accounted for:
 - Unexpected ancestry or inherited changes:
-- Generated/schema/manifest/dependency/workflow/packaging effects:
+- Generated/schema/manifest/dependency/workflow/packaging/decision/test effects:
 - Binary, unavailable, truncated, or excluded surfaces:
 
 ## Plan/focus-branch execution fidelity
 
-- Active focus branch / node / owner / exact input revision:
-- Branch readiness and minimal context packet:
-- Expected versus actual effects:
-- Operations, falsifiers, variations, deviations, and branch/node outcome:
-- Shared-contract/oracle changes, parent-plan revisions, and dependent invalidations:
+- Branch/node/owner/exact input revision:
+- Readiness and minimal context:
+- Obligation/decision and selected path implemented:
+- Expected versus actual effects and preserved value ordering:
+- Operations, falsifiers, variations, deviations, and outcome:
+- Specification/decision/oracle changes, parent revisions, and dependent invalidations:
 - Downstream outputs/revisions and partial-state status:
 
 ## Semantic and integration review
 
 - Critical semantic units reviewed:
 - Affected callers, dependencies, contracts, and state:
-- Triggered sanity/interrogation modules:
+- Triggered specialist modules:
 - Component/boundary reconciliation:
 - Representative and critical end-to-end paths:
-- Simplest credible counterexamples:
+- Strongest credible counterexamples:
 
 ## Cleanup and disposition review
 
 - Protected pre-existing/user/shared/authority/evidence/recovery state:
-- Material local files/folders and tracked/generated/build/cache/package state:
-- Provisional tests, copied fixtures, logs, instrumentation, and test artifacts:
-- Semantic focus branches and local Git branches/worktrees/stashes/refs/config:
-- Remote branches and active dependents:
-- PR/issue/review/claim/label/milestone/assignment/closure/dependent state:
-- Processes/ports/containers/locks/GPU-device/credential/permission/persistence/external resources:
-- Dispositions and dependency-safe ordering:
-- Destructive safeguards and local/remote verification:
-- Retained authority/evidence/recovery/temporary state with owners and triggers:
-- Cleanup debt and parent-acceptance effect:
+- Decision records, local files, tracked/generated/build/cache/package state:
+- Provisional tests, fixtures, logs, instrumentation, and test artifacts:
+- Semantic/Git branches, worktrees, stashes, refs, and configuration:
+- Remote PR/issue/review/claim/dependent state:
+- Processes/ports/containers/locks/GPU-device/credentials/persistence/external resources:
+- Dispositions, safeguards, verification, retained state, and cleanup debt:
 - Post-merge cleanup required:
 
 ## Evidence
 
-- Focused fast, owner/contract, and integration-smoke results:
-- Deep/forensic/sanitizer/profiler/benchmark/artifact evidence and triggers:
+- Focused, owner/contract, integration-smoke, and triggered deep evidence:
 - Branch-output and cross-branch integration checks:
 - CI/workflows for exact head and duplicate/stale-run accounting:
+- Engineering-decision/specification evidence:
 - Token/context discipline evidence:
 - Cleanup verification evidence:
 - Checks not run and why:
@@ -120,11 +136,12 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 
 ## Findings and discussion
 
-| ID/thread | Class | Invariant and mechanism | Consequence | Disposition | Verified on head |
+| ID/thread | Class | Obligation/invariant and mechanism | Consequence | Disposition | Verified on head |
 |---|---|---|---|---|---|
 
 - Requested changes/review threads reconciled:
-- Invalidated/unintegrated focus branches reconciled:
+- Invalidated/unintegrated decisions and focus branches reconciled:
+- Decision debt reconciled:
 - Test debt reconciled:
 - Token debt reconciled:
 - Cleanup debt reconciled:
@@ -136,19 +153,17 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Required independent approval or owner exception:
 - Proposed merge method and rationale:
 - Required checks/protections/queue:
-- Parent/focus-branch/test closure effect:
+- Engineering-decision/parent/focus-branch/test closure effect:
 - Issue closure effect:
-- Local/remote Git branch, worktree, dependent-PR, artifact, permission, and cleanup effect:
-- Conditions that invalidate this review:
+- Git branch/worktree/dependent/artifact/permission/cleanup effect:
+- Conditions invalidating this review:
 
 ## Post-merge verification and cleanup
 
-- Integrated target SHA:
-- Reviewed-head to integrated-commit mapping:
+- Integrated target SHA and reviewed-head mapping:
 - Target tree/result verified:
-- Parent/focus-branch/test map points to integrated revision:
+- Engineering-decision/parent/focus-branch/test maps point to integrated revision:
 - Target checks/deployment/packaging verified:
-- Issue and local/remote branch/worktree disposition:
-- Dependent work updated:
-- Temporary tests, diagnostics, processes, device state, credentials, permissions, artifacts, and external resources disposition:
-- Retained state / test debt / token debt / cleanup debt / remaining limits:
+- Issue/branch/worktree/dependent state:
+- Temporary decision/test/diagnostic/process/device/credential/artifact/external-resource disposition:
+- Retained state / decision debt / test debt / token debt / cleanup debt / remaining limits:
