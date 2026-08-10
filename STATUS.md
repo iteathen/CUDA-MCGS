@@ -49,4 +49,3 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - CUDA scheduling, JIT/linking, graph layout, memory-pressure, evaluator ABI, and device teardown choices remain open pending specifications and experiments.
 - Candidate prior-art performance claims have not yet been reproduced on UMCGS target hardware.
 - A future stabilization/release or post-release branch model has not been activated; that transition requires an explicit policy decision.
-- The connected GitHub transport may not expose every remote cleanup operation, such as branch deletion; unsupported cleanup must be recorded rather than falsely claimed.
