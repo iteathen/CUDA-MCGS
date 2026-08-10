@@ -17,6 +17,8 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - UMCGS will be built as a new framework while using prior art as references and benchmarks.
 - Repository and component organization assumes mature large-project scale from inception.
 - Adversarial assessment precedes planning for substantial and critical work; one proportional combined record is the default.
+- Large or complex tasks use semantic focus branches with one canonical parent/integration spine, full-attention leaves, explicit input/output revisions, constrained parallelism, invalidation, and central reconciliation.
+- A semantic focus branch is not automatically a Git branch, issue, PR, component, directory, or document.
 - Material plans execute through current dependency-ready nodes with expected-before-actual operations, explicit falsifiers/deviations, and no invalid partial state.
 - Material task-created, temporarily modified, superseded, generated, partial, local, remote, sensitive, external, and coordination state receives explicit disposition and owning-system verification.
 - Protected user/pre-existing work, authority, evidence, recovery state, shared resources, protected branches, and active dependents cannot be destroyed as routine cleanup.
@@ -40,8 +42,13 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - ADR-0008 exact-head PR review and guarded merge: accepted.
 - ADR-0009 governed plan execution: accepted.
 - ADR-0010 cleanup, reconciliation, and artifact disposition: accepted.
+- ADR-0011 focus-branch decomposition and integration: accepted.
 - Framework architecture overview and specification map: proposals.
 - Detailed normative Search IR/domain/policy/evaluator/resource specifications: not yet accepted.
+
+## Current next boundary
+
+The version-0 specification effort is itself a large task. Its next step is to produce and adversarially validate the parent focus-branch map, shared contract envelope, dependency graph, and integration spine before drafting individual specifications.
 
 ## Current risks and unknowns
 
