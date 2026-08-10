@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "execution": {
     "id": "",
     "title": "",
@@ -33,6 +33,7 @@
     "cheapest_decisive_falsifier": "",
     "broader_reconciliation_and_validation": [],
     "rollback_recovery_or_supersession": "",
+    "cleanup_and_disposition_obligations": [],
     "stop_and_escalation_conditions": [],
     "assumptions": [],
     "unknowns": [],
@@ -52,12 +53,14 @@
     "repository_branch_and_worktree_state_known": false,
     "environment_toolchain_profiles_and_generated_inputs_known": false,
     "test_and_runtime_state_trustworthy": false,
+    "protected_preexisting_user_shared_authority_evidence_and_recovery_state_known": false,
+    "expected_cleanup_inventory_and_final_state_known": false,
     "safe_transport_available": false,
     "first_operation_reversible_bounded_or_authorized_irreversible": false,
     "invalid_partial_state_is_contained": false,
-    "falsifying_and_acceptance_checks_available": false,
+    "falsifying_acceptance_and_cleanup_checks_available": false,
     "triggered_checkpoint_rollback_or_recovery_exists": false,
-    "resource_budget_and_saturation_behavior_known": false,
+    "resource_budget_saturation_teardown_and_cleanup_behavior_known": false,
     "evidence": [],
     "blockers": [],
     "ready_to_execute": false
@@ -71,8 +74,30 @@
     "provenance_generated_jit_cache_or_abi": {"triggered": false, "authority": [], "application": ""},
     "performance_memory_synchronization_or_search_quality": {"triggered": false, "authority": [], "application": ""},
     "graph_search_or_evaluator_semantics": {"triggered": false, "authority": [], "application": ""},
+    "cleanup_local_remote_sensitive_external_or_retained_state": {"triggered": false, "authority": [], "application": ""},
     "sanity_independent_review_packaging_or_release": {"triggered": false, "authority": [], "application": ""},
     "unplanned_triggers_discovered_during_execution": []
+  },
+  "cleanup": {
+    "formal_cleanup_record_required": false,
+    "cleanup_record": "",
+    "protected_state": [],
+    "expected_items": [
+      {
+        "id": "CLN-001",
+        "category_and_exact_location": "",
+        "preexisting": false,
+        "owner_and_dependents": [],
+        "purpose_and_expected_lifetime": "",
+        "planned_disposition": "remove|restore|retain_authority|retain_evidence|retain_recovery|archive|quarantine|transfer|supersede|retain_temporary|protect_unchanged",
+        "trigger_method_and_verification": [],
+        "status": "planned|active|verified|blocked"
+      }
+    ],
+    "post_merge_release_or_delayed_cleanup": [],
+    "destructive_safeguards": [],
+    "cleanup_debt_allowed_conditions": [],
+    "expected_final_local_remote_and_external_state": []
   },
   "execution_strategy": {
     "coherent_operation_sequence": [],
@@ -86,6 +111,7 @@
     "instrumentation": [],
     "point_of_no_return": "",
     "rollback_boundary": "",
+    "cleanup_dependency_order": [],
     "partial_completion_hazards": [],
     "parallel_nodes_and_non_overlapping_write_surfaces": []
   },
@@ -99,17 +125,19 @@
       "expected_local_effects": [],
       "expected_wider_effects": [],
       "expected_state_transition": "",
+      "expected_created_modified_obsolete_or_retained_state": [],
       "cheapest_decisive_falsifier": "",
       "rollback_or_safe_stop": "",
       "action": "",
       "actual_local_effects": [],
       "actual_wider_effects": [],
       "changed_files_symbols_schemas_artifacts_or_external_state": [],
+      "new_cleanup_items_or_changed_dispositions": [],
       "differences_from_expected": [],
       "new_warnings_failures_contradictions_or_consumers": [],
       "evidence": [],
       "falsifier_result": "pass|fail|uncertain|not_run",
-      "boundary_path_lifecycle_and_design_reconciliation": [],
+      "boundary_path_lifecycle_design_and_cleanup_reconciliation": [],
       "rollback_still_valid": false,
       "outcome": "continue|accept|pause|revise|rollback|fail|supersede",
       "outcome_reason": ""
@@ -121,9 +149,9 @@
       "discovered_during_operation": "",
       "description": "",
       "classification": "non_material_variation|material_deviation",
-      "changed_objective_owner_authority_scope_contract_risk_acceptance_or_downstream": [],
+      "changed_objective_owner_authority_scope_contract_risk_acceptance_downstream_or_cleanup": [],
       "evidence": [],
-      "affected_nodes_and_outputs": [],
+      "affected_nodes_outputs_and_cleanup_items": [],
       "action": "record_and_continue|pause|revise_plan|change_mode|rollback|fail|supersede",
       "new_plan_version": 0,
       "resolution": ""
@@ -139,6 +167,7 @@
     "concurrency_memory_security_compatibility_checks": [],
     "performance_resource_and_search_quality_checks": [],
     "generated_jit_abi_provenance_and_package_checks": [],
+    "cleanup_disposition_and_remote_verification_checks": [],
     "self_sanity_or_independent_review": [],
     "checks_not_run_and_reason": [],
     "acceptance_supported": false
@@ -150,12 +179,14 @@
     "accepted_outputs_and_revisions": [],
     "partial_state_and_classification": [],
     "rollback_recovery_or_irreversible_state": "",
-    "no_invalid_partial_state_or_competing_authority": false,
+    "verified_cleanup_dispositions": [],
+    "retained_authority_evidence_recovery_or_temporary_state": [],
+    "cleanup_debt_issues": [],
+    "no_invalid_partial_state_competing_authority_or_unowned_residue": false,
     "downstream_nodes_updated": [],
     "newly_ready_nodes": [],
     "blocked_invalidated_failed_or_superseded_nodes": [],
-    "temporary_execution_state_disposition": [],
-    "next_executable_or_analytical_node": ""
+    "next_executable_analytical_or_cleanup_node": ""
   },
   "handoff": {
     "execution_summary": "",
@@ -169,8 +200,9 @@
     "accepted_outputs_and_revisions": [],
     "variations_deviations_reassessments_and_invalidations": [],
     "validation_sanity_and_checks_not_run": [],
+    "cleanup_inventory_dispositions_debt_and_remote_state": [],
     "rollback_recovery_or_irreversible_state": "",
     "blockers_or_owner_decisions": [],
-    "next_executable_or_analytical_node": ""
+    "next_executable_analytical_or_cleanup_node": ""
   }
 }

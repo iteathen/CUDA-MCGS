@@ -1,0 +1,83 @@
+name: Cleanup debt
+description: Track material local, remote, sensitive, external, partial, generated, or coordination state that cannot be cleaned safely inside its parent work.
+title: "[Cleanup]: "
+labels: ["cleanup-debt"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Cleanup debt is permitted only when immediate cleanup would be less safe than temporary retention. The residue must be exact, safe, bounded, owned, visible, protected from accidental use, and independently removable. Do not use this form to hide an incomplete acceptance criterion or unrelated repository residue.
+  - type: textarea
+    id: parent-work
+    attributes:
+      label: Parent work and exact revision
+      description: Link the issue, plan version/node, execution or sanity record, PR/release, cleanup record, and exact source/integrated revision.
+    validations:
+      required: true
+  - type: textarea
+    id: remaining-state
+    attributes:
+      label: Exact remaining state
+      description: Identify every local file/folder, tracked file, branch, worktree, stash, Git operation, PR, issue, review request/thread, workflow artifact/cache, release/package, process, service, port, container, lock, device allocation, credential, permission, backup, database record, generated artifact, remote object, or external resource by exact path or ID.
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: Why cleanup cannot complete safely now
+      description: State the authority, permission, retention, rollback, evidence, dependency, merge/release, remote-system, recovery, or timing constraint.
+    validations:
+      required: true
+  - type: textarea
+    id: ownership
+    attributes:
+      label: Owner, dependents, and protected state
+      description: Name the cleanup owner, active dependents/shared users, pre-existing user state, authority, evidence, provenance, and rollback/recovery state that must remain protected.
+    validations:
+      required: true
+  - type: textarea
+    id: containment
+    attributes:
+      label: Containment and material risk
+      description: Explain isolation, access controls, how the item is prevented from becoming authority or normal input, security/privacy/cost/data-loss implications, and what happens if it remains.
+    validations:
+      required: true
+  - type: textarea
+    id: trigger
+    attributes:
+      label: Removal, restoration, transfer, archive, or expiry trigger
+      description: Give the exact dependency, date, retention expiry, merge, release, downstream acceptance, permission, recovery boundary, or other condition that makes cleanup ready.
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: Cleanup method and verification
+      description: State dependency-safe operations, destructive safeguards, rollback/evidence constraints, required authority, and how local and remote final state will be verified through the owning system.
+    validations:
+      required: true
+  - type: textarea
+    id: parent-acceptance
+    attributes:
+      label: Parent acceptance decision
+      description: State whether the parent work may be accepted with this debt, the authority permitting that decision, and why the residue cannot corrupt behavior, expose data, incur uncontrolled cost, mislead authority, or contaminate later work.
+    validations:
+      required: true
+  - type: textarea
+    id: next-action
+    attributes:
+      label: Next safe action
+      description: Give the continuation-ready next cleanup step, required input/permission, expected output, and verification evidence.
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Cleanup-debt checks
+      options:
+        - label: The remaining state is exact, bounded, contained, and independently identifiable.
+          required: true
+        - label: The item has a named owner and an objective removal/restoration/transfer/expiry trigger.
+          required: true
+        - label: The debt is not being used to hide ordinary incomplete work or an unmet acceptance criterion.
+          required: true

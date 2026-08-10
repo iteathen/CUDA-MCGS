@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "title": "<task title>",
   "status": "proposal|accepted|active|paused|complete|superseded",
   "plan_version": 1,
@@ -21,6 +21,7 @@
   "invariants": [],
   "public_contract_effects": [],
   "dependency_effects": [],
+  "protected_preexisting_user_shared_authority_evidence_and_recovery_state": [],
   "nodes": [
     {
       "id": "N-001",
@@ -39,11 +40,28 @@
       "cheapest_decisive_falsifier": "",
       "broader_reconciliation_and_validation": [],
       "rollback_recovery_or_safe_stop": "",
+      "cleanup": {
+        "expected_created_modified_superseded_or_retained_state": [],
+        "planned_dispositions": [],
+        "cleanup_dependency_order": [],
+        "destructive_safeguards": [],
+        "verification": [],
+        "post_merge_release_or_delayed_cleanup": [],
+        "cleanup_record_required": false,
+        "cleanup_debt_allowed_conditions": []
+      },
       "stop_and_escalation_conditions": [],
       "execution_record_required": false
     }
   ],
   "cross_node_validation": [],
+  "cross_node_cleanup_and_final_state": {
+    "expected_final_local_workspace_and_git_state": [],
+    "expected_final_remote_branch_pr_issue_review_and_artifact_state": [],
+    "expected_final_process_device_credential_and_external_resource_state": [],
+    "retained_authority_evidence_recovery_and_archive_state": [],
+    "cleanup_debt_acceptance_rules": []
+  },
   "migration_or_compatibility": [],
   "manifest_registry_updates": [],
   "risks_and_unknowns": [],
@@ -52,8 +70,8 @@
     "review_mode": "author_side|independent|owner_exact_head_authorization|not_applicable",
     "required_checks_reviews_and_protection": [],
     "merge_method_and_reason": "",
-    "issue_closure_branch_and_dependent_work_effects": [],
-    "post_merge_verification": []
+    "issue_closure_branch_worktree_and_dependent_work_effects": [],
+    "post_merge_verification_and_cleanup": []
   },
   "handoff_target": "<next boundary>"
 }

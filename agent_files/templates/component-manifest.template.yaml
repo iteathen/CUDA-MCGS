@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "component": {
     "id": "<stable.dotted.component-id>",
     "name": "<human-readable name>",
@@ -32,6 +32,16 @@
     "owns": [],
     "persistent_state": [],
     "generated_artifacts": [],
+    "lifecycle_and_cleanup": {
+      "startup_and_acquisition": [],
+      "steady_state_ownership": [],
+      "cancellation_and_failure": [],
+      "teardown_and_resource_release": [],
+      "generated_cache_package_and_diagnostic_disposition": [],
+      "persistence_migration_backup_and_recovery_retention": [],
+      "archive_deprecation_and_supersession": [],
+      "cleanup_verification": []
+    },
     "allowed_dependencies": [],
     "forbidden_dependencies": [],
     "known_consumers": [],
@@ -39,7 +49,8 @@
     "release": {
       "unit": "monorepo|independent",
       "compatibility": "<versioning/compatibility policy>",
-      "distribution": "private|internal|public"
+      "distribution": "private|internal|public",
+      "artifact_retention_and_cleanup": "<retention, archive, revocation, and cleanup policy>"
     },
     "owner": "<owner or unassigned>",
     "notes": []

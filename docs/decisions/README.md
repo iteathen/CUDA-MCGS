@@ -15,5 +15,6 @@ Accepted ADRs are immutable records. A later ADR may supersede an earlier one, b
 - [`ADR-0007-proportional-sanity-checking.md`](ADR-0007-proportional-sanity-checking.md) — freeze the target, account for coverage at risk-justified depth, reconcile integration, and preserve actionable findings.
 - [`ADR-0008-exact-head-pr-review-and-guarded-merge.md`](ADR-0008-exact-head-pr-review-and-guarded-merge.md) — review exact heads, apply phase/risk independence, perform guarded merge, and verify target integration.
 - [`ADR-0009-governed-plan-execution.md`](ADR-0009-governed-plan-execution.md) — execute only ready nodes under current authority; inspect and falsify each coherent operation; revise material deviations.
+- [`ADR-0010-cleanup-reconciliation-and-artifact-disposition.md`](ADR-0010-cleanup-reconciliation-and-artifact-disposition.md) — protect pre-existing state; explicitly disposition and verify local, remote, generated, sensitive, external, partial, and coordination state.
 
 Use [`../../agent_files/templates/decision-record.template.md`](../../agent_files/templates/decision-record.template.md). Each ADR states status, context, decision, evidence, consequences, alternatives, and revisit triggers.
