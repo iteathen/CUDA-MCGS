@@ -1,6 +1,6 @@
 # UMCGS Design Alignment Card
 
-Read this before architecture, specification, component creation, implementation, material design review, cleanup/disposition, or PR integration. It intentionally repeats the rules most likely to prevent agent drift. Read deeper doctrine only when the task triggers it.
+Read this before architecture, specification, component creation, implementation, material design review, large-task decomposition, cleanup/disposition, or PR integration. It intentionally repeats the rules most likely to prevent agent drift. Read deeper doctrine only when the task triggers it.
 
 ## Governing hierarchy
 
@@ -30,6 +30,19 @@ Every substantial component is a movable brick with:
 
 Consumers request changes through contracts. They do not mutate another component’s internals or deep-import private files.
 
+## Focus branches for large or complex tasks
+
+- Keep one canonical parent task and integration spine owning global authority, invariants, vocabulary, dependency state, contradictions, cleanup, and closure.
+- A focus branch is a semantic work packet, not automatically a Git branch, issue, PR, component, directory, or document.
+- Decompose before deep execution when the task exceeds one focused session, spans owners/contracts/paths, contains independent unknowns, crosses agents/sessions, enables parallel work, or would require sampling or skimming.
+- Each leaf has one primary question or output, one primary owner, exact input revisions, minimal context, write permissions, acceptance/falsifier, cleanup, and integration obligations.
+- Size leaves by full attention, not line count, file count, token count, or agent count.
+- Normally give one agent one active branch; checkpoint exact state before switching.
+- Shared-contract changes route through the integration spine and explicitly invalidate dependent branches.
+- Parallel branches require non-overlapping owners/write surfaces, frozen or coordinated shared contracts, acyclic dependencies, independent rollback/cleanup, and one integration owner.
+- `accepted` means locally supported; `integrated` means reconciled into the parent result. Parent completion requires cross-branch and end-to-end proof.
+- Create separate Git branches, issues, PRs, worktrees, or documents only when isolation, review, transport, rollback, owner, deliverable, risk, dependency, or closure is independently meaningful.
+
 ## Universality without vagueness
 
 UMCGS is universal at contracts and compilation boundaries, not through one giant generic runtime object.
@@ -52,7 +65,7 @@ The composition root selects concrete domain, policy, evaluator, CUDA/platform, 
 
 ## Total-system simplicity
 
-Measure complexity across callers, adapters, generation, persistence, migration, failure, recovery, cleanup, operations, diagnostics, tests, and expected second instances. Complexity moved elsewhere is not removed.
+Measure complexity across callers, adapters, generation, persistence, migration, failure, recovery, cleanup, operations, diagnostics, tests, focus-branch coordination, and expected second instances. Complexity moved elsewhere is not removed.
 
 Represent essential domain complexity directly. Remove accidental complexity. Reject ceremony that protects no invariant, boundary, responsibility, or operating property.
 
@@ -71,14 +84,15 @@ Represent essential domain complexity directly. Remove accidental complexity. Re
 ## Review and merge
 
 - Review the actual complete PR diff and affected integration at one exact head; the PR description and CI are evidence, not proof.
+- Account for the parent task, focus-branch map, exact branch outputs, invalidated/deferred branches, and integration evidence when the PR represents a large task.
 - Every material PR receives complete author-side review. Independent review is required by phase, policy, owner instruction, or objective consequence.
 - Label author-side review honestly; it is not independent approval.
-- A head change invalidates affected review and cleanup evidence. A material base change invalidates affected integration evidence.
+- A head change invalidates affected review and cleanup evidence. A material base or shared-contract change invalidates affected integration/focus-branch evidence.
 - Blocking findings, questions, unsafe cleanup residue, required checks/reviews/protection, and review threads must be resolved before merge.
 - Merge is a separate guarded transaction: recheck current head, target, mergeability, checks, protection, closure, local/remote branch/worktree/dependency effects, cleanup debt, and conflicting work.
 - Use an expected-head guard where supported. Never force-update the target or bypass protections.
 - Squash is the private pre-release default for one coherent result; use another method only for a real history need.
-- Verify the resulting target SHA/tree, issue/branch/worktree/dependent-work effects, and post-merge cleanup before claiming completion.
+- Verify the resulting target SHA/tree, issue/branch/worktree/dependent-work effects, focus-branch integration state, and post-merge cleanup before claiming completion.
 
 ## UMCGS non-negotiables
 
@@ -87,14 +101,15 @@ Represent essential domain complexity directly. Remove accidental complexity. Re
 - Universal contracts do not embed chess, games, one evaluator shape, one action shape, one graph model, or one GPU.
 - Generated hot paths may be highly specialized and may eliminate unused abstractions.
 - No optimization is accepted without mechanism evidence and semantic/search-quality guardrails.
+- Focus branches may not independently drift Search IR, domain/graph/policy/evaluator/resource meaning, JIT/ABI/cache identity, device closure, or search-quality semantics.
 - Device contexts, allocations, modules, IPC/shared memory, queues, diagnostics, and host resources are released or deliberately retained and verified.
 
 ## Design and integration stop conditions
 
-Stop and resolve the boundary before implementation or cleanup when ownership is ambiguous, dependencies cycle, a public contract leaks platform/private types, state has multiple writers, a name implies unsupported generality, the expected second instance forces redesign, resource exhaustion/teardown is undefined, protected state may be destroyed, cleanup cannot be verified, or alleged simplicity merely exports the problem.
+Stop and resolve the boundary before implementation or cleanup when ownership is ambiguous, a large task lacks a full-attention branch map, focus branches overlap write authority, shared contracts can drift independently, dependencies cycle, a public contract leaks platform/private types, state has multiple writers, a name implies unsupported generality, the expected second instance forces redesign, resource exhaustion/teardown is undefined, protected state may be destroyed, cleanup cannot be verified, or alleged simplicity merely exports the problem.
 
-Stop PR integration when the reviewed head is stale, the changed surface is unaccounted, a blocker or unsafe cleanup item remains, required evidence/gates are missing, or the target result and post-merge state cannot be verified.
+Stop PR integration when the reviewed head is stale, the changed surface or focus-branch outputs are unaccounted, a blocker or unsafe cleanup item remains, required evidence/gates are missing, or the target result and post-merge state cannot be verified.
 
 ## Deeper doctrine
 
-Start with [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md), then load only the detailed documents relevant to the task, including [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md) for lifecycle/disposition and [`general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) for PR integration.
+Start with [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md), then load only the detailed documents relevant to the task, including [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) for large-task decomposition, [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md) for lifecycle/disposition, and [`general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) for PR integration.
