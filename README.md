@@ -35,7 +35,7 @@ No production implementation should be inferred from the current repository.
 - Backpressure limits duplication, repeated evidence, fragmented work, cold context, optional breadth, and work in flight before it reduces scope—and reduces scope before it threatens rigor.
 - Every task retains a risk-appropriate minimum practice floor: authority/current-state inspection, coherent scope, decisive verification, actual-effect inspection, relevant testing, cleanup, and honest limits.
 - Agents read the smallest **authority-complete** document set: mandatory kernel and path instructions, direct governing authority, required normative references, triggered specialist doctrine, and material producer/consumer/lifecycle/test adjacency.
-- Accepted documents apply only within scope; proposals, research, architecture, examples, tests, plans, and summaries remain beneath accepted authority.
+- Accepted documents apply only within scope; proposals, research, architecture, examples, implementation, tests, plans, and summaries remain beneath accepted authority.
 - Routine work uses an implicit micro-budget and no document ledger; substantial/critical work preserves exact applicability, revision, invalidation, and final authority refresh where another consumer needs it.
 - Soft token estimates trigger replanning rather than automatic stopping or reduced rigor; reduced evidence narrows the claim.
 - Consolidated testing banks intents, shares expensive setup, preserves case identity, reuses exact evidence, and repairs root-cause clusters.
@@ -59,6 +59,8 @@ No production implementation should be inferred from the current repository.
 - [`agent_files/general_foundation/FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md)
 - [`agent_files/general_foundation/TESTING.md`](agent_files/general_foundation/TESTING.md)
 - [`docs/PROJECT_CHARTER.md`](docs/PROJECT_CHARTER.md)
+- [`docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md`](docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md)
+- [`docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md`](docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md)
 - [`docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md`](docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md)
 - [`docs/architecture/REPOSITORY_TOPOLOGY.md`](docs/architecture/REPOSITORY_TOPOLOGY.md)
 - [`STATUS.md`](STATUS.md)

@@ -16,9 +16,16 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - Active search remains device-closed after ignition. Concrete engines are finite and resource-planned; contracts are universal and generated hot paths are specialized.
 - Engineering decisions begin with an explicit contract and material specification-obligation map.
 - Hard gates are evaluated before mission objectives, supporting qualities, and process costs. Weighted scoring cannot make an invalid path valid.
+- The contextual fallback orders authority/legality/ethics, unacceptable irreversible harm, semantic correctness and hard mission bounds, mission-sustaining reliability/compatibility/operability, mission quality/performance, supporting qualities, then delivery/process convenience.
+- A subsystem may promote speed, accuracy, availability, or another concern into a higher gate only through explicit purpose, threshold, consequence, owner, evidence, and revisit trigger.
+- Credible no-change, minimal, proposed, materially different, experiment/staged, and fallback paths are compared where material; invalid and Pareto-dominated paths are removed for stated reasons.
 - Work is prioritized as P0 containment, P1 gate/foundation, P2 information/risk/dependency unlock, P3 mission value/measured efficiency, and P4 supporting quality/polish.
-- Token use is continuous backpressure on every task, including routine work, and cannot waive the risk-appropriate practice floor.
-- Agents read the smallest authority-complete set rather than every document or only the files named in the request.
+- Token use is continuous backpressure on every task, including routine work.
+- Backpressure reduces duplicate context/evidence, fragmented work, optional breadth/polish, and scope before it threatens required rigor.
+- Every task preserves a risk-appropriate minimum practice floor: request/authority, current-state inspection, coherent scope, expected result, decisive verification, actual-effect inspection, relevant testing, cleanup, and honest limits.
+- Routine work uses an implicit micro-budget with no mandatory ledger. Substantial/critical work preserves explicit reserves and split/handoff triggers.
+- Soft token estimates are replan signals rather than authority to skip practices. Essential evidence, safety, correctness, cleanup, or handoff may justify an explicit extension followed by narrowing or split to restore reserve.
+- Agents read the smallest authority-complete document set rather than every document or only the files named in the request.
 - Every target path’s instruction chain, direct governing authority, required normative references, triggered specialist doctrine, and material producer/consumer/lifecycle/test/cleanup adjacency are discovered before material mutation.
 - Documents are classified by applicability and read at proportional depth; governing and materially triggered documents are read to semantic closure.
 - Accepted status does not imply universal applicability. Proposals, research, architecture, examples, implementation, tests, plans, and summaries remain in their proper authority roles.
@@ -33,7 +40,9 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 ## Current authority
 
 - Project charter: accepted and narrowed to UMCGS search ownership.
-- ADR-0001 through ADR-0016: accepted.
+- ADR-0001 through ADR-0014: accepted.
+- ADR-0015 engineering judgment, specification alignment, and value ordering: accepted.
+- ADR-0016 universal token backpressure and minimum practice floor: accepted.
 - ADR-0017 selective specification and agent-file reading: accepted.
 - Repository topology: accepted through ADR-0014 and documented in `docs/architecture/REPOSITORY_TOPOLOGY.md`.
 - Framework architecture overview and detailed version-zero contracts: proposals.
@@ -49,7 +58,7 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 
 ## Current next boundary
 
-Define and adversarially validate the version-zero UMCGS-to-CUDA-JS execution-package contract using the accepted engineering contract, obligation map, hard gates, contextual value ordering, P1 priority, universal token practice floor, and a durable cross-repository authority-reading map; revise the SPEC-V0 focus-branch/test/document map accordingly; publish the prepared CUDA-JS bootstrap when the private remote exists.
+Define and adversarially validate the version-zero UMCGS-to-CUDA-JS execution-package contract using the accepted engineering contract, obligation map, hard gates, contextual value ordering, candidate-path comparison, P1 priority, conformance ownership, error/lifetime rules, universal token-backpressure practice floor, and a durable cross-repository authority-reading map; revise the SPEC-V0 focus-branch/test/document map accordingly; publish the prepared CUDA-JS bootstrap when the private remote exists.
 
 ## Current risks and unknowns
 

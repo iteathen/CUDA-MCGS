@@ -89,7 +89,7 @@
       "A new target path, repository, owner, persistence form, generated artifact, native capability, test oracle, package/release effect, or lifecycle boundary.",
       "A governing ADR/specification/agent rule changes or review identifies an omitted consumer."
     ],
-    "pre_mutation_authority_closure_complete": false,
+    "pre_mutation_authority_closure_complete": true,
     "pre_claim_refresh_required": true,
     "document_reading_debt": [
       "CUDA-JS root/path instruction chain and accepted public runtime contract remain unavailable until the private remote is created and the bootstrap/public contract is published; this blocks final cross-repository acceptance but not bounded UMCGS proposal drafting."
@@ -307,7 +307,7 @@
   },
   "preconditions": [
     "ADR-0014/0015/0016/0017 and narrowed charter/registry/topology are integrated into main.",
-    "UMCGS pre-mutation authority closure is complete for proposal drafting.",
+    "UMCGS pre-mutation authority closure is complete for bounded proposal drafting.",
     "No generic CUDA-JS production implementation is added to UMCGS.",
     "The prepared CUDA-JS bootstrap remains available until published or superseded."
   ],
@@ -399,6 +399,7 @@
     "Let a mock define native CUDA or UMCGS semantic truth.",
     "Use speed, convenience, simplicity, or token conservation to override a hard gate or minimum practice floor.",
     "Preserve a broad claim by reducing required authority or evidence; narrow the claim instead.",
+    "Spend the proof/integration/cleanup/review/handoff reserve on optional implementation or polish.",
     "Begin production implementation before both sides' authority closure, engineering contracts, and specifications are accepted."
   ],
   "completion_evidence": [],
