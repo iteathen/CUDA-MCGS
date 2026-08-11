@@ -23,7 +23,7 @@ Owns the universal graph-search product:
 Owns the generic Node/CUDA runtime:
 
 - Driver API symbol/version discovery;
-- JIT and optional native binding backends;
+- schema-compiled host-call backends and exact host-call/JIT capability evidence;
 - opaque contexts, modules, functions, memory, streams, events, and compilations;
 - memory-kind capability contracts;
 - NVRTC/link/load/launch primitives;
@@ -59,6 +59,8 @@ CUDA Driver / GPU
 
 The execution package contains search-specific device code. CUDA-JS treats it as an opaque validated program and never interprets Search IR.
 
+UMCGS expresses requirements through public capability and evidence profiles. It does not encode CUDA-JS-private mechanisms such as Node FFI, Workers, runtime actors, dynamic-library paths, or internal resource representations.
+
 ## Dependency rules
 
 - UMCGS may depend only on CUDA-JS public packages, schemas, and artifact manifests.
@@ -70,7 +72,7 @@ The execution package contains search-specific device code. CUDA-JS treats it as
 
 ## Release and test ownership
 
-CUDA-JS releases generic runtime packages and publishes native/JIT compatibility evidence. UMCGS releases search framework packages and generated execution-package specifications.
+CUDA-JS releases generic runtime packages and publishes backend-neutral capability, host-call/JIT, ABI, lifecycle, and platform compatibility evidence. UMCGS releases search framework packages and generated execution-package specifications.
 
 Testing is divided as follows:
 
@@ -84,4 +86,9 @@ The UMCGS-to-CUDA-JS adapter remains in UMCGS because it consumes UMCGS contract
 
 ## Repository creation state
 
-The `CUDA-JS` repository bootstrap has been prepared locally, committed, verified, bundled, and checksummed. Account-level remote repository creation remains the only publication blocker.
+The CUDA-JS foundation has been researched, adversarially assessed, reconciled, committed locally, validated, bundled, zipped, and checksummed at `77090a981fabb547d9e1a98d76213f2048e81ef2`.
+
+Its selected private implementation is currently Node-FFI-first with a GPU-free `EXP-000` qualification gate. That implementation choice is CUDA-JS authority and remains non-normative for UMCGS. UMCGS depends only on the future public package, capability manifest, and exact compatible-pair evidence.
+
+Account-level remote repository creation remains the publication blocker. Native capability and performance claims remain blocked on the CUDA-JS experiment sequence.
+
