@@ -1,236 +1,255 @@
 {
   "schema_version": 11,
-  "updated": "2026-08-10",
+  "updated": "2026-08-11",
   "status": "ready",
   "parent_task_id": "SPEC-V0",
-  "parent_plan_version": 9,
-  "integration_owner": "docs/specs: UMCGS search-contract and peer-runtime integration spine",
-  "objective": "Define a versioned, backend-neutral package and compatibility contract that lets UMCGS execute a specialized device-closed search program through generic CUDA-JS without leaking search semantics into CUDA-JS or CUDA-JS private mechanisms into UMCGS.",
-  "ownership_boundary": "UMCGS owns search semantics, lowering, device closure, and the adapter; CUDA-JS owns generic Node/CUDA runtime capabilities and private implementation.",
+  "parent_plan_version": 10,
+  "integration_owner": "docs/specs: CUDA-MCGS framework-definition and CUDA-JS integration spine",
+  "north_star": "CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with schema-backed extension support.",
+  "objective": "Define the version-zero CUDA-MCGS contracts, Search IR, schema-backed Extension Surface, finite specialization/composition model, and CUDA-JS execution-package boundary so arbitrary MCGS domains and future search-time optimizations can be incorporated without permanent unused hot-path cost or host participation after ignition.",
+  "ownership_boundary": "CUDA-MCGS/UMCGS owns search semantics, Search IR, Search Composer, extension semantics/binding, finite search-resource planning, graph/transposition/scheduler policy, generated search device behavior, and search conformance. CUDA-JS owns generic Node/CUDA Driver capabilities, opaque resources, NVRTC/nvJitLink, generic artifact cache/load/launch/completion/error/teardown, and runtime conformance.",
+  "plan_revision_reason": "The previous plan was centered on a not-yet-published CUDA-JS foundation. CUDA-JS is now public and has accepted bounded F1-F9 evidence, including a public compiler/linker path and trusted CCCL header profile. New CUDA extension-composition research also provides proven mechanisms that materially reshape the CUDA-MCGS extension plan. This revision folds those facts into the existing canonical plan rather than creating a competing plan.",
   "focus_branch": {
-    "id": "SPEC-V0-CUDAJS",
-    "title": "Define the UMCGS-to-CUDA-JS execution-package boundary",
-    "type": "contract",
+    "id": "SPEC-V0-EXTSURFACE",
+    "title": "Define and falsify the CUDA-MCGS schema-backed extension composition contract",
+    "type": "contract_research_experiment",
     "status": "ready",
-    "owner": "UMCGS interop-contract owner",
-    "objective": "Define a versioned, backend-neutral package and compatibility contract that lets UMCGS execute a specialized device-closed search program through generic CUDA-JS without leaking search semantics into CUDA-JS or CUDA-JS private mechanisms into UMCGS.",
+    "owner": "CUDA-MCGS search-contract and composition owner",
+    "integration_owner": "docs/specs: CUDA-MCGS framework-definition and CUDA-JS integration spine",
+    "objective": "Turn the Extension Surface/Point/Contract/Context Schema/Fragment/Search Composer model into accepted, implementable specifications and prove the first zero-generic-dispatch realization through an exact CUDA-JS compatible pair.",
     "exact_input_revisions": {
-      "umcgs": "48f7b5f5fe125c16d966eaaa4968700900cd12fb",
-      "cuda_js_local_foundation": "77090a981fabb547d9e1a98d76213f2048e81ef2"
+      "umcgs_main_at_plan_revision_start": "e549c916c7101470b6432e1c63863b3ec7ad90b1",
+      "cuda_js": "ad49a6c9b0cddb420e26e097180cf9c502060a65",
+      "nvidia_cuvs_reference": "abfb8b91c9f9bda1e568265b1d01b36250f43a8d",
+      "nvidia_cucollections_reference": "1a1e640179e85139765a27d2d376e02628b2ccbc",
+      "nvidia_cccl_reference": "a0c21d1ec5e8602dc85f9ab289006bf1a72e2f96"
     },
     "scope": [
-      "UMCGS proposal specifications and compatibility manifests",
-      "public capability, evidence-profile, lifecycle, error, teardown, and artifact-pair semantics",
-      "cross-repository conformance ownership",
-      "documentation and planning only"
+      "Search Extension Surface semantics and machine-readable contracts/schemas",
+      "Extension Fragment manifest and compatibility rules",
+      "Search Composer ownership, lowering, resource planning, fragment composition, and artifact identity",
+      "CUDA-MCGS-to-CUDA-JS execution-package inputs needed for composition",
+      "zero-abstraction-cost acceptance definition and experiments",
+      "device-owned scheduling experiment plan without prematurely choosing one topology",
+      "third-party methodology/source/dependency disposition",
+      "documentation, specifications, schemas, reference/conformance preparation, and bounded experiments"
     ],
     "non_goals": [
-      "production UMCGS or CUDA-JS implementation",
-      "EXP-000 or any native/GPU experiment",
-      "CUDA-JS private backend, Worker, actor, library-path, or resource-layout design",
-      "third adapter repository"
+      "one universal runtime callback table",
+      "runtime registry scanning, reflection, service location, or host extension resolution during active search",
+      "production game/domain adapter before the framework contracts and experiments pass",
+      "making cuVS, cuFFT, cuCollections, RAPIDS, or another higher-level search/framework runtime a baseline active-search dependency",
+      "renaming the GitHub repository or rewriting accepted UMCGS ADR identifiers in this plan revision",
+      "selecting one persistent-kernel or CUDA-Graph topology before SCHED-001 evidence"
     ]
   },
   "authority": [
     "AGENTS.md",
     "docs/PROJECT_CHARTER.md",
+    "docs/decisions/ADR-0001-prior-art-disposition.md",
     "docs/decisions/ADR-0002-universal-contracts-specialized-engines.md",
     "docs/decisions/ADR-0003-device-resident-active-search.md",
+    "docs/decisions/ADR-0005-lego-design-hierarchy.md",
+    "docs/decisions/ADR-0006-adversarial-assessment-and-planning.md",
+    "docs/decisions/ADR-0009-governed-plan-execution.md",
     "docs/decisions/ADR-0011-focus-branch-decomposition-and-integration.md",
-    "docs/decisions/ADR-0012-token-use-and-context-discipline.md",
-    "docs/decisions/ADR-0013-consolidated-testing-and-repair-loop-efficiency.md",
     "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
     "docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md",
     "docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md",
     "docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md",
-    "docs/architecture/REPOSITORY_TOPOLOGY.md",
-    "docs/research/2026-08-10-cuda-js-assumption-audit.md",
-    "docs/research/2026-08-10-cuda-js-foundation-result.md",
-    "agent_files/SYSTEM_REGISTRY.md",
-    "docs/specs/SPEC-0000-framework-requirements.md (proposal input)"
+    "agent_files/general_foundation/CONTRACT_STANDARD.md",
+    "agent_files/general_foundation/COMPOSITION_AND_DEPENDENCIES.md",
+    "agent_files/application_specific/RESEARCH_POLICY.md",
+    "docs/architecture/FRAMEWORK_OVERVIEW.md (proposal input)",
+    "docs/specs/SPEC-0000-framework-requirements.md (proposal input)",
+    "docs/research/prior-art/2026-08-10-landscape.md (research evidence)"
   ],
-  "foundation_evidence": {
-    "cuda_js_local_commit": "77090a981fabb547d9e1a98d76213f2048e81ef2",
-    "decision_commit": "383d9f3662a4def90ab99a3fb3039f27e0628024",
-    "experiment_plan_commit": "2f018a01eaade9a678a16892b1dbd2d1b639e5ba",
-    "artifacts": {
-      "bundle": {
-        "name": "CJS-FND-77090a9.bundle",
-        "sha256": "39dc57ea37fac71522b99090945b232173f65676f3421f4e6ea4baa84ca41ad3"
-      },
-      "tracked_tree_zip": {
-        "name": "CJS-FND-77090a9.zip",
-        "sha256": "419cd4453cccd489da6475836f911fc3d8f39ca2a3286b10f63df9db12913408"
-      },
-      "handoff": {
-        "name": "CJS-FND-77090a9-HO.md",
-        "sha256": "43c68aebe508d227ca8d35422d56d0f4f407423d29151ae6e9476cb40266192b"
-      }
-    },
-    "verified": [
-      "exact local Git commit and clean tree",
-      "documentation required-file, active-authority, link, structured-data, dependency-DAG, diff, secret-pattern, and production-source-boundary checks",
-      "no C, C++, JavaScript, TypeScript, Rust, native addon, or runtime implementation source in the foundation tree"
+  "current_peer_evidence": {
+    "cuda_js_revision": "ad49a6c9b0cddb420e26e097180cf9c502060a65",
+    "public_state": "Public pre-release CUDA-JS repository and 0.1.0-alpha.2 testing package exist; old plan claims that the remote does not exist are superseded.",
+    "accepted_bounded_evidence": [
+      "CJS-F1A/EXP-000 and F1B schema/ABI foundations",
+      "Windows F2W through F8W bounded native/runtime/package evidence",
+      "F6 NVRTC/nvJitLink CompilerActor and content-addressed device-artifact cache",
+      "F9 typed cuda-cccl trusted-header profile and device-scope release/acquire publication fixture through the public facade"
     ],
-    "publication_state": "private iteathen/CUDA-JS remote does not yet exist",
-    "claim_limits": [
-      "No Node FFI, CUDA ABI, context, memory, launch, completion, deferred-error, NVRTC, strict-JIT, or performance experiment has run.",
-      "The local CUDA-JS architecture is evidence for UMCGS public requirements, not UMCGS authority over CUDA-JS private internals."
+    "f9_limit": "F9 proves a generic compiler/runtime prerequisite only. It does not prove CUDA-MCGS search semantics, extension composition, scheduler performance, transposition behavior, or the cross-repository compatible pair.",
+    "platform_limit": "Current qualified native evidence is Windows x64 on the recorded exact profile; native Linux CUDA execution remains separately incomplete."
+  },
+  "design_synthesis": {
+    "extension_model": [
+      "A selected search exposes an Extension Surface containing zero or more semantic Extension Points.",
+      "Each point has an Extension Contract plus point-specific Context Schema; the contract owns meaning/permissions/invariants/order/resources/failure, while the schema owns machine-verifiable representation.",
+      "An Extension Fragment declares its target point/version, required context/capabilities, permissions, resources, concurrency requirements, architecture/toolchain needs, and provenance/cache identity.",
+      "The Search Composer validates and binds fragments before ignition, generates only the required context/glue/layouts, and emits the specialized execution package.",
+      "A bound fragment may change activation state on-device during search; new binding/loading/host resolution during active search is non-conforming.",
+      "Mandatory domain/policy/evaluator/execution semantics remain explicit contracts and are not reduced to arbitrary optional hooks."
+    ],
+    "performance_contract": [
+      "Unbound extension points shall impose zero abstraction overhead in the realized search image.",
+      "Bound extensions shall impose no generic dispatch overhead beyond their intrinsic work and resource cost.",
+      "Production evidence must inspect emitted code and representative performance/resources; source-level conditional compilation or an LTO flag is not proof.",
+      "The semantic extension contract remains independent of one composition technique; device LTO is the preferred first experiment because CUDA-JS already owns NVRTC/nvJitLink and prior art demonstrates the pattern."
+    ],
+    "device_closure": [
+      "All data/code/state required for active search is resident or preloaded before ignition.",
+      "The host may configure, validate, compose, compile/link, allocate, upload, launch, request cancellation one-way, and consume completion.",
+      "The host may not supply intermediate decisions, resolve extensions, or coordinate required search phases after ignition.",
+      "GPU residency is a semantic execution contract, not a commitment to a single persistent kernel."
+    ],
+    "ownership_and_reuse": [
+      "CUDA-MCGS owns Search IR, Search Composer, extension contracts/schemas, graph/transposition/memory/scheduler policy, and search conformance.",
+      "CUDA-JS owns generic runtime/compiler/linker/resource mechanics.",
+      "Reuse order is methodology first, independent implementation second, selective permissive source adaptation third, vendoring fourth, higher-level runtime dependency last.",
+      "Copied/adapted third-party implementation requires exact revision, license, provenance, explicit reuse decision, owning component, update process, and disposition under third_party/README.md."
     ]
   },
-  "public_interop_constraints": [
-    "Dependency direction is one-way: UMCGS consumes versioned CUDA-JS public artifacts; CUDA-JS never imports UMCGS source, schemas, fixtures, or terminology.",
-    "UMCGS active search remains device-owned after ignition and cannot require a host-produced intermediate search decision.",
-    "Every concrete UMCGS engine remains finite and resource-planned.",
-    "The UMCGS package names public CUDA-JS capability and evidence profiles, not Node FFI, Workers, actors, child processes, dynamic-library paths, or private resource layouts.",
-    "Persistent UMCGS schemas contain opaque resource requirements and stable IDs, never raw native handles or pointers.",
-    "Strict-JIT is an exact-profile evidence capability; it cannot be inferred from a private implementation choice, signature shape, or timing result.",
-    "The contract distinguishes graceful close from dead runtime epoch, restart-required state, orphan reporting, and context-health failure.",
-    "Compiler/linker providers expose public isolation and process-side-effect capabilities without requiring UMCGS to know their private mechanism.",
-    "Package/cache identity covers every material UMCGS source schema, generator/compiler, runtime contract, platform, Driver/toolkit, GPU architecture, build option, model/adapter input, provider profile, and resource profile.",
-    "CUDA-JS owns generic runtime conformance; UMCGS owns search semantics and generated-package correctness; one exact compatible-pair capsule covers the public boundary."
-  ],
-  "assessment": {
-    "selected_public_path": "Versioned UMCGS execution package plus UMCGS-owned CUDA-JS adapter over backend-neutral public CUDA-JS capabilities.",
-    "cuda_js_private_foundation_evidence": "Node-FFI-first, schema-compiled, capability-safe, actor-owned runtime with GPU-free EXP-000 first; this remains CUDA-JS private planning until published and experimentally qualified.",
-    "rejected_or_deferred": [
-      "private-source coupling or Git submodule: rejected",
-      "third adapter repository: deferred until an independent lifecycle exists",
-      "implementation before contracts and experiments: rejected",
-      "mandatory managed-memory zero-copy arena: rejected",
-      "host micro-batch relaunch as required search progress: rejected",
-      "mock as native CUDA or UMCGS semantic oracle: rejected",
-      "custom JIT first: archived; reconsider only if EXP-011 proves a mandatory public gap"
-    ],
-    "priority": "P1 foundational gate",
-    "confidence": "high for repository/public ownership; experimental for CUDA-JS native capability and performance claims"
-  },
-  "document_reading": {
-    "umcgs_authority_closure": "complete for bounded documentation and proposal drafting",
-    "cuda_js_authority_state": "exact local foundation inspected; remote/public accepted contract absent",
-    "material_exclusions": [
-      "complete CUDA manuals and donor repositories until an exact empirical question requires them",
-      "game-specific search rules",
-      "production implementation",
-      "release automation beyond recording the publication blocker"
-    ],
-    "invalidation_triggers": [
-      "CUDA-JS remote publication or public-contract revision",
-      "UMCGS Search IR, domain, policy, evaluator, or resource specification acceptance/revision",
-      "new repository, owner, public contract, persistence form, native capability, test oracle, package/release effect, or lifecycle boundary",
-      "review identifies an omitted consumer or conflicting authority"
-    ],
-    "pre_claim_refresh_required": true
-  },
-  "token_and_context": {
-    "task_class": "large_complex",
-    "posture": "explicit",
-    "current_band": "green",
-    "validation_integration_cleanup_review_handoff_reserve_percent": 40,
-    "smallest_coherent_scope": "One UMCGS-to-CUDA-JS v0 public contract and exact compatible-pair test plan; no production implementation.",
-    "optional_work_deferred_first": [
-      "production code",
-      "exhaustive CUDA feature research",
-      "performance tuning",
-      "release automation",
-      "additional repository splits",
-      "cosmetic documentation"
-    ],
-    "claim_reduction_rule": "Unavailable peer authority or reduced evidence produces a bounded proposal claim, never a final runtime-compatibility or release claim."
-  },
-  "experiment_gates": [
+  "prior_art_disposition": [
     {
-      "id": "PUB-000",
-      "status": "blocked",
-      "purpose": "Create private iteathen/CUDA-JS and publish exact commit 77090a981fabb547d9e1a98d76213f2048e81ef2."
+      "source": "NVIDIA cuVS JIT-LTO",
+      "revision": "abfb8b91c9f9bda1e568265b1d01b36250f43a8d",
+      "use": "Planner/fragment/LTO/cache methodology reference.",
+      "baseline_dependency": false
     },
     {
-      "id": "EXP-000",
-      "status": "not_run",
-      "purpose": "GPU-free synthetic Node FFI ABI, lifetime, Worker isolation, cleanup, and arbitrary-returned-function-pointer qualification on official Node.js 26.7.0."
+      "source": "cuFFT LTO callbacks",
+      "use": "Typed pre-plan Extension Point methodology reference.",
+      "baseline_dependency": false
     },
     {
-      "id": "EXP-001",
-      "status": "not_run",
-      "purpose": "Real CUDA library loading and Tier-0 named-symbol smoke."
+      "source": "nvJitLink/NVRTC",
+      "use": "CUDA platform linking/compilation substrate exposed through CUDA-JS.",
+      "baseline_dependency": true,
+      "owner": "CUDA-JS generic runtime boundary"
     },
     {
-      "id": "EXP-002",
-      "status": "not_run",
-      "purpose": "Requested-version/export/stream-semantics reconciliation around cuGetProcAddress."
+      "source": "CUDA Graphs device launch/conditional execution",
+      "use": "Candidate SCHED-001 device-owned scheduling realization.",
+      "baseline_dependency": false
     },
     {
-      "id": "EXP-003",
-      "status": "not_run",
-      "purpose": "Pinned CUDA-header importer and independent native layout-oracle parity."
+      "source": "NVIDIA cuCollections",
+      "revision": "1a1e640179e85139765a27d2d376e02628b2ccbc",
+      "use": "TT-001 benchmark/reference and possible source donor.",
+      "baseline_dependency": false
     },
     {
-      "id": "EXP-004_PLUS",
-      "status": "deferred",
-      "purpose": "Host-call evidence, context, completion, errors, memory, compiler/cache, isolation, platform, and optional custom-JIT qualification after the foundation gates pass."
+      "source": "CCCL/libcu++/CUB",
+      "revision": "a0c21d1ec5e8602dc85f9ab289006bf1a72e2f96",
+      "use": "CUDA-native low-level primitives where exact component license/profile fits.",
+      "baseline_dependency": "toolkit/profile dependent"
     }
   ],
-  "testing": {
-    "oracles": [
-      "Accepted UMCGS authority for search semantics, ownership, device closure, and finite resources.",
-      "Future accepted CUDA-JS public contract for generic runtime semantics.",
-      "Independent C/native layout oracle for ABI facts.",
-      "Exact compatible UMCGS/CUDA-JS artifact pair for boundary conformance."
-    ],
-    "capsules": [
-      "CUDA-JS internal generic runtime conformance",
-      "UMCGS package schema/normalization and search-semantic conformance",
-      "UMCGS device-closure end-to-end capsule",
-      "one small cross-repository compatible-pair capsule"
-    ],
-    "no_repeat_rules": [
-      "Do not duplicate complete CUDA-JS runtime tests in UMCGS.",
-      "Do not rerun unchanged compatible-pair evidence or reread unchanged authority without invalidation or a stated statistical/interpretive reason."
-    ]
+  "adversarial_assessment": {
+    "builder_case": "One schema-backed semantic extension protocol avoids hundreds of optimization-specific interfaces while static composition preserves CUDA performance and future algorithm flexibility.",
+    "strongest_overengineering_challenge": "A universal Extension Surface/manifest/composer could become a second compiler framework whose ceremony exceeds the actual number of extensions, while device LTO and templates already solve code composition.",
+    "response_to_overengineering": "Keep CUDA-MCGS semantics narrow and reuse CUDA-JS/nvJitLink for generic mechanics. Do not create a dynamic extension runtime, one schema per algorithm, or a permanent universal context object. Add points only where a real semantic boundary needs exposure.",
+    "strongest_underengineering_challenge": "A generic hook can silently violate graph invariants, force runtime dispatch, allocate hidden memory, or require host progress, making the engine neither universal nor performant.",
+    "response_to_underengineering": "Every point has explicit least-authority contract/schema/resource/synchronization rules; incompatible fragments fail before ignition; unbound points must disappear from the realized image; device closure and finite memory remain hard gates.",
+    "ownership_challenge": "Importing mature libraries reduces implementation risk and may outperform locally owned code.",
+    "ownership_resolution": "Benchmark and reuse methodology/source where justified, but keep search-critical semantics locally owned. A higher-level runtime dependency requires measured benefit that outweighs release/debug/update/control costs.",
+    "scheduler_challenge": "A persistent kernel may monopolize GPU resources and interfere with a resident evaluator or secondary search system.",
+    "scheduler_resolution": "Device closure is invariant; topology remains experiment-selected through SCHED-001 rather than hard-coded into the architecture.",
+    "assessment_disposition": "proceed_with_specification_and_bounded_experiments"
   },
+  "public_interop_constraints": [
+    "Dependency direction remains one-way: CUDA-MCGS consumes versioned CUDA-JS public artifacts; CUDA-JS never imports Search IR or CUDA-MCGS semantics.",
+    "Persistent CUDA-MCGS schemas contain stable IDs, requirements, manifests, and opaque runtime-resource needs, never CUDA-JS private actor/resource representations or raw native pointers.",
+    "Every concrete engine remains finite and resource-planned before ignition.",
+    "All selected extension identities, source/artifact hashes, static configuration, resource inputs, and composition options material to final code enter deterministic execution-package/cache identity.",
+    "The CUDA-MCGS package names public CUDA-JS capabilities/evidence profiles rather than Node FFI, Worker, actor, provider-path, or private resource-layout mechanisms.",
+    "CUDA-JS owns generic runtime conformance; CUDA-MCGS owns search/extension semantics and generated-package correctness; one exact compatible-pair capsule covers the public boundary."
+  ],
+  "experiment_gates": [
+    {
+      "id": "EXT-LTO-001",
+      "status": "planned",
+      "purpose": "Prove one Extension Point/Fragment through the exact CUDA-JS compile/link/load path and test no-point versus unbound versus bound emitted-code/resource/performance behavior.",
+      "promotion": "Direct/specialized fragment execution is correct; incompatible inputs fail pre-ignition; unbound abstraction leaves no material code/resource/dispatch residue; bound path has no generic dispatch beyond fragment work."
+    },
+    {
+      "id": "EXT-LTO-002",
+      "status": "planned",
+      "purpose": "Compose multiple representative fragments and measure artifact/cache identity, link behavior, code size, registers, shared memory, occupancy, and compatibility constraints.",
+      "dependency": "EXT-LTO-001"
+    },
+    {
+      "id": "EXT-CONTRACT-001",
+      "status": "planned",
+      "purpose": "Falsify the extension contract with wrong point/schema versions, types/ranges, permissions, resources, architecture capabilities, and incompatible fragment combinations.",
+      "dependency": "canonical extension contract/schema proposal"
+    },
+    {
+      "id": "SCHED-001",
+      "status": "planned",
+      "purpose": "Compare credible device-owned scheduling realizations on representative irregular graph search with resident evaluator and optional secondary GPU work while preserving identical search semantics/resource limits."
+    },
+    {
+      "id": "TT-001",
+      "status": "planned",
+      "purpose": "Compare cuCollections/reference structures with a CUDA-MCGS-specific transposition table for identity/collision verification, concurrent claim/publication, generations/reclamation, bounded pressure behavior, and representative performance."
+    },
+    {
+      "id": "PAIR-F9-001",
+      "status": "planned",
+      "purpose": "Create the first exact CUDA-MCGS/CUDA-JS compatible-pair capsule using the accepted CUDA-JS F9 public compiler/runtime prerequisite.",
+      "dependency": "EXT-LTO-001 and minimum Search Image package contract"
+    }
+  ],
   "deliverables": [
-    "UMCGS-to-CUDA-JS execution-package v0 proposal and obligation/owner map",
-    "capability and evidence-profile negotiation",
-    "opaque resource, memory, module, launch, completion, cancellation, error, health, and teardown contract",
-    "complete artifact/cache/provenance identity",
-    "cross-repository conformance and no-repeat policy",
-    "publication and experiment handoff"
+    "Accepted or explicitly bounded proposal for Search Extension Surface/Point/Contract/Context Schema/Fragment representation and compatibility",
+    "Search Composer obligation/owner map and deterministic composition/cache identity",
+    "Updated CUDA-MCGS-to-CUDA-JS execution-package proposal covering fragment/LTO inputs without leaking CUDA-JS private mechanisms",
+    "Finite extension-state/workspace integration into the search memory plan",
+    "EXT-LTO-001 and EXT-CONTRACT-001 evidence before production extension implementation",
+    "SCHED-001 and TT-001 evidence before scheduler/transposition implementation commitment",
+    "Exact CUDA-MCGS/CUDA-JS compatible-pair capsule",
+    "Explicit third-party reuse decisions before any external implementation source is adopted"
   ],
   "acceptance_criteria": [
-    "Every public field and lifecycle transition has exactly one owner and evidence path.",
-    "CUDA-JS can validate and execute a package without Search IR knowledge.",
-    "UMCGS preserves device-owned progress and finite search-resource semantics.",
-    "No CUDA-JS private mechanism or raw handle enters UMCGS persistent schemas.",
-    "Strict-JIT and other performance-sensitive capabilities are required only through exact evidence profiles.",
-    "Graceful close, dead epoch, restart-required state, orphan reporting, deferred errors, and context health are unambiguous.",
-    "Compiler/provider side effects and isolation are public capabilities.",
-    "Each repository owns its internal tests and the public boundary is tested once by exact artifact pair.",
-    "No material specification, document-reading, decision, test, token, or cleanup debt remains for the accepted claim."
+    "The extension mechanism is one uniform semantic protocol, not an open-ended set of optimization-specific runtime interfaces.",
+    "Every Extension Point has one owner, contract, context schema, permission/resource model, compatibility rule, and conformance path.",
+    "The Search Composer can reject incompatible fragments and produce a finite Search Image without CUDA-JS interpreting search semantics.",
+    "Unbound points have evidence of zero abstraction overhead in the realized production image; bound points have no generic dispatch beyond intrinsic work.",
+    "No host-produced intermediate decision or extension resolution is required after ignition.",
+    "Scheduler topology remains replaceable under the device-closure contract until measured evidence selects profiles.",
+    "Higher-level third-party libraries are not accidental mandatory active-search dependencies; any source reuse is explicit, licensed, pinned, owned, and updateable locally.",
+    "CUDA-JS public capability usage is revision/evidence-profile keyed and no private Node/Worker/actor details leak into persistent CUDA-MCGS contracts.",
+    "Finite memory accounts for extension persistent state, scratch/workspace/queues, evaluator/model, graph/search storage, outputs, diagnostics, and safety/runtime reserves.",
+    "No material specification, decision, test, provenance, cleanup, or plan debt remains for the accepted claim."
   ],
   "validation": [
-    "Selective-reading authority-closure and final-refresh review.",
-    "Engineering-contract, obligation-owner, hard-gate, candidate-path, and tradeoff review.",
-    "Backend-neutral public capability and private-mechanism leakage review.",
-    "Device-closure, finite-resource, lifecycle, error-health, teardown, and orphan-report review.",
-    "Artifact/cache/provenance identity and exact compatible-pair conformance review.",
-    "./scripts/verify-docs.sh"
+    "Contract/schema semantic review against CONTRACT_STANDARD.md and accepted ADR-0002/0003/0014.",
+    "Prior-art revision/license/provenance review and explicit methodology/source/runtime disposition.",
+    "Extension second-instance tests across unrelated points/optimizations and first-extension deletion test.",
+    "EXT-LTO-001/002 emitted-code plus performance/resource evidence on exact profiles.",
+    "EXT-CONTRACT-001 negative compatibility/permission/resource tests.",
+    "SCHED-001 semantic-equivalent scheduler comparison and TT-001 transposition comparison.",
+    "Exact CUDA-MCGS/CUDA-JS compatible-pair conformance.",
+    "Policy-compliant exact-head documentation/structure validation covering required files, status markers, relative links, JSON-compatible records, issue forms, and project topology; the legacy Python-backed ./scripts/verify-docs.sh path is frozen under UMCGS-ECO-LANG-001 pending replacement tracked in issue #28."
   ],
   "blockers": [
-    "Create and publish private iteathen/CUDA-JS at exact local commit 77090a981fabb547d9e1a98d76213f2048e81ef2.",
-    "Run EXP-000 on official Node.js 26.7.0 before CUDA-specific production implementation.",
-    "Run EXP-001 through EXP-003 on a qualified first CUDA platform and publish an accepted CUDA-JS public capability contract before final compatible-pair acceptance."
+    "Canonical Search IR and extension contract/schema representations are not yet accepted.",
+    "No EXT-LTO-001 evidence yet proves the zero-abstraction-cost extension realization on the exact CUDA-JS path.",
+    "No SCHED-001 evidence yet selects the initial device-owned scheduling profile.",
+    "No TT-001 evidence yet selects transposition-table implementation/source-reuse disposition.",
+    "The first exact CUDA-MCGS/CUDA-JS compatible-pair capsule is still pending."
   ],
   "do_not": [
-    "Implement generic Driver bindings, JIT ABI stubs, memory providers, NVRTC plumbing, or Node completion delivery in UMCGS.",
-    "Put Search IR, graph search, evaluators, or search-resource policy into CUDA-JS.",
-    "Encode Node FFI, Worker, actor, child-process, library-path, or private resource-layout details in the UMCGS public package.",
-    "Assume managed memory is universal zero-copy or host relaunch is device-closed search progress.",
-    "Claim strict-JIT, native CUDA correctness, cleanup after dead runtime-domain loss, or performance without direct exact-profile evidence.",
-    "Begin production implementation before peer authority closure and the applicable experiment gates pass."
+    "Create a second competing CUDA-MCGS master plan; revise this canonical plan when material facts change.",
+    "Implement a universal callback/function-pointer table, runtime extension registry, reflection/service locator, or generic mutable context object as the universality mechanism.",
+    "Treat schema validation as sufficient behavioral contract conformance.",
+    "Bind/load/compile extensions or require CPU search decisions after ignition.",
+    "Equate device closure with one persistent-kernel topology before SCHED-001.",
+    "Implement generic Driver bindings, NVRTC/nvJitLink providers, Node completion delivery, or CUDA-JS private resource machinery in CUDA-MCGS.",
+    "Put Search IR, graph/search policy, extension semantics, or search-resource policy into CUDA-JS.",
+    "Import third-party implementation into production without exact revision/license/provenance/reuse decision and donor-artifact disposition.",
+    "Claim zero overhead, native search correctness, performance, scheduler superiority, or transposition-table superiority without direct exact-profile evidence."
   ],
   "completion_evidence": [
-    "CUDA-JS local research, assessment, architecture, experiment DAG, and documentation validation verified at exact commit 77090a981fabb547d9e1a98d76213f2048e81ef2.",
-    "UMCGS reconciliation remains documentation-only and makes no final runtime-compatibility claim."
+    "This plan revision is documentation/research/specification work only and does not claim production CUDA-MCGS implementation.",
+    "CUDA-JS current public state was reconciled at exact revision ad49a6c9b0cddb420e26e097180cf9c502060a65 rather than the superseded unpublished-foundation assumption.",
+    "The new extension/composition direction is integrated into the existing framework architecture/specification/research/plan spine rather than recorded as a parallel plan."
   ],
-  "handoff": "Publish exact CUDA-JS authority, run EXP-000, then use experiment-backed public capabilities to finish the UMCGS-to-CUDA-JS v0 contract and compatible-pair capsule."
+  "handoff": "Finalize the canonical Extension Surface/Point/Context Schema/Fragment contract and minimum Search Image package, then execute EXT-LTO-001 plus EXT-CONTRACT-001 through the exact CUDA-JS F9-capable profile. Use those results to accept/revise the composition model before production implementation, followed by SCHED-001 and TT-001 for scheduler/transposition choices."
 }
