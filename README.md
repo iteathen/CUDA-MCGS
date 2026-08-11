@@ -50,37 +50,59 @@ The first implementation should reuse proven CUDA mechanisms and methodology agg
 
 ## Current phase
 
-The project is private, pre-release, and in **framework-definition phase**. The repository is establishing versioned search contracts, the Search IR, extension composition semantics, CUDA-JS interoperability, finite-resource rules, prior-art evidence, conformance strategy, and experiments before production implementation.
+The project is private, pre-release, and in **framework-definition phase**. The repository is establishing governance, mature-scale organization, versioned search contracts, the Search IR, extension composition semantics, inter-repository compatibility, resource constraints, prior-art evidence, conformance strategy, and test architecture before production implementation.
 
 No production CUDA-MCGS implementation should be inferred from the current repository.
 
 ## Current accepted direction
 
-- Universal search contracts and Search IR compile into finite specialized hot paths.
-- Active search remains device-closed after ignition; no CPU-produced intermediate decision is permitted.
-- Generic Node/CUDA runtime work belongs to CUDA-JS rather than shaping CUDA-MCGS foundations.
-- The search-semantic and search-critical extension/composition model remains CUDA-MCGS-owned.
-- Schemas make boundary/context representation machine-verifiable; contracts define meaning, permissions, invariants, lifetime, ordering, failure, and resource behavior.
-- A single schema-backed extension protocol replaces an open-ended family of optimization-specific callback interfaces.
-- Unused capabilities are specialized away rather than carried through one universal runtime object or callback table.
-- CUDA scheduling topology remains a measured implementation choice under the device-closure contract.
-- Third-party methodology is reused freely; third-party implementation reuse requires exact revision, license, provenance, ownership, and an explicit dependency/source-reuse decision.
+The following accepted project/governance direction remains unchanged by the proposal-level extension work:
+
 - Engineering begins with an explicit contract and specification-obligation map, not a file list.
-- Candidate paths pass hard gates before performance, maintainability, delivery, and process preferences are compared.
+- Candidate paths pass hard gates before safety, correctness, accuracy, speed, reliability, architecture, delivery, and process preferences are compared.
+- Contextual value ordering and P0–P4 priority make tradeoffs, path selection, and scheduling reviewable.
 - LEGO macroscopic ownership, SOLID internals, CUPID quality, and simplest sufficient total system govern valid designs.
 - Adversarial assessment precedes planning; large work uses semantic focus branches and one integration spine.
-- Token use is continuous backpressure on every task without lowering the risk-appropriate practice floor.
-- Consolidated testing, governed execution, cleanup, proportional sanity, exact-head review, guarded merge, and verified post-merge state remain mandatory.
+- Token use is continuous backpressure on **every** task, including routine work.
+- Backpressure limits duplication, repeated evidence, fragmented work, cold context, optional breadth, and work in flight before it reduces scope—and reduces scope before it threatens rigor.
+- Every task retains a risk-appropriate minimum practice floor: authority/current-state inspection, coherent scope, decisive verification, actual-effect inspection, relevant testing, cleanup, and honest limits.
+- Agents read the smallest **authority-complete** document set: mandatory kernel and path instructions, direct governing authority, required normative references, triggered specialist doctrine, and material producer/consumer/lifecycle/test adjacency.
+- Accepted documents apply only within scope; proposals, research, architecture, examples, implementation, tests, plans, and summaries remain beneath accepted authority.
+- Routine work uses an implicit micro-budget and no document ledger; substantial/critical work preserves exact applicability, revision, invalidation, and final authority refresh where another consumer needs it.
+- Soft token estimates trigger replanning rather than automatic stopping or reduced rigor; reduced evidence narrows the claim.
+- Consolidated testing banks intents, shares expensive setup, preserves case identity, reuses exact evidence, and repairs root-cause clusters.
+- Governed execution uses dependency-ready nodes, expected-before-actual inspection, explicit deviations, and no invalid partial state.
+- Cleanup, proportional sanity, exact-head review, guarded merge, and verified post-merge state are mandatory.
+- Universal search contracts and Search IR compile into finite specialized hot paths.
+- Active search remains device-closed after ignition; no CPU-produced intermediate decision is permitted.
+- Generic Node/CUDA runtime work belongs to CUDA-JS rather than shaping UMCGS foundations.
+
+The current proposal further explores, without yet promoting to accepted authority:
+
+- a single schema-backed semantic extension protocol instead of an open-ended family of optimization-specific callback interfaces;
+- CUDA-MCGS ownership of search-semantic/search-critical extension composition;
+- contract-defined behavior with schema-backed context/representation;
+- specialization that removes unused Extension Points from realized hot paths;
+- device-owned scheduler topology selected by evidence rather than fixed by the phrase "GPU-resident";
+- ownership-first third-party reuse: methodology first, explicit source adaptation/vendor decisions when justified, higher-level runtime dependency last.
 
 ## Start here
 
 - [`AGENTS.md`](AGENTS.md)
 - [`agent_files/README.md`](agent_files/README.md)
+- [`agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md)
+- [`agent_files/general_foundation/CONTEXT_ROUTING.md`](agent_files/general_foundation/CONTEXT_ROUTING.md)
+- [`agent_files/general_foundation/TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md)
+- [`agent_files/general_foundation/ENGINEERING_JUDGMENT.md`](agent_files/general_foundation/ENGINEERING_JUDGMENT.md)
+- [`agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md`](agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md)
 - [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md)
 - [`agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md)
 - [`agent_files/general_foundation/FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md)
 - [`agent_files/general_foundation/TESTING.md`](agent_files/general_foundation/TESTING.md)
 - [`docs/PROJECT_CHARTER.md`](docs/PROJECT_CHARTER.md)
+- [`docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md`](docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md)
+- [`docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md`](docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md)
+- [`docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md`](docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md)
 - [`docs/architecture/FRAMEWORK_OVERVIEW.md`](docs/architecture/FRAMEWORK_OVERVIEW.md)
 - [`docs/specs/SPEC-0000-framework-requirements.md`](docs/specs/SPEC-0000-framework-requirements.md)
 - [`docs/research/prior-art/2026-08-10-landscape.md`](docs/research/prior-art/2026-08-10-landscape.md)
