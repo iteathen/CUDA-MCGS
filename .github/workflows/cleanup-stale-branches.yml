@@ -39,6 +39,7 @@ jobs:
             agent/pr-review-and-merge-doctrine
             agent/proportional-sanity-checking
             agent/publish-lego-doctrine
+            agent/trigger-stale-cleanup-20260810
           )
           cleanup_branch='agent/cleanup-stale-branches-20260810'
 
