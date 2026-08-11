@@ -1,14 +1,14 @@
 {
-  "schema_version": 12,
+  "schema_version": 13,
   "updated": "2026-08-11",
   "status": "ready",
   "parent_task_id": "SPEC-V0",
-  "parent_plan_version": 10,
+  "parent_plan_version": 11,
   "integration_owner": "docs/specs: CUDA-MCGS framework-definition and CUDA-JS integration spine",
   "north_star": "CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with schema-backed extension support.",
   "objective": "Define the version-zero CUDA-MCGS contracts, Search IR, schema-backed Extension Surface, finite specialization/composition model, and CUDA-JS execution-package boundary so arbitrary MCGS domains and future search-time optimizations can be incorporated without permanent unused hot-path cost or host participation after ignition.",
   "ownership_boundary": "CUDA-MCGS/UMCGS owns search semantics, Search IR, Search Composer, extension semantics/binding, finite search-resource planning, graph/transposition/scheduler policy, generated search device behavior, and search conformance. CUDA-JS owns generic Node/CUDA Driver capabilities, opaque resources, NVRTC/nvJitLink, generic artifact cache/load/launch/completion/error/teardown, and runtime conformance.",
-  "plan_revision_reason": "The previous plan was centered on a not-yet-published CUDA-JS foundation. CUDA-JS is now public and has accepted bounded F1-F9 evidence, including a public compiler/linker path and trusted CCCL header profile. SPEC-0001 and the foundational Search IR 0.1.0 slice in SPEC-0002 are now accepted with bounded prototype/reference evidence. New CUDA extension-composition research provides proven mechanisms that shape the remaining extension-capable Search IR plan. This revision folds those facts into the existing canonical plan rather than creating a competing plan.",
+  "plan_revision_reason": "CUDA-JS is public and has accepted bounded F1-F9 evidence, including a public compiler/linker path and trusted CCCL header profile. SPEC-0001 and the foundational Search IR 0.1.0 slice in SPEC-0002 are accepted with bounded prototype/reference evidence. The project owner selected relocatable PTX rather than device LTO for the version-zero Extension Fragment realization. This revision makes PTX inputs, symbol contracts, deterministic link identity, and PTX-to-cubin evidence explicit while retaining LTO only as prior art and a deferred comparison; it does not create a competing plan or depend on CUDA-JS LTO work.",
   "focus_branch": {
     "id": "SPEC-V0-EXTSURFACE",
     "title": "Define and falsify the CUDA-MCGS schema-backed extension composition contract",
@@ -20,6 +20,7 @@
     "exact_input_revisions": {
       "umcgs_main_at_plan_revision_start": "e549c916c7101470b6432e1c63863b3ec7ad90b1",
       "umcgs_main_at_prototype_integration": "b7ff30c5a3a00b7f6081ce2bc2cd10817a9afbc2",
+      "umcgs_main_at_ptx_plan_revision": "5a55dc30b7145839bc8715c4ae3fa8c1fbf0d59e",
       "cuda_js": "ad49a6c9b0cddb420e26e097180cf9c502060a65",
       "nvidia_cuvs_reference": "abfb8b91c9f9bda1e568265b1d01b36250f43a8d",
       "nvidia_cucollections_reference": "1a1e640179e85139765a27d2d376e02628b2ccbc",
@@ -29,6 +30,7 @@
       "Search Extension Surface semantics and machine-readable contracts/schemas",
       "Extension Fragment manifest and compatibility rules",
       "Search Composer ownership, lowering, resource planning, fragment composition, and artifact identity",
+      "version-zero relocatable PTX fragment ABI, direct device-symbol binding, and PTX-to-cubin link profile",
       "CUDA-MCGS-to-CUDA-JS execution-package inputs needed for composition",
       "zero-abstraction-cost acceptance definition and experiments",
       "device-owned scheduling experiment plan without prematurely choosing one topology",
@@ -40,6 +42,7 @@
       "runtime registry scanning, reflection, service location, or host extension resolution during active search",
       "production game/domain adapter before the framework contracts and experiments pass",
       "making cuVS, cuFFT, cuCollections, RAPIDS, or another higher-level search/framework runtime a baseline active-search dependency",
+      "depending on CUDA-JS device-LTO work or selecting LTO as the version-zero fragment format",
       "renaming the GitHub repository or rewriting accepted UMCGS ADR identifiers in this plan revision",
       "selecting one persistent-kernel or CUDA-Graph topology before SCHED-001 evidence"
     ]
@@ -108,8 +111,10 @@
     "performance_contract": [
       "Unbound extension points shall impose zero abstraction overhead in the realized search image.",
       "Bound extensions shall impose no generic dispatch overhead beyond their intrinsic work and resource cost.",
-      "Production evidence must inspect emitted code and representative performance/resources; source-level conditional compilation or an LTO flag is not proof.",
-      "The semantic extension contract remains independent of one composition technique; device LTO is the preferred first experiment because CUDA-JS already owns NVRTC/nvJitLink and prior art demonstrates the pattern."
+      "Production evidence must inspect emitted PTX and final cubin/SASS plus representative performance/resources; source-level specialization or a successful link is not proof.",
+      "The semantic extension contract remains independent of one composition technique, while the selected version-zero realization uses separately compiled relocatable PTX modules linked to a cubin through the CUDA-JS public compiler/linker path.",
+      "Unbound points disappear through Search Composer generation before PTX emission. Bound points use statically named direct device symbols rather than callback tables or function-pointer registries.",
+      "PTX separate compilation does not guarantee cross-module inlining or zero call/resource cost; EXT-PTX-001 must compare the linked-module path with a fused/generated-source baseline and may reject or constrain the profile."
     ],
     "device_closure": [
       "All data/code/state required for active search is resident or preloaded before ignition.",
@@ -128,7 +133,7 @@
     {
       "source": "NVIDIA cuVS JIT-LTO",
       "revision": "abfb8b91c9f9bda1e568265b1d01b36250f43a8d",
-      "use": "Planner/fragment/LTO/cache methodology reference.",
+      "use": "Planner/fragment/cache methodology reference and deferred LTO comparison; not the selected fragment format.",
       "baseline_dependency": false
     },
     {
@@ -138,7 +143,7 @@
     },
     {
       "source": "nvJitLink/NVRTC",
-      "use": "CUDA platform linking/compilation substrate exposed through CUDA-JS.",
+      "use": "CUDA platform substrate for producing relocatable PTX and linking PTX inputs into a cubin, exposed through CUDA-JS.",
       "baseline_dependency": true,
       "owner": "CUDA-JS generic runtime boundary"
     },
@@ -162,7 +167,7 @@
   ],
   "adversarial_assessment": {
     "builder_case": "One schema-backed semantic extension protocol avoids hundreds of optimization-specific interfaces while static composition preserves CUDA performance and future algorithm flexibility.",
-    "strongest_overengineering_challenge": "A universal Extension Surface/manifest/composer could become a second compiler framework whose ceremony exceeds the actual number of extensions, while device LTO and templates already solve code composition.",
+    "strongest_overengineering_challenge": "A universal Extension Surface/manifest/composer could become a second compiler framework whose ceremony exceeds the actual number of extensions, while PTX linking and generated source already provide code-composition mechanisms.",
     "response_to_overengineering": "Keep CUDA-MCGS semantics narrow and reuse CUDA-JS/nvJitLink for generic mechanics. Do not create a dynamic extension runtime, one schema per algorithm, or a permanent universal context object. Add points only where a real semantic boundary needs exposure.",
     "strongest_underengineering_challenge": "A generic hook can silently violate graph invariants, force runtime dispatch, allocate hidden memory, or require host progress, making the engine neither universal nor performant.",
     "response_to_underengineering": "Every point has explicit least-authority contract/schema/resource/synchronization rules; incompatible fragments fail before ignition; unbound points must disappear from the realized image; device closure and finite memory remain hard gates.",
@@ -170,6 +175,8 @@
     "ownership_resolution": "Benchmark and reuse methodology/source where justified, but keep search-critical semantics locally owned. A higher-level runtime dependency requires measured benefit that outweighs release/debug/update/control costs.",
     "scheduler_challenge": "A persistent kernel may monopolize GPU resources and interfere with a resident evaluator or secondary search system.",
     "scheduler_resolution": "Device closure is invariant; topology remains experiment-selected through SCHED-001 rather than hard-coded into the architecture.",
+    "ptx_challenge": "Separately linked PTX can preserve a direct symbol call while still losing cross-module inlining or adding call/register/code-size cost relative to fused source; PTX version, virtual target, address size, symbol ABI, and final GPU target can also become hidden compatibility dimensions.",
+    "ptx_resolution": "Treat PTX as the selected version-zero device artifact profile rather than the semantic contract. Record all compatibility dimensions and content/provenance/options in the package identity, reject mismatches before ignition, and compare linked PTX modules against a fused/generated-source control before promotion.",
     "assessment_disposition": "proceed_with_specification_and_bounded_experiments"
   },
   "public_interop_constraints": [
@@ -177,6 +184,7 @@
     "Persistent CUDA-MCGS schemas contain stable IDs, requirements, manifests, and opaque runtime-resource needs, never CUDA-JS private actor/resource representations or raw native pointers.",
     "Every concrete engine remains finite and resource-planned before ignition.",
     "All selected extension identities, source/artifact hashes, static configuration, resource inputs, and composition options material to final code enter deterministic execution-package/cache identity.",
+    "The version-zero PTX fragment identity includes PTX ISA version, virtual target, address size, declared imports/exports and signatures, content digest, compiler/toolkit provenance and options, final GPU target, and link options.",
     "The CUDA-MCGS package names public CUDA-JS capabilities/evidence profiles rather than Node FFI, Worker, actor, provider-path, or private resource-layout mechanisms.",
     "CUDA-JS owns generic runtime conformance; CUDA-MCGS owns search/extension semantics and generated-package correctness; one exact compatible-pair capsule covers the public boundary."
   ],
@@ -188,16 +196,16 @@
   },
   "experiment_gates": [
     {
-      "id": "EXT-LTO-001",
+      "id": "EXT-PTX-001",
       "status": "planned",
-      "purpose": "Prove one Extension Point/Fragment through the exact CUDA-JS compile/link/load path and test no-point versus unbound versus bound emitted-code/resource/performance behavior.",
-      "promotion": "Direct/specialized fragment execution is correct; incompatible inputs fail pre-ignition; unbound abstraction leaves no material code/resource/dispatch residue; bound path has no generic dispatch beyond fragment work."
+      "purpose": "Prove one relocatable-PTX Extension Point/Fragment through the exact CUDA-JS PTX-link/load path and compare no-point, unbound, bound-module, and fused/generated-source control realizations.",
+      "promotion": "Direct-symbol fragment execution is correct; incompatible inputs fail pre-ignition; unbound generation leaves no material code/resource/dispatch residue; bound PTX has no generic dispatch; emitted PTX/cubin/SASS and measurements characterize any separate-link call, register, occupancy, or code-size cost rather than assuming it away."
     },
     {
-      "id": "EXT-LTO-002",
+      "id": "EXT-PTX-002",
       "status": "planned",
-      "purpose": "Compose multiple representative fragments and measure artifact/cache identity, link behavior, code size, registers, shared memory, occupancy, and compatibility constraints.",
-      "dependency": "EXT-LTO-001"
+      "purpose": "Compose multiple representative relocatable PTX fragments and measure artifact/cache identity, direct-symbol link behavior, code size, registers, shared memory, occupancy, and compatibility constraints.",
+      "dependency": "EXT-PTX-001"
     },
     {
       "id": "EXT-CONTRACT-001",
@@ -219,15 +227,15 @@
       "id": "PAIR-F9-001",
       "status": "planned",
       "purpose": "Create the first exact CUDA-MCGS/CUDA-JS compatible-pair capsule using the accepted CUDA-JS F9 public compiler/runtime prerequisite.",
-      "dependency": "EXT-LTO-001 and minimum Search Image package contract"
+      "dependency": "EXT-PTX-001 and minimum Search Image package contract"
     }
   ],
   "deliverables": [
     "Accepted or explicitly bounded proposal for Search Extension Surface/Point/Contract/Context Schema/Fragment representation and compatibility",
     "Search Composer obligation/owner map and deterministic composition/cache identity",
-    "Updated CUDA-MCGS-to-CUDA-JS execution-package proposal covering fragment/LTO inputs without leaking CUDA-JS private mechanisms",
+    "Updated CUDA-MCGS-to-CUDA-JS execution-package proposal covering relocatable PTX fragment inputs and complete PTX/link/cache identity without leaking CUDA-JS private mechanisms",
     "Finite extension-state/workspace integration into the search memory plan",
-    "EXT-LTO-001 and EXT-CONTRACT-001 evidence before production extension implementation",
+    "EXT-PTX-001 and EXT-CONTRACT-001 evidence before production extension implementation",
     "SCHED-001 and TT-001 evidence before scheduler/transposition implementation commitment",
     "Exact CUDA-MCGS/CUDA-JS compatible-pair capsule",
     "Explicit third-party reuse decisions before any external implementation source is adopted"
@@ -248,7 +256,7 @@
     "Contract/schema semantic review against CONTRACT_STANDARD.md and accepted ADR-0002/0003/0014.",
     "Prior-art revision/license/provenance review and explicit methodology/source/runtime disposition.",
     "Extension second-instance tests across unrelated points/optimizations and first-extension deletion test.",
-    "EXT-LTO-001/002 emitted-code plus performance/resource evidence on exact profiles.",
+    "EXT-PTX-001/002 emitted-PTX/cubin/SASS plus performance/resource evidence on exact profiles, including a fused/generated-source control.",
     "EXT-CONTRACT-001 negative compatibility/permission/resource tests.",
     "SCHED-001 semantic-equivalent scheduler comparison and TT-001 transposition comparison.",
     "Exact CUDA-MCGS/CUDA-JS compatible-pair conformance.",
@@ -256,7 +264,7 @@
   ],
   "blockers": [
     "The foundational Search IR 0.1.0 slice is accepted, but the complete extension-capable Search IR and extension contract/schema representations are not yet accepted.",
-    "No EXT-LTO-001 evidence yet proves the zero-abstraction-cost extension realization on the exact CUDA-JS path.",
+    "No EXT-PTX-001 evidence yet proves the zero-abstraction-cost extension realization or quantifies separate-PTX link cost on the exact CUDA-JS path.",
     "No SCHED-001 evidence yet selects the initial device-owned scheduling profile.",
     "No TT-001 evidence yet selects transposition-table implementation/source-reuse disposition.",
     "The first exact CUDA-MCGS/CUDA-JS compatible-pair capsule is still pending."
@@ -268,6 +276,7 @@
     "Bind/load/compile extensions or require CPU search decisions after ignition.",
     "Equate device closure with one persistent-kernel topology before SCHED-001.",
     "Implement generic Driver bindings, NVRTC/nvJitLink providers, Node completion delivery, or CUDA-JS private resource machinery in CUDA-MCGS.",
+    "Depend on CUDA-JS device-LTO work for the version-zero CUDA-MCGS extension path; the selected input boundary is relocatable PTX.",
     "Put Search IR, graph/search policy, extension semantics, or search-resource policy into CUDA-JS.",
     "Import third-party implementation into production without exact revision/license/provenance/reuse decision and donor-artifact disposition.",
     "Claim zero overhead, native search correctness, performance, scheduler superiority, or transposition-table superiority without direct exact-profile evidence."
@@ -276,8 +285,9 @@
     "This plan revision is documentation/research/specification work only and does not claim production CUDA-MCGS implementation.",
     "CUDA-JS current public state was reconciled at exact revision ad49a6c9b0cddb420e26e097180cf9c502060a65 rather than the superseded unpublished-foundation assumption.",
     "The new extension/composition direction is integrated into the existing framework architecture/specification/research/plan spine rather than recorded as a parallel plan.",
+    "The owner-selected PTX realization replaces LTO experiment dependencies while retaining LTO sources only as prior art and a deferred comparison.",
     "SPEC-0001 and the bounded Search IR 0.1.0 foundation in SPEC-0002 are reconciled as accepted inputs to, rather than completion of, the extension-capable Search IR plan.",
     "Free-tier private collaboration is isolated through owner-only canonical access and per-contributor intake repositories; public CUDA-JS retains protected branches and public CI."
   ],
-  "handoff": "Finalize the canonical Extension Surface/Point/Context Schema/Fragment contract and minimum Search Image package, then execute EXT-LTO-001 plus EXT-CONTRACT-001 through the exact CUDA-JS F9-capable profile. Use those results to accept/revise the composition model before production implementation, followed by SCHED-001 and TT-001 for scheduler/transposition choices."
+  "handoff": "Finalize the canonical Extension Surface/Point/Context Schema/Fragment contract and minimum Search Image package with an explicit relocatable-PTX ABI and deterministic link identity, then execute EXT-PTX-001 plus EXT-CONTRACT-001 through the exact CUDA-JS F9-capable profile. Compare the linked-PTX path with a fused/generated-source control before accepting or revising the composition profile, followed by SCHED-001 and TT-001 for scheduler/transposition choices."
 }

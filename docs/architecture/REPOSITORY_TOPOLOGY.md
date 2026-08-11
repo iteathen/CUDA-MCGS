@@ -61,7 +61,7 @@ Search Composer
       ▼
 CUDA-MCGS execution package
   - required CUDA-JS contract/capabilities
-  - source/LTO/binary modules and complete cache inputs
+  - relocatable PTX/source/binary modules and complete cache inputs
   - opaque memory/resource requirements
   - arguments and launch descriptions
   - initial data/model/configuration

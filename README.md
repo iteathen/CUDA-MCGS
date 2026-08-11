@@ -38,6 +38,8 @@ A search exposes an **Extension Surface** made of semantic **Extension Points**.
 
 The extension mechanism is uniform; the points and schemas are search-specific. It is not a runtime callback table, service locator, or generic `void *` escape hatch.
 
+The selected version-zero device-artifact profile uses relocatable PTX Extension Fragments linked into a cubin through CUDA-JS. Unbound points are omitted during generation; bound points use statically named direct device symbols. PTX is a realization choice, not the semantic extension contract, and the prototype must measure separate-link call/resource cost against a fused generated-source control.
+
 Production profiles target these properties:
 
 - unbound extension points impose no abstraction overhead in the realized search image;

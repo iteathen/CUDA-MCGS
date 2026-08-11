@@ -34,6 +34,8 @@ The architecture and SPEC-0000 proposals define a common search extension model:
 
 These extension representations and the complete extension-capable Search IR remain proposal-level until detailed specifications and experiment evidence are accepted. The accepted Search IR 0.1.0 slice is their semantic foundation, not proof of the complete model.
 
+The owner-selected version-zero realization is relocatable PTX, not device LTO. CUDA-MCGS will define the PTX fragment ABI and composition semantics; CUDA-JS will provide the generic public compile/link/load path. LTO remains prior art and a possible future comparison, and CUDA-MCGS does not depend on the active CUDA-JS LTO work.
+
 ## Bounded CUDA-only experiment
 
 The standalone experiment at [`experiments/cuda-device-mcgs-prototype/`](experiments/cuda-device-mcgs-prototype/) is retained as non-production evidence. It has no Node.js dependency and does not exercise or implement CUDA-JS.
@@ -81,11 +83,12 @@ At exact inspected revision `ad49a6c9b0cddb420e26e097180cf9c502060a65`, public `
 
 ## Current next boundary
 
-Execute the canonical [`next_step.yaml`](next_step.yaml) plan. Extend Search IR 0.1.0 with the Extension Surface/Point/Contract/Context Schema/Fragment and minimum Search Image package contract, then run `EXT-LTO-001` and `EXT-CONTRACT-001` through the exact public CUDA-JS path. Use those results before production extension implementation, followed by `SCHED-001`, `TT-001`, and the exact compatible-pair capsule.
+Execute the canonical [`next_step.yaml`](next_step.yaml) plan. Extend Search IR 0.1.0 with the Extension Surface/Point/Contract/Context Schema/Fragment, relocatable PTX ABI, and minimum Search Image package contract, then run `EXT-PTX-001` and `EXT-CONTRACT-001` through the exact public CUDA-JS path. Compare linked PTX modules with a fused/generated-source control before production extension implementation, followed by `SCHED-001`, `TT-001`, and the exact compatible-pair capsule.
 
 ## Current blockers and claim limits
 
 - The complete extension-capable Search IR and extension representation are not accepted.
+- The PTX fragment ABI, symbol compatibility rules, deterministic link identity, and separate-link cost have not yet passed `EXT-PTX-001`/`EXT-CONTRACT-001`.
 - Domain, policy, evaluator, full memory/resource, scheduler, output, persistence/reroot, and execution-package contracts remain incomplete.
 - The prototype covers a fixed deterministic two-action scalar-value domain and node-capacity exhaustion only.
 - No representative evaluator, workload, profiler, search-quality, cross-GPU, cancellation, device-loss, reclamation, or complete sanitizer evidence exists.

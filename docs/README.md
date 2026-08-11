@@ -59,7 +59,7 @@ finite specialized Search Image
 
 Binding, compatibility resolution, composition, and memory planning occur before ignition. Active search remains device-closed; unbound points target zero abstraction overhead and bound fragments target no generic dispatch beyond intrinsic work.
 
-The expanded prior-art record identifies cuVS JIT-LTO and cuFFT LTO callbacks as close methodology precedents, nvJitLink/NVRTC as CUDA-JS-owned platform substrate, CUDA Graphs as a scheduler candidate, cuCollections as a transposition-table benchmark/source-donor candidate, and CCCL/libcu++/CUB as low-level CUDA primitives. None is promoted into a mandatory higher-level active-search dependency by this proposal.
+The expanded prior-art record identifies cuVS JIT-LTO and cuFFT LTO callbacks as close methodology precedents, nvJitLink/NVRTC as CUDA-JS-owned platform substrate, CUDA Graphs as a scheduler candidate, cuCollections as a transposition-table benchmark/source-donor candidate, and CCCL/libcu++/CUB as low-level CUDA primitives. Relocatable PTX—not LTO—is selected for the version-zero CUDA-MCGS fragment experiment; none of the higher-level libraries is promoted into a mandatory active-search dependency.
 
 ## Repository split references
 
