@@ -41,6 +41,7 @@
 
 - [`architecture/REPOSITORY_TOPOLOGY.md`](architecture/REPOSITORY_TOPOLOGY.md) — peer repository ownership, artifact flow, compatibility, and test responsibilities.
 - [`research/2026-08-10-cuda-js-assumption-audit.md`](research/2026-08-10-cuda-js-assumption-audit.md) — technical corrections to the initial CUDA-JS sketch.
+- [`research/2026-08-10-cuda-js-foundation-result.md`](research/2026-08-10-cuda-js-foundation-result.md) — verified local CUDA-JS foundation plan and its public interop consequences.
 
 ## Authority
 

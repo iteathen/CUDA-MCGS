@@ -7,6 +7,7 @@ Research records external evidence that may affect UMCGS. It does not govern the
 ## CUDA-JS runtime boundary
 
 - [`2026-08-10-cuda-js-assumption-audit.md`](2026-08-10-cuda-js-assumption-audit.md) — official-source audit of the initial CUDA-JS sketch, including Node-API/JIT boundaries, NVRTC scope, managed/mapped memory, host micro-batching, atomic publication, and CUDA context-health implications.
+- [`2026-08-10-cuda-js-foundation-result.md`](2026-08-10-cuda-js-foundation-result.md) — exact local CUDA-JS foundation result, experiment order, artifact hashes, claim limits, and backend-neutral consequences for the UMCGS interop contract.
 
 ## Prior art
 

@@ -13,6 +13,7 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - The generic graph-search framework—not chess or another first domain—is the first UMCGS product.
 - UMCGS owns Search IR, search semantics, finite search-resource planning, specialized search device programs, search conformance, and the UMCGS-to-CUDA-JS adapter/package contract.
 - Generic Node.js/CUDA Driver runtime behavior belongs to the independent peer `CUDA-JS`; dependency direction is one-way through versioned public artifacts.
+- CUDA-JS has a verified local foundation plan at `77090a981fabb547d9e1a98d76213f2048e81ef2`; UMCGS consumes only its future public capabilities and exact artifacts, not its private Node/Worker/backend design.
 - Active search remains device-closed after ignition. Concrete engines are finite and resource-planned; contracts are universal and generated hot paths are specialized.
 - Engineering decisions begin with an explicit contract and material specification-obligation map.
 - Hard gates are evaluated before mission objectives, supporting qualities, and process costs. Weighted scoring cannot make an invalid path valid.
@@ -49,21 +50,29 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - UMCGS-to-CUDA-JS execution-package contract: not yet accepted.
 - CUDA-JS repository charter/bootstrap: prepared locally; remote repository creation/publication pending.
 
-## Prepared CUDA-JS bootstrap
+## Prepared CUDA-JS foundation
 
 - Intended private repository: `iteathen/CUDA-JS`.
-- Local bootstrap Git commit: `cd44a3da58fad67153f8123525fcb9ec3bddab9f`.
-- Bootstrap includes charter, repository ADR, architecture proposal, technical assumption audit, version-zero runtime contract map, agent guidance, validation, and standard product areas.
-- Account-level GitHub repository creation is not exposed by the connected GitHub capability and no authenticated local GitHub CLI/token is available. This is recorded as a publication blocker, not falsely reported as completed.
+- Exact local planning commit: `77090a981fabb547d9e1a98d76213f2048e81ef2`.
+- The foundation is Node-FFI-first, schema-generated, capability-safe, and actor-owned; `EXP-000` is the GPU-free first executable gate.
+- Verified bundle: `CJS-FND-77090a9.bundle`, SHA-256 `39dc57ea37fac71522b99090945b232173f65676f3421f4e6ea4baa84ca41ad3`.
+- Verified tracked-tree ZIP: `CJS-FND-77090a9.zip`, SHA-256 `419cd4453cccd489da6475836f911fc3d8f39ca2a3286b10f63df9db12913408`.
+- Verified handoff: `CJS-FND-77090a9-HO.md`, SHA-256 `43c68aebe508d227ca8d35422d56d0f4f407423d29151ae6e9476cb40266192b`.
+- The private remote still does not exist. This exact local authority is evidence for UMCGS interop planning, not a published CUDA-JS runtime contract.
 
 ## Current next boundary
 
-Define and adversarially validate the version-zero UMCGS-to-CUDA-JS execution-package contract using the accepted engineering contract, obligation map, hard gates, contextual value ordering, candidate-path comparison, P1 priority, conformance ownership, error/lifetime rules, universal token-backpressure practice floor, and a durable cross-repository authority-reading map; revise the SPEC-V0 focus-branch/test/document map accordingly; publish the prepared CUDA-JS bootstrap when the private remote exists.
+Draft and adversarially validate the version-zero UMCGS-to-CUDA-JS execution-package contract against the exact CUDA-JS foundation result. Express every runtime dependency as a public versioned capability, evidence profile, opaque resource requirement, lifecycle/error/teardown contract, and compatible artifact pair. Do not encode Node FFI, Worker actors, dynamic-library paths, or other CUDA-JS-private mechanisms.
+
+Final acceptance remains blocked until the CUDA-JS remote/public contract exists and its GPU-free and CUDA-specific foundation experiments pass.
 
 ## Current risks and unknowns
 
 - No project license has been selected. Third-party implementation reuse still requires exact license/provenance review, and public release requires a distribution license.
-- CUDA-JS JIT ABI support, memory baseline, event-loop completion, compilation/linking, packaging, and context-health behavior remain open in the peer repository.
+- CUDA-JS `EXP-000` has not yet qualified the Node-FFI host substrate on official Node.js 26.7.0.
+- CUDA-JS CUDA-specific ABI, context, memory, launch, completion, error-health, compiler/linker, cache, strict-JIT, and platform claims remain experiment-gated.
+- The CUDA-JS private remote and accepted public capability contract do not yet exist.
 - UMCGS scheduling, graph layout, pressure, evaluator ABI, device teardown, and exact capsule budgets remain open pending search specifications and experiments.
-- Cross-repository release automation and exact compatibility policy are not yet accepted.
+- Cross-repository release automation and exact compatible-pair policy are not yet accepted.
 - Candidate prior-art performance claims have not been reproduced on target hardware.
+
