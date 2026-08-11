@@ -1,6 +1,6 @@
 # Pull-request review record
 
-Use this only when review evidence must survive beyond the normal GitHub review/comment: independent or high-consequence review, stabilization/release, cross-session continuation, contested engineering decisions, disputed findings, material decision/test/token/cleanup debt, large focus-branch integration, or exact-head owner authorization.
+Use this only when review evidence must survive beyond the normal GitHub review/comment: independent or high-consequence review, stabilization/release, cross-session continuation, contested authority/engineering decisions, disputed findings, material document-reading/decision/test/token/cleanup debt, large focus-branch integration, or exact-head owner authorization.
 
 ## Review identity
 
@@ -22,6 +22,26 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Intended integration outcome and consumers:
 - Global invariants and closure criteria:
 - Explicit non-goals and closure effect:
+
+## Selective specification and agent-file reading review
+
+- Task signature and final changed surface:
+- Mandatory operating kernel:
+- Root-to-target `AGENTS.md` instruction chains for every repository/path:
+- Tool adapters followed to canonical authority:
+- Registry, index, manifest, stable-ID, repository-search, and reference discovery:
+- Governing documents with status, owner, scope, version, exact revision, and supersession:
+- Triggered specialist doctrine and objective trigger:
+- Material producer/consumer/dependency/adapter/generated/persistence/lifecycle/test/package/cleanup adjacency:
+- Applicability dispositions and reading depths:
+- Definitions, normative references, conditions, exceptions, lifecycle/failure/resource/compatibility/security/cleanup/conformance sections followed to semantic closure:
+- Material near misses excluded and scope-based reasons:
+- Missing, conflicting, stale, inaccessible, or unimplementable authority:
+- Scope/owner/repository/contract/resource/failure/oracle changes and reading-map invalidations:
+- Final pre-claim authority refresh:
+- Remaining document-reading debt and effect on the claim:
+
+Reject both recursive indiscriminate reading and shallow reading limited to named files. An accepted document outside its scope is not applicable; a proposal, architecture note, example, implementation, test, plan, PR description, or summary is not accepted authority by itself.
 
 ## Engineering contract and specification alignment
 
@@ -53,7 +73,7 @@ Use this only when review evidence must survive beyond the normal GitHub review/
 - Integration owner and integration spine:
 - Branch map / exact branch IDs, owners, inputs, outputs, dependencies, and statuses:
 - Full-attention sizing evidence:
-- Shared contracts, decisions, value order, oracles, and generated sources:
+- Shared contracts, decisions, value order, oracles, generated sources, and reading maps:
 - Parallel branches and non-overlapping write/test surfaces:
 - Branches accepted / integrated / blocked / invalidated / superseded / deferred / removed from scope:
 - Contradictions and dispositions:
@@ -103,17 +123,18 @@ Reject token “efficiency” that preserves broad claims while cutting required
 
 - Changed files/renames/deletions accounted for:
 - Unexpected ancestry or inherited changes:
-- Generated/schema/manifest/dependency/workflow/packaging/decision/test effects:
+- Generated/schema/manifest/dependency/workflow/packaging/authority/decision/test effects:
 - Binary, unavailable, truncated, or excluded surfaces:
 
 ## Plan/focus-branch execution fidelity
 
 - Branch/node/owner/exact input revision:
 - Readiness and minimal context:
+- Authority closure at mutation time:
 - Obligation/decision and selected path implemented:
 - Expected versus actual effects and preserved value ordering:
 - Operations, falsifiers, variations, deviations, and outcome:
-- Specification/decision/oracle changes, parent revisions, and dependent invalidations:
+- Specification/decision/oracle/reading-map changes, parent revisions, and dependent invalidations:
 - Downstream outputs/revisions and partial-state status:
 
 ## Semantic and integration review
@@ -128,7 +149,7 @@ Reject token “efficiency” that preserves broad claims while cutting required
 ## Cleanup and disposition review
 
 - Protected pre-existing/user/shared/authority/evidence/recovery state:
-- Decision/token records, local files, tracked/generated/build/cache/package state:
+- Reading/decision/token records, local files, tracked/generated/build/cache/package state:
 - Provisional tests, fixtures, logs, instrumentation, and test artifacts:
 - Semantic/Git branches, worktrees, stashes, refs, and configuration:
 - Remote PR/issue/review/claim/dependent state:
@@ -138,6 +159,7 @@ Reject token “efficiency” that preserves broad claims while cutting required
 
 ## Evidence
 
+- Authority-closure and final-refresh evidence:
 - Focused, owner/contract, integration-smoke, and triggered deep evidence:
 - Branch-output and cross-branch integration checks:
 - CI/workflows for exact head and duplicate/stale-run accounting:
@@ -153,7 +175,8 @@ Reject token “efficiency” that preserves broad claims while cutting required
 |---|---|---|---|---|---|
 
 - Requested changes/review threads reconciled:
-- Invalidated/unintegrated decisions and focus branches reconciled:
+- Invalidated/unintegrated authority, decisions, and focus branches reconciled:
+- Document-reading debt reconciled:
 - Decision debt reconciled:
 - Test debt reconciled:
 - Token debt reconciled:
@@ -166,7 +189,7 @@ Reject token “efficiency” that preserves broad claims while cutting required
 - Required independent approval or owner exception:
 - Proposed merge method and rationale:
 - Required checks/protections/queue:
-- Engineering-decision/parent/focus-branch/test/token closure effect:
+- Authority/engineering-decision/parent/focus-branch/test/token closure effect:
 - Issue closure effect:
 - Git branch/worktree/dependent/artifact/permission/cleanup effect:
 - Conditions invalidating this review:
@@ -175,8 +198,9 @@ Reject token “efficiency” that preserves broad claims while cutting required
 
 - Integrated target SHA and reviewed-head mapping:
 - Target tree/result verified:
-- Engineering-decision/parent/focus-branch/test/token maps point to integrated revision:
+- Governing authority/index/registry/status state verified:
+- Reading/engineering-decision/parent/focus-branch/test/token maps point to integrated revision:
 - Target checks/deployment/packaging verified:
 - Issue/branch/worktree/dependent state:
-- Temporary decision/test/token/diagnostic/process/device/credential/artifact/external-resource disposition:
-- Retained state / decision debt / test debt / token debt / cleanup debt / remaining limits:
+- Temporary reading/decision/test/token/diagnostic/process/device/credential/artifact/external-resource disposition:
+- Retained state / document-reading debt / decision debt / test debt / token debt / cleanup debt / remaining limits:

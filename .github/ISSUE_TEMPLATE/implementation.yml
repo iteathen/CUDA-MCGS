@@ -1,5 +1,5 @@
 name: Implementation
-description: Implement an accepted UMCGS specification through governed engineering judgment, token backpressure, focus branches, testing, cleanup, and integration
+description: Implement an accepted UMCGS specification through selective authority reading, engineering judgment, token backpressure, focus branches, testing, cleanup, and integration
 title: "[Implementation]: "
 labels: ["implementation"]
 body:
@@ -8,6 +8,13 @@ body:
     attributes:
       label: Accepted specification
       placeholder: docs/specs/...
+    validations:
+      required: true
+  - type: textarea
+    id: document-reading
+    attributes:
+      label: Specification and agent-file applicability
+      description: State the task signature, mandatory kernel, root-to-target AGENTS.md chains, registry/index/manifest/search discovery, governing documents with status/scope/exact revision, triggered specialist doctrine, material producer/consumer/generated/lifecycle/test/cleanup adjacency, normative references/semantic closure, material not-applicable reasons, missing/conflicting authority, rerouting triggers, final authority refresh, and whether a durable document-reading record is required.
     validations:
       required: true
   - type: textarea
@@ -70,7 +77,7 @@ body:
     id: cleanup
     attributes:
       label: Cleanup inventory, protected state, and final disposition
-      description: Identify protected state; expected decision records, files, provisional tests/fixtures/logs, branches/worktrees/stashes, remote PR/issues/reviews, generated/build artifacts, processes/device state, credentials, backups/persistence, external resources, dispositions, safeguards, verification, and debt.
+      description: Identify protected state; expected reading/decision records, files, provisional tests/fixtures/logs, branches/worktrees/stashes, remote PR/issues/reviews, generated/build artifacts, processes/device state, credentials, backups/persistence, external resources, dispositions, safeguards, verification, and debt.
     validations:
       required: true
   - type: dropdown
@@ -86,6 +93,6 @@ body:
     id: validation
     attributes:
       label: Completion evidence and stop conditions
-      description: Include obligation/gate satisfaction, selected-path falsifiers, actual-effect inspection, test evidence/counts/intents/clusters, branch integration, token-practice-floor adherence, backpressure actions, resource/failure/compatibility checks, cleanup verification, debts, and conditions to pause/narrow/split/revise/invalidate/rollback/fail/block.
+      description: Include authority-closure and final-refresh evidence, obligation/gate satisfaction, selected-path falsifiers, actual-effect inspection, test evidence/counts/intents/clusters, branch integration, token-practice-floor adherence, resource/failure/compatibility checks, cleanup verification, document-reading/decision/test/token debt, and conditions to pause/narrow/split/revise/invalidate/rollback/fail/block.
     validations:
       required: true

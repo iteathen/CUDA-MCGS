@@ -184,3 +184,26 @@
 180. Evaluate token efficiency by quality-adjusted lifecycle progress, rework, escaped defects, repeated retrieval, repair cycles, missed integration, unsafe residue, and continuation cost—not raw token count.
 181. If token pressure would require violating the practice floor, stop mutation and narrow, split, extend, hand off, or report a blocker; never silently trade away required good practice.
 182. Stop spending only when further tokens cannot materially improve the verified result, evidence, risk, cleanup, priority, or next action—not merely because an initial estimate was reached.
+183. Before task-specific deep reading, use `SPEC_AND_AGENT_FILE_READING.md` to build the smallest authority-complete document set rather than reading all documentation or only named files.
+184. Read the mandatory operating kernel, then discover every applicable `AGENTS.md` from repository root toward each target path; use the union for multiple paths and each repository’s own chain for cross-repository work.
+185. Treat tool-specific instruction files as routing adapters unless accepted authority explicitly gives them independent scope; do not let them create competing rules.
+186. Use registry, indexes, manifests, stable IDs, exact paths/symbols, repository search, and document references together to discover governing authority; no single discovery mechanism is sufficient by itself for material work.
+187. Check a document’s status, owner, scope, version, revision, and supersession before applying its content; accepted status does not make a document applicable outside its declared scope.
+188. Classify plausible documents as kernel, governing, triggered, adjacent-check, evidence-only, not-applicable, superseded/archive, or blocked/missing before deciding reading depth.
+189. Use D0 identity and D1 applicability scans for candidate documents; read governing and materially triggered documents to at least D2 semantic closure, and read the complete document when it is foundational, tightly coupled, ambiguous, critical, or not safely separable.
+190. Semantic closure includes required definitions, normative references, conditions, exceptions, ownership, lifecycle, failure/resource behavior, compatibility, security, cleanup, and conformance evidence; an isolated clause or search snippet is not enough when these affect meaning.
+191. Do not use a proposal, research note, architecture explanation, example, implementation, test, plan, PR description, handoff, or summary as accepted normative authority unless higher authority explicitly says so.
+192. Read the governing method as well as any template used for it; a template does not replace its agent doctrine.
+193. Determine specialist doctrine from semantic effects—public contract, persistence, foundational representation, CUDA/concurrency, native/JIT, security, performance, testing, cleanup, PR/merge, release, or external reuse—not merely filenames or request wording.
+194. For every material target owner, scan affected producers, consumers, dependencies, adapters, generated forms, persistence, lifecycle/recovery, tests, packaging, and cleanup; widen beyond one hop while material consequences continue.
+195. Do not create a negative ledger of every unrelated repository file; record governing/triggered documents, material adjacency, and plausible near misses whose exclusion affects confidence.
+196. A `not-applicable` disposition requires a scope-, owner-, operation-, or consequence-based reason when material; document length, inconvenience, or token cost is not a valid reason.
+197. When uncertain whether a document applies and the consequence of omission is material, read it or block the operation until applicability is resolved.
+198. Treat unspecified material behavior as a specification gap or transparent derived requirement, not automatic permission to choose the convenient implementation.
+199. Re-run instruction discovery, trigger scanning, adjacency, and applicability when scope expands to a new path/owner/repository, a public contract or resource model changes, a failure reveals a new boundary, the test oracle changes, or governing authority is revised.
+200. Record exact document revisions and invalidate derivative plans, summaries, generated artifacts, tests, caches, and reviews when governing meaning changes.
+201. Before material mutation, prove authority closure: instruction chains, direct authority, required normative references, triggered doctrine, material adjacency, applicability dispositions, and no unresolved missing/conflicting authority.
+202. Before acceptance, PR readiness, merge, release, or handoff, compare the final changed surface with the original reading map and refresh newly triggered or changed authority.
+203. Keep reading outputs compact: normalized obligations, applicability dispositions, exact sources, exclusions, and invalidation triggers—not document transcripts.
+204. Use a durable document-reading record only when cross-session, cross-agent, cross-repository, critical, disputed, or review-sensitive work has a real consumer; routine obvious routing needs no ledger.
+205. Material document-reading debt—unknown instruction scope, unread governing authority, unfollowed normative references, unclassified triggered doctrine, or unresolved missing/conflicting documentation—blocks completion.

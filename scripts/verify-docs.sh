@@ -34,6 +34,7 @@ required=(
   agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md
   agent_files/general_foundation/FOCUS_BRANCHES.md
   agent_files/general_foundation/TOKEN_DISCIPLINE.md
+  agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md
   agent_files/general_foundation/CONTEXT_ROUTING.md
   agent_files/general_foundation/PLAN_EXECUTION.md
   agent_files/general_foundation/TESTING.md
@@ -70,6 +71,7 @@ required=(
   agent_files/templates/assessment-and-plan.template.md
   agent_files/templates/focus-branch.template.yaml
   agent_files/templates/token-budget.template.yaml
+  agent_files/templates/document-reading.template.yaml
   agent_files/templates/test-batch.template.yaml
   agent_files/templates/plan-execution.template.yaml
   agent_files/templates/cleanup-disposition.template.yaml
@@ -111,6 +113,7 @@ required=(
   docs/decisions/ADR-0014-extract-cuda-js-runtime.md
   docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md
   docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md
+  docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md
   docs/development/README.md
   docs/research/README.md
   docs/research/2026-08-10-cuda-js-assumption-audit.md
@@ -181,4 +184,4 @@ if command -v ruby >/dev/null 2>&1; then
   ruby -e 'require "yaml"; Dir[".github/ISSUE_TEMPLATE/*.{yml,yaml}"].each { |f| YAML.safe_load_file(f, permitted_classes: [], aliases: false) }'
 fi
 
-printf 'documentation, organization, engineering-judgment, focus-branch, universal-token-backpressure, testing, agent-governance, and cleanup checks passed\n'
+printf 'documentation, selective-authority-reading, discoverability, organization, engineering-judgment, focus-branch, universal-token-backpressure, testing, agent-governance, and cleanup checks passed\n'

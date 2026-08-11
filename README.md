@@ -34,7 +34,9 @@ No production implementation should be inferred from the current repository.
 - Token use is continuous backpressure on **every** task, including routine work.
 - Backpressure limits duplication, repeated evidence, fragmented work, cold context, optional breadth, and work in flight before it reduces scope—and reduces scope before it threatens rigor.
 - Every task retains a risk-appropriate minimum practice floor: authority/current-state inspection, coherent scope, decisive verification, actual-effect inspection, relevant testing, cleanup, and honest limits.
-- Routine work uses an implicit micro-budget; substantial/critical work preserves explicit reserves and split/handoff rules.
+- Agents read the smallest **authority-complete** document set: mandatory kernel and path instructions, direct governing authority, required normative references, triggered specialist doctrine, and material producer/consumer/lifecycle/test adjacency.
+- Accepted documents apply only within scope; proposals, research, architecture, examples, tests, plans, and summaries remain beneath accepted authority.
+- Routine work uses an implicit micro-budget and no document ledger; substantial/critical work preserves exact applicability, revision, invalidation, and final authority refresh where another consumer needs it.
 - Soft token estimates trigger replanning rather than automatic stopping or reduced rigor; reduced evidence narrows the claim.
 - Consolidated testing banks intents, shares expensive setup, preserves case identity, reuses exact evidence, and repairs root-cause clusters.
 - Governed execution uses dependency-ready nodes, expected-before-actual inspection, explicit deviations, and no invalid partial state.
@@ -47,6 +49,8 @@ No production implementation should be inferred from the current repository.
 
 - [`AGENTS.md`](AGENTS.md)
 - [`agent_files/README.md`](agent_files/README.md)
+- [`agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md)
+- [`agent_files/general_foundation/CONTEXT_ROUTING.md`](agent_files/general_foundation/CONTEXT_ROUTING.md)
 - [`agent_files/general_foundation/TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md)
 - [`agent_files/general_foundation/ENGINEERING_JUDGMENT.md`](agent_files/general_foundation/ENGINEERING_JUDGMENT.md)
 - [`agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md`](agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md)
@@ -55,8 +59,7 @@ No production implementation should be inferred from the current repository.
 - [`agent_files/general_foundation/FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md)
 - [`agent_files/general_foundation/TESTING.md`](agent_files/general_foundation/TESTING.md)
 - [`docs/PROJECT_CHARTER.md`](docs/PROJECT_CHARTER.md)
-- [`docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md`](docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md)
-- [`docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md`](docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md)
+- [`docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md`](docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md)
 - [`docs/architecture/REPOSITORY_TOPOLOGY.md`](docs/architecture/REPOSITORY_TOPOLOGY.md)
 - [`STATUS.md`](STATUS.md)
 - [`next_step.yaml`](next_step.yaml)
