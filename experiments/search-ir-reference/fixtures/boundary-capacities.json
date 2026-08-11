@@ -1,0 +1,14 @@
+{
+  "id": "minimum-safe-capacities",
+  "capacities": {
+    "action-bytes": 1,
+    "active-paths": 1,
+    "diagnostics": 1,
+    "outputs": 1,
+    "parent-edges": 1,
+    "state-bytes": 1,
+    "state-nodes": 1,
+    "transposition-slots": 1,
+    "work-queue": 1
+  }
+}

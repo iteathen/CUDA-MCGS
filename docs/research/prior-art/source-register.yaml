@@ -9,8 +9,8 @@
       "license": "Apache-2.0",
       "inspected_paths": [
         "README.md",
-        "mctx/_src/tree.py",
-        "mctx/_src/search.py",
+        "mctx/_src/tree module",
+        "mctx/_src/search module",
         "LICENSE"
       ],
       "disposition": "reference_and_benchmark",
@@ -23,7 +23,7 @@
       "license": "CC-BY-4.0",
       "inspected_paths": [
         "README.md",
-        "src/mctsnc.py",
+        "src/mctsnc module",
         "LICENSE"
       ],
       "disposition": "benchmark_and_kernel_reference_no_code_reuse_without_decision",

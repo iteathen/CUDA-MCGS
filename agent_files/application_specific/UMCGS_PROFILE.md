@@ -67,4 +67,4 @@ Before adapting third-party implementation, record exact revision/license and ma
 
 ## Current next boundary
 
-Define and adversarially validate the version-zero UMCGS-to-CUDA-JS execution-package contract, including obligation ownership, hard gates/value ordering, compatibility/cache identity, conformance, errors, lifetimes, cancellation, and teardown; then revise the SPEC-V0 branch/test map before production implementation.
+Define the domain, policy, evaluator, full resource/memory, output, and execution-package semantics that the accepted Search IR 0.1.0 must compose before production lowering. Preserve the CUDA-free Windows/Linux reference gate, then select an exact public CUDA-JS revision for the CUDA-MCGS-to-CUDA-JS compatibility contract.

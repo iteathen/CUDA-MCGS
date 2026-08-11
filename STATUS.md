@@ -1,78 +1,74 @@
-# UMCGS Status
+# CUDA-MCGS Status
 
 **Status:** Informational
 
-**Updated:** 2026-08-10
+**Updated:** 2026-08-11
 
 ## Phase
 
-Private pre-release framework definition and evidence gathering. `main` is the integration trunk for short-lived `feature/*` and `agent/*` branches. No production runtime implementation or final UMCGS component decomposition has been accepted.
+Private pre-release framework definition and bounded evidence gathering. `main` is the integration trunk. No production runtime component decomposition or implementation has been accepted.
 
 ## Accepted project state
 
-- The generic graph-search framework—not chess or another first domain—is the first UMCGS product.
-- UMCGS owns Search IR, search semantics, finite search-resource planning, specialized search device programs, search conformance, and the UMCGS-to-CUDA-JS adapter/package contract.
-- Generic Node.js/CUDA Driver runtime behavior belongs to the independent peer `CUDA-JS`; dependency direction is one-way through versioned public artifacts.
-- CUDA-JS has a verified local foundation plan at `77090a981fabb547d9e1a98d76213f2048e81ef2`; UMCGS consumes only its future public capabilities and exact artifacts, not its private Node/Worker/backend design.
-- Active search remains device-closed after ignition. Concrete engines are finite and resource-planned; contracts are universal and generated hot paths are specialized.
-- Engineering decisions begin with an explicit contract and material specification-obligation map.
-- Hard gates are evaluated before mission objectives, supporting qualities, and process costs. Weighted scoring cannot make an invalid path valid.
-- The contextual fallback orders authority/legality/ethics, unacceptable irreversible harm, semantic correctness and hard mission bounds, mission-sustaining reliability/compatibility/operability, mission quality/performance, supporting qualities, then delivery/process convenience.
-- A subsystem may promote speed, accuracy, availability, or another concern into a higher gate only through explicit purpose, threshold, consequence, owner, evidence, and revisit trigger.
-- Credible no-change, minimal, proposed, materially different, experiment/staged, and fallback paths are compared where material; invalid and Pareto-dominated paths are removed for stated reasons.
-- Work is prioritized as P0 containment, P1 gate/foundation, P2 information/risk/dependency unlock, P3 mission value/measured efficiency, and P4 supporting quality/polish.
-- Token use is continuous backpressure on every task, including routine work.
-- Backpressure reduces duplicate context/evidence, fragmented work, optional breadth/polish, and scope before it threatens required rigor.
-- Every task preserves a risk-appropriate minimum practice floor: request/authority, current-state inspection, coherent scope, expected result, decisive verification, actual-effect inspection, relevant testing, cleanup, and honest limits.
-- Routine work uses an implicit micro-budget with no mandatory ledger. Substantial/critical work preserves explicit reserves and split/handoff triggers.
-- Soft token estimates are replan signals rather than authority to skip practices. Essential evidence, safety, correctness, cleanup, or handoff may justify an explicit extension followed by narrowing or split to restore reserve.
-- Agents read the smallest authority-complete document set rather than every document or only the files named in the request.
-- Every target path’s instruction chain, direct governing authority, required normative references, triggered specialist doctrine, and material producer/consumer/lifecycle/test/cleanup adjacency are discovered before material mutation.
-- Documents are classified by applicability and read at proportional depth; governing and materially triggered documents are read to semantic closure.
-- Accepted status does not imply universal applicability. Proposals, research, architecture, examples, implementation, tests, plans, and summaries remain in their proper authority roles.
-- Scope, owner, repository, contract, resource, failure, oracle, or authority changes trigger document re-routing and evidence invalidation.
-- Routine work needs no document ledger when applicability is obvious. Substantial/critical/cross-repository work preserves exact reading coverage when another consumer needs it.
-- Reduced evidence narrows the claim; sampling or lower test tiers cannot support an unchanged complete/release-grade claim.
-- Adversarial assessment, focus branches, consolidated test capsules, governed execution, cleanup, sanity, and exact-head guarded integration remain binding.
-- Material specification/decision/document-reading/test/token debt, invalid partial state, unsafe cleanup debt, and unintegrated branch outputs block completion.
-- Repository and component organization assumes mature large-project scale from inception.
-- Project license selection is deferred and does not block original private pre-release work.
+- The generic graph-search framework, not a first game or domain, is the CUDA-MCGS product.
+- CUDA-MCGS owns Search IR, search semantics, finite search-resource planning, specialized search device programs, search conformance, and the CUDA-MCGS-to-CUDA-JS adapter/package contract.
+- Generic Node.js/CUDA Driver behavior belongs to the independent peer `iteathen/CUDA-JS`. Dependency remains one-way through versioned public artifacts and compatibility manifests.
+- Active search remains device-closed after ignition. Concrete engines are finite and resource-planned; universal contracts lower into specialized generated hot paths.
+- [`docs/specs/SPEC-0001-device-search-publication-and-resources.md`](docs/specs/SPEC-0001-device-search-publication-and-resources.md) is accepted authority for backend-neutral publication channels, state-node/parent-edge ownership, identity-before-path-cycle ordering, finite-resource accounting, typed exhaustion, partial-result validity, and scheduler-neutral conformance.
+- [`docs/specs/SPEC-0002-search-ir-and-reference-semantics.md`](docs/specs/SPEC-0002-search-ir-and-reference-semantics.md) accepts the concrete backend-neutral Search IR 0.1.0 representation, strict normalization, canonical identity, and CUDA-free deterministic reference semantics.
+- SPEC-0001 and SPEC-0002 do not authorize a generated ABI, production CUDA lowering, scheduler, graph store, resource planner, evaluator, adapter, or CUDA-JS integration.
+- Engineering judgment, adversarial assessment, focus-branch sizing, token backpressure, consolidated testing, governed execution, cleanup, sanity, and exact-head integration remain binding.
+- Repository and component organization assumes mature-project scale from inception.
+- Project license selection remains deferred for original private pre-release work.
+
+## Bounded CUDA-only experiment
+
+The standalone experiment at [`experiments/cuda-device-mcgs-prototype/`](experiments/cuda-device-mcgs-prototype/) is retained as non-production evidence. It has no Node.js dependency and does not exercise or implement CUDA-JS.
+
+Exact final local evidence:
+
+- source SHA-256 `9D1F9F9C196531DDA241966761657760D96D9E3800B82EDEA617E1CB4E84EDA3`;
+- Release binary SHA-256 `FE106092751A4E53C472B8B28E2833C1896C0FA220578B7CB0A6FB89429C1443`;
+- CUDA 13.3 / Driver API 13030 / GeForce GTX 1660 Ti / compute capability 7.5;
+- ordinary invariant capsule: 8 expected, 8 discovered, 8 executed, 8 passed, zero skips;
+- five additional unchanged full-workload trials: 8/8 each;
+- global-ticket and warp-batched-ticket mechanisms both preserved the stable semantic invariants;
+- warp batching reduced ticket claims but established no stable timing win and does not select a production scheduler;
+- exact-final-binary Compute Sanitizer memcheck remained incomplete after a bounded reduced-workload attempt.
+
+Build output is ignored, reproducible task state and is removed after final evidence reconciliation. Production code may not import experiment internals.
+
+## Bounded Search IR reference
+
+The CUDA-free reference at [`experiments/search-ir-reference/`](experiments/search-ir-reference/) validates the accepted Search IR 0.1.0 contract independently from the native prototype and CUDA-JS.
+
+Exact local Windows evidence:
+
+- Node.js 26.7.0 on Windows x64;
+- 18 expected, discovered, and executed cases; 18 passed with zero skips;
+- canonical normalized bytes: `7749`;
+- Search IR SHA-256 `bd6679178c6754fe9b06d6fa54d038166b7ef39e32fb5f51513cc303cfd63a96`;
+- baseline, canonical-order, minimum-capacity, eight fail-closed mutations, ordinary, publication, transposition, path-cycle, forced-exhaustion, scheduler-parity, and oracle-sensitivity cases all pass.
+
+The same capsule is required on `windows-latest` and `ubuntu-latest`. Ubuntu establishes only backend-neutral normalization/reference portability. Native Linux CUDA, GPU publication, sanitizers, resource cleanup, performance, and CUDA-JS integration remain untested.
 
 ## Current authority
 
-- Project charter: accepted and narrowed to UMCGS search ownership.
-- ADR-0001 through ADR-0014: accepted.
-- ADR-0015 engineering judgment, specification alignment, and value ordering: accepted.
-- ADR-0016 universal token backpressure and minimum practice floor: accepted.
-- ADR-0017 selective specification and agent-file reading: accepted.
-- Repository topology: accepted through ADR-0014 and documented in `docs/architecture/REPOSITORY_TOPOLOGY.md`.
-- Framework architecture overview and detailed version-zero contracts: proposals.
-- UMCGS-to-CUDA-JS execution-package contract: not yet accepted.
-- CUDA-JS repository charter/bootstrap: prepared locally; remote repository creation/publication pending.
-
-## Prepared CUDA-JS foundation
-
-- Intended private repository: `iteathen/CUDA-JS`.
-- Exact local planning commit: `77090a981fabb547d9e1a98d76213f2048e81ef2`.
-- The foundation is Node-FFI-first, schema-generated, capability-safe, and actor-owned; `EXP-000` is the GPU-free first executable gate.
-- Verified bundle: `CJS-FND-77090a9.bundle`, SHA-256 `39dc57ea37fac71522b99090945b232173f65676f3421f4e6ea4baa84ca41ad3`.
-- Verified tracked-tree ZIP: `CJS-FND-77090a9.zip`, SHA-256 `419cd4453cccd489da6475836f911fc3d8f39ca2a3286b10f63df9db12913408`.
-- Verified handoff: `CJS-FND-77090a9-HO.md`, SHA-256 `43c68aebe508d227ca8d35422d56d0f4f407423d29151ae6e9476cb40266192b`.
-- The private remote still does not exist. This exact local authority is evidence for UMCGS interop planning, not a published CUDA-JS runtime contract.
+- Project charter and ADR-0001 through ADR-0017: accepted.
+- Repository topology and the CUDA-JS peer split: accepted through ADR-0014.
+- SPEC-0001 device publication/graph/resource semantic contract: accepted.
+- SPEC-0002 Search IR 0.1.0 and deterministic reference semantics: accepted.
+- SPEC-0000 framework map: proposal input, not an implementable production contract.
+- Domain, policy, evaluator, full memory-plan, scheduler, output, and CUDA-MCGS-to-CUDA-JS package specifications: not yet accepted.
+- CUDA-JS now exists as a peer remote, but no exact released CUDA-MCGS/CUDA-JS compatible pair or CUDA-MCGS-owned adapter evidence has been accepted.
 
 ## Current next boundary
 
-Draft and adversarially validate the version-zero UMCGS-to-CUDA-JS execution-package contract against the exact CUDA-JS foundation result. Express every runtime dependency as a public versioned capability, evidence profile, opaque resource requirement, lifecycle/error/teardown contract, and compatible artifact pair. Do not encode Node FFI, Worker actors, dynamic-library paths, or other CUDA-JS-private mechanisms.
+Define the domain, policy, evaluator, full resource/memory, output, and execution-package contracts needed to compose Search IR 0.1.0 without accidental first-domain limits. Then resume the version-zero CUDA-MCGS-to-CUDA-JS contract against an exact public CUDA-JS revision and add the boundary capsule once, without copying CUDA-JS private mechanisms or its complete internal suite.
 
-Final acceptance remains blocked until the CUDA-JS remote/public contract exists and its GPU-free and CUDA-specific foundation experiments pass.
+## Current blockers and claim limits
 
-## Current risks and unknowns
-
-- No project license has been selected. Third-party implementation reuse still requires exact license/provenance review, and public release requires a distribution license.
-- CUDA-JS `EXP-000` has not yet qualified the Node-FFI host substrate on official Node.js 26.7.0.
-- CUDA-JS CUDA-specific ABI, context, memory, launch, completion, error-health, compiler/linker, cache, strict-JIT, and platform claims remain experiment-gated.
-- The CUDA-JS private remote and accepted public capability contract do not yet exist.
-- UMCGS scheduling, graph layout, pressure, evaluator ABI, device teardown, and exact capsule budgets remain open pending search specifications and experiments.
-- Cross-repository release automation and exact compatible-pair policy are not yet accepted.
-- Candidate prior-art performance claims have not been reproduced on target hardware.
-
+- Domain, policy, evaluator, full memory/resource, scheduler, output, persistence/reroot, and execution-package contracts remain incomplete.
+- The prototype covers a fixed deterministic two-action scalar-value domain and node-capacity exhaustion only.
+- No representative evaluator, workload, profiler, search-quality, cross-GPU, cancellation, device-loss, reclamation, or complete sanitizer evidence exists.
+- No production implementation, native Linux CUDA qualification, public release, exact compatible runtime pair, or release automation is claimed.

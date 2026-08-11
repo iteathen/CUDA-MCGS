@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.1.0/search-ir.schema.json",
+  "title": "CUDA-MCGS Search IR 0.1.0",
+  "description": "Backend-neutral semantic Search IR for SPEC-0001. Cross-field obligations are enforced by the normative normalizer.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "contract", "roles", "publicationChannels", "graph", "resources", "stop", "result", "identity"],
+  "properties": {
+    "schema": { "const": "cuda-mcgs.search-ir/0.1.0" },
+    "contract": { "const": "SPEC-0001/0.1.0" },
+    "roles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "publicationChannels": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/channel" }
+    },
+    "graph": { "$ref": "#/$defs/graph" },
+    "resources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/resource" }
+    },
+    "stop": { "$ref": "#/$defs/stop" },
+    "result": { "$ref": "#/$defs/result" },
+    "identity": { "$ref": "#/$defs/identity" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$" },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "$ref": "#/$defs/id" },
+        "to": { "$ref": "#/$defs/id" }
+      }
+    },
+    "channel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "producer", "consumers", "payloadOwner", "states", "initialState", "readyState", "terminalStates", "failureStates", "visibilityScope", "transitions", "progress"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "producer": { "$ref": "#/$defs/id" },
+        "consumers": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "payloadOwner": { "$ref": "#/$defs/id" },
+        "states": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "initialState": { "$ref": "#/$defs/id" },
+        "readyState": { "$ref": "#/$defs/id" },
+        "terminalStates": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "failureStates": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "visibilityScope": { "const": "search-device" },
+        "transitions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/transition" } },
+        "progress": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["observesStop", "boundedWait"],
+          "properties": {
+            "observesStop": { "const": true },
+            "boundedWait": { "const": true }
+          }
+        }
+      }
+    },
+    "graph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity", "stateNodes", "parentEdges", "cycles", "backup"],
+      "properties": {
+        "identity": {
+          "type": "object", "additionalProperties": false,
+          "required": ["owner", "verification", "transpositionScope"],
+          "properties": {
+            "owner": { "const": "domain-identity" },
+            "verification": { "const": "hash-plus-domain-equality" },
+            "transpositionScope": { "const": "search-incarnation" }
+          }
+        },
+        "stateNodes": {
+          "type": "object", "additionalProperties": false,
+          "required": ["owner", "uniqueness", "staleReferencePolicy"],
+          "properties": {
+            "owner": { "const": "graph-owner" },
+            "uniqueness": { "const": "one-ready-node-per-verified-identity" },
+            "staleReferencePolicy": { "const": "generation-checked" }
+          }
+        },
+        "parentEdges": {
+          "type": "object", "additionalProperties": false,
+          "required": ["owner", "statistics", "inFlightDistinctFromCompleted"],
+          "properties": {
+            "owner": { "const": "policy-worker" },
+            "statistics": { "const": "incoming-edge-local" },
+            "inFlightDistinctFromCompleted": { "const": true }
+          }
+        },
+        "cycles": {
+          "type": "object", "additionalProperties": false,
+          "required": ["lookupOrder", "membership", "response"],
+          "properties": {
+            "lookupOrder": { "const": ["resolve-identity", "evaluate-active-path"] },
+            "membership": { "const": "active-path" },
+            "response": { "enum": ["cutoff", "transform-value", "repetition-outcome", "bounded-history", "fail-capability"] }
+          }
+        },
+        "backup": {
+          "type": "object", "additionalProperties": false,
+          "required": ["owner", "dispositions", "exactlyOnce"],
+          "properties": {
+            "owner": { "const": "backup-owner" },
+            "dispositions": { "const": ["applied", "abandoned"] },
+            "exactlyOnce": { "const": true }
+          }
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "capacity", "unit", "counters", "admission", "failedReservationConsumesCapacity", "exhaustionCause"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "capacity": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "unit": { "$ref": "#/$defs/id" },
+        "counters": { "const": ["claimed", "published", "retired-unreclaimed", "failed-reservations", "high-water"] },
+        "admission": { "const": "bounded-reservation" },
+        "failedReservationConsumesCapacity": { "const": false },
+        "exhaustionCause": { "type": "string", "pattern": "^resource-exhausted/[a-z][a-z0-9-]*$" }
+      }
+    },
+    "stop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["states", "causes", "firstCauseAuthoritative", "admissionAfterStop", "claimedDisposition"],
+      "properties": {
+        "states": { "const": ["running", "stop-requested", "draining", "terminal"] },
+        "causes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+        "firstCauseAuthoritative": { "const": true },
+        "admissionAfterStop": { "const": "reject-resource-dependent" },
+        "claimedDisposition": { "const": ["apply-ready", "abandon-unready"] }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["partialClasses", "rankingInputs", "reports"],
+      "properties": {
+        "partialClasses": { "const": ["complete", "valid-partial", "no-valid-result"] },
+        "rankingInputs": { "const": ["ready-nodes", "ready-edges", "ready-evaluator-outputs", "applied-backups"] },
+        "reports": { "const": ["completion-class", "first-stop-cause", "completed-work-count", "resource-ledgers", "budget-satisfied", "diagnostics"] }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonicalization", "digest", "pathIndependent", "targetIndependent"],
+      "properties": {
+        "canonicalization": { "const": "utf8-json-sorted-keys-v1" },
+        "digest": { "const": "sha256" },
+        "pathIndependent": { "const": true },
+        "targetIndependent": { "const": true }
+      }
+    }
+  }
+}

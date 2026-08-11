@@ -80,6 +80,8 @@ CUDA-JS owns generic Driver entry points, binding backends, opaque resources, me
 
 ## Logical device pipeline
 
+The publication, graph/path ownership, finite-resource, stop, partial-result, and scheduler-neutral semantic obligations across this pipeline are governed by [`../specs/SPEC-0001-device-search-publication-and-resources.md`](../specs/SPEC-0001-device-search-publication-and-resources.md). The concrete pipeline and scheduler below remain architectural proposals.
+
 ```text
 select/reserve paths
         ↓
@@ -101,7 +103,7 @@ resource pressure and stop decision
         └────────────── loop on device
 ```
 
-The eventual search scheduling backend is deliberately not accepted yet. Persistent kernels, supported graph/tail-launch mechanisms, or another device-owned strategy must be evaluated against capability restrictions and measured behavior. A host micro-batch relaunch loop is not conforming when UMCGS progress depends on the host between iterations.
+The eventual search scheduling backend is deliberately not accepted yet. The disposable global-ticket versus warp-ticket comparison changed ticket-claim count but established no stable timing win. Persistent kernels, supported graph/tail-launch mechanisms, cooperative ownership, or another device-owned strategy must be evaluated against representative capabilities, resource profiles, search-quality equivalence, and measured behavior. A host micro-batch relaunch loop is not conforming when UMCGS progress depends on the host between iterations.
 
 ## Data ownership
 
@@ -126,7 +128,7 @@ These are UMCGS-generated layouts. They are not CUDA-JS public memory structures
 
 ## Reference backend
 
-A deterministic CPU interpreter of Search IR is proposed as a UMCGS semantic oracle only. CUDA-JS may have its own mock/reference runtime for generic lifecycle behavior, but that backend does not define search semantics or production performance.
+The CUDA-free deterministic Search IR 0.1.0 interpreter accepted by [`SPEC-0002`](../specs/SPEC-0002-search-ir-and-reference-semantics.md) is the current bounded CUDA-MCGS semantic oracle. It remains a disposable experiment rather than a production component. CUDA-JS may have its own mock/reference runtime for generic lifecycle behavior, but that backend does not define search semantics or production performance.
 
 ## Synthetic conformance domains
 

@@ -1,236 +1,173 @@
 {
-  "schema_version": 11,
-  "updated": "2026-08-10",
+  "schema_version": 13,
+  "updated": "2026-08-11",
   "status": "ready",
-  "parent_task_id": "SPEC-V0",
-  "parent_plan_version": 9,
-  "integration_owner": "docs/specs: UMCGS search-contract and peer-runtime integration spine",
-  "objective": "Define a versioned, backend-neutral package and compatibility contract that lets UMCGS execute a specialized device-closed search program through generic CUDA-JS without leaking search semantics into CUDA-JS or CUDA-JS private mechanisms into UMCGS.",
-  "ownership_boundary": "UMCGS owns search semantics, lowering, device closure, and the adapter; CUDA-JS owns generic Node/CUDA runtime capabilities and private implementation.",
-  "focus_branch": {
-    "id": "SPEC-V0-CUDAJS",
-    "title": "Define the UMCGS-to-CUDA-JS execution-package boundary",
-    "type": "contract",
-    "status": "ready",
-    "owner": "UMCGS interop-contract owner",
-    "objective": "Define a versioned, backend-neutral package and compatibility contract that lets UMCGS execute a specialized device-closed search program through generic CUDA-JS without leaking search semantics into CUDA-JS or CUDA-JS private mechanisms into UMCGS.",
-    "exact_input_revisions": {
-      "umcgs": "48f7b5f5fe125c16d966eaaa4968700900cd12fb",
-      "cuda_js_local_foundation": "77090a981fabb547d9e1a98d76213f2048e81ef2"
-    },
-    "scope": [
-      "UMCGS proposal specifications and compatibility manifests",
-      "public capability, evidence-profile, lifecycle, error, teardown, and artifact-pair semantics",
-      "cross-repository conformance ownership",
-      "documentation and planning only"
-    ],
-    "non_goals": [
-      "production UMCGS or CUDA-JS implementation",
-      "EXP-000 or any native/GPU experiment",
-      "CUDA-JS private backend, Worker, actor, library-path, or resource-layout design",
-      "third adapter repository"
-    ]
-  },
+  "parent_task_id": "MCGS-V0",
+  "parent_plan_version": 11,
+  "integration_owner": "docs/specs: CUDA-MCGS search-contract integration spine",
+  "objective": "Define the domain, policy, evaluator, full resource/memory, output, and execution-package contracts that must compose with accepted Search IR 0.1.0 before any production lowering.",
+  "ownership_boundary": "CUDA-MCGS owns search-semantic representation, reference interpretation, finite search-resource policy, generated lowering, and its CUDA-JS adapter; CUDA-JS owns only generic runtime capabilities behind its public contract.",
   "authority": [
     "AGENTS.md",
     "docs/PROJECT_CHARTER.md",
     "docs/decisions/ADR-0002-universal-contracts-specialized-engines.md",
     "docs/decisions/ADR-0003-device-resident-active-search.md",
-    "docs/decisions/ADR-0011-focus-branch-decomposition-and-integration.md",
-    "docs/decisions/ADR-0012-token-use-and-context-discipline.md",
-    "docs/decisions/ADR-0013-consolidated-testing-and-repair-loop-efficiency.md",
     "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
-    "docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md",
-    "docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md",
-    "docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md",
-    "docs/architecture/REPOSITORY_TOPOLOGY.md",
-    "docs/research/2026-08-10-cuda-js-assumption-audit.md",
-    "docs/research/2026-08-10-cuda-js-foundation-result.md",
-    "agent_files/SYSTEM_REGISTRY.md",
-    "docs/specs/SPEC-0000-framework-requirements.md (proposal input)"
+    "docs/specs/SPEC-0001-device-search-publication-and-resources.md",
+    "docs/specs/SPEC-0002-search-ir-and-reference-semantics.md"
   ],
-  "foundation_evidence": {
-    "cuda_js_local_commit": "77090a981fabb547d9e1a98d76213f2048e81ef2",
-    "decision_commit": "383d9f3662a4def90ab99a3fb3039f27e0628024",
-    "experiment_plan_commit": "2f018a01eaade9a678a16892b1dbd2d1b639e5ba",
-    "artifacts": {
-      "bundle": {
-        "name": "CJS-FND-77090a9.bundle",
-        "sha256": "39dc57ea37fac71522b99090945b232173f65676f3421f4e6ea4baa84ca41ad3"
-      },
-      "tracked_tree_zip": {
-        "name": "CJS-FND-77090a9.zip",
-        "sha256": "419cd4453cccd489da6475836f911fc3d8f39ca2a3286b10f63df9db12913408"
-      },
-      "handoff": {
-        "name": "CJS-FND-77090a9-HO.md",
-        "sha256": "43c68aebe508d227ca8d35422d56d0f4f407423d29151ae6e9476cb40266192b"
-      }
-    },
-    "verified": [
-      "exact local Git commit and clean tree",
-      "documentation required-file, active-authority, link, structured-data, dependency-DAG, diff, secret-pattern, and production-source-boundary checks",
-      "no C, C++, JavaScript, TypeScript, Rust, native addon, or runtime implementation source in the foundation tree"
-    ],
-    "publication_state": "private iteathen/CUDA-JS remote does not yet exist",
-    "claim_limits": [
-      "No Node FFI, CUDA ABI, context, memory, launch, completion, deferred-error, NVRTC, strict-JIT, or performance experiment has run.",
-      "The local CUDA-JS architecture is evidence for UMCGS public requirements, not UMCGS authority over CUDA-JS private internals."
-    ]
+  "current_result": {
+    "status": "locally_accepted_bounded_result",
+    "repository_base_head": "ffe218d58d14de3873e18945fb6fe0866d113421",
+    "accepted_contracts": "SPEC-0001 version 0.1.0 and SPEC-0002 version 0.1.0",
+    "prototype_source_sha256": "9D1F9F9C196531DDA241966761657760D96D9E3800B82EDEA617E1CB4E84EDA3",
+    "prototype_binary_sha256": "FE106092751A4E53C472B8B28E2833C1896C0FA220578B7CB0A6FB89429C1443",
+    "native_prototype_capsule": "8 expected, 8 discovered, 8 executed, 8 passed, zero skips",
+    "repetition": "five additional unchanged full-workload capsules passed 8/8",
+    "sanitizer_limit": "exact-final-binary reduced-workload memcheck was terminated without a result after approximately 90 seconds",
+    "search_ir_reference": "18 expected, 18 discovered, 18 executed, 18 passed, zero skips on Windows Node.js 26.7.0",
+    "search_ir_sha256": "bd6679178c6754fe9b06d6fa54d038166b7ef39e32fb5f51513cc303cfd63a96",
+    "linux_gap": "Ubuntu CI is required only for CUDA-free reference parity; native Linux CUDA remains untested",
+    "claim": "accepted bounded semantic contracts and disposable evidence only; no production implementation, native Linux CUDA qualification, or scheduler selection"
   },
-  "public_interop_constraints": [
-    "Dependency direction is one-way: UMCGS consumes versioned CUDA-JS public artifacts; CUDA-JS never imports UMCGS source, schemas, fixtures, or terminology.",
-    "UMCGS active search remains device-owned after ignition and cannot require a host-produced intermediate search decision.",
-    "Every concrete UMCGS engine remains finite and resource-planned.",
-    "The UMCGS package names public CUDA-JS capability and evidence profiles, not Node FFI, Workers, actors, child processes, dynamic-library paths, or private resource layouts.",
-    "Persistent UMCGS schemas contain opaque resource requirements and stable IDs, never raw native handles or pointers.",
-    "Strict-JIT is an exact-profile evidence capability; it cannot be inferred from a private implementation choice, signature shape, or timing result.",
-    "The contract distinguishes graceful close from dead runtime epoch, restart-required state, orphan reporting, and context-health failure.",
-    "Compiler/linker providers expose public isolation and process-side-effect capabilities without requiring UMCGS to know their private mechanism.",
-    "Package/cache identity covers every material UMCGS source schema, generator/compiler, runtime contract, platform, Driver/toolkit, GPU architecture, build option, model/adapter input, provider profile, and resource profile.",
-    "CUDA-JS owns generic runtime conformance; UMCGS owns search semantics and generated-package correctness; one exact compatible-pair capsule covers the public boundary."
-  ],
-  "assessment": {
-    "selected_public_path": "Versioned UMCGS execution package plus UMCGS-owned CUDA-JS adapter over backend-neutral public CUDA-JS capabilities.",
-    "cuda_js_private_foundation_evidence": "Node-FFI-first, schema-compiled, capability-safe, actor-owned runtime with GPU-free EXP-000 first; this remains CUDA-JS private planning until published and experimentally qualified.",
-    "rejected_or_deferred": [
-      "private-source coupling or Git submodule: rejected",
-      "third adapter repository: deferred until an independent lifecycle exists",
-      "implementation before contracts and experiments: rejected",
-      "mandatory managed-memory zero-copy arena: rejected",
-      "host micro-batch relaunch as required search progress: rejected",
-      "mock as native CUDA or UMCGS semantic oracle: rejected",
-      "custom JIT first: archived; reconsider only if EXP-011 proves a mandatory public gap"
-    ],
-    "priority": "P1 foundational gate",
-    "confidence": "high for repository/public ownership; experimental for CUDA-JS native capability and performance claims"
-  },
-  "document_reading": {
-    "umcgs_authority_closure": "complete for bounded documentation and proposal drafting",
-    "cuda_js_authority_state": "exact local foundation inspected; remote/public accepted contract absent",
-    "material_exclusions": [
-      "complete CUDA manuals and donor repositories until an exact empirical question requires them",
-      "game-specific search rules",
-      "production implementation",
-      "release automation beyond recording the publication blocker"
-    ],
-    "invalidation_triggers": [
-      "CUDA-JS remote publication or public-contract revision",
-      "UMCGS Search IR, domain, policy, evaluator, or resource specification acceptance/revision",
-      "new repository, owner, public contract, persistence form, native capability, test oracle, package/release effect, or lifecycle boundary",
-      "review identifies an omitted consumer or conflicting authority"
-    ],
-    "pre_claim_refresh_required": true
-  },
-  "token_and_context": {
-    "task_class": "large_complex",
-    "posture": "explicit",
-    "current_band": "green",
-    "validation_integration_cleanup_review_handoff_reserve_percent": 40,
-    "smallest_coherent_scope": "One UMCGS-to-CUDA-JS v0 public contract and exact compatible-pair test plan; no production implementation.",
-    "optional_work_deferred_first": [
-      "production code",
-      "exhaustive CUDA feature research",
-      "performance tuning",
-      "release automation",
-      "additional repository splits",
-      "cosmetic documentation"
-    ],
-    "claim_reduction_rule": "Unavailable peer authority or reduced evidence produces a bounded proposal claim, never a final runtime-compatibility or release claim."
-  },
-  "experiment_gates": [
+  "focus_branches": [
     {
-      "id": "PUB-000",
-      "status": "blocked",
-      "purpose": "Create private iteathen/CUDA-JS and publish exact commit 77090a981fabb547d9e1a98d76213f2048e81ef2."
+      "id": "MCGS-V0-PUB-RES",
+      "type": "contract_and_evidence",
+      "status": "accepted",
+      "owner": "CUDA-MCGS search-contract integration spine",
+      "output": "SPEC-0001 plus invariant-oriented CUDA-only experiment evidence",
+      "integration": "governs future Search IR, reference, lowering, resource, graph, policy, evaluator-publication, and conformance work"
     },
     {
-      "id": "EXP-000",
-      "status": "not_run",
-      "purpose": "GPU-free synthetic Node FFI ABI, lifetime, Worker isolation, cleanup, and arbitrary-returned-function-pointer qualification on official Node.js 26.7.0."
+      "id": "MCGS-V0-SEARCH-IR",
+      "type": "contract",
+      "status": "accepted",
+      "owner": "contract.search-ir",
+      "objective": "Define a versioned backend-neutral encoding for SPEC-0001 semantic channels, graph/path ownership, resource ledgers, stop causes, partial results, and conformance identity.",
+      "scope": [
+        "Search IR schema and normalization",
+        "invalid/boundary fixtures",
+        "lowering obligations expressed without a CUDA instruction choice",
+        "cache/evidence identity inputs"
+      ],
+      "non_goals": [
+        "production CUDA lowering",
+        "production scheduler selection",
+        "domain-specific layouts",
+        "CUDA-JS private mechanisms"
+      ],
+      "acceptance": [
+        "Every selected SPEC-0001 publication channel has one producer, consumers, payload owner, state machine, scope, failure, and progress rule.",
+        "State-node identity, parent-edge statistics, active-path cycles, backup disposition, and incarnation/stale-reference meaning remain distinct.",
+        "Every enabled resource class has capacity, unambiguous counter meanings, typed exhaustion, stop/drain, and partial-result behavior.",
+        "Invalid undeclared edges, insufficient scope, ambiguous counters, missing exhaustion, and stale identities fail normalization.",
+        "Documentation and structured-data validation pass."
+      ],
+      "falsifier": "A second synthetic domain or an exhaustion/cancellation counterexample requires foundational schema redesign or cannot be represented without backend atomics.",
+      "output": "SPEC-0002 plus Search IR 0.1.0 schema, strict normalizer, fixtures, and canonical identity"
     },
     {
-      "id": "EXP-001",
-      "status": "not_run",
-      "purpose": "Real CUDA library loading and Tier-0 named-symbol smoke."
+      "id": "MCGS-V0-REFERENCE",
+      "type": "reference_and_conformance",
+      "status": "accepted",
+      "owner": "reference.search-ir and conformance.search",
+      "dependency": "MCGS-V0-SEARCH-IR accepted",
+      "objective": "Implement an independent deterministic reference capsule for ordinary, transposition, cycle, publication-state, exhaustion, partial-result, scheduler-parity, and oracle-sensitivity semantics.",
+      "output": "18-case CUDA-free deterministic reference capsule with exact Windows evidence and a Windows/Ubuntu CI parity gate"
     },
     {
-      "id": "EXP-002",
-      "status": "not_run",
-      "purpose": "Requested-version/export/stream-semantics reconciliation around cuGetProcAddress."
+      "id": "MCGS-V0-COMPOSITION-ASSESS",
+      "type": "assessment_and_plan",
+      "status": "ready",
+      "owner": "CUDA-MCGS search-contract integration spine",
+      "dependencies": [
+        "SPEC-0001 accepted",
+        "SPEC-0002 and Search IR 0.1.0 accepted",
+        "18-case deterministic reference capsule accepted locally"
+      ],
+      "objective": "Build the dependency and obligation map for domain, policy, evaluator, full resource/memory, output, persistence/reroot, and execution-package contracts before splitting their implementation-ready specification branches.",
+      "scope": [
+        "contract owners and public inputs/outputs",
+        "shared types, ordering constraints, and invalidation edges",
+        "second-domain and non-scalar evaluator counterexamples",
+        "Windows-first and native Linux evidence obligations"
+      ],
+      "non_goals": [
+        "production implementation or CUDA lowering",
+        "scheduler selection",
+        "private CUDA-JS design",
+        "one monolithic specification for all owners"
+      ],
+      "acceptance": [
+        "Every remaining contract obligation has one owner and an acyclic dependency position.",
+        "Each resulting specification branch fits one focused session with exact acceptance and falsifier.",
+        "Shared representation changes route through the Search IR integration spine.",
+        "Windows and Linux validation claims remain separately scoped."
+      ]
     },
     {
-      "id": "EXP-003",
-      "status": "not_run",
-      "purpose": "Pinned CUDA-header importer and independent native layout-oracle parity."
-    },
-    {
-      "id": "EXP-004_PLUS",
-      "status": "deferred",
-      "purpose": "Host-call evidence, context, completion, errors, memory, compiler/cache, isolation, platform, and optional custom-JIT qualification after the foundation gates pass."
+      "id": "SPEC-V0-CUDAJS",
+      "type": "interop_contract",
+      "status": "planned",
+      "owner": "contract.cuda-js-package and integration.cuda-js",
+      "dependencies": [
+        "domain, policy, evaluator, full resource/memory, output, and execution-package semantic inputs accepted",
+        "exact public CUDA-JS revision/package selected",
+        "CUDA-MCGS execution-package fields derived from accepted search semantics"
+      ],
+      "objective": "Define and test the public versioned CUDA-MCGS execution package and exact compatible pair without importing CUDA-JS private source or Node/Worker mechanisms."
     }
   ],
-  "testing": {
-    "oracles": [
-      "Accepted UMCGS authority for search semantics, ownership, device closure, and finite resources.",
-      "Future accepted CUDA-JS public contract for generic runtime semantics.",
-      "Independent C/native layout oracle for ABI facts.",
-      "Exact compatible UMCGS/CUDA-JS artifact pair for boundary conformance."
-    ],
-    "capsules": [
-      "CUDA-JS internal generic runtime conformance",
-      "UMCGS package schema/normalization and search-semantic conformance",
-      "UMCGS device-closure end-to-end capsule",
-      "one small cross-repository compatible-pair capsule"
-    ],
-    "no_repeat_rules": [
-      "Do not duplicate complete CUDA-JS runtime tests in UMCGS.",
-      "Do not rerun unchanged compatible-pair evidence or reread unchanged authority without invalidation or a stated statistical/interpretive reason."
-    ]
-  },
+  "global_invariants": [
+    "Active production search remains device-closed after ignition.",
+    "Concrete engines are finite and resource-planned.",
+    "Universal contracts contain no first-domain, first-evaluator, first-scheduler, or first-GPU assumptions.",
+    "CUDA-JS owns generic runtime behavior; CUDA-MCGS owns search semantics and the CUDA-MCGS adapter.",
+    "Experiment source is evidence only and is never imported by production components."
+  ],
   "deliverables": [
-    "UMCGS-to-CUDA-JS execution-package v0 proposal and obligation/owner map",
-    "capability and evidence-profile negotiation",
-    "opaque resource, memory, module, launch, completion, cancellation, error, health, and teardown contract",
-    "complete artifact/cache/provenance identity",
-    "cross-repository conformance and no-repeat policy",
-    "publication and experiment handoff"
-  ],
-  "acceptance_criteria": [
-    "Every public field and lifecycle transition has exactly one owner and evidence path.",
-    "CUDA-JS can validate and execute a package without Search IR knowledge.",
-    "UMCGS preserves device-owned progress and finite search-resource semantics.",
-    "No CUDA-JS private mechanism or raw handle enters UMCGS persistent schemas.",
-    "Strict-JIT and other performance-sensitive capabilities are required only through exact evidence profiles.",
-    "Graceful close, dead epoch, restart-required state, orphan reporting, deferred errors, and context health are unambiguous.",
-    "Compiler/provider side effects and isolation are public capabilities.",
-    "Each repository owns its internal tests and the public boundary is tested once by exact artifact pair.",
-    "No material specification, document-reading, decision, test, token, or cleanup debt remains for the accepted claim."
-  ],
-  "validation": [
-    "Selective-reading authority-closure and final-refresh review.",
-    "Engineering-contract, obligation-owner, hard-gate, candidate-path, and tradeoff review.",
-    "Backend-neutral public capability and private-mechanism leakage review.",
-    "Device-closure, finite-resource, lifecycle, error-health, teardown, and orphan-report review.",
-    "Artifact/cache/provenance identity and exact compatible-pair conformance review.",
-    "./scripts/verify-docs.sh"
+    "Domain/state/action/transition and identity inputs that remain outside Search IR 0.1.0.",
+    "Policy selection, reservation, backup, and ranking semantics.",
+    "Evaluator publication, value-shape, perspective, batching, and workspace semantics.",
+    "Full resource/memory, cancellation, output, persistence/reroot, and execution-package contracts.",
+    "Updated conformance cases and compatibility evidence for each accepted extension."
   ],
   "blockers": [
-    "Create and publish private iteathen/CUDA-JS at exact local commit 77090a981fabb547d9e1a98d76213f2048e81ef2.",
-    "Run EXP-000 on official Node.js 26.7.0 before CUDA-specific production implementation.",
-    "Run EXP-001 through EXP-003 on a qualified first CUDA platform and publish an accepted CUDA-JS public capability contract before final compatible-pair acceptance."
+    "Production CUDA lowering remains blocked until Search IR plus the relevant domain, policy, evaluator, full resource, scheduler, output, and execution-package contracts are accepted.",
+    "Production scheduler selection remains blocked on representative evaluator/workload/resource/profiler/search-quality evidence.",
+    "CUDA-MCGS-to-CUDA-JS compatible-pair acceptance remains blocked until an exact public CUDA-JS revision/package is selected and the CUDA-MCGS package contract is accepted."
   ],
+  "testing": {
+    "current_oracle": "independent deterministic Search IR reference semantics accepted by SPEC-0002",
+    "required_case_families": [
+      "ordinary serial",
+      "parallel publication invariants",
+      "transposition node/edge ownership",
+      "identity-before-path-cycle",
+      "forced capacity and partial result",
+      "scheduler semantic parity",
+      "oracle sensitivity"
+    ],
+    "native_claim_limit": "The retained CUDA experiment is bounded mechanism evidence, not the reference oracle or production conformance."
+  },
+  "cleanup": {
+    "protected": "pre-existing unrelated workflow, research, organization, and Python-to-Node script changes",
+    "retained_evidence": "experiments/cuda-device-mcgs-prototype source and bounded RESULTS.md until reference conformance owns equivalent cases",
+    "remove_after_validation": "ignored native prototype and Search IR reference build directories after their evidence is reconciled",
+    "remote": "GitHub issue #24 remains open until its production-oriented acceptance criteria are satisfied"
+  },
   "do_not": [
-    "Implement generic Driver bindings, JIT ABI stubs, memory providers, NVRTC plumbing, or Node completion delivery in UMCGS.",
-    "Put Search IR, graph search, evaluators, or search-resource policy into CUDA-JS.",
-    "Encode Node FFI, Worker, actor, child-process, library-path, or private resource-layout details in the UMCGS public package.",
-    "Assume managed memory is universal zero-copy or host relaunch is device-closed search progress.",
-    "Claim strict-JIT, native CUDA correctness, cleanup after dead runtime-domain loss, or performance without direct exact-profile evidence.",
-    "Begin production implementation before peer authority closure and the applicable experiment gates pass."
+    "Promote or import the CUDA prototype into components, adapters, or conformance.",
+    "Select a production scheduler from ticket counts or toy timing.",
+    "Encode CUDA atomics, Node.js, Workers, raw native handles, or CUDA-JS private layouts as Search IR semantics.",
+    "Claim clean sanitizer/race evidence from the incomplete final-binary attempt.",
+    "Begin production lowering before the domain/policy/evaluator/resource/output/execution-package dependencies are accepted."
   ],
-  "completion_evidence": [
-    "CUDA-JS local research, assessment, architecture, experiment DAG, and documentation validation verified at exact commit 77090a981fabb547d9e1a98d76213f2048e81ef2.",
-    "UMCGS reconciliation remains documentation-only and makes no final runtime-compatibility claim."
-  ],
-  "handoff": "Publish exact CUDA-JS authority, run EXP-000, then use experiment-backed public capabilities to finish the UMCGS-to-CUDA-JS v0 contract and compatible-pair capsule."
+  "validation": [
+    "Review SPEC-0001 and SPEC-0002 against graph, publication, finite-resource, stop, partial-result, normalization, identity, portability, scheduler-neutrality, and CUDA-JS ownership obligations.",
+    "Run the exact prototype ordinary capsule and bounded nondeterministic repetitions only when the source/binary evidence key changes or schedule variation is the stated subject.",
+    "Run the exact 18-case Search IR reference capsule through ./scripts/verify-docs.sh and require the Windows/Ubuntu CI matrix before integration.",
+    "Reconcile ignored build output, processes/device state, Git status, issue state, and retained evidence before handoff."
+  ]
 }

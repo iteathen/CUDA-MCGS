@@ -96,6 +96,8 @@ required=(
   docs/architecture/REPOSITORY_TOPOLOGY.md
   docs/specs/README.md
   docs/specs/SPEC-0000-framework-requirements.md
+  docs/specs/SPEC-0001-device-search-publication-and-resources.md
+  docs/specs/SPEC-0002-search-ir-and-reference-semantics.md
   docs/decisions/README.md
   docs/decisions/ADR-0001-prior-art-disposition.md
   docs/decisions/ADR-0002-universal-contracts-specialized-engines.md
@@ -132,9 +134,20 @@ required=(
   tests/README.md
   third_party/README.md
   tools/README.md
-  scripts/check-doc-links.py
-  scripts/check-project-organization.py
-  scripts/check-structured-data.py
+  scripts/check-doc-links.mjs
+  scripts/check-project-organization.mjs
+  scripts/check-structured-data.mjs
+  scripts/run-search-ir-reference.mjs
+  schemas/search-ir/0.1.0/search-ir.schema.json
+  experiments/search-ir-reference/README.md
+  experiments/search-ir-reference/RESULTS.md
+  experiments/search-ir-reference/fixtures/baseline.search-ir.json
+  experiments/search-ir-reference/fixtures/boundary-capacities.json
+  experiments/search-ir-reference/fixtures/invalid-mutations.json
+  experiments/search-ir-reference/fixtures/expected-identity.json
+  experiments/search-ir-reference/src/normalize.mjs
+  experiments/search-ir-reference/src/reference.mjs
+  experiments/search-ir-reference/run.mjs
 )
 
 for path in "${required[@]}"; do
@@ -167,9 +180,35 @@ done
   exit 1
 }
 
-python3 scripts/check-project-organization.py
-python3 scripts/check-doc-links.py
-python3 scripts/check-structured-data.py
+node_bin="${UMCGS_NODE:-}"
+if [[ -z "$node_bin" ]]; then
+  for candidate in \
+    "$repo_root/build/toolchains/node-v26.7.0-win-x64/node.exe" \
+    "$repo_root/../CUDA-JS/build/toolchains/node-v26.7.0-win-x64/node.exe"; do
+    if [[ -x "$candidate" ]]; then
+      node_bin="$candidate"
+      break
+    fi
+  done
+fi
+if [[ -z "$node_bin" ]] && command -v node >/dev/null 2>&1; then
+  node_bin="$(command -v node)"
+fi
+if [[ -z "$node_bin" ]]; then
+  printf 'Node.js 26 is required to validate this repository\n' >&2
+  exit 1
+fi
+
+node_major="$($node_bin -p 'process.versions.node.split(".")[0]')"
+if (( node_major < 26 )); then
+  printf 'Node.js 26 or newer is required; found %s\n' "$($node_bin --version)" >&2
+  exit 1
+fi
+
+"$node_bin" scripts/check-project-organization.mjs
+"$node_bin" scripts/check-doc-links.mjs
+"$node_bin" scripts/check-structured-data.mjs
+"$node_bin" scripts/run-search-ir-reference.mjs
 
 for form in .github/ISSUE_TEMPLATE/*.yml; do
   if [[ "$(basename "$form")" == config.yml ]]; then

@@ -1,0 +1,10 @@
+[
+  { "id": "undeclared-consumer-role", "mutation": "undeclared-consumer-role", "expectedCode": "IR_ROLE_UNDECLARED" },
+  { "id": "insufficient-visibility-scope", "mutation": "insufficient-visibility-scope", "expectedCode": "IR_VISIBILITY_SCOPE" },
+  { "id": "ambiguous-resource-counters", "mutation": "ambiguous-resource-counters", "expectedCode": "IR_RESOURCE_COUNTERS" },
+  { "id": "backend-admission-mechanism", "mutation": "backend-admission-mechanism", "expectedCode": "IR_RESOURCE_ADMISSION" },
+  { "id": "missing-exhaustion-cause", "mutation": "missing-exhaustion-cause", "expectedCode": "IR_RESOURCE_EXHAUSTION" },
+  { "id": "stale-incarnation-policy", "mutation": "stale-incarnation-policy", "expectedCode": "IR_GRAPH_SEMANTICS" },
+  { "id": "unbounded-channel-wait", "mutation": "unbounded-channel-wait", "expectedCode": "IR_CHANNEL_PROGRESS" },
+  { "id": "unknown-root-field", "mutation": "unknown-root-field", "expectedCode": "IR_UNKNOWN_FIELD" }
+]

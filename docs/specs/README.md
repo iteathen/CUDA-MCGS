@@ -26,8 +26,13 @@ Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider 
 
 Use [`../../agent_files/templates/specification.template.md`](../../agent_files/templates/specification.template.md) together with its governing reading, engineering, contract, compatibility, testing, and documentation methods. An accepted UMCGS specification must define applicability, normative references, invariants, ranges, ownership, lifecycle, failures/exhaustion, compatibility, security, generated/cache identity, testing, cleanup, downstream invalidation, and peer-runtime effects.
 
+## Current accepted contracts
+
+- [`SPEC-0001-device-search-publication-and-resources.md`](SPEC-0001-device-search-publication-and-resources.md) — backend-neutral device publication, graph identity/edge ownership, path-cycle ordering, finite-resource accounting, exhaustion, partial-result, scheduler-neutrality, and conformance semantics.
+- [`SPEC-0002-search-ir-and-reference-semantics.md`](SPEC-0002-search-ir-and-reference-semantics.md) — concrete backend-neutral Search IR 0.1.0, strict normalization and canonical identity, and CUDA-free deterministic reference semantics.
+
 ## Current proposals
 
 - [`SPEC-0000-framework-requirements.md`](SPEC-0000-framework-requirements.md) — UMCGS specification map and cross-cutting conformance requirements; not yet an implementable accepted contract.
 
-The next specification boundary is the version-zero UMCGS-to-CUDA-JS package and compatibility contract described in [`../../next_step.yaml`](../../next_step.yaml). Its cross-repository authority closure remains bounded until the private CUDA-JS repository and accepted public runtime contract exist.
+The next specification boundary is the domain, policy, evaluator, full resource/memory, output, and execution-package semantics needed before production Search IR lowering. The version-zero CUDA-MCGS-to-CUDA-JS package and compatibility contract remains planned in [`../../next_step.yaml`](../../next_step.yaml).

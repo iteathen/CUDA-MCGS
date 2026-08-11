@@ -1,22 +1,22 @@
-# UMCGS
+# CUDA-MCGS
 
 **Universal Monte Carlo Graph Search**
 
-UMCGS is a documentation-first project for a universal, GPU-resident framework that specifies and specializes many MCGS-style search systems without embedding assumptions from any one domain, game, model, input representation, output representation, or objective.
+CUDA-MCGS is a documentation-first project for a universal, GPU-resident framework that specifies and specializes many MCGS-style search systems without embedding assumptions from any one domain, game, model, input representation, output representation, or objective. The GitHub repository and local directory retain the historical identifier `UMCGS`; product and feature references use CUDA-MCGS.
 
 The intended boundary includes chess, Go, text search, planning, optimization, policy-only search, evaluation-only search, partially observable planning, and other graph-search workloads. A deployed engine is finite and specialized to its domain, search policy, evaluator, CUDA capability profile, and GPU-memory budget.
 
 ## Repository boundary
 
-UMCGS owns search semantics, Search IR, finite search-memory planning, search-specific layout/device-program generation, device-owned search progress, reference interpretation, synthetic conformance, and the adapter/package contract used to execute a specialized engine.
+CUDA-MCGS owns search semantics, Search IR, finite search-memory planning, search-specific layout/device-program generation, device-owned search progress, reference interpretation, synthetic conformance, and the adapter/package contract used to execute a specialized engine.
 
 The independent private `iteathen/CUDA-JS` repository owns generic Node.js/CUDA Driver bindings, JIT/native host-call backends, opaque resources, generic memory capabilities, NVRTC/link/load, launch/completion/error/teardown, packaging, and runtime conformance.
 
 ```text
-UMCGS execution package → UMCGS CUDA-JS adapter → CUDA-JS → CUDA Driver / GPU
+CUDA-MCGS execution package → CUDA-MCGS CUDA-JS adapter → CUDA-JS → CUDA Driver / GPU
 ```
 
-CUDA-JS must not know Search IR or MCGS. UMCGS must not reach into CUDA-JS private source. See [`docs/decisions/ADR-0014-extract-cuda-js-runtime.md`](docs/decisions/ADR-0014-extract-cuda-js-runtime.md).
+CUDA-JS must not know Search IR or MCGS. CUDA-MCGS must not reach into CUDA-JS private source. See [`docs/decisions/ADR-0014-extract-cuda-js-runtime.md`](docs/decisions/ADR-0014-extract-cuda-js-runtime.md).
 
 ## Current phase
 
@@ -44,6 +44,8 @@ No production implementation should be inferred from the current repository.
 - Universal search contracts and Search IR compile into finite specialized hot paths.
 - Active search remains device-closed after ignition; no CPU-produced intermediate decision is permitted.
 - Generic Node/CUDA runtime work belongs to CUDA-JS rather than shaping UMCGS foundations.
+- Device publication, state-node/parent-edge ownership, path-cycle ordering, finite-resource exhaustion, partial-result validity, and scheduler-neutral conformance are accepted in [`docs/specs/SPEC-0001-device-search-publication-and-resources.md`](docs/specs/SPEC-0001-device-search-publication-and-resources.md).
+- The first concrete backend-neutral Search IR and its deterministic CUDA-free reference semantics are accepted in [`docs/specs/SPEC-0002-search-ir-and-reference-semantics.md`](docs/specs/SPEC-0002-search-ir-and-reference-semantics.md); production lowering remains blocked on the remaining domain, policy, evaluator, resource, output, and interop contracts.
 
 ## Start here
 
@@ -63,5 +65,7 @@ No production implementation should be inferred from the current repository.
 - [`docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md`](docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md)
 - [`docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md`](docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md)
 - [`docs/architecture/REPOSITORY_TOPOLOGY.md`](docs/architecture/REPOSITORY_TOPOLOGY.md)
+- [`docs/specs/SPEC-0001-device-search-publication-and-resources.md`](docs/specs/SPEC-0001-device-search-publication-and-resources.md)
+- [`docs/specs/SPEC-0002-search-ir-and-reference-semantics.md`](docs/specs/SPEC-0002-search-ir-and-reference-semantics.md)
 - [`STATUS.md`](STATUS.md)
 - [`next_step.yaml`](next_step.yaml)
