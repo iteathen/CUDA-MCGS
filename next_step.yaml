@@ -5,6 +5,8 @@
   "parent_task_id": "SPEC-V0",
   "parent_plan_version": 9,
   "integration_owner": "docs/specs: UMCGS search-contract and peer-runtime integration spine",
+  "objective": "Define a versioned, backend-neutral package and compatibility contract that lets UMCGS execute a specialized device-closed search program through generic CUDA-JS without leaking search semantics into CUDA-JS or CUDA-JS private mechanisms into UMCGS.",
+  "ownership_boundary": "UMCGS owns search semantics, lowering, device closure, and the adapter; CUDA-JS owns generic Node/CUDA runtime capabilities and private implementation.",
   "focus_branch": {
     "id": "SPEC-V0-CUDAJS",
     "title": "Define the UMCGS-to-CUDA-JS execution-package boundary",
@@ -204,6 +206,14 @@
     "Compiler/provider side effects and isolation are public capabilities.",
     "Each repository owns its internal tests and the public boundary is tested once by exact artifact pair.",
     "No material specification, document-reading, decision, test, token, or cleanup debt remains for the accepted claim."
+  ],
+  "validation": [
+    "Selective-reading authority-closure and final-refresh review.",
+    "Engineering-contract, obligation-owner, hard-gate, candidate-path, and tradeoff review.",
+    "Backend-neutral public capability and private-mechanism leakage review.",
+    "Device-closure, finite-resource, lifecycle, error-health, teardown, and orphan-report review.",
+    "Artifact/cache/provenance identity and exact compatible-pair conformance review.",
+    "./scripts/verify-docs.sh"
   ],
   "blockers": [
     "Create and publish private iteathen/CUDA-JS at exact local commit 77090a981fabb547d9e1a98d76213f2048e81ef2.",
