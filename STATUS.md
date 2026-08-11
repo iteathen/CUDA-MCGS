@@ -72,3 +72,9 @@ Define the domain, policy, evaluator, full resource/memory, output, and executio
 - The prototype covers a fixed deterministic two-action scalar-value domain and node-capacity exhaustion only.
 - No representative evaluator, workload, profiler, search-quality, cross-GPU, cancellation, device-loss, reclamation, or complete sanitizer evidence exists.
 - No production implementation, native Linux CUDA qualification, public release, exact compatible runtime pair, or release automation is claimed.
+
+## Private collaboration safety
+
+CUDA-MCGS uses the free GitHub plan and will not depend on paid private-repository protection or Actions. The canonical private repository keeps `iteathen` as its only account; personal-account private collaborators would receive write access and therefore are not admitted directly.
+
+Outside developers contribute through standalone private intake repositories with no canonical credentials, secrets, runners, or authority. The owner imports reviewed exact commits onto canonical branches. While private, validation is local and Linux gaps remain explicit. Public repositories such as CUDA-JS continue using protected branches and public CI. The normative workflow is in [`CONTRIBUTING.md`](CONTRIBUTING.md).

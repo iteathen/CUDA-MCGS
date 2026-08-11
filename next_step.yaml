@@ -136,7 +136,8 @@
   "blockers": [
     "Production CUDA lowering remains blocked until Search IR plus the relevant domain, policy, evaluator, full resource, scheduler, output, and execution-package contracts are accepted.",
     "Production scheduler selection remains blocked on representative evaluator/workload/resource/profiler/search-quality evidence.",
-    "CUDA-MCGS-to-CUDA-JS compatible-pair acceptance remains blocked until an exact public CUDA-JS revision/package is selected and the CUDA-MCGS package contract is accepted."
+    "CUDA-MCGS-to-CUDA-JS compatible-pair acceptance remains blocked until an exact public CUDA-JS revision/package is selected and the CUDA-MCGS package contract is accepted.",
+    "Native Linux and private-repository CI evidence remain unavailable until supplied by an isolated contributor environment or the repository becomes public; no paid GitHub dependency is accepted."
   ],
   "testing": {
     "current_oracle": "independent deterministic Search IR reference semantics accepted by SPEC-0002",
@@ -155,7 +156,7 @@
     "protected": "pre-existing unrelated workflow, research, organization, and Python-to-Node script changes",
     "retained_evidence": "experiments/cuda-device-mcgs-prototype source and bounded RESULTS.md until reference conformance owns equivalent cases",
     "remove_after_validation": "ignored native prototype and Search IR reference build directories after their evidence is reconciled",
-    "remote": "GitHub issue #24 remains open until its production-oriented acceptance criteria are satisfied"
+    "remote": "GitHub issue #24 remains open for production semantics; issue #26 owns free-tier private contribution isolation"
   },
   "do_not": [
     "Promote or import the CUDA prototype into components, adapters, or conformance.",

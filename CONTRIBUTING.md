@@ -1,6 +1,27 @@
-# Contributing to UMCGS
+# Contributing to CUDA-MCGS
 
-UMCGS is private and documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md), [`CONTEXT_ROUTING.md`](agent_files/general_foundation/CONTEXT_ROUTING.md), [`PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`ENGINEERING_JUDGMENT.md`](agent_files/general_foundation/ENGINEERING_JUDGMENT.md), [`CONTEXTUAL_DESIGN_WEIGHTING.md`](agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md), [`ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md), [`TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md), [`TESTING.md`](agent_files/general_foundation/TESTING.md), [`DEBUGGING.md`](agent_files/general_foundation/DEBUGGING.md), [`PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md), and [`CLEANUP_AND_DISPOSITION.md`](agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md) when applicable.
+CUDA-MCGS is private and documentation-first. The GitHub repository retains the historical identifier `iteathen/UMCGS`. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md), [`CONTEXT_ROUTING.md`](agent_files/general_foundation/CONTEXT_ROUTING.md), [`PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`ENGINEERING_JUDGMENT.md`](agent_files/general_foundation/ENGINEERING_JUDGMENT.md), [`CONTEXTUAL_DESIGN_WEIGHTING.md`](agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md), [`ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md), [`TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md), [`TESTING.md`](agent_files/general_foundation/TESTING.md), [`DEBUGGING.md`](agent_files/general_foundation/DEBUGGING.md), [`PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md), and [`CLEANUP_AND_DISPOSITION.md`](agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md) when applicable.
+
+## Private-repository contribution isolation
+
+The canonical private repository is owned by a personal GitHub account on the free plan. GitHub gives every collaborator on such a repository write access, while protected branches and rulesets are unavailable for private repositories on that plan. Therefore:
+
+- `iteathen` MUST remain the only account with access to the canonical private repository;
+- an outside developer MUST NOT be invited to canonical CUDA-MCGS, even temporarily;
+- CODEOWNERS is advisory while the repository is private and MUST NOT be represented as enforced protection;
+- private-repository GitHub Actions remain disabled; validation is local and every missing platform remains an explicit evidence gap;
+- public repositories such as CUDA-JS continue to use protected branches, required owner review, and public-repository CI.
+
+When an outside developer needs the private source, the owner creates a standalone private intake repository for that engagement. It is an access-isolation boundary, not a fork, product repository, release source, authority, or integration trunk.
+
+1. Seed the intake repository from one exact canonical commit, with no credentials, owner-only refs, build output, external state, or unrelated history.
+2. Disable Actions and add no repository secrets, deploy keys with canonical write access, self-hosted runners, or automation tokens.
+3. Invite the developer only to the intake repository. They work on topic branches and may open intake PRs; intake approvals never authorize canonical integration.
+4. The owner fetches the proposed exact head, verifies ancestry and the complete diff, runs risk-appropriate local validation, and imports accepted commits onto an owner-controlled canonical topic branch.
+5. Canonical integration follows the normal author review, exact-head, test, cleanup, and merge gates. Preserve the developer's original commit authorship or explicit co-author attribution.
+6. At engagement end, remove the collaborator and archive the intake repository after recording its exact retained head and disposition. Do not delete evidence needed for attribution, review, or recovery.
+
+Compromise or destructive changes in an intake repository must have no path to mutate canonical CUDA-MCGS. When CUDA-MCGS becomes public, replace this workflow with ordinary forks, protected `main`, required owner review, and public CI.
 
 ## Before production implementation
 
