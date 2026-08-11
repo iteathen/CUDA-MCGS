@@ -30,6 +30,14 @@ Owns the generic Node/CUDA runtime:
 - asynchronous completion/cancellation delivery;
 - generic error, context-health, teardown, packaging, compatibility, mock, and conformance behavior.
 
+## Ecosystem language policy
+
+Both peer repositories—and every future repository extracted from or primarily created to support this ecosystem—are Python-free.
+
+Python is prohibited in production and reference source, tools, schema importers, generators, tests, benchmarks, documentation tooling, CI, packaging, installers, release automation, migrations, diagnostics, prototypes, experiments, and one-off or temporary scripts. A wrapper, container, vendored tool, or indirect invocation does not create an exception when ordinary project use still requires Python.
+
+Each repository carries and applies [`NO_PYTHON_POLICY.md`](../../agent_files/general_foundation/NO_PYTHON_POLICY.md). A new related repository must adopt the same accepted policy before code-bearing work begins. Repository separation, extraction, or an independent release lifecycle may not be used to bypass it.
+
 ## Artifact flow
 
 ```text
@@ -91,4 +99,3 @@ The CUDA-JS foundation has been researched, adversarially assessed, reconciled, 
 Its selected private implementation is currently Node-FFI-first with a GPU-free `EXP-000` qualification gate. That implementation choice is CUDA-JS authority and remains non-normative for UMCGS. UMCGS depends only on the future public package, capability manifest, and exact compatible-pair evidence.
 
 Account-level remote repository creation remains the publication blocker. Native capability and performance claims remain blocked on the CUDA-JS experiment sequence.
-
