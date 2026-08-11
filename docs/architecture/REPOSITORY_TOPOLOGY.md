@@ -85,7 +85,7 @@ CUDA-MCGS expresses requirements through public CUDA-JS capability and evidence 
 ## Dependency rules
 
 - CUDA-MCGS may depend only on CUDA-JS public packages, schemas, capabilities, and artifact manifests.
-- CUDA-JS never imports CUDA-MCGS/UMCGS source, Search IR, schemas, fixtures, or search terminology as runtime dependencies.
+- CUDA-JS never imports CUDA-MCGS/UMCGS source, Search IR, schemas, fixtures, or search terminology.
 - CUDA-MCGS source may call generic CUDA behavior only through its CUDA-JS adapter, except in explicitly isolated experiments.
 - The CUDA-MCGS Search Composer owns search/extension composition decisions; CUDA-JS owns generic compile/link/load mechanisms.
 - No consumer relies on a peer repository's branch, worktree, internal path, unversioned generated file, or local build directory.
