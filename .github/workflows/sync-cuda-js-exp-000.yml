@@ -1,0 +1,392 @@
+name: Synchronize CUDA-JS EXP-000 result
+
+on:
+  push:
+    branches:
+      - agent/cuda-js-exp-000-sync
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-cuda-js-exp-000
+  cancel-in-progress: false
+
+jobs:
+  synchronize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      SOURCE_BRANCH: ${{ github.ref_name }}
+    steps:
+      - name: Check out exact UMCGS trunk
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Record public CUDA-JS result and update the interop plan
+        id: docs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'UMCGS CUDA-JS Synchronizer'
+          git config user.email 'noreply@github.com'
+
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          import json
+          import re
+          from pathlib import Path
+
+          root = Path('.')
+          cuda_repo = 'iteathen/CUDA-JS'
+          foundation = '77090a981fabb547d9e1a98d76213f2048e81ef2'
+          evidence_tag = 'exp-000-node-26.7.0-linux-x64'
+          evidence_path = 'experiments/exp-000-node-ffi-host-abi/evidence/result.json'
+
+          research_note = f'''# CUDA-JS EXP-000 Publication and Qualification Result
+
+          **Status:** Research Note
+
+          **Date:** 2026-08-10
+
+          ## Exact public identity
+
+          - Private peer repository: `{cuda_repo}`
+          - Preserved foundation commit: `{foundation}`
+          - Passing evidence tag: `{evidence_tag}`
+          - CUDA-JS evidence path: `{evidence_path}`
+
+          The private CUDA-JS repository now exists, preserves the verified foundation history, and has reconciled its bootstrap and experiment branches into its default trunk.
+
+          ## Qualified result
+
+          CUDA-JS `EXP-000` passed on exact Node.js 26.7.0 / Linux x86-64. The qualified scope is the public Node FFI host substrate exercised by the GPU-free ABI, bounded-buffer/output, native-layout, Worker responsiveness, explicit-close/stale-wrapper, contained lifetime, and returned-function-pointer-gap cases.
+
+          The first native fixture was rejected by the strict C11 compiler gate for a non-portable function-pointer conversion. The corrected fixture passed without weakening the compiler policy. That failure and correction remain in CUDA-JS history.
+
+          ## UMCGS consequences
+
+          UMCGS may now treat the exact `{evidence_tag}` profile as evidence that the generic host-call substrate is viable for the qualified Node/Linux profile. UMCGS still depends only on public CUDA-JS capabilities and versioned artifacts; it does not encode Node FFI, Workers, runtime actors, dynamic-library paths, or private resource layouts.
+
+          This result does **not** prove:
+
+          - CUDA Driver loading or symbol correctness;
+          - CUDA ABI/layout correctness;
+          - context, memory, launch, completion, or deferred-error behavior;
+          - strict-JIT dispatch;
+          - Windows or ARM64 support;
+          - production search performance or device closure.
+
+          ## Next gate
+
+          `EXP-001` requires a qualified CUDA host with a real NVIDIA Driver library. It must load the Driver and execute the Tier-0 named-symbol smoke. A mock cannot satisfy this boundary. Production CUDA-JS or UMCGS runtime implementation remains blocked until the applicable CUDA-specific foundation gates pass.
+          '''
+          research_note = re.sub(r'^          ', '', research_note, flags=re.MULTILINE)
+          research_dir = root / 'docs/research'
+          note_path = research_dir / '2026-08-10-cuda-js-exp-000-result.md'
+          note_path.write_text(research_note, encoding='utf-8')
+
+          research_index = research_dir / 'README.md'
+          text = research_index.read_text(encoding='utf-8')
+          entry = ('- [`2026-08-10-cuda-js-exp-000-result.md`]'
+                   '(2026-08-10-cuda-js-exp-000-result.md) — published CUDA-JS '
+                   'foundation, passing GPU-free EXP-000 profile, claim limits, and '
+                   'the real-CUDA EXP-001 blocker.\n')
+          if entry not in text:
+              text = text.rstrip() + '\n\n' + entry
+              research_index.write_text(text, encoding='utf-8')
+
+          docs_index = root / 'docs/README.md'
+          text = docs_index.read_text(encoding='utf-8')
+          entry = ('- [`research/2026-08-10-cuda-js-exp-000-result.md`]'
+                   '(research/2026-08-10-cuda-js-exp-000-result.md) — exact public '
+                   'CUDA-JS EXP-000 result and remaining CUDA-host gate.\n')
+          if entry not in text:
+              marker = '## Repository split references\n'
+              if marker in text:
+                  text = text.replace(marker, marker + '\n' + entry, 1)
+              else:
+                  text = text.rstrip() + '\n\n' + entry
+              docs_index.write_text(text, encoding='utf-8')
+
+          topology_path = root / 'docs/architecture/REPOSITORY_TOPOLOGY.md'
+          topology = topology_path.read_text(encoding='utf-8')
+          replacement = f'''## Repository creation and qualification state
+
+          The private `iteathen/CUDA-JS` repository exists and preserves exact foundation commit `{foundation}`. Its bootstrap and experiment branches were reconciled before continuing.
+
+          The GPU-free host-substrate gate passed at immutable tag `{evidence_tag}` on Node.js 26.7.0 / Linux x86-64. That tag is evidence for the qualified public host-call profile only; CUDA-specific correctness and performance remain experiment-gated.
+
+          UMCGS continues to depend only on public CUDA-JS packages, capability/evidence manifests, and exact compatible artifact pairs. Private Node FFI, Worker, actor, child-process, library-path, and resource-layout choices remain outside the UMCGS contract.
+          '''
+          replacement = re.sub(r'^          ', '', replacement, flags=re.MULTILINE)
+          if '## Repository creation state' in topology:
+              topology = re.sub(
+                  r'## Repository creation state\n.*?(?=\n## |\Z)',
+                  replacement.rstrip(),
+                  topology,
+                  flags=re.DOTALL,
+              )
+          elif '## Repository creation and qualification state' in topology:
+              topology = re.sub(
+                  r'## Repository creation and qualification state\n.*?(?=\n## |\Z)',
+                  replacement.rstrip(),
+                  topology,
+                  flags=re.DOTALL,
+              )
+          else:
+              topology = topology.rstrip() + '\n\n' + replacement
+          topology_path.write_text(topology.rstrip() + '\n', encoding='utf-8')
+
+          status_path = root / 'STATUS.md'
+          status = status_path.read_text(encoding='utf-8')
+          published = f'''## Published CUDA-JS foundation and EXP-000
+
+          - Private peer repository: `{cuda_repo}`.
+          - Preserved foundation commit: `{foundation}`.
+          - Passing GPU-free evidence tag: `{evidence_tag}`.
+          - Qualified profile: Node.js 26.7.0 / Linux x86-64 public Node FFI host substrate.
+          - Claim limit: no CUDA-specific, strict-JIT, Windows/ARM64, production-runtime, or search-performance claim.
+          - Branch state: bootstrap and experiment branches reconciled into the CUDA-JS trunk before continuation.
+
+          '''
+          published = re.sub(r'^          ', '', published, flags=re.MULTILINE)
+          for heading in ['## Prepared CUDA-JS foundation', '## Published CUDA-JS foundation and EXP-000']:
+              if heading in status:
+                  status = re.sub(
+                      rf'{re.escape(heading)}\n.*?(?=\n## |\Z)',
+                      published.rstrip(),
+                      status,
+                      flags=re.DOTALL,
+                  )
+                  break
+          else:
+              marker = re.search(r'\n## Current next boundary\n', status)
+              if marker:
+                  status = status[:marker.start()+1] + published + status[marker.start()+1:]
+              else:
+                  status = status.rstrip() + '\n\n' + published
+
+          next_boundary = '''## Current next boundary
+
+          Continue the version-zero UMCGS-to-CUDA-JS public execution-package proposal using the exact EXP-000 qualified capability profile, while keeping final runtime acceptance and production implementation blocked on `EXP-001` and the later CUDA-specific ABI, context, memory, launch, completion, error-health, compiler, and compatible-pair gates.
+          '''
+          next_boundary = re.sub(r'^          ', '', next_boundary, flags=re.MULTILINE)
+          if '## Current next boundary' in status:
+              status = re.sub(
+                  r'## Current next boundary\n.*?(?=\n## |\Z)',
+                  next_boundary.rstrip(),
+                  status,
+                  flags=re.DOTALL,
+              )
+          else:
+              status = status.rstrip() + '\n\n' + next_boundary
+
+          status = status.replace(
+              'The private `iteathen/CUDA-JS` repository still does not exist',
+              'The private `iteathen/CUDA-JS` repository exists',
+          )
+          status_path.write_text(status.rstrip() + '\n', encoding='utf-8')
+
+          next_path = root / 'next_step.yaml'
+          plan = json.loads(next_path.read_text(encoding='utf-8'))
+          plan['schema_version'] = int(plan.get('schema_version', 0)) + 1
+          plan['updated'] = '2026-08-10'
+          plan['status'] = 'ready'
+          if 'parent_plan_version' in plan:
+              plan['parent_plan_version'] = int(plan['parent_plan_version']) + 1
+          plan['objective'] = (
+              'Draft and adversarially validate the version-zero UMCGS-to-CUDA-JS '
+              'public execution-package contract using the exact EXP-000 qualified '
+              'host-substrate profile, while blocking production implementation and '
+              'final compatible-pair acceptance on EXP-001 and later CUDA-specific gates.'
+          )
+          plan['cuda_js_public_state'] = {
+              'repository': cuda_repo,
+              'repository_status': 'created_private',
+              'foundation_commit': foundation,
+              'exp_000_tag': evidence_tag,
+              'exp_000_evidence_path': evidence_path,
+              'exp_000_status': 'passed',
+              'qualified_profile': {
+                  'node_version': '26.7.0',
+                  'platform': 'linux',
+                  'architecture': 'x64',
+                  'scope': 'GPU-free public Node FFI host substrate',
+              },
+              'branches_reconciled_before_continuation': True,
+              'claim_limits': [
+                  'No CUDA Driver, ABI, context, memory, launch, completion, deferred-error, or compiler claim.',
+                  'No strict-JIT dispatch or production performance claim.',
+                  'No Windows or ARM64 claim.',
+                  'No final UMCGS/CUDA-JS compatible-pair acceptance.',
+              ],
+          }
+
+          gates = plan.get('experiment_gates', [])
+          if isinstance(gates, list):
+              by_id = {item.get('id'): item for item in gates if isinstance(item, dict)}
+              by_id.setdefault('PUB-000', {'id': 'PUB-000'})['status'] = 'passed'
+              by_id['PUB-000']['purpose'] = (
+                  f'Private {cuda_repo} exists and preserves foundation {foundation}.'
+              )
+              by_id.setdefault('EXP-000', {'id': 'EXP-000'})['status'] = 'passed'
+              by_id['EXP-000']['purpose'] = (
+                  'GPU-free Node FFI ABI/lifetime qualification passed at '
+                  f'{evidence_tag}.'
+              )
+              by_id.setdefault('EXP-001', {'id': 'EXP-001'})['status'] = 'blocked_environment'
+              by_id['EXP-001']['purpose'] = (
+                  'Load the real CUDA Driver library and execute the Tier-0 named-symbol smoke.'
+              )
+              plan['experiment_gates'] = list(by_id.values())
+          else:
+              plan['experiment_gates'] = [
+                  {'id': 'PUB-000', 'status': 'passed'},
+                  {'id': 'EXP-000', 'status': 'passed'},
+                  {'id': 'EXP-001', 'status': 'blocked_environment'},
+              ]
+
+          plan['blockers'] = [
+              'EXP-001 and later CUDA-specific foundation experiments require a qualified CUDA host with a real NVIDIA Driver library and applicable official toolkit/header identity.',
+              'CUDA-JS has not yet published an accepted CUDA-specific public capability contract or final compatible-pair evidence.',
+          ]
+          plan['validation'] = list(dict.fromkeys([
+              *plan.get('validation', []),
+              'Resolve and verify immutable CUDA-JS tag exp-000-node-26.7.0-linux-x64.',
+              'Preserve the EXP-000 claim boundary when drafting UMCGS public requirements.',
+              'Refuse CUDA-specific acceptance without real Driver and native-layout evidence.',
+              './scripts/verify-docs.sh',
+          ]))
+          plan['do_not'] = list(dict.fromkeys([
+              *plan.get('do_not', []),
+              'Encode Node FFI, Worker, actor, child-process, dynamic-library-path, or private resource-layout mechanisms into the UMCGS public package.',
+              'Treat EXP-000 as CUDA-specific correctness, strict-JIT, Windows/ARM64, or production-performance evidence.',
+              'Use a mock as the EXP-001 real Driver oracle.',
+              'Begin production implementation before applicable CUDA-specific foundation gates pass.',
+          ]))
+          plan['completion_evidence'] = list(dict.fromkeys([
+              *plan.get('completion_evidence', []),
+              f'CUDA-JS foundation {foundation} is published in private {cuda_repo}.',
+              f'EXP-000 passed at immutable tag {evidence_tag}.',
+              'CUDA-JS bootstrap and experiment branches were reconciled before continuation.',
+          ]))
+          plan['handoff'] = (
+              'Draft the backend-neutral UMCGS-to-CUDA-JS v0 public package contract; '
+              'run EXP-001 only on a qualified CUDA host and keep production code blocked.'
+          )
+          next_path.write_text(json.dumps(plan, indent=2) + '\n', encoding='utf-8')
+          PY
+
+          git rm .github/workflows/sync-cuda-js-exp-000.yml
+          git add STATUS.md next_step.yaml docs/README.md docs/architecture/REPOSITORY_TOPOLOGY.md docs/research
+          ./scripts/verify-docs.sh
+          git diff --check --cached
+          git commit -m 'Record published CUDA-JS EXP-000 result and next gate'
+          head_sha="$(git rev-parse HEAD)"
+          echo "head_sha=${head_sha}" >> "$GITHUB_OUTPUT"
+          git push origin HEAD:"${SOURCE_BRANCH}"
+
+      - name: Verify prospective UMCGS merge
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin \
+            "+refs/heads/${DEFAULT_BRANCH}:refs/remotes/origin/${DEFAULT_BRANCH}" \
+            "+refs/heads/${SOURCE_BRANCH}:refs/remotes/origin/${SOURCE_BRANCH}"
+          git checkout -B verify-integration "origin/${DEFAULT_BRANCH}"
+          git merge --no-commit --no-ff "origin/${SOURCE_BRANCH}"
+          ./scripts/verify-docs.sh
+          git diff --check --cached
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          plan = json.loads(Path('next_step.yaml').read_text(encoding='utf-8'))
+          assert plan['cuda_js_public_state']['exp_000_status'] == 'passed'
+          assert any(gate['id'] == 'EXP-001' and gate['status'] == 'blocked_environment'
+                     for gate in plan['experiment_gates'])
+          PY
+          git merge --abort
+          git checkout "${SOURCE_BRANCH}"
+
+      - name: Create exact-head PR and author-side review comment
+        id: pr
+        shell: bash
+        env:
+          HEAD_SHA: ${{ steps.docs.outputs.head_sha }}
+        run: |
+          set -euo pipefail
+          number="$(gh pr list \
+            --repo "${GITHUB_REPOSITORY}" \
+            --head "${SOURCE_BRANCH}" \
+            --base "${DEFAULT_BRANCH}" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')"
+          if [[ -z "$number" ]]; then
+            gh pr create \
+              --repo "${GITHUB_REPOSITORY}" \
+              --head "${SOURCE_BRANCH}" \
+              --base "${DEFAULT_BRANCH}" \
+              --title 'Record published CUDA-JS EXP-000 result and next gate' \
+              --body "$(cat <<EOF
+          ## Scope
+
+          Documentation and planning only. Synchronize the created private CUDA-JS repository, preserved foundation commit, passing EXP-000 evidence tag, public claim limits, and the real-CUDA EXP-001 blocker.
+
+          ## Exact head
+
+          \`${HEAD_SHA}\`
+
+          ## Boundaries
+
+          No UMCGS or CUDA-JS production source is added. UMCGS remains backend-neutral and cannot treat EXP-000 as CUDA-specific, strict-JIT, Windows/ARM64, or production-performance evidence.
+          EOF
+          )"
+            number="$(gh pr list \
+              --repo "${GITHUB_REPOSITORY}" \
+              --head "${SOURCE_BRANCH}" \
+              --base "${DEFAULT_BRANCH}" \
+              --state open \
+              --json number \
+              --jq '.[0].number')"
+          fi
+          echo "number=${number}" >> "$GITHUB_OUTPUT"
+          gh pr comment "$number" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --body "Author-side exact-head documentation review completed for \`${HEAD_SHA}\`; non-independent. Repository validation and the prospective merged tree passed."
+
+      - name: Guarded squash merge
+        shell: bash
+        env:
+          HEAD_SHA: ${{ steps.docs.outputs.head_sha }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          gh pr merge "$PR_NUMBER" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --squash \
+            --delete-branch \
+            --match-head-commit "$HEAD_SHA"
+
+      - name: Verify final UMCGS state and cleanup
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune
+          main_ref="origin/${DEFAULT_BRANCH}"
+          git show "${main_ref}:next_step.yaml" \
+            | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["cuda_js_public_state"]["exp_000_status"]=="passed"'
+          remaining="$({ git for-each-ref --format='%(refname:short)' refs/remotes/origin \
+            | sed '/\/HEAD$/d' \
+            | grep -v "^origin/${DEFAULT_BRANCH}$"; } || true)"
+          if [[ -n "$remaining" ]]; then
+            printf 'Unexpected UMCGS branches remain:\n%s\n' "$remaining" >&2
+            exit 1
+          fi
