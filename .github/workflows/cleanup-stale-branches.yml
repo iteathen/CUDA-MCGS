@@ -1,0 +1,98 @@
+name: Cleanup fully merged stale branches
+
+on:
+  push:
+    branches:
+      - agent/cleanup-stale-branches-20260810
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: cleanup-stale-branches-20260810
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      CLEANUP_BRANCH: ${{ github.ref_name }}
+    steps:
+      - name: Check out complete history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Delete only branches proven merged and unused
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          targets=(
+            agent/cleanup-and-artifact-disposition
+            agent/cuda-js-exp-000-sync
+            agent/governed-plan-execution
+            agent/pr-review-and-merge-doctrine
+            agent/proportional-sanity-checking
+            agent/publish-lego-doctrine
+          )
+
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune
+          default_ref="origin/${DEFAULT_BRANCH}"
+          git rev-parse --verify "${default_ref}^{commit}" >/dev/null
+
+          for branch in "${targets[@]}"; do
+            ref="origin/${branch}"
+            if ! git show-ref --verify --quiet "refs/remotes/${ref}"; then
+              echo "Already absent: ${branch}"
+              continue
+            fi
+
+            if ! git merge-base --is-ancestor "${ref}" "${default_ref}"; then
+              echo "Refusing to delete unmerged branch: ${branch}" >&2
+              exit 1
+            fi
+
+            open_prs="$(gh pr list \
+              --repo "${GITHUB_REPOSITORY}" \
+              --state open \
+              --head "${branch}" \
+              --json number \
+              --jq 'length')"
+            if [[ "${open_prs}" != "0" ]]; then
+              echo "Refusing to delete branch with open PR: ${branch}" >&2
+              exit 1
+            fi
+
+            git push origin --delete "${branch}"
+          done
+
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune
+          for branch in "${targets[@]}"; do
+            if git show-ref --verify --quiet "refs/remotes/origin/${branch}"; then
+              echo "Branch still exists after deletion: ${branch}" >&2
+              exit 1
+            fi
+          done
+
+          if ! git merge-base --is-ancestor "origin/${CLEANUP_BRANCH}" "${default_ref}"; then
+            echo "Cleanup branch is not based on current default branch" >&2
+            exit 1
+          fi
+
+          open_cleanup_prs="$(gh pr list \
+            --repo "${GITHUB_REPOSITORY}" \
+            --state open \
+            --head "${CLEANUP_BRANCH}" \
+            --json number \
+            --jq 'length')"
+          if [[ "${open_cleanup_prs}" != "0" ]]; then
+            echo "Refusing to self-delete cleanup branch with open PR" >&2
+            exit 1
+          fi
+
+          git push origin --delete "${CLEANUP_BRANCH}"
