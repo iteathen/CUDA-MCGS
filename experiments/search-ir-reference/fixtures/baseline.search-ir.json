@@ -1,0 +1,211 @@
+{
+  "schema": "cuda-mcgs.search-ir/0.1.0",
+  "contract": "SPEC-0001/0.1.0",
+  "roles": [
+    "backup-owner",
+    "domain-identity",
+    "expansion-owner",
+    "graph-owner",
+    "policy-worker",
+    "result-consumer",
+    "result-owner",
+    "stop-owner"
+  ],
+  "publicationChannels": [
+    {
+      "id": "identity-slot",
+      "producer": "domain-identity",
+      "consumers": ["graph-owner"],
+      "payloadOwner": "domain-identity",
+      "states": ["vacant", "claimed", "ready", "failed"],
+      "initialState": "vacant",
+      "readyState": "ready",
+      "terminalStates": ["ready", "failed"],
+      "failureStates": ["failed"],
+      "visibilityScope": "search-device",
+      "transitions": [
+        { "from": "vacant", "to": "claimed" },
+        { "from": "claimed", "to": "ready" },
+        { "from": "claimed", "to": "failed" }
+      ],
+      "progress": { "observesStop": true, "boundedWait": true }
+    },
+    {
+      "id": "state-node",
+      "producer": "graph-owner",
+      "consumers": ["expansion-owner", "policy-worker"],
+      "payloadOwner": "graph-owner",
+      "states": ["reserved", "initializing", "ready", "failed"],
+      "initialState": "reserved",
+      "readyState": "ready",
+      "terminalStates": ["ready", "failed"],
+      "failureStates": ["failed"],
+      "visibilityScope": "search-device",
+      "transitions": [
+        { "from": "reserved", "to": "initializing" },
+        { "from": "initializing", "to": "ready" },
+        { "from": "initializing", "to": "failed" }
+      ],
+      "progress": { "observesStop": true, "boundedWait": true }
+    },
+    {
+      "id": "expansion",
+      "producer": "expansion-owner",
+      "consumers": ["backup-owner", "policy-worker"],
+      "payloadOwner": "expansion-owner",
+      "states": ["unexpanded", "claimed", "ready", "failed"],
+      "initialState": "unexpanded",
+      "readyState": "ready",
+      "terminalStates": ["ready", "failed"],
+      "failureStates": ["failed"],
+      "visibilityScope": "search-device",
+      "transitions": [
+        { "from": "unexpanded", "to": "claimed" },
+        { "from": "claimed", "to": "ready" },
+        { "from": "claimed", "to": "failed" }
+      ],
+      "progress": { "observesStop": true, "boundedWait": true }
+    },
+    {
+      "id": "child-binding",
+      "producer": "expansion-owner",
+      "consumers": ["backup-owner", "policy-worker"],
+      "payloadOwner": "graph-owner",
+      "states": ["unbound", "ready", "failed"],
+      "initialState": "unbound",
+      "readyState": "ready",
+      "terminalStates": ["ready", "failed"],
+      "failureStates": ["failed"],
+      "visibilityScope": "search-device",
+      "transitions": [
+        { "from": "unbound", "to": "ready" },
+        { "from": "unbound", "to": "failed" }
+      ],
+      "progress": { "observesStop": true, "boundedWait": true }
+    },
+    {
+      "id": "backup-eligibility",
+      "producer": "backup-owner",
+      "consumers": ["policy-worker", "result-owner"],
+      "payloadOwner": "backup-owner",
+      "states": ["reserved", "value-ready", "applied", "abandoned"],
+      "initialState": "reserved",
+      "readyState": "applied",
+      "terminalStates": ["applied", "abandoned"],
+      "failureStates": ["abandoned"],
+      "visibilityScope": "search-device",
+      "transitions": [
+        { "from": "reserved", "to": "value-ready" },
+        { "from": "reserved", "to": "abandoned" },
+        { "from": "value-ready", "to": "applied" },
+        { "from": "value-ready", "to": "abandoned" }
+      ],
+      "progress": { "observesStop": true, "boundedWait": true }
+    },
+    {
+      "id": "stop",
+      "producer": "stop-owner",
+      "consumers": ["backup-owner", "expansion-owner", "graph-owner", "policy-worker", "result-owner"],
+      "payloadOwner": "stop-owner",
+      "states": ["running", "stop-requested", "draining", "terminal"],
+      "initialState": "running",
+      "readyState": "terminal",
+      "terminalStates": ["terminal"],
+      "failureStates": [],
+      "visibilityScope": "search-device",
+      "transitions": [
+        { "from": "running", "to": "stop-requested" },
+        { "from": "stop-requested", "to": "draining" },
+        { "from": "draining", "to": "terminal" }
+      ],
+      "progress": { "observesStop": true, "boundedWait": true }
+    },
+    {
+      "id": "result",
+      "producer": "result-owner",
+      "consumers": ["result-consumer"],
+      "payloadOwner": "result-owner",
+      "states": ["unavailable", "publishing", "ready", "failed"],
+      "initialState": "unavailable",
+      "readyState": "ready",
+      "terminalStates": ["ready", "failed"],
+      "failureStates": ["failed"],
+      "visibilityScope": "search-device",
+      "transitions": [
+        { "from": "unavailable", "to": "publishing" },
+        { "from": "publishing", "to": "ready" },
+        { "from": "publishing", "to": "failed" }
+      ],
+      "progress": { "observesStop": true, "boundedWait": true }
+    }
+  ],
+  "graph": {
+    "identity": {
+      "owner": "domain-identity",
+      "verification": "hash-plus-domain-equality",
+      "transpositionScope": "search-incarnation"
+    },
+    "stateNodes": {
+      "owner": "graph-owner",
+      "uniqueness": "one-ready-node-per-verified-identity",
+      "staleReferencePolicy": "generation-checked"
+    },
+    "parentEdges": {
+      "owner": "policy-worker",
+      "statistics": "incoming-edge-local",
+      "inFlightDistinctFromCompleted": true
+    },
+    "cycles": {
+      "lookupOrder": ["resolve-identity", "evaluate-active-path"],
+      "membership": "active-path",
+      "response": "cutoff"
+    },
+    "backup": {
+      "owner": "backup-owner",
+      "dispositions": ["applied", "abandoned"],
+      "exactlyOnce": true
+    }
+  },
+  "resources": [
+    { "id": "state-nodes", "capacity": 8, "unit": "entries", "counters": ["claimed", "published", "retired-unreclaimed", "failed-reservations", "high-water"], "admission": "bounded-reservation", "failedReservationConsumesCapacity": false, "exhaustionCause": "resource-exhausted/state-nodes" },
+    { "id": "parent-edges", "capacity": 16, "unit": "entries", "counters": ["claimed", "published", "retired-unreclaimed", "failed-reservations", "high-water"], "admission": "bounded-reservation", "failedReservationConsumesCapacity": false, "exhaustionCause": "resource-exhausted/parent-edges" },
+    { "id": "state-bytes", "capacity": 1024, "unit": "bytes", "counters": ["claimed", "published", "retired-unreclaimed", "failed-reservations", "high-water"], "admission": "bounded-reservation", "failedReservationConsumesCapacity": false, "exhaustionCause": "resource-exhausted/state-bytes" },
+    { "id": "action-bytes", "capacity": 1024, "unit": "bytes", "counters": ["claimed", "published", "retired-unreclaimed", "failed-reservations", "high-water"], "admission": "bounded-reservation", "failedReservationConsumesCapacity": false, "exhaustionCause": "resource-exhausted/action-bytes" },
+    { "id": "transposition-slots", "capacity": 16, "unit": "entries", "counters": ["claimed", "published", "retired-unreclaimed", "failed-reservations", "high-water"], "admission": "bounded-reservation", "failedReservationConsumesCapacity": false, "exhaustionCause": "resource-exhausted/transposition-slots" },
+    { "id": "active-paths", "capacity": 4, "unit": "paths", "counters": ["claimed", "published", "retired-unreclaimed", "failed-reservations", "high-water"], "admission": "bounded-reservation", "failedReservationConsumesCapacity": false, "exhaustionCause": "resource-exhausted/active-paths" },
+    { "id": "work-queue", "capacity": 16, "unit": "items", "counters": ["claimed", "published", "retired-unreclaimed", "failed-reservations", "high-water"], "admission": "bounded-reservation", "failedReservationConsumesCapacity": false, "exhaustionCause": "resource-exhausted/work-queue" },
+    { "id": "outputs", "capacity": 4, "unit": "records", "counters": ["claimed", "published", "retired-unreclaimed", "failed-reservations", "high-water"], "admission": "bounded-reservation", "failedReservationConsumesCapacity": false, "exhaustionCause": "resource-exhausted/outputs" },
+    { "id": "diagnostics", "capacity": 16, "unit": "records", "counters": ["claimed", "published", "retired-unreclaimed", "failed-reservations", "high-water"], "admission": "bounded-reservation", "failedReservationConsumesCapacity": false, "exhaustionCause": "resource-exhausted/diagnostics" }
+  ],
+  "stop": {
+    "states": ["running", "stop-requested", "draining", "terminal"],
+    "causes": [
+      "budget-satisfied",
+      "cancelled",
+      "publication-failure",
+      "resource-exhausted/action-bytes",
+      "resource-exhausted/active-paths",
+      "resource-exhausted/diagnostics",
+      "resource-exhausted/outputs",
+      "resource-exhausted/parent-edges",
+      "resource-exhausted/state-bytes",
+      "resource-exhausted/state-nodes",
+      "resource-exhausted/transposition-slots",
+      "resource-exhausted/work-queue"
+    ],
+    "firstCauseAuthoritative": true,
+    "admissionAfterStop": "reject-resource-dependent",
+    "claimedDisposition": ["apply-ready", "abandon-unready"]
+  },
+  "result": {
+    "partialClasses": ["complete", "valid-partial", "no-valid-result"],
+    "rankingInputs": ["ready-nodes", "ready-edges", "ready-evaluator-outputs", "applied-backups"],
+    "reports": ["completion-class", "first-stop-cause", "completed-work-count", "resource-ledgers", "budget-satisfied", "diagnostics"]
+  },
+  "identity": {
+    "canonicalization": "utf8-json-sorted-keys-v1",
+    "digest": "sha256",
+    "pathIndependent": true,
+    "targetIndependent": true
+  }
+}

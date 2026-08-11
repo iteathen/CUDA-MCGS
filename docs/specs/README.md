@@ -8,6 +8,13 @@ Read specifications through [`../../agent_files/general_foundation/SPEC_AND_AGEN
 
 Accepted status governs only within declared scope. Proposal specifications support drafting, review, and explicitly authorized experiments; they do not authorize production implementation by themselves.
 
+## Current accepted contracts
+
+- [`SPEC-0001-device-search-publication-and-resources.md`](SPEC-0001-device-search-publication-and-resources.md) — backend-neutral publication, graph identity/edge ownership, path-cycle ordering, finite-resource exhaustion, partial-result validity, and scheduler-neutral conformance, version 0.1.0.
+- [`SPEC-0002-search-ir-and-reference-semantics.md`](SPEC-0002-search-ir-and-reference-semantics.md) — the foundational Search IR 0.1.0 representation, strict normalization, canonical identity, and deterministic CUDA-free reference semantics for the SPEC-0001 boundary.
+
+These contracts do not authorize production CUDA lowering, a generated ABI, the complete extension-capable Search IR, a production scheduler or graph store, or CUDA-JS integration.
+
 ## Planned CUDA-MCGS specification families
 
 - normalized Search IR;
@@ -32,4 +39,4 @@ Use [`../../agent_files/templates/specification.template.md`](../../agent_files/
 
 - [`SPEC-0000-framework-requirements.md`](SPEC-0000-framework-requirements.md) — framework specification map and cross-cutting conformance requirements, including the schema-backed extension model and zero-abstraction-cost target; not yet an implementable accepted contract.
 
-The next specification boundary is the canonical Extension Surface/Point/Context Schema/Fragment representation plus the minimum Search Image/CUDA-JS package contract described in [`../../next_step.yaml`](../../next_step.yaml). The current CUDA-JS peer is public and has bounded F1-F9 evidence; the remaining interop blocker is the exact CUDA-MCGS specification/experiment/compatible-pair evidence, not repository publication.
+The next specification boundary extends the accepted Search IR 0.1.0 foundation with the canonical Extension Surface/Point/Context Schema/Fragment representation plus the minimum Search Image/CUDA-JS package contract described in [`../../next_step.yaml`](../../next_step.yaml). The current CUDA-JS peer is public and has bounded F1-F9 evidence; the remaining interop blocker is the exact CUDA-MCGS specification/experiment/compatible-pair evidence, not repository publication.

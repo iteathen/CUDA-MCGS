@@ -1,4 +1,4 @@
-# CUDA-MCGS / UMCGS Status
+# CUDA-MCGS Status
 
 **Status:** Informational
 
@@ -6,116 +6,93 @@
 
 ## Phase
 
-Private pre-release framework definition, research, specification, and evidence gathering. `main` remains the integration trunk for short-lived `feature/*` and `agent/*` branches. No production CUDA-MCGS search runtime or final component decomposition has been accepted.
+CUDA-MCGS is in private pre-release framework definition, research, specification, and bounded evidence gathering. `main` is the integration trunk. No production search runtime or final component decomposition has been accepted.
 
-The product-facing name is **CUDA-MCGS**. The GitHub repository and existing accepted authority identifiers remain `UMCGS` until a separate explicit repository/naming migration is accepted.
+The GitHub repository and existing accepted UMCGS authority identifiers retain the historical name until a separate migration is accepted. Product-facing references use **CUDA-MCGS**.
 
 ## North star
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with schema-backed extension support.**
 
-The current design interprets that as:
-
-- universal behavior is defined through versioned contracts and Search IR;
-- schemas make representations and extension contexts machine-verifiable but do not replace behavioral contracts;
-- concrete engines are finite, resource-planned, and specialized;
-- active search remains device-closed after ignition;
-- optional search-time behavior uses one schema-backed Extension Surface/Point/Fragment protocol rather than an unbounded family of optimization-specific runtime callbacks;
-- unbound extension points target zero abstraction overhead in the realized image, and bound extensions target no generic dispatch beyond their intrinsic work;
-- scheduler topology remains an evidence-selected realization under device closure rather than a hard-coded persistent-kernel assumption;
-- search-critical semantics/composition remain CUDA-MCGS-owned while generic CUDA runtime/compiler/linker behavior remains CUDA-JS-owned.
+Universal behavior is defined through versioned contracts and Search IR. Concrete engines are finite, resource-planned, and specialized. Active search remains device-closed after ignition. Optional search-time behavior uses a schema-backed Extension Surface/Point/Fragment protocol resolved before ignition, while generic CUDA runtime/compiler/linker behavior remains CUDA-JS-owned.
 
 ## Accepted project state
 
-- The generic graph-search framework—not chess or another first domain—is the first product.
-- CUDA-MCGS/UMCGS owns Search IR, search semantics, finite search-resource planning, specialized search device programs, search conformance, and the CUDA-JS adapter/package contract.
-- Generic Node.js/CUDA Driver runtime behavior belongs to the independent peer `CUDA-JS`; dependency direction is one-way through versioned public artifacts.
-- Active search remains device-closed after ignition. Concrete engines are finite and resource-planned; contracts are universal and generated hot paths are specialized.
-- Accepted ADR-0002 rejects one universal runtime structure/callback table as the universality mechanism and permits generated engines to inline operations and eliminate unused fields/capabilities.
-- Accepted ADR-0003 forbids CPU-produced intermediate decisions required for active-search progress.
-- Accepted ADR-0014 keeps generic CUDA host/runtime mechanics in CUDA-JS rather than CUDA-MCGS.
-- Engineering begins with explicit contracts, specification obligations, adversarial assessment, evidence, and dependency-ready execution rather than implementation-first drift.
-- Repository/component organization, no-Python ecosystem policy, finite-resource design, consolidated testing, cleanup, exact-head review, and guarded integration remain binding.
+- The generic graph-search framework—not a first game or domain—is the CUDA-MCGS product.
+- CUDA-MCGS owns Search IR, search semantics, finite search-resource planning, specialized search device programs, search conformance, and the CUDA-MCGS-to-CUDA-JS adapter/package contract.
+- Generic Node.js/CUDA Driver behavior belongs to the independent public peer `iteathen/CUDA-JS`. Dependency remains one-way through versioned public artifacts and compatibility manifests.
+- Active search remains device-closed after ignition. Concrete engines are finite and resource-planned; universal contracts lower into specialized generated hot paths.
+- [`docs/specs/SPEC-0001-device-search-publication-and-resources.md`](docs/specs/SPEC-0001-device-search-publication-and-resources.md) is accepted authority for backend-neutral publication channels, state-node/parent-edge ownership, identity-before-path-cycle ordering, finite-resource accounting, typed exhaustion, partial-result validity, and scheduler-neutral conformance.
+- [`docs/specs/SPEC-0002-search-ir-and-reference-semantics.md`](docs/specs/SPEC-0002-search-ir-and-reference-semantics.md) accepts the foundational backend-neutral Search IR 0.1.0 representation, strict normalization, canonical identity, and CUDA-free deterministic reference semantics for the SPEC-0001 boundary.
+- SPEC-0001 and SPEC-0002 do not authorize a generated ABI, production CUDA lowering, the complete extension-capable Search IR, a scheduler, graph store, resource planner, evaluator, adapter, or CUDA-JS integration.
+- Engineering judgment, adversarial assessment, focus-branch sizing, token backpressure, consolidated testing, governed execution, cleanup, sanity, and exact-head integration remain binding.
+- Repository/component organization and the no-Python ecosystem policy apply from project inception.
 
 ## Current proposal direction
 
-The framework architecture/specification proposals now define a common search extension model:
+The architecture and SPEC-0000 proposals define a common search extension model: Extension Surface, Extension Point, Extension Contract, point-specific Context Schema, Extension Fragment, Search Composer, and finite specialized Search Image. Binding/composition occurs before ignition. On-device activation may change later, but active search does not perform host extension discovery, lookup, compilation, linking, or decision service.
 
-- **Extension Surface** — all semantic extension locations exposed by the selected search realization.
-- **Extension Point** — one versioned semantic location with explicit execution scope and permissions.
-- **Extension Contract** — meaning, invariants, ownership, effects, synchronization, resources, failure, and compatibility.
-- **Context Schema** — exact machine-verifiable data/capabilities exposed at that point.
-- **Extension Fragment** — optional device implementation with a manifest declaring target point, requirements, permissions, resources, architecture/toolchain needs, and provenance/cache identity.
-- **Search Composer** — CUDA-MCGS-owned pre-ignition validator/lowerer/planner/composer that generates the finite specialized Search Image.
-- **Search Image** — the fully resolved device program/artifacts plus layouts, resource plan, configuration, compatibility identity, and resident/preloaded search state.
+These extension representations and the complete extension-capable Search IR remain proposal-level until detailed specifications and experiment evidence are accepted. The accepted Search IR 0.1.0 slice is their semantic foundation, not proof of the complete model.
 
-Binding/composition occurs before ignition. A fragment may later change activation on-device, but active search does not perform host extension discovery, lookup, compilation, linking, or decision service.
+## Bounded CUDA-only experiment
 
-These definitions are still proposal-level until detailed versioned specifications and experiment evidence are accepted.
+The standalone experiment at [`experiments/cuda-device-mcgs-prototype/`](experiments/cuda-device-mcgs-prototype/) is retained as non-production evidence. It has no Node.js dependency and does not exercise or implement CUDA-JS.
+
+Exact final local Windows evidence:
+
+- source SHA-256 `9D1F9F9C196531DDA241966761657760D96D9E3800B82EDEA617E1CB4E84EDA3`;
+- Release binary SHA-256 `FE106092751A4E53C472B8B28E2833C1896C0FA220578B7CB0A6FB89429C1443`;
+- CUDA 13.3 / Driver API 13030 / GeForce GTX 1660 Ti / compute capability 7.5;
+- ordinary invariant capsule: 8 expected, discovered, and executed; 8 passed with zero skips;
+- five additional unchanged full-workload trials: 8/8 each;
+- global-ticket and warp-batched-ticket mechanisms both preserved stable semantic invariants;
+- warp batching reduced ticket claims but established no stable timing win and does not select a production scheduler;
+- exact-final-binary Compute Sanitizer memcheck remained incomplete after a bounded reduced-workload attempt.
+
+Build output is ignored, reproducible task state and is removed after evidence reconciliation. Production code may not import experiment internals.
+
+## Bounded Search IR reference
+
+The CUDA-free reference at [`experiments/search-ir-reference/`](experiments/search-ir-reference/) validates the accepted Search IR 0.1.0 foundation independently from the native prototype and CUDA-JS.
+
+Exact local Windows evidence:
+
+- Node.js 26.7.0 on Windows x64;
+- 18 expected, discovered, and executed cases; 18 passed with zero skips;
+- canonical normalized bytes: `7749`;
+- Search IR SHA-256 `bd6679178c6754fe9b06d6fa54d038166b7ef39e32fb5f51513cc303cfd63a96`;
+- baseline, canonical-order, minimum-capacity, eight fail-closed mutations, ordinary, publication, transposition, path-cycle, forced-exhaustion, scheduler-parity, and oracle-sensitivity cases all pass.
+
+Private CUDA-MCGS Actions are disabled on the free plan, so this capsule currently has local Windows evidence only. Native Linux CUDA, Linux reference execution, GPU publication, sanitizers, resource cleanup, performance, and CUDA-JS integration remain untested and explicitly tracked gaps.
 
 ## Current CUDA-JS peer state
 
-The previous UMCGS status/plan assumption that CUDA-JS had no remote is obsolete.
-
-At exact inspected revision `ad49a6c9b0cddb420e26e097180cf9c502060a65`, `iteathen/CUDA-JS` is a public pre-release project with a public `cuda-js` 0.1.0-alpha.2 testing package and bounded accepted evidence through its F1-F9 sequence.
-
-Relevant current evidence includes:
-
-- F1A/EXP-000 and F1B schema/ABI foundations;
-- Windows F2W-F8W Driver/resource/memory/execution/compiler/package evidence on the recorded exact profile;
-- F6 CompilerActor ownership of NVRTC/nvJitLink plus content-addressed device artifacts;
-- F9 `cuda-cccl` trusted-header profile and a consumer-neutral `<cuda/atomic>` device-scope release/acquire publication fixture through the public facade.
-
-F9 is deliberately bounded: it proves a generic compiler/runtime prerequisite, not CUDA-MCGS search semantics, extension composition, scheduler behavior/performance, transposition semantics, or the cross-repository compatible pair. Native Linux CUDA qualification also remains separate from the accepted Windows profile.
-
-## Prior-art result
-
-The prior-art landscape still finds no reviewed search framework suitable as the CUDA-MCGS foundation. The expanded 2026-08-11 research does reduce unnecessary invention:
-
-- NVIDIA cuVS JIT-LTO is a direct methodology reference for planner-selected device fragments, LTO composition, and caching.
-- cuFFT LTO callbacks are a direct methodology reference for typed device behavior bound to defined points before plan finalization.
-- nvJitLink/NVRTC are appropriate platform/compiler substrate through CUDA-JS.
-- CUDA Graph device launch/conditional execution is a candidate device-owned scheduler mechanism, not a mandatory topology.
-- cuCollections is a transposition-table benchmark/reference and possible permissively licensed source donor pending TT-001.
-- CCCL/libcu++/CUB are CUDA-native primitive sources where exact component contracts/licensing fit.
-
-The selected reuse posture is: **methodology first; independent search-owned implementation second; selective source adaptation third; vendoring fourth; higher-level runtime dependency last.**
-
-A production Search Image should not require cuVS, cuFFT, cuCollections, RAPIDS, or another higher-level search/framework runtime to make progress unless a later explicit dependency decision proves that benefit outweighs loss of local control.
+At exact inspected revision `ad49a6c9b0cddb420e26e097180cf9c502060a65`, public `iteathen/CUDA-JS` has bounded accepted F1-F9 evidence, including Windows Driver/resource/memory/execution/compiler/package evidence and the F9 `cuda-cccl` device-scope publication prerequisite. F9 proves generic compiler/runtime behavior only; it does not prove CUDA-MCGS search semantics, extension composition, scheduler performance, transposition behavior, or the cross-repository compatible pair. Native Linux CUDA qualification remains separate.
 
 ## Current authority
 
-- Project charter: accepted and narrowed to UMCGS/CUDA-MCGS search ownership.
-- ADR-0001 through ADR-0017: accepted within their documented scopes.
-- Repository topology and ecosystem language policy: accepted boundary, informational architecture explanation.
-- Framework architecture overview: proposal, updated with schema-backed extension composition.
-- Framework specification map: proposal, updated with extension and zero-abstraction-cost obligations.
-- CUDA-MCGS-to-CUDA-JS execution-package contract: not yet accepted.
-- Canonical Search IR: not yet accepted.
-- Extension Surface/Point/Context Schema/Fragment representation: not yet accepted.
-- Initial scheduler and transposition-table implementation decisions: not yet accepted.
+- Project charter and ADR-0001 through ADR-0017: accepted within their scopes.
+- Repository topology, no-Python policy, and the CUDA-JS peer split: accepted.
+- SPEC-0001 device publication/graph/resource semantic contract: accepted.
+- SPEC-0002 foundational Search IR 0.1.0 and deterministic reference semantics: accepted.
+- SPEC-0000 framework map and extension model: proposal input, not an implementable production contract.
+- Complete extension-capable Search IR, Extension Surface/Point/Fragment representation, domain, policy, evaluator, full memory-plan, scheduler, output, and CUDA-MCGS-to-CUDA-JS package specifications: not yet accepted.
+- No exact released CUDA-MCGS/CUDA-JS compatible pair or CUDA-MCGS-owned adapter evidence has been accepted.
 
 ## Current next boundary
 
-Execute the revised canonical `next_step.yaml` plan rather than creating a parallel plan.
+Execute the canonical [`next_step.yaml`](next_step.yaml) plan. Extend Search IR 0.1.0 with the Extension Surface/Point/Contract/Context Schema/Fragment and minimum Search Image package contract, then run `EXT-LTO-001` and `EXT-CONTRACT-001` through the exact public CUDA-JS path. Use those results before production extension implementation, followed by `SCHED-001`, `TT-001`, and the exact compatible-pair capsule.
 
-The immediate sequence is:
+## Current blockers and claim limits
 
-1. finalize the canonical Extension Surface/Point/Contract/Context Schema/Fragment representation and minimum Search Image package contract;
-2. run `EXT-LTO-001` through the exact CUDA-JS compiler/link/load path to test direct composition and the no-point/unbound/bound zero-abstraction-cost hypothesis;
-3. run `EXT-CONTRACT-001` to prove incompatible schemas, versions, permissions, resources, and capabilities fail before ignition;
-4. use those results to accept or revise the extension composition model;
-5. run `SCHED-001` before committing to a production device-owned scheduling topology;
-6. run `TT-001` before committing to cuCollections reuse, source adaptation/vendoring, or a custom transposition-table implementation;
-7. produce the exact CUDA-MCGS/CUDA-JS compatible-pair capsule.
+- The complete extension-capable Search IR and extension representation are not accepted.
+- Domain, policy, evaluator, full memory/resource, scheduler, output, persistence/reroot, and execution-package contracts remain incomplete.
+- The prototype covers a fixed deterministic two-action scalar-value domain and node-capacity exhaustion only.
+- No representative evaluator, workload, profiler, search-quality, cross-GPU, cancellation, device-loss, reclamation, or complete sanitizer evidence exists.
+- No production implementation, native Linux CUDA qualification, public CUDA-MCGS release, exact compatible runtime pair, or release automation is claimed.
 
-## Current risks and unknowns
+## Private collaboration safety
 
-- The Extension Surface abstraction may prove too broad or too expensive unless emitted-code and resource evidence confirms specialization removes unused machinery.
-- Device LTO is a promising first realization, not yet proven to satisfy every CUDA-MCGS extension composition case or target GPU/toolchain profile.
-- The optimal device-owned scheduler may vary with irregular search, evaluator occupancy, secondary GPU work, hardware generation, watchdog/environment constraints, and resource profile.
-- cuCollections may not satisfy CUDA-MCGS collision verification, publication, generation/reclamation, or memory-layout needs despite being a strong baseline.
-- Canonical Search IR, graph identity/publication, variable-size arenas, reroot/reclamation, evaluator resident contract, and exact memory-pressure policies remain specification work.
-- Native Linux CUDA-JS execution remains incompletely qualified; current compatible-pair planning must not generalize Windows evidence to Linux.
-- Third-party implementation reuse requires exact license/provenance and explicit reuse decisions; the CUDA-MCGS project distribution license remains a separate release/reuse decision.
-- Candidate performance claims remain non-authoritative until reproduced on representative CUDA-MCGS workloads/hardware.
+CUDA-MCGS uses GitHub Free and will not depend on paid private-repository protection or Actions. The canonical private repository keeps `iteathen` as its only account; personal-account private collaborators receive write access and therefore are not admitted directly.
+
+Outside developers contribute through standalone private intake repositories containing an exact, sanitized starting revision and no canonical credentials, secrets, runners, or authority. The owner reviews and locally validates an exact intake head, then imports selected commits onto a canonical branch while preserving authorship. Intake repositories are archived or deleted at engagement end. Public repositories such as CUDA-JS continue using protected branches and public CI. The normative workflow is in [`CONTRIBUTING.md`](CONTRIBUTING.md).

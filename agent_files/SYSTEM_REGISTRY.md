@@ -38,7 +38,7 @@ This registry tells developers and agents where durable information and future i
 | `governance.owner-entry` | Mandatory repository entry rules | [`../AGENTS.md`](../AGENTS.md) | Active |
 | `project.charter` | UMCGS search mission, product boundary, and peer-runtime separation | [`../docs/PROJECT_CHARTER.md`](../docs/PROJECT_CHARTER.md) | Accepted |
 | `project.decisions` | Cross-cutting accepted choices | [`../docs/decisions/`](../docs/decisions/README.md) | Active |
-| `project.specifications` | Normative UMCGS search and interop contracts | [`../docs/specs/`](../docs/specs/README.md) | Proposal set |
+| `project.specifications` | Normative UMCGS search and interop contracts | [`../docs/specs/`](../docs/specs/README.md) | Active; accepted and proposal documents are indexed separately |
 | `project.architecture` | Explanatory architecture and repository topology | [`../docs/architecture/`](../docs/architecture/README.md) | Active/proposal set |
 | `project.research` | Prior-art and external technical evidence | [`../docs/research/`](../docs/research/README.md) | Active |
 | `project.archive` | Superseded documentation provenance | [`../docs/archive/`](../docs/archive/README.md) | Active |
@@ -49,12 +49,12 @@ This registry tells developers and agents where durable information and future i
 
 | Product area | Owns | Location | Current status |
 |---|---|---|---|
-| `schemas` | Versioned UMCGS machine-readable contracts and metaschemas | [`../schemas/`](../schemas/README.md) | Reserved |
+| `schemas` | Versioned UMCGS machine-readable contracts and metaschemas | [`../schemas/`](../schemas/README.md) | Active; Search IR 0.1.0 accepted |
 | `components` | Production UMCGS search components | [`../components/`](../components/README.md) | Reserved; no implementation authorized |
 | `adapters` | Domain, policy, evaluator, output, and peer-runtime adapters | [`../adapters/`](../adapters/README.md) | Reserved |
 | `conformance` | UMCGS reference backend, synthetic domains, search-contract suites, and public peer-boundary compatibility | [`../conformance/`](../conformance/README.md) | Reserved |
 | `benchmarks` | Cross-component reproducible performance and search-quality suites | [`../benchmarks/`](../benchmarks/README.md) | Reserved |
-| `experiments` | Disposable research/prototypes | [`../experiments/`](../experiments/README.md) | Reserved |
+| `experiments` | Disposable research/prototypes | [`../experiments/`](../experiments/README.md) | Active; CUDA and CUDA-free bounded evidence retained |
 | `examples` | Minimal public-surface usage examples | [`../examples/`](../examples/README.md) | Reserved |
 | `tools` | UMCGS-owned developer/build/search-specialization tools | [`../tools/`](../tools/README.md) | Reserved |
 | `scripts` | Thin repository task entry points | [`../scripts/`](../scripts/) | Active |
@@ -62,13 +62,20 @@ This registry tells developers and agents where durable information and future i
 | `packaging` | UMCGS execution-package composition, manifests, compatibility records, and distribution metadata | [`../packaging/`](../packaging/README.md) | Reserved |
 | `third-party` | Vendored external material and provenance | [`../third_party/`](../third_party/README.md) | Reserved |
 
+## Accepted UMCGS semantic contracts
+
+| Boundary ID | Owns | Authoritative location | Status |
+|---|---|---|---|
+| `contract.device-search-state-v0` | Device publication channels, state-node/parent-edge ownership, path-cycle ordering, finite-resource accounting, exhaustion, partial-result validity, scheduler-neutral conformance | [`../docs/specs/SPEC-0001-device-search-publication-and-resources.md`](../docs/specs/SPEC-0001-device-search-publication-and-resources.md) | Accepted semantic contract; concrete Search IR and production lowering pending |
+| `contract.search-ir` | Backend-neutral Search IR 0.1.0 shape, normalization, versioning, and canonical identity | [`../docs/specs/SPEC-0002-search-ir-and-reference-semantics.md`](../docs/specs/SPEC-0002-search-ir-and-reference-semantics.md) and [`../schemas/search-ir/0.1.0/`](../schemas/search-ir/0.1.0/) | Accepted bounded semantic contract; production lowering pending |
+| `reference.search-ir` | Independent deterministic interpretation of accepted publication, graph, path, resource, stop, and partial-result semantics | [`../experiments/search-ir-reference/`](../experiments/search-ir-reference/README.md) | Accepted disposable reference; no production or CUDA authority |
+
 ## Planned UMCGS product components
 
 The following IDs are planning anchors only. Their exact contracts, names, and implementation locations are not accepted until version-zero specifications settle ownership.
 
 | Planned boundary ID | Intended responsibility | Governing work |
 |---|---|---|
-| `contract.search-ir` | Normalized Search IR and versioning | Search IR v0 specification |
 | `contract.domain` | State/action/transition/identity/cycle contract | Domain contract v0 |
 | `contract.policy` | Selection/reservation/backup/output ranking contract | Search-policy contract v0 |
 | `contract.evaluator` | Resident evaluator semantics, capabilities, batching, workspace, and publication requirements | Evaluator contract v0 |
@@ -77,7 +84,6 @@ The following IDs are planning anchors only. Their exact contracts, names, and i
 | `tool.search-schema` | Parse, validate, normalize, diff, and generate UMCGS search contracts | Future accepted component specification |
 | `tool.search-compiler` | Capability resolution, search specialization, search-specific layouts/device code, and execution-package generation | Future accepted component specification |
 | `integration.cuda-js` | UMCGS adapter from execution-package semantics to the public CUDA-JS runtime contract | Interop contract v0 |
-| `reference.search-ir` | Independent host/reference interpretation of accepted UMCGS search semantics | Future accepted component specification |
 | `conformance.search` | Synthetic-domain and end-to-end UMCGS search conformance | Future accepted component specification |
 
 Generic Node/V8 bindings, CUDA Driver call machinery, generic memory providers, NVRTC/link/load, generic launch/completion/error/teardown, and generic runtime packaging belong to the independent `iteathen/CUDA-JS` repository and must not become UMCGS component entries.

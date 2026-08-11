@@ -51,7 +51,7 @@ These product areas are reserved so first implementations enter durable homes ra
 
 The root contains only project/governance entry points, workspace/build/package manifests, license/security/contribution metadata, `next_step.yaml`, and reserved product areas.
 
-No production `.cu`, `.cpp`, `.h`, `.rs`, `.py`, `.js`, `.ts`, model, schema, benchmark result, test fixture, or generated artifact belongs at root.
+No production `.cu`, `.cpp`, `.h`, `.rs`, `.js`, `.mjs`, `.ts`, model, schema, benchmark result, test fixture, or generated artifact belongs at root.
 
 Adding another top-level directory requires an accepted organizational decision and organization-checker update.
 
@@ -173,4 +173,4 @@ A repository split includes:
 
 ## Enforcement
 
-[`../../scripts/check-project-organization.py`](../../scripts/check-project-organization.py) enforces UMCGS topology, root source-file prohibition, component manifests, and dumping-ground rules. Cross-repository contract conformance is added with the accepted version-zero interop specification.
+[`../../scripts/check-project-organization.mjs`](../../scripts/check-project-organization.mjs) enforces UMCGS topology, root source-file prohibition, component manifests, and dumping-ground rules. Cross-repository contract conformance is added with the accepted version-zero interop specification.

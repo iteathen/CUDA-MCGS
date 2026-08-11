@@ -12,6 +12,8 @@ CUDA-MCGS should be a **search compiler/composer plus a finite specialized devic
 
 Universality is defined by stable search contracts, Search IR, and extension contracts. Performance and memory efficiency come from specialization: optional capabilities, fields, branches, adapters, and extension points that are not selected for a concrete engine should not survive merely because the universal framework can represent them.
 
+[`SPEC-0001`](../specs/SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](../specs/SPEC-0002-search-ir-and-reference-semantics.md) accept a foundational Search IR 0.1.0 slice for publication, graph identity/edge ownership, path cycles, finite resources, stop, result, and canonical identity. The complete extension-capable Search IR shown here remains proposal work until the remaining contracts and composition experiments are accepted.
+
 ```text
 Domain contract ───────────────┐
 Search-policy contract ────────┤
@@ -248,7 +250,7 @@ cuCollections should be treated as a serious transposition-table baseline and po
 
 ## 11. Reference backend and conformance
 
-A deterministic non-production reference interpreter of Search IR may define search semantics, subject to the ecosystem language policy. It must not define production GPU performance behavior.
+The deterministic, CUDA-free Search IR 0.1.0 reference capsule governed by SPEC-0002 is accepted as a bounded semantic oracle for the SPEC-0001 foundation. It is a disposable experiment, not production architecture: it does not define a CUDA lowering, generated ABI, scheduler topology, native GPU correctness, or production GPU performance behavior.
 
 Before a production domain adapter, conformance should cover at least:
 
