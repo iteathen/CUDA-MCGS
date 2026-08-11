@@ -18,6 +18,12 @@ The peer `CUDA-JS` repository owns generic Node/CUDA Driver runtime behavior. De
 
 The project is defining version-zero UMCGS search and UMCGS-to-CUDA-JS contracts, ownership, memory/resource behavior, conformance, and test architecture before production implementation.
 
+## Ecosystem language constraint
+
+UMCGS and every UMCGS-related project are Python-free. Python may not be used for production or reference code, host tooling, schema import, generators, tests, benchmarks, documentation tooling, CI, packaging, installers, release work, migrations, diagnostics, prototypes, experiments, or temporary scripts. Python-based ordinary-use dependencies and indirect interpreter invocation are also prohibited.
+
+Apply [`../general_foundation/NO_PYTHON_POLICY.md`](../general_foundation/NO_PYTHON_POLICY.md) to every plan, component, tool, dependency, experiment protocol, and repository split. This is a hard gate; a convenient Python implementation must be rejected or redesigned in an accepted project language.
+
 ## Hard constraints
 
 - Apply ADR-0015 engineering contracts, specification traceability, hard gates, contextual value ordering, candidate-path comparison, and P0–P4 priority.
@@ -32,6 +38,7 @@ The project is defining version-zero UMCGS search and UMCGS-to-CUDA-JS contracts
 - Foundational widths/ranges are derived from expected domains and resource plans.
 - Production performance preserves semantic, resource, stopping, and search-quality guardrails.
 - Generic native runtime behavior remains in CUDA-JS; UMCGS retains only search-semantic lowering and adapter ownership.
+- No Python artifact, interpreter, package manager, build/test dependency, generator, workflow, or temporary support path may enter the repository or its ordinary lifecycle.
 
 ## UMCGS value ordering
 

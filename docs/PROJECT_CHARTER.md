@@ -24,6 +24,14 @@ UMCGS owns reusable search contracts and search-specific runtime behavior for:
 
 UMCGS does **not** own generic Node.js/CUDA Driver bindings, CPU-call ABI generation, native/JIT packaging, generic memory primitives, NVRTC/link/load plumbing, event-loop delivery, or generic CUDA resource handles. Those responsibilities belong to the independent `iteathen/CUDA-JS` repository under ADR-0014.
 
+## Ecosystem language policy
+
+Python is prohibited throughout UMCGS, CUDA-JS, and every future project whose primary purpose is to build, test, package, release, operate, or extend the UMCGS ecosystem.
+
+The prohibition applies to production and reference source, tools, schema importers, generators, tests, benchmarks, documentation tooling, CI, packaging, installers, release automation, migrations, diagnostics, prototypes, experiments, and one-off or temporary scripts. Indirect or containerized invocation does not create an exception.
+
+This is a hard project gate rather than a preference. Use only languages and toolchains accepted by the owning repository and boundary. The complete rule, prohibited artifacts, validation requirements, and cross-repository inheritance are defined in [`../agent_files/general_foundation/NO_PYTHON_POLICY.md`](../agent_files/general_foundation/NO_PYTHON_POLICY.md).
+
 ## Universality rule
 
 The framework defines universal search contracts and a universal intermediate representation. It must not require one universal hot-path object layout or impose permanent runtime cost for unused capabilities. A concrete engine is expected to be statically specialized.

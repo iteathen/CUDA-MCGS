@@ -19,4 +19,4 @@ The stable Search IR identity is:
 
 The source-keyed machine evidence is generated at `experiments/search-ir-reference/build/evidence.json`, ignored by Git, and reproducible through `node scripts/run-search-ir-reference.mjs`. The retained result above includes both governing specifications, schema, all fixtures, normalizer, reference interpreter, and capsule runner in its source identity.
 
-Native Linux CUDA remains untested. Ubuntu CI will run this CUDA-free capsule and must match the same canonical identity and case outcomes; until that remote job passes, Linux reference portability is pending. Even a pass will not qualify a Linux CUDA provider, GPU path, sanitizer, cleanup path, or CUDA-JS compatible pair.
+Native Linux CUDA remains untested. A dormant Windows/Ubuntu workflow is checked in for reuse when CUDA-MCGS can run CI, but private Actions are disabled under the free-tier safety policy. Linux reference portability therefore remains pending. A future Linux reference pass must match the same canonical identity and case outcomes and still will not qualify a Linux CUDA provider, GPU path, sanitizer, cleanup path, or CUDA-JS compatible pair.

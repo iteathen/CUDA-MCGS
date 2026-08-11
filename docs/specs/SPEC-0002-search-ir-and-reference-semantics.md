@@ -18,7 +18,7 @@ The authorized implementation is deliberately small and disposable:
 - a fail-closed normalizer with canonical identity;
 - checked-in valid, minimum-capacity, and invalid fixtures;
 - a CUDA-free deterministic reference model and invariant capsule;
-- Windows and Linux CI execution of the same reference capsule.
+- portable Windows and Linux execution of the same reference capsule, with platform evidence reported separately.
 
 This is not authorization for a production graph store, CUDA code generator, scheduler, domain adapter, evaluator, memory planner, output adapter, persistence system, CUDA-JS adapter, or public release. The retained CUDA-only prototype remains separate evidence and MUST NOT be imported by this reference implementation.
 
@@ -175,6 +175,6 @@ This bounded contract is accepted when:
 - the schema, normalizer, fixtures, checked-in canonical identity, reference cases, indexes, registry, and project state agree;
 - all reference cases are discovered and pass with zero skips on the local exact Windows evidence head;
 - documentation, links, structured data, organization, whitespace, and diff checks pass;
-- remote Linux CI is reported separately and does not widen the claim.
+- Linux execution evidence is reported separately and does not widen the accepted local Windows claim.
 
 Acceptance authorizes the next semantic work to define domain, policy, evaluator, full resource/memory, output, and execution-package contracts against this representation. It does not authorize production CUDA lowering or scheduler selection by itself.
