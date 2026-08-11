@@ -126,7 +126,7 @@
       "repository": "https://github.com/NVIDIA/cuCollections",
       "revision": "1a1e640179e85139765a27d2d376e02628b2ccbc",
       "license": "Apache-2.0",
-      "inspected_paths": ["LICENSE", "include/cuco"],
+      "inspected_paths": ["README.md", "LICENSE"],
       "disposition": "transposition_table_benchmark_and_possible_source_donor_not_default_runtime_dependency",
       "revisit_trigger": "TT-001 semantic/performance comparison and explicit reuse decision"
     },
