@@ -130,9 +130,11 @@ The Composer owns search composition semantics. CUDA-JS owns the generic compile
 
 ## 5. Realization and zero-abstraction-cost target
 
-The preferred first production realization should exploit device whole-program optimization where evidence supports it. CUDA-JS already owns NVRTC and nvJitLink, and NVIDIA cuVS and cuFFT provide useful prior-art evidence that separately supplied device fragments/callbacks can be selected before execution and folded into optimized device code.
+The selected version-zero realization uses relocatable PTX modules. CUDA-MCGS owns the PTX fragment ABI, imported/exported device-symbol contracts, and composition identity; CUDA-JS owns the generic NVRTC/nvJitLink path that compiles or accepts PTX, links the selected inputs into a cubin, loads it, and launches it. Unbound points are omitted by Search Composer generation before PTX emission. Bound fragments are reached through statically named direct device symbols rather than a callback table or function-pointer registry.
 
-CUDA-MCGS must not, however, make one specific linking technique part of the semantic extension contract. A conforming production realization may use device LTO, direct generated source composition, templates/code generation, precompiled specialization, or a later mechanism if it preserves the required semantics and measured performance properties.
+CUDA-MCGS must not make PTX syntax or one linker technique part of the semantic extension contract. A later conforming realization may use direct generated source composition, templates/code generation, precompiled specialization, LTO, or another mechanism if it preserves the required semantics and measured performance properties. NVIDIA cuVS and cuFFT LTO designs remain useful planning and typed-extension-point precedents, not the selected version-zero artifact format.
+
+PTX separate compilation does not guarantee cross-module inlining. A direct linked symbol can still add call, register, occupancy, or code-size cost relative to fused source. The first experiment therefore compares the PTX-module path with a fused/generated-source control and treats the result as evidence, not an assumed optimizer property.
 
 The production performance requirements are:
 
@@ -142,7 +144,7 @@ For an unbound point, production evidence should show no retained callback-table
 
 For a bound fragment, any increased instructions, registers, shared memory, global memory, synchronization, occupancy pressure, or code size caused by the fragment's actual work is intrinsic cost rather than abstraction cost. Those costs remain subject to normal performance/resource acceptance.
 
-This requirement must be verified against emitted intermediate/final code and representative benchmarks where tool support permits; source-level `if constexpr` or an LTO flag alone is not proof.
+This requirement must be verified against emitted PTX and final cubin/SASS plus representative benchmarks where tool support permits; source-level specialization or a successful link alone is not proof.
 
 ## 6. Search Image and pre-ignition boundary
 

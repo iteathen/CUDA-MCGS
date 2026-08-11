@@ -62,21 +62,21 @@ This is a bounded conclusion about the reviewed sources, not proof that no priva
 
 Inspected official `NVIDIA/cuvs` source at revision `abfb8b91c9f9bda1e568265b1d01b36250f43a8d` and the JIT-LTO guide. Relevant implementation paths include `cpp/include/cuvs/detail/jit_lto/AlgorithmPlanner.hpp`, `cpp/src/detail/jit_lto/AlgorithmPlanner.cpp`, and algorithm-specific planner files.
 
-The important methodology is that reusable device fragments can be compiled independently, selected by a planner for a concrete configuration, linked with device LTO, and cached as a realized kernel rather than carrying all variant choices through runtime dispatch.
+The important methodology is that reusable device fragments can be compiled independently, selected by a planner for a concrete configuration, linked before execution, and cached as a realized kernel rather than carrying all variant choices through runtime dispatch. cuVS realizes that methodology with device LTO.
 
-**Use for CUDA-MCGS:** direct methodology/reference for Search Composer planning, fragment identity, LTO composition, cache-key design, and adapter-fragment separation. Do not introduce cuVS/RAFT/RAPIDS as a mandatory active-search dependency.
+**Use for CUDA-MCGS:** methodology/reference for Search Composer planning, fragment identity, cache-key design, and adapter-fragment separation. CUDA-MCGS selects relocatable PTX rather than LTO for its version-zero fragment format; cuVS LTO remains a deferred comparison. Do not introduce cuVS/RAFT/RAPIDS as a mandatory active-search dependency.
 
 ### cuFFT LTO callbacks
 
 CUDA Toolkit documentation describes typed LTO callbacks associated with defined load/store execution points before a cuFFT plan is finalized. User device code is supplied as LTO IR; planning/linking folds it into LTO kernels so preprocessing/postprocessing can avoid an extra standalone kernel.
 
-**Use for CUDA-MCGS:** strong proof-of-pattern for a typed device Extension Point whose implementation is bound before execution and incorporated into optimized device code. CUDA-MCGS needs broader search semantics, point-specific Context Schemas, permissions, resource contracts, and many possible search points; it does not need to depend on cuFFT.
+**Use for CUDA-MCGS:** strong proof-of-pattern for a typed device Extension Point whose implementation is bound before execution and incorporated into device code. It is not evidence that a non-LTO PTX realization will inline or have zero call/resource cost. CUDA-MCGS needs broader search semantics, point-specific Context Schemas, permissions, resource contracts, and many possible search points; it does not need to depend on cuFFT.
 
 ### nvJitLink and NVRTC
 
-Official CUDA Toolkit 13.3 documentation supports runtime linking of device code including LTO IR and production of linked cubins. CUDA-JS already owns the generic NVRTC/nvJitLink provider, artifact/cache, module-load, and launch boundary, with its F6 compiler/linker evidence and F9 trusted-CCCL prerequisite.
+Official CUDA Toolkit 13.3 documentation supports NVRTC production of relocatable PTX and nvJitLink consumption of PTX inputs to produce a linked cubin. CUDA-JS already owns the generic NVRTC/nvJitLink provider, artifact/cache, module-load, and launch boundary, with its F6 compiler/linker evidence and F9 trusted-CCCL prerequisite.
 
-**Use for CUDA-MCGS:** platform/toolchain substrate through CUDA-JS. CUDA-MCGS should own the semantic composition plan and emit complete inputs; CUDA-JS should own generic compilation/linking mechanics.
+**Use for CUDA-MCGS:** selected version-zero PTX platform/toolchain substrate through CUDA-JS. CUDA-MCGS should own the semantic composition plan, PTX symbol/ABI contract, and complete compatibility/cache identity; CUDA-JS should own generic compilation/linking mechanics. The experiment must compare separately linked PTX with a fused/generated-source control because supported linking does not by itself prove cross-module inlining or zero abstraction cost.
 
 ### CUDA Graphs and device launch/conditional execution
 
@@ -145,9 +145,9 @@ The implementation targets offline POMDP planning and finite-state-controller ou
 - **OpenSpiel/Pgx:** domain capability matrix and deterministic/stochastic conformance environments.
 - **POMCGraphSearch:** progressive widening, partial observability, belief/graph folding.
 - **CuFusion-MCTS:** fused-kernel and persistent-RNG hypotheses to reproduce if full details/code become available.
-- **cuVS:** JIT-LTO fragment planning/composition/cache methodology.
-- **cuFFT:** typed pre-plan LTO callback/extension-point methodology.
-- **nvJitLink/NVRTC:** supported device-code composition substrate through CUDA-JS.
+- **cuVS:** fragment planning/composition/cache methodology; LTO realization retained as prior art and a deferred comparison.
+- **cuFFT:** typed pre-plan callback/extension-point methodology; LTO-specific optimization is not assumed for the PTX path.
+- **nvJitLink/NVRTC:** supported relocatable-PTX-to-cubin composition substrate through CUDA-JS.
 - **CUDA Graphs:** alternative device-owned execution/scheduling mechanisms to benchmark.
 - **cuCollections:** transposition-table baseline and possible permissively licensed source donor.
 - **CCCL/libcu++/CUB:** CUDA-native low-level primitives where their contracts fit.
@@ -169,7 +169,7 @@ Replacing these foundations inside any reviewed search framework would rewrite i
 ## Required follow-up
 
 1. Convert candidate gaps into conformance requirements and synthetic domains.
-2. Run `EXT-LTO-001`: prove extension-fragment composition and baseline/unbound/bound emitted-code behavior through the exact CUDA-JS compiler/link path.
+2. Run `EXT-PTX-001`: prove relocatable-PTX extension-fragment composition and no-point/unbound/bound/fused-control emitted-code behavior through the exact CUDA-JS compiler/link path.
 3. Run `EXT-CONTRACT-001`: prove incompatible context schemas, versions, permissions, capabilities, and resources fail before ignition.
 4. Run `SCHED-001`: compare persistent-kernel and credible device-owned multi-kernel/graph realizations on representative irregular search plus resident evaluator/secondary work.
 5. Run `TT-001`: compare cuCollections against CUDA-MCGS-specific transposition-table requirements and decide methodology/source/vendor/custom disposition.
@@ -179,4 +179,4 @@ Replacing these foundations inside any reviewed search framework would rewrite i
 
 ## Limitations
 
-Repository/paper searches cannot prove nonexistence. Most third-party performance claims have not been independently reproduced on CUDA-MCGS target workloads. NVIDIA mechanisms prove that particular composition/scheduling techniques exist; they do not prove that CUDA-MCGS's proposed Extension Surface has zero overhead, that one scheduler is optimal, or that an external collection meets MCGS transposition semantics. Those claims remain experiment-gated.
+Repository/paper searches cannot prove nonexistence. Most third-party performance claims have not been independently reproduced on CUDA-MCGS target workloads. NVIDIA mechanisms prove that particular composition/scheduling techniques exist; they do not prove that CUDA-MCGS's proposed Extension Surface has zero overhead, that separately linked PTX matches fused-source code generation, that one scheduler is optimal, or that an external collection meets MCGS transposition semantics. Those claims remain experiment-gated.

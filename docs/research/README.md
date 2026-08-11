@@ -12,7 +12,7 @@ Research records external evidence that may affect CUDA-MCGS/UMCGS. It does not 
 ## Prior art
 
 - [`prior-art/README.md`](prior-art/README.md) — review index and method.
-- [`prior-art/2026-08-10-landscape.md`](prior-art/2026-08-10-landscape.md) — MCTS/MCGS/GPU framework assessment expanded on 2026-08-11 with cuVS JIT-LTO, cuFFT LTO callbacks, nvJitLink, CUDA Graphs, cuCollections, CCCL, and an ownership-versus-dependency disposition.
+- [`prior-art/2026-08-10-landscape.md`](prior-art/2026-08-10-landscape.md) — MCTS/MCGS/GPU framework assessment expanded on 2026-08-11 with cuVS JIT-LTO, cuFFT LTO callbacks, NVRTC/nvJitLink, CUDA Graphs, cuCollections, CCCL, an ownership-versus-dependency disposition, and the selected version-zero relocatable-PTX direction.
 - [`prior-art/source-register.yaml`](prior-art/source-register.yaml) — machine-readable exact revisions, licenses/terms, inspected paths, dispositions, and revisit triggers.
 
 The current research conclusion is that no reviewed search framework supplies the complete CUDA-MCGS boundary, but proven CUDA composition/collection mechanisms substantially reduce the amount that must be invented. The plan therefore favors methodology reuse, selective explicitly governed source reuse, and local ownership of search-critical semantics/execution rather than mandatory higher-level runtime dependencies.

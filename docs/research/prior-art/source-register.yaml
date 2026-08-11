@@ -94,8 +94,8 @@
         "LICENSE"
       ],
       "official_docs": "https://docs.rapids.ai/api/cuvs/stable/jit_lto_guide/",
-      "disposition": "jit_lto_fragment_planning_methodology_reference_no_runtime_dependency",
-      "revisit_trigger": "source-adaptation decision for a narrowly owned composer primitive or materially better upstream composition mechanism"
+      "disposition": "fragment_planning_methodology_and_deferred_lto_comparison_no_runtime_dependency",
+      "revisit_trigger": "explicit post-PTX comparison or source-adaptation decision for a narrowly owned composer primitive"
     },
     {
       "name": "NVIDIA cuFFT LTO callbacks",
@@ -110,8 +110,16 @@
       "source": "https://docs.nvidia.com/cuda/nvjitlink/index.html",
       "version": "CUDA Toolkit 13.3 documentation inspected 2026-08-11",
       "license": "NVIDIA CUDA toolkit terms",
-      "disposition": "cuda_js_owned_platform_linker_substrate",
-      "revisit_trigger": "CUDA-JS compiler/linker public capability changes or first extension-LTO experiment exposes a required gap"
+      "disposition": "cuda_js_owned_ptx_linker_substrate",
+      "revisit_trigger": "CUDA-JS compiler/linker public capability changes or EXT-PTX-001 exposes a required gap"
+    },
+    {
+      "name": "NVIDIA NVRTC",
+      "source": "https://docs.nvidia.com/cuda/nvrtc/index.html",
+      "version": "CUDA Toolkit 13.3 documentation inspected 2026-08-11",
+      "license": "NVIDIA CUDA toolkit terms",
+      "disposition": "cuda_js_owned_relocatable_ptx_compiler_substrate",
+      "revisit_trigger": "CUDA-JS compiler public capability changes or EXT-PTX-001 exposes a required gap"
     },
     {
       "name": "CUDA Graphs device launch and conditional execution",

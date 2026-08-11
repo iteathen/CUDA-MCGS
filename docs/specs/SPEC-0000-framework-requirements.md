@@ -160,11 +160,11 @@ For an unbound point, the realized production image MUST NOT retain solely for t
 - reserved extension-owned state or workspace;
 - synchronization required only by the absent extension.
 
-For a bound point, the production path MUST avoid generic runtime dispatch unless an explicitly accepted profile proves that the dispatch is necessary and meets the same performance contract. Device LTO, generated direct composition, templates/code generation, or precompiled specialization are candidate mechanisms; the semantic contract MUST remain independent of one linker technique.
+For a bound point, the production path MUST avoid generic runtime dispatch unless an explicitly accepted profile proves that the dispatch is necessary and meets the same performance contract. The selected version-zero realization uses relocatable PTX fragments and statically named direct device symbols. Generated direct composition, templates/code generation, precompiled specialization, LTO, or another mechanism may be considered later; the semantic contract MUST remain independent of one artifact format or linker technique.
 
 Evidence for this requirement MUST include, where the toolchain permits:
 
-- final or near-final emitted-code inspection (for example PTX/LTO IR/cubin/SASS or equivalent relevant evidence);
+- emitted PTX plus final or near-final cubin/SASS inspection, or equivalent evidence for a later accepted profile;
 - baseline versus unbound-point comparison;
 - bound-fragment comparison that separates abstraction cost from fragment-intrinsic work;
 - representative performance/resource measurements including registers, occupancy/shared memory/code size where material.
@@ -201,7 +201,8 @@ Generic Driver entry-point schemas, CPU call ABI/JIT bindings, generic memory al
 The version-zero interop specification MUST define:
 
 - required CUDA-JS public contract version and capability/evidence profile;
-- device-module source/LTO/binary forms and complete compilation/link/cache inputs;
+- relocatable PTX, source, and binary module forms plus complete compilation/link/cache inputs;
+- PTX ISA version, virtual target, address size, declared imports/exports and signatures, content digest, compiler/toolkit provenance and options, final GPU target, and link options where material to compatibility or identity;
 - all selected Extension Fragment identities and composition inputs material to the device artifact;
 - opaque resource and memory requirements without exposing CUDA-JS private handles in persistent CUDA-MCGS schemas;
 - function/argument/launch descriptions and allowed execution dependencies;
@@ -301,8 +302,8 @@ A small cross-repository compatibility capsule validates exact released revision
 
 The plan should include bounded experiments for unresolved implementation choices rather than silently promoting them to architecture:
 
-- **EXT-LTO-001** — prove one optional Extension Fragment can be composed through the exact CUDA-JS compiler/link path; compare no-point/bound/unbound realizations and inspect emitted code sufficiently to test the zero-abstraction-cost claim.
-- **EXT-LTO-002** — compose multiple representative fragments and measure link/cache identity, register/code-size/shared-memory/occupancy effects, plus compatibility rejection behavior.
+- **EXT-PTX-001** — prove one relocatable PTX Extension Fragment through the exact CUDA-JS PTX-link path; compare no-point, unbound, bound-module, and fused/generated-source control realizations; inspect emitted PTX/cubin/SASS and measure separate-link call/resource/performance cost.
+- **EXT-PTX-002** — compose multiple representative relocatable PTX fragments and measure symbol/link compatibility, artifact/cache identity, register/code-size/shared-memory/occupancy effects, plus compatibility rejection behavior.
 - **EXT-CONTRACT-001** — reject wrong point versions, context types/ranges, permissions, resource budgets, architecture requirements, and incompatible fragment combinations before ignition.
 - **SCHED-001** — compare credible device-owned scheduling realizations on representative irregular-search plus resident-evaluator/secondary-work workloads; device closure is invariant, scheduler topology is the measured variable.
 - **TT-001** — compare cuCollections/reference structures against a CUDA-MCGS-specific transposition-table design for collision verification, concurrent publication, generations/reclamation, finite capacity, and representative performance before selecting reuse/adaptation/custom implementation.
