@@ -226,7 +226,7 @@
     "EXT-CONTRACT-001 negative compatibility/permission/resource tests.",
     "SCHED-001 semantic-equivalent scheduler comparison and TT-001 transposition comparison.",
     "Exact CUDA-MCGS/CUDA-JS compatible-pair conformance.",
-    "./scripts/verify-docs.sh for every documentation/specification plan change."
+    "Policy-compliant exact-head documentation/structure validation covering required files, status markers, relative links, JSON-compatible records, issue forms, and project topology; the legacy Python-backed ./scripts/verify-docs.sh path is frozen under UMCGS-ECO-LANG-001 pending replacement tracked in issue #28."
   ],
   "blockers": [
     "Canonical Search IR and extension contract/schema representations are not yet accepted.",
