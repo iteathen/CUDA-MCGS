@@ -6,6 +6,7 @@ The canonical development system is [`../../agent_files/README.md`](../../agent_
 
 The project method is:
 
+- selective authority reading: mandatory kernel, target-path instruction chains, direct governing authority, required normative references, triggered specialist doctrine, material adjacency, and final refresh;
 - engineering contracts and specification-obligation mapping before implementation selection;
 - contextual value ordering that distinguishes hard gates, mission objectives, supporting qualities, and process costs;
 - credible candidate-path comparison, decisive evidence, reversibility, explicit tradeoffs, and P0–P4 priority;
@@ -23,6 +24,8 @@ The project method is:
 - LEGO component ownership, SOLID internal responsibilities, CUPID implementation quality, and simplest sufficient total-system design;
 - mature-scale organization, specification-first foundations, test architecture defined with contracts, evidence-first debugging/performance, and provenance-preserving documentation/handoffs.
 
+Selective specification and agent-file reading are governed by [`../decisions/ADR-0017-selective-spec-and-agent-file-reading.md`](../decisions/ADR-0017-selective-spec-and-agent-file-reading.md), [`../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md), [`../../agent_files/general_foundation/CONTEXT_ROUTING.md`](../../agent_files/general_foundation/CONTEXT_ROUTING.md), and [`../../agent_files/general_foundation/DOCUMENTATION_GOVERNANCE.md`](../../agent_files/general_foundation/DOCUMENTATION_GOVERNANCE.md).
+
 Engineering judgment and value ordering are governed by [`../decisions/ADR-0015-engineering-judgment-and-value-ordering.md`](../decisions/ADR-0015-engineering-judgment-and-value-ordering.md), [`../../agent_files/general_foundation/ENGINEERING_JUDGMENT.md`](../../agent_files/general_foundation/ENGINEERING_JUDGMENT.md), and [`../../agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md`](../../agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md).
 
 Assessment and planning are governed by [`../decisions/ADR-0006-adversarial-assessment-and-planning.md`](../decisions/ADR-0006-adversarial-assessment-and-planning.md) and [`../../agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md`](../../agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md).
@@ -31,8 +34,8 @@ Focus-branch decomposition and integration are governed by [`../decisions/ADR-00
 
 Token discipline is governed by [`../decisions/ADR-0012-token-use-and-context-discipline.md`](../decisions/ADR-0012-token-use-and-context-discipline.md), [`../decisions/ADR-0016-token-backpressure-and-practice-floor.md`](../decisions/ADR-0016-token-backpressure-and-practice-floor.md), and [`../../agent_files/general_foundation/TOKEN_DISCIPLINE.md`](../../agent_files/general_foundation/TOKEN_DISCIPLINE.md).
 
-Routine tasks use an implicit micro-budget and the universal practice floor without a separate ledger. Substantial/critical work preserves explicit reserves and every objectively triggered engineering/testing/review requirement. Soft estimates are replan signals rather than authority; reduced evidence narrows the claim.
+Routine tasks use an implicit reading route and micro-budget without separate ledgers. They still read the mandatory kernel, target-path instructions, current owner authority, and any objectively triggered doctrine. Substantial/critical/cross-repository work preserves exact applicability, reading depth, revisions, invalidation, and final refresh when another consumer needs it.
 
 Testing/repair-loop discipline remains governed by ADR-0013 and its foundation files. Plan execution, cleanup, sanity, PR integration, design, and organization remain governed by ADR-0009/0010/0007/0008/0005/0004 and the canonical agent foundation.
 
-Use the combined assessment template only when durable planning is needed. Use `engineering-decision.template.yaml` only for foundational, contested, cross-component, high-consequence, empirically uncertain, difficult-to-reverse, or cross-session decisions. Use focus-branch, token-budget, test-batch, execution, cleanup, sanity, and PR-review records only when their unique evidence has a real consumer. Routine judgment, token posture, focus branches, tests, execution, scratch cleanup, self-sanity, and author-side PR review belong in the parent issue, plan, PR, or task result.
+Use the combined assessment template only when durable planning is needed. Use `document-reading.template.yaml` only for cross-session, cross-agent, cross-repository, critical, disputed, or review-sensitive authority coverage. Use `engineering-decision.template.yaml` only for foundational, contested, cross-component, high-consequence, empirically uncertain, difficult-to-reverse, or cross-session decisions. Use focus-branch, token-budget, test-batch, execution, cleanup, sanity, and PR-review records only when their unique evidence has a real consumer. Routine reading, judgment, token posture, focus branches, tests, execution, scratch cleanup, self-sanity, and author-side PR review belong in the parent issue, plan, PR, or task result.

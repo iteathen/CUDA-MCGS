@@ -2,6 +2,24 @@
 
 ## Product area, component, manifest, and dependency direction
 
+## Selective specification and agent-file reading
+
+For substantial, critical, cross-repository, or review-sensitive work, state or link:
+
+- task signature: target paths/symbols/schemas/artifacts/operations/claim and exact revisions;
+- mandatory operating kernel and each root-to-target `AGENTS.md` instruction chain;
+- registry, indexes, manifests, stable IDs, search terms, and references used to discover authority;
+- governing specifications/ADRs/contracts with status, owner, scope, version, exact revision, and supersession;
+- triggered specialist doctrine and why it applies;
+- material producer, consumer, dependency, adapter, generated-form, persistence, lifecycle/recovery, test, packaging, and cleanup adjacency;
+- applicability dispositions and reading depth for governing documents and material near misses;
+- normative references and semantic-closure sections followed;
+- missing/conflicting/stale authority and its disposition;
+- scope or authority changes that invalidated the reading map;
+- final pre-claim authority refresh and remaining document-reading debt.
+
+State `routine obvious route; no durable reading record required` when appropriate. Do not report recursive reading of all documentation as thoroughness, or shallow reading of only named files as selectivity.
+
 ## Engineering contract and specification alignment
 
 State or link:
@@ -98,24 +116,24 @@ State parent plan/version, engineering-decision version, focus-branch ID, node, 
 
 ## Cleanup and disposition
 
-State protected pre-existing/user/shared/authority/evidence/recovery state and account for material decision/token records, temporary/superseded/generated/diagnostic/local/remote/external/sensitive/coordination state, including provisional tests and duplicate fixtures.
+State protected pre-existing/user/shared/authority/evidence/recovery state and account for material reading/decision/token records, temporary/superseded/generated/diagnostic/local/remote/external/sensitive/coordination state, including provisional tests and duplicate fixtures.
 
 ## Sanity / independent-review claim and limits
 
-State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name exact revision/artifact, coverage boundary, critical leaves, actionable findings, invalidated/rerun specification/decision/test evidence, focus-branch integration, token-practice-floor/test/cleanup state, checks not run, and final claim limits. Reduced evidence must narrow this claim.
+State `not separately triggered`, `self-sanity`, `bounded`, `sampled`, or `full`; name exact revision/artifact, coverage boundary, critical leaves, actionable findings, invalidated/rerun specification/decision/test evidence, focus-branch integration, document-reading/token-practice-floor/test/cleanup state, checks not run, and final claim limits. Reduced evidence must narrow this claim.
 
 ## Ready-for-review head and review mode
 
-Record exact head SHA, intended base, review mode, checks not run, unresolved decision debt, unintegrated branches, test debt, token debt/context limits, deferred cleanup, budget/scope/claim changes, and invalidation conditions. A later head, parent-plan, specification, engineering decision, value order, shared contract, source/test revision, oracle, artifact, environment, fixture, or material base change invalidates affected evidence.
+Record exact head SHA, intended base, review mode, checks not run, unresolved document-reading/decision/test/token debt, unintegrated branches, context limits, deferred cleanup, budget/scope/claim changes, and invalidation conditions. A later head, parent-plan, specification, engineering decision, value order, shared contract, source/test revision, oracle, artifact, environment, fixture, or material base change invalidates affected evidence.
 
 ## Proposed merge and closure effects
 
-State merge method, issue relationship, engineering-decision and semantic focus-branch disposition, local/remote Git branch/worktree effects, stacked/dependent PR effects, required checks/protection/queue, decision/test/token/cleanup debt, and post-merge verification beyond target-tree confirmation.
+State merge method, issue relationship, engineering-decision and semantic focus-branch disposition, local/remote Git branch/worktree effects, stacked/dependent PR effects, required checks/protection/queue, document-reading/decision/test/token/cleanup debt, and post-merge verification beyond target-tree confirmation.
 
 ## Performance and GPU-memory evidence
 
 ## Compatibility, migration, rollback, recovery, and retained state
 
-## Documentation, engineering-decision/parent/focus-branch/token/test/plan/cleanup state, registry, findings, and archived material
+## Documentation, reading/engineering-decision/parent/focus-branch/token/test/plan/cleanup state, registry, findings, and archived material
 
 ## Remaining risks / assumptions / revisit triggers

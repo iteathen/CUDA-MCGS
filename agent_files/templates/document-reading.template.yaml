@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "document_reading": {
+    "id": "",
+    "status": "proposal|active|complete|invalidated|superseded",
+    "owner": "",
+    "parent_task": "",
+    "parent_plan_version": 1,
+    "focus_branch_id": "",
+    "node_id": "",
+    "repository_or_repositories": [],
+    "exact_subject_revisions": [],
+    "record_required_reason": "cross_session|cross_agent|cross_repository|critical|disputed|review_sensitive|complex_authority"
+  },
+  "task_signature": {
+    "requested_outcome_and_claim": "",
+    "target_paths_symbols_schemas_artifacts_and_external_resources": [],
+    "operations": [],
+    "known_owner_boundaries": [],
+    "behavior_authority_contract_persistence_generated_resource_test_package_release_effects": [],
+    "task_class_and_consequence": "routine|substantial|critical|large_complex",
+    "explicit_non_goals": []
+  },
+  "mandatory_kernel": {
+    "documents_and_exact_revisions": [],
+    "current_status_next_step_and_repository_state": [],
+    "authority_order_confirmed": false
+  },
+  "instruction_chains": [
+    {
+      "repository": "",
+      "target_path_or_operation": "",
+      "root_to_leaf_agent_files": [],
+      "tool_adapters_followed_to_canonical_authority": [],
+      "local_specializations": [],
+      "conflicts_or_missing_access": []
+    }
+  ],
+  "discovery": {
+    "registry_entries": [],
+    "indexes": [],
+    "component_manifests_and_readmes": [],
+    "exact_ids_names_paths_and_search_terms": [],
+    "normative_references_followed": [],
+    "backlinks_or_repository_search_results": [],
+    "documentation_discoverability_defects": []
+  },
+  "trigger_scan": {
+    "public_contract_schema_abi_protocol_package_or_persistence": false,
+    "component_ownership_dependency_or_repository_structure": false,
+    "foundational_type_range_identity_precision_or_layout": false,
+    "cuda_concurrency_publication_memory_ipc_or_cancellation": false,
+    "native_jit_generated_executable_or_cache_identity": false,
+    "migration_recovery_rollback_or_compatibility": false,
+    "security_privacy_permissions_or_external_capability": false,
+    "performance_search_quality_or_benchmark_claim": false,
+    "debugging_testing_or_oracle_change": false,
+    "sanity_audit_release_or_complete_claim": false,
+    "pr_review_merge_branch_or_cleanup_operation": false,
+    "external_source_license_or_implementation_reuse": false,
+    "documentation_authority_index_registry_or_supersession": false,
+    "triggered_doctrine_and_reason": []
+  },
+  "adjacency_scan": {
+    "upstream_producers_and_input_contracts": [],
+    "downstream_consumers_and_output_contracts": [],
+    "public_adapters_and_peer_boundaries": [],
+    "canonical_sources_and_generated_forms": [],
+    "persistent_readers_writers_and_migrations": [],
+    "lifecycle_cleanup_recovery_and_external_owners": [],
+    "test_oracles_capsules_integration_paths_and_evidence_keys": [],
+    "packaging_release_permissions_and_external_resources": [],
+    "additional_hops_required_and_reason": []
+  },
+  "documents": [
+    {
+      "path_or_external_identity": "",
+      "repository_and_exact_revision": "",
+      "status": "accepted|proposal|superseded|research|informational|agent_instruction|manifest|plan|unknown",
+      "owner_and_scope": "",
+      "disposition": "kernel|governing|triggered|adjacent_check|evidence_only|not_applicable|superseded_or_archive|blocked_or_missing",
+      "reading_depth": "D0_identity|D1_applicability_scan|D2_semantic_sections|D3_complete_document|D4_provenance_history",
+      "terms_definitions_and_normative_references": [],
+      "obligations_invariants_conditions_exceptions": [],
+      "lifecycle_failure_resource_compatibility_security_cleanup_and_conformance": [],
+      "reason_excluded_or_limited": "",
+      "downstream_artifacts_decisions_tests_and_claims": [],
+      "invalidation_triggers": []
+    }
+  ],
+  "authority_closure": {
+    "mandatory_kernel_complete": false,
+    "all_target_path_instruction_chains_complete": false,
+    "direct_governing_authority_identified": false,
+    "normative_references_required_for_meaning_followed": false,
+    "triggered_specialist_doctrine_complete": false,
+    "material_owner_dependency_consumer_adjacency_checked": false,
+    "plausible_candidates_dispositioned": false,
+    "conflicting_missing_stale_or_unimplementable_authority": [],
+    "ready_for_mutation": false
+  },
+  "obligation_map": [
+    {
+      "id": "OBL-001",
+      "source_path_clause_and_exact_revision": "",
+      "normalized_obligation": "",
+      "normative_strength": "must|must_not|should|may|derived|agent_rule",
+      "scope_and_conditions": [],
+      "authoritative_owner": "",
+      "affected_design_implementation_test_cleanup_or_claim": [],
+      "evidence_or_test_capsule": [],
+      "status": "satisfied|unsatisfied|blocked|not_applicable"
+    }
+  ],
+  "dynamic_routing": {
+    "scope_owner_path_repository_or_operation_changes": [],
+    "new_contract_persistence_generated_resource_failure_or_oracle_triggers": [],
+    "governing_documents_changed_or_superseded": [],
+    "reading_map_invalidations": [],
+    "documents_promoted_or_demoted_and_reason": []
+  },
+  "pre_claim_refresh": {
+    "final_changed_surface_compared_with_task_signature": false,
+    "trigger_and_adjacency_scan_rerun": false,
+    "governing_statuses_and_revisions_refreshed": false,
+    "changed_authority_reread_to_semantic_closure": false,
+    "implementation_tests_generated_forms_plans_and_claims_reconciled": false,
+    "unavailable_documents_and_checks_not_run": [],
+    "stale_summaries_and_cold_context_retired": false
+  },
+  "completion": {
+    "active_document_set_is_minimal": false,
+    "active_document_set_is_authority_complete": false,
+    "material_exclusions_have_scope_based_reasons": false,
+    "no_search_snippet_or_template_substituted_for_governing_method": false,
+    "no_proposal_plan_example_test_or_summary_misused_as_authority": false,
+    "no_material_document_reading_debt_remains": false,
+    "further_reading_cannot_change_authority_design_validation_risk_cleanup_or_next_action": false
+  }
+}

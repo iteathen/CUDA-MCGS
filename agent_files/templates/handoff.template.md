@@ -2,6 +2,23 @@
 
 ## Parent task, objective, product area, and component
 
+## Selective specification and agent-file reading state
+
+- Task signature and exact target revisions:
+- Mandatory operating kernel:
+- Root-to-target `AGENTS.md` instruction chains for every repository/path:
+- Registry/index/manifest/stable-ID/search/reference discovery used:
+- Governing documents with status, owner, scope, version, exact revision, and supersession:
+- Triggered specialist doctrine and reason:
+- Material producer/consumer/dependency/adapter/generated/persistence/lifecycle/test/package/cleanup adjacency:
+- Applicability dispositions and reading depths:
+- Normative references and semantic-closure sections followed:
+- Material exclusions and reasons:
+- Missing/conflicting/stale authority:
+- Scope/authority changes and reading-map invalidations:
+- Final pre-claim authority refresh:
+- Remaining document-reading debt and next reading action:
+
 ## Engineering contract and specification alignment
 
 - Required outcome and consumers:
@@ -37,7 +54,7 @@
 - Exact dependency inputs and revisions:
 - Minimal context packet:
 - Expected output and downstream consumers:
-- Acceptance / falsifier / decision / testing / rollback / cleanup / integration obligations:
+- Acceptance / falsifier / reading / decision / testing / rollback / cleanup / integration obligations:
 - Other branches and statuses: `planned | ready | active | paused | blocked | accepted | invalidated | superseded | integrated | archived`
 
 ## Universal token backpressure and context state
@@ -89,7 +106,7 @@
 ## Cleanup and disposition
 
 - Protected pre-existing/user/shared/authority/evidence/recovery state:
-- Decision/token records, local files, tracked/generated/build/cache/package state:
+- Reading/decision/token records, local files, tracked/generated/build/cache/package state:
 - Provisional tests, fixtures, logs, instrumentation, and test artifacts:
 - Semantic focus branches, Git branches/worktrees/stashes/refs/config, and uncommitted state:
 - PRs/issues/reviews/claims/artifacts/releases/dependents:
@@ -102,7 +119,7 @@
 - Current Git branch/head and working-tree state:
 - PR/base/review mode and unresolved threads/checks:
 - Integrated target SHA when merged:
-- Engineering-decision/focus-branch/test/token-map and local/remote branch/worktree disposition:
+- Reading/engineering-decision/focus-branch/test/token-map and local/remote branch/worktree disposition:
 - Issue closure and dependent-work state:
 
 ## Rollback, recovery, or irreversible state
@@ -111,4 +128,4 @@
 
 ## Failed paths / hypotheses / contaminated or quarantined state
 
-## Next engineering-decision, executable, analytical, testing, focus-branch, integration, cleanup, or context-restoration boundary
+## Next document-reading, engineering-decision, executable, analytical, testing, focus-branch, integration, cleanup, or context-restoration boundary

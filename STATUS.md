@@ -25,9 +25,15 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - Every task preserves a risk-appropriate minimum practice floor: request/authority, current-state inspection, coherent scope, expected result, decisive verification, actual-effect inspection, relevant testing, cleanup, and honest limits.
 - Routine work uses an implicit micro-budget with no mandatory ledger. Substantial/critical work preserves explicit reserves and split/handoff triggers.
 - Soft token estimates are replan signals rather than authority to skip practices. Essential evidence, safety, correctness, cleanup, or handoff may justify an explicit extension followed by narrowing or split to restore reserve.
+- Agents read the smallest authority-complete document set rather than every document or only the files named in the request.
+- Every target path’s instruction chain, direct governing authority, required normative references, triggered specialist doctrine, and material producer/consumer/lifecycle/test/cleanup adjacency are discovered before material mutation.
+- Documents are classified by applicability and read at proportional depth; governing and materially triggered documents are read to semantic closure.
+- Accepted status does not imply universal applicability. Proposals, research, architecture, examples, implementation, tests, plans, and summaries remain in their proper authority roles.
+- Scope, owner, repository, contract, resource, failure, oracle, or authority changes trigger document re-routing and evidence invalidation.
+- Routine work needs no document ledger when applicability is obvious. Substantial/critical/cross-repository work preserves exact reading coverage when another consumer needs it.
 - Reduced evidence narrows the claim; sampling or lower test tiers cannot support an unchanged complete/release-grade claim.
 - Adversarial assessment, focus branches, consolidated test capsules, governed execution, cleanup, sanity, and exact-head guarded integration remain binding.
-- Material decision debt, test debt, token debt, invalid partial state, unsafe cleanup debt, and unintegrated branch outputs block completion.
+- Material specification/decision/document-reading/test/token debt, invalid partial state, unsafe cleanup debt, and unintegrated branch outputs block completion.
 - Repository and component organization assumes mature large-project scale from inception.
 - Project license selection is deferred and does not block original private pre-release work.
 
@@ -37,6 +43,7 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 - ADR-0001 through ADR-0014: accepted.
 - ADR-0015 engineering judgment, specification alignment, and value ordering: accepted.
 - ADR-0016 universal token backpressure and minimum practice floor: accepted.
+- ADR-0017 selective specification and agent-file reading: accepted.
 - Repository topology: accepted through ADR-0014 and documented in `docs/architecture/REPOSITORY_TOPOLOGY.md`.
 - Framework architecture overview and detailed version-zero contracts: proposals.
 - UMCGS-to-CUDA-JS execution-package contract: not yet accepted.
@@ -51,7 +58,7 @@ Private pre-release framework definition and evidence gathering. `main` is the i
 
 ## Current next boundary
 
-Define and adversarially validate the version-zero UMCGS-to-CUDA-JS execution-package contract using the accepted engineering contract, obligation map, hard gates, contextual value ordering, candidate-path comparison, P1 priority, conformance ownership, error/lifetime rules, and universal token-backpressure practice floor; revise the SPEC-V0 focus-branch/test map accordingly; publish the prepared CUDA-JS bootstrap when the private remote exists.
+Define and adversarially validate the version-zero UMCGS-to-CUDA-JS execution-package contract using the accepted engineering contract, obligation map, hard gates, contextual value ordering, candidate-path comparison, P1 priority, conformance ownership, error/lifetime rules, universal token-backpressure practice floor, and a durable cross-repository authority-reading map; revise the SPEC-V0 focus-branch/test/document map accordingly; publish the prepared CUDA-JS bootstrap when the private remote exists.
 
 ## Current risks and unknowns
 

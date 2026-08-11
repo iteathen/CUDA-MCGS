@@ -1,5 +1,5 @@
 {
-  "schema_version": 8,
+  "schema_version": 9,
   "title": "<task title>",
   "status": "proposal|accepted|active|paused|complete|superseded",
   "plan_version": 1,
@@ -17,6 +17,28 @@
     "integrated_resolution": "<what changed or why the proposal survives>",
     "evidence_or_falsifier": [],
     "residual_assumptions": []
+  },
+  "document_reading": {
+    "task_signature": {
+      "target_paths_symbols_schemas_artifacts_external_resources_and_operations": [],
+      "requested_claim_and_exact_subject_revisions": [],
+      "known_owner_boundaries": [],
+      "behavior_authority_contract_persistence_generated_resource_test_package_or_release_effects": []
+    },
+    "mandatory_kernel_and_instruction_chains": [],
+    "registry_indexes_manifests_ids_search_terms_and_references_used": [],
+    "governing_documents_status_scope_owner_version_revision_and_supersession": [],
+    "triggered_specialist_doctrine_and_reason": [],
+    "material_producer_consumer_dependency_adapter_generated_persistence_lifecycle_test_package_cleanup_adjacency": [],
+    "applicability_dispositions_and_reading_depths": [],
+    "normative_references_and_semantic_closure": [],
+    "material_exclusions_and_scope_based_reasons": [],
+    "missing_conflicting_stale_inaccessible_or_unimplementable_authority": [],
+    "scope_authority_and_reading_map_invalidation_triggers": [],
+    "pre_mutation_authority_closure_required": true,
+    "pre_claim_refresh_required": true,
+    "document_reading_debt_blocking_conditions": [],
+    "durable_document_reading_record_required": false
   },
   "engineering_judgment": {
     "engineering_contract": {
@@ -82,7 +104,7 @@
     "shared_vocabulary_and_semantics": [],
     "global_invariants": [],
     "units_ranges_precision_identity_versions_and_memory_spaces": [],
-    "resource_security_compatibility_cleanup_context_testing_and_decision_constraints": [],
+    "resource_security_compatibility_cleanup_context_testing_reading_and_decision_constraints": [],
     "included_surface": [],
     "excluded_surface_and_reason": []
   },
@@ -154,7 +176,7 @@
     "canonical_branch_map_location": "",
     "integration_spine": [],
     "parallelism_policy": [],
-    "shared_contract_decision_oracle_change_and_invalidation_policy": [],
+    "shared_contract_decision_oracle_authority_change_and_invalidation_policy": [],
     "git_github_mapping_policy": [],
     "branches": [
       {
@@ -171,6 +193,7 @@
         "write_surface_and_authority": [],
         "global_invariants_and_value_order_to_preserve": [],
         "minimal_context_packet": [],
+        "document_reading_and_authority_closure_obligations": [],
         "dependencies": [],
         "expected_output_and_revision": [],
         "downstream_consumers": [],
@@ -182,7 +205,7 @@
         "full_attention_and_token_fit": {
           "one_primary_semantic_owner": false,
           "one_primary_question_or_output": false,
-          "packet_execution_testing_validation_cleanup_and_handoff_fit_one_window": false,
+          "packet_reading_execution_testing_validation_cleanup_and_handoff_fit_one_window": false,
           "mechanism_and_material_consequence_horizon_fit_active_context": false,
           "minimum_practice_floor_and_required_reserve_remain": false,
           "independent_acceptance_rollback_and_cleanup_are_understandable": false,
@@ -207,6 +230,7 @@
       "obligations_and_engineering_decisions_implemented": [],
       "preconditions": [],
       "dependencies_and_expected_revisions": [],
+      "authority_closure_and_reading_map": [],
       "scope": [],
       "non_goals": [],
       "expected_local_effects": [],
@@ -219,7 +243,7 @@
       "test_intents_capsules_and_tiers": [],
       "broader_reconciliation_and_validation": [],
       "rollback_recovery_or_safe_stop": "",
-      "context_token_test_and_decision_stop_conditions": [],
+      "context_token_test_reading_and_decision_stop_conditions": [],
       "backpressure_actions_and_claim_changes": [],
       "cleanup": {
         "expected_created_modified_superseded_or_retained_state": [],
@@ -236,6 +260,7 @@
     }
   ],
   "integration": {
+    "authority_reading_and_obligation_reconciliation": [],
     "engineering_contract_and_obligation_reconciliation": [],
     "selected_path_value_order_priority_and_tradeoff_reconciliation": [],
     "branch_status_accounting": [],
@@ -244,8 +269,8 @@
     "test_capsule_and_evidence_reconciliation": [],
     "token_practice_floor_backpressure_and_claim_reconciliation": [],
     "boundary_and_end_to_end_validation": [],
-    "invalidated_decision_and_evidence_rerun": [],
-    "decision_test_token_debt_and_context_reconstruction_check": [],
+    "invalidated_authority_decision_and_evidence_rerun": [],
+    "document_reading_decision_test_token_debt_and_context_reconstruction_check": [],
     "final_revision_or_artifact": ""
   },
   "cross_node_validation": [],
@@ -263,6 +288,7 @@
   "expected_pr_review_and_merge": {
     "review_mode": "author_side|independent|owner_exact_head_authorization|not_applicable",
     "required_checks_reviews_and_protection": [],
+    "document_reading_authority_closure_and_final_refresh_evidence": [],
     "engineering_judgment_and_spec_traceability_evidence": [],
     "focus_branch_integration_evidence": [],
     "token_practice_floor_backpressure_claim_and_handoff_evidence": [],
@@ -271,5 +297,5 @@
     "issue_closure_branch_worktree_and_dependent_work_effects": [],
     "post_merge_verification_and_cleanup": []
   },
-  "handoff_target": "<next decision, focus branch, integration boundary, or parent state>"
+  "handoff_target": "<next reading, decision, focus branch, integration boundary, or parent state>"
 }

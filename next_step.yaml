@@ -1,9 +1,9 @@
 {
-  "schema_version": 9,
+  "schema_version": 10,
   "updated": "2026-08-10",
   "status": "ready",
   "parent_task_id": "SPEC-V0",
-  "parent_plan_version": 7,
+  "parent_plan_version": 8,
   "integration_owner": "docs/specs: UMCGS search-contract and peer-runtime integration spine",
   "focus_branch": {
     "id": "SPEC-V0-CUDAJS",
@@ -12,19 +12,89 @@
     "status": "ready",
     "owner": "UMCGS interop-contract owner",
     "primary_question_or_output": "Define a versioned package and compatibility contract that lets UMCGS execute a specialized device-closed search program through generic CUDA-JS without leaking search semantics into the runtime or generic Driver concerns into UMCGS.",
-    "exact_input_revision": "main after ADR-0016 integration",
+    "exact_input_revision": "main after ADR-0017 integration",
     "write_surface_and_authority": [
       "docs/specs and schemas proposals",
-      "SPEC-V0 engineering-decision/focus-branch/dependency/test map",
+      "SPEC-V0 engineering-decision/focus-branch/dependency/test/document-reading map",
       "adapters/runtimes proposal ownership",
       "no production native runtime or search implementation"
     ],
     "integration_obligations": [
-      "Revise SPEC-V0 around the accepted two-repository boundary, engineering-judgment doctrine, and universal token-backpressure practice floor.",
+      "Revise SPEC-V0 around the accepted two-repository boundary, engineering-judgment doctrine, universal token-backpressure practice floor, and selective authority-reading method.",
       "Define exact obligation ownership, hard gates, conformance ownership, and compatible UMCGS/CUDA-JS evidence identity.",
       "Preserve UMCGS device closure, finite search-memory ownership, search-semantic authority, and value ordering.",
-      "Preserve CUDA-JS independence from Search IR and UMCGS private source."
+      "Preserve CUDA-JS independence from Search IR and UMCGS private source.",
+      "Maintain an authority-complete cross-repository reading map and refresh it when either repository's public authority changes."
     ]
+  },
+  "document_reading": {
+    "task_signature_and_exact_subject_revisions": [
+      "UMCGS proposal work affecting docs/specs, schemas proposals, planned integration.cuda-js ownership, public execution-package semantics, conformance ownership, and the prepared CUDA-JS bootstrap at cd44a3da58fad67153f8123525fcb9ec3bddab9f.",
+      "No production implementation, private CUDA-JS source, or accepted CUDA-JS runtime contract is in scope."
+    ],
+    "mandatory_kernel_and_root_to_target_instruction_chains": [
+      "UMCGS root AGENTS.md, canonical agent_files/AGENTS.md, AI_RULES.md, DESIGN_ALIGNMENT_CARD.md, PRINCIPLES.md, STATUS.md, this next-step packet, and exact UMCGS main revision.",
+      "UMCGS target-path instruction chain for docs/specs, schemas proposals, adapters, and packaging must be discovered before writes; any nested AGENTS.md is added root-to-leaf.",
+      "CUDA-JS bootstrap root instructions and public boundary authority are read from the prepared exact bootstrap revision when the artifact is materialized/published; UMCGS private instructions do not govern CUDA-JS internals."
+    ],
+    "registry_indexes_manifests_ids_search_terms_and_references_used": [
+      "agent_files/SYSTEM_REGISTRY.md boundary IDs contract.cuda-js-package and integration.cuda-js.",
+      "docs/README.md, docs/decisions/README.md, docs/specs/README.md, docs/architecture/README.md, repository topology, SPEC-0000, and exact interop/CUDA-JS identifiers.",
+      "Repository search for execution package, capability, compatibility, device closure, cache identity, lifecycle, error, cancellation, teardown, and peer-runtime ownership."
+    ],
+    "governing_documents_status_scope_owner_version_revision_and_supersession": [
+      "Accepted UMCGS charter and ADR-0002/0003/0004/0011 through 0017 at the current UMCGS input revision.",
+      "Agent hard rules and selective-reading/context/documentation-governance methods at the current UMCGS input revision.",
+      "Accepted repository topology under ADR-0014.",
+      "SPEC-0000, framework overview, CUDA-JS technical audit, and bootstrap runtime map are proposal/evidence inputs and cannot authorize production implementation."
+    ],
+    "triggered_specialist_doctrine_and_reason": [
+      "ENGINEERING_JUDGMENT and CONTEXTUAL_DESIGN_WEIGHTING: foundational cross-repository public contract.",
+      "FOCUS_BRANCHES: large, multi-owner, cross-repository work.",
+      "TOKEN_DISCIPLINE: large-complex context and evidence budget.",
+      "TESTING and DEBUGGING: cross-repository conformance/oracle ownership and future repair behavior.",
+      "COMPATIBILITY_AND_EVOLUTION, CONTRACT_STANDARD, DOMAIN_APPROPRIATE_FOUNDATIONS, SECURITY, and CLEANUP_AND_DISPOSITION: public package, capabilities, handles, versioning, native resources, lifecycle, and teardown.",
+      "PULL_REQUEST_REVIEW_AND_MERGE and SANITY_CHECKING when exact-head acceptance/integration claims are made."
+    ],
+    "material_producer_consumer_dependency_adapter_generated_persistence_lifecycle_test_package_cleanup_adjacency": [
+      "Upstream UMCGS Search IR/domain/policy/evaluator/resource contracts and specialization output.",
+      "Downstream UMCGS CUDA-JS adapter, execution-package loader, result/cancellation/error consumers, packaging, and release compatibility.",
+      "CUDA-JS public schema/capability/module/memory/launch/completion/error/teardown contracts at their accepted future revisions.",
+      "Generated search modules, argument layouts, model/adapter identities, cache/provenance records, device resources, and cleanup owners.",
+      "UMCGS internal conformance, CUDA-JS internal runtime conformance, and one public compatible-pair integration capsule."
+    ],
+    "applicability_dispositions_and_reading_depths": [
+      "Kernel and direct accepted ADR/agent authority: D2 or D3 as needed for semantic closure.",
+      "SPEC-0000, framework overview, technical audit, and CUDA-JS bootstrap proposals: evidence-only/proposal at D2 for affected sections.",
+      "Unrelated domain adapters, game-specific rules, complete CUDA manuals, donor repositories, implementation logs, and release automation: not applicable to the current bounded proposal unless a new empirical question promotes them.",
+      "Superseded or archived documents: provenance only when resolving migration or contradictory terminology."
+    ],
+    "normative_references_and_semantic_closure": [
+      "Follow definitions, ownership, public/private boundary, identity/version, device-closure, finite-resource, lifecycle, cancellation, error, teardown, compatibility, security, cleanup, and conformance references required by each material obligation.",
+      "Do not treat an isolated ADR sentence, search snippet, example, test, plan, or initial CUDA-JS sketch as a complete contract."
+    ],
+    "material_exclusions_and_scope_based_reasons": [
+      "Production implementation is excluded because neither peer v0 contract is accepted.",
+      "A third adapter repository is excluded because no independent lifecycle/owner/consumer exists.",
+      "Full CUDA capability exploration is excluded until an exact package requirement creates an empirical question.",
+      "Game-specific search rules are excluded because the contract is universal and peer-runtime focused."
+    ],
+    "missing_conflicting_stale_inaccessible_or_unimplementable_authority": [
+      "The CUDA-JS remote repository and accepted v0 public capability contract do not yet exist; UMCGS may define required public semantics and blockers but may not invent peer-private representation.",
+      "Any conflict between UMCGS package needs and future CUDA-JS accepted authority pauses the affected field and routes it to both authoritative owners."
+    ],
+    "scope_authority_and_reading_map_invalidation_triggers": [
+      "Publication or revision of the CUDA-JS bootstrap/public contract.",
+      "Acceptance or revision of UMCGS Search IR/domain/policy/evaluator/resource specifications.",
+      "A new target path, repository, owner, persistence form, generated artifact, native capability, test oracle, package/release effect, or lifecycle boundary.",
+      "A governing ADR/specification/agent rule changes or review identifies an omitted consumer."
+    ],
+    "pre_mutation_authority_closure_complete": true,
+    "pre_claim_refresh_required": true,
+    "document_reading_debt": [
+      "CUDA-JS root/path instruction chain and accepted public runtime contract remain unavailable until the private remote is created and the bootstrap/public contract is published; this blocks final cross-repository acceptance but not bounded UMCGS proposal drafting."
+    ],
+    "durable_document_reading_record": "Use agent_files/templates/document-reading.template.yaml for this cross-repository specification branch; store or link the canonical map with the SPEC-V0 assessment rather than duplicating it across PR and handoff."
   },
   "engineering_judgment": {
     "required_outcome_and_consumer": [
@@ -42,7 +112,7 @@
     "ambiguities_conflicts_gaps_or_oracle_mismatches": [
       "The exact public CUDA-JS v0 capability schema is not yet accepted; UMCGS may propose required semantics but cannot invent peer-private representation.",
       "Managed-memory, host-microbatch, JIT/Node-API, mock/native, publication, and deferred-error behavior remain open peer-runtime design questions and cannot be assumed by this contract.",
-      "Remote CUDA-JS repository publication is blocked, but the prepared bootstrap and repository-boundary authority are sufficient for proposal work."
+      "Remote CUDA-JS repository publication is blocked, but the prepared bootstrap and repository-boundary authority are sufficient for bounded proposal work."
     ],
     "hard_gates": [
       "One-way dependency: UMCGS may depend on versioned CUDA-JS public artifacts; CUDA-JS may not depend on UMCGS.",
@@ -128,6 +198,9 @@
     "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
     "docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md",
     "docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md",
+    "docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md",
+    "agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md",
+    "agent_files/general_foundation/CONTEXT_ROUTING.md",
     "agent_files/general_foundation/ENGINEERING_JUDGMENT.md",
     "agent_files/general_foundation/TOKEN_DISCIPLINE.md",
     "agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md",
@@ -150,50 +223,52 @@
     "current_band": "green",
     "validation_integration_cleanup_review_handoff_reserve_percent": 40,
     "minimum_practice_floor": [
+      "Authority closure across both repository boundaries before final acceptance.",
       "Current authority and repository-boundary inspection.",
       "Engineering contract, obligation/owner map, hard gates, and credible path review.",
       "Exact interop semantics, lifecycle, error, cancellation, teardown, compatibility, and evidence identity.",
       "Adversarial review, consolidated test ownership, actual-effect inspection, cleanup, exact-head review, and lossless handoff."
     ],
     "smallest_coherent_scope": [
-      "One version-zero UMCGS-to-CUDA-JS public execution-package contract and revised SPEC-V0 branch/test map; no production implementation."
+      "One version-zero UMCGS-to-CUDA-JS public execution-package contract and revised SPEC-V0 branch/test/document map; no production implementation."
     ],
     "context_layers_loaded": [
-      "Operating kernel and exact main revision.",
-      "Charter, engineering judgment, ADR-0002/0003/0004/0011 through 0016, registry, topology, proposal, and technical audit.",
+      "Operating kernel, target-path instruction chains, and exact UMCGS main revision.",
+      "Charter, selective-reading doctrine, engineering judgment, ADR-0002/0003/0004/0011 through 0017, registry, topology, proposal, and technical audit.",
       "Focus-branch, token, testing, execution, cleanup, sanity, and PR doctrine as triggered."
     ],
     "context_explicitly_excluded": [
       "Full CUDA documentation and donor repositories.",
       "Production implementation details before contract acceptance.",
       "A permanent third adapter-repository design.",
-      "Large generated engines, models, traces, and logs."
+      "Large generated engines, models, traces, and logs.",
+      "Unrelated UMCGS domain adapters and game-specific specifications."
     ],
     "pressure_triggers": [
       "An unchanged source reread, tool retry, or reassurance test.",
       "A second repair/revision cycle without a changed hypothesis or stronger first-divergence evidence.",
-      "A new semantic owner or peer-private representation entering the contract.",
+      "A new semantic owner, target path, peer-private representation, or governing document entering the contract.",
       "Expansion into production implementation, full CUDA research, or optional repository/process design.",
       "Erosion of the 40% proof/integration/cleanup/review/handoff reserve."
     ],
     "reduction_ladder": [
       "Remove duplicate authority, notes, tests, and retrieval.",
-      "Reuse exact evidence and link accepted doctrine.",
-      "Batch field/lifecycle/compatibility/test-owner analysis.",
+      "Reuse exact revision-specific reading/evidence maps and link accepted doctrine.",
+      "Batch field/lifecycle/compatibility/test-owner/applicability analysis.",
       "Narrow context and generated prose.",
       "Defer optional performance and packaging detail.",
       "Reduce the contract claim to a coherent bounded proposal.",
-      "Split peer-owned empirical questions into CUDA-JS leaves or handoff.",
+      "Split peer-owned empirical or authority questions into CUDA-JS leaves or handoff.",
       "Pause when peer authority or evidence is missing."
     ],
     "optional_work_deferred_first": [
       "Production code, exhaustive CUDA capability analysis, release automation, extra repository splits, performance tuning, and cosmetic documentation."
     ],
     "budget_extension_conditions": [
-      "Essential ownership/device-closure/security/compatibility/lifecycle evidence or cleanup requires additional context and cannot be safely deferred; extension must restore reserve through narrowing or split."
+      "Essential ownership/device-closure/security/compatibility/lifecycle/authority evidence or cleanup requires additional context and cannot be safely deferred; extension must restore reserve through narrowing or split."
     ],
     "claim_reduction_rule": [
-      "Reduced evidence produces a proposal/bounded claim, never a falsely complete interop or release claim."
+      "Reduced evidence or unavailable peer authority produces a proposal/bounded claim, never a falsely complete interop or release claim."
     ],
     "token_debt": []
   },
@@ -202,6 +277,7 @@
       "Repository ownership follows ADR-0014.",
       "Value ordering/path selection follows ADR-0015.",
       "Token backpressure and practice floor follow ADR-0012/0016.",
+      "Authority discovery/applicability/semantic closure follows ADR-0017.",
       "Search package semantics follow accepted UMCGS specifications.",
       "Generic runtime fields follow the future accepted CUDA-JS public contract.",
       "Device closure follows ADR-0003 and cannot be inferred from a mock."
@@ -214,7 +290,8 @@
       "Memory/lifetime/teardown/deferred-error ownership is unambiguous.",
       "Cache and compatibility identity changes for every material input.",
       "Mocks cannot satisfy unobserved native or search-semantic claims.",
-      "A gate-failing combination is rejected rather than compensated by performance/convenience."
+      "A gate-failing combination is rejected rather than compensated by performance/convenience.",
+      "Changing either peer public specification invalidates the compatible-pair evidence and reading map."
     ],
     "owning_capsules": [
       "UMCGS package schema/normalization capsule.",
@@ -224,12 +301,13 @@
     ],
     "no_repeat_rules": [
       "Do not duplicate complete CUDA-JS runtime tests in UMCGS.",
-      "Do not rerun unchanged compatible-pair evidence without invalidation or statistical reason."
+      "Do not rerun unchanged compatible-pair evidence or reread unchanged governing documents without invalidation or statistical/interpretive reason."
     ],
     "test_debt": []
   },
   "preconditions": [
-    "ADR-0014/0015/0016 and narrowed charter/registry/topology are integrated into main.",
+    "ADR-0014/0015/0016/0017 and narrowed charter/registry/topology are integrated into main.",
+    "UMCGS pre-mutation authority closure is complete for bounded proposal drafting.",
     "No generic CUDA-JS production implementation is added to UMCGS.",
     "The prepared CUDA-JS bootstrap remains available until published or superseded."
   ],
@@ -237,29 +315,33 @@
   "protected_preexisting_user_shared_authority_evidence_and_recovery_state": [
     "Accepted UMCGS charter and ADR history.",
     "Prepared CUDA-JS bootstrap commit, bundle, zip, and checksums.",
-    "Prior-art and official-source technical evidence."
+    "Prior-art and official-source technical evidence.",
+    "Current authority indexes, registry, and reading-map provenance."
   ],
   "expected_local_effects": [
     "A proposal interop specification with one owner for every field/lifecycle transition and traceability from every material gate to evidence.",
-    "A revised SPEC-V0 engineering-decision/branch/dependency/test map assigning no generic native runtime work to UMCGS.",
+    "A revised SPEC-V0 engineering-decision/branch/dependency/test/document map assigning no generic native runtime work to UMCGS.",
     "A planned adapters/runtimes boundary without premature production code."
   ],
   "expected_wider_effects": [
     "CUDA-JS can evolve for unrelated consumers without importing UMCGS.",
     "UMCGS agents can focus on search correctness and generated device behavior.",
-    "Cross-repository release, cache, compatibility, conformance, value ordering, token pressure, and cleanup become explicit."
+    "Cross-repository authority, release, cache, compatibility, conformance, value ordering, token pressure, and cleanup become explicit."
   ],
   "deliverables": [
+    "Canonical cross-repository document-reading/applicability map with exact revisions, missing authority, invalidation, and final-refresh rules.",
     "UMCGS-to-CUDA-JS execution-package v0 proposal and obligation map.",
     "Capability/version negotiation and compatibility manifest.",
     "Opaque resource/memory, module, argument, launch, completion, cancellation, error, and teardown ownership map.",
     "Complete artifact/cache/provenance identity dimensions.",
     "UMCGS semantic versus CUDA-JS generic error classification.",
     "Cross-repository test ownership and no-repeat evidence policy.",
-    "Revised SPEC-V0 engineering-decision/branch/dependency/test/token architecture.",
+    "Revised SPEC-V0 engineering-decision/branch/dependency/test/token/document architecture.",
     "Publication handoff for the prepared CUDA-JS bootstrap."
   ],
   "acceptance_criteria": [
+    "The mandatory kernel, target-path instruction chains, direct authority, normative references, triggered doctrine, and material adjacency are known for every in-scope repository/path.",
+    "Every plausible material document has an applicability disposition and governing documents are read to semantic closure.",
     "Every material obligation, field, and lifecycle transition has exactly one owner and evidence path.",
     "All hard gates are explicit and satisfied; no preference or token target masks a failure.",
     "CUDA-JS can validate/execute the package without Search IR knowledge.",
@@ -267,27 +349,31 @@
     "No raw/private CUDA-JS handle enters persistent UMCGS schemas.",
     "Compatibility/cache identity includes every material package/runtime/platform input.",
     "Each side is tested independently and the public boundary is tested once.",
+    "The final changed surface receives a trigger/adjacency/status/revision refresh before acceptance.",
     "The 40% reserve or semantic equivalent remains for proof/integration/cleanup/review/handoff, or an explicit extend/narrow/split decision is recorded.",
-    "No third repository, submodule, source-path dependency, duplicate oracle, or material decision/test/token/cleanup debt is introduced."
+    "No third repository, submodule, source-path dependency, duplicate oracle, or material specification/document-reading/decision/test/token/cleanup debt is introduced."
   ],
-  "cheapest_decisive_falsifier": "A second unrelated CUDA-JS consumer requires Search IR changes, or UMCGS cannot express/load a package without CUDA-JS private source, raw handles, host-driven search progress, incomplete ownership, failed hard gates, incomplete compatibility/cache identity, or an evidence/practice floor that cannot fit the branch.",
-  "rollback_recovery_or_safe_stop": "Keep the interop specification in Proposal status, preserve the counterexample and token/backpressure state, revise ownership/value ordering through an ADR or decision if needed, narrow/split the branch, and do not begin production implementation.",
+  "cheapest_decisive_falsifier": "A second unrelated CUDA-JS consumer requires Search IR changes, UMCGS cannot express/load a package without CUDA-JS private source/raw handles/host-driven search progress, or the branch lacks authority closure, complete ownership, hard-gate satisfaction, compatibility identity, or a sufficient evidence/practice floor.",
+  "rollback_recovery_or_safe_stop": "Keep the interop specification in Proposal status, preserve the counterexample and exact reading/token state, revise ownership/value ordering through an ADR or decision if needed, narrow/split the branch, and do not begin production implementation.",
   "cleanup_and_disposition": {
     "planned_dispositions": [
-      "Retain accepted ADR/topology/audit/engineering/token doctrine as authority/evidence.",
+      "Retain accepted ADR/topology/audit/engineering/token/reading doctrine as authority/evidence.",
       "Retain the prepared CUDA-JS bootstrap until published or superseded.",
-      "Remove duplicate sketches and temporary decision/token records after unique meaning is incorporated.",
+      "Remove duplicate sketches and temporary reading/decision/token records after unique meaning is incorporated.",
+      "Archive superseded reading maps with exact reason/successor when useful for provenance.",
       "Delete task branches after verified integration when safe."
     ],
     "verification": [
       "UMCGS documentation/structured-data checks.",
+      "Authority-closure and pre-claim-refresh review.",
       "Exact-head PR review and target verification.",
       "Checksums/Git verification for the local CUDA-JS bootstrap.",
-      "Remote repository verification after publication."
+      "Remote repository and instruction-chain verification after publication."
     ],
     "cleanup_debt": []
   },
   "validation": [
+    "Selective-reading instruction-chain/applicability/semantic-closure/trigger/adjacency/final-refresh review.",
     "Engineering-contract, obligation-map, gate, value-order, candidate-path, priority, and tradeoff review.",
     "Universal token-backpressure/practice-floor/reduction-ladder/claim-scope review.",
     "Adversarial ownership and first-consumer-deletion review.",
@@ -298,9 +384,12 @@
     "./scripts/verify-docs.sh"
   ],
   "blockers": [
-    "The connected GitHub capability cannot create account-level repositories; create the private iteathen/CUDA-JS remote before publishing the prepared bootstrap."
+    "The connected GitHub capability cannot create account-level repositories; create the private iteathen/CUDA-JS remote before publishing the prepared bootstrap and completing final cross-repository authority closure."
   ],
   "do_not": [
+    "Read every UMCGS/CUDA/CUDA-JS document merely because it exists.",
+    "Read only files named in the request or directly changed paths.",
+    "Treat a search snippet, isolated clause, template, proposal, test, plan, or summary as complete accepted authority.",
     "Implement generic Driver bindings, JIT ABI stubs, memory providers, NVRTC plumbing, or Node completion delivery in UMCGS.",
     "Put Search IR, graph search, evaluators, or search-resource policy into CUDA-JS.",
     "Create a third adapter repository without an independent lifecycle decision.",
@@ -309,10 +398,10 @@
     "Use host micro-batch relaunch as required active-search progress.",
     "Let a mock define native CUDA or UMCGS semantic truth.",
     "Use speed, convenience, simplicity, or token conservation to override a hard gate or minimum practice floor.",
-    "Preserve a broad claim by reducing required evidence; narrow the claim instead.",
-    "Spend proof/integration/cleanup/handoff reserve on optional implementation or polish.",
-    "Begin production implementation before both sides' engineering contracts and specifications are accepted."
+    "Preserve a broad claim by reducing required authority or evidence; narrow the claim instead.",
+    "Spend the proof/integration/cleanup/review/handoff reserve on optional implementation or polish.",
+    "Begin production implementation before both sides' authority closure, engineering contracts, and specifications are accepted."
   ],
   "completion_evidence": [],
-  "handoff_to_next_focus_branch_or_integration_spine": "After interop and revised SPEC-V0 acceptance, select separately owned UMCGS search-contract and CUDA-JS runtime-contract leaves with their own practice floors and reserves."
+  "handoff_to_next_focus_branch_or_integration_spine": "After interop and revised SPEC-V0 acceptance, select separately owned UMCGS search-contract and CUDA-JS runtime-contract leaves with exact instruction chains, reading maps, practice floors, tests, and reserves."
 }

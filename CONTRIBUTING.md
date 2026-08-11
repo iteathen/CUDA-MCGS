@@ -1,11 +1,13 @@
 # Contributing to UMCGS
 
-UMCGS is private and documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`ENGINEERING_JUDGMENT.md`](agent_files/general_foundation/ENGINEERING_JUDGMENT.md), [`CONTEXTUAL_DESIGN_WEIGHTING.md`](agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md), [`ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md), [`TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md), [`TESTING.md`](agent_files/general_foundation/TESTING.md), [`DEBUGGING.md`](agent_files/general_foundation/DEBUGGING.md), [`PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md), and [`CLEANUP_AND_DISPOSITION.md`](agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md) before a material change.
+UMCGS is private and documentation-first. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md), [`CONTEXT_ROUTING.md`](agent_files/general_foundation/CONTEXT_ROUTING.md), [`PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`ENGINEERING_JUDGMENT.md`](agent_files/general_foundation/ENGINEERING_JUDGMENT.md), [`CONTEXTUAL_DESIGN_WEIGHTING.md`](agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md), [`ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md), [`TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md), [`TESTING.md`](agent_files/general_foundation/TESTING.md), [`DEBUGGING.md`](agent_files/general_foundation/DEBUGGING.md), [`PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md), and [`CLEANUP_AND_DISPOSITION.md`](agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md) when applicable.
 
 ## Before production implementation
 
 A change needs:
 
+- the mandatory operating kernel and every target-path instruction chain;
+- the smallest authority-complete reading set: direct governing authority, required normative references, triggered specialist doctrine, and material producer/consumer/lifecycle/test/cleanup adjacency;
 - a proportional assessment whose disposition permits implementation;
 - an engineering contract covering outcome, consumers, authority, semantics, bounds, resources, lifecycle/failure/recovery/cleanup, compatibility, non-goals, and completion evidence;
 - traceability from material specification obligations to owners, mechanisms, failure consequences, and test capsules;
@@ -23,6 +25,27 @@ A change needs:
 - domain-appropriate foundations and total-system simplicity, including decision review, branch coordination, context reconstruction, tests, operations, and cleanup;
 - validation capable of falsifying the selected path and final integrated behavior;
 - prior-art/provenance inspection where it can reshape the design.
+
+## Selective specification and agent-file reading
+
+Do not recursively read the whole repository, and do not read only the files named in the request.
+
+For every task:
+
+1. state the task signature—outcome, target paths/symbols/artifacts, operations, owner, claim, and exact revision;
+2. read the mandatory kernel;
+3. discover every applicable `AGENTS.md` from repository root toward each target path;
+4. use registry, indexes, manifests, stable IDs, search, and references to find direct authority;
+5. check status, owner, scope, version, revision, and supersession before applying a document;
+6. classify plausible documents as kernel, governing, triggered, adjacent-check, evidence-only, not-applicable, superseded/archive, or blocked/missing;
+7. read governing and materially triggered documents to semantic closure, including definitions, normative references, conditions, lifecycle/failure/compatibility/security/cleanup, and conformance evidence;
+8. scan material producers, consumers, dependencies, generated forms, persistence, lifecycle, tests, packaging, and cleanup;
+9. repeat routing when scope or authority changes;
+10. refresh the final changed surface before acceptance or review.
+
+Accepted status does not imply universal applicability. Proposals, research, architecture, examples, implementation, tests, plans, PR descriptions, and summaries remain beneath accepted authority.
+
+Routine obvious work needs no standalone document-reading ledger. Use [`agent_files/templates/document-reading.template.yaml`](agent_files/templates/document-reading.template.yaml) only when cross-session, cross-agent, cross-repository, critical, disputed, or review-sensitive work needs durable applicability and invalidation evidence.
 
 ## Engineering judgment and value ordering
 
@@ -98,19 +121,19 @@ Capture material test intents immediately, use minimal reproducers, consolidate 
 
 Token pressure may remove duplicate tests, setup, and unnecessary tiers. It may not remove the authoritative oracle, evidence identity, discovery/skip accounting, required owner capsule, or integration evidence needed by the claim.
 
-Decompose large work into semantic focus branches; do not confuse those with Git branches. A focus branch must fit its complete mechanism, consequences, testing, cleanup, and handoff reserve.
+Decompose large work into semantic focus branches; do not confuse those with Git branches. A focus branch must fit its complete reading set, mechanism, consequences, testing, cleanup, and handoff reserve.
 
-Protect user/pre-existing work, project authority, evidence, recovery state, shared resources, protected branches, and active dependents. Every material decision record, file, test artifact, branch, process, device resource, credential, backup, and external object receives an intentional verified disposition.
+Protect user/pre-existing work, project authority, evidence, recovery state, shared resources, protected branches, and active dependents. Every material reading/decision record, file, test artifact, branch, process, device resource, credential, backup, and external object receives an intentional verified disposition.
 
 ## Organization
 
 UMCGS is organized for large-project scale from inception. Follow [`PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
 
-New production components require `README.md`, `component.yaml`, registry entry, dependency declaration, public contract, validation/test ownership, canonical capsule commands, teardown, and disposition. Engineering-decision records, focus branches, token budgets, and test batches do not create components by themselves.
+New production components require `README.md`, `component.yaml`, registry entry, dependency declaration, public contract, validation/test ownership, canonical capsule commands, teardown, and disposition. Document-reading records, engineering-decision records, focus branches, token budgets, and test batches do not create components by themselves.
 
 ## Documentation and validation
 
-Substantial Markdown below `docs/` must carry a recognized status. Update specifications, ADRs, engineering-decision/parent/focus-branch/token/test/plan/execution/cleanup state, indexes, and registry entries in the same coherent change. Link authority rather than copying it; archive useful stale guidance rather than keeping competing active versions.
+Substantial Markdown below `docs/` must carry a recognized status and support selective discovery through clear owner, scope, normative references, supersession, indexes, and registry linkage. Update specifications, ADRs, document-reading/engineering-decision/parent/focus-branch/token/test/plan/execution/cleanup state, indexes, and registry entries in the same coherent change. Link authority rather than copying it; archive useful stale guidance rather than keeping competing active versions.
 
 Run:
 
@@ -125,13 +148,14 @@ Token pressure cannot waive objectively triggered validation.
 Before requesting review:
 
 - freeze exact head/base and account for the complete changed surface;
+- show instruction chains, governing documents, triggered doctrine, material adjacency, applicability exclusions, exact revisions, and final authority refresh for substantial work;
 - show engineering-contract and specification traceability;
 - disclose hard gates, value order, credible candidates, selected path, alternatives rejected, priority, tradeoffs, confidence, and decision debt;
 - account for branch statuses/outputs, token practice floor/reserve/backpressure actions, test evidence, execution fidelity, cleanup, and affected contracts;
 - disclose authoritative oracles, evidence keys, discovery/skip counts, test intents, failure clusters, tiers, evidence reused/repeated, and checks not run;
 - rerun only evidence invalidated by head, base, specification, decision, shared contract, source/test revision, generated artifact, model, environment, fixture, seed, or resource profile;
-- disclose any budget extension, narrowed claim, deferred work, split/handoff, decision/test/token/cleanup debt, issue closure, Git branch/worktree effects, and merge method.
+- disclose any budget extension, narrowed claim, deferred work, split/handoff, document-reading/decision/test/token/cleanup debt, issue closure, Git branch/worktree effects, and merge method.
 
-Every material PR receives author-side complete-diff review. Independent review is triggered by phase, policy, owner instruction, or objective consequence. Merge is a separate expected-head transaction followed by target, engineering-decision, focus-branch, test-evidence, dependency, debt, and cleanup verification.
+Every material PR receives author-side complete-diff review. Independent review is triggered by phase, policy, owner instruction, or objective consequence. Merge is a separate expected-head transaction followed by target, authority, engineering-decision, focus-branch, test-evidence, dependency, debt, and cleanup verification.
 
-Do not describe low raw token use as efficiency without showing verified lifecycle progress and preserved practice, a convenient implementation as the best path without gate/evidence comparison, branch-local work as integrated, raw test count as completeness, author-side review as independent approval, or a merge response as verified completion.
+Do not describe shallow reading as selectivity, low raw token use as efficiency without showing verified lifecycle progress and preserved practice, a convenient implementation as the best path without gate/evidence comparison, branch-local work as integrated, raw test count as completeness, author-side review as independent approval, or a merge response as verified completion.

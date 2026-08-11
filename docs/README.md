@@ -6,6 +6,8 @@
 
 - [`PROJECT_CHARTER.md`](PROJECT_CHARTER.md) — accepted UMCGS search mission and boundary.
 - [`../agent_files/README.md`](../agent_files/README.md) — canonical developer/agent system.
+- [`../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md) — selective authority discovery, instruction chains, applicability, semantic closure, and final refresh.
+- [`../agent_files/general_foundation/CONTEXT_ROUTING.md`](../agent_files/general_foundation/CONTEXT_ROUTING.md) — authority-complete context loading and compaction.
 - [`../agent_files/general_foundation/TOKEN_DISCIPLINE.md`](../agent_files/general_foundation/TOKEN_DISCIPLINE.md) — universal token backpressure, minimum practice floor, reduction ladder, reserves, and token debt.
 - [`../agent_files/general_foundation/ENGINEERING_JUDGMENT.md`](../agent_files/general_foundation/ENGINEERING_JUDGMENT.md) — specification alignment, path selection, value ordering, tradeoffs, and priority.
 - [`decisions/README.md`](decisions/README.md) — accepted decisions.
@@ -33,6 +35,7 @@
 - Extract the generic Node/CUDA runtime into independent `CUDA-JS`; retain search semantics and the adapter in UMCGS. See [`decisions/ADR-0014-extract-cuda-js-runtime.md`](decisions/ADR-0014-extract-cuda-js-runtime.md).
 - Translate specifications into engineering contracts, eliminate gate-failing paths, order contextual values, compare credible alternatives, and prioritize work by consequence/dependency/information value. See [`decisions/ADR-0015-engineering-judgment-and-value-ordering.md`](decisions/ADR-0015-engineering-judgment-and-value-ordering.md).
 - Apply token backpressure to every task while preserving the risk-appropriate minimum practice floor; reduce duplication, optional breadth, and scope before rigor. See [`decisions/ADR-0016-token-backpressure-and-practice-floor.md`](decisions/ADR-0016-token-backpressure-and-practice-floor.md).
+- Read the smallest authority-complete document set through instruction-chain discovery, applicability classification, semantic closure, trigger/adjacency scans, and pre-claim refresh. See [`decisions/ADR-0017-selective-spec-and-agent-file-reading.md`](decisions/ADR-0017-selective-spec-and-agent-file-reading.md).
 
 ## Repository split references
 
@@ -41,4 +44,4 @@
 
 ## Authority
 
-Accepted ADRs and specifications govern their scopes. Research notes provide evidence but do not become architecture until accepted through the decision/specification process. Engineering-decision records, plans, focus-branch packets, token/test records, and cleanup records organize work beneath authority. Archived material is not current authority.
+Accepted ADRs and specifications govern their declared scopes. Research notes provide evidence but do not become architecture until accepted through the decision/specification process. Engineering-decision records, plans, focus-branch packets, token/document-reading/test records, and cleanup records organize work beneath authority. Archived material is not current authority.

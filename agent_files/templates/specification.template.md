@@ -2,11 +2,23 @@
 
 **Status:** Proposal
 
-## Purpose and owner
+## Authority, identity, and applicability
 
-## Product area, component, and durable path
+- Specification ID and version:
+- Authoritative owner:
+- Product area / component / durable path:
+- Intended consumers:
+- Applies to:
+- Explicitly out of scope:
+- Supersedes / superseded by:
+- Normative dependencies and referenced specifications:
+- Informative references:
 
-## Scope / out of scope
+## Purpose and required outcome
+
+## Reading map
+
+Identify the sections and normative references required to interpret the contract’s core obligations. State when the document is too tightly coupled for partial reading and should be read completely.
 
 ## LEGO ownership and design boundary
 
@@ -18,26 +30,50 @@
 
 ### Second-instance / first-consumer deletion / total-system simplicity
 
-## Terms
+## Terms, units, and definitions
 
-## Inputs and outputs
+## Inputs, outputs, errors, and side effects
 
 ## Public/internal boundary and dependencies
 
-## Invariants
+## Normative requirements
 
-## Expected ranges and representations
+Use stable requirement IDs where downstream plans, tests, generated artifacts, or peer repositories need durable traceability.
 
-## Lifecycle, ownership, and concurrency
+For each material requirement, make conditions, exceptions, owner, and required evidence explicit.
 
-## Resource and failure behavior
+## Invariants and prohibited states
 
-## Compatibility and versioning
+## Expected ranges, precision, representations, identity, versions, and memory spaces
 
-## Security
+## Lifecycle, ownership, ordering, concurrency, publication, cancellation, and teardown
 
-## Conformance requirements
+## Resource, pressure, exhaustion, and failure behavior
 
-## Performance requirements and evidence
+## Recovery, rollback, cleanup, and retained state
 
-## Open questions
+## Compatibility, migration, persistence, and versioning
+
+## Security, privacy, permissions, trust, and provenance
+
+## Generated artifacts, ABI, package, and cache identity
+
+## Conformance requirements and authoritative test oracles
+
+## Performance and quality requirements and evidence
+
+## Reader-triggered specialist doctrine
+
+List specialist agent methods that become applicable when implementing, testing, reviewing, migrating, releasing, or cleaning up this contract.
+
+## Examples and rationale
+
+Mark these explicitly informative unless a requirement says otherwise.
+
+## Open questions and acceptance blockers
+
+A proposal with unresolved material ownership, range, lifecycle, failure, compatibility, security, conformance, or evidence questions is not production implementation authority.
+
+## Change, supersession, and downstream invalidation
+
+Identify plans, generated artifacts, implementations, tests, caches, peer contracts, and review evidence that must be invalidated when this specification changes.

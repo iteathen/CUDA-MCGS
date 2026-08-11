@@ -1,5 +1,5 @@
 {
-  "schema_version": 8,
+  "schema_version": 9,
   "updated": "YYYY-MM-DD",
   "status": "ready|blocked|in_progress|complete|superseded|invalidated",
   "parent_task_id": "<canonical parent task>",
@@ -15,6 +15,23 @@
     "exact_input_revision": "",
     "write_surface_and_authority": [],
     "integration_obligations": []
+  },
+  "document_reading": {
+    "task_signature_and_exact_subject_revisions": [],
+    "mandatory_kernel_and_root_to_target_instruction_chains": [],
+    "registry_indexes_manifests_ids_search_terms_and_references_used": [],
+    "governing_documents_status_scope_owner_version_revision_and_supersession": [],
+    "triggered_specialist_doctrine_and_reason": [],
+    "material_producer_consumer_dependency_adapter_generated_persistence_lifecycle_test_package_cleanup_adjacency": [],
+    "applicability_dispositions_and_reading_depths": [],
+    "normative_references_and_semantic_closure": [],
+    "material_exclusions_and_scope_based_reasons": [],
+    "missing_conflicting_stale_inaccessible_or_unimplementable_authority": [],
+    "scope_authority_and_reading_map_invalidation_triggers": [],
+    "pre_mutation_authority_closure_complete": false,
+    "pre_claim_refresh_required": true,
+    "document_reading_debt": [],
+    "durable_document_reading_record": ""
   },
   "engineering_judgment": {
     "required_outcome_and_consumer": [],
@@ -125,5 +142,5 @@
   "blockers": [],
   "do_not": [],
   "completion_evidence": [],
-  "handoff_to_next_decision_focus_branch_or_integration_spine": ""
+  "handoff_to_next_reading_decision_focus_branch_or_integration_spine": ""
 }

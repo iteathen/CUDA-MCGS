@@ -19,7 +19,8 @@ This directory is the durable operating system for development. The root [`AGENT
 - [`general_foundation/ASSESSMENT_AND_PLANNING.md`](general_foundation/ASSESSMENT_AND_PLANNING.md) — proportional adversarial assessment and executable planning.
 - [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md) — parent-task integration spines, full-attention branch sizing, context packets, parallelism, invalidation, and reconciliation for large or complex work.
 - [`general_foundation/TOKEN_DISCIPLINE.md`](general_foundation/TOKEN_DISCIPLINE.md) — universal token backpressure, minimum practice floor, reduction ladder, reserves, context layers/bands, budget elasticity, lossless checkpoints, and token-debt prevention.
-- [`general_foundation/CONTEXT_ROUTING.md`](general_foundation/CONTEXT_ROUTING.md) — authoritative context loading, freshness, compaction, and retirement.
+- [`general_foundation/SPEC_AND_AGENT_FILE_READING.md`](general_foundation/SPEC_AND_AGENT_FILE_READING.md) — instruction-chain discovery, specification applicability, trigger/adjacency scans, semantic closure, reading depth, and final authority refresh.
+- [`general_foundation/CONTEXT_ROUTING.md`](general_foundation/CONTEXT_ROUTING.md) — authority-complete context loading, freshness, compaction, and retirement.
 - [`general_foundation/PLAN_EXECUTION.md`](general_foundation/PLAN_EXECUTION.md) — readiness proof, coherent operations, expected-versus-actual inspection, deviation handling, recovery, and acceptance.
 - [`general_foundation/TESTING.md`](general_foundation/TESTING.md) — accurate and complete test design, test-intent banking, consolidated capsules, no-repeat evidence, failure clustering, and efficient repair loops.
 - [`general_foundation/DEBUGGING.md`](general_foundation/DEBUGGING.md) — first-divergence diagnosis and root-cause repair using the testing discipline.
@@ -56,12 +57,14 @@ This directory is the durable operating system for development. The root [`AGENT
 
 ## Templates
 
-Use [`templates/`](templates/) for engineering decisions, ADRs, specifications, component manifests, combined assessment/plans, durable focus-branch packets, token/context budgets, consolidated test batches, governed plan execution, cleanup/disposition, sanity checks, critical semantic reviews, durable PR reviews, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning.
+Use [`templates/`](templates/) for engineering decisions, ADRs, specifications, component manifests, combined assessment/plans, durable focus-branch packets, token/context budgets, document-reading/applicability maps, consolidated test batches, governed plan execution, cleanup/disposition, sanity checks, critical semantic reviews, durable PR reviews, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning.
 
 Universal token backpressure applies to every task, but routine work uses an implicit micro-budget and no token ledger. Use [`templates/token-budget.template.yaml`](templates/token-budget.template.yaml) only when cross-session/agent continuation, telemetry, high consequence, parallelism, repeated pressure, or audit/review gives the record a real consumer.
 
+Selective document reading also applies to every task, but routine work needs no standalone applicability ledger when the instruction chain and governing authority are obvious. Use [`templates/document-reading.template.yaml`](templates/document-reading.template.yaml) only for substantial, critical, cross-session, cross-agent, cross-repository, disputed, or review-sensitive work whose exact authority coverage and invalidation state must survive.
+
 Routine work needs no engineering-decision or test ledger. Use [`templates/engineering-decision.template.yaml`](templates/engineering-decision.template.yaml) for foundational, contested, cross-component, high-consequence, empirically uncertain, difficult-to-reverse, or cross-session decisions. Use [`templates/test-batch.template.yaml`](templates/test-batch.template.yaml) when several test intents must be accumulated/consolidated, expensive setup must be shared, a failure cluster crosses sessions/agents, or completeness/skip/invalidation evidence has a real consumer. Routine task-owned scratch cleanup, single-session execution, simple focus branches, self-sanity, and ordinary PR review should remain in the canonical issue/plan/PR rather than forcing standalone artifacts.
 
-Token backpressure should reduce duplicate records and optional ceremony; it must not add a mandatory form to every task or weaken the practice floor.
+Token backpressure and selective reading should reduce duplicate context and records. They must not add a mandatory form to every task, weaken the practice floor, or permit shallow interpretation of governing authority.
 
 Tool adapters such as `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md` must point here and remain thin.
