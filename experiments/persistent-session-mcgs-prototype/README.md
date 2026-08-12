@@ -35,20 +35,21 @@ No CUDA primitive, persistent-kernel topology, CUDA Graph topology, mapped-memor
 
 ## Cases
 
-The consolidated capsule contains ten stable cases:
+The consolidated capsule contains eleven stable cases:
 
-1. `live-ranking-running`
-2. `ranking-cadence-decoupled`
-3. `transposition-edge-local`
-4. `reroot-reuse`
-5. `stale-work-rejected`
-6. `reclaim-generation-reuse`
-7. `many-epoch-bounded-memory`
-8. `epoch-exhaustion-no-side-effect`
-9. `ranking-exhaustion-no-side-effect`
-10. `oracle-sensitivity`
+1. `ranking-publication-readonly`
+2. `live-ranking-running`
+3. `ranking-cadence-decoupled`
+4. `transposition-edge-local`
+5. `reroot-reuse`
+6. `stale-work-rejected`
+7. `reclaim-generation-reuse`
+8. `many-epoch-bounded-memory`
+9. `epoch-exhaustion-no-side-effect`
+10. `ranking-exhaustion-no-side-effect`
+11. `oracle-sensitivity`
 
-Throwaway mutation runs additionally remove the root-epoch commit guard, slot-generation advance, and pre-mutation reroot admission guard. They are not retained; their outcomes are recorded in `RESULTS.md`.
+Throwaway mutation runs additionally remove the root-epoch commit guard, slot-generation advance, pre-mutation reroot admission guard, and ranking-publication read-only boundary. They are not retained; their outcomes are recorded in `RESULTS.md`.
 
 ## Run
 
@@ -62,7 +63,7 @@ The runner uses no network, CUDA, persistence, or external service and reports e
 
 A pass supports only these bounded semantic propositions for this synthetic profile:
 
-- ranking publication need not participate in every backup;
+- ranking publication can remain read-only with respect to search materialization and need not participate in every backup;
 - reroot can be a logical root/epoch transition rather than a graph rebuild;
 - old-epoch root-relative work can be abandoned without contaminating new-epoch statistics;
 - reclamation can be separated from the latency-critical root switch;
