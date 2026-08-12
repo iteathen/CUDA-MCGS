@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "cuda-mcgs.ptx-discovery.observer.v1",
+  "point": {
+    "id": "backup-observer",
+    "version": 1
+  },
+  "symbol": "cuda_mcgs_backup_observer_v1",
+  "signature": {
+    "result": "u32",
+    "parameters": ["u32", "u32", "u32", "u32"]
+  },
+  "contextFields": ["checksum", "state", "iteration", "score"],
+  "permissions": ["read:checksum", "read:state", "read:iteration", "read:evaluation"],
+  "resources": {
+    "staticBytes": 0,
+    "dynamicSharedBytes": 0
+  },
+  "ptx": {
+    "version": "8.0",
+    "target": "sm_75",
+    "addressSize": 64,
+    "file": "ptx/observer.ptx",
+    "sha256": "d6f4e1ceae85cd6cc6deb13d4c4bd4d1b4c03de284fa9cf0bd9c684b21cd923f"
+  },
+  "provenance": {
+    "kind": "hand-authored-discovery-fixture",
+    "generator": "none",
+    "options": []
+  }
+}

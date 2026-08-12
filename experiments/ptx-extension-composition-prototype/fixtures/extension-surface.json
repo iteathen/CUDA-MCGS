@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "cuda-mcgs.ptx-discovery.extension-surface.v1",
+  "points": [
+    {
+      "id": "score-transform",
+      "version": 1,
+      "symbol": "cuda_mcgs_score_transform_v1",
+      "signature": {
+        "result": "u32",
+        "parameters": ["u32", "u32", "u32"]
+      },
+      "contextFields": ["score", "state", "iteration"],
+      "permissions": ["read:evaluation", "read:state", "read:iteration"],
+      "resources": {
+        "maxStaticBytes": 0,
+        "maxDynamicSharedBytes": 0
+      }
+    },
+    {
+      "id": "backup-observer",
+      "version": 1,
+      "symbol": "cuda_mcgs_backup_observer_v1",
+      "signature": {
+        "result": "u32",
+        "parameters": ["u32", "u32", "u32", "u32"]
+      },
+      "contextFields": ["checksum", "state", "iteration", "score"],
+      "permissions": ["read:checksum", "read:state", "read:iteration", "read:evaluation"],
+      "resources": {
+        "maxStaticBytes": 0,
+        "maxDynamicSharedBytes": 0
+      }
+    }
+  ],
+  "limits": {
+    "maxFragments": 2,
+    "maxPtxBytes": 65536,
+    "maxNodeCapacity": 16,
+    "maxIterations": 64
+  },
+  "ptxProfile": {
+    "version": "8.0",
+    "target": "sm_75",
+    "addressSize": 64
+  }
+}

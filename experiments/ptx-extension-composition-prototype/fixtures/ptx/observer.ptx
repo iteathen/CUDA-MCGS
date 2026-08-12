@@ -1,0 +1,23 @@
+.version 8.0
+.target sm_75
+.address_size 64
+
+.visible .func (.param .b32 result) cuda_mcgs_backup_observer_v1(
+    .param .b32 checksum,
+    .param .b32 state,
+    .param .b32 iteration,
+    .param .b32 score
+)
+{
+    .reg .b32 %r<8>;
+    ld.param.u32 %r0, [checksum];
+    ld.param.u32 %r1, [state];
+    ld.param.u32 %r2, [iteration];
+    ld.param.u32 %r3, [score];
+    mul.lo.u32 %r4, %r2, 16777619;
+    add.u32 %r5, %r1, %r4;
+    add.u32 %r5, %r5, %r3;
+    xor.b32 %r6, %r0, %r5;
+    st.param.b32 [result], %r6;
+    ret;
+}

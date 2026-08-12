@@ -65,7 +65,24 @@ Exact local Windows evidence:
 - Search IR SHA-256 `bd6679178c6754fe9b06d6fa54d038166b7ef39e32fb5f51513cc303cfd63a96`;
 - baseline, canonical-order, minimum-capacity, eight fail-closed mutations, ordinary, publication, transposition, path-cycle, forced-exhaustion, scheduler-parity, and oracle-sensitivity cases all pass.
 
-Private CUDA-MCGS Actions are disabled on the free plan, so this capsule currently has local Windows evidence only. Native Linux CUDA, Linux reference execution, GPU publication, sanitizers, resource cleanup, performance, and CUDA-JS integration remain untested and explicitly tracked gaps.
+Private CUDA-MCGS Actions are disabled on the free plan, so this capsule currently has local Windows evidence only. Native Linux CUDA and Linux reference execution remain explicitly tracked gaps. The later PTX experiment below adds bounded Windows CUDA-JS integration, GPU execution, and cleanup evidence without retroactively expanding this Search IR capsule's claim.
+
+## Bounded PTX extension-composition discovery
+
+The disposable vertical slice at [`experiments/ptx-extension-composition-prototype/`](experiments/ptx-extension-composition-prototype/) exercises a proposal-shaped Extension Surface, deterministic multi-fragment PTX composition, the packaged public CUDA-JS facade, one device-closed miniature search, negative contracts, emitted-binary inspection, resource bounds, and cleanup. It is discovery evidence rather than an accepted production schema or component.
+
+Exact local Windows evidence:
+
+- portable capsule: 37 expected, discovered, and executed; 37 passed with zero skips;
+- packaged CUDA-JS `main` revision `ad49a6c9b0cddb420e26e097180cf9c502060a65`;
+- native capsule: 13 expected, discovered, and executed; 13 passed with zero skips;
+- no-point and unbound generation produced byte-identical PTX and byte-identical 4,392-byte cubins with zero extension symbols or calls;
+- one and two direct PTX fragments linked and executed correctly, including transposition, root-cycle, finite-resource, activation, backup, and output checks;
+- two bound fragments retained two SASS calls and produced a 7,016-byte/31-register kernel versus the 4,520-byte/17-register fused control, so direct static binding is not fused-equivalent evidence;
+- current CUDA-JS NVRTC compilation cannot produce linkable standalone CUDA-source fragments because its public compile contract lacks relocatable-device-code control; hand-authored PTX works only as a discovery fixture;
+- unresolved-symbol, architecture-mismatch, and memory-limit failures were explicit and recoverable; terminal cleanup was graceful with zero live/orphaned Driver resources.
+
+The ownership and “can” versus “should” dispositions are in [`experiments/ptx-extension-composition-prototype/FINDINGS.md`](experiments/ptx-extension-composition-prototype/FINDINGS.md). Native Linux remains untested: the portable lane is prepared, but the selected CUDA-JS revision has no qualified Linux compiler/driver compatible pair.
 
 ## Current CUDA-JS peer state
 
@@ -83,16 +100,17 @@ At exact inspected revision `ad49a6c9b0cddb420e26e097180cf9c502060a65`, public `
 
 ## Current next boundary
 
-Execute the canonical [`next_step.yaml`](next_step.yaml) plan. Extend Search IR 0.1.0 with the Extension Surface/Point/Contract/Context Schema/Fragment, relocatable PTX ABI, and minimum Search Image package contract, then run `EXT-PTX-001` and `EXT-CONTRACT-001` through the exact public CUDA-JS path. Compare linked PTX modules with a fused/generated-source control before production extension implementation, followed by `SCHED-001`, `TT-001`, and the exact compatible-pair capsule.
+Execute the revised canonical [`next_step.yaml`](next_step.yaml) plan. [CUDA-JS #35](https://github.com/iteathen/CUDA-JS/issues/35) now records the relocatable-device-code need; do not implement it until the active LTO/compiler work finishes and its exact head is reassessed. [UMCGS #30](https://github.com/iteathen/UMCGS/issues/30) owns the CUDA-MCGS ABI, unbound-disappearance requirement, generator boundary, and representative bound-cost envelope. Then run the controlled post-capability PTX experiment before production extension implementation, followed by `SCHED-001`, `TT-001`, and the exact compatible-pair capsule.
 
 ## Current blockers and claim limits
 
 - The complete extension-capable Search IR and extension representation are not accepted.
-- The PTX fragment ABI, symbol compatibility rules, deterministic link identity, and separate-link cost have not yet passed `EXT-PTX-001`/`EXT-CONTRACT-001`.
+- The prototype establishes direct-link correctness, unbound disappearance, a subset of negative contracts, and a separate-link cost warning, but the normative PTX ABI/schema and representative performance/resource acceptance envelope are not accepted.
+- CUDA-JS cannot yet compile standalone CUDA-source fragments into linkable relocatable PTX through its public API; implementation must wait for reassessment against the active LTO/compiler work's final exact head.
 - Domain, policy, evaluator, full memory/resource, scheduler, output, persistence/reroot, and execution-package contracts remain incomplete.
 - The prototype covers a fixed deterministic two-action scalar-value domain and node-capacity exhaustion only.
 - No representative evaluator, workload, profiler, search-quality, cross-GPU, cancellation, device-loss, reclamation, or complete sanitizer evidence exists.
-- No production implementation, native Linux CUDA qualification, public CUDA-MCGS release, exact compatible runtime pair, or release automation is claimed.
+- No production implementation, native Linux CUDA qualification, public CUDA-MCGS release, released compatible runtime pair, or release automation is claimed.
 
 ## Private collaboration safety
 
