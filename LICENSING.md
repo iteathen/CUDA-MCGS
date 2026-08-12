@@ -4,11 +4,11 @@ Copyright (C) 2026 iteathen.
 
 ## Open-source license
 
-CUDA-MCGS, currently developed in the `iteathen/UMCGS` repository, is free software distributed under the **GNU Affero General Public License, version 3 or (at your option) any later version** (`AGPL-3.0-or-later`). The complete license is in [`LICENSE`](LICENSE).
+CUDA-MCGS, developed in the `iteathen/UMCGS` repository, is free software distributed under the **GNU Affero General Public License, version 3 or (at your option) any later version** (`AGPL-3.0-or-later`). The complete license is in [`LICENSE`](LICENSE).
 
 The AGPL permits commercial use, modification, distribution, and charging fees, subject to its conditions. In particular, covered source obligations apply when modified versions are conveyed and when users interact remotely with a modified network-facing version.
 
-The repository being private does not replace or narrow the license grant for copies that are distributed under these terms.
+Repository visibility does not replace, narrow, or expand the license grant. A public GitHub repository is not, by itself, a production release or support promise.
 
 ## Commercial licensing
 
@@ -16,9 +16,18 @@ Organizations that cannot or do not want to comply with the AGPL may request a s
 
 ## Contributions and relicensing
 
-To preserve both the open-source license and the commercial-license option, the project owner must retain sufficient rights to distribute and relicense accepted contributions. The canonical private repository currently uses the contribution-isolation process described in [`CONTRIBUTING.md`](CONTRIBUTING.md). Any external contribution intended for canonical integration must be submitted under terms that permit distribution under `AGPL-3.0-or-later` and separate commercial relicensing; a separate written contributor agreement may be required before acceptance.
+To preserve both the open-source license and the commercial-license option, accepted code contributions must grant the project owner sufficient rights to distribute and relicense the contribution.
 
-Contributors retain their own copyright unless a separate agreement states otherwise. Do not submit code that you cannot license on the required terms.
+By submitting a code contribution through a pull request, a contributor represents that they have the right to submit it and agrees that:
+
+1. the contribution may be distributed under `AGPL-3.0-or-later`;
+2. the contributor grants the CUDA-MCGS project owner a perpetual, worldwide, non-exclusive, royalty-free, irrevocable copyright license to use, reproduce, modify, prepare derivative works of, publicly display, publicly perform, sublicense, relicense, and distribute the contribution;
+3. the contributor grants the CUDA-MCGS project owner and downstream recipients a perpetual, worldwide, royalty-free patent license for patent claims they can license that are necessarily infringed by the contribution alone or in combination with CUDA-MCGS; and
+4. the contributor retains ownership of the contribution and receives no payment or commercial-license revenue right unless a separate written agreement says otherwise.
+
+The maintainer may require a separate signed contributor agreement before accepting a material contribution. If a contributor cannot agree to these terms, they should not submit code; an issue describing a problem or idea is welcome.
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Third-party software and source donors
 
