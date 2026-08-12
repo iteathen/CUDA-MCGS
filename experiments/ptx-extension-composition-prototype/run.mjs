@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { CUDA_JS_BRANCH, CUDA_JS_REVISION } from './src/model.mjs';
+import { COST_KERNEL_NAME, buildCostProbeProfiles } from './src/cost-probe.mjs';
 import { runPortable } from './src/run-portable.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
@@ -78,6 +79,7 @@ async function prepareConsumer() {
   await command(process.execPath, [npmCli, 'install', '--ignore-scripts', '--no-audit', '--no-fund', tarball], { cwd: consumerDirectory });
   await cp(path.join(experimentRoot, 'src', 'native-consumer.mjs'), path.join(consumerDirectory, 'native-consumer.mjs'));
   await cp(path.join(experimentRoot, 'src', 'model.mjs'), path.join(consumerDirectory, 'model.mjs'));
+  await cp(path.join(experimentRoot, 'src', 'cost-probe.mjs'), path.join(consumerDirectory, 'cost-probe.mjs'));
   await cp(path.join(experimentRoot, 'fixtures'), path.join(consumerDirectory, 'fixtures'), { recursive: true });
   return { tarball, filename: path.basename(tarball), sha256: await sha256File(tarball), npmCli };
 }
@@ -89,7 +91,8 @@ async function inspectNativeArtifacts() {
   assert((await stat(cuobjdump)).isFile());
   assert((await stat(nvdisasm)).isFile());
   const cubins = (await readdir(nativeOutputDirectory)).filter((name) => name.endsWith('.cubin')).sort();
-  assert(cubins.length >= 6, `Expected at least six cubins, found ${cubins.length}.`);
+  const costProfiles = buildCostProbeProfiles();
+  assert.equal(cubins.length, 6 + costProfiles.length, `Expected six composition cubins plus ${costProfiles.length} cost cubins.`);
   const artifacts = {};
   for (const name of cubins) {
     const file = path.join(nativeOutputDirectory, name);
@@ -99,17 +102,41 @@ async function inspectNativeArtifacts() {
     ]);
     await writeFile(path.join(nativeOutputDirectory, `${name}.resource.txt`), resources.stdout);
     await writeFile(path.join(nativeOutputDirectory, `${name}.sass.txt`), sass.stdout);
+    const functions = Object.fromEntries([...resources.stdout.matchAll(/Function ([^:]+):\s+REG:(\d+) STACK:(\d+) SHARED:(\d+) LOCAL:(\d+)(?: CONSTANT\[0\]:(\d+))?/g)].map((match) => [match[1], {
+      registers: Number(match[2]),
+      stackBytes: Number(match[3]),
+      sharedBytes: Number(match[4]),
+      localBytes: Number(match[5]),
+      constant0Bytes: match[6] === undefined ? 0 : Number(match[6]),
+    }]));
     artifacts[name] = {
       byteLength: (await stat(file)).size,
       sha256: await sha256File(file),
       sassCallInstructions: (sass.stdout.match(/\bCALL(?:\.\w+)?\b/g) ?? []).length,
+      functionCount: Object.keys(functions).length,
+      functions,
+      costKernelResources: functions[COST_KERNEL_NAME] ?? null,
       containsScoreTransformName: sass.stdout.includes('cuda_mcgs_score_transform_v1'),
       containsObserverName: sass.stdout.includes('cuda_mcgs_backup_observer_v1'),
       resourceOutputSha256: createHash('sha256').update(resources.stdout).digest('hex'),
       sassOutputSha256: createHash('sha256').update(sass.stdout).digest('hex'),
     };
   }
-  const evidence = { schemaVersion: 1, tools: { cuobjdump, nvdisasm }, artifacts };
+  for (const profile of costProfiles) {
+    const artifact = artifacts[`cost-${profile.id}.cubin`];
+    assert(artifact, `Missing inspected cost artifact ${profile.id}.`);
+    assert(artifact.costKernelResources, `Missing parsed kernel resources for ${profile.id}.`);
+    assert.equal(artifact.sassCallInstructions, profile.sourceCallSites, `Unexpected SASS call count for ${profile.id}.`);
+    const expectedFunctions = profile.mode === 'inline' ? 1 : profile.mode === 'separate-coarse' ? 2 : profile.fragmentCount + 1;
+    assert.equal(artifact.functionCount, expectedFunctions, `Unexpected retained function count for ${profile.id}.`);
+    assert.equal(artifact.costKernelResources.stackBytes, 0, `Unexpected stack allocation for ${profile.id}.`);
+    assert.equal(artifact.costKernelResources.localBytes, 0, `Unexpected local allocation for ${profile.id}.`);
+    assert.equal(artifact.costKernelResources.sharedBytes, 0, `Unexpected shared allocation for ${profile.id}.`);
+  }
+  const fineBytes = [1, 2, 4, 8].map((count) => artifacts[`cost-separate-fine-n${count}.cubin`].byteLength);
+  assert(fineBytes.every((value, index) => index === 0 || value > fineBytes[index - 1]), 'Separate-fine cubin bytes must increase across the frozen 1/2/4/8 matrix.');
+  assert.equal(artifacts['cost-same-internal-n8.cubin'].sassCallInstructions, artifacts['cost-separate-fine-n8.cubin'].sassCallInstructions);
+  const evidence = { schemaVersion: 2, tools: { cuobjdump, nvdisasm }, artifacts };
   await writeFile(path.join(nativeOutputDirectory, 'binary-inspection.json'), `${JSON.stringify(evidence, null, 2)}\n`);
   return evidence;
 }

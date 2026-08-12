@@ -13,7 +13,7 @@ CUDA-MCGS is the product-facing name of the universal MCGS framework currently h
 - [`../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md) — selective authority discovery and semantic closure.
 - [`../agent_files/general_foundation/ENGINEERING_JUDGMENT.md`](../agent_files/general_foundation/ENGINEERING_JUDGMENT.md) — specification alignment, path selection, value ordering, tradeoffs, and priority.
 - [`decisions/README.md`](decisions/README.md) — accepted decisions.
-- [`architecture/README.md`](architecture/README.md) — explanatory architecture, Extension Surface/Search Composer proposal, and repository topology.
+- [`architecture/README.md`](architecture/README.md) — explanatory Search Stage/surface/channel/Search Composer proposal and repository topology.
 - [`specs/README.md`](specs/README.md) — normative search-contract families, conformance requirements, and current proposals.
 - [`research/README.md`](research/README.md) — prior art and external technical evidence.
 - [`development/README.md`](development/README.md) — development method.
@@ -42,24 +42,24 @@ CUDA-MCGS is the product-facing name of the universal MCGS framework currently h
 
 ## Current proposal and research boundary
 
-The current architecture/specification proposal adds one schema-backed semantic extension protocol:
+The current architecture/specification proposal uses semantic per-work-item stages and stage-owned optional behavior:
 
 ```text
-Search Extension Surface
+Search Stage
         ↓
-Extension Point
-  contract + Context Schema
+stable entry/exit surface
+  contract + Context Schema + capability set
         ↓
-Extension Fragment manifest
+zero or one optional composed Stage PTX
         ↓
 Search Composer
         ↓
 finite specialized Search Image
 ```
 
-Binding, compatibility resolution, composition, and memory planning occur before ignition. Active search remains device-closed; unbound points target zero abstraction overhead and bound fragments target no generic dispatch beyond intrinsic work.
+Semantic category and owned invariant define a stage; usefulness validates its granularity. Binding, compatibility resolution, composition, and memory planning occur before ignition. Cross-stage/cross-surface dataflow uses bounded Async Stage Channels; blocking is prohibited. Active search remains device-closed, and stages with no capabilities retain no extension residue.
 
-The expanded prior-art record identifies cuVS JIT-LTO and cuFFT LTO callbacks as close methodology precedents, nvJitLink/NVRTC as CUDA-JS-owned platform substrate, CUDA Graphs as a scheduler candidate, cuCollections as a transposition-table benchmark/source-donor candidate, and CCCL/libcu++/CUB as low-level CUDA primitives. Relocatable PTX—not LTO—is selected for the version-zero CUDA-MCGS fragment experiment; none of the higher-level libraries is promoted into a mandatory active-search dependency.
+The expanded prior-art record identifies cuVS/cuFFT as composition methodology, nvJitLink/NVRTC as CUDA-JS-owned platform substrate, Atos/Groute/Gunrock as irregular scheduling comparisons, CUDA Graphs as a restricted scheduler candidate, cuCollections as a transposition-table benchmark/source-donor candidate, and CCCL/libcu++/CUB as low-level CUDA primitives. Relocatable Stage PTX—not LTO—is selected for version zero; none of the higher-level libraries is promoted into a mandatory active-search dependency.
 
 ## Repository split references
 
@@ -67,6 +67,7 @@ The expanded prior-art record identifies cuVS JIT-LTO and cuFFT LTO callbacks as
 - [`research/2026-08-10-cuda-js-assumption-audit.md`](research/2026-08-10-cuda-js-assumption-audit.md) — historical technical corrections to the initial CUDA-JS sketch.
 - [`research/2026-08-10-cuda-js-foundation-result.md`](research/2026-08-10-cuda-js-foundation-result.md) — historical verified local CUDA-JS foundation result that preceded the current public peer.
 - [`research/prior-art/2026-08-10-landscape.md`](research/prior-art/2026-08-10-landscape.md) — current search-framework and CUDA composition prior-art landscape.
+- [`research/2026-08-11-stage-resident-extension-assessment.md`](research/2026-08-11-stage-resident-extension-assessment.md) — stage/surface/channel research and second-pass adversarial assessment.
 
 ## Authority
 

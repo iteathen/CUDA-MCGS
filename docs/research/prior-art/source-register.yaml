@@ -130,6 +130,46 @@
       "revisit_trigger": "SCHED-001 evidence or CUDA graph capability changes"
     },
     {
+      "name": "CUDA C++ memory model",
+      "source": "https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/cuda-cpp-memory-model.html",
+      "version": "CUDA documentation inspected 2026-08-11",
+      "license": "NVIDIA CUDA documentation/toolkit terms; no implementation copied",
+      "disposition": "stage_channel_publication_scope_reference",
+      "revisit_trigger": "publication primitive/profile or supported CUDA scope changes"
+    },
+    {
+      "name": "Atos task-parallel GPU dynamic scheduling",
+      "source": "https://arxiv.org/abs/2112.00132",
+      "version": "arXiv:2112.00132; SC 2022 paper inspected 2026-08-11",
+      "license": "publication_only; no implementation copied",
+      "disposition": "per_task_stage_queue_and_relaxed_barrier_methodology_reference",
+      "revisit_trigger": "SCHED-001 task granularity or progress evidence"
+    },
+    {
+      "name": "Groute asynchronous graph processing",
+      "source": "https://doi.org/10.1145/3399730",
+      "version": "ACM TACO 2020 paper metadata inspected 2026-08-11",
+      "license": "publication_only; no implementation copied",
+      "disposition": "async_worklist_and_future_multi_gpu_methodology_reference",
+      "revisit_trigger": "multi-GPU scope or Async Stage Channel implementation selection"
+    },
+    {
+      "name": "Gunrock data-centric GPU graph processing",
+      "source": "https://escholarship.org/uc/item/9gj6r1dj",
+      "version": "UC thesis/publication record inspected 2026-08-11",
+      "license": "publication_only; no implementation copied",
+      "disposition": "bulk_synchronous_frontier_scheduler_comparison",
+      "revisit_trigger": "SCHED-001 frontier/BSP profile comparison"
+    },
+    {
+      "name": "Continuous Monte Carlo Graph Search",
+      "source": "https://arxiv.org/abs/2210.01426",
+      "version": "arXiv:2210.01426 inspected 2026-08-11",
+      "license": "publication_only; no implementation copied",
+      "disposition": "continuous_state_action_second_instance_conformance_reference",
+      "revisit_trigger": "domain/stage contract second-instance design or conformance"
+    },
+    {
       "name": "NVIDIA cuCollections",
       "repository": "https://github.com/NVIDIA/cuCollections",
       "revision": "1a1e640179e85139765a27d2d376e02628b2ccbc",

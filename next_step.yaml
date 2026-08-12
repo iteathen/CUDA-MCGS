@@ -1,51 +1,49 @@
 {
-  "schema_version": 14,
+  "schema_version": 16,
   "updated": "2026-08-11",
   "status": "ready",
-  "parent_task_id": "SPEC-V0",
-  "parent_plan_version": 12,
-  "integration_owner": "docs/specs: CUDA-MCGS framework-definition and CUDA-JS integration spine",
-  "north_star": "CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with schema-backed extension support.",
-  "objective": "Define the version-zero CUDA-MCGS contracts, Search IR, schema-backed Extension Surface, finite specialization/composition model, and CUDA-JS execution-package boundary so arbitrary MCGS domains and future search-time optimizations can be incorporated without permanent unused hot-path cost or host participation after ignition.",
-  "ownership_boundary": "CUDA-MCGS/UMCGS owns search semantics, Search IR, Search Composer, extension semantics/binding, finite search-resource planning, graph/transposition/scheduler policy, generated search device behavior, and search conformance. CUDA-JS owns generic Node/CUDA Driver capabilities, opaque resources, NVRTC/nvJitLink, generic artifact cache/load/launch/completion/error/teardown, and runtime conformance.",
-  "plan_revision_reason": "The bounded PTX composition prototype completed 37/37 portable and 13/13 Windows-native cases through a packaged exact CUDA-JS main revision. It proves ordered direct-symbol PTX linking, device-closed execution, fail-closed proposal-shaped validation, graceful recovery/cleanup, and exact unbound disappearance. It also falsifies two optimistic assumptions: current CUDA-JS NVRTC compilation cannot produce linkable standalone CUDA-source fragments without a public relocatable-device-code control, and separate PTX calls are not fused-equivalent for the tiny hot fixture. This revision separates the evidenced CUDA-JS feature from CUDA-MCGS semantic work, constrains rather than rejects the owner-selected PTX direction, and leaves the active CUDA-JS LTO/compiler work untouched until its exact final head can be reassessed.",
-  "focus_branch": {
-    "id": "SPEC-V0-EXTSURFACE",
-    "title": "Define and falsify the CUDA-MCGS schema-backed extension composition contract",
-    "type": "contract_research_experiment",
-    "status": "ready_with_discovery_constraints",
-    "owner": "CUDA-MCGS search-contract and composition owner",
-    "integration_owner": "docs/specs: CUDA-MCGS framework-definition and CUDA-JS integration spine",
-    "objective": "Turn the Extension Surface/Point/Contract/Context Schema/Fragment/Search Composer model into accepted, implementable specifications and prove the first zero-generic-dispatch realization through an exact CUDA-JS compatible pair.",
-    "exact_input_revisions": {
-      "umcgs_main_at_plan_revision_start": "e549c916c7101470b6432e1c63863b3ec7ad90b1",
-      "umcgs_main_at_prototype_integration": "b7ff30c5a3a00b7f6081ce2bc2cd10817a9afbc2",
-      "umcgs_main_at_ptx_plan_revision": "5a55dc30b7145839bc8715c4ae3fa8c1fbf0d59e",
-      "cuda_js": "ad49a6c9b0cddb420e26e097180cf9c502060a65",
-      "nvidia_cuvs_reference": "abfb8b91c9f9bda1e568265b1d01b36250f43a8d",
-      "nvidia_cucollections_reference": "1a1e640179e85139765a27d2d376e02628b2ccbc",
-      "nvidia_cccl_reference": "a0c21d1ec5e8602dc85f9ab289006bf1a72e2f96"
-    },
-    "scope": [
-      "Search Extension Surface semantics and machine-readable contracts/schemas",
-      "Extension Fragment manifest and compatibility rules",
-      "Search Composer ownership, lowering, resource planning, fragment composition, and artifact identity",
-      "version-zero relocatable PTX fragment ABI, direct device-symbol binding, and PTX-to-cubin link profile",
-      "CUDA-MCGS-to-CUDA-JS execution-package inputs needed for composition",
-      "zero-abstraction-cost acceptance definition and experiments",
-      "device-owned scheduling experiment plan without prematurely choosing one topology",
-      "third-party methodology/source/dependency disposition",
-      "documentation, specifications, schemas, reference/conformance preparation, and bounded experiments"
-    ],
-    "non_goals": [
-      "one universal runtime callback table",
-      "runtime registry scanning, reflection, service location, or host extension resolution during active search",
-      "production game/domain adapter before the framework contracts and experiments pass",
-      "making cuVS, cuFFT, cuCollections, RAPIDS, or another higher-level search/framework runtime a baseline active-search dependency",
-      "depending on CUDA-JS device-LTO work or selecting LTO as the version-zero fragment format",
-      "renaming the GitHub repository or rewriting accepted UMCGS ADR identifiers in this plan revision",
-      "selecting one persistent-kernel or CUDA-Graph topology before SCHED-001 evidence"
-    ]
+  "parent_task_id": "CUDA-MCGS-ENGINE-V0",
+  "parent_plan_version": 14,
+  "integration_owner": "CUDA-MCGS framework-definition and engine-integration spine",
+  "north_star": "CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with finite semantic Search Stages, useful stage-owned extension surfaces, bounded nonblocking dataflow, and schema-specialized device execution.",
+  "objective": "Create the version-zero CUDA-MCGS search engine by accepting its universal semantic contracts, extending Search IR, implementing the Search Composer and finite device runtime, proving one exact CUDA-JS compatible pair on Windows, and preserving an explicit Linux qualification lane without allowing platform or first-domain assumptions into the core.",
+  "ownership_boundary": "CUDA-MCGS owns search semantics, Search IR, Search Stages/surfaces/capabilities/channels, Search Composer, finite search resources, graph/storage/scheduler policy, generated Stage PTX/Search Images, reference/native search conformance, and the CUDA-MCGS-to-CUDA-JS adapter/package. CUDA-JS owns consumer-neutral Node/CUDA Driver/compiler/linker/artifact/resource/launch/completion/error/teardown contracts and platform qualification.",
+  "deliverables": [
+    "accepted universal domain, policy, evaluator, stage/channel, graph/storage, resource, scheduler and output contracts",
+    "complete normalized Search IR and deterministic Search Composer",
+    "version-zero Stage PTX ABI/generator and CUDA-MCGS-to-CUDA-JS Search Image package",
+    "deterministic CUDA-free reference engine and consolidated conformance domains",
+    "finite Windows CUDA-MCGS native engine through one exact public CUDA-JS compatible pair",
+    "representative performance/search-quality evidence and explicit Windows/Linux support matrix",
+    "public SDK/package and release only after exact-head stabilization gates"
+  ],
+  "do_not": [
+    "begin production implementation before the owning specification and dependencies are accepted",
+    "modify active CUDA-JS compiler/LTO work or implement CUDA-JS issue 35 before its owner finishes",
+    "treat a stage as a global phase, barrier, kernel, module, launch, or CUDA Graph node",
+    "expose extension capability inside incomplete stage mutation or across a stage boundary",
+    "create one PTX input/runtime call per capability or use a runtime callback/registry/schema interpreter",
+    "block a GPU worker or require CPU progress for cross-stage/cross-surface dataflow",
+    "claim native Linux support from portable schema/reference evidence"
+  ],
+  "minimum_practice_floor": [
+    "accepted behavioral specifications before production implementation of each owned boundary",
+    "critical assessment and adversarial challenge for stages, concurrency, JIT/ABI, graph storage, memory, scheduler, evaluator, and hot paths",
+    "one semantic focus branch per coherent owner with exact dependencies, acceptance, falsifier, rollback, cleanup, and integration obligations",
+    "deterministic CUDA-free reference evidence before native optimization claims",
+    "exact final-binary, resource, lifecycle, and compatible-pair evidence for native claims",
+    "every new component is introduced with its manifest, README, registry entry, dependency declaration, and validation boundary in the same coherent change",
+    "Windows-first native execution with portable/Linux work maintained in parallel and every unrun Linux claim explicitly excluded"
+  ],
+  "plan_revision_reason": "Owner clarification and a second-pass research assessment invalidate the prior fine Extension Point/independently callable Extension Fragment plan. The durable model is a finite per-work-item Search Stage graph: semantic category and owned invariant define a stable stage boundary; usefulness validates granularity; entry/exit are the only extension checkpoints; multiple capabilities share one stage surface and at most one optional composed Stage PTX input; cross-stage/cross-surface dataflow is bounded and asynchronous while blocking is prohibited. Official CUDA Graph restrictions also prevent selecting nested graph execution as a universal scheduler substrate. The prior 42/42 portable and 25/25 Windows-native PTX discovery remains evidence for direct composition, exact unused disappearance, and the cost of fine PTX calls, but it does not authorize the superseded fragment schema or a production cost threshold.",
+  "exact_input_revisions": {
+    "cuda_mcgs_branch": "codex/ptx-granularity-exploration",
+    "cuda_mcgs_head_at_assessment": "69625c921f62e1f08c28543c1e29cece1d2c94f4",
+    "cuda_mcgs_prototype_base": "c11d7911a4f0841a44404f851d93070c63c97086",
+    "cuda_js": "ad49a6c9b0cddb420e26e097180cf9c502060a65",
+    "nvidia_cuvs_reference": "abfb8b91c9f9bda1e568265b1d01b36250f43a8d",
+    "nvidia_cucollections_reference": "1a1e640179e85139765a27d2d376e02628b2ccbc",
+    "nvidia_cccl_reference": "a0c21d1ec5e8602dc85f9ab289006bf1a72e2f96"
   },
   "authority": [
     "AGENTS.md",
@@ -58,274 +56,336 @@
     "docs/decisions/ADR-0009-governed-plan-execution.md",
     "docs/decisions/ADR-0011-focus-branch-decomposition-and-integration.md",
     "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
-    "docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md",
-    "docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md",
-    "docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md",
     "docs/specs/SPEC-0001-device-search-publication-and-resources.md",
     "docs/specs/SPEC-0002-search-ir-and-reference-semantics.md",
-    "agent_files/general_foundation/CONTRACT_STANDARD.md",
-    "agent_files/general_foundation/COMPOSITION_AND_DEPENDENCIES.md",
-    "agent_files/application_specific/RESEARCH_POLICY.md",
-    "docs/architecture/FRAMEWORK_OVERVIEW.md (proposal input)",
-    "docs/specs/SPEC-0000-framework-requirements.md (proposal input)",
-    "docs/research/prior-art/2026-08-10-landscape.md (research evidence)"
+    "docs/specs/SPEC-0003-search-stage-and-extension-surface.md (proposal)",
+    "docs/specs/SPEC-0004-async-stage-channels.md (proposal)",
+    "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md (proposal)",
+    "docs/research/2026-08-11-stage-resident-extension-assessment.md (evidence)"
   ],
-  "current_peer_evidence": {
-    "cuda_js_revision": "ad49a6c9b0cddb420e26e097180cf9c502060a65",
-    "public_state": "Public pre-release CUDA-JS repository and 0.1.0-alpha.2 testing package exist; old plan claims that the remote does not exist are superseded.",
-    "accepted_bounded_evidence": [
-      "CJS-F1A/EXP-000 and F1B schema/ABI foundations",
-      "Windows F2W through F8W bounded native/runtime/package evidence",
-      "F6 NVRTC/nvJitLink CompilerActor and content-addressed device-artifact cache",
-      "F9 typed cuda-cccl trusted-header profile and device-scope release/acquire publication fixture through the public facade"
+  "settled_proposal_shape": {
+    "stage_model": [
+      "A Search Stage is one semantic operational state and validity transition for one logical search work item, not the searched domain state or a global phase/kernel/module/graph node.",
+      "A coherent semantic category and owned invariant define the stage; usefulness then checks granularity and chooses among semantically valid placements.",
+      "A stage may expose stable entry, stable exit, both, or neither; no extension checkpoint exists during incomplete stage mutation.",
+      "A capability that requires mid-stage participation belongs in the mandatory stage lowering; a new stable operational invariant becomes a stage."
     ],
-    "f9_limit": "F9 proves a generic compiler/runtime prerequisite only. It does not prove CUDA-MCGS search semantics, extension composition, scheduler performance, transposition behavior, or the cross-repository compatible pair.",
-    "platform_limit": "Current qualified native evidence is Windows x64 on the recorded exact profile; native Linux CUDA execution remains separately incomplete."
-  },
-  "bounded_foundation_evidence": {
-    "accepted_scope": "SPEC-0001/0.1.0 publication, graph identity/edge ownership, path-cycle, finite-resource, stop, partial-result, and scheduler-neutral semantics plus their foundational Search IR 0.1.0 representation and deterministic reference semantics in SPEC-0002/0.1.0.",
-    "native_cuda_prototype": {
-      "platform": "Windows x64; CUDA 13.3; Driver API 13030; GeForce GTX 1660 Ti; compute capability 7.5",
-      "source_sha256": "9D1F9F9C196531DDA241966761657760D96D9E3800B82EDEA617E1CB4E84EDA3",
-      "release_binary_sha256": "FE106092751A4E53C472B8B28E2833C1896C0FA220578B7CB0A6FB89429C1443",
-      "result": "8/8 invariant cases passed plus five unchanged 8/8 trials for both global-ticket and warp-batched-ticket mechanisms.",
-      "limit": "Disposable fixed-domain evidence only; no scheduler selection, production lowering, or complete exact-final-binary sanitizer evidence."
-    },
-    "cuda_free_reference": {
-      "platform": "Node.js 26.7.0 on Windows x64",
-      "result": "18 expected, discovered, and executed; 18 passed; zero skips.",
-      "normalized_bytes": 7749,
-      "search_ir_sha256": "bd6679178c6754fe9b06d6fa54d038166b7ef39e32fb5f51513cc303cfd63a96",
-      "limit": "No native Linux, production CUDA lowering, CUDA-JS integration, scheduler performance, or complete extension-capable Search IR claim."
-    }
-  },
-  "ptx_composition_discovery": {
-    "status": "bounded_windows_discovery_complete",
-    "cuda_mcgs_base_revision": "62948a1f5750d487b6002b8dbeaa74d46dc0dd61",
-    "cuda_js_revision": "ad49a6c9b0cddb420e26e097180cf9c502060a65",
-    "portable_package_sha256": "48352c62dabbc05f6774c49d8c7482bb911f887555a10444fb9a7b9ad6ace699",
-    "portable_result": "37 expected, discovered, and executed; 37 passed; zero skips.",
-    "native_result": "13 expected, discovered, and executed; 13 passed; zero skips; exact CPU/device parity; graceful compiler/driver cleanup.",
-    "positive": [
-      "No-point and unbound generation produced byte-identical PTX and byte-identical cubin with no extension symbol or call residue.",
-      "One and two hand-authored PTX fragments linked through the packaged public CUDA-JS facade and executed through direct device symbols.",
-      "Manifest/profile/digest/permission/resource/bounds failures were rejected before native work; linker, architecture, and memory failures were explicit and recoverable."
-    ],
-    "constraints": [
-      "Current public CUDA-JS NVRTC compilation lacks relocatable-device-code control; standalone CUDA-source device fragments were eliminated and could not satisfy the modular core.",
-      "Two linked tiny fragments retained two SASS calls and yielded a 7016-byte/31-register kernel versus the 4520-byte/17-register fused control; no fused-equivalent bound-cost claim is permitted.",
-      "The prototype schemas, handwritten PTX, fixture checker, single-thread search, and sibling-checkout packaging have no production authority."
-    ],
-    "linux_gap": "The portable lane is prepared but was not run on Linux. The selected CUDA-JS revision has no accepted native Linux compiler/driver compatible pair, so no Linux nvJitLink, cubin, SASS, launch, cleanup, or performance claim exists.",
-    "evidence": [
-      "experiments/ptx-extension-composition-prototype/RESULTS.md",
-      "experiments/ptx-extension-composition-prototype/FINDINGS.md"
-    ]
-  },
-  "design_synthesis": {
     "extension_model": [
-      "A selected search exposes an Extension Surface containing zero or more semantic Extension Points.",
-      "Each point has an Extension Contract plus point-specific Context Schema; the contract owns meaning/permissions/invariants/order/resources/failure, while the schema owns machine-verifiable representation.",
-      "An Extension Fragment declares its target point/version, required context/capabilities, permissions, resources, concurrency requirements, architecture/toolchain needs, and provenance/cache identity.",
-      "The Search Composer validates and binds fragments before ignition, generates only the required context/glue/layouts, and emits the specialized execution package.",
-      "A bound fragment may change activation state on-device during search; new binding/loading/host resolution during active search is non-conforming.",
-      "Mandatory domain/policy/evaluator/execution semantics remain explicit contracts and are not reduced to arbitrary optional hooks."
+      "All capabilities required at one stage share one Stage Extension Surface, minimum generated context, finite resource contribution, and deterministic composition order.",
+      "A non-empty stage capability set contributes exactly one optional composed Stage PTX input; an empty set contributes no optional-extension PTX, call, context, state, capability-only channel/workspace, or synchronization residue.",
+      "Stage PTX is an artifact/composition unit and does not prescribe a cubin, module, kernel, launch, CUDA Graph node, or scheduler topology.",
+      "No runtime registry, callback table, fragment loop, schema interpreter, host resolution, late compilation, or late binding exists after ignition."
     ],
-    "performance_contract": [
-      "Unbound extension points shall impose zero abstraction overhead in the realized search image.",
-      "Bound extensions shall impose no generic dispatch overhead beyond their intrinsic work and resource cost; direct static calls qualify as non-generic dispatch but do not qualify as fused-equivalent or zero-cost evidence.",
-      "Production evidence must inspect emitted PTX and final cubin/SASS plus representative performance/resources; source-level specialization or a successful link is not proof.",
-      "The semantic extension contract remains independent of one composition technique, while the selected version-zero realization uses separately compiled relocatable PTX modules linked to a cubin through the CUDA-JS public compiler/linker path.",
-      "Unbound points disappear through Search Composer generation before PTX emission. Bound points use statically named direct device symbols rather than callback tables or function-pointer registries.",
-      "The bounded discovery retained one SASS call per tiny PTX fragment and materially increased fixture code/register use versus fused source. The version-zero profile must constrain extension granularity and pass a controlled representative cost envelope; tiny hot hooks may require fused generation."
+    "dataflow_model": [
+      "Cross-stage and cross-surface dataflow is allowed; cross-stage and cross-surface blocking is forbidden.",
+      "A producer may publish bounded work/data for a later stage using separately owned storage after committing or rolling back its current stage mutation.",
+      "A required unavailable result moves the logical consumer to a declared pending state and releases the worker/resources; the scheduler runs other ready work including the producer.",
+      "Every channel owns identity, generation, freshness, release/acquire scope, capacity, pressure, cancellation, expiry, deadlock outcome, reclamation, and teardown."
     ],
-    "device_closure": [
-      "All data/code/state required for active search is resident or preloaded before ignition.",
-      "The host may configure, validate, compose, compile/link, allocate, upload, launch, request cancellation one-way, and consume completion.",
-      "The host may not supply intermediate decisions, resolve extensions, or coordinate required search phases after ignition.",
-      "GPU residency is a semantic execution contract, not a commitment to a single persistent kernel."
-    ],
-    "ownership_and_reuse": [
-      "CUDA-MCGS owns Search IR, Search Composer, extension contracts/schemas, graph/transposition/memory/scheduler policy, and search conformance.",
-      "CUDA-JS owns generic runtime/compiler/linker/resource mechanics.",
-      "Reuse order is methodology first, independent implementation second, selective permissive source adaptation third, vendoring fourth, higher-level runtime dependency last.",
-      "Copied/adapted third-party implementation requires exact revision, license, provenance, explicit reuse decision, owning component, update process, and disposition under third_party/README.md."
+    "scheduler_model": [
+      "Device closure is invariant and physical scheduler topology is experiment-selected.",
+      "Persistent queues, cooperative execution, device-owned multi-kernel workflows, CUDA Graph profiles, and future mechanisms may conform when they preserve stage/channel semantics.",
+      "CUDA Graph conditional/device-launch restrictions prevent graphs from being assumed as the universal nested scheduler.",
+      "A host relaunch or decision loop that advances active search is non-conforming."
     ]
   },
-  "prior_art_disposition": [
+  "can_versus_should": {
+    "can": [
+      "create a stage per source block or possible hook",
+      "use global barriers or one kernel per stage",
+      "bind one callable PTX fragment per feature",
+      "spin on readiness or nest device launches",
+      "hand-author PTX and rely on synthetic clock64 timing"
+    ],
+    "should": [
+      "derive stages from semantic categories and owned stable invariants, then validate useful granularity",
+      "schedule per-work-item stage states without implying a global barrier",
+      "compose all same-stage capabilities into one optional Stage PTX input",
+      "represent dependencies as bounded published readiness and pending work",
+      "generate PTX from accepted contracts and validate final artifacts with representative GPU evidence"
+    ]
+  },
+  "current_focus": {
+    "id": "ENGINE-STAGE-01",
+    "status": "proposal_drafted_review_required",
+    "next_action": "Review SPEC-0003, SPEC-0004, and SPEC-0005 as one semantic packet, resolve stage/channel representation questions, and decide whether they are ready for acceptance work without beginning production lowering."
+  },
+  "issue_tracker": {
+    "parent": "https://github.com/iteathen/UMCGS/issues/32",
+    "stage_and_stage_ptx": "https://github.com/iteathen/UMCGS/issues/30",
+    "channels_and_scheduler": "https://github.com/iteathen/UMCGS/issues/33",
+    "semantic_contracts": "https://github.com/iteathen/UMCGS/issues/34",
+    "graph_and_resources": "https://github.com/iteathen/UMCGS/issues/24",
+    "search_ir_and_composer": "https://github.com/iteathen/UMCGS/issues/35",
+    "reference_and_windows_engine": "https://github.com/iteathen/UMCGS/issues/36",
+    "performance_and_linux": "https://github.com/iteathen/UMCGS/issues/37",
+    "cuda_js_relocatable_device_code": "https://github.com/iteathen/CUDA-JS/issues/35",
+    "cuda_js_native_linux": "https://github.com/iteathen/CUDA-JS/issues/4"
+  },
+  "focus_branches": [
     {
-      "source": "NVIDIA cuVS JIT-LTO",
-      "revision": "abfb8b91c9f9bda1e568265b1d01b36250f43a8d",
-      "use": "Planner/fragment/cache methodology reference and deferred LTO comparison; not the selected fragment format.",
-      "baseline_dependency": false
+      "id": "ENGINE-STAGE-01",
+      "title": "Search Stage graph and Stage Extension Surface contract",
+      "owner": "search execution semantics",
+      "status": "proposal_drafted_review_required",
+      "depends_on": ["SPEC-0001", "SPEC-0002"],
+      "write_boundary": ["docs/specs/SPEC-0003-*", "stage representation in Search IR proposal", "stage conformance cases"],
+      "outcome": "Accepted finite per-work-item stage semantics with natural semantic categories, useful stable entry/exit boundaries, least-authority capabilities, no mid-stage exposure, and scheduler-neutral transitions.",
+      "non_goals": ["scheduler selection", "PTX ABI implementation", "fixed AlphaZero stage list"],
+      "acceptance": ["two materially different domain/policy instances", "unreachable/illegal graphs rejected", "unused surfaces disappear", "no hidden global barrier or mid-stage mutation"],
+      "falsifier": "A required universal capability cannot be expressed at a stable checkpoint, in the stage core, or as a coherent new stage without breaking the model.",
+      "rollback": "Keep SPEC-0003 proposal-only and return the counterexample to assessment.",
+      "cleanup": "Retire superseded terminology and provisional fixtures only after durable evidence and links are preserved.",
+      "integration": "Freeze stage IDs/checkpoint semantics before dependent Search IR, composer, scheduler, and ABI acceptance."
     },
     {
-      "source": "cuFFT LTO callbacks",
-      "use": "Typed pre-plan Extension Point methodology reference.",
-      "baseline_dependency": false
+      "id": "ENGINE-CHANNEL-01",
+      "title": "Async Stage Channel and readiness/progress contract",
+      "owner": "device-resident dataflow semantics",
+      "status": "proposal_drafted_review_required",
+      "depends_on": ["ENGINE-STAGE-01", "SPEC-0001"],
+      "write_boundary": ["docs/specs/SPEC-0004-*", "channel representation in Search IR proposal", "channel conformance cases"],
+      "outcome": "Accepted bounded cross-stage/cross-surface dataflow with pending/ready scheduling, publication, pressure, cancellation, deadlock and reclamation semantics and no worker blocking.",
+      "non_goals": ["one queue data structure", "host service loop", "multi-GPU transport"],
+      "acceptance": ["required evaluator-like flow", "optional secondary-work flow", "saturation/cancellation/stale generation/deadlock cases", "release/acquire scope evidence plan"],
+      "falsifier": "A correctness-required dependency necessarily holds stage mutation or a worker while waiting, or cannot guarantee a runnable producer under finite resources.",
+      "rollback": "Keep SPEC-0004 proposal-only and revise stage/resource ownership.",
+      "cleanup": "No retained diagnostic queues or temporary processes after experiments.",
+      "integration": "Feeds evaluator, scheduler, resource planner, Search IR and native conformance."
     },
     {
-      "source": "nvJitLink/NVRTC",
-      "use": "CUDA platform substrate for producing relocatable PTX and linking PTX inputs into a cubin, exposed through CUDA-JS.",
-      "baseline_dependency": true,
-      "owner": "CUDA-JS generic runtime boundary"
+      "id": "ENGINE-DOMAIN-01",
+      "title": "Universal domain, state, action, transition, history and node-role contract",
+      "owner": "domain adapter semantics",
+      "status": "pending",
+      "depends_on": ["ENGINE-STAGE-01"],
+      "write_boundary": ["domain specification family", "domain schemas", "domain conformance fixtures"],
+      "outcome": "Accepted domain contract covering fixed/variable/custom state, action production, stochasticity, observation, terminal roles, identity, history and cycles without game assumptions.",
+      "non_goals": ["one game adapter", "graph-store layout", "search policy"],
+      "acceptance": ["fixed DAG", "cyclic/history-sensitive", "stochastic/observation", "lazy or continuous-action second instance"],
+      "falsifier": "A conformance domain requires changing the core contract instead of implementing the domain port.",
+      "rollback": "Keep the contract proposal-only and split accidental domain-instance policy from universal meaning.",
+      "cleanup": "Consolidate fixtures under one domain capsule; remove duplicate probes.",
+      "integration": "Publishes exact state/action/transition facts consumed by Search IR, stages, graph storage and reference semantics."
     },
     {
-      "source": "CUDA Graphs device launch/conditional execution",
-      "use": "Candidate SCHED-001 device-owned scheduling realization.",
-      "baseline_dependency": false
+      "id": "ENGINE-POLICY-01",
+      "title": "Search policy, reservation, widening, backup, stop and output contract",
+      "owner": "search policy semantics",
+      "status": "pending",
+      "depends_on": ["ENGINE-STAGE-01", "ENGINE-DOMAIN-01"],
+      "write_boundary": ["policy/backup/output specification family", "policy schemas", "policy reference cases"],
+      "outcome": "Accepted policy contracts for selection, statistics, in-flight reservation, widening, backup perspective/algebra, stopping and bounded result ranking.",
+      "non_goals": ["one UCT formula", "scalar zero-sum value assumption", "scheduler implementation"],
+      "acceptance": ["atomic-commutative, segmented-associative and ordered-owner backup profiles", "policy-only/evaluation-only/full-search modes", "partial-result validity"],
+      "falsifier": "A valid policy requires hidden global ordering, fixed players/actions/value shape, or host-produced decisions.",
+      "rollback": "Split policy family by semantic owner without introducing runtime callback generality.",
+      "cleanup": "Retire one-off policy fixtures after consolidation.",
+      "integration": "Publishes stage roles, graph statistics ownership, resource demands and output semantics."
     },
     {
-      "source": "NVIDIA cuCollections",
-      "revision": "1a1e640179e85139765a27d2d376e02628b2ccbc",
-      "use": "TT-001 benchmark/reference and possible source donor.",
-      "baseline_dependency": false
+      "id": "ENGINE-EVALUATOR-01",
+      "title": "Resident evaluator/model and asynchronous task contract",
+      "owner": "evaluator semantics and residency",
+      "status": "pending",
+      "depends_on": ["ENGINE-DOMAIN-01", "ENGINE-CHANNEL-01"],
+      "write_boundary": ["evaluator specification family", "evaluator schemas", "reference evaluator fixtures"],
+      "outcome": "Accepted absent/proposal/value/combined/vector/distributional evaluator contracts with resident code/model/workspace, batching, perspective, publication and cancellation.",
+      "non_goals": ["one neural framework", "host inference callback", "one batch topology"],
+      "acceptance": ["absent and multiple output shapes", "required-result pending flow", "workspace/resource limits", "late/stale/cancelled result handling"],
+      "falsifier": "A selected evaluator requires CPU inference/progression or unbounded workspace after ignition.",
+      "rollback": "Reject the evaluator profile or return residency/dataflow requirements to assessment.",
+      "cleanup": "No retained model packages without exact provenance, owner and disposition.",
+      "integration": "Feeds Search IR, memory plan, scheduler, Stage PTX ABI and compatible-pair tests."
     },
     {
-      "source": "CCCL/libcu++/CUB",
-      "revision": "a0c21d1ec5e8602dc85f9ab289006bf1a72e2f96",
-      "use": "CUDA-native low-level primitives where exact component license/profile fits.",
-      "baseline_dependency": "toolkit/profile dependent"
+      "id": "ENGINE-GRAPH-01",
+      "title": "Graph store, transposition, path, cycle, persistence, reroot and reclamation",
+      "owner": "search graph/storage semantics",
+      "status": "pending",
+      "depends_on": ["ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "SPEC-0001"],
+      "write_boundary": ["graph/storage specification family", "TT-001 experiment", "graph reference cases"],
+      "outcome": "Accepted node/edge/path ownership, identity/collision, transposition publication, generations, cycles/history, persistence, reroot and reclamation behavior.",
+      "non_goals": ["premature cuCollections dependency", "raw-pointer persistent identity", "tree-only storage"],
+      "acceptance": ["TT-001 compare methodology/source/vendor/custom paths", "finite collision/full-table behavior", "stale-generation and reroot/reclaim cases", "state-node versus parent-edge ownership"],
+      "falsifier": "The chosen representation cannot preserve required identity/history/backup semantics within finite device resources.",
+      "rollback": "Keep donor code out of production and revise representation/reuse disposition.",
+      "cleanup": "Dispose donor checkouts, generated data and benchmark resources with provenance retained.",
+      "integration": "Feeds layout, resource, scheduler and result/persistence branches."
+    },
+    {
+      "id": "ENGINE-RESOURCE-01",
+      "title": "Finite memory/resource planner and pressure lifecycle",
+      "owner": "search resource planning",
+      "status": "pending",
+      "depends_on": ["ENGINE-CHANNEL-01", "ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-GRAPH-01"],
+      "write_boundary": ["resource/memory specification family", "resource profiles", "pressure/exhaustion reference cases"],
+      "outcome": "Accepted finite plan for code, model, workspace, graph, paths, queues/channels, Stage PTX state, output, diagnostics and safety reserve with deterministic pressure outcomes.",
+      "non_goals": ["allocation-success assumption", "managed-memory universal arena", "unbounded diagnostics"],
+      "acceptance": ["minimum/ordinary/high/critical profiles", "failed claims excluded from published counts", "partial-result validity", "full teardown accounting"],
+      "falsifier": "A required engine configuration cannot compute a finite safe capacity or cannot terminate safely at pressure.",
+      "rollback": "Reject the configuration/profile rather than add hidden allocation or eviction.",
+      "cleanup": "Every allocation/cache/diagnostic artifact has lifetime and final disposition.",
+      "integration": "Freezes capacities for Search Composer, scheduler, Stage PTX and native engine."
+    },
+    {
+      "id": "ENGINE-IR-COMPOSER-01",
+      "title": "Complete Search IR, schemas, Search Composer and deterministic specialization",
+      "owner": "search compiler/composer",
+      "status": "pending",
+      "depends_on": ["ENGINE-STAGE-01", "ENGINE-CHANNEL-01", "ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-GRAPH-01", "ENGINE-RESOURCE-01"],
+      "write_boundary": ["Search IR specification/schema", "Search Composer component", "generated layouts/manifests", "portable conformance"],
+      "outcome": "Normalize universal contracts into one canonical finite Search IR and reproducibly generate layouts, stage/channel plans, code inputs, package identity and diagnostics.",
+      "non_goals": ["CUDA-JS private runtime implementation", "runtime schema interpretation", "legacy aliases in core"],
+      "acceptance": ["strict normalization and unknown-field rejection", "deterministic identity", "second-instance deletion/generality tests", "portable Windows/Linux capsule"],
+      "falsifier": "Two semantically equal inputs normalize differently, or materially different engines collide in identity.",
+      "rollback": "Invalidate generated artifacts and keep production lowering blocked.",
+      "cleanup": "Generated outputs are reproducible/owned or removed; no stale cache identity remains.",
+      "integration": "Publishes the frozen input for Stage PTX, scheduler, reference and native branches."
+    },
+    {
+      "id": "ENGINE-STAGE-PTX-01",
+      "title": "Stage PTX ABI, generator, Search Image and CUDA-JS execution package",
+      "owner": "CUDA-MCGS code generation and peer adapter",
+      "status": "blocked_by_dependencies",
+      "depends_on": ["ENGINE-IR-COMPOSER-01", "ENGINE-RESOURCE-01", "CUDA-JS issue 35 after active compiler/LTO work completes"],
+      "write_boundary": ["docs/specs/SPEC-0005-*", "Stage PTX generator/ABI", "CUDA-MCGS-to-CUDA-JS adapter/package", "compatible-pair capsule"],
+      "outcome": "Generate zero or one optional Stage PTX per stage, link a complete finite Search Image through public CUDA-JS, and prove deterministic ABI/identity, unused disappearance, failure recovery and representative bound cost.",
+      "non_goals": ["LTO dependency", "one PTX per capability", "handwritten PTX authoring model", "CUDA-JS semantic changes"],
+      "acceptance": ["STAGE-PTX-001", "exact compatible-pair identity", "final cubin/SASS/resource inspection", "fused-control comparison", "graceful partial-creation rollback/teardown"],
+      "falsifier": "Representative stage boundaries retain unacceptable cost or CUDA-JS cannot supply the consumer-neutral relocatable compilation/link contract.",
+      "rollback": "Keep Stage PTX proposal-only; fuse/reclassify the boundary or revise the peer dependency without touching active CUDA-JS work.",
+      "cleanup": "Remove generated packages/tarballs/builds unless retained as bounded evidence with exact identity.",
+      "integration": "Freezes Search Image inputs for the native scheduler/engine branch."
+    },
+    {
+      "id": "ENGINE-SCHED-01",
+      "title": "Device-owned scheduler and progress mechanism",
+      "owner": "search scheduling execution",
+      "status": "pending",
+      "depends_on": ["ENGINE-STAGE-01", "ENGINE-CHANNEL-01", "ENGINE-EVALUATOR-01", "ENGINE-RESOURCE-01", "ENGINE-IR-COMPOSER-01"],
+      "write_boundary": ["scheduler specification", "SCHED-001 experiment", "scheduler component", "progress conformance"],
+      "outcome": "Select one version-zero Windows scheduler profile that realizes stage/channel semantics, required producer progress, stopping and evaluator coexistence without host progression.",
+      "non_goals": ["making persistent kernel universal", "making CUDA Graphs universal", "schedule-specific semantic outputs"],
+      "acceptance": ["persistent-queue baseline", "credible graph/multi-kernel comparison where supported", "irregular small/large frontier workloads", "no starvation/deadlock/resource leak", "equivalent semantic invariants"],
+      "falsifier": "No candidate preserves device closure and producer progress within the finite resource/evaluator profile.",
+      "rollback": "Do not select a scheduler; revise resource/stage/dataflow assumptions and repeat bounded evidence.",
+      "cleanup": "Stop device work and dispose graphs/streams/events/modules/allocations/profiling state.",
+      "integration": "Publishes exact scheduler capability/resource identity for native engine generation."
+    },
+    {
+      "id": "ENGINE-REFERENCE-01",
+      "title": "Deterministic reference engine and universal conformance domains",
+      "owner": "semantic oracle and conformance",
+      "status": "pending",
+      "depends_on": ["ENGINE-IR-COMPOSER-01"],
+      "write_boundary": ["reference component", "conformance domains", "contract test capsules"],
+      "outcome": "Provide a CUDA-free deterministic oracle for all accepted semantic contracts and consolidated domains that expose hidden game/tree/action/value/evaluator assumptions.",
+      "non_goals": ["performance model", "native CUDA oracle", "one fixture per defect"],
+      "acceptance": ["fixed DAG/cycle/history/stochastic/continuous-or-lazy-action cases", "stage/channel/pressure/cancellation cases", "oracle sensitivity", "exact discovery/skip accounting"],
+      "falsifier": "Reference behavior depends on CUDA scheduling or repeats production algorithms without an independent oracle.",
+      "rollback": "Keep native implementation blocked until an independent semantic oracle exists.",
+      "cleanup": "Consolidate provisional reproducers and remove duplicate fixtures.",
+      "integration": "Supplies differential evidence for Windows native and compatible-pair branches."
+    },
+    {
+      "id": "ENGINE-WINDOWS-01",
+      "title": "Windows CUDA-MCGS native vertical slice",
+      "owner": "native CUDA-MCGS engine integration",
+      "status": "blocked_by_dependencies",
+      "depends_on": ["ENGINE-STAGE-PTX-01", "ENGINE-SCHED-01", "ENGINE-REFERENCE-01"],
+      "write_boundary": ["production components/manifests", "Windows native conformance", "compatible-pair evidence"],
+      "outcome": "Run a finite generated CUDA-MCGS Search Image entirely on GPU after ignition through an exact public CUDA-JS pair and match the reference semantics across representative domains.",
+      "non_goals": ["public release", "Linux qualification", "final performance optimization"],
+      "acceptance": ["exact Windows hardware/toolchain/runtime identity", "device closure", "reference parity/invariants", "pressure/cancel/device-error/teardown", "final-binary/resource evidence", "zero required skips"],
+      "falsifier": "Any active-search decision requires CPU progress or semantic/resource/lifecycle parity fails.",
+      "rollback": "Do not promote the engine; preserve evidence, unload/close all resources and return the first divergence to its owning branch.",
+      "cleanup": "Verify no live/orphaned CUDA-JS Driver/compiler resources, packages, processes or generated residue.",
+      "integration": "Produces the first implementation candidate, not release acceptance."
+    },
+    {
+      "id": "ENGINE-PERF-LINUX-01",
+      "title": "Representative performance, search quality, hardware profiles and Linux qualification",
+      "owner": "performance/portability validation",
+      "status": "blocked_by_windows_candidate",
+      "depends_on": ["ENGINE-WINDOWS-01", "CUDA-JS Linux issue 4 for native Linux pair"],
+      "write_boundary": ["benchmark/conformance plans", "raw evidence manifests", "Linux compatible-pair capsule", "profile documentation"],
+      "outcome": "Establish representative semantic/search-quality/resource-equivalent performance and qualify or explicitly exclude each Windows/Linux hardware/toolchain profile.",
+      "non_goals": ["using WDDM host timing for fine claims", "claiming Linux from portable tests", "multi-GPU production support without a separate plan"],
+      "acceptance": ["GPU event/profiler timing", "occupancy/final resources", "several workloads and at least two hardware profiles when available", "native Linux link/load/launch/cleanup", "honest unsupported-profile behavior"],
+      "falsifier": "Performance comparisons change semantics/work/stopping/quality, or Linux/native identity cannot be established.",
+      "rollback": "Narrow supported profiles and keep unqualified targets explicitly unsupported.",
+      "cleanup": "Dispose profiler output/builds/caches and device resources; retain only curated exact evidence.",
+      "integration": "Gates stabilization/release planning and records the Linux gap until actually closed."
+    },
+    {
+      "id": "ENGINE-RELEASE-01",
+      "title": "SDK/package, documentation, release and long-term compatibility",
+      "owner": "CUDA-MCGS public product boundary",
+      "status": "deferred",
+      "depends_on": ["ENGINE-PERF-LINUX-01", "full exact-head sanity", "independent PR review"],
+      "write_boundary": ["public SDK/package", "release manifests", "installation/upgrade docs", "compatibility policy"],
+      "outcome": "Publish a versioned CUDA-MCGS package and exact CUDA-JS compatibility profile with installation, contribution, security, migration and support documentation.",
+      "non_goals": ["premature public API freeze", "paid private-repository controls", "unsupported platform claims"],
+      "acceptance": ["release-ready exact revision", "package/install smoke", "license/provenance", "compatibility/migration", "cleanup and rollback drill"],
+      "falsifier": "The implementation or evidence is not stable enough to support the promised public boundary.",
+      "rollback": "Remain private pre-release and revise the affected upstream branch.",
+      "cleanup": "Remove failed release candidates and verify remote/package state through owning systems.",
+      "integration": "Final parent reconciliation only after every focus branch is accounted for on one exact revision."
     }
   ],
-  "adversarial_assessment": {
-    "builder_case": "One schema-backed semantic extension protocol avoids hundreds of optimization-specific interfaces while static composition preserves CUDA performance and future algorithm flexibility.",
-    "strongest_overengineering_challenge": "A universal Extension Surface/manifest/composer could become a second compiler framework whose ceremony exceeds the actual number of extensions, while PTX linking and generated source already provide code-composition mechanisms.",
-    "response_to_overengineering": "Keep CUDA-MCGS semantics narrow and reuse CUDA-JS/nvJitLink for generic mechanics. Do not create a dynamic extension runtime, one schema per algorithm, or a permanent universal context object. Add points only where a real semantic boundary needs exposure.",
-    "strongest_underengineering_challenge": "A generic hook can silently violate graph invariants, force runtime dispatch, allocate hidden memory, or require host progress, making the engine neither universal nor performant.",
-    "response_to_underengineering": "Every point has explicit least-authority contract/schema/resource/synchronization rules; incompatible fragments fail before ignition; unbound points must disappear from the realized image; device closure and finite memory remain hard gates.",
-    "ownership_challenge": "Importing mature libraries reduces implementation risk and may outperform locally owned code.",
-    "ownership_resolution": "Benchmark and reuse methodology/source where justified, but keep search-critical semantics locally owned. A higher-level runtime dependency requires measured benefit that outweighs release/debug/update/control costs.",
-    "scheduler_challenge": "A persistent kernel may monopolize GPU resources and interfere with a resident evaluator or secondary search system.",
-    "scheduler_resolution": "Device closure is invariant; topology remains experiment-selected through SCHED-001 rather than hard-coded into the architecture.",
-    "ptx_challenge": "Separately linked PTX can preserve a direct symbol call while still losing cross-module inlining or adding call/register/code-size cost relative to fused source; PTX version, virtual target, address size, symbol ABI, and final GPU target can also become hidden compatibility dimensions.",
-    "ptx_resolution": "Treat PTX as the selected version-zero device artifact profile rather than the semantic contract. Record all compatibility dimensions and content/provenance/options in the package identity, reject mismatches before ignition, and compare linked PTX modules against a fused/generated-source control before promotion.",
-    "assessment_disposition": "proceed_with_specification_and_bounded_experiments"
-  },
-  "public_interop_constraints": [
-    "Dependency direction remains one-way: CUDA-MCGS consumes versioned CUDA-JS public artifacts; CUDA-JS never imports Search IR or CUDA-MCGS semantics.",
-    "Persistent CUDA-MCGS schemas contain stable IDs, requirements, manifests, and opaque runtime-resource needs, never CUDA-JS private actor/resource representations or raw native pointers.",
-    "Every concrete engine remains finite and resource-planned before ignition.",
-    "All selected extension identities, source/artifact hashes, static configuration, resource inputs, and composition options material to final code enter deterministic execution-package/cache identity.",
-    "The version-zero PTX fragment identity includes PTX ISA version, virtual target, address size, declared imports/exports and signatures, content digest, compiler/toolkit provenance and options, final GPU target, and link options.",
-    "The CUDA-MCGS package names public CUDA-JS capabilities/evidence profiles rather than Node FFI, Worker, actor, provider-path, or private resource-layout mechanisms.",
-    "CUDA-JS owns generic runtime conformance; CUDA-MCGS owns search/extension semantics and generated-package correctness; one exact compatible-pair capsule covers the public boundary."
+  "dependency_order": [
+    "A: settle and accept stage/channel/domain/policy/evaluator/graph/resource semantics",
+    "B: freeze complete Search IR and Search Composer outputs",
+    "C: implement Stage PTX/Search Image and scheduler mechanisms behind accepted contracts",
+    "D: build reference and Windows native engine, then reconcile end to end",
+    "E: validate representative performance/search quality and native Linux profiles",
+    "F: perform full exact-head sanity, independent review, packaging and release"
   ],
-  "collaboration_safety": {
-    "plan": "GitHub Free only; no paid private-repository controls are required.",
-    "private_cuda_mcgs": "The canonical private repository remains owner-only and private Actions stay disabled. External developers work in standalone private intake repositories made from exact sanitized revisions with no canonical credentials, secrets, runners, or authority. The owner validates exact intake heads locally and imports selected commits while preserving authorship.",
-    "public_cuda_js": "CUDA-JS remains public and continues to use protected branches and public CI.",
-    "linux_gap": "Private CUDA-MCGS currently has no Linux CI evidence; native Linux CUDA and CUDA-free Linux reference execution remain explicit gaps."
-  },
-  "experiment_gates": [
-    {
-      "id": "EXT-PTX-001",
-      "status": "bounded_discovery_complete_follow_up_required",
-      "purpose": "Prove one relocatable-PTX Extension Point/Fragment through the exact CUDA-JS PTX-link/load path and compare no-point, unbound, bound-module, and fused/generated-source control realizations.",
-      "result": "The disposable profile proved direct-symbol correctness, exact unbound disappearance, pre-ignition rejection, recoverable link/runtime errors, final-binary inspection, and graceful cleanup. Its tiny two-fragment linked path retained two calls and used 7016 cubin bytes/31 kernel registers versus 4520 bytes/17 registers for fused source.",
-      "promotion": "Retain the PTX direction only as constrained: resolve CJS-RDC-001, define the normative ABI/package, and run a controlled representative emitted-code/resource/performance comparison before production acceptance."
-    },
-    {
-      "id": "EXT-PTX-002",
-      "status": "bounded_discovery_complete_follow_up_required",
-      "purpose": "Compose multiple representative relocatable PTX fragments and measure artifact/cache identity, direct-symbol link behavior, code size, registers, shared memory, occupancy, and compatibility constraints.",
-      "dependency": "CJS-RDC-001 and normative CUDA-MCGS ABI/package contract",
-      "result": "Two hand-authored PTX fragments composed correctly and deterministic ordered identities were captured. The fixture is not representative enough for occupancy/performance or production granularity selection."
-    },
-    {
-      "id": "EXT-CONTRACT-001",
-      "status": "prototype_subset_complete_normative_contract_pending",
-      "purpose": "Falsify the extension contract with wrong point/schema versions, types/ranges, permissions, resources, architecture capabilities, and incompatible fragment combinations.",
-      "dependency": "canonical extension contract/schema proposal",
-      "result": "The disposable validator rejected unknown fields, duplicate bindings, wrong point/version/ABI/context/permissions/resources/PTX profile/digest/export/text/bounds, and incompatible architecture. These are banked test intents, not acceptance of the fixture schema."
-    },
-    {
-      "id": "CJS-RDC-001",
-      "status": "issue_open_implementation_deferred_for_active_compiler_work",
-      "owner": "CUDA-JS compiler public-contract owner",
-      "purpose": "Expose a bounded typed relocatable-device-code NVRTC compile option whose native flag, normalized request, cache identity, result evidence, mocks, and tests remain generic and consumer-neutral.",
-      "evidence": "Current public compilation emitted header-only PTX for standalone device fragments; fake retention kernels did not preserve linkable definitions; the modular core then failed with explicit undefined references while the actor remained healthy.",
-      "issue": "https://github.com/iteathen/CUDA-JS/issues/35",
-      "coordination": "Issue #35 is open. Do not implement or alter the active CUDA-JS LTO/compiler branch. Reassess the final exact head first for overlap, duplication, and invalidated evidence."
-    },
-    {
-      "id": "SCHED-001",
-      "status": "planned",
-      "purpose": "Compare credible device-owned scheduling realizations on representative irregular graph search with resident evaluator and optional secondary GPU work while preserving identical search semantics/resource limits."
-    },
-    {
-      "id": "TT-001",
-      "status": "planned",
-      "purpose": "Compare cuCollections/reference structures with a CUDA-MCGS-specific transposition table for identity/collision verification, concurrent claim/publication, generations/reclamation, bounded pressure behavior, and representative performance."
-    },
-    {
-      "id": "PAIR-F9-001",
-      "status": "planned",
-      "purpose": "Create the first exact CUDA-MCGS/CUDA-JS compatible-pair capsule using the accepted CUDA-JS F9 public compiler/runtime prerequisite.",
-      "dependency": "EXT-PTX-001 and minimum Search Image package contract"
-    }
+  "invalidation_rules": [
+      "A material stage/checkpoint/capability change invalidates dependent channel, Search IR, composer, Stage PTX, scheduler and native evidence.",
+    "A domain/policy/evaluator/graph/resource contract change invalidates every generated layout/artifact and affected oracle result.",
+    "A CUDA-JS compiler/runtime public contract or exact-peer revision change invalidates the compatible-pair, artifact and native evidence keys.",
+    "A scheduler or resource-profile change invalidates native progress, resource, performance and cleanup evidence.",
+    "A test-oracle change invalidates every result produced by the previous oracle."
   ],
-  "deliverables": [
-    "Accepted or explicitly bounded proposal for Search Extension Surface/Point/Contract/Context Schema/Fragment representation and compatibility",
-    "Search Composer obligation/owner map and deterministic composition/cache identity",
-    "Updated CUDA-MCGS-to-CUDA-JS execution-package proposal covering relocatable PTX fragment inputs and complete PTX/link/cache identity without leaking CUDA-JS private mechanisms",
-    "Finite extension-state/workspace integration into the search memory plan",
-    "EXT-PTX-001 and EXT-CONTRACT-001 evidence before production extension implementation",
-    "SCHED-001 and TT-001 evidence before scheduler/transposition implementation commitment",
-    "Exact CUDA-MCGS/CUDA-JS compatible-pair capsule",
-    "Explicit third-party reuse decisions before any external implementation source is adopted"
-  ],
-  "acceptance_criteria": [
-    "The extension mechanism is one uniform semantic protocol, not an open-ended set of optimization-specific runtime interfaces.",
-    "Every Extension Point has one owner, contract, context schema, permission/resource model, compatibility rule, and conformance path.",
-    "The Search Composer can reject incompatible fragments and produce a finite Search Image without CUDA-JS interpreting search semantics.",
-    "Unbound points have evidence of zero abstraction overhead in the realized production image; bound points have no generic dispatch beyond intrinsic work.",
-    "No host-produced intermediate decision or extension resolution is required after ignition.",
-    "Scheduler topology remains replaceable under the device-closure contract until measured evidence selects profiles.",
-    "Higher-level third-party libraries are not accidental mandatory active-search dependencies; any source reuse is explicit, licensed, pinned, owned, and updateable locally.",
-    "CUDA-JS public capability usage is revision/evidence-profile keyed and no private Node/Worker/actor details leak into persistent CUDA-MCGS contracts.",
-    "Finite memory accounts for extension persistent state, scratch/workspace/queues, evaluator/model, graph/search storage, outputs, diagnostics, and safety/runtime reserves.",
-    "No material specification, decision, test, provenance, cleanup, or plan debt remains for the accepted claim."
-  ],
-  "validation": [
-    "Contract/schema semantic review against CONTRACT_STANDARD.md and accepted ADR-0002/0003/0014.",
-    "Prior-art revision/license/provenance review and explicit methodology/source/runtime disposition.",
-    "Extension second-instance tests across unrelated points/optimizations and first-extension deletion test.",
-    "EXT-PTX-001/002 emitted-PTX/cubin/SASS plus performance/resource evidence on exact profiles, including a fused/generated-source control.",
-    "EXT-CONTRACT-001 negative compatibility/permission/resource tests.",
-    "SCHED-001 semantic-equivalent scheduler comparison and TT-001 transposition comparison.",
-    "Exact CUDA-MCGS/CUDA-JS compatible-pair conformance.",
-    "Policy-compliant exact-head documentation/structure validation through the Node-based ./scripts/verify-docs.sh path, covering required files, status markers, relative links, JSON-compatible records, issue forms, project topology, and the Search IR reference capsule."
+  "integration_closure": [
+    "every focus branch has accepted output or an explicit blocker/supersession",
+    "accepted specs, Search IR, implementation, generated artifacts, reference oracle, native engine and package identity agree",
+    "one exact Windows compatible pair passes required conformance with no host-produced active-search decisions",
+    "performance claims use semantically/search-quality/resource-equivalent workloads and final artifact identity",
+    "Linux claims remain explicitly absent until native qualification passes",
+    "all local/remote/generated/device/research/coordination state has verified disposition",
+    "issue tracker, STATUS.md, specifications and next_step.yaml describe the same current truth"
   ],
   "blockers": [
-    "The foundational Search IR 0.1.0 slice is accepted, but the complete extension-capable Search IR and extension contract/schema representations are not yet accepted.",
-    "Current CUDA-JS public NVRTC compilation cannot request relocatable device code, so CUDA-source-authored PTX fragments cannot yet enter the intended public composition path without an unacceptable handwritten/out-of-band workaround.",
-    "The bounded EXT-PTX discovery falsified fused-equivalent cost for tiny hot fragments; no representative controlled envelope yet establishes acceptable extension granularity, code size, registers, occupancy, or performance.",
-    "No SCHED-001 evidence yet selects the initial device-owned scheduling profile.",
-    "No TT-001 evidence yet selects transposition-table implementation/source-reuse disposition.",
-    "The first exact CUDA-MCGS/CUDA-JS compatible-pair capsule is still pending."
+    "SPEC-0003 through SPEC-0005 are proposals and the remaining domain/policy/evaluator/graph/resource/scheduler/output contracts are not accepted.",
+    "CUDA-JS source-to-relocatable-PTX public capability remains tracked in issue 35 and must not be touched until active compiler/LTO work finishes.",
+    "No representative Stage PTX cost envelope, scheduler selection, production graph store, generated engine, or exact released compatible pair exists.",
+    "Native Linux CUDA-JS compiler/driver and CUDA-MCGS compatible-pair evidence remains absent."
   ],
-  "do_not": [
-    "Create a second competing CUDA-MCGS master plan; revise this canonical plan when material facts change.",
-    "Implement a universal callback/function-pointer table, runtime extension registry, reflection/service locator, or generic mutable context object as the universality mechanism.",
-    "Treat schema validation as sufficient behavioral contract conformance.",
-    "Bind/load/compile extensions or require CPU search decisions after ignition.",
-    "Equate device closure with one persistent-kernel topology before SCHED-001.",
-    "Implement generic Driver bindings, NVRTC/nvJitLink providers, Node completion delivery, or CUDA-JS private resource machinery in CUDA-MCGS.",
-    "Depend on CUDA-JS device-LTO work for the version-zero CUDA-MCGS extension path; the selected input boundary is relocatable PTX.",
-    "Modify or build on the active CUDA-JS LTO/compiler branch before its owner finishes; reassess its final exact head before implementing CJS-RDC-001.",
-    "Put Search IR, graph/search policy, extension semantics, or search-resource policy into CUDA-JS.",
-    "Import third-party implementation into production without exact revision/license/provenance/reuse decision and donor-artifact disposition.",
-    "Claim zero overhead, native search correctness, performance, scheduler superiority, or transposition-table superiority without direct exact-profile evidence."
-  ],
-  "completion_evidence": [
-    "This plan revision is documentation/research/specification work only and does not claim production CUDA-MCGS implementation.",
-    "CUDA-JS current public state was reconciled at exact revision ad49a6c9b0cddb420e26e097180cf9c502060a65 rather than the superseded unpublished-foundation assumption.",
-    "The new extension/composition direction is integrated into the existing framework architecture/specification/research/plan spine rather than recorded as a parallel plan.",
-    "The owner-selected PTX realization replaces LTO experiment dependencies while retaining LTO sources only as prior art and a deferred comparison.",
-    "SPEC-0001 and the bounded Search IR 0.1.0 foundation in SPEC-0002 are reconciled as accepted inputs to, rather than completion of, the extension-capable Search IR plan.",
-    "The disposable PTX composition slice completed 37/37 portable and 13/13 Windows-native cases, proved exact unbound disappearance and direct-link correctness, exposed the CUDA-JS relocatable-device-code gap, and constrained bound-cost claims without accepting its prototype schemas or handwritten PTX.",
-    "Free-tier private collaboration is isolated through owner-only canonical access and per-contributor intake repositories; public CUDA-JS retains protected branches and public CI."
-  ],
-  "handoff": "CUDA-JS #35 records CJS-RDC-001; leave implementation untouched until the active CUDA-JS LTO/compiler work finishes and its exact head is reassessed. UMCGS #30 owns finalizing the canonical Extension Surface/Point/Context Schema/Fragment contract and minimum Search Image package with exact unbound disappearance, an explicit relocatable-PTX ABI, deterministic link identity, and a constrained bound-cost acceptance envelope. Then rerun the controlled multi-fragment/fused comparison through the resolved public CUDA-JS path before production acceptance, followed by SCHED-001 and TT-001."
+  "retained_evidence": {
+    "ptx_discovery": "experiments/ptx-extension-composition-prototype; 42/42 portable and 25/25 Windows-native; retained as bounded mechanism evidence, not production schema/architecture",
+    "cuda_device_prototype": "experiments/cuda-device-mcgs-prototype; bounded fixed-domain publication/resource/scheduler evidence only",
+    "search_ir_reference": "experiments/search-ir-reference; accepted SPEC-0001/SPEC-0002 foundation only",
+    "research": "docs/research/2026-08-11-stage-resident-extension-assessment.md"
+  },
+  "validation": {
+    "current_plan_gate": [
+      "node JSON parse and required-key validation",
+      "./scripts/verify-docs.sh",
+      "exact diff/status inspection",
+      "issue tracker read-back after publication"
+    ],
+    "implementation_floor": [
+      "owner-local fast and contract capsules",
+      "deterministic reference differential/invariant evidence",
+      "portable Windows/Linux schema/generation evidence where applicable",
+      "exact Windows native compatible-pair identity and final-binary/resource/lifecycle evidence",
+      "representative performance/search-quality equivalence before optimization claims",
+      "native Linux qualification before any Linux runtime claim"
+    ],
+    "claim_rule": "Every claim names the exact revision/artifact/environment and discloses required checks not run; portable, sampled, synthetic, or Windows-only evidence never expands into a native Linux or release claim."
+  },
+  "handoff": "Begin with ENGINE-STAGE-01 and ENGINE-CHANNEL-01 proposal review as one semantic packet. Do not begin production code or modify CUDA-JS. Keep Windows as the first native target, maintain portable/Linux schemas and test plans in every applicable branch, and preserve the explicit native Linux gap until CUDA-JS issue 4 and an exact CUDA-MCGS compatible-pair run actually close it."
 }

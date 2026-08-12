@@ -21,15 +21,17 @@ These contracts do not authorize production CUDA lowering, a generated ABI, the 
 - domain/state/action/transition contract and device realization;
 - search-policy selection/reservation/backup contract and device realization;
 - evaluator/model semantic and resident-device contract;
-- Search Extension Surface, Extension Point, Extension Contract, Context Schema, Extension Fragment manifest, and composition rules;
+- operational Search Stage graph, semantic boundary selection, and stage-owned entry/exit surfaces;
+- stage capability composition and optional Stage PTX realization;
+- nonblocking Async Stage Channels, readiness, progress, cancellation, expiry, and reclamation;
 - Search Composer lowering, compatibility, finite resource planning, and deterministic specialization identity;
-- search resource and finite memory-plan contract, including extension state/workspace;
+- search resource and finite memory-plan contract, including stage capability/channel state and workspace;
 - graph identity, transposition, publication, history, and cycle semantics;
 - device-owned search scheduling, stopping, and device-closure contract;
 - search-specific generated layout/device-module/Search Image contract;
 - CUDA-MCGS-to-CUDA-JS execution-package, capability, compatibility, error, and lifecycle contract;
 - output, persistence, reroot, and reclamation contract;
-- synthetic conformance-domain, extension-cost, search-quality, and benchmark requirements.
+- synthetic conformance-domain, stage/channel/Stage PTX cost, search-quality, and benchmark requirements.
 
 Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider implementation, NVRTC/nvJitLink plumbing, stream/event wrappers, Node event-loop delivery, and generic context teardown are CUDA-JS specification families and do not live here.
 
@@ -38,5 +40,8 @@ Use [`../../agent_files/templates/specification.template.md`](../../agent_files/
 ## Current proposals
 
 - [`SPEC-0000-framework-requirements.md`](SPEC-0000-framework-requirements.md) — framework specification map and cross-cutting conformance requirements, including the schema-backed extension model and zero-abstraction-cost target; not yet an implementable accepted contract.
+- [`SPEC-0003-search-stage-and-extension-surface.md`](SPEC-0003-search-stage-and-extension-surface.md) — operational Search Stage graph, semantic/useful boundary selection, stable entry/exit checkpoints, shared stage capability sets, and no mid-stage extension mutation.
+- [`SPEC-0004-async-stage-channels.md`](SPEC-0004-async-stage-channels.md) — bounded cross-stage/cross-surface dataflow, required-result pending states, release/acquire publication, progress, pressure, cancellation and reclamation without worker blocking.
+- [`SPEC-0005-stage-ptx-and-search-image-composition.md`](SPEC-0005-stage-ptx-and-search-image-composition.md) — zero-or-one optional composed Stage PTX input per stage, checkpoint ABI, empty-capability disappearance, compatible-pair identity, and representative cost gates.
 
-The next specification boundary extends the accepted Search IR 0.1.0 foundation with the canonical Extension Surface/Point/Context Schema/Fragment representation plus the minimum Search Image/CUDA-JS package contract described in [`../../next_step.yaml`](../../next_step.yaml). The current CUDA-JS peer is public and has bounded F1-F9 evidence; the remaining interop blocker is the exact CUDA-MCGS specification/experiment/compatible-pair evidence, not repository publication.
+SPEC-0003 through SPEC-0005 are proposal outputs of the stage-model reassessment; they do not authorize production lowering. The next accepted boundary must extend Search IR 0.1.0 with stage/channel representations and complete the dependent domain, policy, evaluator, graph/storage, scheduler, resource and output contracts described in [`../../next_step.yaml`](../../next_step.yaml). The current CUDA-JS peer is public and has bounded F1-F9 evidence; source-authored Stage PTX also depends on reassessing the relocatable-device-code work after the active CUDA-JS compiler/LTO work finishes.

@@ -12,7 +12,7 @@ Owns the universal graph-search product:
 
 - Search IR;
 - domain, graph, policy, evaluator, output, and finite-resource contracts;
-- schema-backed Extension Surface/Point/Fragment semantics and Search Composer;
+- semantic Search Stage graph, useful entry/exit surfaces, stage capabilities, Async Stage Channels, Stage PTX semantics, and Search Composer;
 - search-specific capability resolution and specialization;
 - search-specific layouts and generated device programs/Search Images;
 - graph/transposition/path/publication/reclamation semantics;
@@ -32,7 +32,7 @@ Owns the generic Node/CUDA runtime:
 - asynchronous completion/cancellation delivery;
 - generic error, context-health, teardown, packaging, compatibility, mock, and conformance behavior.
 
-CUDA-JS does not own Search IR, graph/search semantics, extension-point meaning, search scheduling policy, or search-memory planning.
+CUDA-JS does not own Search IR, graph/search semantics, stage/checkpoint/capability/channel meaning, search scheduling policy, or search-memory planning.
 
 ## Ecosystem language policy
 
@@ -45,16 +45,16 @@ Each repository carries and applies [`NO_PYTHON_POLICY.md`](../../agent_files/ge
 ## Artifact flow
 
 ```text
-CUDA-MCGS input contracts + selected extension manifests
+CUDA-MCGS input contracts + selected stage capability schemas
       │
       ▼
-Search IR + Extension Surface resolution
+Search IR + Search Stage/surface/channel resolution
       │
       ▼
 Search Composer
   - contract/schema compatibility
   - finite memory/layout plan
-  - fragment composition inputs
+  - one optional composed Stage PTX input per required stage
   - scheduler/profile selection
   - complete artifact/cache identity
       │
@@ -78,7 +78,7 @@ versioned CUDA-JS package/runtime
 CUDA Driver / GPU
 ```
 
-The execution package contains or identifies every search-specific device behavior required after ignition. CUDA-JS treats it as an opaque validated program/package and never interprets Search IR or Extension Point semantics.
+The execution package contains or identifies every search-specific device behavior required after ignition. CUDA-JS treats it as an opaque validated program/package and never interprets Search IR or Search Stage/surface/capability/channel semantics.
 
 CUDA-MCGS expresses requirements through public CUDA-JS capability and evidence profiles. It does not encode CUDA-JS-private mechanisms such as Node FFI, Workers, runtime actors, dynamic-library paths, or internal resource representations.
 
@@ -87,10 +87,10 @@ CUDA-MCGS expresses requirements through public CUDA-JS capability and evidence 
 - CUDA-MCGS may depend only on CUDA-JS public packages, schemas, capabilities, and artifact manifests.
 - CUDA-JS never imports CUDA-MCGS/UMCGS source, Search IR, schemas, fixtures, or search terminology.
 - CUDA-MCGS source may call generic CUDA behavior only through its CUDA-JS adapter, except in explicitly isolated experiments.
-- The CUDA-MCGS Search Composer owns search/extension composition decisions; CUDA-JS owns generic compile/link/load mechanisms.
+- The CUDA-MCGS Search Composer owns stage/capability/channel composition decisions; CUDA-JS owns generic compile/link/load mechanisms.
 - No consumer relies on a peer repository's branch, worktree, internal path, unversioned generated file, or local build directory.
 - Compatibility is expressed as public version/capability profiles and exact tested revision/artifact pairs.
-- Generated artifacts identify every material search schema/contract, extension fragment/configuration, generator/compiler, CUDA-JS runtime contract, platform, Driver/toolkit, GPU architecture, build/link option, model/adapter input, and resource profile.
+- Generated artifacts identify every material search schema/contract, stage graph/checkpoint/capability/channel, ordered Stage PTX input, generator/compiler, CUDA-JS runtime contract, platform, Driver/toolkit, GPU architecture, build/link option, model/adapter input, scheduler, and resource profile.
 - Higher-level projects such as cuVS, cuFFT, cuCollections, or RAPIDS are not baseline active-search runtime dependencies. Methodology/source reuse follows explicit dependency/provenance rules.
 
 ## Release and test ownership
@@ -100,7 +100,7 @@ CUDA-JS releases generic runtime packages and publishes backend-neutral capabili
 Testing is divided as follows:
 
 - CUDA-JS owns generic runtime conformance, resource lifetime, error, ABI, compilation/link/load, launch, completion, cancellation, and teardown capsules.
-- CUDA-MCGS owns Search IR semantics, extension-contract compatibility, search-specific memory planning, generated package correctness, device closure, zero-abstraction-cost extension evidence, search quality, and synthetic-domain conformance.
+- CUDA-MCGS owns Search IR semantics, stage/surface/channel compatibility, search-specific memory planning, generated package correctness, device closure, empty-capability disappearance/Stage PTX cost evidence, search quality, and synthetic-domain conformance.
 - Cross-repository integration owns a small compatibility capsule keyed by exact CUDA-MCGS and CUDA-JS revisions/artifacts. It does not duplicate either repository's complete test suite.
 
 ## Adapter placement
@@ -113,4 +113,4 @@ The earlier local-only CUDA-JS foundation state is superseded.
 
 At the exact inspected revision `ad49a6c9b0cddb420e26e097180cf9c502060a65`, `iteathen/CUDA-JS` is public and pre-release. Its bounded accepted evidence includes the F1 schema/ABI foundation, Windows F2W-F8W runtime/package slices, F6 NVRTC/nvJitLink compilation plus content-addressed artifacts, and the F9 `cuda-cccl` trusted-header/device-publication prerequisite.
 
-F9 intentionally stops at a generic CUDA compiler/runtime prerequisite. It does not establish CUDA-MCGS extension composition, search correctness, scheduling, transposition semantics, performance, or the exact cross-repository compatible pair. Those remain owned by this repository and the current canonical plan in `next_step.yaml`.
+F9 intentionally stops at a generic CUDA compiler/runtime prerequisite. It does not establish CUDA-MCGS stage/channel composition, search correctness, scheduling, transposition semantics, performance, or the exact cross-repository compatible pair. Those remain owned by this repository and the current canonical plan in `next_step.yaml`.
