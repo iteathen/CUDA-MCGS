@@ -2,11 +2,11 @@
 
 **Status:** Informational
 
-**Updated:** 2026-08-11
+**Updated:** 2026-08-12
 
 ## Phase
 
-CUDA-MCGS is in private pre-release framework definition, research, specification, and bounded evidence gathering. `main` is the integration trunk. No production search runtime or final component decomposition has been accepted.
+CUDA-MCGS is in **public pre-release framework definition, research, specification, and bounded evidence gathering**. `main` is the integration trunk. Public repository visibility is a collaboration, review, research-transparency, and CI state; it is not a CUDA-MCGS product release, stable API promise, native platform-support claim, or evidence that a released CUDA-MCGS/CUDA-JS compatible pair exists. No production search runtime or final component decomposition has been accepted.
 
 The GitHub repository and existing accepted UMCGS authority identifiers retain the historical name until a separate migration is accepted. Product-facing references use **CUDA-MCGS**.
 
@@ -27,6 +27,7 @@ Universal behavior is defined through versioned contracts and Search IR. Concret
 - SPEC-0001 and SPEC-0002 do not authorize a generated ABI, production CUDA lowering, the complete extension-capable Search IR, a scheduler, graph store, resource planner, evaluator, adapter, or CUDA-JS integration.
 - Engineering judgment, adversarial assessment, focus-branch sizing, token backpressure, consolidated testing, governed execution, cleanup, sanity, and exact-head integration remain binding.
 - Repository/component organization and the no-Python ecosystem policy apply from project inception.
+- Repository licensing is `AGPL-3.0-or-later` with a separately negotiated commercial-license option; repository visibility does not change those grants or imply release readiness.
 
 ## Current proposal direction
 
@@ -67,7 +68,7 @@ Exact local Windows evidence:
 - Search IR SHA-256 `bd6679178c6754fe9b06d6fa54d038166b7ef39e32fb5f51513cc303cfd63a96`;
 - baseline, canonical-order, minimum-capacity, eight fail-closed mutations, ordinary, publication, transposition, path-cycle, forced-exhaustion, scheduler-parity, and oracle-sensitivity cases all pass.
 
-Private CUDA-MCGS Actions are disabled on the free plan, so this capsule currently has local Windows evidence only. Native Linux CUDA and Linux reference execution remain explicitly tracked gaps. The later PTX experiment below adds bounded Windows CUDA-JS integration, GPU execution, and cleanup evidence without retroactively expanding this Search IR capsule's claim.
+The repository includes a public GitHub Actions workflow that runs the deterministic Search IR reference on Windows and Ubuntu plus documentation/governance validation. Public CI provides portable/reference evidence only; it does not retroactively change the exact local Windows evidence above or establish native Linux CUDA support. Native Linux CUDA remains an explicit gap. The later PTX experiment below adds bounded Windows CUDA-JS integration, GPU execution, and cleanup evidence without retroactively expanding this Search IR capsule's claim.
 
 ## Bounded PTX extension-composition discovery
 
@@ -97,7 +98,7 @@ At exact inspected revision `ad49a6c9b0cddb420e26e097180cf9c502060a65`, public `
 ## Current authority
 
 - Project charter and ADR-0001 through ADR-0017: accepted within their scopes.
-- Repository topology, no-Python policy, and the CUDA-JS peer split: accepted.
+- Repository topology, no-Python policy, CUDA-JS peer split, and AGPL-3.0-or-later/commercial-license repository licensing: accepted current operating state.
 - SPEC-0001 device publication/graph/resource semantic contract: accepted.
 - SPEC-0002 foundational Search IR 0.1.0 and deterministic reference semantics: accepted.
 - SPEC-0000 framework map and the SPEC-0003 through SPEC-0005 stage/surface/channel/Stage PTX drafts: proposal input, not implementable production authority.
@@ -116,10 +117,14 @@ Execute the revised canonical [`next_step.yaml`](next_step.yaml) engine plan thr
 - Domain, policy, evaluator, graph/storage, full memory/resource, scheduler, output, persistence/reroot, and execution-package contracts remain incomplete.
 - The prototype covers a fixed deterministic two-action scalar-value domain and node-capacity exhaustion only.
 - No representative evaluator, workload, profiler, search-quality, cross-GPU, cancellation, device-loss, reclamation, or complete sanitizer evidence exists.
-- No production implementation, native Linux CUDA qualification, public CUDA-MCGS release, released compatible runtime pair, or release automation is claimed.
+- No production implementation, native Linux CUDA qualification, CUDA-MCGS product release, released compatible runtime pair, or release automation is claimed.
 
-## Private collaboration safety
+## Public collaboration and repository security
 
-CUDA-MCGS uses GitHub Free and will not depend on paid private-repository protection or Actions. The canonical private repository keeps `iteathen` as its only account; personal-account private collaborators receive write access and therefore are not admitted directly.
+CUDA-MCGS uses the normal public GitHub contribution model: forks or short-lived branches feed pull requests into canonical `main`. Foundational authority remains owner-controlled through CODEOWNERS; the intended public posture is protected `main` with required owner review and the public documentation/reference checks.
 
-Outside developers contribute through standalone private intake repositories containing an exact, sanitized starting revision and no canonical credentials, secrets, runners, or authority. The owner reviews and locally validates an exact intake head, then imports selected commits onto a canonical branch while preserving authorship. Intake repositories are archived or deleted at engagement end. Public repositories such as CUDA-JS continue using protected branches and public CI. The normative workflow is in [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Security-sensitive reports must use the private vulnerability channel described in [`SECURITY.md`](SECURITY.md), not public exploit-detail issues. The repository must not contain credentials, private user data, private endpoints, or sensitive machine artifacts.
+
+The public transition checklist is [`docs/development/PUBLIC_REPOSITORY.md`](docs/development/PUBLIC_REPOSITORY.md). A full-history secret/private-material scan remains a hard visibility-switch gate because the connected GitHub integration could not access private-repository secret-scanning alerts during preparation. The current tree review does not certify historical Git objects as secret-free.
+
+Public visibility does not waive the project’s specification, evidence, security, review, cleanup, platform-qualification, compatible-pair, packaging, or release gates.
