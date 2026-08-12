@@ -1,14 +1,14 @@
 {
-  "schema_version": 14,
+  "schema_version": 15,
   "updated": "2026-08-11",
   "status": "ready",
   "parent_task_id": "SPEC-V0",
-  "parent_plan_version": 12,
+  "parent_plan_version": 13,
   "integration_owner": "docs/specs: CUDA-MCGS framework-definition and CUDA-JS integration spine",
   "north_star": "CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with schema-backed extension support.",
   "objective": "Define the version-zero CUDA-MCGS contracts, Search IR, schema-backed Extension Surface, finite specialization/composition model, and CUDA-JS execution-package boundary so arbitrary MCGS domains and future search-time optimizations can be incorporated without permanent unused hot-path cost or host participation after ignition.",
   "ownership_boundary": "CUDA-MCGS/UMCGS owns search semantics, Search IR, Search Composer, extension semantics/binding, finite search-resource planning, graph/transposition/scheduler policy, generated search device behavior, and search conformance. CUDA-JS owns generic Node/CUDA Driver capabilities, opaque resources, NVRTC/nvJitLink, generic artifact cache/load/launch/completion/error/teardown, and runtime conformance.",
-  "plan_revision_reason": "The bounded PTX composition prototype completed 37/37 portable and 13/13 Windows-native cases through a packaged exact CUDA-JS main revision. It proves ordered direct-symbol PTX linking, device-closed execution, fail-closed proposal-shaped validation, graceful recovery/cleanup, and exact unbound disappearance. It also falsifies two optimistic assumptions: current CUDA-JS NVRTC compilation cannot produce linkable standalone CUDA-source fragments without a public relocatable-device-code control, and separate PTX calls are not fused-equivalent for the tiny hot fixture. This revision separates the evidenced CUDA-JS feature from CUDA-MCGS semantic work, constrains rather than rejects the owner-selected PTX direction, and leaves the active CUDA-JS LTO/compiler work untouched until its exact final head can be reassessed.",
+  "plan_revision_reason": "The extended PTX composition prototype completed 42/42 portable and 25/25 Windows-native cases through a packaged exact CUDA-JS main revision. The controlled one-to-eight-operation matrix confirms that same-module PTX functions are not automatically inlined, fine call-per-hook composition scales calls and code size with fragment count, and one coarse PTX boundary can amortize close to inline cost only after enough intrinsic work. This preserves PTX as the selected final device artifact and a candidate coarse-module boundary while rejecting tiny separately callable hot hooks as the default. A tiered realization—fusible CUDA-MCGS-owned lowering for hot micro-policies and relocatable PTX calls for measured coarse modules/stages—is now a specification candidate requiring representative evidence. No new CUDA-JS feature is inferred beyond the already evidenced relocatable-device-code control, and active CUDA-JS LTO/compiler work remains untouched.",
   "focus_branch": {
     "id": "SPEC-V0-EXTSURFACE",
     "title": "Define and falsify the CUDA-MCGS schema-backed extension composition contract",
@@ -101,19 +101,23 @@
   },
   "ptx_composition_discovery": {
     "status": "bounded_windows_discovery_complete",
-    "cuda_mcgs_base_revision": "62948a1f5750d487b6002b8dbeaa74d46dc0dd61",
+    "cuda_mcgs_base_revision": "c11d7911a4f0841a44404f851d93070c63c97086",
     "cuda_js_revision": "ad49a6c9b0cddb420e26e097180cf9c502060a65",
-    "portable_package_sha256": "48352c62dabbc05f6774c49d8c7482bb911f887555a10444fb9a7b9ad6ace699",
-    "portable_result": "37 expected, discovered, and executed; 37 passed; zero skips.",
-    "native_result": "13 expected, discovered, and executed; 13 passed; zero skips; exact CPU/device parity; graceful compiler/driver cleanup.",
+    "portable_package_sha256": "ca9eb6af112ba8470f290c6a08b98e5ccb0596762b409f6006999e9249a39e76",
+    "portable_result": "42 expected, discovered, and executed; 42 passed; zero skips.",
+    "native_result": "25 expected, discovered, and executed; 25 passed; zero skips; exact CPU/device parity across the search and 12 controlled cost profiles; graceful compiler/driver cleanup.",
     "positive": [
       "No-point and unbound generation produced byte-identical PTX and byte-identical cubin with no extension symbol or call residue.",
       "One and two hand-authored PTX fragments linked through the packaged public CUDA-JS facade and executed through direct device symbols.",
-      "Manifest/profile/digest/permission/resource/bounds failures were rejected before native work; linker, architecture, and memory failures were explicit and recoverable."
+      "Manifest/profile/digest/permission/resource/bounds failures were rejected before native work; linker, architecture, and memory failures were explicit and recoverable.",
+      "A controlled one-to-eight-operation matrix accounted for calls, functions, code bytes, registers, zero stack/local/shared memory, and per-thread device-clock deltas for inline, same-module, separate-fine, and separate-coarse realizations."
     ],
     "constraints": [
       "Current public CUDA-JS NVRTC compilation lacks relocatable-device-code control; standalone CUDA-source device fragments were eliminated and could not satisfy the modular core.",
-      "Two linked tiny fragments retained two SASS calls and yielded a 7016-byte/31-register kernel versus the 4520-byte/17-register fused control; no fused-equivalent bound-cost claim is permitted.",
+      "Fine separate hooks retained one SASS call per operation and grew from 5416 bytes/24 registers/one call to 12072 bytes/24 registers/eight calls versus 4456 bytes/14 registers/zero calls inline; their longest tested device-clock shapes were 4.34x and 6.06x inline.",
+      "Internal functions placed in the same PTX input retained the same calls and nearly the same device ticks as separate-fine inputs; PTX text co-location is not an evidenced fusion strategy.",
+      "One coarse separate call reached 1.10x and 1.05x inline device ticks at the longest one- and eight-operation shapes, but was worse for very small work; coarsening is a candidate realization subject to measured thresholds, not a universal workaround.",
+      "Host timing around awaited launches was bimodal/quantized under WDDM. Per-thread clock64 supports only relative synthetic exact-profile comparisons; representative GPU-event/profiler, occupancy, workload, hardware, and Linux evidence remains absent.",
       "The prototype schemas, handwritten PTX, fixture checker, single-thread search, and sibling-checkout packaging have no production authority."
     ],
     "linux_gap": "The portable lane is prepared but was not run on Linux. The selected CUDA-JS revision has no accepted native Linux compiler/driver compatible pair, so no Linux nvJitLink, cubin, SASS, launch, cleanup, or performance claim exists.",
@@ -133,11 +137,11 @@
     ],
     "performance_contract": [
       "Unbound extension points shall impose zero abstraction overhead in the realized search image.",
-      "Bound extensions shall impose no generic dispatch overhead beyond their intrinsic work and resource cost; direct static calls qualify as non-generic dispatch but do not qualify as fused-equivalent or zero-cost evidence.",
+      "Bound extensions shall avoid generic runtime dispatch and meet an explicit realization-specific emitted-code/resource/performance envelope; direct static calls qualify as non-generic dispatch but their call, register, and code-size costs remain charged to the realization.",
       "Production evidence must inspect emitted PTX and final cubin/SASS plus representative performance/resources; source-level specialization or a successful link is not proof.",
-      "The semantic extension contract remains independent of one composition technique, while the selected version-zero realization uses separately compiled relocatable PTX modules linked to a cubin through the CUDA-JS public compiler/linker path.",
-      "Unbound points disappear through Search Composer generation before PTX emission. Bound points use statically named direct device symbols rather than callback tables or function-pointer registries.",
-      "The bounded discovery retained one SASS call per tiny PTX fragment and materially increased fixture code/register use versus fused source. The version-zero profile must constrain extension granularity and pass a controlled representative cost envelope; tiny hot hooks may require fused generation."
+      "The semantic extension contract remains independent of one composition technique. PTX remains the selected version-zero final device artifact; separately compiled relocatable PTX is a candidate module/stage boundary rather than a requirement for every semantic point.",
+      "Unbound points disappear through Search Composer generation before PTX emission. Bound points may be lowered into fused generated core PTX or use statically named coarse device symbols according to an accepted realization classification; callback tables and runtime function-pointer registries remain excluded.",
+      "The controlled discovery rejects tiny call-per-hook PTX as the default on the exact tested profile and shows that same-input PTX does not recover inlining. The candidate tiered realization must pass representative second-instance, deletion, emitted-code, occupancy, GPU-timing, and multi-profile gates before acceptance."
     ],
     "device_closure": [
       "All data/code/state required for active search is resident or preloaded before ignition.",
@@ -199,7 +203,7 @@
     "scheduler_challenge": "A persistent kernel may monopolize GPU resources and interfere with a resident evaluator or secondary search system.",
     "scheduler_resolution": "Device closure is invariant; topology remains experiment-selected through SCHED-001 rather than hard-coded into the architecture.",
     "ptx_challenge": "Separately linked PTX can preserve a direct symbol call while still losing cross-module inlining or adding call/register/code-size cost relative to fused source; PTX version, virtual target, address size, symbol ABI, and final GPU target can also become hidden compatibility dimensions.",
-    "ptx_resolution": "Treat PTX as the selected version-zero device artifact profile rather than the semantic contract. Record all compatibility dimensions and content/provenance/options in the package identity, reject mismatches before ignition, and compare linked PTX modules against a fused/generated-source control before promotion.",
+    "ptx_resolution": "Treat PTX as the selected version-zero final device artifact profile rather than the semantic contract or a mandatory call topology. Record all compatibility dimensions and content/provenance/options in package identity, reject mismatches before ignition, lower hot micro-policies through an owned fusible representation when justified, and admit separately linked PTX only at coarse module/stage boundaries that pass representative comparisons against fused controls.",
     "assessment_disposition": "proceed_with_specification_and_bounded_experiments"
   },
   "public_interop_constraints": [
@@ -220,17 +224,17 @@
   "experiment_gates": [
     {
       "id": "EXT-PTX-001",
-      "status": "bounded_discovery_complete_follow_up_required",
+      "status": "bounded_synthetic_granularity_complete_representative_follow_up_required",
       "purpose": "Prove one relocatable-PTX Extension Point/Fragment through the exact CUDA-JS PTX-link/load path and compare no-point, unbound, bound-module, and fused/generated-source control realizations.",
-      "result": "The disposable profile proved direct-symbol correctness, exact unbound disappearance, pre-ignition rejection, recoverable link/runtime errors, final-binary inspection, and graceful cleanup. Its tiny two-fragment linked path retained two calls and used 7016 cubin bytes/31 kernel registers versus 4520 bytes/17 registers for fused source.",
-      "promotion": "Retain the PTX direction only as constrained: resolve CJS-RDC-001, define the normative ABI/package, and run a controlled representative emitted-code/resource/performance comparison before production acceptance."
+      "result": "The disposable profile proved direct-symbol correctness, exact unbound disappearance, pre-ignition rejection, recoverable link/runtime errors, final-binary inspection, and graceful cleanup. The controlled extension shows that tiny fine hooks retain calls and scale poorly, same-module PTX does not inline, and sufficiently coarse work can amortize one PTX call near inline device-clock cost on the exact synthetic profile.",
+      "promotion": "Retain PTX as the final artifact and candidate coarse module/stage boundary. Resolve CJS-RDC-001, define the normative ABI/package plus realization classification, and run representative fused-hot-policy versus coarse-module emitted-code/resource/occupancy/GPU-timing comparisons before production acceptance."
     },
     {
       "id": "EXT-PTX-002",
-      "status": "bounded_discovery_complete_follow_up_required",
+      "status": "controlled_synthetic_matrix_complete_representative_follow_up_required",
       "purpose": "Compose multiple representative relocatable PTX fragments and measure artifact/cache identity, direct-symbol link behavior, code size, registers, shared memory, occupancy, and compatibility constraints.",
-      "dependency": "CJS-RDC-001 and normative CUDA-MCGS ABI/package contract",
-      "result": "Two hand-authored PTX fragments composed correctly and deterministic ordered identities were captured. The fixture is not representative enough for occupancy/performance or production granularity selection."
+      "dependency": "CJS-RDC-001 and normative CUDA-MCGS ABI/package and realization-classification contracts",
+      "result": "One-, two-, four-, and eight-fragment fine composition preserved exact outputs and scaled SASS calls 1/2/4/8 and artifact bytes 5416/6312/8232/12072. Same-module PTX retained calls. Coarse one-call profiles amortized close to inline only at the longest synthetic shapes. This settles the bounded mechanism question but remains insufficient for representative occupancy/performance or production granularity selection."
     },
     {
       "id": "EXT-CONTRACT-001",
@@ -300,7 +304,7 @@
   "blockers": [
     "The foundational Search IR 0.1.0 slice is accepted, but the complete extension-capable Search IR and extension contract/schema representations are not yet accepted.",
     "Current CUDA-JS public NVRTC compilation cannot request relocatable device code, so CUDA-source-authored PTX fragments cannot yet enter the intended public composition path without an unacceptable handwritten/out-of-band workaround.",
-    "The bounded EXT-PTX discovery falsified fused-equivalent cost for tiny hot fragments; no representative controlled envelope yet establishes acceptable extension granularity, code size, registers, occupancy, or performance.",
+    "The bounded EXT-PTX discovery rejects fine call-per-hook PTX as the default for tiny hot behavior and makes a tiered fused-hot/coarse-module realization plausible, but no representative envelope yet accepts that split for search/evaluator code size, registers, occupancy, GPU time, hardware profiles, or Linux.",
     "No SCHED-001 evidence yet selects the initial device-owned scheduling profile.",
     "No TT-001 evidence yet selects transposition-table implementation/source-reuse disposition.",
     "The first exact CUDA-MCGS/CUDA-JS compatible-pair capsule is still pending."
@@ -324,8 +328,8 @@
     "The new extension/composition direction is integrated into the existing framework architecture/specification/research/plan spine rather than recorded as a parallel plan.",
     "The owner-selected PTX realization replaces LTO experiment dependencies while retaining LTO sources only as prior art and a deferred comparison.",
     "SPEC-0001 and the bounded Search IR 0.1.0 foundation in SPEC-0002 are reconciled as accepted inputs to, rather than completion of, the extension-capable Search IR plan.",
-    "The disposable PTX composition slice completed 37/37 portable and 13/13 Windows-native cases, proved exact unbound disappearance and direct-link correctness, exposed the CUDA-JS relocatable-device-code gap, and constrained bound-cost claims without accepting its prototype schemas or handwritten PTX.",
+    "The disposable PTX composition slice completed 42/42 portable and 25/25 Windows-native cases, proved exact unbound disappearance and direct-link correctness, exposed the CUDA-JS relocatable-device-code gap, rejected tiny fine PTX calls as the default, and identified coarse PTX plus fused hot-policy lowering as a candidate split without accepting its prototype schemas, handwritten PTX, or synthetic timing as production authority.",
     "Free-tier private collaboration is isolated through owner-only canonical access and per-contributor intake repositories; public CUDA-JS retains protected branches and public CI."
   ],
-  "handoff": "CUDA-JS #35 records CJS-RDC-001; leave implementation untouched until the active CUDA-JS LTO/compiler work finishes and its exact head is reassessed. UMCGS #30 owns finalizing the canonical Extension Surface/Point/Context Schema/Fragment contract and minimum Search Image package with exact unbound disappearance, an explicit relocatable-PTX ABI, deterministic link identity, and a constrained bound-cost acceptance envelope. Then rerun the controlled multi-fragment/fused comparison through the resolved public CUDA-JS path before production acceptance, followed by SCHED-001 and TT-001."
+  "handoff": "CUDA-JS #35 records CJS-RDC-001; leave implementation untouched until the active CUDA-JS LTO/compiler work finishes and its exact head is reassessed. UMCGS #30 owns finalizing the canonical Extension Surface/Point/Context Schema/Fragment contract and minimum Search Image package with exact unbound disappearance, an explicit relocatable-PTX ABI, deterministic identity, and realization classification that separates fusible hot micro-policies from measured coarse PTX modules/stages. Next, compare both realizations inside representative search/evaluator workloads using final-binary resources, occupancy, GPU-event/profiler timing, multiple hardware profiles, and eventually Linux before production acceptance, followed by SCHED-001 and TT-001."
 }

@@ -18,6 +18,17 @@ import {
   validateFragment,
   validateSurface,
 } from './model.mjs';
+import {
+  COST_BLOCK_SIZE,
+  COST_GRID_SIZE,
+  COST_KERNEL_NAME,
+  COST_OUTPUT_BYTES,
+  COST_SEED,
+  COST_THREAD_COUNT,
+  COST_VALUE_BYTES,
+  buildCostProbeProfiles,
+  costProbeValue,
+} from './cost-probe.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const fixtureRoot = path.join(experimentRoot, 'fixtures');
@@ -127,6 +138,46 @@ export async function runPortable({ outputDirectory = path.join(experimentRoot, 
     assert(modularSources.observerAnchored.includes('retention_anchor'));
   });
 
+  const costProfiles = buildCostProbeProfiles();
+  const costProfile = (id) => costProfiles.find((candidate) => candidate.id === id);
+  await runCase('cost-probe-matrix-is-bounded-and-unique', () => {
+    assert.equal(costProfiles.length, 12);
+    assert.equal(COST_OUTPUT_BYTES, COST_THREAD_COUNT * 12);
+    assert.equal(new Set(costProfiles.map(({ id }) => id)).size, costProfiles.length);
+    assert(costProfiles.every(({ fragmentCount }) => fragmentCount >= 0 && fragmentCount <= 8));
+    const files = costProfiles.flatMap(({ generatedFiles }) => generatedFiles.map(({ file }) => file));
+    assert.equal(new Set(files).size, files.length);
+  });
+  await runCase('cost-probe-reference-has-fixed-boundaries', () => {
+    assert.equal(costProbeValue(0, 0, 0), COST_SEED);
+    assert.equal(costProbeValue(7, 0, 8), (COST_SEED ^ 7) >>> 0);
+    assert.equal(costProbeValue(0, 1, 1), 3281653459);
+    assert.equal(costProbeValue(31, 4, 8), 160841874);
+  });
+  await runCase('same-module-controls-have-one-link-input', () => {
+    assert.equal(costProfile('same-internal-n1').inputCount, 1);
+    assert.equal(costProfile('same-visible-n1').inputCount, 1);
+    assert.equal(costProfile('same-internal-n8').inputCount, 1);
+    assert.equal(costProfile('same-internal-n8').sourceCallSites, 8);
+    assert(!costProfile('same-internal-n8').generatedFiles[0].text.includes('.extern .func'));
+  });
+  await runCase('separate-fine-input-and-call-count-scale-with-surface', () => {
+    for (const count of [1, 2, 4, 8]) {
+      const candidate = costProfile(`separate-fine-n${count}`);
+      assert.equal(candidate.inputCount, count + 1);
+      assert.equal(candidate.sourceCallSites, count);
+      assert.equal(candidate.fragmentFiles.length, count);
+    }
+  });
+  await runCase('coarse-modules-collapse-repeated-boundary-to-one-call', () => {
+    for (const count of [1, 8]) {
+      const candidate = costProfile(`separate-coarse-n${count}`);
+      assert.equal(candidate.inputCount, 2);
+      assert.equal(candidate.sourceCallSites, 1);
+      assert.equal(candidate.fragmentFiles.length, 1);
+    }
+  });
+
   const invalid = async (id, code, body) => runCase(`reject-${id}`, () => assert.throws(body, expectCode(code)));
   await invalid('surface-unknown-field', 'SURFACE_FIELDS', () => validateSurface({ ...surfaceInput, extra: true }));
   await invalid('surface-duplicate-point', 'POINT_DUPLICATE', () => validateSurface({ ...surfaceInput, points: [...surfaceInput.points, clone(surfaceInput.points[0])] }));
@@ -174,6 +225,20 @@ export async function runPortable({ outputDirectory = path.join(experimentRoot, 
     profiles: packageProfiles,
     fusedControl: { sourceFile: 'fused-bias-observer.cu', sourceSha256: sha256(encoder.encode(fusedSource)), pointIds: ['score-transform', 'backup-observer'], expected: words(referenceOutput(config, ['score-transform', 'backup-observer'])) },
     modularCudaProbe: Object.fromEntries(Object.entries(modularSources).map(([id, source]) => [id, { sourceFile: `modular-${id}.cu`, sourceSha256: sha256(encoder.encode(source)) }])),
+    costProbe: {
+      kernel: { name: COST_KERNEL_NAME, parameters: ['device-memory', 'u32', 'u32'] },
+      launch: { grid: { x: COST_GRID_SIZE, y: 1, z: 1 }, block: { x: COST_BLOCK_SIZE, y: 1, z: 1 } },
+      threadCount: COST_THREAD_COUNT,
+      valueBytes: COST_VALUE_BYTES,
+      outputBytes: COST_OUTPUT_BYTES,
+      seed: COST_SEED,
+      timing: { boundary: 'host-performance-now-around-awaited-cuda-js-launch', warmups: 2, samples: 7 },
+      profiles: costProfiles.map(({ generatedFiles, ...candidate }) => ({
+        ...candidate,
+        coreSha256: sha256(encoder.encode(generatedFiles[0].text)),
+        fragmentSha256: generatedFiles.slice(1).map(({ text }) => sha256(encoder.encode(text))),
+      })),
+    },
   };
   const summary = { expected: cases.length, discovered: cases.length, executed: cases.length, passed: cases.length - failed.length, failed: failed.length, requiredSkipped: 0, conditionalSkipped: 0, optionalSkipped: 0, notDiscovered: 0 };
   const sourceRelatives = [
@@ -183,6 +248,7 @@ export async function runPortable({ outputDirectory = path.join(experimentRoot, 
     'fixtures/ptx/bias.ptx',
     'fixtures/ptx/observer.ptx',
     'src/model.mjs',
+    'src/cost-probe.mjs',
     'src/run-portable.mjs',
   ];
   const sources = {};
@@ -209,6 +275,7 @@ export async function runPortable({ outputDirectory = path.join(experimentRoot, 
     await Promise.all(profiles.map(({ id, coreBytes }) => writeFile(path.join(outputDirectory, `core-${id}.ptx`), coreBytes)));
     await writeFile(path.join(outputDirectory, portablePackage.fusedControl.sourceFile), fusedSource);
     await Promise.all(Object.entries(modularSources).map(([id, source]) => writeFile(path.join(outputDirectory, `modular-${id}.cu`), source)));
+    await Promise.all(costProfiles.flatMap(({ generatedFiles }) => generatedFiles.map(({ file, text }) => writeFile(path.join(outputDirectory, file), text))));
     await writeFile(path.join(outputDirectory, 'package.json'), `${JSON.stringify(portablePackage, null, 2)}\n`);
     await writeFile(path.join(outputDirectory, 'evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`);
   }

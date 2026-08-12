@@ -2,10 +2,12 @@ import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { performance } from 'node:perf_hooks';
 
 import { CudaJsError, CUDA_JS_COMPATIBILITY, inspectCudaHost, openCudaRuntime } from 'cuda-js';
 
 import { KERNEL_NAME, OUTPUT_BYTES, referenceOutput, sha256 } from './model.mjs';
+import { referenceCostProbe } from './cost-probe.mjs';
 
 const inputDirectory = path.resolve(process.argv[2]);
 const outputDirectory = path.resolve(process.argv[3]);
@@ -80,12 +82,122 @@ async function executeArtifact(id, artifact, expected) {
   }
 }
 
+function summarizeSamples(samples) {
+  const sorted = [...samples].sort((left, right) => left - right);
+  const total = samples.reduce((sum, sample) => sum + sample, 0);
+  return {
+    samplesMilliseconds: samples,
+    minimumMilliseconds: sorted[0],
+    medianMilliseconds: sorted[Math.floor(sorted.length / 2)],
+    maximumMilliseconds: sorted[sorted.length - 1],
+    meanMilliseconds: total / samples.length,
+  };
+}
+
+function summarizeScalarSamples(samples) {
+  const sorted = [...samples].sort((left, right) => left - right);
+  return {
+    samples,
+    minimum: sorted[0],
+    median: sorted[Math.floor(sorted.length / 2)],
+    maximum: sorted.at(-1),
+    mean: samples.reduce((sum, sample) => sum + sample, 0) / samples.length,
+  };
+}
+
+function summarizeDeviceTicks(samples) {
+  const sorted = [...samples].sort((left, right) => left - right);
+  const at = (fraction) => sorted[Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * fraction))];
+  return {
+    minimum: sorted[0],
+    p25: at(0.25),
+    median: at(0.5),
+    p75: at(0.75),
+    p90: at(0.9),
+    p99: at(0.99),
+    maximum: sorted.at(-1),
+    mean: samples.reduce((sum, sample) => sum + sample, 0) / samples.length,
+  };
+}
+
+function readCostResult(bytes, metadata) {
+  const values = readWords(bytes.subarray(0, metadata.valueBytes));
+  const view = new DataView(bytes.buffer, bytes.byteOffset + metadata.valueBytes, bytes.byteLength - metadata.valueBytes);
+  const ticks = Array.from({ length: metadata.threadCount }, (_, index) => Number(view.getBigUint64(index * 8, true)));
+  return { values, deviceClockTicks: summarizeDeviceTicks(ticks) };
+}
+
+async function executeCostArtifact(profile, artifact) {
+  let module = null;
+  let fn = null;
+  let memory = null;
+  const metadata = portablePackage.costProbe;
+  try {
+    await writeFile(path.join(outputDirectory, `cost-${profile.id}.cubin`), artifact.bytes);
+    module = await runtime.loadModule({ format: 'cubin', bytes: artifact.bytes });
+    fn = await module.getFunction({
+      name: metadata.kernel.name,
+      parameters: [{ kind: 'device-memory' }, { kind: 'u32' }, { kind: 'u32' }],
+    });
+    memory = await runtime.allocateDevice({ byteLength: metadata.outputBytes });
+    const launch = async (rounds) => fn.launch({
+      grid: metadata.launch.grid,
+      block: metadata.launch.block,
+      arguments: [memory, rounds, metadata.seed],
+    });
+    const verify = async (rounds) => {
+      const completion = await launch(rounds);
+      const copy = await memory.read({ byteLength: metadata.outputBytes });
+      const actual = readCostResult(copy.bytes, metadata);
+      assert.deepEqual(actual.values, [...referenceCostProbe(rounds, profile.fragmentCount, metadata.threadCount)]);
+      return { rounds, completion, first: actual.values[0], middle: actual.values[Math.floor(actual.values.length / 2)], last: actual.values.at(-1), deviceClockTicks: actual.deviceClockTicks };
+    };
+    const verification = await verify(profile.verificationRounds);
+    const benchmark = [];
+    for (const rounds of profile.benchmarkRounds) {
+      for (let index = 0; index < metadata.timing.warmups; index += 1) await launch(rounds);
+      const samples = [];
+      const deviceClockTicksBySample = [];
+      let checked = null;
+      for (let index = 0; index < metadata.timing.samples; index += 1) {
+        const started = performance.now();
+        await launch(rounds);
+        samples.push(performance.now() - started);
+        const copy = await memory.read({ byteLength: metadata.outputBytes });
+        const actual = readCostResult(copy.bytes, metadata);
+        deviceClockTicksBySample.push(actual.deviceClockTicks);
+        if (index === metadata.timing.samples - 1) {
+          assert.deepEqual(actual.values, [...referenceCostProbe(rounds, profile.fragmentCount, metadata.threadCount)]);
+          checked = { first: actual.values[0], middle: actual.values[Math.floor(actual.values.length / 2)], last: actual.values.at(-1) };
+        }
+      }
+      benchmark.push({
+        rounds,
+        ...summarizeSamples(samples),
+        deviceClockTicksBySample,
+        medianThreadTicksAcrossSamples: summarizeScalarSamples(deviceClockTicksBySample.map(({ median }) => median)),
+        checked,
+      });
+    }
+    return {
+      verification,
+      benchmark,
+      module: { byteLength: module.byteLength, sha256: module.sha256 },
+      timingBoundary: metadata.timing.boundary,
+    };
+  } finally {
+    if (fn) await fn.close();
+    if (module) await module.close();
+    if (memory) await memory.close();
+  }
+}
+
 await runCase('open-public-cuda-js-package', async () => {
   assert.equal(CUDA_JS_COMPATIBILITY.package.version, '0.1.0-alpha.2');
   runtime = await openCudaRuntime({
     compiler: true,
     driver: {
-      memory: { maxDeviceBytes: OUTPUT_BYTES, maxAllocationBytes: OUTPUT_BYTES, maxTransferBytes: OUTPUT_BYTES },
+      memory: { maxDeviceBytes: portablePackage.costProbe.outputBytes, maxAllocationBytes: portablePackage.costProbe.outputBytes, maxTransferBytes: portablePackage.costProbe.outputBytes },
       execution: { maxModuleBytes: 16 * 1024 * 1024, maxArguments: 4, maxCompletionMilliseconds: 10_000 },
     },
   });
@@ -148,7 +260,7 @@ if (runtime) {
   });
 
   await runCase('memory-quota-rejects-and-recovers', async () => {
-    await assert.rejects(runtime.allocateDevice({ byteLength: OUTPUT_BYTES + 4 }), (error) => error instanceof CudaJsError && error.code === 'MEMORY_ALLOCATION_LIMIT');
+    await assert.rejects(runtime.allocateDevice({ byteLength: portablePackage.costProbe.outputBytes + 4 }), (error) => error instanceof CudaJsError && error.code === 'MEMORY_ALLOCATION_LIMIT');
     assert.equal(runtime.health, 'healthy');
     const memory = await runtime.allocateDevice({ byteLength: OUTPUT_BYTES });
     await memory.close();
@@ -218,6 +330,29 @@ if (runtime) {
     };
     assert.equal(runtime.health, 'healthy');
   });
+
+  observations.costProbe = {};
+  for (const profile of portablePackage.costProbe.profiles) {
+    await runCase(`cost-probe-${profile.id}`, async () => {
+      const files = [profile.coreFile, ...profile.fragmentFiles];
+      const inputs = await Promise.all(files.map((file) => loadBytes(path.join(inputDirectory, file))));
+      assert.equal(inputs.length, profile.inputCount);
+      assert.equal(sha256(inputs[0]), profile.coreSha256);
+      assert.deepEqual(inputs.slice(1).map(sha256), profile.fragmentSha256);
+      const linked = await runtime.link({ inputs, options: { architecture: 'sm_75' } });
+      const execution = await executeCostArtifact(profile, linked.artifact);
+      observations.costProbe[profile.id] = {
+        mode: profile.mode,
+        fragmentCount: profile.fragmentCount,
+        sourceCallSites: profile.sourceCallSites,
+        orderedInputSha256: inputs.map(sha256),
+        cubin: { byteLength: linked.artifact.byteLength, sha256: linked.artifact.sha256 },
+        link: { log: linked.log, provider: linked.provider, health: linked.health, operationSequence: linked.operationSequence },
+        execution,
+      };
+      assert.equal(runtime.health, 'healthy');
+    });
+  }
 }
 
 if (runtime) {
@@ -250,6 +385,7 @@ const evidence = {
   claimLimits: [
     'Exact Windows x64 discovery profile only; no native Linux claim.',
     'Single-thread miniature search; no scheduler, concurrency, representative performance, search-quality, or production-lowering claim.',
+    'The cost probe uses synthetic per-thread clock64 deltas for relative mechanism discovery; retained host launch timings are non-decisive, and neither boundary can set a production threshold or prove occupancy.',
     'Hand-authored PTX and sibling-checkout package are discovery mechanisms, not durable production recommendations.',
   ],
 };
