@@ -6,125 +6,142 @@
 
 ## Phase
 
-CUDA-MCGS is in **public-transition-ready pre-release framework definition, research, specification, and bounded evidence gathering**. The canonical GitHub repository remains private until its visibility is explicitly changed. `main` is the integration trunk. Public collaboration, licensing, security-reporting, and CI policy is prepared in advance; repository visibility is not a CUDA-MCGS product release, stable API promise, native platform-support claim, or evidence that a released CUDA-MCGS/CUDA-JS compatible pair exists. No production search runtime or final component decomposition has been accepted.
+CUDA-MCGS is a **public pre-release repository in framework definition, research, specification, and bounded evidence gathering**. `main` is the integration trunk. Public visibility is not a product release, stable API promise, native platform-support claim, released CUDA-MCGS/CUDA-JS compatible-pair claim, or chess engine release.
 
-The GitHub repository and existing accepted UMCGS authority identifiers retain the historical name until a separate migration is accepted. Product-facing references use **CUDA-MCGS**.
+No production search runtime or final production component decomposition has been accepted.
 
 ## North star
 
-> **CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with schema-backed extension support.**
+> **CUDA-MCGS is a contract-defined universal GPU-resident MCGS framework with a universal least-authority extension/composition substrate and finite specialized Search Images.**
 
-Universal behavior is defined through versioned contracts and Search IR. Concrete engines are finite, resource-planned, and specialized. Active search remains device-closed after ignition. Optional search-time behavior is composed at useful semantic Search Stage entry/exit surfaces, with zero or one optional Stage PTX input per stage and bounded nonblocking Async Stage Channels. Generic CUDA runtime/compiler/linker behavior remains CUDA-JS-owned.
+[`ADR-0018`](docs/decisions/ADR-0018-universal-core-extension-product-layering.md) separates:
+
+1. universal product-neutral MCGS semantic core;
+2. universal product-neutral extension/composition mechanics;
+3. downstream domain/search products such as chess.
+
+Universal completion does not require chess completion. Product needs cannot silently become universal fields/contracts.
 
 ## Accepted project state
 
-- The generic graph-search framework—not a first game or domain—is the CUDA-MCGS product.
-- CUDA-MCGS owns Search IR, search semantics, finite search-resource planning, specialized search device programs, search conformance, and the CUDA-MCGS-to-CUDA-JS adapter/package contract.
-- Generic Node.js/CUDA Driver behavior belongs to the independent public peer `iteathen/CUDA-JS`. Dependency remains one-way through versioned public artifacts and compatibility manifests.
-- Active search remains device-closed after ignition. Concrete engines are finite and resource-planned; universal contracts lower into specialized generated hot paths.
-- [`docs/specs/SPEC-0001-device-search-publication-and-resources.md`](docs/specs/SPEC-0001-device-search-publication-and-resources.md) is accepted authority for backend-neutral publication channels, state-node/parent-edge ownership, identity-before-path-cycle ordering, finite-resource accounting, typed exhaustion, partial-result validity, and scheduler-neutral conformance.
-- [`docs/specs/SPEC-0002-search-ir-and-reference-semantics.md`](docs/specs/SPEC-0002-search-ir-and-reference-semantics.md) accepts the foundational backend-neutral Search IR 0.1.0 representation, strict normalization, canonical identity, and CUDA-free deterministic reference semantics for the SPEC-0001 boundary.
-- SPEC-0001 and SPEC-0002 do not authorize a generated ABI, production CUDA lowering, the complete extension-capable Search IR, a scheduler, graph store, resource planner, evaluator, adapter, or CUDA-JS integration.
-- Engineering judgment, adversarial assessment, focus-branch sizing, token backpressure, consolidated testing, governed execution, cleanup, sanity, and exact-head integration remain binding.
-- Repository/component organization and the no-Python ecosystem policy apply from project inception.
-- Repository licensing is `AGPL-3.0-or-later` with a separately negotiated commercial-license option; repository visibility does not change those grants or imply release readiness.
+- The universal graph-search framework, not a first game/domain, is the CUDA-MCGS universal product.
+- The project charter and ADR-0001 through ADR-0018 are accepted within their scopes.
+- ADR-0018 clarifies that generic bounded result/observation semantics are universal while ranked root-action/move output belongs only to selected output/product contracts.
+- [`SPEC-0001`](docs/specs/SPEC-0001-device-search-publication-and-resources.md) remains accepted authority for backend-neutral publication channels, state-node/parent-edge ownership, identity-before-path-cycle ordering, finite-resource accounting, typed exhaustion, partial-result validity, and scheduler-neutral conformance.
+- [`SPEC-0002`](docs/specs/SPEC-0002-search-ir-and-reference-semantics.md) remains accepted authority for foundational Search IR 0.1.0 representation, strict normalization, canonical identity, and deterministic CUDA-free reference semantics within the SPEC-0001 boundary.
+- SPEC-0001/SPEC-0002 do not mandate ranked actions; their ranking language constrains later selected ranking outputs when present.
+- Generic Node/CUDA Driver/compiler/linker/launch/completion/resource lifecycle remains owned by independent public peer `iteathen/CUDA-JS`.
+- Repository/component organization and the no-Python ecosystem policy remain binding.
+- Repository licensing is `AGPL-3.0-or-later` with a separately negotiated commercial-license option.
 
-## Current proposal direction
+## Current universal proposal direction
 
-The stage-model reassessment retires the fine Extension Point/independently callable Extension Fragment path. A concrete Search Image contains a finite operational Search Stage graph. A stage is a per-logical-work-item semantic state, not a searched domain state, global phase, barrier, kernel, module or CUDA Graph node.
+### Universal core
 
-Each stage may expose stable entry, stable exit, both, or neither. No surface exists inside incomplete stage mutation, and no surface crosses a stage boundary. Semantic category and owned invariant define the boundary; usefulness validates granularity and chooses among semantically valid placements. Several capabilities at one stage share one surface, minimum context, resource plan and—when required—exactly one optional composed Stage PTX input.
+Product-neutral contract families own domain, policy, evaluator, generic output payloads, graph/path/transposition, Search Session/root lifecycle, finite resources, device-owned progress, Search IR/Composer, conformance, and package semantics.
 
-Cross-stage and cross-surface dataflow is allowed through bounded Async Stage Channels. Synchronous blocking is prohibited. Required unavailable results move the logical consumer to a pending operational state so workers can execute other ready work, including the producer. Identity, generation, release/acquire publication, capacity, cancellation, expiry, deadlock outcome and reclamation are explicit.
+Domain/policy/evaluator/output/resource contracts are intentionally meaningful independently of the optional Stage extension model. A framework with every optional capability removed must still have coherent universal MCGS semantics and a finite core resource plan.
 
-[`SPEC-0003`](docs/specs/SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](docs/specs/SPEC-0004-async-stage-channels.md), and [`SPEC-0005`](docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) are proposal drafts, not accepted implementation authority. PTX remains the selected version-zero artifact and LTO is not a dependency. Stage PTX is a composition input, not a physical scheduling topology.
+Search policy owns selection/reservation/widening/policy statistics/backup/stopping/reuse semantics. A separate universal output family owns generic bounded complete/partial/evaluation/proof/sequence/diagnostic/custom/absent result payloads. Ranking is a downstream output/product transformation/schema, not mandatory policy meaning.
 
-## Bounded CUDA-only experiment
+### Universal extension/composition substrate
 
-The standalone experiment at [`experiments/cuda-device-mcgs-prototype/`](experiments/cuda-device-mcgs-prototype/) is retained as non-production evidence. It has no Node.js dependency and does not exercise or implement CUDA-JS.
+[`SPEC-0003`](docs/specs/SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](docs/specs/SPEC-0004-async-stage-channels.md), and [`SPEC-0005`](docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) propose:
 
-Exact final local Windows evidence:
+- finite semantic per-work-item Search Stages;
+- stable least-authority Stage Extension Surfaces;
+- minimal universal base checkpoint contexts;
+- namespaced selected capability-specific context/state/resources;
+- bounded nonblocking internal Async Stage Channels;
+- zero-or-one optional composed Stage PTX input per stage;
+- exact absent-capability/product deletion.
 
-- source SHA-256 `9D1F9F9C196531DDA241966761657760D96D9E3800B82EDEA617E1CB4E84EDA3`;
-- Release binary SHA-256 `FE106092751A4E53C472B8B28E2833C1896C0FA220578B7CB0A6FB89429C1443`;
-- CUDA 13.3 / Driver API 13030 / GeForce GTX 1660 Ti / compute capability 7.5;
-- ordinary invariant capsule: 8 expected, discovered, and executed; 8 passed with zero skips;
-- five additional unchanged full-workload trials: 8/8 each;
-- global-ticket and warp-batched-ticket mechanisms both preserved stable semantic invariants;
-- warp batching reduced ticket claims but established no stable timing win and does not select a production scheduler;
-- exact-final-binary Compute Sanitizer memcheck remained incomplete after a bounded reduced-workload attempt.
+The substrate is universal; individual capability semantics are not automatically universal. A capability that changes search meaning must name the selected domain/policy/evaluator/output/session/product contract owning that meaning.
 
-Build output is ignored, reproducible task state and is removed after evidence reconciliation. Production code may not import experiment internals.
+### Search Session
 
-## Bounded Search IR reference
+[`SPEC-0006`](docs/specs/SPEC-0006-search-session-control-and-observation.md) proposes generic long-lived Search Session semantics:
 
-The CUDA-free reference at [`experiments/search-ir-reference/`](experiments/search-ir-reference/) validates the accepted Search IR 0.1.0 foundation independently from the native prototype and CUDA-JS.
+- finite root epochs;
+- root-update validation/admission before root-update-specific mutation;
+- typed full-arena new-root pressure/admission behavior;
+- one authoritative root commit;
+- old-epoch stale-work isolation and accounting;
+- explicit retain/retain-if-key-valid/transform/reset/invalidate reuse classification;
+- separation of reroot from generation-safe reclamation;
+- generic bounded read-only observation publication whose payload meaning is owned by the selected output/product contract;
+- finite stale-safe generation/counter exhaustion/restart behavior.
 
-Exact local Windows evidence:
+Ranked moves/actions are not required by SPEC-0006.
 
-- Node.js 26.7.0 on Windows x64;
-- 18 expected, discovered, and executed cases; 18 passed with zero skips;
-- canonical normalized bytes: `7749`;
-- Search IR SHA-256 `bd6679178c6754fe9b06d6fa54d038166b7ef39e32fb5f51513cc303cfd63a96`;
-- baseline, canonical-order, minimum-capacity, eight fail-closed mutations, ordinary, publication, transposition, path-cycle, forced-exhaustion, scheduler-parity, and oracle-sensitivity cases all pass.
+## Downstream chess product
 
-The repository includes a GitHub Actions workflow prepared to run the deterministic Search IR reference on Windows and Ubuntu plus documentation/governance validation when public Actions are active. That workflow provides portable/reference evidence only; it does not retroactively change the exact local Windows evidence above or establish native Linux CUDA support. Native Linux CUDA remains an explicit gap. The later PTX experiment below adds bounded Windows CUDA-JS integration, GPU execution, and cleanup evidence without retroactively expanding this Search IR capsule's claim.
+[`CHESS-0001`](docs/specs/products/chess/CHESS-0001-search-product.md) and issue #45 define chess as a downstream product proposal.
 
-## Bounded PTX extension-composition discovery
+Chess owns chess board/history/legal-move/terminal identity, chess policy/evaluator semantics, any ranked legal-move/best-move/MultiPV observation, chess-specific extension capabilities, chess reroot/reuse rules, and chess product quality/support evidence.
 
-The disposable vertical slice at [`experiments/ptx-extension-composition-prototype/`](experiments/ptx-extension-composition-prototype/) exercised the now-superseded fine Extension Point/Fragment proposal, deterministic multi-input PTX composition, the packaged public CUDA-JS facade, one device-closed miniature search, negative contracts, emitted-binary inspection, resource bounds, and cleanup. Its mechanism evidence remains useful; its schema and granularity are not production authority.
+Deleting chess must leave universal CUDA-MCGS architecture, Search IR, extension mechanics and conformance complete. Chess implementation/release does **not** gate universal CUDA-MCGS parent completion.
 
-Exact local Windows evidence:
+## Bounded evidence
 
-- portable capsule: 42 expected, discovered, and executed; 42 passed with zero skips;
-- packaged CUDA-JS `main` revision `ad49a6c9b0cddb420e26e097180cf9c502060a65`;
-- native capsule: 25 expected, discovered, and executed; 25 passed with zero skips;
-- no-point and unbound generation produced byte-identical PTX and byte-identical 4,392-byte cubins with zero extension symbols or calls;
-- one and two direct PTX fragments linked and executed correctly, including transposition, root-cycle, finite-resource, activation, backup, and output checks;
-- two bound fragments retained two SASS calls and produced a 7,016-byte/31-register kernel versus the 4,520-byte/17-register fused control, so direct static binding is not fused-equivalent evidence;
-- a controlled one-to-eight-operation matrix confirmed one retained SASS call per fine PTX hook, 5,416-to-12,072-byte artifact growth, and a 24-register called kernel versus 14 registers inline;
-- same-module PTX functions retained the calls and nearly matched separate-module device ticks, so PTX text co-location is not an evidenced fusion strategy;
-- one coarse PTX boundary amortized to 1.10× and 1.05× inline device ticks at the longest one- and eight-operation shapes, while fine calls remained 4.34× and 6.06×; this supports coarse modules as a candidate but not a universal rule;
-- WDDM host launch timing was unsuitable for fine comparison; the controlled ratios use per-thread `%clock64` only and remain synthetic, exact-profile discovery evidence;
-- current CUDA-JS NVRTC compilation cannot produce linkable standalone CUDA-source fragments because its public compile contract lacks relocatable-device-code control; hand-authored PTX works only as a discovery fixture;
-- unresolved-symbol, architecture-mismatch, and memory-limit failures were explicit and recoverable; terminal cleanup was graceful with zero live/orphaned Driver resources.
+### CUDA-only MCGS prototype
 
-The ownership and “can” versus “should” dispositions are in [`experiments/ptx-extension-composition-prototype/FINDINGS.md`](experiments/ptx-extension-composition-prototype/FINDINGS.md). Native Linux remains untested: the portable lane is prepared, but the selected CUDA-JS revision has no qualified Linux compiler/driver compatible pair.
+`experiments/cuda-device-mcgs-prototype/` remains bounded non-production evidence for device closure, transposition node/edge ownership, path-local cycles, finite capacity and scheduler-ticket mechanisms. Its fixed two-action scalar-value domain is not universal authority.
 
-## Current CUDA-JS peer state
+### Search IR reference
 
-At exact inspected revision `ad49a6c9b0cddb420e26e097180cf9c502060a65`, public `iteathen/CUDA-JS` has bounded accepted F1-F9 evidence, including Windows Driver/resource/memory/execution/compiler/package evidence and the F9 `cuda-cccl` device-scope publication prerequisite. F9 proves generic compiler/runtime behavior only; it does not prove CUDA-MCGS search semantics, extension composition, scheduler performance, transposition behavior, or the cross-repository compatible pair. Native Linux CUDA qualification remains separate.
+`experiments/search-ir-reference/` remains the accepted deterministic CUDA-free reference evidence for SPEC-0001/SPEC-0002's bounded foundation. Its exact accepted evidence remains separate from later proposal changes.
 
-## Current authority
+### PTX composition discovery
 
-- Project charter and ADR-0001 through ADR-0017: accepted within their scopes.
-- Repository topology, no-Python policy, CUDA-JS peer split, and AGPL-3.0-or-later/commercial-license repository licensing: accepted current operating state.
-- SPEC-0001 device publication/graph/resource semantic contract: accepted.
-- SPEC-0002 foundational Search IR 0.1.0 and deterministic reference semantics: accepted.
-- SPEC-0000 framework map and the SPEC-0003 through SPEC-0005 stage/surface/channel/Stage PTX drafts: proposal input, not implementable production authority.
-- Complete stage-capable Search IR, domain, policy, evaluator, graph/storage, full memory-plan, scheduler, output, and CUDA-MCGS-to-CUDA-JS package specifications: not yet accepted.
-- No exact released CUDA-MCGS/CUDA-JS compatible pair or CUDA-MCGS-owned adapter evidence has been accepted.
+`experiments/ptx-extension-composition-prototype/` remains bounded mechanism/cost evidence. It supports static composition, exact unused disappearance, and a warning against fine PTX calls. It does not define the production capability schema or Stage PTX cost envelope.
 
-## Current next boundary
+### SESSION-001
 
-Execute the revised canonical [`next_step.yaml`](next_step.yaml) engine plan through its semantic focus branches. [UMCGS #32](https://github.com/iteathen/UMCGS/issues/32) is the parent tracker; [#30](https://github.com/iteathen/UMCGS/issues/30), [#33](https://github.com/iteathen/UMCGS/issues/33), [#34](https://github.com/iteathen/UMCGS/issues/34), [#24](https://github.com/iteathen/UMCGS/issues/24), [#35](https://github.com/iteathen/UMCGS/issues/35), [#36](https://github.com/iteathen/UMCGS/issues/36), and [#37](https://github.com/iteathen/UMCGS/issues/37) hold owner-coherent work blocks. [CUDA-JS #35](https://github.com/iteathen/CUDA-JS/issues/35) records the relocatable-device-code need; do not implement it until the active compiler/LTO work finishes and its exact head is reassessed.
+Draft PR #43 / issue #42 contain bounded CUDA-free SESSION-001 learning evidence. The exact prototype head referenced by plan 16 is `97e1755bcc2f9e0e7c3b8df4defba9475864e57c`.
+
+Important observed lessons carried into SPEC-0006/plan 16:
+
+- observation publication must not materialize/expand search state;
+- root-update admission occurs before root-update-specific mutation;
+- old root-epoch work cannot publish new-epoch root-relative effects;
+- reroot and reclamation are separate transitions;
+- storage reuse needs stale-safe generation/incarnation handling;
+- finite root-update capacity pressure needs an explicit typed strategy;
+- root/observation/reclamation generations need explicit stale-safe exhaustion behavior;
+- reroot statistics/cache reuse is contract-selected, not universal.
+
+SESSION-001 proves no native CUDA concurrency, memory ordering, sideband transport, scheduler performance, or universal statistics-reuse policy.
+
+## Canonical plan packet
+
+[`next_step.yaml`](next_step.yaml) in this architecture packet is **schema 18 / parent plan 16**.
+
+Its lanes are:
+
+- **universal core** — domain, policy, evaluator, output, graph, Search Session, resources;
+- **universal extension substrate** — Search Stages/surfaces, internal channels, Stage PTX;
+- **universal integration/native** — Search IR/Composer, scheduler, reference, Windows native, performance/Linux, release;
+- **downstream products** — chess as a separately tracked non-gating lane.
+
+The plan's crucial dependency correction is that universal domain/policy/evaluator/output/resource semantics no longer depend on the Stage extension model. The core resource owner defines generic optional resource-contribution/admission rules; the Composer later integrates selected Stage/Channel/product contributions into a concrete Search Image plan.
 
 ## Current blockers and claim limits
 
-- The complete stage/channel-capable Search IR and proposal specifications are not accepted.
-- The prototype establishes direct-link correctness, exact unused disappearance, a subset of negative contracts, controlled synthetic granularity evidence, and a clear fine-hook cost warning, but the Stage PTX ABI/schema, generator, representative performance/resource envelope, and compatible-pair contract are not accepted.
-- CUDA-JS cannot yet compile standalone CUDA-source fragments into linkable relocatable PTX through its public API; implementation must wait for reassessment against the active LTO/compiler work's final exact head.
-- Domain, policy, evaluator, graph/storage, full memory/resource, scheduler, output, persistence/reroot, and execution-package contracts remain incomplete.
-- The prototype covers a fixed deterministic two-action scalar-value domain and node-capacity exhaustion only.
-- No representative evaluator, workload, profiler, search-quality, cross-GPU, cancellation, device-loss, reclamation, or complete sanitizer evidence exists.
-- No production implementation, native Linux CUDA qualification, CUDA-MCGS product release, released compatible runtime pair, or release automation is claimed.
+- ADR-0018 layering is accepted, but SPEC-0000 and SPEC-0003 through SPEC-0006 are proposals and require review/acceptance before production lowering.
+- Universal domain/policy/evaluator/output/graph/session/resource/scheduler contracts are incomplete.
+- Complete Search IR does not yet represent core versus namespaced capability/product specialization inputs, generic output families, Search Session semantics, and capability-specific context/resource deletion.
+- First production root-update admission/full-arena pressure strategy and reroot reuse classifications are not accepted.
+- SESSION-002 native concurrent root-update/stale-work/reclamation/observation evidence does not exist.
+- CUDA-JS issue #35 remains the consumer-neutral relocatable-device-code dependency; issue #38 remains the generic long-lived sideband capability research/specification dependency.
+- No representative Stage PTX cost envelope, scheduler selection, production graph store, generated universal engine, or released compatible pair exists.
+- Native Linux CUDA-JS/CUDA-MCGS compatible-pair evidence remains absent.
+- CHESS-0001 is proposal-only and intentionally not a universal blocker.
 
-## Public collaboration and repository security
+## Repository/public status
 
-CUDA-MCGS is prepared to use the normal public GitHub contribution model after the visibility switch: forks or short-lived branches feed pull requests into canonical `main`. Foundational authority remains owner-controlled through CODEOWNERS; the intended public posture is protected `main` with required owner review and public documentation/reference checks.
+The canonical repository is public. Historical private-to-public preparation/checklist documents remain for provenance and audit; they no longer describe current visibility.
 
-Security-sensitive reports must use the private vulnerability channel described in [`SECURITY.md`](SECURITY.md), not public exploit-detail issues. The repository must not contain credentials, private user data, private endpoints, or sensitive machine artifacts.
+`main` is protected. Public visibility does not waive specification, evidence, security, review, cleanup, platform qualification, compatible-pair, packaging or release gates.
 
-The public transition checklist is [`docs/development/PUBLIC_REPOSITORY.md`](docs/development/PUBLIC_REPOSITORY.md). A full-history secret/private-material scan remains a hard visibility-switch gate because the connected GitHub integration could not access private-repository secret-scanning alerts during preparation. The current tree review does not certify historical Git objects as secret-free.
-
-Public visibility does not waive the project’s specification, evidence, security, review, cleanup, platform-qualification, compatible-pair, packaging, or release gates.
+Security-sensitive reports follow [`SECURITY.md`](SECURITY.md). Contribution workflow follows [`CONTRIBUTING.md`](CONTRIBUTING.md).

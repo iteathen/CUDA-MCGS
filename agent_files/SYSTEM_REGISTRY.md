@@ -17,6 +17,7 @@ This registry tells developers and agents where durable information and future i
 - Cross-component dependencies must be declared in both the component manifest and governing architecture/specification where material.
 - Archived and superseded locations never regain authority merely because an agent finds them.
 - Retained temporary, evidence, recovery, archive, cleanup-debt, token-budget, document-reading, test-batch, and engineering-decision state has an owner and objective lifecycle trigger.
+- Under ADR-0018, universal core, universal extension substrate, and downstream product boundaries remain explicit. A product/capability does not gain universal ownership by being the first consumer.
 
 ## Governance and documentation boundaries
 
@@ -36,61 +37,73 @@ This registry tells developers and agents where durable information and future i
 | `governance.sanity` | Sanity/audit claims, semantic coverage, risk-based depth, reconciliation, and findings | [`general_foundation/SANITY_CHECKING.md`](general_foundation/SANITY_CHECKING.md) and [`general_foundation/SEMANTIC_INTERROGATION.md`](general_foundation/SEMANTIC_INTERROGATION.md) | Accepted |
 | `governance.pr-integration` | Exact-head PR readiness/review, guarded merge, post-merge verification, and branch/coordination disposition | [`general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) | Accepted |
 | `governance.owner-entry` | Mandatory repository entry rules | [`../AGENTS.md`](../AGENTS.md) | Active |
-| `project.charter` | UMCGS search mission, product boundary, and peer-runtime separation | [`../docs/PROJECT_CHARTER.md`](../docs/PROJECT_CHARTER.md) | Accepted |
-| `project.decisions` | Cross-cutting accepted choices | [`../docs/decisions/`](../docs/decisions/README.md) | Active |
-| `project.specifications` | Normative UMCGS search and interop contracts | [`../docs/specs/`](../docs/specs/README.md) | Active; accepted and proposal documents are indexed separately |
+| `project.charter` | Universal CUDA-MCGS mission, three-layer product boundary, and peer-runtime separation | [`../docs/PROJECT_CHARTER.md`](../docs/PROJECT_CHARTER.md) | Accepted |
+| `project.decisions` | Cross-cutting accepted choices, including ADR-0018 layering | [`../docs/decisions/`](../docs/decisions/README.md) | Active |
+| `project.specifications` | Universal core, universal extension-substrate, interop, and downstream product specifications | [`../docs/specs/`](../docs/specs/README.md) | Active; accepted/proposal/product documents indexed separately |
 | `project.architecture` | Explanatory architecture and repository topology | [`../docs/architecture/`](../docs/architecture/README.md) | Active/proposal set |
 | `project.research` | Prior-art and external technical evidence | [`../docs/research/`](../docs/research/README.md) | Active |
 | `project.archive` | Superseded documentation provenance | [`../docs/archive/`](../docs/archive/README.md) | Active |
 | `project.state` | Current phase and authority summary | [`../STATUS.md`](../STATUS.md) | Active |
-| `project.next-step` | One coherent next boundary or active focus-branch packet | [`../next_step.yaml`](../next_step.yaml) | Active |
+| `project.next-step` | Canonical universal engine plan plus explicitly non-gating downstream product lanes | [`../next_step.yaml`](../next_step.yaml) | Active |
 | `project.licensing` | Open-source license, commercial-license path, contribution/relicensing grant, and third-party licensing boundary | [`../LICENSE`](../LICENSE) and [`../LICENSING.md`](../LICENSING.md) | Active; `AGPL-3.0-or-later` plus separate commercial licensing |
-| `project.contributing` | Public contribution workflow, contributor declarations, and review-entry expectations | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) and [`../.github/pull_request_template.md`](../.github/pull_request_template.md) | Public-transition-ready; canonical repository remains private until explicit switch |
-| `project.security` | Public vulnerability-reporting policy, secret-handling expectations, and repository security entry point | [`../SECURITY.md`](../SECURITY.md) and [`general_foundation/SECURITY.md`](general_foundation/SECURITY.md) | Public-transition-ready |
-| `project.repository-publication` | Private-to-public visibility gates, history/privacy audit, public CI/protection posture, switch sequence, and post-switch verification | [`../docs/development/PUBLIC_REPOSITORY.md`](../docs/development/PUBLIC_REPOSITORY.md) | Active transition checklist; does not authorize visibility switch or product release |
+| `project.contributing` | Public contribution workflow, contributor declarations, and review-entry expectations | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) and [`../.github/pull_request_template.md`](../.github/pull_request_template.md) | Public |
+| `project.security` | Public vulnerability-reporting policy, secret-handling expectations, and repository security entry point | [`../SECURITY.md`](../SECURITY.md) and [`general_foundation/SECURITY.md`](general_foundation/SECURITY.md) | Public |
+| `project.repository-publication` | Historical public-transition gates, publication sequence, and post-switch verification record | [`../docs/development/PUBLIC_REPOSITORY.md`](../docs/development/PUBLIC_REPOSITORY.md) | Repository is public; checklist retained for provenance/future audit |
 
 ## Repository product areas
 
 | Product area | Owns | Location | Current status |
 |---|---|---|---|
-| `schemas` | Versioned UMCGS machine-readable contracts and metaschemas | [`../schemas/`](../schemas/README.md) | Active; Search IR 0.1.0 accepted |
-| `components` | Production UMCGS search components | [`../components/`](../components/README.md) | Reserved; no implementation authorized |
-| `adapters` | Domain, policy, evaluator, output, and peer-runtime adapters | [`../adapters/`](../adapters/README.md) | Reserved |
-| `conformance` | UMCGS reference backend, synthetic domains, search-contract suites, and public peer-boundary compatibility | [`../conformance/`](../conformance/README.md) | Reserved |
-| `benchmarks` | Cross-component reproducible performance and search-quality suites | [`../benchmarks/`](../benchmarks/README.md) | Reserved |
+| `schemas` | Versioned CUDA-MCGS machine-readable universal and namespaced selected contracts/metaschemas | [`../schemas/`](../schemas/README.md) | Active; Search IR 0.1.0 accepted |
+| `components` | Production universal CUDA-MCGS search components | [`../components/`](../components/README.md) | Reserved; no implementation authorized |
+| `adapters` | Universal/domain/product policy, evaluator, output, domain, and peer-runtime adapters | [`../adapters/`](../adapters/README.md) | Reserved |
+| `conformance` | Universal reference backend, synthetic domains, search-contract suites, and public peer-boundary compatibility | [`../conformance/`](../conformance/README.md) | Reserved |
+| `benchmarks` | Cross-component reproducible universal and separately namespaced product performance/search-quality suites | [`../benchmarks/`](../benchmarks/README.md) | Reserved |
 | `experiments` | Disposable research/prototypes | [`../experiments/`](../experiments/README.md) | Active; CUDA and CUDA-free bounded evidence retained |
 | `examples` | Minimal public-surface usage examples | [`../examples/`](../examples/README.md) | Reserved |
-| `tools` | UMCGS-owned developer/build/search-specialization tools | [`../tools/`](../tools/README.md) | Reserved |
+| `tools` | CUDA-MCGS-owned developer/build/search-specialization tools | [`../tools/`](../tools/README.md) | Reserved |
 | `scripts` | Thin repository task entry points | [`../scripts/`](../scripts/) | Active |
 | `tests` | Cross-component/system/end-to-end tests only | [`../tests/`](../tests/README.md) | Reserved |
-| `packaging` | UMCGS execution-package composition, manifests, compatibility records, and distribution metadata | [`../packaging/`](../packaging/README.md) | Reserved |
+| `packaging` | CUDA-MCGS Search Image/execution-package composition, manifests, compatibility records, and distribution metadata | [`../packaging/`](../packaging/README.md) | Reserved |
 | `third-party` | Vendored external material and provenance | [`../third_party/`](../third_party/README.md) | Reserved |
 
-## Accepted UMCGS semantic contracts
+## Accepted CUDA-MCGS semantic contracts
 
 | Boundary ID | Owns | Authoritative location | Status |
 |---|---|---|---|
-| `contract.device-search-state-v0` | Device publication channels, state-node/parent-edge ownership, path-cycle ordering, finite-resource accounting, exhaustion, partial-result validity, scheduler-neutral conformance | [`../docs/specs/SPEC-0001-device-search-publication-and-resources.md`](../docs/specs/SPEC-0001-device-search-publication-and-resources.md) | Accepted semantic contract; concrete Search IR and production lowering pending |
-| `contract.search-ir` | Backend-neutral Search IR 0.1.0 shape, normalization, versioning, and canonical identity | [`../docs/specs/SPEC-0002-search-ir-and-reference-semantics.md`](../docs/specs/SPEC-0002-search-ir-and-reference-semantics.md) and [`../schemas/search-ir/0.1.0/`](../schemas/search-ir/0.1.0/) | Accepted bounded semantic contract; production lowering pending |
-| `reference.search-ir` | Independent deterministic interpretation of accepted publication, graph, path, resource, stop, and partial-result semantics | [`../experiments/search-ir-reference/`](../experiments/search-ir-reference/README.md) | Accepted disposable reference; no production or CUDA authority |
+| `contract.device-search-state-v0` | Device publication channels, state-node/parent-edge ownership, path-cycle ordering, finite-resource accounting, exhaustion, partial-result validity, scheduler-neutral conformance | [`../docs/specs/SPEC-0001-device-search-publication-and-resources.md`](../docs/specs/SPEC-0001-device-search-publication-and-resources.md) | Accepted semantic contract; complete Search IR/production lowering pending |
+| `contract.search-ir` | Backend-neutral Search IR 0.1.0 shape, normalization, versioning, and canonical identity | [`../docs/specs/SPEC-0002-search-ir-and-reference-semantics.md`](../docs/specs/SPEC-0002-search-ir-and-reference-semantics.md) and [`../schemas/search-ir/0.1.0/`](../schemas/search-ir/0.1.0/) | Accepted bounded semantic contract; complete representation/production lowering pending |
+| `reference.search-ir` | Independent deterministic interpretation of accepted publication, graph, path, resource, stop, and partial-result semantics | [`../experiments/search-ir-reference/`](../experiments/search-ir-reference/README.md) | Accepted disposable reference; no production/CUDA/product authority |
 
-## Planned UMCGS product components
+## Planned universal CUDA-MCGS boundaries
 
-The following IDs are planning anchors only. Their exact contracts, names, and implementation locations are not accepted until version-zero specifications settle ownership.
+These IDs are planning anchors only. Exact contracts/names/implementation locations are not accepted until their version-zero specifications settle ownership.
 
 | Planned boundary ID | Intended responsibility | Governing work |
 |---|---|---|
-| `contract.domain` | State/action/transition/identity/cycle contract | Domain contract v0 |
-| `contract.policy` | Selection/reservation/backup/output ranking contract | Search-policy contract v0 |
-| `contract.evaluator` | Resident evaluator semantics, capabilities, batching, workspace, and publication requirements | Evaluator contract v0 |
-| `contract.resources` | Search-memory plan, capacities, pressure, exhaustion, cancellation, and teardown | Resource contract v0 |
-| `contract.cuda-js-package` | UMCGS-generated execution package and compatibility manifest for the peer CUDA-JS runtime | Interop contract v0 |
-| `tool.search-schema` | Parse, validate, normalize, diff, and generate UMCGS search contracts | Future accepted component specification |
-| `tool.search-compiler` | Capability resolution, search specialization, search-specific layouts/device code, and execution-package generation | Future accepted component specification |
-| `integration.cuda-js` | UMCGS adapter from execution-package semantics to the public CUDA-JS runtime contract | Interop contract v0 |
-| `conformance.search` | Synthetic-domain and end-to-end UMCGS search conformance | Future accepted component specification |
+| `contract.domain` | Product-neutral state/action/transition/identity/history/node-role semantics | Universal domain contract v0 |
+| `contract.policy` | Product-neutral selection/reservation/widening/policy statistics/backup/stopping and reroot reuse classification | Universal search-policy contract v0 |
+| `contract.evaluator` | Resident evaluator semantics/capabilities/batching/workspace/publication and reroot cache validity | Universal evaluator contract v0 |
+| `contract.graph` | Graph/node/edge/path/transposition/generation/reclamation mechanics | Universal graph/storage contract v0 |
+| `contract.session` | Search Session/root-update admission/root epochs/stale-work/reroot/reuse/reclamation interaction/generic observation semantics | [`../docs/specs/SPEC-0006-search-session-control-and-observation.md`](../docs/specs/SPEC-0006-search-session-control-and-observation.md) proposal |
+| `contract.output` | Generic bounded result/observation publication contracts; no mandatory ranked-action payload | Universal output/observation contract family |
+| `contract.extensions` | Universal Search Stage/base-context/capability/Async Channel/Stage PTX extension-composition substrate | [`../docs/specs/SPEC-0003-search-stage-and-extension-surface.md`](../docs/specs/SPEC-0003-search-stage-and-extension-surface.md), [`../docs/specs/SPEC-0004-async-stage-channels.md`](../docs/specs/SPEC-0004-async-stage-channels.md), [`../docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md`](../docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) proposals |
+| `contract.resources` | Search-memory plan, capacities, root-update admission reserve/pressure, capability/product resources, exhaustion/cancellation/teardown | Universal resource contract v0 |
+| `contract.cuda-js-package` | CUDA-MCGS-generated Search Image/execution package and compatibility manifest for peer CUDA-JS | Interop contract v0 |
+| `tool.search-schema` | Parse, validate, normalize, diff, and generate universal plus namespaced selected search contracts | Future accepted component specification |
+| `tool.search-compiler` | Capability/product resolution, search specialization, layouts/device code, and execution-package generation | Future accepted component specification |
+| `integration.cuda-js` | CUDA-MCGS adapter from execution-package semantics to public CUDA-JS runtime | Interop contract v0 |
+| `conformance.search` | Synthetic-domain/end-to-end universal CUDA-MCGS conformance independent of chess | Future accepted component specification |
 
-Generic Node/V8 bindings, CUDA Driver call machinery, generic memory providers, NVRTC/link/load, generic launch/completion/error/teardown, and generic runtime packaging belong to the independent `iteathen/CUDA-JS` repository and must not become UMCGS component entries.
+## Downstream domain/search product boundaries
+
+Downstream products consume universal contracts; they do not define them. Product deletion must leave universal architecture/conformance complete.
+
+| Product boundary ID | Owns | Authoritative location | Status |
+|---|---|---|---|
+| `product.chess` | Chess-specific domain/policy/evaluator/output/session-reuse/support/search-quality semantics, including any ranked legal-move/best-move/MultiPV observation | [`../docs/specs/products/chess/CHESS-0001-search-product.md`](../docs/specs/products/chess/CHESS-0001-search-product.md) and issue #45 | Proposal; does not gate universal parent |
+
+Generic Node/V8 bindings, CUDA Driver call machinery, generic memory providers, NVRTC/link/load, generic long-lived sideband mechanisms, launch/completion/error/teardown, and generic runtime packaging belong to independent `iteathen/CUDA-JS` and must not become CUDA-MCGS component/product entries.
 
 ## Adding, changing, archiving, or removing a registry entry
 
