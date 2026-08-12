@@ -1,0 +1,2 @@
+# These discovery fixtures have exact-byte digests and must survive Windows checkout unchanged.
+/experiments/ptx-extension-composition-prototype/fixtures/ptx/*.ptx text eol=lf

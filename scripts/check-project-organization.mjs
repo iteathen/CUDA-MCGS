@@ -26,6 +26,7 @@ const allowedTopLevelDirectories = new Set([
 ]);
 
 const allowedTopLevelFiles = new Set([
+  ".gitattributes",
   ".gitignore",
   "AGENTS.md",
   "CLAUDE.md",

@@ -5,6 +5,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
 required=(
+  .gitattributes
   README.md
   AGENTS.md
   STATUS.md
@@ -138,6 +139,7 @@ required=(
   scripts/check-project-organization.mjs
   scripts/check-structured-data.mjs
   scripts/run-search-ir-reference.mjs
+  scripts/run-ptx-extension-prototype.mjs
   schemas/search-ir/0.1.0/search-ir.schema.json
   experiments/search-ir-reference/README.md
   experiments/search-ir-reference/RESULTS.md
@@ -148,6 +150,18 @@ required=(
   experiments/search-ir-reference/src/normalize.mjs
   experiments/search-ir-reference/src/reference.mjs
   experiments/search-ir-reference/run.mjs
+  experiments/ptx-extension-composition-prototype/README.md
+  experiments/ptx-extension-composition-prototype/RESULTS.md
+  experiments/ptx-extension-composition-prototype/FINDINGS.md
+  experiments/ptx-extension-composition-prototype/fixtures/extension-surface.json
+  experiments/ptx-extension-composition-prototype/fixtures/fragment-bias.json
+  experiments/ptx-extension-composition-prototype/fixtures/fragment-observer.json
+  experiments/ptx-extension-composition-prototype/fixtures/ptx/bias.ptx
+  experiments/ptx-extension-composition-prototype/fixtures/ptx/observer.ptx
+  experiments/ptx-extension-composition-prototype/src/model.mjs
+  experiments/ptx-extension-composition-prototype/src/run-portable.mjs
+  experiments/ptx-extension-composition-prototype/src/native-consumer.mjs
+  experiments/ptx-extension-composition-prototype/run.mjs
 )
 
 for path in "${required[@]}"; do
@@ -209,6 +223,7 @@ fi
 "$node_bin" scripts/check-doc-links.mjs
 "$node_bin" scripts/check-structured-data.mjs
 "$node_bin" scripts/run-search-ir-reference.mjs
+"$node_bin" scripts/run-ptx-extension-prototype.mjs portable-check
 
 for form in .github/ISSUE_TEMPLATE/*.yml; do
   if [[ "$(basename "$form")" == config.yml ]]; then
