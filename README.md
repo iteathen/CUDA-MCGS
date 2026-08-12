@@ -8,7 +8,7 @@ CUDA-MCGS is the product name for the universal GPU-resident MCGS framework curr
 
 The framework specifies and specializes MCGS-style search systems without embedding assumptions from any one domain, game, model, input representation, output representation, objective, or CUDA execution topology. The intended boundary includes chess, Go, text search, planning, optimization, policy-only search, evaluation-only search, partially observable planning, and other graph-search workloads.
 
-A deployed engine is finite and specialized to its domain, search policy, evaluator, selected extensions, CUDA capability profile, and GPU-memory budget. Universality lives at contract, schema, and compilation boundaries; the realized hot path contains only what that concrete search requires.
+A deployed engine is finite and specialized to its domain, search policy, evaluator, Search Stage graph/capabilities, CUDA capability profile, and GPU-memory budget. Universality lives at contract, schema, and compilation boundaries; the realized hot path contains only what that concrete search requires.
 
 ## Repository boundary
 
@@ -17,7 +17,7 @@ CUDA-MCGS/UMCGS owns search semantics, Search IR, finite search-memory planning,
 The independent public `iteathen/CUDA-JS` repository owns generic Node.js/CUDA Driver bindings, opaque resources, generic memory capabilities, NVRTC/nvJitLink compilation and linking, module loading, launch/completion/error/teardown, packaging, compatibility, and runtime conformance.
 
 ```text
-CUDA-MCGS contracts + extensions
+CUDA-MCGS contracts + stage capabilities
         ↓
 Search IR + Search Composer
         ↓
@@ -32,18 +32,20 @@ CUDA Driver / GPU
 
 CUDA-JS must not know Search IR or MCGS. CUDA-MCGS must not reach into CUDA-JS private source. See [`docs/decisions/ADR-0014-extract-cuda-js-runtime.md`](docs/decisions/ADR-0014-extract-cuda-js-runtime.md).
 
-## Extension direction
+## Stage-resident extension direction
 
-A search exposes an **Extension Surface** made of semantic **Extension Points**. Every point is governed by an Extension Contract and a point-specific Context Schema. Optional device implementations are **Extension Fragments** selected and validated before search ignition, then incorporated into the specialized search image.
+A concrete search has a finite graph of operational **Search Stages**. Semantic category and owned stable invariant define a stage; usefulness validates its granularity. A stage is per logical work item and does not imply a global phase, barrier, kernel, module, or CUDA Graph node.
 
-The extension mechanism is uniform; the points and schemas are search-specific. It is not a runtime callback table, service locator, or generic `void *` escape hatch.
+Each stage may expose a stage-owned **Stage Extension Surface** at stable entry, stable exit, both, or neither. No extension surface exists while stage mutation is incomplete, and no surface crosses a stage boundary. All optional capabilities selected for one stage share its surface, context and finite resource plan.
 
-The selected version-zero device-artifact profile uses relocatable PTX Extension Fragments linked into a cubin through CUDA-JS. Unbound points are omitted during generation; bound points use statically named direct device symbols. PTX is a realization choice, not the semantic extension contract, and the prototype must measure separate-link call/resource cost against a fused generated-source control.
+The selected version-zero device-artifact profile uses zero or one optional composed relocatable **Stage PTX** input per stage: none when no capability is selected, one containing the complete stage capability set otherwise. Stage PTX inputs are linked into the Search Image through CUDA-JS. This is not a runtime callback table, per-feature PTX loop, service locator, or generic pointer escape hatch.
+
+Cross-stage and cross-surface dataflow uses bounded **Async Stage Channels**. Dataflow is allowed; blocking is forbidden. Required unavailable results move a logical work item to a pending state so GPU workers can execute other ready work, including the producer.
 
 Production profiles target these properties:
 
-- unbound extension points impose no abstraction overhead in the realized search image;
-- bound extensions impose no generic dispatch overhead beyond their intrinsic work and resource cost;
+- stages without selected capabilities retain no extension PTX, call, context, state, resource or synchronization residue;
+- several capabilities at one stage share one composed Stage PTX input without generic runtime dispatch;
 - all extension code, state, workspace, and required secondary search behavior are resident or preloaded before ignition;
 - activation may change on-device during search, but binding, compatibility resolution, code composition, and memory planning do not require host participation after ignition;
 - device closure is an execution contract, not a commitment to one persistent-kernel topology.
@@ -52,7 +54,7 @@ The first implementation should reuse proven CUDA mechanisms and methodology agg
 
 ## Current phase
 
-The project is private, pre-release, and in **framework-definition phase**. The repository is establishing governance, mature-scale organization, versioned search contracts, the complete extension-capable Search IR, extension composition semantics, inter-repository compatibility, resource constraints, prior-art evidence, conformance strategy, and test architecture before production implementation.
+The project is private, pre-release, and in **framework-definition phase**. The repository is establishing governance, mature-scale organization, versioned search contracts, the complete stage/channel-capable Search IR, Stage PTX composition semantics, inter-repository compatibility, resource constraints, prior-art evidence, conformance strategy, and test architecture before production implementation.
 
 No production CUDA-MCGS implementation should be inferred from the current repository.
 
@@ -86,7 +88,9 @@ The current proposal further explores, without yet promoting to accepted authori
 - a single schema-backed semantic extension protocol instead of an open-ended family of optimization-specific callback interfaces;
 - CUDA-MCGS ownership of search-semantic/search-critical extension composition;
 - contract-defined behavior with schema-backed context/representation;
-- specialization that removes unused Extension Points from realized hot paths;
+- semantic per-work-item Search Stages with useful stable entry/exit boundaries and no mid-stage extension mutation;
+- specialization that removes unused stage surfaces and Stage PTX inputs from realized hot paths;
+- bounded nonblocking Async Stage Channels for cross-stage/cross-surface dataflow;
 - device-owned scheduler topology selected by evidence rather than fixed by the phrase "GPU-resident";
 - ownership-first third-party reuse: methodology first, explicit source adaptation/vendor decisions when justified, higher-level runtime dependency last.
 
@@ -113,5 +117,8 @@ The current proposal further explores, without yet promoting to accepted authori
 - [`docs/architecture/REPOSITORY_TOPOLOGY.md`](docs/architecture/REPOSITORY_TOPOLOGY.md)
 - [`docs/specs/SPEC-0001-device-search-publication-and-resources.md`](docs/specs/SPEC-0001-device-search-publication-and-resources.md)
 - [`docs/specs/SPEC-0002-search-ir-and-reference-semantics.md`](docs/specs/SPEC-0002-search-ir-and-reference-semantics.md)
+- [`docs/specs/SPEC-0003-search-stage-and-extension-surface.md`](docs/specs/SPEC-0003-search-stage-and-extension-surface.md)
+- [`docs/specs/SPEC-0004-async-stage-channels.md`](docs/specs/SPEC-0004-async-stage-channels.md)
+- [`docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md`](docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md)
 - [`STATUS.md`](STATUS.md)
 - [`next_step.yaml`](next_step.yaml)

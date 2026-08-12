@@ -4,6 +4,8 @@
 
 **Inspected:** 2026-08-10; composition/runtime evidence expanded 2026-08-11
 
+**Stage-model reassessment:** [`../2026-08-11-stage-resident-extension-assessment.md`](../2026-08-11-stage-resident-extension-assessment.md) supersedes this note's fine Extension Point/Fragment realization language. The retained composition evidence remains valid; the current proposal uses semantic per-work-item Search Stages, stable entry/exit surfaces, one optional composed Stage PTX input per stage, and nonblocking Async Stage Channels.
+
 ## Question
 
 Has an existing public project already implemented the framework CUDA-MCGS intends to build, or implemented a lower-level composition/search mechanism well enough that CUDA-MCGS should reuse its code or methodology rather than invent a new mechanism?
@@ -32,13 +34,13 @@ Lower-level candidates are assessed separately for whether they provide proven c
 The 2026-08-11 expansion does, however, narrow the invention surface. NVIDIA already demonstrates important lower-level mechanisms that closely match the desired realization:
 
 - cuVS uses planner-selected JIT-LTO fragments to avoid precompiling a combinatorial kernel matrix;
-- cuFFT LTO callbacks bind typed user device routines to defined execution points before plan finalization and fold them into LTO kernels;
+- cuFFT LTO callbacks bind typed user device routines to defined execution points before plan finalization and fold them into LTO kernels, providing methodology rather than the selected artifact model;
 - nvJitLink supplies supported runtime device linking/LTO machinery;
 - CUDA Graphs provide device-launch and conditional execution mechanisms that can participate in device-owned progression;
 - cuCollections provides serious GPU concurrent hash-collection baselines;
 - CCCL/libcu++/CUB provides CUDA-native low-level algorithms, atomics, and collectives.
 
-The resulting design direction is **not** to depend on cuVS/cuFFT/cuCollections/RAPIDS as the CUDA-MCGS runtime. It is to reuse proven methodology and CUDA-platform primitives while owning the search-semantic contracts, Search Composer, extension model, graph/transposition semantics, memory planning, scheduler policy, and generated search image.
+The resulting design direction is **not** to depend on cuVS/cuFFT/cuCollections/RAPIDS as the CUDA-MCGS runtime. It is to reuse proven methodology and CUDA-platform primitives while owning the search-semantic contracts, Search Composer, Search Stage/surface/channel model, graph/transposition semantics, memory planning, scheduler policy, and generated search image.
 
 This is a bounded conclusion about the reviewed sources, not proof that no private or obscure implementation exists.
 
@@ -160,8 +162,8 @@ The missing part is not one kernel or linker. It is the combination of:
 - complete device-resident control and evaluator execution;
 - bounded resource planning and safe pressure behavior;
 - contract/schema/Search-IR-driven specialization;
-- a universal semantic Extension Surface without permanent runtime callback cost;
-- generated layouts and fragment composition without unused hot-path cost;
+- stage-owned semantic extension surfaces without permanent runtime callback cost;
+- generated layouts and one optional composed Stage PTX per required stage without unused hot-path cost;
 - explicit lifecycle, persistence, output, ownership, and conformance contracts.
 
 Replacing these foundations inside any reviewed search framework would rewrite its core. Depending directly on a general GPU library would not supply the missing search semantics. A clean CUDA-MCGS-owned layer can instead use mature CUDA mechanisms and donor implementations at their proper boundaries.
@@ -169,8 +171,8 @@ Replacing these foundations inside any reviewed search framework would rewrite i
 ## Required follow-up
 
 1. Convert candidate gaps into conformance requirements and synthetic domains.
-2. Run `EXT-PTX-001`: prove relocatable-PTX extension-fragment composition and no-point/unbound/bound/fused-control emitted-code behavior through the exact CUDA-JS compiler/link path.
-3. Run `EXT-CONTRACT-001`: prove incompatible context schemas, versions, permissions, capabilities, and resources fail before ignition.
+2. Treat `EXT-PTX-001` as completed bounded discovery: it proved direct composition and exact unused disappearance while rejecting tiny call-per-hook PTX as the default.
+3. Run `STAGE-PTX-001`, `STAGE-CONTRACT-001`, and `CHANNEL-001` for representative composed Stage PTX, stable stage boundaries, capability compatibility, and nonblocking cross-stage dataflow.
 4. Run `SCHED-001`: compare persistent-kernel and credible device-owned multi-kernel/graph realizations on representative irregular search plus resident evaluator/secondary work.
 5. Run `TT-001`: compare cuCollections against CUDA-MCGS-specific transposition-table requirements and decide methodology/source/vendor/custom disposition.
 6. Reproduce representative search baselines on target hardware before architecture depends on performance claims.

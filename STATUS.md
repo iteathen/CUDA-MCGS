@@ -14,7 +14,7 @@ The GitHub repository and existing accepted UMCGS authority identifiers retain t
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with schema-backed extension support.**
 
-Universal behavior is defined through versioned contracts and Search IR. Concrete engines are finite, resource-planned, and specialized. Active search remains device-closed after ignition. Optional search-time behavior uses a schema-backed Extension Surface/Point/Fragment protocol resolved before ignition, while generic CUDA runtime/compiler/linker behavior remains CUDA-JS-owned.
+Universal behavior is defined through versioned contracts and Search IR. Concrete engines are finite, resource-planned, and specialized. Active search remains device-closed after ignition. Optional search-time behavior is composed at useful semantic Search Stage entry/exit surfaces, with zero or one optional Stage PTX input per stage and bounded nonblocking Async Stage Channels. Generic CUDA runtime/compiler/linker behavior remains CUDA-JS-owned.
 
 ## Accepted project state
 
@@ -30,11 +30,13 @@ Universal behavior is defined through versioned contracts and Search IR. Concret
 
 ## Current proposal direction
 
-The architecture and SPEC-0000 proposals define a common search extension model: Extension Surface, Extension Point, Extension Contract, point-specific Context Schema, Extension Fragment, Search Composer, and finite specialized Search Image. Binding/composition occurs before ignition. On-device activation may change later, but active search does not perform host extension discovery, lookup, compilation, linking, or decision service.
+The stage-model reassessment retires the fine Extension Point/independently callable Extension Fragment path. A concrete Search Image contains a finite operational Search Stage graph. A stage is a per-logical-work-item semantic state, not a searched domain state, global phase, barrier, kernel, module or CUDA Graph node.
 
-These extension representations and the complete extension-capable Search IR remain proposal-level until detailed specifications and experiment evidence are accepted. The accepted Search IR 0.1.0 slice is their semantic foundation, not proof of the complete model.
+Each stage may expose stable entry, stable exit, both, or neither. No surface exists inside incomplete stage mutation, and no surface crosses a stage boundary. Semantic category and owned invariant define the boundary; usefulness validates granularity and chooses among semantically valid placements. Several capabilities at one stage share one surface, minimum context, resource plan and—when required—exactly one optional composed Stage PTX input.
 
-The owner-selected version-zero realization is relocatable PTX, not device LTO. CUDA-MCGS will define the PTX fragment ABI and composition semantics; CUDA-JS will provide the generic public compile/link/load path. LTO remains prior art and a possible future comparison, and CUDA-MCGS does not depend on the active CUDA-JS LTO work.
+Cross-stage and cross-surface dataflow is allowed through bounded Async Stage Channels. Synchronous blocking is prohibited. Required unavailable results move the logical consumer to a pending operational state so workers can execute other ready work, including the producer. Identity, generation, release/acquire publication, capacity, cancellation, expiry, deadlock outcome and reclamation are explicit.
+
+[`SPEC-0003`](docs/specs/SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](docs/specs/SPEC-0004-async-stage-channels.md), and [`SPEC-0005`](docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) are proposal drafts, not accepted implementation authority. PTX remains the selected version-zero artifact and LTO is not a dependency. Stage PTX is a composition input, not a physical scheduling topology.
 
 ## Bounded CUDA-only experiment
 
@@ -69,7 +71,7 @@ Private CUDA-MCGS Actions are disabled on the free plan, so this capsule current
 
 ## Bounded PTX extension-composition discovery
 
-The disposable vertical slice at [`experiments/ptx-extension-composition-prototype/`](experiments/ptx-extension-composition-prototype/) exercises a proposal-shaped Extension Surface, deterministic multi-fragment PTX composition, the packaged public CUDA-JS facade, one device-closed miniature search, negative contracts, emitted-binary inspection, resource bounds, and cleanup. It is discovery evidence rather than an accepted production schema or component.
+The disposable vertical slice at [`experiments/ptx-extension-composition-prototype/`](experiments/ptx-extension-composition-prototype/) exercised the now-superseded fine Extension Point/Fragment proposal, deterministic multi-input PTX composition, the packaged public CUDA-JS facade, one device-closed miniature search, negative contracts, emitted-binary inspection, resource bounds, and cleanup. Its mechanism evidence remains useful; its schema and granularity are not production authority.
 
 Exact local Windows evidence:
 
@@ -98,20 +100,20 @@ At exact inspected revision `ad49a6c9b0cddb420e26e097180cf9c502060a65`, public `
 - Repository topology, no-Python policy, and the CUDA-JS peer split: accepted.
 - SPEC-0001 device publication/graph/resource semantic contract: accepted.
 - SPEC-0002 foundational Search IR 0.1.0 and deterministic reference semantics: accepted.
-- SPEC-0000 framework map and extension model: proposal input, not an implementable production contract.
-- Complete extension-capable Search IR, Extension Surface/Point/Fragment representation, domain, policy, evaluator, full memory-plan, scheduler, output, and CUDA-MCGS-to-CUDA-JS package specifications: not yet accepted.
+- SPEC-0000 framework map and the SPEC-0003 through SPEC-0005 stage/surface/channel/Stage PTX drafts: proposal input, not implementable production authority.
+- Complete stage-capable Search IR, domain, policy, evaluator, graph/storage, full memory-plan, scheduler, output, and CUDA-MCGS-to-CUDA-JS package specifications: not yet accepted.
 - No exact released CUDA-MCGS/CUDA-JS compatible pair or CUDA-MCGS-owned adapter evidence has been accepted.
 
 ## Current next boundary
 
-Execute the revised canonical [`next_step.yaml`](next_step.yaml) plan. [CUDA-JS #35](https://github.com/iteathen/CUDA-JS/issues/35) records the relocatable-device-code need; do not implement it until the active LTO/compiler work finishes and its exact head is reassessed. [UMCGS #30](https://github.com/iteathen/UMCGS/issues/30) owns the CUDA-MCGS ABI, unbound-disappearance requirement, composer/lowering boundary, realization-granularity rules, and representative bound-cost envelope. The next decision evidence is a representative search/evaluator comparison of fused hot micro-policy lowering and coarse relocatable-PTX modules, followed by `SCHED-001`, `TT-001`, and the exact compatible-pair capsule.
+Execute the revised canonical [`next_step.yaml`](next_step.yaml) engine plan through its semantic focus branches. [UMCGS #32](https://github.com/iteathen/UMCGS/issues/32) is the parent tracker; [#30](https://github.com/iteathen/UMCGS/issues/30), [#33](https://github.com/iteathen/UMCGS/issues/33), [#34](https://github.com/iteathen/UMCGS/issues/34), [#24](https://github.com/iteathen/UMCGS/issues/24), [#35](https://github.com/iteathen/UMCGS/issues/35), [#36](https://github.com/iteathen/UMCGS/issues/36), and [#37](https://github.com/iteathen/UMCGS/issues/37) hold owner-coherent work blocks. [CUDA-JS #35](https://github.com/iteathen/CUDA-JS/issues/35) records the relocatable-device-code need; do not implement it until the active compiler/LTO work finishes and its exact head is reassessed.
 
 ## Current blockers and claim limits
 
-- The complete extension-capable Search IR and extension representation are not accepted.
-- The prototype establishes direct-link correctness, unbound disappearance, a subset of negative contracts, controlled synthetic granularity evidence, and a clear fine-hook cost warning, but the normative PTX ABI/schema, realization rules, and representative performance/resource acceptance envelope are not accepted.
+- The complete stage/channel-capable Search IR and proposal specifications are not accepted.
+- The prototype establishes direct-link correctness, exact unused disappearance, a subset of negative contracts, controlled synthetic granularity evidence, and a clear fine-hook cost warning, but the Stage PTX ABI/schema, generator, representative performance/resource envelope, and compatible-pair contract are not accepted.
 - CUDA-JS cannot yet compile standalone CUDA-source fragments into linkable relocatable PTX through its public API; implementation must wait for reassessment against the active LTO/compiler work's final exact head.
-- Domain, policy, evaluator, full memory/resource, scheduler, output, persistence/reroot, and execution-package contracts remain incomplete.
+- Domain, policy, evaluator, graph/storage, full memory/resource, scheduler, output, persistence/reroot, and execution-package contracts remain incomplete.
 - The prototype covers a fixed deterministic two-action scalar-value domain and node-capacity exhaustion only.
 - No representative evaluator, workload, profiler, search-quality, cross-GPU, cancellation, device-loss, reclamation, or complete sanitizer evidence exists.
 - No production implementation, native Linux CUDA qualification, public CUDA-MCGS release, released compatible runtime pair, or release automation is claimed.

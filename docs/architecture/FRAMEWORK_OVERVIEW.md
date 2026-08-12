@@ -10,7 +10,7 @@ The repository retains its existing UMCGS authority identifiers while the produc
 
 CUDA-MCGS should be a **search compiler/composer plus a finite specialized device program**, consuming the independent generic CUDA-JS runtime rather than owning Node/CUDA Driver plumbing.
 
-Universality is defined by stable search contracts, Search IR, and extension contracts. Performance and memory efficiency come from specialization: optional capabilities, fields, branches, adapters, and extension points that are not selected for a concrete engine should not survive merely because the universal framework can represent them.
+Universality is defined by stable search contracts, Search IR, a finite operational Search Stage graph, and stage-owned extension contracts. Performance and memory efficiency come from specialization: optional capabilities, fields, branches, adapters, surfaces, channels and Stage PTX inputs that are not selected for a concrete engine should not survive merely because the universal framework can represent them.
 
 [`SPEC-0001`](../specs/SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](../specs/SPEC-0002-search-ir-and-reference-semantics.md) accept a foundational Search IR 0.1.0 slice for publication, graph identity/edge ownership, path cycles, finite resources, stop, result, and canonical identity. The complete extension-capable Search IR shown here remains proposal work until the remaining contracts and composition experiments are accepted.
 
@@ -20,7 +20,7 @@ Search-policy contract ────────┤
 Evaluator contract ────────────┤
 Execution/storage contract ────┼─► Search IR
 Resource profile ──────────────┤       │
-Extension manifests/fragments ─┘       ▼
+Stage capability schemas ──────┘       ▼
                                Search Composer
                         ┌───────────────┼────────────────┐
                         │               │                │
@@ -63,49 +63,35 @@ The core input contracts remain conceptually distinct:
 
 These mandatory semantics must not be weakened into arbitrary callbacks merely because the extension mechanism is flexible.
 
-## 2. Search Extension Surface
+## 2. Operational Search Stages
 
-Every concrete search definition may expose zero or more semantic **Extension Points**. The set of points is its **Extension Surface**.
+Every concrete engine has a finite operational **Search Stage** graph. A stage represents one stable execution state and owns one complete mutation interval for one logical search work item. It is not the searched domain state, graph node, kernel, module, launch, CUDA Graph node, global phase, or grid barrier.
 
-An Extension Point is a compile/composition-time contract, not a runtime registration slot. A point identifies a meaningful search location or decision boundary and defines exactly what an attached implementation may observe or affect.
+A stage transition occurs when that logical work item commits a new operational state. Different work items may occupy different stages concurrently when publication and resource contracts allow it.
 
-Every point must define at least:
+Each stage may expose a stage-owned **Stage Extension Surface** at stable `entry`, stable `exit`, both, or neither. No surface exists inside the stage's incomplete mutation interval, and a surface never crosses into another stage.
 
-- stable namespaced point ID and contract version;
-- semantic purpose and execution location;
-- invocation cardinality and execution/synchronization scope;
-- point-specific Context Schema;
-- readable and writable facts/capabilities;
-- allowed control effects or result signals, if any;
-- invariants that remain owned by the search core;
-- memory-space, lifetime, aliasing, and publication rules;
-- scratch/workspace and bounded resource rules;
-- failure behavior and compatibility policy.
+A stage boundary is defined first by a coherent semantic category, owned invariant and validity transition. Usefulness then validates the granularity and chooses among semantically valid placements: a useful boundary exposes stable facts and capabilities that credible consumers can reuse where data is already materialized and ownership/publication/resource lifetime is clear. CUDA-MCGS does not create a stage for every internal variable change or possible hook, and usefulness never justifies merging materially different invariants, readiness states, failure modes or owners.
 
-The Context Schema describes data available at an already-defined point. It does **not** scan generated code or dynamically determine where an extension should attach.
+A context schema describes the least-authority representation already available at a selected checkpoint. It does **not** scan generated code, choose a boundary at runtime, or grant arbitrary mutation.
 
-A search may expose points around candidate generation/scoring, selection, transition, transposition publication, expansion, evaluation, propagation/backup, pressure handling, ranking, or other semantics where extension is genuinely useful. Point names should describe the semantic boundary rather than encode one known optimization such as virtual loss, RAVE, pruning, or a particular solver.
+If behavior must participate inside an invariant-forming operation, it belongs in the mandatory stage implementation. If it establishes a new stable operational state, it becomes a stage.
 
-## 3. Extension Fragments
+## 3. Shared stage capabilities and asynchronous dataflow
 
-An optional device implementation bound to an Extension Point is an **Extension Fragment**.
+All optional capabilities required at one stage share that stage's surface, minimum generated context and finite resource plan. They are composed before ignition; they do not become separately discovered runtime extensions.
 
-A fragment manifest declares:
+Cross-stage and cross-surface dataflow uses bounded **Async Stage Channels**. A stage may publish a task or data for later use, including evaluator or secondary search work, if:
 
-- fragment identity, revision, provenance, and source/artifact hashes;
-- target Extension Point ID/version;
-- required context fields/capabilities and type/range expectations;
-- requested read/write/control permissions;
-- device/toolchain/architecture requirements;
-- static configuration and compile/link options;
-- persistent state, scratch, shared-memory, workspace, queue, or model requirements;
-- concurrency/publication requirements;
-- incompatibilities and composition constraints;
-- deterministic cache/specialization identity inputs.
+- the producer commits or rolls back its stage mutation first;
+- request and result storage have separate bounded ownership;
+- identity, generation, freshness and release/acquire publication are explicit;
+- pressure, cancellation, expiry and reclamation are planned;
+- no worker spins, waits, holds a lock/reservation, or keeps stage mutation open for the result.
 
-Fragments are selected and validated before ignition. A production search must never discover extensions by scanning registries, loading code, interpreting schemas, or resolving generic callbacks in the active hot path.
+A required but unavailable result moves the logical consumer into a declared pending state. The scheduler runs other ready work, including the producer. If no producer can become runnable or capacity forms an unresolved cycle, CUDA-MCGS publishes a typed outcome rather than blocking indefinitely.
 
-The same extension mechanism may support optimizations, solvers, instrumentation, secondary search-time systems, alternative scoring, domain-specific acceleration, or future MCGS techniques without adding a new framework-wide callback ABI for each technique.
+[`SPEC-0003`](../specs/SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](../specs/SPEC-0004-async-stage-channels.md), and [`SPEC-0005`](../specs/SPEC-0005-stage-ptx-and-search-image-composition.md) are the detailed proposal boundaries.
 
 ## 4. Search Composer
 
@@ -115,34 +101,36 @@ It must:
 
 - normalize and validate all mandatory search contracts and schemas;
 - lower them into one versioned Search IR;
-- resolve the concrete Extension Surface exposed by the selected search realization;
-- validate Extension Fragment manifests against point contracts and context schemas;
+- build and validate the finite operational Search Stage graph;
+- select useful stable stage boundaries and resolve entry/exit surfaces;
+- validate and deterministically compose each stage's capability set;
+- validate all Async Stage Channels, readiness dependencies and progress outcomes;
 - reject incompatible types, versions, permissions, resource needs, or synchronization assumptions before ignition;
 - perform range/precision analysis and choose concrete widths/layouts;
-- plan finite graph/search/model/extension memory and pressure behavior;
-- generate point-specific glue/adapters where required;
+- plan finite graph/search/model/stage-capability/channel memory and pressure behavior;
+- generate checkpoint/channel glue and at most one optional Stage PTX per stage where required;
 - select graph, transposition, cycle, reduction, reclamation, and scheduling strategies;
-- compose core, mandatory domain/evaluator behavior, and selected Extension Fragments;
+- compose core, mandatory domain/evaluator behavior, and selected Stage PTX inputs;
 - emit complete compilation/link inputs and deterministic artifact/cache identity;
 - produce the CUDA-JS execution package and result contract.
 
 The Composer owns search composition semantics. CUDA-JS owns the generic compiler/linker/runtime capability used to materialize those inputs.
 
-## 5. Realization and zero-abstraction-cost target
+## 5. Stage PTX realization and empty-capability disappearance
 
-The selected version-zero realization uses relocatable PTX modules. CUDA-MCGS owns the PTX fragment ABI, imported/exported device-symbol contracts, and composition identity; CUDA-JS owns the generic NVRTC/nvJitLink path that compiles or accepts PTX, links the selected inputs into a cubin, loads it, and launches it. Unbound points are omitted by Search Composer generation before PTX emission. Bound fragments are reached through statically named direct device symbols rather than a callback table or function-pointer registry.
+The selected version-zero realization uses relocatable PTX, not device LTO. A stage whose contract/schema selects one or more optional capabilities contributes exactly one composed **Stage PTX** input. A stage with no selected capability contributes no optional-extension PTX, call, context, state, capability-only channel/workspace or synchronization residue; mandatory stage/channel behavior is unaffected. If a stage exposes both entry and exit checkpoints, both symbols live in the same Stage PTX input.
 
-CUDA-MCGS must not make PTX syntax or one linker technique part of the semantic extension contract. A later conforming realization may use direct generated source composition, templates/code generation, precompiled specialization, LTO, or another mechanism if it preserves the required semantics and measured performance properties. NVIDIA cuVS and cuFFT LTO designs remain useful planning and typed-extension-point precedents, not the selected version-zero artifact format.
+Capabilities are declarative lowering inputs, not one independently callable PTX fragment per feature. CUDA-MCGS owns capability/stage semantics, lowering, Stage PTX ABI, imported/exported device-symbol contracts, ordered composition and Search Image identity. CUDA-JS owns the generic NVRTC/nvJitLink path that compiles or accepts PTX, links selected inputs into a cubin, loads it, and launches it.
 
-PTX separate compilation does not guarantee cross-module inlining. A direct linked symbol can still add call, register, occupancy, or code-size cost relative to fused source. The first experiment therefore compares the PTX-module path with a fused/generated-source control and treats the result as evidence, not an assumed optimizer property.
+Stage PTX is an artifact/composition unit, not a kernel, launch, module or scheduler requirement. One Search Image may link all stage inputs together. CUDA-MCGS does not make PTX syntax or one linker technique part of the semantic extension contract; a future accepted realization may preserve the semantics through another mechanism without making LTO a version-zero dependency.
 
-The production performance requirements are:
+The bounded probe proved exact unused disappearance and direct-link correctness, but tiny separate PTX functions retained calls and grew code/register cost. One coarse boundary approached the inline control only after sufficient synthetic work. Therefore the production requirement is:
 
-> **Unbound extension points shall impose zero abstraction overhead in the realized search image. Bound extensions shall impose no generic dispatch overhead beyond the intrinsic work and resource cost of their implementation.**
+> **No capability means no extension residue. Several capabilities at one stage mean one composed Stage PTX input, invoked only at declared stable entry/exit checkpoints.**
 
-For an unbound point, production evidence should show no retained callback-table lookup, indirect call, enable branch, generic schema walk, unused context construction, or reserved per-point state attributable solely to the extension abstraction.
+Stage boundaries should be chosen where they are semantically stable and practically useful enough to amortize the boundary. A stage must not be invented merely to obtain a PTX attachment point.
 
-For a bound fragment, any increased instructions, registers, shared memory, global memory, synchronization, occupancy pressure, or code size caused by the fragment's actual work is intrinsic cost rather than abstraction cost. Those costs remain subject to normal performance/resource acceptance.
+Any increased instructions, registers, shared/global memory, synchronization, occupancy pressure, code size or latency remains charged to the engine. Representative Stage PTX profiles must be compared against equivalent fused/generated controls.
 
 This requirement must be verified against emitted PTX and final cubin/SASS plus representative benchmarks where tool support permits; source-level specialization or a successful link alone is not proof.
 
@@ -152,7 +140,7 @@ The **Search Image** is the fully resolved executable search configuration: devi
 
 Before ignition, the host-side toolchain may:
 
-- select contracts, profiles, extensions, and evaluator/model;
+- select contracts, profiles, stage capabilities, channels, and evaluator/model;
 - validate and normalize schemas;
 - compose/generate/compile/link code;
 - allocate finite resources;
@@ -161,12 +149,12 @@ Before ignition, the host-side toolchain may:
 
 After ignition:
 
-- no required extension may be newly discovered, compiled, linked, or loaded;
-- no host lookup may resolve an extension point;
+- no required capability or Stage PTX may be newly discovered, compiled, linked, or loaded;
+- no host lookup may resolve a stage surface, capability or channel;
 - no CPU-produced intermediate decision may be required for progress;
-- all behavior required for active search, including bound extensions and secondary search-time systems, is already device-resident or device-accessible under the finite plan.
+- all behavior required for active search, including stage capabilities, channels and secondary search-time systems, is already device-resident or device-accessible under the finite plan.
 
-A bound extension may be **inactive** and later become **active** based on GPU-side conditions. This is activation, not late binding.
+An already-composed capability may be **inactive** and later become **active** based on GPU-side conditions. This is activation, not late binding.
 
 ## 7. Search-specific device program
 
@@ -178,7 +166,7 @@ The realized device program owns or executes the selected implementations for:
 - domain transition and action/proposal behavior;
 - evaluator batch formation, resident execution, and result publication;
 - selection/reservation and backup/propagation;
-- extension point invocations that survived specialization;
+- operational stage transitions, stage checkpoints and Async Stage Channels that survived specialization;
 - root/output publication;
 - memory-pressure and search-stop state;
 - search diagnostics/instrumentation selected for the concrete image;
@@ -199,7 +187,7 @@ The Search Composer may eventually select among evidence-backed realizations suc
 - conditional graph execution;
 - another device-owned scheduling mechanism.
 
-The exact scheduler remains an open measured decision. Persistent kernels are especially attractive for irregular low-latency search loops but may constrain coexistence with evaluator or secondary GPU work. CUDA Graph device launch/conditional mechanisms can express device-owned progression but impose their own instantiation and topology constraints. The correct implementation must be selected from representative workloads and hardware evidence rather than from the phrase "GPU-resident."
+The exact scheduler remains an open measured decision. Persistent kernels are especially attractive for irregular low-latency search loops but may constrain coexistence with evaluator or secondary GPU work. CUDA Graph device launch/conditional mechanisms can express some device-owned progression, but conditional bodies prohibit kernels that use Device Graph Launch or CUDA Dynamic Parallelism and device graphs have additional restrictions. Graphs therefore remain a profile candidate, not the universal stage substrate. The correct implementation must be selected from representative workloads and hardware evidence rather than from the phrase "GPU-resident."
 
 A host micro-batch relaunch loop is non-conforming whenever active-search progress or the next search decision depends on the host between launches.
 
@@ -208,8 +196,9 @@ A host micro-batch relaunch loop is non-conforming whenever active-search progre
 CUDA-MCGS should own its **search-semantic and search-critical execution mechanisms**, including:
 
 - Search IR and Search Composer;
-- Extension Surface/Point/Contract/Context Schema semantics;
-- fragment manifest, compatibility, binding, and specialization identity;
+- Search Stage graph, useful boundary, checkpoint and Stage Extension Surface semantics;
+- capability/Async Stage Channel compatibility and specialization identity;
+- Stage PTX lowering and checkpoint ABI;
 - search memory planning and pressure policy;
 - graph/transposition/publication/cycle/path semantics;
 - search scheduling policy and result semantics;
@@ -239,10 +228,10 @@ This separation allows transpositions to share state/evaluation without incorrec
 
 Memory rules:
 
-- CUDA-MCGS plans search/model/extension/workspace/output capacities before engine creation.
+- CUDA-MCGS plans search/model/stage-capability/channel/workspace/output capacities before engine creation.
 - CUDA-JS performs generic allocations under explicit memory-kind and lifetime contracts.
 - Active search allocates from bounded device arenas selected by CUDA-MCGS; general-purpose host-mediated allocation is not a hot-path escape hatch.
-- Layouts contain only fields required by the realized contracts/extensions.
+- Layouts contain only fields required by the realized contracts, stages and capabilities.
 - References use explicit identity/generation semantics; raw addresses are not universal persistent identities.
 - High pressure reduces, freezes, or redirects expansion according to deterministic policy before unsafe allocation.
 - Reclamation favors explicit correctness and generation safety over invisible arbitrary eviction.
@@ -261,10 +250,11 @@ Before a production domain adapter, conformance should cover at least:
 3. lazy very-large action spaces with progressive widening;
 4. stochastic/chance and observation-bearing graphs;
 5. evaluator modes including absent, proposal-only, value-only, combined, vector/distributional where selected;
-6. extension points with no fragment bound, one fragment, and multiple compatible fragments;
-7. incompatible point/schema/version/permission/resource manifests rejected before ignition;
+6. stages with no capability, entry-only, exit-only, both checkpoints, and multiple compatible capabilities sharing one surface/Stage PTX;
+7. incompatible stage/checkpoint/schema/version/permission/resource combinations rejected before ignition;
 8. GPU-side activation/deactivation of already-bound behavior without host decisions;
-9. finite memory pressure, saturation, cancellation, completion, and deterministic failure behavior;
-10. equivalent search semantics across the reference interpretation and an exact compatible CUDA-JS/Search Image pair.
+9. required and optional cross-stage dataflow, pending/ready rescheduling, saturation, stale generations and deadlock outcomes without worker blocking;
+10. finite memory pressure, cancellation, completion, and deterministic failure behavior;
+11. equivalent search semantics across the reference interpretation and an exact compatible CUDA-JS/Search Image pair.
 
-The zero-abstraction-cost claim additionally requires a baseline-versus-unbound emitted-code/benchmark capsule; functional conformance alone cannot prove it.
+The empty-capability disappearance claim additionally requires baseline-versus-empty-capability emitted-code evidence. Bound-stage acceptance requires a representative Stage PTX versus fused-control resource/occupancy/GPU-timing capsule; functional conformance alone proves neither.
