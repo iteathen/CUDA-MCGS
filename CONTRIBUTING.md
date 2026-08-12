@@ -1,12 +1,12 @@
 # Contributing to CUDA-MCGS
 
-CUDA-MCGS is a public, pre-release, documentation-first project. The GitHub repository retains the historical identifier `iteathen/UMCGS`; product-facing references use **CUDA-MCGS**.
+CUDA-MCGS is a pre-release, documentation-first project prepared for public contribution. The canonical `iteathen/UMCGS` repository remains private until its visibility is explicitly changed; product-facing references use **CUDA-MCGS**.
 
 Before making a material change, read [`AGENTS.md`](AGENTS.md) and the relevant governance/specification files it routes to. The project is intentionally contract-first: proposals and experiments do not silently authorize production implementation.
 
 ## Public contribution workflow
 
-Use the normal public GitHub contribution model:
+Once the canonical repository is public, use the normal public GitHub contribution model:
 
 1. Open or reference an issue when the change is substantial, architectural, security-sensitive, cross-component, or likely to require design/specification work.
 2. Fork `iteathen/UMCGS` or create a short-lived topic branch when you have appropriate repository access.
@@ -16,7 +16,7 @@ Use the normal public GitHub contribution model:
 6. Fill in the pull-request template honestly, including checks not run, evidence gaps, cleanup state, third-party provenance, and contributor declarations.
 7. Maintainer review decides integration. A PR, green CI result, or external approval is evidence—not permission to bypass accepted contracts or repository policy.
 
-`main` is the integration trunk. The intended public-repository posture is protected `main`, CODEOWNERS/owner review for foundational authority, and public GitHub Actions for portable/documentation/reference checks. Exact repository settings remain GitHub configuration and must be verified after any visibility/protection change.
+`main` is the integration trunk. The intended public-repository posture is protected `main`, CODEOWNERS/owner review for foundational authority, and public GitHub Actions for portable/documentation/reference checks. Exact repository settings remain GitHub configuration and must be verified after the visibility/protection change.
 
 ## Security reports
 
@@ -114,7 +114,7 @@ Run:
 ./scripts/verify-docs.sh
 ```
 
-The public workflow in [`.github/workflows/docs.yml`](.github/workflows/docs.yml) provides portable documentation/reference CI. Native CUDA claims still require exact-profile native evidence; public CI does not magically qualify unsupported platforms.
+The workflow in [`.github/workflows/docs.yml`](.github/workflows/docs.yml) is prepared to provide public portable documentation/reference CI after visibility changes. Native CUDA claims still require exact-profile native evidence; public CI does not magically qualify unsupported platforms.
 
 ## Pull requests
 
@@ -131,4 +131,4 @@ Every material PR receives complete author-side review. Independent review is re
 
 ## Historical private-intake workflow
 
-Before the repository's public transition, outside contributors used standalone private intake repositories because a free private personal repository could not provide the intended branch-protection boundary. That workflow is superseded by the public fork/PR model and is retained only in repository history/provenance; do not create new intake repositories unless a future security/access requirement explicitly re-authorizes them.
+Before the public-transition preparation, outside contributors used standalone private intake repositories because a free private personal repository could not provide the intended branch-protection boundary. That workflow is superseded for the intended public state and is retained only in repository history/provenance; do not create new intake repositories unless a future security/access requirement explicitly re-authorizes them.
