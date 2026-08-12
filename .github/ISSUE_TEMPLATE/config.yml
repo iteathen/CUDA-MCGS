@@ -1,2 +1,5 @@
 blank_issues_enabled: true
-contact_links: []
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/iteathen/UMCGS/blob/main/SECURITY.md
+    about: Read the private vulnerability-reporting policy instead of opening a public exploit-detail issue.

@@ -24,6 +24,8 @@ The project method is:
 - LEGO component ownership, SOLID internal responsibilities, CUPID implementation quality, and simplest sufficient total-system design;
 - mature-scale organization, specification-first foundations, test architecture defined with contracts, evidence-first debugging/performance, and provenance-preserving documentation/handoffs.
 
+Public repository collaboration, security, CI/protection expectations, and the visibility-transition checklist are documented in [`PUBLIC_REPOSITORY.md`](PUBLIC_REPOSITORY.md), [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md), and [`../../SECURITY.md`](../../SECURITY.md). Public visibility is independent from a CUDA-MCGS product release.
+
 Selective specification and agent-file reading are governed by [`../decisions/ADR-0017-selective-spec-and-agent-file-reading.md`](../decisions/ADR-0017-selective-spec-and-agent-file-reading.md), [`../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md), [`../../agent_files/general_foundation/CONTEXT_ROUTING.md`](../../agent_files/general_foundation/CONTEXT_ROUTING.md), and [`../../agent_files/general_foundation/DOCUMENTATION_GOVERNANCE.md`](../../agent_files/general_foundation/DOCUMENTATION_GOVERNANCE.md).
 
 Engineering judgment and value ordering are governed by [`../decisions/ADR-0015-engineering-judgment-and-value-ordering.md`](../decisions/ADR-0015-engineering-judgment-and-value-ordering.md), [`../../agent_files/general_foundation/ENGINEERING_JUDGMENT.md`](../../agent_files/general_foundation/ENGINEERING_JUDGMENT.md), and [`../../agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md`](../../agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md).

@@ -9,6 +9,17 @@
 .DS_Store
 Thumbs.db
 
+# Local secret-bearing files (defense in depth only; never rely on ignore rules for secret management)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.netrc
+.npmrc
+
 # Generated local output
 build/
 dist/

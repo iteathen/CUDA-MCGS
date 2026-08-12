@@ -44,6 +44,10 @@ This registry tells developers and agents where durable information and future i
 | `project.archive` | Superseded documentation provenance | [`../docs/archive/`](../docs/archive/README.md) | Active |
 | `project.state` | Current phase and authority summary | [`../STATUS.md`](../STATUS.md) | Active |
 | `project.next-step` | One coherent next boundary or active focus-branch packet | [`../next_step.yaml`](../next_step.yaml) | Active |
+| `project.licensing` | Open-source license, commercial-license path, contribution/relicensing grant, and third-party licensing boundary | [`../LICENSE`](../LICENSE) and [`../LICENSING.md`](../LICENSING.md) | Active; `AGPL-3.0-or-later` plus separate commercial licensing |
+| `project.contributing` | Public contribution workflow, contributor declarations, and review-entry expectations | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) and [`../.github/pull_request_template.md`](../.github/pull_request_template.md) | Public-transition-ready; canonical repository remains private until explicit switch |
+| `project.security` | Public vulnerability-reporting policy, secret-handling expectations, and repository security entry point | [`../SECURITY.md`](../SECURITY.md) and [`general_foundation/SECURITY.md`](general_foundation/SECURITY.md) | Public-transition-ready |
+| `project.repository-publication` | Private-to-public visibility gates, history/privacy audit, public CI/protection posture, switch sequence, and post-switch verification | [`../docs/development/PUBLIC_REPOSITORY.md`](../docs/development/PUBLIC_REPOSITORY.md) | Active transition checklist; does not authorize visibility switch or product release |
 
 ## Repository product areas
 

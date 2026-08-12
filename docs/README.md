@@ -2,13 +2,17 @@
 
 **Status:** Informational
 
-CUDA-MCGS is the product-facing name of the universal MCGS framework currently hosted in `iteathen/UMCGS`. Existing accepted UMCGS ADR/specification identifiers remain authoritative until a separate naming/repository migration is accepted.
+CUDA-MCGS is the product-facing name of the universal MCGS framework hosted in `iteathen/UMCGS`. Existing accepted UMCGS ADR/specification identifiers remain authoritative until a separate naming/repository migration is accepted.
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with schema-backed extension support.**
 
 ## Start here
 
 - [`PROJECT_CHARTER.md`](PROJECT_CHARTER.md) — accepted UMCGS/CUDA-MCGS search mission and boundary.
+- [`../CONTRIBUTING.md`](../CONTRIBUTING.md) — public fork/PR workflow and contributor-license grant.
+- [`../SECURITY.md`](../SECURITY.md) — private vulnerability reporting and public security posture.
+- [`../LICENSING.md`](../LICENSING.md) — AGPL-3.0-or-later, commercial licensing, contribution/relicensing, and third-party boundaries.
+- [`development/PUBLIC_REPOSITORY.md`](development/PUBLIC_REPOSITORY.md) — public-visibility readiness, history/secret audit, CI/protection, and post-switch verification checklist.
 - [`../agent_files/README.md`](../agent_files/README.md) — canonical developer/agent system.
 - [`../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md) — selective authority discovery and semantic closure.
 - [`../agent_files/general_foundation/ENGINEERING_JUDGMENT.md`](../agent_files/general_foundation/ENGINEERING_JUDGMENT.md) — specification alignment, path selection, value ordering, tradeoffs, and priority.
@@ -19,6 +23,8 @@ CUDA-MCGS is the product-facing name of the universal MCGS framework currently h
 - [`development/README.md`](development/README.md) — development method.
 - [`archive/README.md`](archive/README.md) — superseded-history policy.
 - [`../next_step.yaml`](../next_step.yaml) — current canonical plan spine; revise this rather than creating a competing master plan.
+
+Public repository visibility is a collaboration/publication state, **not** a CUDA-MCGS product release, stable API promise, native platform qualification, or compatible-pair acceptance claim.
 
 ## Current accepted decisions
 
