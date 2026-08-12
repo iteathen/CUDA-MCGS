@@ -1,31 +1,43 @@
 # Contributing to CUDA-MCGS
 
-CUDA-MCGS is private and documentation-first. The GitHub repository retains the historical identifier `iteathen/UMCGS`. Read [`AGENTS.md`](AGENTS.md), [`agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md), [`CONTEXT_ROUTING.md`](agent_files/general_foundation/CONTEXT_ROUTING.md), [`PRINCIPLES.md`](agent_files/general_foundation/PRINCIPLES.md), [`ENGINEERING_JUDGMENT.md`](agent_files/general_foundation/ENGINEERING_JUDGMENT.md), [`CONTEXTUAL_DESIGN_WEIGHTING.md`](agent_files/general_foundation/CONTEXTUAL_DESIGN_WEIGHTING.md), [`ASSESSMENT_AND_PLANNING.md`](agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md), [`FOCUS_BRANCHES.md`](agent_files/general_foundation/FOCUS_BRANCHES.md), [`TOKEN_DISCIPLINE.md`](agent_files/general_foundation/TOKEN_DISCIPLINE.md), [`TESTING.md`](agent_files/general_foundation/TESTING.md), [`DEBUGGING.md`](agent_files/general_foundation/DEBUGGING.md), [`PLAN_EXECUTION.md`](agent_files/general_foundation/PLAN_EXECUTION.md), and [`CLEANUP_AND_DISPOSITION.md`](agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md) when applicable.
+CUDA-MCGS is a public, pre-release, documentation-first project. The GitHub repository retains the historical identifier `iteathen/UMCGS`; product-facing references use **CUDA-MCGS**.
 
-## Private-repository contribution isolation
+Before making a material change, read [`AGENTS.md`](AGENTS.md) and the relevant governance/specification files it routes to. The project is intentionally contract-first: proposals and experiments do not silently authorize production implementation.
 
-The canonical private repository is owned by a personal GitHub account on the free plan. GitHub gives every collaborator on such a repository write access, while protected branches and rulesets are unavailable for private repositories on that plan. Therefore:
+## Public contribution workflow
 
-- `iteathen` MUST remain the only account with access to the canonical private repository;
-- an outside developer MUST NOT be invited to canonical CUDA-MCGS, even temporarily;
-- CODEOWNERS is advisory while the repository is private and MUST NOT be represented as enforced protection;
-- private-repository GitHub Actions remain disabled; validation is local and every missing platform remains an explicit evidence gap;
-- public repositories such as CUDA-JS continue to use protected branches, required owner review, and public-repository CI.
+Use the normal public GitHub contribution model:
 
-When an outside developer needs the private source, the owner creates a standalone private intake repository for that engagement. It is an access-isolation boundary, not a fork, product repository, release source, authority, or integration trunk.
+1. Open or reference an issue when the change is substantial, architectural, security-sensitive, cross-component, or likely to require design/specification work.
+2. Fork `iteathen/UMCGS` or create a short-lived topic branch when you have appropriate repository access.
+3. Keep one pull request to one coherent ownership-sized outcome. Do not bundle unrelated cleanup or speculative redesign.
+4. Rebase/update from current `main` before final review when the base materially affects the change.
+5. Run `./scripts/verify-docs.sh` for every durable repository change plus every task-specific capsule required by the affected contract.
+6. Fill in the pull-request template honestly, including checks not run, evidence gaps, cleanup state, third-party provenance, and contributor declarations.
+7. Maintainer review decides integration. A PR, green CI result, or external approval is evidence—not permission to bypass accepted contracts or repository policy.
 
-1. Seed the intake repository from one exact canonical commit, with no credentials, owner-only refs, build output, external state, or unrelated history.
-2. Disable Actions and add no repository secrets, deploy keys with canonical write access, self-hosted runners, or automation tokens.
-3. Invite the developer only to the intake repository. They work on topic branches and may open intake PRs; intake approvals never authorize canonical integration.
-4. The owner fetches the proposed exact head, verifies ancestry and the complete diff, runs risk-appropriate local validation, and imports accepted commits onto an owner-controlled canonical topic branch.
-5. Canonical integration follows the normal author review, exact-head, test, cleanup, and merge gates. Preserve the developer's original commit authorship or explicit co-author attribution.
-6. At engagement end, remove the collaborator and archive the intake repository after recording its exact retained head and disposition. Do not delete evidence needed for attribution, review, or recovery.
+`main` is the integration trunk. The intended public-repository posture is protected `main`, CODEOWNERS/owner review for foundational authority, and public GitHub Actions for portable/documentation/reference checks. Exact repository settings remain GitHub configuration and must be verified after any visibility/protection change.
 
-Compromise or destructive changes in an intake repository must have no path to mutate canonical CUDA-MCGS. When CUDA-MCGS becomes public, replace this workflow with ordinary forks, protected `main`, required owner review, and public CI.
+## Security reports
+
+Do not file exploitable security details in a public issue. Follow [`SECURITY.md`](SECURITY.md) for private vulnerability reporting and incident handling.
+
+## Contribution license grant
+
+CUDA-MCGS uses `AGPL-3.0-or-later` plus a separately negotiated commercial-license path. To preserve both options, by submitting a code contribution you represent that you have the right to submit it and agree that:
+
+1. the contribution may be distributed under `AGPL-3.0-or-later`;
+2. you grant the CUDA-MCGS project owner a perpetual, worldwide, non-exclusive, royalty-free, irrevocable copyright license to use, reproduce, modify, prepare derivative works of, publicly display, publicly perform, sublicense, relicense, and distribute the contribution;
+3. you grant the CUDA-MCGS project owner and downstream recipients a perpetual, worldwide, royalty-free patent license for patent claims you can license that are necessarily infringed by your contribution alone or in combination with CUDA-MCGS; and
+4. you retain ownership of your contribution and receive no payment or commercial-license revenue right unless a separate written agreement says otherwise.
+
+Mark the contributor declaration in the pull-request template. The maintainer may require a separate signed contributor agreement before accepting a material contribution. If you cannot agree to these terms, do not submit code; an issue describing the problem or idea is welcome.
+
+See [`LICENSING.md`](LICENSING.md).
 
 ## Before production implementation
 
-A change needs:
+A production change needs, proportionally to its consequence:
 
 - the mandatory operating kernel and every target-path instruction chain;
 - the smallest authority-complete reading set: direct governing authority, required normative references, triggered specialist doctrine, and material producer/consumer/lifecycle/test/cleanup adjacency;
@@ -33,55 +45,38 @@ A change needs:
 - an engineering contract covering outcome, consumers, authority, semantics, bounds, resources, lifecycle/failure/recovery/cleanup, compatibility, non-goals, and completion evidence;
 - traceability from material specification obligations to owners, mechanisms, failure consequences, and test capsules;
 - explicit resolution or blocking of specification ambiguities, conflicts, gaps, stale meaning, unimplementable obligations, and oracle mismatches;
-- hard gates, mission objectives, supporting qualities, and process costs classified for the subsystem;
-- credible alternative paths, decisive evidence, selected-path rationale, accepted tradeoffs, confidence, priority P0–P4, and revisit triggers;
-- the strongest credible adversarial objection and its resolution, experiment, risk, or blocker;
+- credible alternative paths, decisive evidence, selected-path rationale, accepted tradeoffs, confidence, and revisit triggers;
 - a clear product-area/component owner and accepted contract authority;
-- a current plan version and dependency-ready node;
-- a focus-branch map when work exceeds one focused session or spans semantic owners/contracts/paths/unknowns;
-- a token-backpressure strategy preserving the risk-appropriate practice floor and enough capacity for inspection, validation, integration, cleanup, review, recovery, and handoff;
-- a test strategy tied to owned invariants, authoritative oracles, case-intent banking, owning capsules, evidence invalidation, escalation tiers, and consolidation;
-- expected local/wider effects and downstream output revisions;
-- a LEGO boundary with explicit ports, injected dependencies, adapters, lifecycle, and replaceability;
-- domain-appropriate foundations and total-system simplicity, including decision review, branch coordination, context reconstruction, tests, operations, and cleanup;
+- a current dependency-ready plan/focus branch;
+- a test strategy tied to owned invariants, authoritative oracles, evidence invalidation, escalation tiers, and consolidation;
 - validation capable of falsifying the selected path and final integrated behavior;
 - prior-art/provenance inspection where it can reshape the design.
 
+Do not begin production implementation merely because an issue or proposal exists.
+
 ## Selective specification and agent-file reading
 
-Do not recursively read the whole repository, and do not read only the files named in the request.
+Do not recursively read the whole repository, and do not read only the files named in a request.
 
-For every task:
+For every material task:
 
 1. state the task signature—outcome, target paths/symbols/artifacts, operations, owner, claim, and exact revision;
 2. read the mandatory kernel;
 3. discover every applicable `AGENTS.md` from repository root toward each target path;
 4. use registry, indexes, manifests, stable IDs, search, and references to find direct authority;
 5. check status, owner, scope, version, revision, and supersession before applying a document;
-6. classify plausible documents as kernel, governing, triggered, adjacent-check, evidence-only, not-applicable, superseded/archive, or blocked/missing;
-7. read governing and materially triggered documents to semantic closure, including definitions, normative references, conditions, lifecycle/failure/compatibility/security/cleanup, and conformance evidence;
-8. scan material producers, consumers, dependencies, generated forms, persistence, lifecycle, tests, packaging, and cleanup;
-9. repeat routing when scope or authority changes;
-10. refresh the final changed surface before acceptance or review.
+6. read governing and materially triggered documents to semantic closure;
+7. scan material producers, consumers, dependencies, generated forms, persistence, lifecycle, tests, packaging, security, and cleanup;
+8. reroute when scope or authority changes;
+9. refresh the final changed surface before acceptance or review.
 
 Accepted status does not imply universal applicability. Proposals, research, architecture, examples, implementation, tests, plans, PR descriptions, and summaries remain beneath accepted authority.
-
-Routine obvious work needs no standalone document-reading ledger. Use [`agent_files/templates/document-reading.template.yaml`](agent_files/templates/document-reading.template.yaml) only when cross-session, cross-agent, cross-repository, critical, disputed, or review-sensitive work needs durable applicability and invalidation evidence.
 
 ## Engineering judgment and value ordering
 
 Specifications are obligations, not themes. Existing code, tests, comments, examples, plans, and previous agent output are evidence—not automatic authority.
 
-Translate each material value into one of:
-
-- hard gate;
-- mission objective;
-- supporting quality;
-- process cost or tie-breaker.
-
-Eliminate gate-failing paths before comparing preferences. Weighted scoring cannot compensate for failed authority, safety, semantic correctness, required accuracy/deadline/resource/compatibility, lifecycle, recovery, or evidence bounds.
-
-When no subsystem-specific order exists, use the accepted fallback:
+Eliminate paths that fail authority, safety/security, semantic correctness, required accuracy/deadline/resource/compatibility, lifecycle, recovery, or evidence gates before comparing preferences. When no subsystem-specific order exists, use the accepted fallback:
 
 ```text
 authority / legality / explicit ethics
@@ -93,68 +88,25 @@ authority / legality / explicit ethics
     → delivery speed / token cost / convenience / polish
 ```
 
-A subsystem may promote another concern into a gate only with explicit purpose, threshold, consequence, owner, evidence, and revisit trigger.
+Choose the lowest complete total system, not the easiest file change.
 
-Compare credible no-change, minimal, proposed, materially different, experiment/staged, and fallback paths where material. Prefer reversible evidence-producing steps under high uncertainty and consequence. Choose the lowest complete total system—not the easiest file change.
+## Token backpressure, testing, and cleanup
 
-Prioritize P0 containment, P1 gate/foundation, P2 information/risk/dependency unlock, P3 mission value/measured efficiency, then P4 supporting quality/polish.
+Token/context pressure applies to every contribution but never justifies skipping required evidence, safety, cleanup, or review. Reduce duplication and optional breadth before reducing scope; reduce scope before reducing rigor.
 
-Routine work needs no separate decision record. Use [`agent_files/templates/engineering-decision.template.yaml`](agent_files/templates/engineering-decision.template.yaml) only for foundational, contested, cross-component, high-consequence, empirically uncertain, difficult-to-reverse, or cross-session choices.
+Capture material test intents when discovered, use minimal reproducers, consolidate durable cases into owning capsules, reuse exact unchanged evidence, and cluster failures by root cause rather than repeating broad test runs.
 
-## Universal token backpressure and minimum practice floor
+Protect user/pre-existing work, project authority, evidence, recovery state, shared resources, protected branches, and active dependents. Every material generated, diagnostic, local, remote, sensitive, or external artifact receives an intentional disposition.
 
-Token backpressure applies to every contribution, including routine edits, from the first retrieval or mutation.
+## Third-party code and generated artifacts
 
-Every task establishes, at least implicitly:
+Do not include credentials, machine-specific private paths, CUDA Toolkit binaries, NVIDIA proprietary files, third-party code, datasets, diagrams, generated artifacts, or substantial copied documentation without exact provenance and compatible licensing.
 
-- exact outcome and authority;
-- relevant current-state inspection;
-- smallest coherent useful scope;
-- risk-appropriate minimum practice floor;
-- cheapest decisive verification;
-- enough reserve for actual-effect inspection, testing, cleanup, and truthful reporting;
-- pressure triggers and optional work to defer.
-
-The universal floor includes the request/constraints, current authority, coherent scope, expected result, decisive verification, actual-effect inspection, relevant testing, cleanup/reconciliation, and honest checks-not-run/risks. Substantial and critical work retain every objectively triggered specification, reasoning, safety/security, resource/failure, compatibility, recovery, review, and integration practice.
-
-When pressure rises, reduce in this order:
-
-```text
-remove duplication
-  → reuse authority and evidence
-  → batch coherent work and tests
-  → narrow context and output
-  → defer optional breadth and polish
-  → reduce scope or claim
-  → split, rebranch, or hand off
-  → pause on a blocker
-```
-
-Reduce waste before breadth and breadth before rigor. A broad claim may not be preserved by cutting required evidence; sampling or a lower tier narrows the claim.
-
-Routine work uses an implicit micro-budget and needs no token ledger. Substantial/critical work preserves explicit reserves and split/handoff triggers. Soft estimates are replan signals rather than authority. Essential evidence or cleanup may justify an explicit extension, followed by scope reduction or split to restore reserve.
-
-Do not continue because tokens have already been spent. Do not stop at a soft estimate while required in-scope safety, correctness, cleanup, or handoff remains incomplete and a sound extension or split is available.
-
-## Testing, focus branches, and cleanup
-
-Capture material test intents immediately, use minimal reproducers, consolidate cases into owning capsules, reuse exact evidence, cluster failures by root cause, and avoid unchanged reassurance runs. A second repair cycle without stronger first-divergence evidence or a changed root-cause hypothesis requires replan.
-
-Token pressure may remove duplicate tests, setup, and unnecessary tiers. It may not remove the authoritative oracle, evidence identity, discovery/skip accounting, required owner capsule, or integration evidence needed by the claim.
-
-Decompose large work into semantic focus branches; do not confuse those with Git branches. A focus branch must fit its complete reading set, mechanism, consequences, testing, cleanup, and handoff reserve.
-
-Protect user/pre-existing work, project authority, evidence, recovery state, shared resources, protected branches, and active dependents. Every material reading/decision record, file, test artifact, branch, process, device resource, credential, backup, and external object receives an intentional verified disposition.
-
-## Organization
-
-UMCGS is organized for large-project scale from inception. Follow [`PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and [`REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md).
-
-New production components require `README.md`, `component.yaml`, registry entry, dependency declaration, public contract, validation/test ownership, canonical capsule commands, teardown, and disposition. Document-reading records, engineering-decision records, focus branches, token budgets, and test batches do not create components by themselves.
+Source adaptation/vendor decisions require exact upstream revision, license, local-change record, and explicit reuse disposition. See [`third_party/README.md`](third_party/README.md), [`LICENSING.md`](LICENSING.md), and the research policy.
 
 ## Documentation and validation
 
-Substantial Markdown below `docs/` must carry a recognized status and support selective discovery through clear owner, scope, normative references, supersession, indexes, and registry linkage. Update specifications, ADRs, document-reading/engineering-decision/parent/focus-branch/token/test/plan/execution/cleanup state, indexes, and registry entries in the same coherent change. Link authority rather than copying it; archive useful stale guidance rather than keeping competing active versions.
+Substantial Markdown below `docs/` must carry a recognized status and support selective discovery through clear ownership, scope, references, indexes, and supersession.
 
 Run:
 
@@ -162,21 +114,21 @@ Run:
 ./scripts/verify-docs.sh
 ```
 
-Token pressure cannot waive objectively triggered validation.
+The public workflow in [`.github/workflows/docs.yml`](.github/workflows/docs.yml) provides portable documentation/reference CI. Native CUDA claims still require exact-profile native evidence; public CI does not magically qualify unsupported platforms.
 
 ## Pull requests
 
 Before requesting review:
 
-- freeze exact head/base and account for the complete changed surface;
-- show instruction chains, governing documents, triggered doctrine, material adjacency, applicability exclusions, exact revisions, and final authority refresh for substantial work;
-- show engineering-contract and specification traceability;
-- disclose hard gates, value order, credible candidates, selected path, alternatives rejected, priority, tradeoffs, confidence, and decision debt;
-- account for branch statuses/outputs, token practice floor/reserve/backpressure actions, test evidence, execution fidelity, cleanup, and affected contracts;
-- disclose authoritative oracles, evidence keys, discovery/skip counts, test intents, failure clusters, tiers, evidence reused/repeated, and checks not run;
-- rerun only evidence invalidated by head, base, specification, decision, shared contract, source/test revision, generated artifact, model, environment, fixture, seed, or resource profile;
-- disclose any budget extension, narrowed claim, deferred work, split/handoff, document-reading/decision/test/token/cleanup debt, issue closure, Git branch/worktree effects, and merge method.
+- freeze the exact head/base and account for the complete changed surface;
+- show governing documents and affected contracts for material work;
+- state expected/actual effects and the decisive falsifier;
+- disclose evidence keys, checks not run, unsupported platforms, and claim limits;
+- disclose third-party provenance, contributor-license agreement, security implications, cleanup state, and remaining debt;
+- keep the branch stable while exact-head review is active or explicitly invalidate stale review evidence after changes.
 
-Every material PR receives author-side complete-diff review. Independent review is triggered by phase, policy, owner instruction, or objective consequence. Merge is a separate expected-head transaction followed by target, authority, engineering-decision, focus-branch, test-evidence, dependency, debt, and cleanup verification.
+Every material PR receives complete author-side review. Independent review is required when phase, repository policy, owner instruction, or objective consequence triggers it. Merge is a separate guarded transaction followed by target/branch/dependency/cleanup verification.
 
-Do not describe shallow reading as selectivity, low raw token use as efficiency without showing verified lifecycle progress and preserved practice, a convenient implementation as the best path without gate/evidence comparison, branch-local work as integrated, raw test count as completeness, author-side review as independent approval, or a merge response as verified completion.
+## Historical private-intake workflow
+
+Before the repository's public transition, outside contributors used standalone private intake repositories because a free private personal repository could not provide the intended branch-protection boundary. That workflow is superseded by the public fork/PR model and is retained only in repository history/provenance; do not create new intake repositories unless a future security/access requirement explicitly re-authorizes them.
