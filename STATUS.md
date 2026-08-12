@@ -6,7 +6,7 @@
 
 ## Phase
 
-CUDA-MCGS is in **public pre-release framework definition, research, specification, and bounded evidence gathering**. `main` is the integration trunk. Public repository visibility is a collaboration, review, research-transparency, and CI state; it is not a CUDA-MCGS product release, stable API promise, native platform-support claim, or evidence that a released CUDA-MCGS/CUDA-JS compatible pair exists. No production search runtime or final component decomposition has been accepted.
+CUDA-MCGS is in **public-transition-ready pre-release framework definition, research, specification, and bounded evidence gathering**. The canonical GitHub repository remains private until its visibility is explicitly changed. `main` is the integration trunk. Public collaboration, licensing, security-reporting, and CI policy is prepared in advance; repository visibility is not a CUDA-MCGS product release, stable API promise, native platform-support claim, or evidence that a released CUDA-MCGS/CUDA-JS compatible pair exists. No production search runtime or final component decomposition has been accepted.
 
 The GitHub repository and existing accepted UMCGS authority identifiers retain the historical name until a separate migration is accepted. Product-facing references use **CUDA-MCGS**.
 
@@ -68,7 +68,7 @@ Exact local Windows evidence:
 - Search IR SHA-256 `bd6679178c6754fe9b06d6fa54d038166b7ef39e32fb5f51513cc303cfd63a96`;
 - baseline, canonical-order, minimum-capacity, eight fail-closed mutations, ordinary, publication, transposition, path-cycle, forced-exhaustion, scheduler-parity, and oracle-sensitivity cases all pass.
 
-The repository includes a public GitHub Actions workflow that runs the deterministic Search IR reference on Windows and Ubuntu plus documentation/governance validation. Public CI provides portable/reference evidence only; it does not retroactively change the exact local Windows evidence above or establish native Linux CUDA support. Native Linux CUDA remains an explicit gap. The later PTX experiment below adds bounded Windows CUDA-JS integration, GPU execution, and cleanup evidence without retroactively expanding this Search IR capsule's claim.
+The repository includes a GitHub Actions workflow prepared to run the deterministic Search IR reference on Windows and Ubuntu plus documentation/governance validation when public Actions are active. That workflow provides portable/reference evidence only; it does not retroactively change the exact local Windows evidence above or establish native Linux CUDA support. Native Linux CUDA remains an explicit gap. The later PTX experiment below adds bounded Windows CUDA-JS integration, GPU execution, and cleanup evidence without retroactively expanding this Search IR capsule's claim.
 
 ## Bounded PTX extension-composition discovery
 
@@ -121,7 +121,7 @@ Execute the revised canonical [`next_step.yaml`](next_step.yaml) engine plan thr
 
 ## Public collaboration and repository security
 
-CUDA-MCGS uses the normal public GitHub contribution model: forks or short-lived branches feed pull requests into canonical `main`. Foundational authority remains owner-controlled through CODEOWNERS; the intended public posture is protected `main` with required owner review and the public documentation/reference checks.
+CUDA-MCGS is prepared to use the normal public GitHub contribution model after the visibility switch: forks or short-lived branches feed pull requests into canonical `main`. Foundational authority remains owner-controlled through CODEOWNERS; the intended public posture is protected `main` with required owner review and public documentation/reference checks.
 
 Security-sensitive reports must use the private vulnerability channel described in [`SECURITY.md`](SECURITY.md), not public exploit-detail issues. The repository must not contain credentials, private user data, private endpoints, or sensitive machine artifacts.
 
