@@ -8,16 +8,17 @@
   "north_star": "CUDA-MCGS is a contract-defined universal GPU-resident MCGS framework with a universal least-authority extension/composition substrate; domain/search products such as chess are downstream specializations rather than the shape of the core.",
   "objective": "Create the version-zero universal CUDA-MCGS framework by accepting product-neutral MCGS contracts, accepting the universal Search Stage extension/composition substrate, extending Search IR and the Search Composer, proving finite long-lived Search Session semantics and one exact CUDA-JS compatible native engine, then allow downstream products such as chess to specialize those accepted contracts without becoming prerequisites for universal framework completion.",
   "architecture_layers": {
-    "universal_core": "Product-neutral MCGS semantics: domain, policy, evaluator, graph/path/transposition, Search Session/root lifecycle, finite resources, generic bounded result/observation publication, device-owned progress, Search IR/Composer, conformance and package semantics.",
+    "universal_core": "Product-neutral MCGS semantics: domain, policy, evaluator, graph/path/transposition, generic output payloads, Search Session/root lifecycle, finite resources, bounded result/observation publication, device-owned progress, Search IR/Composer, conformance and package semantics.",
     "universal_extension_substrate": "Product-neutral composition mechanics: semantic Search Stages, stable least-authority entry/exit surfaces, universal base checkpoint contexts, namespaced capability-specific context/resource contributions, bounded Async Stage Channels, and specialized Stage PTX/Search Image composition.",
     "downstream_products": "Separately owned domain/search products that select universal contracts/capabilities and add product-specific semantics, outputs, support and quality evidence. Chess is the first explicitly planned product lane but does not gate the universal parent."
   },
-  "ownership_boundary": "CUDA-MCGS owns universal MCGS semantics, the universal extension/composition substrate, Search IR/Search Composer, finite search resources, Search Session/root-update/observation semantics, generated Search Images, reference/native conformance, and the CUDA-MCGS-to-CUDA-JS adapter/package. Product layers such as chess own product-specific domain/policy/evaluator/output/capability semantics. CUDA-JS owns consumer-neutral Node/CUDA Driver/compiler/linker/artifact/resource/long-lived-operation/sideband-control-observation/launch/completion/error/teardown mechanisms and platform qualification; it must not learn MCGS, Search Stage, product, chess, root-update or output meaning.",
+  "ownership_boundary": "CUDA-MCGS owns universal MCGS semantics, generic result/output payload contracts, the universal extension/composition substrate, Search IR/Search Composer, finite search resources, Search Session/root-update/observation publication semantics, generated Search Images, reference/native conformance, and the CUDA-MCGS-to-CUDA-JS adapter/package. Product layers such as chess own product-specific domain/policy/evaluator/output/capability semantics. CUDA-JS owns consumer-neutral Node/CUDA Driver/compiler/linker/artifact/resource/long-lived-operation/sideband-control-observation/launch/completion/error/teardown mechanisms and platform qualification; it must not learn MCGS, Search Stage, product, chess, root-update or output meaning.",
   "deliverables": [
-    "accepted universal product-neutral domain, policy, evaluator, graph/storage, Search Session, finite-resource, scheduler and generic result/observation contracts",
+    "accepted universal product-neutral domain, policy, evaluator, graph/storage, generic output, Search Session, finite-resource and scheduler contracts",
     "accepted universal Search Stage, Stage Extension Surface, Async Stage Channel and capability-composition contracts with first-product deletion and materially different second-capability evidence",
     "complete normalized Search IR and deterministic Search Composer that distinguish universal core meaning from namespaced capability/product specialization inputs",
-    "accepted Search Session contract with finite root epochs, fail-closed root-update admission, stale-work disposition, explicit reuse classification, reroot/reclamation separation, generation-safe reuse and generic read-only observations",
+    "accepted generic output contract family supporting bounded complete, partial, evaluation, proof, sequence, diagnostic, custom or absent outputs without mandatory ranking semantics",
+    "accepted Search Session contract with finite root epochs, fail-closed root-update admission, stale-work disposition, explicit reuse classification, reroot/reclamation separation, generation-safe reuse and generic read-only observation publication",
     "version-zero Stage PTX ABI/generator and CUDA-MCGS-to-CUDA-JS Search Image package with exact absent-capability/product disappearance",
     "deterministic CUDA-free universal reference engine and consolidated synthetic conformance domains independent of chess",
     "finite Windows universal CUDA-MCGS native engine through one exact public CUDA-JS compatible pair, including the selected long-lived session profile where supported",
@@ -28,8 +29,10 @@
   "do_not": [
     "begin production implementation before the owning specification and dependencies are accepted",
     "make chess, games, boards, players, ranked moves, best-action output, top-k output, scalar value, one evaluator shape or one search formula universal core meaning",
+    "collapse search policy and output payload ownership merely because a product ranks policy statistics",
     "make a product-specific capability field part of every universal Stage base context or core Search IR merely because the first product needs it",
-    "use the extension substrate as a back door to redefine domain, policy, evaluator, resource, session or graph invariants without an owning selected contract",
+    "use the extension substrate as a back door to redefine domain, policy, evaluator, output, resource, session or graph invariants without an owning selected contract",
+    "make universal core contract acceptance depend on optional Stage/capability mechanics when the core semantic contract can be stated independently",
     "make chess product acceptance or implementation a prerequisite for universal CUDA-MCGS framework completion/release",
     "modify active CUDA-JS compiler/LTO work or implement CUDA-JS issue 35 before its owner finishes",
     "implement CUDA-JS long-lived-operation/sideband mechanisms before CUDA-JS issue 38 completes its own consumer-neutral research/specification gate",
@@ -49,7 +52,7 @@
   ],
   "minimum_practice_floor": [
     "accepted behavioral specifications before production implementation of each owned boundary",
-    "critical assessment and adversarial challenge for universal layering, Search IR, extension least authority, session/root-update semantics, concurrency, JIT/ABI, graph storage, memory, scheduler, evaluator and hot paths",
+    "critical assessment and adversarial challenge for universal layering, Search IR, extension least authority, output ownership, session/root-update semantics, concurrency, JIT/ABI, graph storage, memory, scheduler, evaluator and hot paths",
     "universal-core branches remain semantically coherent if the extension substrate and chess product are deleted",
     "extension-substrate acceptance includes first-product deletion plus a materially different second capability/product without widening universal base context",
     "one semantic focus branch per coherent owner with exact dependencies, acceptance, falsifier, rollback, cleanup and integration obligations",
@@ -59,7 +62,7 @@
     "every new production component is introduced with manifest, README, registry entry, dependency declaration and validation boundary in the same coherent change",
     "Windows-first native execution with portable/Linux work maintained in parallel and every unrun Linux claim explicitly excluded"
   ],
-  "plan_revision_reason": "The project owner corrected plan 15 after SESSION-001 learning: continuously ranked root moves were promoted too high and made the universal framework look like a specific decision/game search. ADR-0018 now separates mandatory universal MCGS semantics, a universal least-authority extension/composition substrate, and downstream products. Ranked chess moves move to the chess product/output layer; the universal session contract provides only generic bounded read-only observation publication. SESSION-001 also exposed proposal requirements for admission-before-mutation root updates, typed full-arena root pressure, reroot/reclamation separation, root-epoch stale-work isolation, generation-safe reclamation, observation read-only behavior and finite stale-safe counters. Plan 16 additionally reverses a plan-15 dependency mistake: universal domain/policy/evaluator semantics no longer depend on the Stage extension model. Stage surfaces consume stable core facts; they do not define the core.",
+  "plan_revision_reason": "The project owner corrected plan 15 after SESSION-001 learning: continuously ranked root moves were promoted too high and made the universal framework look like a specific decision/game search. ADR-0018 now separates mandatory universal MCGS semantics, a universal least-authority extension/composition substrate, and downstream products. Ranked chess moves move to the chess product/output layer; the universal session contract provides only generic bounded read-only observation publication. SESSION-001 also exposed proposal requirements for admission-before-mutation root updates, typed full-arena root pressure, reroot/reclamation separation, root-epoch stale-work isolation, generation-safe reclamation, observation read-only behavior and finite stale-safe counters. Plan 16 reverses plan-15 dependency mistakes: universal domain/policy/evaluator/output/resource semantics are stated independently of optional Stage mechanics, while the Search Composer later integrates selected extension resource contributions. A dedicated universal output owner prevents ranked-product payload semantics from leaking back into search policy.",
   "exact_input_revisions": {
     "cuda_mcgs_branch": "main",
     "cuda_mcgs_head_at_assessment": "cced9ccca22b935b8ecc0dcc4455687563e39a7b",
@@ -96,9 +99,9 @@
   "settled_proposal_shape": {
     "universal_core_model": [
       "Universal core meaning is product-neutral and remains coherent if chess and all optional extension capabilities are deleted.",
-      "Domain, policy and evaluator contracts define their semantics independently of the Search Stage extension substrate.",
+      "Domain, policy, evaluator, generic output and resource contracts define their semantics independently of the Search Stage extension substrate.",
       "Graph/path/transposition/publication/resource/device-progress semantics remain universal MCGS contracts; no ranking formula/output is mandatory.",
-      "Generic bounded result/observation publication is universal mechanism/semantics; product payloads such as ranked legal moves are downstream selected schemas."
+      "Generic bounded output payloads plus generic result/observation publication are universal semantics; product payloads such as ranked legal moves are downstream selected schemas."
     ],
     "extension_model": [
       "A Search Stage is one semantic operational state/validity transition for one logical work item, not searched domain state or a global phase/kernel/module/graph/product phase.",
@@ -115,7 +118,7 @@
       "Old root-relative work cannot publish new-epoch effects unless an owning contract proves the effect root-independent; reservations receive exactly one stale/completion disposition.",
       "Each persistent state family declares retain, retain-if-key-valid, transform, reset or invalidate/retire semantics across reroot.",
       "Reroot and reclamation are separate transitions; reclamation is generation-safe and may use a grace/epoch mechanism or equivalent proof.",
-      "Generic live observations are bounded coherent snapshots and are read-only with respect to search-semantic state; ranking is only one possible product/policy observation schema.",
+      "Generic live observations are bounded coherent snapshots and are read-only with respect to search-semantic state; ranking is only one possible product/output observation schema.",
       "Session/root/observation/reclamation counters are finite and fail/restart stale-safely instead of silently wrapping."
     ],
     "product_model": [
@@ -133,7 +136,7 @@
   "current_focus": {
     "id": "ENGINE-STAGE-01",
     "status": "proposal_drafted_review_required",
-    "next_action": "Review ADR-0018, SPEC-0000, SPEC-0003 through SPEC-0006 and the plan-16 dependency direction as one universal architecture packet. In parallel, assess universal domain/policy/evaluator contracts independently of the Stage extension model. Keep CHESS-0001 downstream proposal-only; do not begin production chess or universal lowering."
+    "next_action": "Review ADR-0018, SPEC-0000, SPEC-0003 through SPEC-0006 and the plan-16 dependency direction as one universal architecture packet. In parallel, assess universal domain/policy/evaluator/output contracts independently of the Stage extension model. Keep CHESS-0001 downstream proposal-only; do not begin production chess or universal lowering."
   },
   "issue_tracker": {
     "parent": "https://github.com/iteathen/CUDA-MCGS/issues/32",
@@ -152,7 +155,7 @@
     "cuda_js_native_linux": "https://github.com/iteathen/CUDA-JS/issues/4"
   },
   "focus_lanes": {
-    "universal_core": ["ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-GRAPH-01", "ENGINE-SESSION-01", "ENGINE-RESOURCE-01"],
+    "universal_core": ["ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-OUTPUT-01", "ENGINE-GRAPH-01", "ENGINE-SESSION-01", "ENGINE-RESOURCE-01"],
     "universal_extension_substrate": ["ENGINE-STAGE-01", "ENGINE-CHANNEL-01", "ENGINE-STAGE-PTX-01"],
     "universal_integration_and_native": ["ENGINE-IR-COMPOSER-01", "ENGINE-SCHED-01", "ENGINE-REFERENCE-01", "ENGINE-WINDOWS-01", "ENGINE-PERF-LINUX-01", "ENGINE-RELEASE-01"],
     "downstream_products": ["PRODUCT-CHESS-V0"]
@@ -167,12 +170,12 @@
       "depends_on": ["ADR-0018", "SPEC-0001", "SPEC-0002"],
       "write_boundary": ["docs/specs/SPEC-0003-*", "stage/capability representation in complete Search IR proposal", "stage conformance cases"],
       "outcome": "Accepted finite per-work-item stage semantics with universal semantic boundaries, minimal universal base contexts, namespaced capability-specific context/resource contributions, least-authority permissions, no mid-stage exposure and no product-shaped stage dependence.",
-      "non_goals": ["domain/policy/evaluator definition", "scheduler selection", "PTX ABI implementation", "fixed AlphaZero/chess stage list", "product capability catalogue"],
+      "non_goals": ["domain/policy/evaluator/output definition", "scheduler selection", "PTX ABI implementation", "fixed AlphaZero/chess stage list", "product capability catalogue"],
       "acceptance": ["universal stage graph coherent without chess", "first-product capability deletion leaves base context unchanged", "materially different non-chess second capability", "unreachable/illegal graphs rejected", "unused capability context/surface disappears", "no hidden global barrier or mid-stage mutation"],
       "falsifier": "A required universal execution invariant cannot be expressed without a product-shaped stage/base context, or a product capability can change core semantics without an owning selected contract.",
       "rollback": "Keep SPEC-0003 proposal-only and return counterexamples to the universal layering assessment.",
       "cleanup": "Retire superseded product-shaped or fine-hook terminology only after durable links/evidence are preserved.",
-      "integration": "Publishes stable stage/checkpoint/base-context semantics consumed by channels, composer, Stage PTX and scheduler; does not gate domain/policy/evaluator meaning."
+      "integration": "Publishes stable stage/checkpoint/base-context semantics consumed by channels, composer, Stage PTX and scheduler; does not gate domain/policy/evaluator/output meaning."
     },
     {
       "id": "ENGINE-CHANNEL-01",
@@ -188,7 +191,7 @@
       "falsifier": "A correctness-required dependency holds stage mutation/worker while waiting, or product payload must become universal base channel meaning.",
       "rollback": "Keep SPEC-0004 proposal-only and revise stage/resource/channel ownership.",
       "cleanup": "No retained diagnostic queues or temporary processes after experiments.",
-      "integration": "Feeds evaluator optional task paths, scheduler, resource planner, Search IR and native conformance; remains distinct from external session I/O."
+      "integration": "Feeds evaluator optional task paths, scheduler, Search IR and native conformance; remains distinct from external session I/O."
     },
     {
       "id": "ENGINE-DOMAIN-01",
@@ -204,7 +207,7 @@
       "falsifier": "A materially different conformance domain or chess deletion requires changing foundational domain meaning rather than implementing/selecting an adapter/profile.",
       "rollback": "Keep contract proposal-only and split accidental product policy from universal domain meaning.",
       "cleanup": "Consolidate fixtures under universal domain capsules; no chess fixture becomes the universal oracle.",
-      "integration": "Publishes exact state/action/transition/identity/history facts consumed by graph, policy, evaluator, session and composer."
+      "integration": "Publishes exact state/action/transition/identity/history facts consumed by graph, policy, evaluator, session, output and composer."
     },
     {
       "id": "ENGINE-POLICY-01",
@@ -215,12 +218,12 @@
       "depends_on": ["ENGINE-DOMAIN-01", "SPEC-0001", "ADR-0018"],
       "write_boundary": ["policy/backup/stopping specification family", "policy schemas", "policy reference cases"],
       "outcome": "Accepted product-neutral policy contracts for selection, policy-owned statistics, in-flight reservation, widening, backup perspective/algebra, stopping/budgets and reroot reuse classification. No ranked-action output is mandatory universal policy meaning.",
-      "non_goals": ["one UCT/PUCT formula", "scalar zero-sum assumption", "chess move ranking", "scheduler implementation", "Stage surface definition"],
-      "acceptance": ["atomic-commutative, segmented-associative and ordered-owner backup profiles", "policy-only/evaluation-only/full-search modes", "multiple output/no-live-output profiles", "retain/reset/transform/invalidate reroot classes"],
+      "non_goals": ["one UCT/PUCT formula", "scalar zero-sum assumption", "chess move ranking", "generic output payload ownership", "scheduler implementation", "Stage surface definition"],
+      "acceptance": ["atomic-commutative, segmented-associative and ordered-owner backup profiles", "policy-only/evaluation-only/full-search modes", "retain/reset/transform/invalidate reroot classes", "no output schema needed to state policy correctness"],
       "falsifier": "A valid policy requires fixed players/actions/value shape, ranked-move output, hidden global ordering or host-produced internal decisions.",
       "rollback": "Split policy families by semantic owner without runtime callback generality or product assumptions.",
       "cleanup": "Retire one-off/chess-shaped policy fixtures after universal consolidation.",
-      "integration": "Publishes policy statistics/backup/stopping/reuse facts to graph, session, resource, stages, Search IR and products."
+      "integration": "Publishes policy statistics/backup/stopping/reuse facts to graph, session, resource, output, stages, Search IR and products."
     },
     {
       "id": "ENGINE-EVALUATOR-01",
@@ -231,12 +234,28 @@
       "depends_on": ["ENGINE-DOMAIN-01", "SPEC-0001", "ADR-0018"],
       "write_boundary": ["evaluator specification family", "evaluator schemas", "reference evaluator fixtures"],
       "outcome": "Accepted absent/proposal/value/combined/vector/distributional/custom evaluator contracts with resident code/model/workspace, batching, perspective, publication, cancellation and reroot cache-validity classification, independent of the Stage substrate.",
-      "non_goals": ["one neural/chess framework", "host inference callback", "one batch topology", "Stage checkpoint definition"],
+      "non_goals": ["one neural/chess framework", "host inference callback", "one batch topology", "Stage checkpoint definition", "product output schema"],
       "acceptance": ["absent and multiple output shapes", "required-result semantics later mapped through internal channels", "workspace/resource limits", "late/stale/cancelled result handling", "reroot retain-if-key-valid cases"],
       "falsifier": "A selected evaluator requires CPU inference/progression, fixed chess/scalar semantics or unbounded workspace.",
       "rollback": "Reject the evaluator profile or return residency/dataflow requirements to assessment.",
       "cleanup": "No retained model packages without exact provenance/owner/disposition.",
-      "integration": "Publishes evaluator meaning/resources/reuse requirements consumed by channels, resource planner, Search IR, scheduler, Stage PTX and products."
+      "integration": "Publishes evaluator meaning/resources/reuse requirements consumed by output, channels, resource planner, Search IR, scheduler, Stage PTX and products."
+    },
+    {
+      "id": "ENGINE-OUTPUT-01",
+      "lane": "universal_core",
+      "title": "Universal generic result and observation payload contract family",
+      "owner": "universal search output semantics",
+      "status": "pending",
+      "depends_on": ["ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "SPEC-0001", "ADR-0018"],
+      "write_boundary": ["generic output/result specification family", "output schemas", "output reference cases"],
+      "outcome": "Accepted product-neutral typed bounded output payload contracts for complete, partial, evaluation, proof, sequence, diagnostic, custom and absent-output profiles. Output ownership is separate from search-policy semantics; ranking is one optional downstream output transformation/schema rather than a universal requirement.",
+      "non_goals": ["chess ranked moves", "best-action/top-k universal fields", "one scalar result", "Search Session transport/publication mechanism", "scheduler implementation"],
+      "acceptance": ["no-live-output profile", "terminal complete/partial result profiles", "evaluation/proof/sequence or custom second instances", "typed units/perspective/validity/progress bounds", "output schema independent of policy formula", "chess deletion leaves output family complete"],
+      "falsifier": "Universal output semantics require ranked actions, one value shape, one game/domain, or collapse back into policy ownership.",
+      "rollback": "Keep output family proposal-only and split product transformations from reusable payload semantics.",
+      "cleanup": "Consolidate output fixtures under generic owner; product/chess samples remain downstream fixtures.",
+      "integration": "Publishes payload semantics to Search Session observation publication, resource planning, Search IR/Composer, adapters/reference/native and downstream products."
     },
     {
       "id": "ENGINE-GRAPH-01",
@@ -257,34 +276,34 @@
     {
       "id": "ENGINE-SESSION-01",
       "lane": "universal_core",
-      "title": "Universal Search Session, root-update, reroot and generic observation contract",
+      "title": "Universal Search Session, root-update, reroot and generic observation publication contract",
       "owner": "Search Session and search-lifecycle semantics",
       "status": "proposal_drafted_review_required",
       "depends_on": ["ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-GRAPH-01", "SPEC-0001", "ADR-0018"],
       "write_boundary": ["docs/specs/SPEC-0006-*", "session/root-update/observation Search IR proposal", "SESSION-001/SESSION-002 evidence", "session reference cases"],
-      "outcome": "Accepted optional long-lived Search Session semantics with finite root epochs, validation/admission before mutation, typed full-arena root pressure, old-epoch isolation, explicit reuse classification, reroot/reclamation separation, generation-safe storage reuse, generic bounded read-only observations and stale-safe counter exhaustion. No ranked-action payload is mandatory.",
-      "non_goals": ["chess ranked moves", "one persistent kernel", "one sideband transport", "all-statistics-survive rule", "host-owned search progression"],
-      "acceptance": ["existing/transposition/new root updates", "invalid/exhausted update no-side-effect", "full-arena typed admission outcome", "old-work stale accounting", "retain/reset/transform/invalidate matrix", "deferred generation-safe reclaim", "many-epoch bounded memory", "observation read-only/cadence invariance", "stale-safe counter exhaustion", "SESSION-002 native concurrency evidence plan"],
-      "falsifier": "A root update must mutate search before admission, old work can contaminate the new epoch, observation must advance search, finite full-arena update has no safe outcome, or correct reuse cannot be owned explicitly.",
+      "outcome": "Accepted optional long-lived Search Session semantics with finite root epochs, validation/admission before mutation, typed full-arena root pressure, old-epoch isolation, explicit reuse classification, reroot/reclamation separation, generation-safe storage reuse, generic bounded read-only observation publication and stale-safe counter exhaustion. Observation payload meaning is ENGINE-OUTPUT-01/product-owned; no ranked-action payload is mandatory.",
+      "non_goals": ["chess ranked moves", "generic output payload meaning", "one persistent kernel", "one sideband transport", "all-statistics-survive rule", "host-owned search progression"],
+      "acceptance": ["existing/transposition/new root updates", "invalid/exhausted update no-side-effect", "full-arena typed admission outcome", "old-work stale accounting", "retain/reset/transform/invalidate matrix", "deferred generation-safe reclaim", "many-epoch bounded memory", "observation publication read-only/cadence invariance", "stale-safe counter exhaustion", "SESSION-002 native concurrency evidence plan"],
+      "falsifier": "A root update must mutate search before admission, old work can contaminate the new epoch, observation publication must advance search, finite full-arena update has no safe outcome, or correct reuse cannot be owned explicitly.",
       "rollback": "Keep SPEC-0006 proposal-only, retain SESSION-001 as bounded evidence and revise domain/policy/graph/resource ownership before native implementation.",
       "cleanup": "Dispose SESSION experiment scratch/mutations; retain only curated source/results/issue evidence while lessons have active spec consumers.",
-      "integration": "Publishes session/root/observation/resource requirements to resource planner, Search IR, scheduler, CUDA-JS package, reference/native engine and downstream products."
+      "integration": "Publishes session/root/publication/resource requirements to output integration, resource planner, Search IR, scheduler, CUDA-JS package, reference/native engine and downstream products."
     },
     {
       "id": "ENGINE-RESOURCE-01",
       "lane": "universal_core",
-      "title": "Finite memory/resource planner and pressure lifecycle",
-      "owner": "universal search resource planning",
+      "title": "Finite memory/resource planner contract and pressure lifecycle",
+      "owner": "universal search resource planning semantics",
       "status": "pending",
-      "depends_on": ["ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-GRAPH-01", "ENGINE-SESSION-01", "ENGINE-STAGE-01", "ENGINE-CHANNEL-01"],
-      "write_boundary": ["resource/memory specification family", "resource profiles", "pressure/exhaustion reference cases"],
-      "outcome": "Accepted finite plan for code/model/workspace/graph/paths/queues/internal channels/extension state/session control-observation/root-admission reserve/generic outputs/diagnostics/safety reserve with deterministic pressure outcomes and explicit product resource partitioning.",
-      "non_goals": ["allocation-success assumption", "managed-memory universal arena", "unbounded diagnostics", "surprise root-update allocation", "chess budget as universal default"],
-      "acceptance": ["minimum/ordinary/high/critical profiles", "failed claims excluded from counts", "root-update ordinary/full-capacity strategy", "product capability resource deletion", "partial-result validity", "full teardown accounting"],
-      "falsifier": "A required engine configuration cannot compute a finite safe capacity, root update has no bounded pressure outcome, or a product capability needs undeclared resources.",
-      "rollback": "Reject configuration/profile rather than add hidden allocation/eviction.",
-      "cleanup": "Every allocation/cache/observation/capability/diagnostic artifact has lifetime/final disposition.",
-      "integration": "Freezes capacities for composer, scheduler, Stage PTX, session/native engine and product profiles."
+      "depends_on": ["ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-OUTPUT-01", "ENGINE-GRAPH-01", "ENGINE-SESSION-01"],
+      "write_boundary": ["resource/memory specification family", "resource contribution/profile schemas", "pressure/exhaustion reference cases"],
+      "outcome": "Accepted product-neutral finite resource contract for core code/model/workspace/graph/paths/work/session/root-admission/generic output/diagnostic/safety reserves plus a generic namespaced resource-contribution interface that later composition uses for selected extension/product resources. It does not depend on any particular Stage/Channel capability existing.",
+      "non_goals": ["allocation-success assumption", "managed-memory universal arena", "unbounded diagnostics", "surprise root-update allocation", "Stage-specific resource layout", "chess budget as universal default"],
+      "acceptance": ["minimum/ordinary/high/critical core profiles", "failed claims excluded from counts", "root-update ordinary/full-capacity strategy", "generic optional resource-contribution admission/deletion", "partial-result validity", "full teardown accounting", "resource contract coherent with all optional capabilities removed"],
+      "falsifier": "A required core engine configuration cannot compute a finite safe capacity, root update has no bounded pressure outcome, or optional capability accounting requires the universal resource contract to depend on one Stage/product schema.",
+      "rollback": "Reject configuration/profile rather than add hidden allocation/eviction or product-specific core budget.",
+      "cleanup": "Every core/session/output allocation/cache/diagnostic artifact has lifetime/final disposition; optional contribution cleanup is composed later under its owner.",
+      "integration": "Publishes generic capacity/admission/pressure contracts. ENGINE-IR-COMPOSER-01 later combines them with selected Stage/Channel/product contribution schemas to freeze concrete Search Image capacities."
     },
     {
       "id": "ENGINE-IR-COMPOSER-01",
@@ -292,12 +311,12 @@
       "title": "Complete Search IR, schemas, Search Composer and deterministic specialization",
       "owner": "universal search compiler/composer",
       "status": "pending",
-      "depends_on": ["ENGINE-STAGE-01", "ENGINE-CHANNEL-01", "ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-GRAPH-01", "ENGINE-SESSION-01", "ENGINE-RESOURCE-01"],
+      "depends_on": ["ENGINE-STAGE-01", "ENGINE-CHANNEL-01", "ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-OUTPUT-01", "ENGINE-GRAPH-01", "ENGINE-SESSION-01", "ENGINE-RESOURCE-01"],
       "write_boundary": ["Search IR specification/schema", "Search Composer component", "generated layouts/manifests", "portable conformance"],
-      "outcome": "Normalize universal contracts into canonical finite Search IR while representing namespaced selected capability/product inputs without promoting their fields into universal core meaning; reproducibly generate layouts/stage-channel-session plans/code inputs/package identity/diagnostics.",
+      "outcome": "Normalize universal contracts into canonical finite Search IR while representing namespaced selected capability/product inputs without promoting their fields into universal core meaning; reproducibly combine generic resource contribution contracts with selected Stage/Channel/product resources and generate layouts/stage-channel-session/output plans/code inputs/package identity/diagnostics.",
       "non_goals": ["CUDA-JS private runtime implementation", "runtime schema interpretation", "legacy aliases", "chess fields in universal core schema"],
-      "acceptance": ["strict normalization/unknown-field rejection", "deterministic identity", "first-product deletion", "materially different second product/capability", "namespaced capability context deletion", "session/root observation representation", "portable Windows/Linux capsule"],
-      "falsifier": "Semantically equal inputs normalize differently, materially different engines collide, or deleting chess requires changing universal Search IR meaning.",
+      "acceptance": ["strict normalization/unknown-field rejection", "deterministic identity", "first-product deletion", "materially different second product/capability", "namespaced capability context/resource deletion", "generic output/session representation", "portable Windows/Linux capsule"],
+      "falsifier": "Semantically equal inputs normalize differently, materially different engines collide, selected optional resources cannot be composed without changing universal core contracts, or deleting chess requires changing universal Search IR meaning.",
       "rollback": "Invalidate generated artifacts and keep lowering blocked.",
       "cleanup": "Generated outputs are reproducible/owned or removed; no stale cache identity remains.",
       "integration": "Publishes frozen input for Stage PTX, scheduler, reference/native and downstream product composition."
@@ -342,9 +361,9 @@
       "status": "pending",
       "depends_on": ["ENGINE-IR-COMPOSER-01"],
       "write_boundary": ["reference component", "synthetic conformance domains", "contract test capsules"],
-      "outcome": "Provide a CUDA-free deterministic oracle for accepted universal contracts including session/root-update/observation and extension layering, with synthetic domains exposing hidden game/chess/tree/action/value/evaluator/product assumptions.",
+      "outcome": "Provide a CUDA-free deterministic oracle for accepted universal contracts including generic output/session/root-update/observation and extension layering, with synthetic domains exposing hidden game/chess/tree/action/value/evaluator/product assumptions.",
       "non_goals": ["performance model", "native CUDA oracle", "chess product oracle", "one fixture per defect"],
-      "acceptance": ["fixed DAG/cycle/history/stochastic/continuous-or-lazy action", "stage/channel/pressure/cancellation", "root-update/stale-work/reclamation/observation", "first-product deletion", "non-chess second product/capability", "oracle sensitivity", "exact discovery/skip accounting"],
+      "acceptance": ["fixed DAG/cycle/history/stochastic/continuous-or-lazy action", "generic output variants", "stage/channel/pressure/cancellation", "root-update/stale-work/reclamation/observation", "first-product deletion", "non-chess second product/capability", "oracle sensitivity", "exact discovery/skip accounting"],
       "falsifier": "Reference behavior depends on CUDA scheduling/product semantics or repeats production algorithms without an independent oracle.",
       "rollback": "Keep native implementation blocked until independent universal oracle exists.",
       "cleanup": "Consolidate provisional reproducers and remove duplicate/chess-shaped universal fixtures.",
@@ -408,7 +427,7 @@
       "status": "proposal_scaffolded_deferred_by_universal_contracts",
       "does_not_gate_universal_parent": true,
       "owner": "CUDA-MCGS chess product layer",
-      "specification_dependencies": ["ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-GRAPH-01", "ENGINE-SESSION-01", "ADR-0018"],
+      "specification_dependencies": ["ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-OUTPUT-01", "ENGINE-GRAPH-01", "ENGINE-SESSION-01", "ADR-0018"],
       "extension_dependencies_when_selected": ["ENGINE-STAGE-01", "ENGINE-CHANNEL-01", "ENGINE-STAGE-PTX-01"],
       "implementation_dependencies": ["ENGINE-IR-COMPOSER-01", "ENGINE-REFERENCE-01", "ENGINE-WINDOWS-01"],
       "outcome": "Specify and later implement chess domain/policy/evaluator/output/session/capability semantics entirely as a downstream specialization. Ranked legal moves/best-move/MultiPV are chess product observations built on generic bounded observation publication.",
@@ -420,9 +439,9 @@
     }
   ],
   "dependency_order": [
-    "A1: review/accept universal layering and core contract direction; domain/policy/evaluator are independent of extension substrate",
+    "A1: review/accept universal layering and core contract direction; domain/policy/evaluator/output/resource semantics are independent of optional extension substrate",
     "A2: review/accept universal Stage/surface/channel/session proposal families and reconcile them against stable core facts",
-    "B: finalize finite resource/session pressure semantics and freeze complete Search IR/Search Composer representation",
+    "B: finalize finite resource/session pressure/output semantics and freeze complete Search IR/Search Composer representation including selected extension/product resource contributions",
     "C: implement universal Stage PTX/Search Image and evidence-selected scheduler behind accepted contracts",
     "D: build universal reference and Windows native engine, including SESSION-002 where selected, then reconcile end to end",
     "E: validate representative universal performance/search quality and native Linux profiles",
@@ -431,9 +450,9 @@
   ],
   "invalidation_rules": [
     "A change that promotes product/capability meaning into universal core invalidates ADR-0018 layering review and every affected Search IR/spec/product result.",
-    "A material universal domain/policy/evaluator/graph/session/resource contract change invalidates affected generated layouts/artifacts/reference results and downstream product assumptions.",
+    "A material universal domain/policy/evaluator/output/graph/session/resource contract change invalidates affected generated layouts/artifacts/reference results and downstream product assumptions.",
     "A material stage/base-context/capability change invalidates channel, Search IR, Stage PTX, scheduler, native and selected product-capability evidence, but must not silently redefine core contracts.",
-    "A Search Session root-update/reuse/observation change invalidates session/resource/Search IR/scheduler/native evidence and any downstream product relying on the old lifecycle.",
+    "A Search Session root-update/reuse/observation-publication change invalidates session/resource/Search IR/scheduler/native evidence and any downstream product relying on the old lifecycle.",
     "A chess product change invalidates chess product evidence only unless it separately proposes and receives universal contract acceptance.",
     "A CUDA-JS compiler/runtime/sideband public contract or exact-peer revision change invalidates compatible-pair/artifact/native evidence keys.",
     "A scheduler/resource-profile change invalidates native progress/resource/performance/session-cleanup evidence.",
@@ -442,10 +461,12 @@
   "integration_closure": [
     "every universal focus branch has accepted output or explicit blocker/supersession/authoritative deferral",
     "universal core remains semantically complete with all optional capabilities and chess product deleted",
+    "universal output contract remains meaningful with ranking/product transformations deleted",
+    "universal resource contract remains meaningful with all optional Stage/product contributions deleted, while composition can add selected contributions later",
     "extension substrate passes first-product deletion and materially different second-capability/product tests without base-context leakage",
-    "accepted universal specs, Search IR, implementation, generated artifacts, reference oracle, native engine, resources/session semantics and package identity agree",
+    "accepted universal specs, Search IR, implementation, generated artifacts, reference oracle, native engine, output/resource/session semantics and package identity agree",
     "one exact Windows compatible pair passes required universal conformance with no host-produced internal search decisions",
-    "selected long-lived session profile passes root-update admission/stale-work/reclamation/read-only observation/full-arena pressure requirements",
+    "selected long-lived session profile passes root-update admission/stale-work/reclamation/read-only observation-publication/full-arena pressure requirements",
     "performance claims use universal semantically/search-quality/resource-equivalent workloads rather than chess-only metrics",
     "Linux claims remain absent until native qualification passes",
     "all local/remote/generated/device/research/coordination state has verified disposition",
@@ -453,10 +474,10 @@
     "chess product status is truthful but does not gate universal parent closure"
   ],
   "blockers": [
-    "SPEC-0000 and SPEC-0003 through SPEC-0006 are proposals; universal domain/policy/evaluator/graph/session/resource/scheduler/generic-output contracts are not accepted.",
-    "Complete Search IR does not yet encode the core-versus-namespaced capability/product separation, session semantics or capability-specific context deletion.",
+    "SPEC-0000 and SPEC-0003 through SPEC-0006 are proposals; universal domain/policy/evaluator/output/graph/session/resource/scheduler contracts are not accepted.",
+    "Complete Search IR does not yet encode the core-versus-namespaced capability/product separation, generic output family, session semantics or capability-specific context/resource deletion.",
     "First production root-update admission/full-arena pressure strategy and reroot reuse classification are not accepted.",
-    "SESSION-001 is CUDA-free bounded semantic evidence; no SESSION-002 native concurrent root-update/reclamation/observation evidence exists.",
+    "SESSION-001 is CUDA-free bounded semantic evidence; no SESSION-002 native concurrent root-update/reclamation/observation-publication evidence exists.",
     "CUDA-JS source-to-relocatable-PTX capability remains issue 35; generic long-lived sideband capability remains issue 38.",
     "No representative Stage PTX cost envelope, scheduler selection, production graph store, generated universal engine or exact released compatible pair exists.",
     "Native Linux CUDA-JS/CUDA-MCGS compatible-pair evidence remains absent.",
@@ -490,5 +511,5 @@
     ],
     "claim_rule": "Every claim names exact revision/artifact/environment and checks not run; portable/sampled/synthetic/Windows-only/chess-only evidence never expands into unsupported universal, native Linux, production-session or release claims."
   },
-  "handoff": "Review the plan-16 architecture/specification packet first: ADR-0018, amended charter, SPEC-0000, SPEC-0003 through SPEC-0006, and CHESS-0001 as a downstream deletion-test product. Then advance universal core contracts without depending on the Stage extension substrate, reconcile the extension substrate against stable core facts, and keep chess proposal-only until its universal specification dependencies are accepted. Do not begin production CUDA-MCGS or chess implementation and do not modify CUDA-JS issues 35/38 from this repository."
+  "handoff": "Review the plan-16 architecture/specification packet first: ADR-0018, amended charter, SPEC-0000, SPEC-0003 through SPEC-0006, and CHESS-0001 as a downstream deletion-test product. Then advance universal domain/policy/evaluator/output/resource contracts without depending on the Stage extension substrate, reconcile the extension substrate against stable core facts, and keep chess proposal-only until its universal specification dependencies are accepted. Do not begin production CUDA-MCGS or chess implementation and do not modify CUDA-JS issues 35/38 from this repository."
 }
