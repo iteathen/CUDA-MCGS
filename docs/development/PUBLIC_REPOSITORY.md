@@ -31,7 +31,8 @@ Before changing visibility, verify all of the following against the exact intend
    - current tree contains no credentials, private keys, tokens, private endpoints, private user data, machine-specific secrets, or sensitive retained artifacts;
    - repository **history**, not only the current tree, has been scanned for secrets and private material;
    - any discovered credential has been revoked/rotated before publication; rewriting history alone is not a credential-remediation strategy;
-   - commit metadata, issue/PR history, filenames, research evidence, screenshots, logs, and generated artifacts have been reviewed for material that was safe only because the repository was private.
+   - commit metadata, issue/PR history, filenames, research evidence, screenshots, logs, and generated artifacts have been reviewed for material that was safe only because the repository was private;
+   - historical author/committer names and email addresses have an explicit owner disposition before publication.
 3. **Public collaboration**
    - `CONTRIBUTING.md` describes fork/PR contribution flow;
    - `SECURITY.md` provides a non-public vulnerability-reporting path;
@@ -47,6 +48,17 @@ Before changing visibility, verify all of the following against the exact intend
    - private-only collaboration language has been removed from current operating documents or retained only as clearly historical/archive material;
    - documentation indexes resolve and `./scripts/verify-docs.sh` passes on the exact public-ready head.
 
+## History and metadata findings
+
+The connected GitHub history listing shows historical commits whose author and, for some commits, committer identity includes `josh.oshiro@gmail.com`. Public repository visibility will expose that address in reachable Git commit metadata. This is **not** being rewritten automatically.
+
+Before publication, the repository owner must choose one disposition:
+
+- **accept exposure** of that address as intended public commit metadata; or
+- **authorize a history rewrite** to replace/redact it after separately assessing the consequences.
+
+A history rewrite is high-consequence: it changes commit SHAs, can invalidate signatures and exact-revision evidence, breaks historical links/references, affects branches/tags/clones, and requires downstream reconciliation. It must not be performed merely for cosmetic cleanliness.
+
 ## History-scan limitation
 
 GitHub secret-scanning alerts for the current private repository were not accessible to the connected integration during this preparation pass. Therefore this document deliberately does **not** certify the full Git history as secret-free.
@@ -57,13 +69,14 @@ Before the visibility switch, perform an authenticated full-history secret scan 
 
 1. Freeze the exact public-ready `main` SHA.
 2. Complete the full-history secret/private-material audit and resolve every blocking finding.
-3. Confirm there are no open temporary PRs/branches or retained artifacts that should remain private.
-4. Change repository visibility to public in GitHub settings.
-5. Immediately configure/verify branch protection or rulesets for `main`, including required checks and owner review as intended.
-6. Verify Actions are enabled and the public documentation/reference workflow runs successfully on the public repository.
-7. Read back repository visibility, default branch, license detection, README, SECURITY, CONTRIBUTING, CODEOWNERS, issues, and workflow status.
-8. Verify no repository secret, deploy key, runner, environment, or external integration gained unintended exposure or authority because of the visibility change.
-9. Record the exact public-transition SHA/date in `STATUS.md` if a durable publication record is useful.
+3. Accept the existing historical commit-email exposure or complete an explicitly authorized history rewrite and reconcile all affected revisions/signatures/refs/evidence.
+4. Confirm there are no open temporary PRs/branches or retained artifacts that should remain private.
+5. Change repository visibility to public in GitHub settings.
+6. Immediately configure/verify branch protection or rulesets for `main`, including required checks and owner review as intended.
+7. Verify Actions are enabled and the public documentation/reference workflow runs successfully on the public repository.
+8. Read back repository visibility, default branch, license detection, README, SECURITY, CONTRIBUTING, CODEOWNERS, issues, and workflow status.
+9. Verify no repository secret, deploy key, runner, environment, or external integration gained unintended exposure or authority because of the visibility change.
+10. Record the exact public-transition SHA/date in `STATUS.md` if a durable publication record is useful.
 
 ## Rollback and incident handling
 
