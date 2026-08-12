@@ -2,46 +2,87 @@
 
 **Status:** Informational
 
-This directory contains versioned normative UMCGS/CUDA-MCGS search contracts. CUDA-MCGS is the product-facing name; existing accepted UMCGS identifiers remain authoritative until a separate naming/repository migration is accepted. No interface is accepted merely because it appears in architecture discussion, research, implementation, tests, a plan, or an example.
+This directory contains versioned CUDA-MCGS search contracts and downstream product specifications. No interface is accepted merely because it appears in architecture discussion, research, implementation, tests, a plan, product example, or proposal.
 
-Read specifications through [`../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md): verify status, owner, scope, version, exact revision, and supersession; follow normative references; read governing requirements to semantic closure; inspect material producer/consumer/lifecycle/test adjacency; and refresh when scope or authority changes.
+Read specifications through [`../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md): verify status, owner, scope, version, exact revision and supersession; follow normative references; read governing requirements to semantic closure; inspect material producer/consumer/lifecycle/test adjacency; refresh when scope/authority changes.
 
-Accepted status governs only within declared scope. Proposal specifications support drafting, review, and explicitly authorized experiments; they do not authorize production implementation by themselves.
+Accepted status governs only within declared scope. Proposal specifications support drafting, review and explicitly authorized experiments; they do not authorize production implementation by themselves.
+
+## Architectural layering
+
+[`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md) separates three semantic layers:
+
+1. **Universal MCGS semantic core** — domain/policy/evaluator/graph/resource/session/publication/search-lifecycle contracts and Search IR/Composer meaning that remain coherent across unrelated MCGS products.
+2. **Universal extension/composition substrate** — Search Stages, least-authority Stage Extension Surfaces, namespaced capability schemas, Async Stage Channels and Stage PTX/Search Image specialization.
+3. **Domain/search products** — downstream products such as chess that select universal contracts/capabilities and own product-specific state/action/history/evaluator/output semantics.
+
+The extension substrate is universal; a selected capability's payload is not automatically universal core meaning. Product-specific schemas must disappear with the product/capability rather than widening every Search Image.
 
 ## Current accepted contracts
 
-- [`SPEC-0001-device-search-publication-and-resources.md`](SPEC-0001-device-search-publication-and-resources.md) — backend-neutral publication, graph identity/edge ownership, path-cycle ordering, finite-resource exhaustion, partial-result validity, and scheduler-neutral conformance, version 0.1.0.
-- [`SPEC-0002-search-ir-and-reference-semantics.md`](SPEC-0002-search-ir-and-reference-semantics.md) — the foundational Search IR 0.1.0 representation, strict normalization, canonical identity, and deterministic CUDA-free reference semantics for the SPEC-0001 boundary.
+- [`SPEC-0001-device-search-publication-and-resources.md`](SPEC-0001-device-search-publication-and-resources.md) — backend-neutral publication, graph identity/edge ownership, path-cycle ordering, finite-resource exhaustion, partial-result validity and scheduler-neutral conformance, version 0.1.0.
+- [`SPEC-0002-search-ir-and-reference-semantics.md`](SPEC-0002-search-ir-and-reference-semantics.md) — foundational Search IR 0.1.0 representation, strict normalization, canonical identity and deterministic CUDA-free reference semantics for the SPEC-0001 boundary.
 
-These contracts do not authorize production CUDA lowering, a generated ABI, the complete extension-capable Search IR, a production scheduler or graph store, or CUDA-JS integration.
+These accepted contracts do not require a ranked-action output. Their references to ranking constrain validity only when a later selected policy/output contract uses ranking. They do not authorize production CUDA lowering, generated ABI, complete extension-capable Search IR, production scheduler/graph store, Search Session sideband, product output, or CUDA-JS integration.
 
-## Planned CUDA-MCGS specification families
+## Universal specification families
 
-- normalized Search IR;
-- domain/state/action/transition contract and device realization;
-- search-policy selection/reservation/backup contract and device realization;
-- evaluator/model semantic and resident-device contract;
-- operational Search Stage graph, semantic boundary selection, and stage-owned entry/exit surfaces;
-- stage capability composition and optional Stage PTX realization;
-- nonblocking Async Stage Channels, readiness, progress, cancellation, expiry, and reclamation;
-- Search Composer lowering, compatibility, finite resource planning, and deterministic specialization identity;
-- search resource and finite memory-plan contract, including stage capability/channel state and workspace;
-- graph identity, transposition, publication, history, and cycle semantics;
-- device-owned search scheduling, stopping, and device-closure contract;
-- search-specific generated layout/device-module/Search Image contract;
-- CUDA-MCGS-to-CUDA-JS execution-package, capability, compatibility, error, and lifecycle contract;
-- output, persistence, reroot, and reclamation contract;
-- synthetic conformance-domain, stage/channel/Stage PTX cost, search-quality, and benchmark requirements.
+### Universal MCGS core
 
-Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider implementation, NVRTC/nvJitLink plumbing, stream/event wrappers, Node event-loop delivery, and generic context teardown are CUDA-JS specification families and do not live here.
+Planned/partial families include:
 
-Use [`../../agent_files/templates/specification.template.md`](../../agent_files/templates/specification.template.md) together with its governing reading, engineering, contract, compatibility, testing, and documentation methods. An accepted CUDA-MCGS specification must define applicability, normative references, invariants, ranges, ownership, lifecycle, failures/exhaustion, compatibility, security, generated/cache identity, testing, cleanup, downstream invalidation, and peer-runtime effects.
+- normalized Search IR and specialization identity;
+- domain/state/action/transition/identity/history contract;
+- search-policy selection/reservation/widening/backup/stopping contract;
+- evaluator/model semantics/resident execution;
+- graph storage/transpositions/paths/cycles/reclamation;
+- finite resource/memory planning and typed pressure/exhaustion;
+- Search Session/root-update/reroot/stale-work/reuse/reclamation semantics;
+- generic bounded result/observation publication;
+- device-owned scheduler/progress/device closure;
+- Search Composer and generated Search Image/package;
+- CUDA-MCGS-to-CUDA-JS compatibility/error/lifecycle contract;
+- deterministic reference/synthetic conformance/diagnostics.
 
-## Current proposals
+### Universal extension/composition substrate
 
-- [`SPEC-0000-framework-requirements.md`](SPEC-0000-framework-requirements.md) — framework specification map and cross-cutting conformance requirements, including the schema-backed extension model and zero-abstraction-cost target; not yet an implementable accepted contract.
-- [`SPEC-0003-search-stage-and-extension-surface.md`](SPEC-0003-search-stage-and-extension-surface.md) — operational Search Stage graph, semantic/useful boundary selection, stable entry/exit checkpoints, shared stage capability sets, and no mid-stage extension mutation.
-- [`SPEC-0004-async-stage-channels.md`](SPEC-0004-async-stage-channels.md) — bounded cross-stage/cross-surface dataflow, required-result pending states, release/acquire publication, progress, pressure, cancellation and reclamation without worker blocking.
-- [`SPEC-0005-stage-ptx-and-search-image-composition.md`](SPEC-0005-stage-ptx-and-search-image-composition.md) — zero-or-one optional composed Stage PTX input per stage, checkpoint ABI, empty-capability disappearance, compatible-pair identity, and representative cost gates.
+- operational Search Stage graph/useful semantic boundaries;
+- stable least-authority Stage Extension Surfaces;
+- universal base checkpoint contexts plus selected namespaced capability-context contributions;
+- capability schemas/permissions/semantic-owner binding;
+- bounded nonblocking Async Stage Channels;
+- Stage PTX/checkpoint ABI/Search Image composition;
+- zero-residue absent-capability specialization;
+- capability provenance/security/resource composition and representative cost evidence.
 
-SPEC-0003 through SPEC-0005 are proposal outputs of the stage-model reassessment; they do not authorize production lowering. The next accepted boundary must extend Search IR 0.1.0 with stage/channel representations and complete the dependent domain, policy, evaluator, graph/storage, scheduler, resource and output contracts described in [`../../next_step.yaml`](../../next_step.yaml). The current CUDA-JS peer is public and has bounded F1-F9 evidence; source-authored Stage PTX also depends on reassessing the relocatable-device-code work after the active CUDA-JS compiler/LTO work finishes.
+Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider implementation, NVRTC/nvJitLink plumbing, stream/event wrappers, Node event-loop delivery and generic context teardown are CUDA-JS specification families.
+
+## Current universal proposals
+
+- [`SPEC-0000-framework-requirements.md`](SPEC-0000-framework-requirements.md) — framework map and cross-cutting three-layer conformance requirements.
+- [`SPEC-0003-search-stage-and-extension-surface.md`](SPEC-0003-search-stage-and-extension-surface.md) — universal Search Stage/surface/base-context/capability composition semantics and product-capability isolation.
+- [`SPEC-0004-async-stage-channels.md`](SPEC-0004-async-stage-channels.md) — bounded **internal** cross-stage/cross-surface dataflow, pending/ready progress, publication, pressure, cancellation and reclamation.
+- [`SPEC-0005-stage-ptx-and-search-image-composition.md`](SPEC-0005-stage-ptx-and-search-image-composition.md) — zero-or-one optional Stage PTX per stage, capability-specific specialization-only context, empty/product deletion, ABI/identity and cost gates.
+- [`SPEC-0006-search-session-control-and-observation.md`](SPEC-0006-search-session-control-and-observation.md) — generic long-lived Search Session/root-update admission/root epochs/stale work/reuse/reclamation and read-only bounded observation semantics, without requiring ranked actions.
+
+These proposals do not authorize production lowering. The complete Search IR must represent selected universal semantics plus namespaced capability/product inputs without promoting first-product fields into universal core meaning.
+
+## Domain/search product specifications
+
+Products live downstream of universal contracts. Their conformance cannot substitute for universal second-instance tests, and product requirements cannot amend universal semantics by usage.
+
+Current product proposal:
+
+- [`products/chess/CHESS-0001-search-product.md`](products/chess/CHESS-0001-search-product.md) — chess domain/policy/evaluator/session/output/extension layering, including a future chess-specific ranked legal-move observation built on generic SPEC-0006 publication rather than universal ranking semantics.
+
+Future Go/planning/optimization/text-search or other products should be able to replace the chess product without foundational redesign.
+
+## Acceptance discipline
+
+Use [`../../agent_files/templates/specification.template.md`](../../agent_files/templates/specification.template.md) with governing contract, compatibility, testing and documentation methods.
+
+An accepted CUDA-MCGS specification must define applicability, normative references, invariants, ranges, ownership, lifecycle, failure/exhaustion, compatibility, security, generated/cache identity, testing, cleanup, downstream invalidation and peer-runtime effects.
+
+For universal extension specifications, acceptance additionally requires first-consumer deletion and materially different second-capability/product tests. For product specifications, acceptance requires explicit proof that product deletion leaves universal architecture/conformance complete.
+
+The canonical execution order and focus branches are maintained in [`../../next_step.yaml`](../../next_step.yaml).
