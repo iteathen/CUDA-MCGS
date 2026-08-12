@@ -39,7 +39,7 @@ class Session {
     for(const [r,i] of w.edges){const n=this.resolve(r),e=n.e[i];if(!e.res)err('RESERVATION');e.res--;e.v++;e.sum+=w.val;}for(const r of w.nodes)this.resolve(r).v++;
     this.pending.delete(w.id);this.completed++;return true;}
   search(n,cad=0){for(let i=0;i<n;i++){ok(this.commit(this.begin()),'serial work went stale');if(cad&&this.completed%cad===0)this.rank();}if(!this.lastRank||this.lastRank.epoch!==this.epoch||this.lastRank.completed!==this.completed)this.rank();}
-  rank(){if(this.rankGen>=this.maxRank)err('RANK_EXHAUSTED');const n=this.expand(this.root);this.rankSorts++;const entries=n.e.map(e=>({action:e.action,visits:e.v,mean:e.v?e.sum/e.v:null,inFlight:e.res}));
+  rank(){if(this.rankGen>=this.maxRank)err('RANK_EXHAUSTED');const n=this.resolve(this.root);if(!n)err('STALE_ROOT');this.rankSorts++;const entries=(n.e||[]).map(e=>({action:e.action,visits:e.v,mean:e.v?e.sum/e.v:null,inFlight:e.res}));
     entries.sort((a,b)=>b.visits-a.visits||((b.mean??-1e99)-(a.mean??-1e99))||a.action-b.action);this.rankGen++;this.lastRank=Object.freeze({epoch:this.epoch,generation:this.rankGen,root:n.state,completed:this.completed,entries:Object.freeze(entries.map(Object.freeze))});return this.lastRank;}
   canRoot(){if(this.epoch>=this.maxEpoch)err('EPOCH_EXHAUSTED');}
   advance(r){this.canRoot();if(!this.resolve(r))err('STALE_NEW_ROOT');this.epoch++;this.root=cp(r);this.reroots++;}
@@ -54,6 +54,7 @@ class Session {
 }
 
 const tests=[];function test(id,fn){tests.push([id,fn]);}
+test('ranking-publication-readonly',()=>{const s=new Session(),d=s.digest();const r=s.rank();ok(r.entries.length===0,'fresh rank should have no materialized actions');ok(s.digest()===d,'ranking publication mutated search state');});
 test('live-ranking-running',()=>{const s=new Session();s.search(128,64);const a=s.lastRank,old=JSON.stringify(a.entries);s.search(384,64);ok(a.generation<s.lastRank.generation,'rank gen');ok(JSON.stringify(a.entries)===old,'snapshot mutated');ok(a.epoch===1&&s.lastRank.epoch===1,'epoch');ok(s.lastRank.entries[0].action===0,'top action');});
 test('ranking-cadence-decoupled',()=>{const a=new Session(),b=new Session();a.search(512,1);b.search(512,64);ok(a.digest()===b.digest(),'cadence changed search');ok(a.rankSorts===512&&b.rankSorts===8,'sort counts');});
 test('transposition-edge-local',()=>{const s=new Session();s.search(1024,128);ok(s.count()===7,'duplicate node');const a=s.resolve(s.refs(1)).e[1],b=s.resolve(s.refs(2)).e[0];ok(s.resolve(a.c).state===4&&s.resolve(b.c).state===4,'no shared child');ok(a.v>0&&b.v>0,'no edge stats');});
