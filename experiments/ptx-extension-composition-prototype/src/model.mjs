@@ -166,9 +166,10 @@ export function buildPlan(surfaceInput, validatedFragments, configInput) {
   const byPoint = new Map();
   for (const fragment of validatedFragments) {
     if (!fragment?.manifest || !fragment?.inspection || !(fragment.bytes instanceof Uint8Array)) fail('PLAN_FRAGMENT_INVALID', 'Plan inputs must be validated fragments.');
-    const pointId = fragment.manifest.point.id;
+    const revalidated = validateFragment(fragment.manifest, fragment.bytes, surface);
+    const pointId = revalidated.manifest.point.id;
     if (byPoint.has(pointId)) fail('PLAN_POINT_DUPLICATE', 'Only one fragment may bind each discovery point.', { pointId });
-    byPoint.set(pointId, fragment);
+    byPoint.set(pointId, revalidated);
   }
   const fragments = surface.points.filter(({ id }) => byPoint.has(id)).map(({ id }) => byPoint.get(id));
   const identityInput = {

@@ -103,7 +103,12 @@ export async function runPortable({ outputDirectory = path.join(experimentRoot, 
     const reverse = buildPlan(surface, [observer, bias], config);
     assert.equal(reverse.sha256, profile('bias-observer').plan.sha256);
   });
-  await runCase('plan-identity-is-content-sensitive', () => assert.notEqual(profile('bias').plan.sha256, profile('bias-observer').plan.sha256));
+  await runCase('plan-identity-is-content-sensitive-and-revalidated', () => {
+    assert.notEqual(profile('bias').plan.sha256, profile('bias-observer').plan.sha256);
+    const tampered = { ...bias, bytes: Uint8Array.from(bias.bytes) };
+    tampered.bytes[tampered.bytes.byteLength - 2] ^= 1;
+    assert.throws(() => buildPlan(surface, [tampered], config), expectCode('FRAGMENT_PTX_DIGEST'));
+  });
   await runCase('reference-full-budget', () => assert.deepEqual(words(profile('bias-observer').expected), [1296254803, 12, 3, 10, 4, 12, 139, 0, 8, 2166129286, 11, 1]));
   await runCase('reference-node-capacity-stop', () => assert.deepEqual(words(referenceOutput({ nodeCapacity: 1, iterationBudget: 12, activationStep: 4 }, [])), [1296254803, 0, 1, 0, 0, 0, 0, 1, 0, 2166136261, 2, 1]));
   const fusedSource = generateFusedSource(config);
