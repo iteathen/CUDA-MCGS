@@ -94,6 +94,12 @@ The current proposal further explores, without yet promoting to accepted authori
 - device-owned scheduler topology selected by evidence rather than fixed by the phrase "GPU-resident";
 - ownership-first third-party reuse: methodology first, explicit source adaptation/vendor decisions when justified, higher-level runtime dependency last.
 
+## Licensing
+
+CUDA-MCGS is distributed under the **GNU Affero General Public License, version 3 or (at your option) any later version** (`AGPL-3.0-or-later`), matching CUDA-JS. Organizations that cannot or do not want to comply with the AGPL may request a separately negotiated commercial license from the copyright holder.
+
+See [`LICENSE`](LICENSE) for the full AGPL text and [`LICENSING.md`](LICENSING.md) for the open-source, commercial, contribution/relicensing, and third-party licensing policy.
+
 ## Start here
 
 - [`AGENTS.md`](AGENTS.md)
