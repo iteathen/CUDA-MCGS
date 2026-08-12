@@ -112,6 +112,10 @@ State parent plan/version, engineering-decision version, focus-branch ID, node, 
 
 ## Contracts, invariants, lifecycle, resources, and failure behavior
 
+## Security, provenance, licensing, and public-publication effects
+
+State whether the change affects credentials, permissions, executable/native boundaries, third-party material, contribution/license terms, public repository behavior, workflow trust, or publication/visibility. Link `SECURITY.md`, `LICENSING.md`, or the public-transition checklist when triggered.
+
 ## Validation and evidence
 
 ## Cleanup and disposition
@@ -137,3 +141,8 @@ State merge method, issue relationship, engineering-decision and semantic focus-
 ## Documentation, reading/engineering-decision/parent/focus-branch/token/test/plan/cleanup state, registry, findings, and archived material
 
 ## Remaining risks / assumptions / revisit triggers
+
+## Contributor declarations
+
+- [ ] I have the right to submit this contribution and agree to the contribution license grant in [`CONTRIBUTING.md`](../CONTRIBUTING.md).
+- [ ] I disclosed third-party code/material, generated artifacts, credentials/security implications, unavailable checks/platform evidence, and cleanup residue.
