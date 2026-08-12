@@ -43,10 +43,32 @@ Before changing visibility, verify all of the following against the exact intend
    - workflow permissions remain least-authority (`contents: read` unless a reviewed job needs more);
    - public `main` protection/ruleset is configured after visibility changes to require the intended checks and owner review;
    - no workflow accepts arbitrary PR-controlled code while exposing repository secrets or write authority.
-5. **Public claims**
+5. **Public claims and repository metadata**
    - README and STATUS clearly distinguish public repository visibility from production/release/support claims;
    - private-only collaboration language has been removed from current operating documents or retained only as clearly historical/archive material;
-   - documentation indexes resolve and `./scripts/verify-docs.sh` passes on the exact public-ready head.
+   - documentation indexes resolve and `./scripts/verify-docs.sh` passes on the exact public-ready head;
+   - repository description and topics describe CUDA-MCGS accurately and use the product-facing name.
+
+## Repository metadata recommendation
+
+The repository settings should be updated before or immediately with the visibility switch. The current GitHub description is stale and contains a typo, and the repository currently has no topics.
+
+Recommended description:
+
+> **CUDA-MCGS: universal contract-defined GPU-resident Monte Carlo Graph Search framework for NVIDIA CUDA.**
+
+Recommended initial topics:
+
+- `cuda`
+- `gpgpu`
+- `gpu-computing`
+- `graph-search`
+- `mcgs`
+- `monte-carlo-search`
+- `nvidia`
+- `search-algorithms`
+
+Repository metadata is descriptive, not specification authority; changing it must not broaden support or release claims beyond README/STATUS.
 
 ## History and metadata findings
 
@@ -70,13 +92,14 @@ Before the visibility switch, perform an authenticated full-history secret scan 
 1. Freeze the exact public-ready `main` SHA.
 2. Complete the full-history secret/private-material audit and resolve every blocking finding.
 3. Accept the existing historical commit-email exposure or complete an explicitly authorized history rewrite and reconcile all affected revisions/signatures/refs/evidence.
-4. Confirm there are no open temporary PRs/branches or retained artifacts that should remain private.
-5. Change repository visibility to public in GitHub settings.
-6. Immediately configure/verify branch protection or rulesets for `main`, including required checks and owner review as intended.
-7. Verify Actions are enabled and the public documentation/reference workflow runs successfully on the public repository.
-8. Read back repository visibility, default branch, license detection, README, SECURITY, CONTRIBUTING, CODEOWNERS, issues, and workflow status.
-9. Verify no repository secret, deploy key, runner, environment, or external integration gained unintended exposure or authority because of the visibility change.
-10. Record the exact public-transition SHA/date in `STATUS.md` if a durable publication record is useful.
+4. Update the repository description/topics to the accepted public metadata.
+5. Confirm there are no open temporary PRs/branches or retained artifacts that should remain private.
+6. Change repository visibility to public in GitHub settings.
+7. Immediately configure/verify branch protection or rulesets for `main`, including required checks and owner review as intended.
+8. Verify Actions are enabled and the public documentation/reference workflow runs successfully on the public repository.
+9. Read back repository visibility, default branch, license detection, description/topics, README, SECURITY, CONTRIBUTING, CODEOWNERS, issues, and workflow status.
+10. Verify no repository secret, deploy key, runner, environment, or external integration gained unintended exposure or authority because of the visibility change.
+11. Record the exact public-transition SHA/date in `STATUS.md` if a durable publication record is useful.
 
 ## Rollback and incident handling
 
