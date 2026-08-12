@@ -285,6 +285,6 @@ Repository visibility is independent from a **CUDA-MCGS product release**. Befor
 
 ## Current phase
 
-UMCGS is public/pre-release at the repository-collaboration layer and has no accepted production CUDA-MCGS implementation or product release. The mandatory current check is `./scripts/verify-docs.sh`, plus task-specific engineering judgment, assessment, focus-branch, token-backpressure, testing, execution, cleanup, sanity, PR-review, merge, security, publication, or specialist validation.
+UMCGS is public-transition-ready at the repository-collaboration layer but remains private until the explicit visibility switch; it has no accepted production CUDA-MCGS implementation or product release. The mandatory current check is `./scripts/verify-docs.sh`, plus task-specific engineering judgment, assessment, focus-branch, token-backpressure, testing, execution, cleanup, sanity, PR-review, merge, security, publication, or specialist validation.
 
 Repository licensing is `AGPL-3.0-or-later` with a separately negotiated commercial-license option. Third-party implementation reuse and public distribution require provenance/license compatibility and donor-artifact disposition.
