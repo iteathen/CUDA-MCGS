@@ -32,6 +32,7 @@
     "one semantic focus branch per coherent owner with exact dependencies, acceptance, falsifier, rollback, cleanup, and integration obligations",
     "deterministic CUDA-free reference evidence before native optimization claims",
     "exact final-binary, resource, lifecycle, and compatible-pair evidence for native claims",
+    "every new component is introduced with its manifest, README, registry entry, dependency declaration, and validation boundary in the same coherent change",
     "Windows-first native execution with portable/Linux work maintained in parallel and every unrun Linux claim explicitly excluded"
   ],
   "plan_revision_reason": "Owner clarification and a second-pass research assessment invalidate the prior fine Extension Point/independently callable Extension Fragment plan. The durable model is a finite per-work-item Search Stage graph: semantic category and owned invariant define a stable stage boundary; usefulness validates granularity; entry/exit are the only extension checkpoints; multiple capabilities share one stage surface and at most one optional composed Stage PTX input; cross-stage/cross-surface dataflow is bounded and asynchronous while blocking is prohibited. Official CUDA Graph restrictions also prevent selecting nested graph execution as a universal scheduler substrate. The prior 42/42 portable and 25/25 Windows-native PTX discovery remains evidence for direct composition, exact unused disappearance, and the cost of fine PTX calls, but it does not authorize the superseded fragment schema or a production cost threshold.",

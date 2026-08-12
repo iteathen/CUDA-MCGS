@@ -51,7 +51,9 @@ The Search Image may link the core, mandatory domain/policy/evaluator/device beh
 
 ## 4. Capability composition before PTX emission
 
-Capability providers supply declarative semantic/lowering inputs, not independently callable runtime fragments. Before generating Stage PTX, the Search Composer MUST:
+Capability providers may be CUDA-MCGS-owned or user-supplied. They supply trusted, schema-constrained semantic/lowering inputs that the composer can combine into the one stage-owned output; they do not add independently callable runtime fragments. The concrete user-authoring representation remains an acceptance decision and MUST preserve provenance, validation, deterministic composition and the one-Stage-PTX rule.
+
+Before generating Stage PTX, the Search Composer MUST:
 
 1. normalize and sort the stage capability set deterministically;
 2. validate checkpoint, type, permission, ordering, publication and resource compatibility;
