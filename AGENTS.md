@@ -42,7 +42,7 @@ A plan, budget, or focus-branch map organizes work beneath authority. Token pres
 
 ## Current phase
 
-UMCGS is public, pre-release, documentation-first, and defining a universal GPU-resident Monte Carlo Graph Search framework. Public repository visibility changes collaboration, review, security-reporting, and CI posture; it does not authorize production implementation or constitute a CUDA-MCGS product release. Production implementation may begin only for a clearly owned boundary with accepted governing specifications, an assessment disposition that permits implementation, and a dependency-ready plan/focus branch—or an explicitly authorized disposable experiment.
+UMCGS is pre-release, documentation-first, and prepared for transition to a public collaboration model while defining a universal GPU-resident Monte Carlo Graph Search framework. The canonical GitHub repository remains private until its visibility is explicitly changed. The public contribution, review, security-reporting, licensing, and CI posture is prepared in advance; the visibility switch itself does not authorize production implementation or constitute a CUDA-MCGS product release. Production implementation may begin only for a clearly owned boundary with accepted governing specifications, an assessment disposition that permits implementation, and a dependency-ready plan/focus branch—or an explicitly authorized disposable experiment.
 
 The first product is the generic framework, not a chess engine. Chess, Go, text search, planning, optimization, policy-only search, evaluation-only search, partially observable search, and other workloads are adapters or conformance domains. None may permanently shape the core.
 
