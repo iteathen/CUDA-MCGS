@@ -2,20 +2,22 @@
 
 **Status:** Proposal
 
-**Draft version:** 0.1.0
+**Draft version:** 0.2.0
 
 **Owner:** CUDA-MCGS search execution semantics
 
-**Consumers:** Search IR, Search Composer, scheduler, domain/policy/evaluator adapters, conformance, and generated device programs
+**Consumers:** Search IR, Search Composer, scheduler, domain/policy/evaluator/product adapters, conformance, capability providers, and generated device programs
 
-This proposal defines the semantic stage boundary through which CUDA-MCGS may be extended without exposing incomplete search mutation. It does not authorize production lowering until accepted with its normative dependencies.
+This proposal defines the **universal extension/composition substrate** through which CUDA-MCGS may be extended without exposing incomplete search mutation or promoting first-product semantics into the universal core. It does not authorize production lowering until accepted with its normative dependencies.
 
 ## 1. Normative references
 
-- [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) owns publication channels, finite-resource behavior, stop and partial-result semantics.
+- [`../decisions/ADR-0018-universal-core-extension-product-layering.md`](../decisions/ADR-0018-universal-core-extension-product-layering.md) owns universal-core / extension-substrate / product separation.
+- [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) owns publication channels, finite-resource behavior, stop and partial-result foundations.
 - [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) owns the accepted foundational Search IR representation and deterministic reference semantics.
-- [`SPEC-0004`](SPEC-0004-async-stage-channels.md) proposes cross-stage/cross-surface dataflow.
+- [`SPEC-0004`](SPEC-0004-async-stage-channels.md) proposes internal cross-stage/cross-surface dataflow.
 - [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) proposes the version-zero Stage PTX realization.
+- [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) proposes external Search Session control/observation semantics and keeps them distinct from internal extension callbacks.
 
 Where this proposal conflicts with accepted authority, accepted authority governs and this proposal must be revised.
 
@@ -24,19 +26,23 @@ Where this proposal conflicts with accepted authority, accepted authority govern
 This specification family owns:
 
 - operational Search Stage identity and transition semantics;
-- stage graph definition and validation;
+- finite stage graph definition and validation;
 - stable entry/exit checkpoint rules;
-- Stage Extension Surface capability and mutation bounds;
+- the universal Stage Extension Surface mechanism;
+- universal base checkpoint context and least-authority permissions;
+- namespaced capability attachment/composition rules;
+- capability-specific specialization-only context/resource contribution;
 - stage outcome, failure, cancellation and resource obligations;
-- separation between semantic stages and physical CUDA execution topology.
+- separation between semantic stages and physical CUDA topology;
+- separation between universal extension mechanics and product/capability semantics.
 
-It does not define one universal stage list, scheduler mechanism, CUDA ABI, domain state representation, graph-store layout, evaluator format, or host runtime.
+It does not define one universal stage list, scheduler mechanism, CUDA ABI, domain state representation, graph layout, evaluator format, host runtime, chess concept, ranked-move output, or fixed capability catalogue.
 
 ## 3. Terms
 
 ### 3.1 Operational search state
 
-The state of one logical search work item in the engine's execution protocol. It is not the searched domain state, a graph node, a CUDA thread state, or a host lifecycle state.
+The state of one logical search work item in the engine's execution protocol. It is not the searched domain state, a graph node, a CUDA thread state, a host lifecycle state, or a product UI state.
 
 ### 3.2 Search Stage
 
@@ -48,116 +54,163 @@ The committed change from one operational search state to another for one logica
 
 ### 3.4 Stable checkpoint
 
-An optional stage `entry` or `exit` boundary at which the facts exposed by the contract satisfy their declared invariants. A checkpoint is the only place a Stage Extension Surface may be invoked.
+An optional stage `entry` or `exit` boundary at which exposed facts satisfy their declared invariants. A checkpoint is the only place a Stage Extension Surface may be invoked.
 
 ### 3.5 Stage Extension Surface
 
-The least-authority optional capability surface owned by one Search Stage. A surface may expose entry, exit, both, or neither. It never spans two stages and has no mid-stage checkpoint.
+The universal least-authority extension mechanism owned by one Search Stage. A surface may expose entry, exit, both, or neither. It never spans two stages and has no mid-stage checkpoint.
+
+A surface is universal because its **checkpoint semantics and permission model** are reusable. It does not make every capability bound to it universal core meaning.
 
 ### 3.6 Stage capability
 
-A contract/schema-selected behavior allowed at a particular stage checkpoint. Several capabilities selected for the same stage form one capability set and share that stage's surface.
+A namespaced/versioned contract/schema-selected behavior allowed at a particular stage checkpoint. Several selected capabilities at the same stage form one capability set and share that stage's surface/composition unit.
 
-## 4. Finite stage graph
+Capabilities may be reusable framework capabilities or domain/search-product capabilities. Semantic ownership remains with the capability and its selected domain/policy/evaluator/output/product contract.
 
-Before ignition, every concrete Search Image MUST contain a finite validated stage graph. Each stage definition MUST declare:
+### 3.7 Base checkpoint context
 
-- namespaced stage ID and version;
+The **base checkpoint context** is the minimal universally meaningful set of stable facts the stage surface can expose independent of any first consumer.
+
+### 3.8 Capability context contribution
+
+A selected capability MAY add namespaced context fields, configuration, state, workspace or channel references required only by that capability. Those contributions exist only in specialized Search Images that select the capability. They are not automatically fields of the universal base context or mandatory Search IR core.
+
+## 4. Layering and ownership invariants
+
+EXT-LAYER-001. A Search Stage is justified by a universal operational invariant/readiness transition, not by a desire to create an attachment point for one product.
+
+EXT-LAYER-002. Deleting the first product/capability that uses a stage or surface MUST leave the stage's semantic purpose coherent. Otherwise the stage belongs to that product/capability rather than the universal stage graph.
+
+EXT-LAYER-003. A capability MUST NOT redefine state identity, graph ownership, resource conservation, publication correctness, Search Session lifecycle or another core invariant through its extension code.
+
+EXT-LAYER-004. When a capability changes selected domain/policy/evaluator/output/session meaning, that semantic change MUST be represented by the owning selected contract/profile and included in Search IR/Search Image identity. The Stage Extension Surface only supplies the safe execution/composition boundary.
+
+EXT-LAYER-005. A capability-specific context contribution MUST be absent when the capability is absent. The universal base context MUST NOT accumulate chess fields, model-specific fields, ranking fields, tablebase fields, optimization-specific fields, or other first-consumer baggage.
+
+EXT-LAYER-006. Reuse by multiple products does not automatically promote a capability field/effect into base context. Promotion follows ADR-0018's explicit universal-core promotion rule.
+
+EXT-LAYER-007. Product capability IDs/schemas are namespaced independently from universal stage/checkpoint IDs. A product may depend on a universal checkpoint; the checkpoint does not depend on the product.
+
+## 5. Finite stage graph
+
+Before ignition, every concrete Search Image using the stage substrate MUST contain a finite validated stage graph. Each stage definition MUST declare:
+
+- namespaced stage ID/version;
 - semantic purpose and owned invariant;
 - work-item kind, identity and generation requirements;
-- entry predicate and facts/capabilities consumed;
+- entry predicate and base facts consumed;
 - mutation owned by the stage core;
 - legal outcomes and target operational states;
 - entry/exit publication dependencies;
 - cancellation, pressure, exhaustion and error outcomes;
-- bounded work, storage, scratch and queue contribution;
+- bounded work/storage/scratch/queue contribution;
 - whether entry and/or exit surfaces exist;
-- compatibility and migration policy where identity persists.
+- compatibility/migration policy where identity persists.
 
-Stage IDs MUST describe semantic operational states rather than one scheduler mechanism. A concrete engine MAY use reusable roles such as candidate production, selection, transition, transposition resolution, evaluation, propagation or output, but CUDA-MCGS MUST NOT impose one fixed AlphaZero, game, tree or bulk-synchronous pipeline.
+Stage IDs describe semantic operational states rather than scheduler mechanisms or one product. A concrete engine MAY use reusable roles such as candidate production, selection, transition, identity/transposition resolution, evaluation, propagation or generic output publication, but CUDA-MCGS MUST NOT impose one AlphaZero/game/chess/tree/bulk-synchronous pipeline.
 
 A contract that introduces a new stable operational invariant or materially different readiness/lifecycle state MUST introduce or replace a stage rather than hide the state inside a mid-stage extension hook.
 
-The composer MUST reject unreachable stages, illegal transitions, missing terminal/stop paths, unowned cycles, undeclared publication dependencies, and stage graphs whose finite resource plan cannot be established.
+The Composer rejects unreachable stages, illegal transitions, missing terminal/stop paths, unowned cycles, undeclared publication dependencies, and graphs whose finite resource plan cannot be established.
 
-### 4.1 Semantic categories and boundary usefulness
+### 5.1 Semantic categories and boundary usefulness
 
-A stage boundary is defined first by a coherent semantic category, owned invariant and validity transition. Usefulness is then a granularity check and tie-breaker among semantically valid placements; it is not independent authority to invent or erase a semantic state.
+A stage boundary is defined first by a coherent semantic category, owned invariant and validity transition. Usefulness is a granularity check/tie-breaker among semantically valid placements; it is not authority to invent a product-shaped stage.
 
-Within that ordering, candidate boundaries are compared by:
+Candidate boundaries are compared by:
 
-- whether they expose stable facts that several credible capabilities or scheduler decisions can reuse;
-- whether required data is already materialized without duplicate packing, traversal or synchronization;
-- whether ownership, publication, cancellation and resource lifetimes become clearer;
-- whether the boundary creates useful ready/pending work for device scheduling;
-- whether it avoids extra transitions, queue traffic, calls and code growth;
-- whether it remains meaningful across materially different domains and policies;
-- whether a second consumer can use it without gaining arbitrary mutation authority.
+- stable facts several credible **materially different** capabilities/policies/schedulers could reuse;
+- data already materialized without duplicate packing/traversal/synchronization;
+- clearer ownership/publication/cancellation/resource lifetimes;
+- useful ready/pending work for device scheduling;
+- avoidance of extra transitions/queue traffic/calls/code growth;
+- meaning across materially different domains/products;
+- ability for a second consumer to use the checkpoint without gaining arbitrary authority.
 
-The engine MUST NOT create a stage for every internal variable change, source-code block or possible hook. It defines operational search states at useful stable semantic validity transitions. Conversely, usefulness MUST NOT merge states when doing so hides a materially different invariant, readiness condition, owner, failure mode or resource lifetime.
+The engine MUST NOT create a stage for every variable change, source block, optimization or possible hook. Conversely, usefulness MUST NOT merge states when doing so hides a materially different invariant, readiness condition, owner, failure mode or resource lifetime.
 
-## 5. Stage mutation interval
+## 6. Stage mutation interval
 
-The interval after entry commitment and before exit commitment is owned exclusively by the stage implementation.
+The interval after entry commitment and before exit commitment is owned exclusively by the mandatory stage implementation.
 
 - Extension code MUST NOT be invoked inside that interval.
-- Other stages and extension surfaces MUST NOT observe partially established stage invariants through a public capability.
-- A stage MUST NOT lend a mutable reference whose valid use can outlive the checkpoint contract.
-- A failure or cancellation inside the interval MUST produce a declared rollback, tombstone, retryable state, or terminal outcome; it MUST NOT publish a success outcome over incomplete mutation.
+- Other stages/surfaces MUST NOT observe partially established invariants through public capabilities.
+- A stage MUST NOT lend a mutable reference whose valid use outlives the checkpoint contract.
+- Failure/cancellation inside the interval MUST produce a declared rollback, tombstone, retryable state or terminal outcome; it MUST NOT publish success over incomplete mutation.
 
-“Opaque/atomic from the extension perspective” does not require a single hardware atomic instruction or global transaction. It requires that the public stage protocol expose only declared stable states with correct publication.
+Opaque/atomic from the extension perspective does not require one hardware atomic instruction or global transaction. It requires only declared stable public states with correct publication.
 
-## 6. Stage Extension Surface
+## 7. Stage Extension Surface contract
 
-A stage surface contract MUST define for each exposed checkpoint:
+A stage surface MUST define for each exposed checkpoint:
 
 - checkpoint ID: `entry` or `exit`;
 - semantic purpose and invocation cardinality;
-- work-item, node, edge, path, batch or other explicit scope;
-- readable facts and their freshness/generation;
-- writable facts, result signals and bounded control effects;
-- facts and invariants that remain core-owned and immutable to the surface;
-- memory space, layout, aliasing and lifetime;
-- ordering, synchronization and publication obligations;
-- scratch, persistent state, queue and workspace limits;
-- failure, skip, fallback and cancellation behavior;
-- deterministic capability-composition order where effects do not commute.
+- work-item/node/edge/path/batch or other explicit scope;
+- universal base readable facts and freshness/generation;
+- universal base writable facts/result signals/bounded control effects;
+- facts/invariants that remain core-owned and immutable;
+- memory space/layout/aliasing/lifetime;
+- ordering/synchronization/publication;
+- base scratch/state/queue/workspace limits;
+- failure/skip/fallback/cancellation;
+- composition order requirements.
 
-A context schema describes the representation available at an already-defined checkpoint. It MUST NOT be interpreted at runtime to discover where code attaches.
+The surface additionally defines **how selected capabilities declare specialization-only context contributions** without widening the base context for absent capabilities.
 
-Capabilities MUST be optimization-neutral and least-authority. Capability names describe allowed semantic effects, not the name of one current optimization. Arbitrary address access, arbitrary search-state mutation, runtime reflection and unrestricted control transfer are non-conforming.
+A context schema describes representation at an already-defined checkpoint. It MUST NOT be interpreted at runtime to discover where code attaches.
 
-## 7. Capability composition
+Base capabilities are least-authority. Arbitrary address access, arbitrary search-state mutation, runtime reflection and unrestricted control transfer are non-conforming.
 
-All capabilities required at the same stage MUST share one stage-owned surface. They MUST NOT become independently discovered runtime extensions or multiply the number of PTX composition inputs for that stage.
+## 8. Capability contract and composition
+
+Every selected capability MUST declare:
+
+- namespaced capability ID/version and semantic owner;
+- required stage/checkpoint/version;
+- required base facts/permissions;
+- capability-specific context/configuration schemas;
+- semantic effects and the owning selected contract/profile that authorizes those effects;
+- persistent/scratch/workspace/channel resource contribution;
+- compatibility/provenance/security identity;
+- deterministic effect ordering when effects do not commute;
+- failure/skip/fallback/cancellation behavior;
+- deletion behavior when absent.
+
+All capabilities required at the same stage share one stage-owned surface and one optional composition unit. They do not become independently discovered runtime extensions or one PTX input/call per feature.
 
 Before ignition, the Search Composer MUST:
 
 1. normalize the requested capability set;
-2. validate checkpoint, version, permission, resource and compatibility requirements;
-3. prove that writes commute or impose a deterministic declared order;
-4. generate the minimum shared checkpoint context;
-5. account for the combined finite resource contribution;
-6. reject cycles or dependencies that require synchronous cross-stage/cross-surface waiting;
-7. omit the complete surface when no capability requires it.
+2. validate checkpoint/version/permission/resource/semantic-owner requirements;
+3. prove writes commute or impose deterministic declared order;
+4. generate the minimum universal base context plus only the selected namespaced capability contributions;
+5. account for combined finite resources;
+6. validate selected Async Stage Channels;
+7. reject cycles requiring synchronous cross-stage/cross-surface waiting;
+8. reject a capability whose semantic effect has no owning selected contract/profile;
+9. omit complete capability-specific context/state/code/resources when absent.
 
-An already-composed capability MAY be active or inactive according to device-resident rules. Activation is not late binding and MUST NOT create unplanned state, code, resources or host dependencies.
+An already-composed capability MAY be active/inactive according to device-resident rules. Activation is not late binding and MUST NOT create unplanned state/code/resources/host dependencies.
 
-## 8. Stage outcomes and readiness
+## 9. Stage outcomes and readiness
 
-Every invocation MUST end in one declared outcome, such as:
+Every invocation ends in one declared outcome, such as:
 
 - transition committed to a named next stage;
-- terminal/result publication;
-- typed finite-resource pressure or exhaustion;
+- generic result/publication work;
+- typed finite-resource pressure/exhaustion;
 - cancellation acknowledged;
 - retryable work republished under a bounded retry policy;
 - consumer moved to an explicit pending state governed by SPEC-0004;
 - typed failure.
 
-A stage MUST NOT synchronously wait for a later stage or surface. It MUST NOT retain a worker, lock, reservation, unpublished mutation, or stage-owned mutable lease while awaiting future data.
+A stage MUST NOT synchronously wait for a later stage/surface. It MUST NOT retain a worker, lock, reservation, unpublished mutation or stage-owned mutable lease while awaiting future data.
 
-## 9. Scheduler neutrality
+Product-specific output meaning is not implied by a generic output/publication outcome.
+
+## 10. Scheduler neutrality
 
 The semantic stage graph MUST NOT prescribe:
 
@@ -169,40 +222,58 @@ The semantic stage graph MUST NOT prescribe:
 - CUDA Graph execution;
 - device dynamic parallelism.
 
-A scheduler may execute different work items in different stages concurrently when their contracts and resources allow it. Scheduler conformance is measured by semantic outcomes, publication, bounded progress and resource behavior rather than by reproducing one schedule.
+Different work items may occupy different stages concurrently. Scheduler conformance is measured by semantic outcomes, publication, bounded progress and resources rather than reproducing one schedule.
 
-## 10. Compatibility and identity
+## 11. Search Session boundary
 
-Stage ID/version, checkpoint set, context schema, capabilities, permissions, legal outcomes and publication contract are part of Search IR and Search Image identity. An incompatible change MUST invalidate generated artifacts and cached conformance evidence. Compatibility translation occurs before the current stage graph enters the core.
+External Search Session root-update/control/observation ports are not Stage Extension Surfaces merely because a physical implementation may use similar memory/mailbox mechanisms.
 
-## 11. Failure and security
+- A root update is external session/domain input governed by SPEC-0006.
+- A live product observation is governed by SPEC-0006 plus its selected output/product schema.
+- Internal extension callbacks MUST NOT be used to smuggle host-owned search progression into the engine.
+- Session observation MUST remain read-only with respect to search-semantic state unless another selected contract truthfully classifies the operation as a semantic input/mutation instead.
 
-The composer MUST fail closed before ignition for unknown stages, checkpoints, capabilities, types, versions, permissions, resource requirements, transition targets or executable provenance.
+## 12. Compatibility and identity
 
-Stage extension code is executable content. Production profiles MUST use trusted package sources, bounded capabilities, complete artifact identity and no ordinary raw-pointer capability. A capability failure MUST map to a declared stage outcome; it MUST NOT silently corrupt core state or fall back to host decision service.
+Stage ID/version, checkpoint set, **base** context schema, selected capability IDs/schemas/context contributions, permissions, legal outcomes and publication contract are Search IR/Search Image identity as applicable.
 
-## 12. Conformance requirements
+An incompatible change invalidates generated artifacts/cached conformance evidence. Product capability schema evolution occurs under the product/capability owner and cannot silently reinterpret universal base context.
 
-At minimum, one consolidated stage-contract capsule MUST cover:
+## 13. Failure and security
+
+The Composer fails closed before ignition for unknown stages, checkpoints, capabilities, types, versions, permissions, semantic owners, resource requirements, transition targets or executable provenance.
+
+Stage extension code is executable content. Production profiles use trusted package sources, bounded capabilities, complete artifact identity and no ordinary raw-pointer authority. Capability failure maps to a declared stage outcome; it MUST NOT silently corrupt core state or fall back to host decision service.
+
+A product capability receives no authority merely because product code generated it.
+
+## 14. Conformance requirements
+
+One consolidated stage-contract capsule MUST cover:
 
 - zero, entry-only, exit-only and entry-plus-exit surfaces;
 - multiple compatible capabilities sharing one surface;
-- incompatible writes, versions, resources and ordering rejected before ignition;
-- exact disappearance of an unused surface from generated context, state and calls;
+- universal base context unchanged when a product capability is deleted;
+- namespaced capability-specific context appears only when selected;
+- incompatible writes/versions/resources/semantic-owner declarations rejected before ignition;
+- exact disappearance of an unused capability/surface contribution from generated context/state/calls/resources;
 - attempted mid-stage observation/mutation rejected structurally;
-- per-work-item transitions without an implied global barrier;
-- cancellation/failure before and after commitment;
-- a required async result represented as pending rather than a worker wait;
-- second-instance domains that falsify fixed games, fixed actions, scalar values and one stage list.
+- per-work-item transitions without implied global barrier;
+- cancellation/failure before/after commitment;
+- required async result represented as pending rather than worker wait;
+- second-instance domains/products falsifying fixed games/actions/scalar values/ranked outputs/one stage list;
+- a chess/product capability and a materially different non-chess capability using the same universal surface without changing base stage meaning.
 
-Reference tests own semantic outcomes. Native CUDA tests additionally own publication scope, race behavior, exact artifact identity, final-binary structure and resource/performance evidence.
+Reference tests own semantic outcomes. Native CUDA tests additionally own publication scope/races/exact artifact/final-binary/resource/performance evidence.
 
-## 13. Acceptance blockers
+## 15. Acceptance blockers
 
 This proposal cannot become accepted until:
 
-- its Search IR representation is specified and normalized;
-- domain, policy, evaluator and execution contracts define the facts stages consume and publish;
+- its stage/surface/capability representation is normalized in the complete Search IR;
+- domain, policy, evaluator, graph/resource/session/output contracts define facts stages consume/publish;
 - SPEC-0004 readiness/deadlock/resource behavior is accepted;
-- representative stage graphs prove universality beyond the original fixed-domain prototype;
-- producer/consumer contract tests and failure/pressure cases exist.
+- capability-specific context contribution has a deterministic schema/identity/deletion model;
+- representative stage graphs prove universality beyond the original fixed-domain prototype and beyond chess;
+- producer/consumer/failure/pressure/security tests exist;
+- first-consumer deletion proves the extension substrate remains coherent without the first product.
