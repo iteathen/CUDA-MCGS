@@ -16,17 +16,17 @@ Passing CI does not override a demonstrated defect. A stale approval does not au
 
 ## Current UMCGS phase
 
-UMCGS is private, pre-release, and in framework-definition/development. Until an explicit phase transition says otherwise:
+UMCGS is public, pre-release, and in framework-definition/development. Public visibility enables ordinary forks, pull requests, CODEOWNERS/branch-protection enforcement, and public GitHub-hosted CI; it does not constitute a CUDA-MCGS product release or stable compatibility promise.
 
 ```text
-feature/* or agent/* -> main
+fork/*, feature/*, or agent/* -> pull request -> main
 ```
 
-`main` is the integration trunk. Short-lived branches should merge frequently enough that incompatible assumptions surface early. One coherent PR normally uses squash merge.
+`main` is the integration trunk. Short-lived branches should merge frequently enough that incompatible assumptions surface early. One coherent PR normally uses squash merge. The intended public posture is protected `main`, required current-head checks, and explicit owner review for foundational authority.
 
-Ordinary low-consequence changes may merge after complete author-side review when repository policy permits. Independent review is still required when objective risk, repository protection, or owner instruction triggers it.
+Ordinary low-consequence development changes may merge after complete author-side review when repository policy and configured protections permit. Independent review is still required when objective risk, repository protection, CODEOWNERS, or owner instruction triggers it.
 
-Release-candidate and public-release review requirements are not imposed on every private development PR. Conversely, private status never waives a safeguard triggered by security, persistence, concurrency, destructive behavior, public contracts, provenance, recovery, or broad blast radius.
+Release-candidate and product-release review requirements are not imposed on every public development PR. Conversely, public visibility never waives a safeguard triggered by security, persistence, concurrency, destructive behavior, public contracts, provenance, licensing, recovery, publication, or broad blast radius.
 
 ## Review roles
 
@@ -60,7 +60,7 @@ This is not independent review. It cannot bypass branch protection, CODEOWNERS, 
 
 Independent review is required when any applies:
 
-- stabilization, release candidate, public release, incident response, or a declared full-system audit;
+- stabilization, release candidate, public product release, incident response, or a declared full-system audit;
 - branch protection, CODEOWNERS, repository policy, or owner instruction requires it;
 - persisted meaning, schema compatibility, migration, rollback, or difficult recovery changes;
 - security, credentials, privacy, hostile input, executable schemas, native capabilities, or trust boundaries;
