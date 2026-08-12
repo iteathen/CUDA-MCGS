@@ -2,7 +2,7 @@
 
 **Universal Monte Carlo Graph Search**
 
-CUDA-MCGS is the product name for the universal GPU-resident MCGS framework currently developed in the `iteathen/UMCGS` repository. Existing accepted UMCGS ADR/specification identifiers remain authoritative until a separate repository/naming migration is explicitly accepted.
+CUDA-MCGS is the product name for the universal GPU-resident MCGS framework developed in the `iteathen/UMCGS` repository. Existing accepted UMCGS ADR/specification identifiers remain authoritative until a separate repository/naming migration is explicitly accepted.
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with schema-backed extension support.**
 
@@ -54,9 +54,19 @@ The first implementation should reuse proven CUDA mechanisms and methodology agg
 
 ## Current phase
 
-The project is private, pre-release, and in **framework-definition phase**. The repository is establishing governance, mature-scale organization, versioned search contracts, the complete stage/channel-capable Search IR, Stage PTX composition semantics, inter-repository compatibility, resource constraints, prior-art evidence, conformance strategy, and test architecture before production implementation.
+The project is **public, pre-release, and in framework-definition phase**. Public repository visibility is for collaboration, review, research transparency, and CI; it is not a production release, stable API promise, platform-support claim, or evidence that the CUDA-MCGS/CUDA-JS compatible pair is complete.
+
+The repository is establishing governance, mature-scale organization, versioned search contracts, the complete stage/channel-capable Search IR, Stage PTX composition semantics, inter-repository compatibility, resource constraints, prior-art evidence, conformance strategy, and test architecture before production implementation.
 
 No production CUDA-MCGS implementation should be inferred from the current repository.
+
+## Public collaboration and security
+
+Contributions use the normal public fork/branch + pull-request workflow. `main` remains the integration trunk; foundational authority is owned through CODEOWNERS and the intended public posture is protected `main` with required owner review and the public documentation/reference checks.
+
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before submitting work. Do **not** open a public issue containing exploitable vulnerability details; use the private reporting path in [`SECURITY.md`](SECURITY.md).
+
+The public transition checklist and its hard history/secret-scan gate are documented in [`docs/development/PUBLIC_REPOSITORY.md`](docs/development/PUBLIC_REPOSITORY.md).
 
 ## Current accepted direction
 
@@ -102,6 +112,10 @@ See [`LICENSE`](LICENSE) for the full AGPL text and [`LICENSING.md`](LICENSING.m
 
 ## Start here
 
+- [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- [`SECURITY.md`](SECURITY.md)
+- [`LICENSING.md`](LICENSING.md)
+- [`docs/development/PUBLIC_REPOSITORY.md`](docs/development/PUBLIC_REPOSITORY.md)
 - [`AGENTS.md`](AGENTS.md)
 - [`agent_files/README.md`](agent_files/README.md)
 - [`agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md)
