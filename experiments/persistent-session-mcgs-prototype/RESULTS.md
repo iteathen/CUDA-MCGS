@@ -1,19 +1,17 @@
-# SESSION-001 Results
+# SESSION-001 Results and Learnings
 
-**Status:** Bounded experiment evidence; no production authority
-
+**Status:** Bounded experiment evidence; no production authority  
 **Date:** 2026-08-12
 
-## Exact local evidence
+## Exact local experiment run
 
-Environment:
+Environment: Linux x86-64, kernel `6.18.35`, Node.js `v22.16.0`. No CUDA or CUDA-JS execution occurs in this slice.
 
-- Linux x86-64, kernel `6.18.35`;
-- Node.js `v22.16.0`;
-- no CUDA or CUDA-JS execution in this slice;
-- command: `node experiments/persistent-session-mcgs-prototype/run.mjs`.
+Command:
 
-The repository-wide validation policy requires Node 26 or newer. This Node 22 run is therefore evidence for this isolated experiment only, not a substitute for repository validation.
+```bash
+node experiments/persistent-session-mcgs-prototype/run.mjs
+```
 
 Result:
 
@@ -21,120 +19,62 @@ Result:
 capsule=session-001 expected=10 discovered=10 executed=10 passed=10 failed=0 required_skipped=0 conditional_skipped=0 optional_skipped=0 not_discovered=0
 ```
 
-Representative case observations:
+Node 22 is sufficient for this isolated experiment, but the repository-wide validator requires Node 26 or newer. This result is therefore not a substitute for `./scripts/verify-docs.sh`.
 
-```text
-live-ranking-running:                 completed=512  nodes=7 evals=3 publishes=8
-ranking-cadence-decoupled:            eager_publishes=512 batched_publishes=8 same_search=true
-reroot-reuses-retained-state:         epoch=2 completed=1280 nodes=7 evals=3
-stale-work-rejected-after-reroot:     stale_abandoned=32 completed_statistics_unchanged=true
-reclamation-defers-and-reuses:        reclaimed=3 replacement_root=10 final_nodes=7
-many-epoch-bounded-memory:            epoch=1002 reroots=1001 completed=9032 nodes=7 allocations=7 evals=3
-```
+## Quantitative observations
 
-A root-ranking trajectory also showed the expected stronger action becoming increasingly dominant without requiring every-backup publication. At 512 completed simulations from state 0 the prototype had 505 completed visits on action 0 versus 7 on action 1. This number is synthetic-domain evidence only, not a search-quality benchmark.
+For identical deterministic search work, publishing/sorting the root ranking every backup versus every 64 backups produced identical search state and the same top action. The batched case performed **8 ranking sorts instead of 512**, a 64x operation-count reduction for this synthetic case. This is not a timing or production-performance claim.
 
-## Sensitivity evidence
+After the seven-node synthetic graph and three nonterminal evaluations were learned, **1001 additional reroots** between already-known states plus continued search reached root epoch 1002 and 9032 completed simulations with:
 
-Two mutations were applied only to throwaway copies; neither mutation is retained.
+- node count still 7;
+- node allocations still 7;
+- cached evaluator computations still 3.
 
-### Remove root-epoch commit rejection
+That is bounded evidence that retained graph/evaluator state can survive many root changes in this simple Markov profile.
 
-Mutation: disable the `work.epoch !== rootEpoch` guard before backup publication.
+## Mutation sensitivity
 
-Result:
+Three throwaway mutations were tested and are not retained.
 
-```text
-expected=10 executed=10 passed=8 failed=2
-failed: stale-work-rejected-after-reroot
-failed: reclamation-defers-and-reuses-generations
-```
+1. **Remove root-epoch validation at commit:** capsule fell to 8/10. `stale-work-rejected` and reclamation failed because old-root work published after reroot.
+2. **Remove slot-generation advance on reclaim:** capsule fell to 9/10. A reused slot resurrected a stale reference.
+3. **Remove pre-mutation root-update admission checks while keeping the later epoch check:** capsule fell to 9/10. `epoch-exhaustion-no-side-effect` detected that a rejected reroot expanded/materialized graph state before failing.
 
-The old-epoch work was applied and the reclamation precondition was violated. The test capsule therefore detects the stale-publication failure it is meant to guard.
+The third mutation caught a real defect in the first prototype pass and changed the implementation ordering.
 
-### Remove slot generation advance on reclaim
+## Lessons worth carrying forward
 
-Mutation: reclaim a slot without incrementing its generation before reuse.
+### Reroot and reclamation are different transitions
 
-Result:
+The simplest safe baseline changes logical root + root epoch immediately, then reclaims only after older outstanding work has committed or been abandoned stale. Cleanup does not belong on the latency-critical root switch by default. Native realization looks more like an epoch/grace-period problem than a reason to stop and rebuild the graph; the exact CUDA mechanism remains unselected.
 
-```text
-expected=10 executed=10 passed=9 failed=1
-failed: reclamation-defers-and-reuses-generations
-```
+### Root epoch must guard publication, not just selection
 
-The reused slot resurrected a stale reference. Generation safety is therefore observable rather than decorative in this model.
+Work captures the root epoch when admitted. Old-epoch work is prevented from publishing root-relative completed statistics after reroot, while already-materialized graph-global state can remain reusable. Later scheduler/reference/native tests should exercise epoch checks at every root-relative publication boundary.
 
-## What the prototype taught us
+### Live ranking should be a snapshot process
 
-### 1. Reroot and reclamation should be separate state transitions
+Ranking cadence can be policy-controlled and independent of every backup in this profile. Immutable snapshots can remain readable after reroot because the old `rootEpoch` makes staleness explicit until a new snapshot is published.
 
-The simplest safe model reroots immediately by changing the logical root plus root epoch, while reclamation waits until older outstanding work has either committed under the old epoch or been abandoned as stale. This avoids making graph cleanup part of the latency-critical root switch.
+### External root updates need fail-closed admission before graph mutation
 
-For a native implementation this resembles an epoch/grace-period problem more than a reason to stop and rebuild the search. The exact CUDA mechanism remains unselected.
+The first implementation checked epoch exhaustion too late. A rejected action reroot could expand the root and a rejected replacement root could allocate state before failing. The corrected rule is: **admit the root update first, then perform root-update-specific graph mutation, then publish the new root epoch**. A later epoch assertion is defense in depth, not the primary no-side-effect guard.
 
-### 2. Root epoch belongs at the publication/commit boundary
+### Generation-safe reclamation is essential
 
-Merely tagging the current root is insufficient. Work that began under an older root epoch must be prevented from publishing root-relative completed statistics into the new epoch. In this model, 32 simultaneously outstanding work items could be abandoned with exact reservation conservation and zero completed-stat contamination.
+Removing generation advance reproduced immediate stale-reference ABA on slot reuse. Production may use a different encoding or reclamation algorithm, but it needs an equivalent stale-identity proof.
 
-The later scheduler/reference/native capsules should therefore test epoch capture at admission and epoch validation at every root-relative publication boundary, not only at work selection.
+### Counter exhaustion needs policy, even with wide counters
 
-### 3. Live ranking can be decoupled from every backup
+Silent root-epoch or ranking-generation wrap can make old work/snapshots alias a later incarnation. Production should choose widths suitable for intended session lifetime and still define exhaustion/restart behavior.
 
-For identical deterministic search work, publishing/sorting every backup and every 64 backups produced identical search state and the same top action. The latter performed 8 ranking sorts instead of 512: a 64x reduction in ranking-publication operations for this case.
+## What this does not answer
 
-This is not a timing or production performance claim. It is strong semantic evidence that ranking publication can be a policy-controlled snapshot process rather than part of every backup mutation.
+SESSION-001 does not establish CUDA memory ordering, concurrent GPU scheduler fairness, simultaneous worker response to reroot, live host/device ranking transport, CUDA-JS issue #38’s long-lived sideband design, history-sensitive/POMDP reuse semantics, stochastic transitions, large/continuous action-space ranking cost, evaluator batching, concurrent reclamation, performance, occupancy, or representative search quality.
 
-### 4. Old complete ranking snapshots are useful and safe when epoch-tagged
-
-After reroot, the previous immutable snapshot can remain readable until a new snapshot is published. It is unambiguously stale because its `rootEpoch` no longer matches the accepted root epoch. This supports snapshot publication without requiring a stop-the-world ranking handoff.
-
-### 5. Retained graph/evaluator state can survive many root changes
-
-After the seven-node synthetic graph was learned, 1001 additional reroots between already-known states plus continued search caused:
-
-- zero additional node allocations;
-- zero additional cached evaluator computations;
-- no node-count growth beyond seven.
-
-This is the behavior the long-lived session plan wants. It is only established for this fixed Markov graph and simple evaluator.
-
-### 6. Generation-safe reclamation is not optional
-
-The generation-removal mutation reproduced stale-reference ABA immediately when a reclaimed slot was reused. A production arena may choose a different encoding or reclamation algorithm, but it still needs an equivalent stale-identity proof.
-
-### 7. Finite epoch/generation exhaustion needs an explicit policy
-
-The prototype fails closed before wrapping tiny configured root-epoch or ranking-generation limits. Silent wrap would make stale work or stale snapshots potentially indistinguishable from a later incarnation. The production contracts should choose widths large enough for intended session lifetime and still define exhaustion/restart behavior.
-
-## Limits and unanswered questions
-
-This experiment deliberately does **not** answer:
-
-- CUDA release/acquire/system-scope ordering;
-- real concurrent GPU work queues or scheduler fairness;
-- multiple CUDA workers observing a root epoch change simultaneously;
-- live host/device ranking transport while a kernel or device-owned workflow remains active;
-- CUDA-JS long-lived-operation/sideband design from CUDA-JS issue #38;
-- history-sensitive or partially observable reuse semantics;
-- stochastic transitions;
-- variable/large/continuous action spaces;
-- top-K maintenance cost at large roots;
-- neural evaluator batching/workspace interaction;
-- reclamation while new-epoch work is concurrently traversing retained nodes;
-- performance, occupancy, cache behavior, or search quality on representative workloads.
-
-The most important next native question is **not** whether rerooting itself can be cheap; this prototype says its semantic state transition can be. The next question is how to realize root-epoch publication, old-work drain/abandonment, ranking snapshots, and reclamation safely under actual CUDA concurrency and through a consumer-neutral CUDA-JS sideband mechanism.
+The highest-value next native experiment is to realize **root-epoch publication + old-work drain/abandonment + live ranking snapshots + generation-safe reclamation under actual CUDA concurrency**, while keeping external control/observation consumer-neutral at the CUDA-JS boundary.
 
 ## Disposition
 
-Keep `SESSION-001` as bounded learning evidence while its lessons are folded into:
-
-- graph/reroot/reclamation work in issue #24;
-- policy/live-ranking work in issue #34;
-- scheduler/progress work in issue #33;
-- Search IR/Composer work in issue #35;
-- reference/native conformance work in issue #36;
-- CUDA-JS generic long-lived sideband research in `iteathen/CUDA-JS#38`.
-
-Do not promote the implementation itself.
+Keep this experiment only as bounded learning evidence while lessons are folded into issues #24, #33, #34, #35, #36 and CUDA-JS #38. Do not promote the implementation itself.
