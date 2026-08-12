@@ -269,10 +269,22 @@ Performance claims require exact identity, representative workload, baseline/tar
 
 ## 17. Publication and release
 
-Before publication/release, inspect final diff/state, run all triggered tiers, update engineering-decision/parent/branch/token/test/execution/cleanup authority, complete exact-head review/guarded merge, verify remote target/checks/artifacts/packages/issue/branch/dependent state, and record skipped evidence, retained state, debt, and claim limits.
+Before a **repository-visibility publication** such as changing `iteathen/UMCGS` from private to public, verify against the exact intended public `main` revision:
+
+- `LICENSE`, `LICENSING.md`, `CONTRIBUTING.md`, `SECURITY.md`, CODEOWNERS, issue/PR templates, and public claims are coherent;
+- the current tree and the full reachable Git history have been audited for credentials, private keys, tokens, private endpoints, private user data, sensitive machine artifacts, or material that was safe only under private visibility;
+- discovered credentials are revoked/rotated before publication; deletion or history rewriting alone is not credential remediation;
+- public pull-request workflows run with least authority, require no repository secrets for untrusted PR code, and do not grant PR-controlled code write authority;
+- the public-ready exact head passes `./scripts/verify-docs.sh` and every publication-specific check available before the switch;
+- after the visibility change, repository visibility/default branch/license detection, public workflows, private vulnerability reporting availability, CODEOWNERS, and intended `main` branch protection/rulesets/required checks are read back through the owning GitHub surfaces;
+- secrets, deploy keys, environments, runners, integrations, and external resources are checked for unintended exposure/authority changes.
+
+If full-history secret/private-material evidence is unavailable, repository visibility is **not** certified ready to switch. See [`../docs/development/PUBLIC_REPOSITORY.md`](../docs/development/PUBLIC_REPOSITORY.md).
+
+Repository visibility is independent from a **CUDA-MCGS product release**. Before a product/package release, inspect final diff/state, run all triggered tiers, update engineering-decision/parent/branch/token/test/execution/cleanup authority, complete exact-head review/guarded merge, verify remote target/checks/artifacts/packages/issue/branch/dependent state, and record skipped evidence, retained state, debt, and claim limits.
 
 ## Current phase
 
-UMCGS has no accepted production implementation or public release. The mandatory current check is `./scripts/verify-docs.sh`, plus task-specific engineering judgment, assessment, focus-branch, token-backpressure, testing, execution, cleanup, sanity, PR-review, merge, or specialist validation.
+UMCGS is public/pre-release at the repository-collaboration layer and has no accepted production CUDA-MCGS implementation or product release. The mandatory current check is `./scripts/verify-docs.sh`, plus task-specific engineering judgment, assessment, focus-branch, token-backpressure, testing, execution, cleanup, sanity, PR-review, merge, security, publication, or specialist validation.
 
-Project license selection remains deferred for original private pre-release work; third-party implementation reuse and public distribution still require provenance/license compatibility and donor-artifact disposition.
+Repository licensing is `AGPL-3.0-or-later` with a separately negotiated commercial-license option. Third-party implementation reuse and public distribution require provenance/license compatibility and donor-artifact disposition.
