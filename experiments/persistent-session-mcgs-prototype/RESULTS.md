@@ -16,7 +16,7 @@ node experiments/persistent-session-mcgs-prototype/run.mjs
 Result:
 
 ```text
-capsule=session-001 expected=10 discovered=10 executed=10 passed=10 failed=0 required_skipped=0 conditional_skipped=0 optional_skipped=0 not_discovered=0
+capsule=session-001 expected=11 discovered=11 executed=11 passed=11 failed=0 required_skipped=0 conditional_skipped=0 optional_skipped=0 not_discovered=0
 ```
 
 Node 22 is sufficient for this isolated experiment, but the repository-wide validator requires Node 26 or newer. This result is therefore not a substitute for `./scripts/verify-docs.sh`.
@@ -35,13 +35,14 @@ That is bounded evidence that retained graph/evaluator state can survive many ro
 
 ## Mutation sensitivity
 
-Three throwaway mutations were tested and are not retained.
+Four throwaway mutations were tested and are not retained.
 
-1. **Remove root-epoch validation at commit:** capsule fell to 8/10. `stale-work-rejected` and reclamation failed because old-root work published after reroot.
-2. **Remove slot-generation advance on reclaim:** capsule fell to 9/10. A reused slot resurrected a stale reference.
-3. **Remove pre-mutation root-update admission checks while keeping the later epoch check:** capsule fell to 9/10. `epoch-exhaustion-no-side-effect` detected that a rejected reroot expanded/materialized graph state before failing.
+1. **Remove root-epoch validation at commit:** capsule fell to 9/11. `stale-work-rejected` and reclamation failed because old-root work published after reroot.
+2. **Remove slot-generation advance on reclaim:** capsule fell to 10/11. A reused slot resurrected a stale reference.
+3. **Remove pre-mutation root-update admission checks while keeping the later epoch check:** capsule fell to 10/11. `epoch-exhaustion-no-side-effect` detected that a rejected reroot expanded/materialized graph state before failing.
+4. **Make ranking publication expand an unexpanded root:** capsule fell to 10/11. `ranking-publication-readonly` detected that publishing the live view was materializing search state.
 
-The third mutation caught a real defect in the first prototype pass and changed the implementation ordering.
+The third and fourth mutations each caught a real coupling defect in review and changed the final prototype.
 
 ## Lessons worth carrying forward
 
@@ -53,9 +54,11 @@ The simplest safe baseline changes logical root + root epoch immediately, then r
 
 Work captures the root epoch when admitted. Old-epoch work is prevented from publishing root-relative completed statistics after reroot, while already-materialized graph-global state can remain reusable. Later scheduler/reference/native tests should exercise epoch checks at every root-relative publication boundary.
 
-### Live ranking should be a snapshot process
+### Live ranking should be a read-only snapshot process
 
-Ranking cadence can be policy-controlled and independent of every backup in this profile. Immutable snapshots can remain readable after reroot because the old `rootEpoch` makes staleness explicit until a new snapshot is published.
+A second review pass found that the first compact publisher called root expansion when ranking an unexpanded root. That made publication itself advance/materialize search state. The final prototype makes ranking publication read-only: on an unexpanded root it publishes an empty coherent snapshot rather than creating edges. The mutation restoring expansion is caught directly.
+
+Ranking cadence can also be policy-controlled and independent of every backup in this profile. Immutable snapshots can remain readable after reroot because the old `rootEpoch` makes staleness explicit until a new snapshot is published.
 
 ### External root updates need fail-closed admission before graph mutation
 
