@@ -54,7 +54,9 @@ The first implementation should reuse proven CUDA mechanisms and methodology agg
 
 ## Current phase
 
-The project is **public, pre-release, and in framework-definition phase**. Public repository visibility is for collaboration, review, research transparency, and CI; it is not a production release, stable API promise, platform-support claim, or evidence that the CUDA-MCGS/CUDA-JS compatible pair is complete.
+The project is **pre-release, in framework-definition phase, and prepared for a public-repository transition**. The canonical GitHub repository remains private until its visibility is explicitly changed. The repository's public collaboration, licensing, security-reporting, and CI posture is prepared in advance so the visibility switch can be a controlled publication action rather than a policy rewrite.
+
+Public repository visibility will support collaboration, review, research transparency, and CI; it will not be a production release, stable API promise, platform-support claim, or evidence that the CUDA-MCGS/CUDA-JS compatible pair is complete.
 
 The repository is establishing governance, mature-scale organization, versioned search contracts, the complete stage/channel-capable Search IR, Stage PTX composition semantics, inter-repository compatibility, resource constraints, prior-art evidence, conformance strategy, and test architecture before production implementation.
 
@@ -62,9 +64,9 @@ No production CUDA-MCGS implementation should be inferred from the current repos
 
 ## Public collaboration and security
 
-Contributions use the normal public fork/branch + pull-request workflow. `main` remains the integration trunk; foundational authority is owned through CODEOWNERS and the intended public posture is protected `main` with required owner review and the public documentation/reference checks.
+The repository is prepared to use the normal public fork/branch + pull-request workflow immediately after the visibility switch. `main` remains the integration trunk; foundational authority is owned through CODEOWNERS and the intended public posture is protected `main` with required owner review and public documentation/reference checks.
 
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before submitting work. Do **not** open a public issue containing exploitable vulnerability details; use the private reporting path in [`SECURITY.md`](SECURITY.md).
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before submitting work once the repository is public. Do **not** publish exploitable vulnerability details in an issue; use the private reporting path in [`SECURITY.md`](SECURITY.md).
 
 The public transition checklist and its hard history/secret-scan gate are documented in [`docs/development/PUBLIC_REPOSITORY.md`](docs/development/PUBLIC_REPOSITORY.md).
 
