@@ -43,8 +43,8 @@ class Session {
     entries.sort((a,b)=>b.visits-a.visits||((b.mean??-1e99)-(a.mean??-1e99))||a.action-b.action);this.rankGen++;this.lastRank=Object.freeze({epoch:this.epoch,generation:this.rankGen,root:n.state,completed:this.completed,entries:Object.freeze(entries.map(Object.freeze))});return this.lastRank;}
   canRoot(){if(this.epoch>=this.maxEpoch)err('EPOCH_EXHAUSTED');}
   advance(r){this.canRoot();if(!this.resolve(r))err('STALE_NEW_ROOT');this.epoch++;this.root=cp(r);this.reroots++;}
-  reroot(action){this.canRoot();const n=this.expand(this.root),i=n.e.findIndex(e=>e.action===action);if(i<0)err('BAD_ACTION');this.advance(this.child(n,i));}
-  replace(state){this.canRoot();this.advance(this.node(state));}
+  reroot(action){this.canRoot();const n=this.resolve(this.root);if(!n)err('STALE_ROOT');const d=graph.get(n.state),t=(d.a||[]).find(([a])=>a===action);if(!t)err('BAD_ACTION');this.advance(this.node(t[1]));}
+  replace(state){this.canRoot();if(!graph.has(state))err('BAD_REPLACEMENT_ROOT');this.advance(this.node(state));}
   refs(state){const r=this.byState.get(state);return r&&this.resolve(r)?cp(r):null;}
   reclaim(){if(this.pending.size)return {deferred:true,reclaimed:0};const live=new Set(),stack=[cp(this.root)];while(stack.length){const r=stack.pop();if(live.has(key(r)))continue;const n=this.resolve(r);if(!n)continue;live.add(key(r));for(const e of n.e||[])if(e.c&&this.resolve(e.c))stack.push(cp(e.c));}
     let count=0;for(const x of this.slots){if(!x.n||live.has(key(x.n.ref)))continue;const st=x.n.state,r=this.byState.get(st);if(r&&key(r)===key(x.n.ref))this.byState.delete(st);x.n=null;x.g++;this.free.push(x.s);count++;}return {deferred:false,reclaimed:count};}
@@ -54,6 +54,8 @@ class Session {
 }
 
 const tests=[];function test(id,fn){tests.push([id,fn]);}
+test('invalid-root-update-no-side-effect',()=>{const a=new Session(),ad=a.digest();throws(()=>a.reroot(99),'BAD_ACTION');ok(a.digest()===ad&&a.resolve(a.root).e===null,'invalid action mutated');const b=new Session(),bd=b.digest(),al=b.allocs;throws(()=>b.replace(999),'BAD_REPLACEMENT_ROOT');ok(b.digest()===bd&&b.allocs===al&&!b.refs(999),'invalid replacement mutated');});
+test('replacement-root-capacity-pressure',()=>{const s=new Session();s.search(1024,128);const d=s.digest(),ep=s.epoch,al=s.allocs;throws(()=>s.replace(10),'NODE_CAPACITY');ok(s.digest()===d&&s.epoch===ep&&s.allocs===al,'capacity rejection mutated session');});
 test('ranking-publication-readonly',()=>{const s=new Session(),d=s.digest();const r=s.rank();ok(r.entries.length===0,'fresh rank should have no materialized actions');ok(s.digest()===d,'ranking publication mutated search state');});
 test('live-ranking-running',()=>{const s=new Session();s.search(128,64);const a=s.lastRank,old=JSON.stringify(a.entries);s.search(384,64);ok(a.generation<s.lastRank.generation,'rank gen');ok(JSON.stringify(a.entries)===old,'snapshot mutated');ok(a.epoch===1&&s.lastRank.epoch===1,'epoch');ok(s.lastRank.entries[0].action===0,'top action');});
 test('ranking-cadence-decoupled',()=>{const a=new Session(),b=new Session();a.search(512,1);b.search(512,64);ok(a.digest()===b.digest(),'cadence changed search');ok(a.rankSorts===512&&b.rankSorts===8,'sort counts');});
