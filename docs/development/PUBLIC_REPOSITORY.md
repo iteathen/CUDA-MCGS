@@ -50,11 +50,11 @@ Before changing visibility, verify all of the following against the exact intend
 
 ## History and metadata findings
 
-The connected GitHub history listing shows historical commits whose author and, for some commits, committer identity includes `josh.oshiro@gmail.com`. Public repository visibility will expose that address in reachable Git commit metadata. This is **not** being rewritten automatically.
+The connected GitHub history listing shows historical commits whose author and, for some commits, committer identity includes a **personal non-GitHub-noreply email address**. Public repository visibility exposes raw reachable Git commit metadata. The exact address is intentionally not duplicated in this public-transition document.
 
 Before publication, the repository owner must choose one disposition:
 
-- **accept exposure** of that address as intended public commit metadata; or
+- **accept exposure** of the existing address as intended public commit metadata; or
 - **authorize a history rewrite** to replace/redact it after separately assessing the consequences.
 
 A history rewrite is high-consequence: it changes commit SHAs, can invalidate signatures and exact-revision evidence, breaks historical links/references, affects branches/tags/clones, and requires downstream reconciliation. It must not be performed merely for cosmetic cleanliness.
