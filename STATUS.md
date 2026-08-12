@@ -26,7 +26,7 @@ Universal completion does not require chess completion. Product needs cannot sil
 
 - The universal graph-search framework, not a first game/domain, is the CUDA-MCGS universal product.
 - The project charter and ADR-0001 through ADR-0018 are accepted within their scopes.
-- ADR-0018 clarifies that generic bounded result/observation semantics are universal while ranked root-action/move output belongs only to selected policy/output/product contracts.
+- ADR-0018 clarifies that generic bounded result/observation semantics are universal while ranked root-action/move output belongs only to selected output/product contracts.
 - [`SPEC-0001`](docs/specs/SPEC-0001-device-search-publication-and-resources.md) remains accepted authority for backend-neutral publication channels, state-node/parent-edge ownership, identity-before-path-cycle ordering, finite-resource accounting, typed exhaustion, partial-result validity, and scheduler-neutral conformance.
 - [`SPEC-0002`](docs/specs/SPEC-0002-search-ir-and-reference-semantics.md) remains accepted authority for foundational Search IR 0.1.0 representation, strict normalization, canonical identity, and deterministic CUDA-free reference semantics within the SPEC-0001 boundary.
 - SPEC-0001/SPEC-0002 do not mandate ranked actions; their ranking language constrains later selected ranking outputs when present.
@@ -38,9 +38,11 @@ Universal completion does not require chess completion. Product needs cannot sil
 
 ### Universal core
 
-Product-neutral contract families own domain, policy, evaluator, graph/path/transposition, Search Session/root lifecycle, finite resources, generic result/observation publication, device-owned progress, Search IR/Composer, conformance, and package semantics.
+Product-neutral contract families own domain, policy, evaluator, generic output payloads, graph/path/transposition, Search Session/root lifecycle, finite resources, device-owned progress, Search IR/Composer, conformance, and package semantics.
 
-Domain/policy/evaluator contracts are intentionally independent of the Stage extension model. A framework with every optional capability removed must still have coherent universal MCGS semantics.
+Domain/policy/evaluator/output/resource contracts are intentionally meaningful independently of the optional Stage extension model. A framework with every optional capability removed must still have coherent universal MCGS semantics and a finite core resource plan.
+
+Search policy owns selection/reservation/widening/policy statistics/backup/stopping/reuse semantics. A separate universal output family owns generic bounded complete/partial/evaluation/proof/sequence/diagnostic/custom/absent result payloads. Ranking is a downstream output/product transformation/schema, not mandatory policy meaning.
 
 ### Universal extension/composition substrate
 
@@ -67,7 +69,7 @@ The substrate is universal; individual capability semantics are not automaticall
 - old-epoch stale-work isolation and accounting;
 - explicit retain/retain-if-key-valid/transform/reset/invalidate reuse classification;
 - separation of reroot from generation-safe reclamation;
-- generic bounded read-only live observations;
+- generic bounded read-only observation publication whose payload meaning is owned by the selected output/product contract;
 - finite stale-safe generation/counter exhaustion/restart behavior.
 
 Ranked moves/actions are not required by SPEC-0006.
@@ -111,24 +113,24 @@ Important observed lessons carried into SPEC-0006/plan 16:
 
 SESSION-001 proves no native CUDA concurrency, memory ordering, sideband transport, scheduler performance, or universal statistics-reuse policy.
 
-## Canonical plan
+## Canonical plan packet
 
-[`next_step.yaml`](next_step.yaml) is proposal plan **schema 18 / parent plan 16** on the architecture branch until integrated.
+[`next_step.yaml`](next_step.yaml) in this architecture packet is **schema 18 / parent plan 16**.
 
 Its lanes are:
 
-- **universal core** — domain, policy, evaluator, graph, Search Session, resources;
+- **universal core** — domain, policy, evaluator, output, graph, Search Session, resources;
 - **universal extension substrate** — Search Stages/surfaces, internal channels, Stage PTX;
 - **universal integration/native** — Search IR/Composer, scheduler, reference, Windows native, performance/Linux, release;
 - **downstream products** — chess as a separately tracked non-gating lane.
 
-The plan's crucial dependency correction is that universal domain/policy/evaluator semantics no longer depend on the Stage extension model. Stage surfaces consume stable core facts rather than defining the core.
+The plan's crucial dependency correction is that universal domain/policy/evaluator/output/resource semantics no longer depend on the Stage extension model. The core resource owner defines generic optional resource-contribution/admission rules; the Composer later integrates selected Stage/Channel/product contributions into a concrete Search Image plan.
 
 ## Current blockers and claim limits
 
 - ADR-0018 layering is accepted, but SPEC-0000 and SPEC-0003 through SPEC-0006 are proposals and require review/acceptance before production lowering.
-- Universal domain/policy/evaluator/graph/session/resource/scheduler/generic-output contracts are incomplete.
-- Complete Search IR does not yet represent core versus namespaced capability/product specialization inputs, Search Session semantics, and capability-specific context deletion.
+- Universal domain/policy/evaluator/output/graph/session/resource/scheduler contracts are incomplete.
+- Complete Search IR does not yet represent core versus namespaced capability/product specialization inputs, generic output families, Search Session semantics, and capability-specific context/resource deletion.
 - First production root-update admission/full-arena pressure strategy and reroot reuse classifications are not accepted.
 - SESSION-002 native concurrent root-update/stale-work/reclamation/observation evidence does not exist.
 - CUDA-JS issue #35 remains the consumer-neutral relocatable-device-code dependency; issue #38 remains the generic long-lived sideband capability research/specification dependency.
