@@ -16,7 +16,7 @@ Passing CI does not override a demonstrated defect. A stale approval does not au
 
 ## Current UMCGS phase
 
-UMCGS is public, pre-release, and in framework-definition/development. Public visibility enables ordinary forks, pull requests, CODEOWNERS/branch-protection enforcement, and public GitHub-hosted CI; it does not constitute a CUDA-MCGS product release or stable compatibility promise.
+UMCGS is pre-release and prepared for transition to a public repository/collaboration model while remaining in framework-definition/development. The canonical repository remains private until its visibility is explicitly changed. Once public, ordinary forks, pull requests, CODEOWNERS/branch-protection enforcement, and public GitHub-hosted CI become the collaboration posture; that visibility change does not constitute a CUDA-MCGS product release or stable compatibility promise.
 
 ```text
 fork/*, feature/*, or agent/* -> pull request -> main
@@ -26,7 +26,7 @@ fork/*, feature/*, or agent/* -> pull request -> main
 
 Ordinary low-consequence development changes may merge after complete author-side review when repository policy and configured protections permit. Independent review is still required when objective risk, repository protection, CODEOWNERS, or owner instruction triggers it.
 
-Release-candidate and product-release review requirements are not imposed on every public development PR. Conversely, public visibility never waives a safeguard triggered by security, persistence, concurrency, destructive behavior, public contracts, provenance, licensing, recovery, publication, or broad blast radius.
+Release-candidate and product-release review requirements are not imposed on every development PR. Private or public repository visibility never waives a safeguard triggered by security, persistence, concurrency, destructive behavior, public contracts, provenance, licensing, recovery, publication, or broad blast radius.
 
 ## Review roles
 
