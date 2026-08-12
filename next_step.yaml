@@ -1,46 +1,53 @@
 {
-  "schema_version": 16,
-  "updated": "2026-08-11",
+  "schema_version": 17,
+  "updated": "2026-08-12",
   "status": "ready",
   "parent_task_id": "CUDA-MCGS-ENGINE-V0",
-  "parent_plan_version": 14,
+  "parent_plan_version": 15,
   "integration_owner": "CUDA-MCGS framework-definition and engine-integration spine",
-  "north_star": "CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with finite semantic Search Stages, useful stage-owned extension surfaces, bounded nonblocking dataflow, and schema-specialized device execution.",
-  "objective": "Create the version-zero CUDA-MCGS search engine by accepting its universal semantic contracts, extending Search IR, implementing the Search Composer and finite device runtime, proving one exact CUDA-JS compatible pair on Windows, and preserving an explicit Linux qualification lane without allowing platform or first-domain assumptions into the core.",
-  "ownership_boundary": "CUDA-MCGS owns search semantics, Search IR, Search Stages/surfaces/capabilities/channels, Search Composer, finite search resources, graph/storage/scheduler policy, generated Stage PTX/Search Images, reference/native search conformance, and the CUDA-MCGS-to-CUDA-JS adapter/package. CUDA-JS owns consumer-neutral Node/CUDA Driver/compiler/linker/artifact/resource/launch/completion/error/teardown contracts and platform qualification.",
+  "north_star": "CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with finite semantic Search Stages, long-lived rerootable search sessions, continuously refreshed root rankings, bounded nonblocking dataflow, and schema-specialized device execution.",
+  "objective": "Create the version-zero CUDA-MCGS search engine by accepting its universal semantic contracts, extending Search IR, implementing the Search Composer and finite device runtime, proving a long-lived session profile that can search continuously across external reroots while publishing a persistent ranked root-action view, proving one exact CUDA-JS compatible pair on Windows, and preserving an explicit Linux qualification lane without allowing platform or first-domain assumptions into the core.",
+  "ownership_boundary": "CUDA-MCGS owns search semantics, Search IR, Search Stages/surfaces/capabilities/channels, Search Composer, long-lived Search Session/root-epoch/reroot/live-ranking semantics, finite search resources, graph/storage/scheduler policy, generated Stage PTX/Search Images, reference/native search conformance, and the CUDA-MCGS-to-CUDA-JS adapter/package. CUDA-JS owns consumer-neutral Node/CUDA Driver/compiler/linker/artifact/resource/long-lived-operation/sideband-control-observation/launch/completion/error/teardown mechanisms and platform qualification; it must not learn search-session, reroot, or ranking meaning.",
   "deliverables": [
     "accepted universal domain, policy, evaluator, stage/channel, graph/storage, resource, scheduler and output contracts",
+    "accepted long-lived Search Session contract with monotonic root epochs, external reroot input, persistent graph reuse, incremental reclamation and continuously published bounded root ranking",
     "complete normalized Search IR and deterministic Search Composer",
-    "version-zero Stage PTX ABI/generator and CUDA-MCGS-to-CUDA-JS Search Image package",
+    "version-zero Stage PTX ABI/generator and CUDA-MCGS-to-CUDA-JS Search Image package including generic session-control/observation requirements",
     "deterministic CUDA-free reference engine and consolidated conformance domains",
-    "finite Windows CUDA-MCGS native engine through one exact public CUDA-JS compatible pair",
-    "representative performance/search-quality evidence and explicit Windows/Linux support matrix",
+    "finite Windows CUDA-MCGS native engine through one exact public CUDA-JS compatible pair that proves continuous search across repeated reroots and live ranking observation",
+    "representative performance/search-quality/ranking-freshness/reroot evidence and explicit Windows/Linux support matrix",
     "public SDK/package and release only after exact-head stabilization gates"
   ],
   "do_not": [
     "begin production implementation before the owning specification and dependencies are accepted",
     "modify active CUDA-JS compiler/LTO work or implement CUDA-JS issue 35 before its owner finishes",
+    "implement CUDA-JS long-lived-operation/session-I/O mechanisms before CUDA-JS issue 38 completes its own research/specification gate",
     "treat a stage as a global phase, barrier, kernel, module, launch, or CUDA Graph node",
+    "treat a long-lived Search Session as synonymous with one persistent kernel or one physical scheduler topology",
     "expose extension capability inside incomplete stage mutation or across a stage boundary",
     "create one PTX input/runtime call per capability or use a runtime callback/registry/schema interpreter",
     "block a GPU worker or require CPU progress for cross-stage/cross-surface dataflow",
+    "use a host relaunch or polling loop to choose or advance internal active-search work; externally supplied moves/observations/root updates are session inputs, not host-owned search progression",
+    "require search to stop merely so a consumer can observe the current ranked root-action view",
+    "require a full graph rebuild or full-graph stop-the-world reclamation on every reroot",
+    "require a full root-action sort after every backup as the universal live-ranking mechanism",
     "claim native Linux support from portable schema/reference evidence"
   ],
   "minimum_practice_floor": [
     "accepted behavioral specifications before production implementation of each owned boundary",
-    "critical assessment and adversarial challenge for stages, concurrency, JIT/ABI, graph storage, memory, scheduler, evaluator, and hot paths",
+    "critical assessment and adversarial challenge for stages, concurrency, JIT/ABI, graph storage, persistent session/root epochs, live ranking publication, memory, scheduler, evaluator, and hot paths",
     "one semantic focus branch per coherent owner with exact dependencies, acceptance, falsifier, rollback, cleanup, and integration obligations",
-    "deterministic CUDA-free reference evidence before native optimization claims",
-    "exact final-binary, resource, lifecycle, and compatible-pair evidence for native claims",
+    "deterministic CUDA-free reference evidence including repeated reroot/stale-epoch/live-ranking cases before native optimization claims",
+    "exact final-binary, resource, lifecycle, sideband-ordering, long-lived-session and compatible-pair evidence for native claims",
     "every new component is introduced with its manifest, README, registry entry, dependency declaration, and validation boundary in the same coherent change",
     "Windows-first native execution with portable/Linux work maintained in parallel and every unrun Linux claim explicitly excluded"
   ],
-  "plan_revision_reason": "Owner clarification and a second-pass research assessment invalidate the prior fine Extension Point/independently callable Extension Fragment plan. The durable model is a finite per-work-item Search Stage graph: semantic category and owned invariant define a stable stage boundary; usefulness validates granularity; entry/exit are the only extension checkpoints; multiple capabilities share one stage surface and at most one optional composed Stage PTX input; cross-stage/cross-surface dataflow is bounded and asynchronous while blocking is prohibited. Official CUDA Graph restrictions also prevent selecting nested graph execution as a universal scheduler substrate. The prior 42/42 portable and 25/25 Windows-native PTX discovery remains evidence for direct composition, exact unused disappearance, and the cost of fine PTX calls, but it does not authorize the superseded fragment schema or a production cost threshold.",
+  "plan_revision_reason": "Owner clarification establishes the intended operating model more strongly than parent plan 14: CUDA-MCGS is expected to search continuously for long periods, preserve useful graph/search knowledge across externally supplied moves or observations, reroot by advancing a logical root epoch, and keep a persistent ranked root-action view available while search continues. Parent plan 14 already named persistence/reroot/reclamation and device-owned progress, but it did not make root epochs, stale-work isolation, live ranking versus terminal result, external session I/O, or the required CUDA-JS long-lived-operation/sideband capability explicit. This revision preserves the existing stage/channel architecture and accepted SPEC-0001/SPEC-0002 authority, strengthens the downstream focus-branch contracts before implementation begins, and creates CUDA-JS issue 38 as a consumer-neutral research/specification dependency. External reroot input is environment/session data and does not authorize host-owned internal search progression. No persistent-kernel, mapped-memory, detached-operation, same-actor-concurrency, or other transport mechanism is selected by this plan revision.",
   "exact_input_revisions": {
-    "cuda_mcgs_branch": "codex/ptx-granularity-exploration",
-    "cuda_mcgs_head_at_assessment": "69625c921f62e1f08c28543c1e29cece1d2c94f4",
+    "cuda_mcgs_branch": "main",
+    "cuda_mcgs_head_at_assessment": "16afc9c861bf7b77cb68e49dfe795bc8eb9aebca",
     "cuda_mcgs_prototype_base": "c11d7911a4f0841a44404f851d93070c63c97086",
-    "cuda_js": "ad49a6c9b0cddb420e26e097180cf9c502060a65",
+    "cuda_js": "b9ee15e2b1567984b10b2bdd5655c066d292cf86",
     "nvidia_cuvs_reference": "abfb8b91c9f9bda1e568265b1d01b36250f43a8d",
     "nvidia_cucollections_reference": "1a1e640179e85139765a27d2d376e02628b2ccbc",
     "nvidia_cccl_reference": "a0c21d1ec5e8602dc85f9ab289006bf1a72e2f96"
@@ -80,13 +87,36 @@
       "Cross-stage and cross-surface dataflow is allowed; cross-stage and cross-surface blocking is forbidden.",
       "A producer may publish bounded work/data for a later stage using separately owned storage after committing or rolling back its current stage mutation.",
       "A required unavailable result moves the logical consumer to a declared pending state and releases the worker/resources; the scheduler runs other ready work including the producer.",
-      "Every channel owns identity, generation, freshness, release/acquire scope, capacity, pressure, cancellation, expiry, deadlock outcome, reclamation, and teardown."
+      "Every channel owns identity, generation, freshness, release/acquire scope, capacity, pressure, cancellation, expiry, deadlock outcome, reclamation, and teardown.",
+      "Internal Async Stage Channels are distinct from external Search Session control/observation ports; an external reroot command is not modeled as an arbitrary internal extension callback."
+    ],
+    "persistent_session_model": [
+      "A Search Session is a long-lived logical engine lifetime that may span many monotonically increasing root epochs under one finite memory/resource plan; long-lived does not mean unbounded memory or one mandatory kernel lifetime.",
+      "An externally supplied action, observation, or replacement-root fact is environment/session input rather than a CPU-produced internal search decision. Accepting a new logical root advances the root epoch and publishes the accepted epoch/root identity.",
+      "Root-relative paths, reservations, pending work, live-ranking publications and terminal-result work are associated with a root epoch. Work from an older epoch cannot publish into the current epoch unless its owning contract explicitly proves the data is root-independent and safely reusable.",
+      "Reroot resolves or creates the new root through the domain identity contract, preserves reusable graph/evaluator/search state according to explicit owners, retires or invalidates obsolete root-relative work, and schedules reclamation with generation safety.",
+      "Reroot must not require rebuilding the entire retained graph. Reclamation may be incremental and pressure-driven; any profile requiring a stop-the-world sweep must declare and justify that behavior explicitly.",
+      "The Search Session abstraction is independent of physical scheduler topology; persistent kernels, cooperative execution, device-owned multi-kernel workflows, device graphs or later mechanisms may conform if they preserve the same session semantics."
+    ],
+    "live_ranking_model": [
+      "Live root ranking is a first-class publication surface separate from terminal search result publication. A consumer can observe a complete ranked root-action view while the Search Session continues to make progress.",
+      "Every live-ranking snapshot carries session identity, root epoch, publication generation, bounded progress/freshness metadata, a bounded entry count and policy-declared ranked action payload. A consumer must reject or ignore a snapshot whose root epoch does not match the accepted current root epoch.",
+      "The policy/output contract selects best-action, top-k, complete-bounded ranking or another fixed-bounded ranking profile and declares ranking fields, ordering, cadence, staleness and validity. The universal contract does not require a full sort after every backup.",
+      "A ranking publisher commits one coherent snapshot before publication; observers see an older complete snapshot or a newer complete snapshot, never a partially updated ranking. Double buffering, sequence counters, mapped publication or another mechanism are lowering/runtime choices, not universal semantics.",
+      "Reading or ignoring the live ranking cannot be required for internal search progression. Terminal completion/partial-result publication remains a separate contract."
+    ],
+    "external_session_io_model": [
+      "The CUDA-MCGS execution package exposes bounded external session ports for root-update input and live-ranking observation in addition to cancellation and terminal completion. CUDA-MCGS owns their semantic schemas and epoch/generation meaning.",
+      "CUDA-JS must expose only consumer-neutral mechanisms sufficient for a long-lived device operation plus bounded sideband control/observation while device work remains active. CUDA-JS must not learn root, move, ranking or search semantics.",
+      "The current CUDA-JS terminally awaited finite-completion-deadline profile is not sufficient evidence for the intended persistent-session profile. CUDA-JS issue 38 owns research/specification of the missing generic capability before Windows persistent-session acceptance.",
+      "Do not assume DriverActor internal concurrency is required. Candidate mechanisms include host-visible mapped/pinned publication with system-scope synchronization, detached/long-lived operation resources with sideband commands, or another generic design selected after CUDA-JS-owned research and evidence.",
+      "One-way cancellation, terminal completion, health/error ownership and teardown remain explicit and are not conflated with ordinary root updates or ranking reads."
     ],
     "scheduler_model": [
       "Device closure is invariant and physical scheduler topology is experiment-selected.",
-      "Persistent queues, cooperative execution, device-owned multi-kernel workflows, CUDA Graph profiles, and future mechanisms may conform when they preserve stage/channel semantics.",
+      "Persistent queues, cooperative execution, device-owned multi-kernel workflows, CUDA Graph profiles, and future mechanisms may conform when they preserve stage/channel/session semantics.",
       "CUDA Graph conditional/device-launch restrictions prevent graphs from being assumed as the universal nested scheduler.",
-      "A host relaunch or decision loop that advances active search is non-conforming."
+      "A host relaunch or decision loop that advances internal active search is non-conforming; external root updates and ranking observation are permitted session I/O only when device-owned progress remains independent of their servicing."
     ]
   },
   "can_versus_should": {
@@ -95,31 +125,37 @@
       "use global barriers or one kernel per stage",
       "bind one callable PTX fragment per feature",
       "spin on readiness or nest device launches",
+      "stop and relaunch around every external move or observation and rebuild root ranking on demand",
+      "sort the complete root action set after every backup",
       "hand-author PTX and rely on synthetic clock64 timing"
     ],
     "should": [
       "derive stages from semantic categories and owned stable invariants, then validate useful granularity",
       "schedule per-work-item stage states without implying a global barrier",
+      "model one long-lived Search Session across explicit root epochs while preserving finite memory and device-owned progress",
+      "treat external action/observation/reroot as bounded session input rather than host-owned internal search progression",
+      "publish coherent bounded root-ranking snapshots independently from terminal results at a policy-defined cadence",
       "compose all same-stage capabilities into one optional Stage PTX input",
-      "represent dependencies as bounded published readiness and pending work",
+      "represent internal dependencies as bounded published readiness and pending work",
       "generate PTX from accepted contracts and validate final artifacts with representative GPU evidence"
     ]
   },
   "current_focus": {
     "id": "ENGINE-STAGE-01",
     "status": "proposal_drafted_review_required",
-    "next_action": "Review SPEC-0003, SPEC-0004, and SPEC-0005 as one semantic packet, resolve stage/channel representation questions, and decide whether they are ready for acceptance work without beginning production lowering."
+    "next_action": "Review SPEC-0003, SPEC-0004, and SPEC-0005 as one semantic packet, resolve stage/channel representation questions, and decide whether they are ready for acceptance work without beginning production lowering. Preserve parent-plan-15 persistent-session/root-epoch/live-ranking requirements as downstream invariants while reviewing those proposals."
   },
   "issue_tracker": {
-    "parent": "https://github.com/iteathen/UMCGS/issues/32",
-    "stage_and_stage_ptx": "https://github.com/iteathen/UMCGS/issues/30",
-    "channels_and_scheduler": "https://github.com/iteathen/UMCGS/issues/33",
-    "semantic_contracts": "https://github.com/iteathen/UMCGS/issues/34",
-    "graph_and_resources": "https://github.com/iteathen/UMCGS/issues/24",
-    "search_ir_and_composer": "https://github.com/iteathen/UMCGS/issues/35",
-    "reference_and_windows_engine": "https://github.com/iteathen/UMCGS/issues/36",
-    "performance_and_linux": "https://github.com/iteathen/UMCGS/issues/37",
+    "parent": "https://github.com/iteathen/CUDA-MCGS/issues/32",
+    "stage_and_stage_ptx": "https://github.com/iteathen/CUDA-MCGS/issues/30",
+    "channels_and_scheduler": "https://github.com/iteathen/CUDA-MCGS/issues/33",
+    "semantic_contracts": "https://github.com/iteathen/CUDA-MCGS/issues/34",
+    "graph_and_resources": "https://github.com/iteathen/CUDA-MCGS/issues/24",
+    "search_ir_and_composer": "https://github.com/iteathen/CUDA-MCGS/issues/35",
+    "reference_and_windows_engine": "https://github.com/iteathen/CUDA-MCGS/issues/36",
+    "performance_and_linux": "https://github.com/iteathen/CUDA-MCGS/issues/37",
     "cuda_js_relocatable_device_code": "https://github.com/iteathen/CUDA-JS/issues/35",
+    "cuda_js_long_lived_session_io": "https://github.com/iteathen/CUDA-JS/issues/38",
     "cuda_js_native_linux": "https://github.com/iteathen/CUDA-JS/issues/4"
   },
   "focus_branches": [
@@ -131,12 +167,12 @@
       "depends_on": ["SPEC-0001", "SPEC-0002"],
       "write_boundary": ["docs/specs/SPEC-0003-*", "stage representation in Search IR proposal", "stage conformance cases"],
       "outcome": "Accepted finite per-work-item stage semantics with natural semantic categories, useful stable entry/exit boundaries, least-authority capabilities, no mid-stage exposure, and scheduler-neutral transitions.",
-      "non_goals": ["scheduler selection", "PTX ABI implementation", "fixed AlphaZero stage list"],
-      "acceptance": ["two materially different domain/policy instances", "unreachable/illegal graphs rejected", "unused surfaces disappear", "no hidden global barrier or mid-stage mutation"],
+      "non_goals": ["scheduler selection", "PTX ABI implementation", "fixed AlphaZero stage list", "external session transport"],
+      "acceptance": ["two materially different domain/policy instances", "unreachable/illegal graphs rejected", "unused surfaces disappear", "no hidden global barrier or mid-stage mutation", "stage semantics remain valid across root-epoch changes without making a root epoch a global stage barrier"],
       "falsifier": "A required universal capability cannot be expressed at a stable checkpoint, in the stage core, or as a coherent new stage without breaking the model.",
       "rollback": "Keep SPEC-0003 proposal-only and return the counterexample to assessment.",
       "cleanup": "Retire superseded terminology and provisional fixtures only after durable evidence and links are preserved.",
-      "integration": "Freeze stage IDs/checkpoint semantics before dependent Search IR, composer, scheduler, and ABI acceptance."
+      "integration": "Freeze stage IDs/checkpoint semantics before dependent Search IR, composer, scheduler, session and ABI acceptance."
     },
     {
       "id": "ENGINE-CHANNEL-01",
@@ -146,12 +182,12 @@
       "depends_on": ["ENGINE-STAGE-01", "SPEC-0001"],
       "write_boundary": ["docs/specs/SPEC-0004-*", "channel representation in Search IR proposal", "channel conformance cases"],
       "outcome": "Accepted bounded cross-stage/cross-surface dataflow with pending/ready scheduling, publication, pressure, cancellation, deadlock and reclamation semantics and no worker blocking.",
-      "non_goals": ["one queue data structure", "host service loop", "multi-GPU transport"],
-      "acceptance": ["required evaluator-like flow", "optional secondary-work flow", "saturation/cancellation/stale generation/deadlock cases", "release/acquire scope evidence plan"],
+      "non_goals": ["one queue data structure", "host service loop", "multi-GPU transport", "external root-update/ranking transport"],
+      "acceptance": ["required evaluator-like flow", "optional secondary-work flow", "saturation/cancellation/stale generation/deadlock cases", "release/acquire scope evidence plan", "clear distinction between internal Async Stage Channels and external Search Session ports"],
       "falsifier": "A correctness-required dependency necessarily holds stage mutation or a worker while waiting, or cannot guarantee a runnable producer under finite resources.",
       "rollback": "Keep SPEC-0004 proposal-only and revise stage/resource ownership.",
       "cleanup": "No retained diagnostic queues or temporary processes after experiments.",
-      "integration": "Feeds evaluator, scheduler, resource planner, Search IR and native conformance."
+      "integration": "Feeds evaluator, scheduler, resource planner, Search IR and native conformance without absorbing external session I/O ownership."
     },
     {
       "id": "ENGINE-DOMAIN-01",
@@ -160,28 +196,28 @@
       "status": "pending",
       "depends_on": ["ENGINE-STAGE-01"],
       "write_boundary": ["domain specification family", "domain schemas", "domain conformance fixtures"],
-      "outcome": "Accepted domain contract covering fixed/variable/custom state, action production, stochasticity, observation, terminal roles, identity, history and cycles without game assumptions.",
-      "non_goals": ["one game adapter", "graph-store layout", "search policy"],
-      "acceptance": ["fixed DAG", "cyclic/history-sensitive", "stochastic/observation", "lazy or continuous-action second instance"],
+      "outcome": "Accepted domain contract covering fixed/variable/custom state, action production, stochasticity, observation, terminal roles, identity, history, cycles, and the bounded facts required to resolve an externally supplied action/observation/replacement-root update without game assumptions.",
+      "non_goals": ["one game adapter", "graph-store layout", "search policy", "host-owned search progression"],
+      "acceptance": ["fixed DAG", "cyclic/history-sensitive", "stochastic/observation", "lazy or continuous-action second instance", "external action/observation-to-root-state resolution including an already-known transposition and a not-yet-materialized root"],
       "falsifier": "A conformance domain requires changing the core contract instead of implementing the domain port.",
       "rollback": "Keep the contract proposal-only and split accidental domain-instance policy from universal meaning.",
       "cleanup": "Consolidate fixtures under one domain capsule; remove duplicate probes.",
-      "integration": "Publishes exact state/action/transition facts consumed by Search IR, stages, graph storage and reference semantics."
+      "integration": "Publishes exact state/action/transition/root-update facts consumed by Search IR, stages, graph storage and reference semantics."
     },
     {
       "id": "ENGINE-POLICY-01",
-      "title": "Search policy, reservation, widening, backup, stop and output contract",
+      "title": "Search policy, reservation, widening, backup, live ranking, stop and terminal output contract",
       "owner": "search policy semantics",
       "status": "pending",
       "depends_on": ["ENGINE-STAGE-01", "ENGINE-DOMAIN-01"],
       "write_boundary": ["policy/backup/output specification family", "policy schemas", "policy reference cases"],
-      "outcome": "Accepted policy contracts for selection, statistics, in-flight reservation, widening, backup perspective/algebra, stopping and bounded result ranking.",
-      "non_goals": ["one UCT formula", "scalar zero-sum value assumption", "scheduler implementation"],
-      "acceptance": ["atomic-commutative, segmented-associative and ordered-owner backup profiles", "policy-only/evaluation-only/full-search modes", "partial-result validity"],
-      "falsifier": "A valid policy requires hidden global ordering, fixed players/actions/value shape, or host-produced decisions.",
-      "rollback": "Split policy family by semantic owner without introducing runtime callback generality.",
+      "outcome": "Accepted policy contracts for selection, statistics, in-flight reservation, widening, backup perspective/algebra, persistent live root ranking, stopping and terminal/partial result publication. Live ranking is a coherent bounded root-epoch-scoped publication surface distinct from terminal result.",
+      "non_goals": ["one UCT formula", "scalar zero-sum value assumption", "scheduler implementation", "sorting every root edge after every backup", "fixing one ranking payload shape"],
+      "acceptance": ["atomic-commutative, segmented-associative and ordered-owner backup profiles", "policy-only/evaluation-only/full-search modes", "best-action/top-k/complete-bounded or custom fixed-bounded ranking profiles", "policy-declared ranking fields/cadence/staleness", "coherent snapshot generation with no torn ranking", "root-epoch mismatch rejection", "partial-result validity"],
+      "falsifier": "A valid policy requires hidden global ordering, fixed players/actions/value shape, host-produced internal decisions, or a universal ranking mechanism whose synchronization cost cannot be bounded independently from backup hot paths.",
+      "rollback": "Split policy/output family by semantic owner without introducing runtime callback generality or collapsing live ranking into terminal result.",
       "cleanup": "Retire one-off policy fixtures after consolidation.",
-      "integration": "Publishes stage roles, graph statistics ownership, resource demands and output semantics."
+      "integration": "Publishes stage roles, graph statistics ownership, live-ranking semantics, resource demands and terminal output semantics."
     },
     {
       "id": "ENGINE-EVALUATOR-01",
@@ -190,28 +226,28 @@
       "status": "pending",
       "depends_on": ["ENGINE-DOMAIN-01", "ENGINE-CHANNEL-01"],
       "write_boundary": ["evaluator specification family", "evaluator schemas", "reference evaluator fixtures"],
-      "outcome": "Accepted absent/proposal/value/combined/vector/distributional evaluator contracts with resident code/model/workspace, batching, perspective, publication and cancellation.",
-      "non_goals": ["one neural framework", "host inference callback", "one batch topology"],
-      "acceptance": ["absent and multiple output shapes", "required-result pending flow", "workspace/resource limits", "late/stale/cancelled result handling"],
+      "outcome": "Accepted absent/proposal/value/combined/vector/distributional evaluator contracts with resident code/model/workspace, batching, perspective, publication, cancellation, and explicit reuse/invalidation semantics across root epochs where evaluation meaning is root-independent or root-relative.",
+      "non_goals": ["one neural framework", "host inference callback", "one batch topology", "assuming every evaluator result survives reroot"],
+      "acceptance": ["absent and multiple output shapes", "required-result pending flow", "workspace/resource limits", "late/stale/cancelled result handling", "reroot case proving reusable state-node evaluation versus root-relative output invalidation where applicable"],
       "falsifier": "A selected evaluator requires CPU inference/progression or unbounded workspace after ignition.",
       "rollback": "Reject the evaluator profile or return residency/dataflow requirements to assessment.",
       "cleanup": "No retained model packages without exact provenance, owner and disposition.",
-      "integration": "Feeds Search IR, memory plan, scheduler, Stage PTX ABI and compatible-pair tests."
+      "integration": "Feeds Search IR, memory plan, scheduler, Stage PTX ABI, graph reuse rules and compatible-pair tests."
     },
     {
       "id": "ENGINE-GRAPH-01",
-      "title": "Graph store, transposition, path, cycle, persistence, reroot and reclamation",
+      "title": "Graph store, transposition, path, cycle, persistent root epochs, reroot and reclamation",
       "owner": "search graph/storage semantics",
       "status": "pending",
       "depends_on": ["ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "SPEC-0001"],
       "write_boundary": ["graph/storage specification family", "TT-001 experiment", "graph reference cases"],
-      "outcome": "Accepted node/edge/path ownership, identity/collision, transposition publication, generations, cycles/history, persistence, reroot and reclamation behavior.",
-      "non_goals": ["premature cuCollections dependency", "raw-pointer persistent identity", "tree-only storage"],
-      "acceptance": ["TT-001 compare methodology/source/vendor/custom paths", "finite collision/full-table behavior", "stale-generation and reroot/reclaim cases", "state-node versus parent-edge ownership"],
-      "falsifier": "The chosen representation cannot preserve required identity/history/backup semantics within finite device resources.",
-      "rollback": "Keep donor code out of production and revise representation/reuse disposition.",
+      "outcome": "Accepted node/edge/path ownership, identity/collision, transposition publication, generations, cycles/history, long-lived session persistence, monotonic root epochs, reroot, retained-state classification and reclamation behavior. Reroot is a logical-root transition over retained graph state, not a tree rebuild.",
+      "non_goals": ["premature cuCollections dependency", "raw-pointer persistent identity", "tree-only storage", "full graph rebuild on reroot", "universal stop-the-world reclamation"],
+      "acceptance": ["TT-001 compare methodology/source/vendor/custom paths", "finite collision/full-table behavior", "repeated reroot across already-known child/transposition/newly-materialized root", "monotonic root-epoch publication", "old-epoch path/work/ranking contamination rejected", "explicit reusable graph/evaluator versus root-relative state classification", "generation-safe incremental reclaim under pressure", "state-node versus parent-edge ownership"],
+      "falsifier": "The chosen representation cannot preserve required identity/history/backup semantics and root-epoch isolation within finite device resources, or reroot requires unbounded/full-graph synchronous work to remain correct.",
+      "rollback": "Keep donor code out of production and revise representation/reuse/reroot disposition.",
       "cleanup": "Dispose donor checkouts, generated data and benchmark resources with provenance retained.",
-      "integration": "Feeds layout, resource, scheduler and result/persistence branches."
+      "integration": "Feeds layouts, root-update/live-ranking schemas, resource planner, scheduler and result/persistence branches."
     },
     {
       "id": "ENGINE-RESOURCE-01",
@@ -220,13 +256,13 @@
       "status": "pending",
       "depends_on": ["ENGINE-CHANNEL-01", "ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-GRAPH-01"],
       "write_boundary": ["resource/memory specification family", "resource profiles", "pressure/exhaustion reference cases"],
-      "outcome": "Accepted finite plan for code, model, workspace, graph, paths, queues/channels, Stage PTX state, output, diagnostics and safety reserve with deterministic pressure outcomes.",
-      "non_goals": ["allocation-success assumption", "managed-memory universal arena", "unbounded diagnostics"],
-      "acceptance": ["minimum/ordinary/high/critical profiles", "failed claims excluded from published counts", "partial-result validity", "full teardown accounting"],
-      "falsifier": "A required engine configuration cannot compute a finite safe capacity or cannot terminate safely at pressure.",
-      "rollback": "Reject the configuration/profile rather than add hidden allocation or eviction.",
-      "cleanup": "Every allocation/cache/diagnostic artifact has lifetime and final disposition.",
-      "integration": "Freezes capacities for Search Composer, scheduler, Stage PTX and native engine."
+      "outcome": "Accepted finite plan for code, model, workspace, graph, paths, queues/channels, persistent session control/ranking publication storage, Stage PTX state, terminal output, diagnostics and safety reserve with deterministic pressure/reclamation outcomes.",
+      "non_goals": ["allocation-success assumption", "managed-memory universal arena", "unbounded diagnostics", "unbounded historical root retention"],
+      "acceptance": ["minimum/ordinary/high/critical profiles", "failed claims excluded from published counts", "bounded root-update and live-ranking buffers", "many-root-epoch session without monotonic live-memory growth when reclaimable state exists", "incremental reclaim/high-critical pressure behavior", "partial-result validity", "full teardown accounting"],
+      "falsifier": "A required engine configuration cannot compute a finite safe capacity, cannot maintain bounded session metadata/output across reroots, or cannot terminate/reclaim safely at pressure.",
+      "rollback": "Reject the configuration/profile rather than add hidden allocation, retention or eviction.",
+      "cleanup": "Every allocation/cache/session buffer/diagnostic artifact has lifetime and final disposition.",
+      "integration": "Freezes capacities for Search Composer, live ranking, scheduler, Stage PTX and native engine."
     },
     {
       "id": "ENGINE-IR-COMPOSER-01",
@@ -235,43 +271,43 @@
       "status": "pending",
       "depends_on": ["ENGINE-STAGE-01", "ENGINE-CHANNEL-01", "ENGINE-DOMAIN-01", "ENGINE-POLICY-01", "ENGINE-EVALUATOR-01", "ENGINE-GRAPH-01", "ENGINE-RESOURCE-01"],
       "write_boundary": ["Search IR specification/schema", "Search Composer component", "generated layouts/manifests", "portable conformance"],
-      "outcome": "Normalize universal contracts into one canonical finite Search IR and reproducibly generate layouts, stage/channel plans, code inputs, package identity and diagnostics.",
-      "non_goals": ["CUDA-JS private runtime implementation", "runtime schema interpretation", "legacy aliases in core"],
-      "acceptance": ["strict normalization and unknown-field rejection", "deterministic identity", "second-instance deletion/generality tests", "portable Windows/Linux capsule"],
-      "falsifier": "Two semantically equal inputs normalize differently, or materially different engines collide in identity.",
+      "outcome": "Normalize universal contracts into one canonical finite Search IR and reproducibly generate layouts, stage/channel plans, persistent-session/root-update/live-ranking contracts, code inputs, package identity and diagnostics.",
+      "non_goals": ["CUDA-JS private runtime implementation", "runtime schema interpretation", "legacy aliases in core", "hard-coding one sideband transport mechanism"],
+      "acceptance": ["strict normalization and unknown-field rejection", "deterministic identity", "root-epoch/live-ranking/session-I/O semantics participate in identity when behavior changes", "second-instance deletion/generality tests", "portable Windows/Linux capsule"],
+      "falsifier": "Two semantically equal inputs normalize differently, materially different engines/session profiles collide in identity, or the IR must encode CUDA-JS-private transport details to express session semantics.",
       "rollback": "Invalidate generated artifacts and keep production lowering blocked.",
       "cleanup": "Generated outputs are reproducible/owned or removed; no stale cache identity remains.",
-      "integration": "Publishes the frozen input for Stage PTX, scheduler, reference and native branches."
+      "integration": "Publishes the frozen input for Stage PTX, session package, scheduler, reference and native branches."
     },
     {
       "id": "ENGINE-STAGE-PTX-01",
       "title": "Stage PTX ABI, generator, Search Image and CUDA-JS execution package",
       "owner": "CUDA-MCGS code generation and peer adapter",
       "status": "blocked_by_dependencies",
-      "depends_on": ["ENGINE-IR-COMPOSER-01", "ENGINE-RESOURCE-01", "CUDA-JS issue 35 after active compiler/LTO work completes"],
+      "depends_on": ["ENGINE-IR-COMPOSER-01", "ENGINE-RESOURCE-01", "CUDA-JS issue 35 after active compiler/LTO work completes", "CUDA-JS issue 38 long-lived operation/sideband research and accepted capability"],
       "write_boundary": ["docs/specs/SPEC-0005-*", "Stage PTX generator/ABI", "CUDA-MCGS-to-CUDA-JS adapter/package", "compatible-pair capsule"],
-      "outcome": "Generate zero or one optional Stage PTX per stage, link a complete finite Search Image through public CUDA-JS, and prove deterministic ABI/identity, unused disappearance, failure recovery and representative bound cost.",
-      "non_goals": ["LTO dependency", "one PTX per capability", "handwritten PTX authoring model", "CUDA-JS semantic changes"],
-      "acceptance": ["STAGE-PTX-001", "exact compatible-pair identity", "final cubin/SASS/resource inspection", "fused-control comparison", "graceful partial-creation rollback/teardown"],
-      "falsifier": "Representative stage boundaries retain unacceptable cost or CUDA-JS cannot supply the consumer-neutral relocatable compilation/link contract.",
-      "rollback": "Keep Stage PTX proposal-only; fuse/reclassify the boundary or revise the peer dependency without touching active CUDA-JS work.",
+      "outcome": "Generate zero or one optional Stage PTX per stage, link a complete finite Search Image through public CUDA-JS, and emit the generic runtime requirements needed to keep one Search Session active while accepting bounded root updates and exposing live ranking observation. Prove deterministic ABI/identity, unused disappearance, failure recovery and representative bound cost.",
+      "non_goals": ["LTO dependency", "one PTX per capability", "handwritten PTX authoring model", "teaching CUDA-JS search semantics", "selecting mapped memory or detached operations in the CUDA-MCGS semantic contract"],
+      "acceptance": ["STAGE-PTX-001", "exact compatible-pair identity", "package-declared long-lived-operation/sideband capability profile", "root-update/live-ranking schema and generation identity", "final cubin/SASS/resource inspection", "fused-control comparison", "graceful partial-creation rollback/teardown"],
+      "falsifier": "Representative stage boundaries retain unacceptable cost, CUDA-JS cannot supply consumer-neutral relocatable composition, or no generic peer capability can support long-lived operation plus bounded session control/observation without leaking search semantics.",
+      "rollback": "Keep Stage PTX/session package proposal-only; fuse/reclassify the boundary or revise the peer dependency without modifying CUDA-JS outside its own accepted work.",
       "cleanup": "Remove generated packages/tarballs/builds unless retained as bounded evidence with exact identity.",
-      "integration": "Freezes Search Image inputs for the native scheduler/engine branch."
+      "integration": "Freezes Search Image and external session-port inputs for the native scheduler/engine branch."
     },
     {
       "id": "ENGINE-SCHED-01",
-      "title": "Device-owned scheduler and progress mechanism",
+      "title": "Device-owned scheduler and long-lived progress mechanism",
       "owner": "search scheduling execution",
       "status": "pending",
       "depends_on": ["ENGINE-STAGE-01", "ENGINE-CHANNEL-01", "ENGINE-EVALUATOR-01", "ENGINE-RESOURCE-01", "ENGINE-IR-COMPOSER-01"],
       "write_boundary": ["scheduler specification", "SCHED-001 experiment", "scheduler component", "progress conformance"],
-      "outcome": "Select one version-zero Windows scheduler profile that realizes stage/channel semantics, required producer progress, stopping and evaluator coexistence without host progression.",
-      "non_goals": ["making persistent kernel universal", "making CUDA Graphs universal", "schedule-specific semantic outputs"],
-      "acceptance": ["persistent-queue baseline", "credible graph/multi-kernel comparison where supported", "irregular small/large frontier workloads", "no starvation/deadlock/resource leak", "equivalent semantic invariants"],
-      "falsifier": "No candidate preserves device closure and producer progress within the finite resource/evaluator profile.",
-      "rollback": "Do not select a scheduler; revise resource/stage/dataflow assumptions and repeat bounded evidence.",
-      "cleanup": "Stop device work and dispose graphs/streams/events/modules/allocations/profiling state.",
-      "integration": "Publishes exact scheduler capability/resource identity for native engine generation."
+      "outcome": "Select one version-zero Windows scheduler profile that realizes stage/channel/session semantics, required producer progress, repeated root-epoch transitions, live-ranking publication opportunities, stopping and evaluator coexistence without host-owned internal progression.",
+      "non_goals": ["making persistent kernel universal", "making CUDA Graphs universal", "schedule-specific semantic outputs", "requiring DriverActor internal concurrency"],
+      "acceptance": ["persistent-queue baseline", "credible graph/multi-kernel comparison where supported", "irregular small/large frontier workloads", "search remains live across repeated reroots", "accepted root update retires stale root-relative work without corrupting new epoch", "ranking publisher obtains bounded progress/fairness", "no starvation/deadlock/resource leak", "equivalent semantic invariants"],
+      "falsifier": "No candidate preserves device closure, root-epoch transition safety, live-ranking progress and producer progress within the finite resource/evaluator profile.",
+      "rollback": "Do not select a scheduler; revise resource/stage/dataflow/session assumptions and repeat bounded evidence.",
+      "cleanup": "Stop device work and dispose graphs/streams/events/modules/allocations/session/profiling state.",
+      "integration": "Publishes exact scheduler capability/resource/session identity for native engine generation."
     },
     {
       "id": "ENGINE-REFERENCE-01",
@@ -280,43 +316,43 @@
       "status": "pending",
       "depends_on": ["ENGINE-IR-COMPOSER-01"],
       "write_boundary": ["reference component", "conformance domains", "contract test capsules"],
-      "outcome": "Provide a CUDA-free deterministic oracle for all accepted semantic contracts and consolidated domains that expose hidden game/tree/action/value/evaluator assumptions.",
-      "non_goals": ["performance model", "native CUDA oracle", "one fixture per defect"],
-      "acceptance": ["fixed DAG/cycle/history/stochastic/continuous-or-lazy-action cases", "stage/channel/pressure/cancellation cases", "oracle sensitivity", "exact discovery/skip accounting"],
-      "falsifier": "Reference behavior depends on CUDA scheduling or repeats production algorithms without an independent oracle.",
+      "outcome": "Provide a CUDA-free deterministic oracle for all accepted semantic contracts, including long-lived session/root-epoch/live-ranking behavior, and consolidated domains that expose hidden game/tree/action/value/evaluator assumptions.",
+      "non_goals": ["performance model", "native CUDA oracle", "one fixture per defect", "simulating CUDA sideband transport"],
+      "acceptance": ["fixed DAG/cycle/history/stochastic/continuous-or-lazy-action cases", "stage/channel/pressure/cancellation cases", "many-step session with repeated reroot", "existing-child/transposition/new-root reroot cases", "stale old-epoch work/ranking rejection", "coherent live-ranking generations before/after reroot", "graph/evaluator reuse versus root-relative invalidation", "oracle sensitivity", "exact discovery/skip accounting"],
+      "falsifier": "Reference behavior depends on CUDA scheduling/transport or repeats production algorithms without an independent oracle.",
       "rollback": "Keep native implementation blocked until an independent semantic oracle exists.",
       "cleanup": "Consolidate provisional reproducers and remove duplicate fixtures.",
-      "integration": "Supplies differential evidence for Windows native and compatible-pair branches."
+      "integration": "Supplies differential session/reroot/ranking evidence for Windows native and compatible-pair branches."
     },
     {
       "id": "ENGINE-WINDOWS-01",
-      "title": "Windows CUDA-MCGS native vertical slice",
+      "title": "Windows CUDA-MCGS native long-lived session vertical slice",
       "owner": "native CUDA-MCGS engine integration",
       "status": "blocked_by_dependencies",
-      "depends_on": ["ENGINE-STAGE-PTX-01", "ENGINE-SCHED-01", "ENGINE-REFERENCE-01"],
+      "depends_on": ["ENGINE-STAGE-PTX-01", "ENGINE-SCHED-01", "ENGINE-REFERENCE-01", "CUDA-JS issue 38 accepted generic capability"],
       "write_boundary": ["production components/manifests", "Windows native conformance", "compatible-pair evidence"],
-      "outcome": "Run a finite generated CUDA-MCGS Search Image entirely on GPU after ignition through an exact public CUDA-JS pair and match the reference semantics across representative domains.",
-      "non_goals": ["public release", "Linux qualification", "final performance optimization"],
-      "acceptance": ["exact Windows hardware/toolchain/runtime identity", "device closure", "reference parity/invariants", "pressure/cancel/device-error/teardown", "final-binary/resource evidence", "zero required skips"],
-      "falsifier": "Any active-search decision requires CPU progress or semantic/resource/lifecycle parity fails.",
-      "rollback": "Do not promote the engine; preserve evidence, unload/close all resources and return the first divergence to its owning branch.",
-      "cleanup": "Verify no live/orphaned CUDA-JS Driver/compiler resources, packages, processes or generated residue.",
-      "integration": "Produces the first implementation candidate, not release acceptance."
+      "outcome": "Run one finite generated CUDA-MCGS Search Image as a long-lived Search Session through an exact public CUDA-JS pair, keep device-owned search progressing while the host observes coherent ranked root-action snapshots, apply repeated external reroots without rebuilding the graph, and match reference semantics across representative domains.",
+      "non_goals": ["public release", "Linux qualification", "final performance optimization", "one mandatory persistent-kernel topology"],
+      "acceptance": ["exact Windows hardware/toolchain/runtime identity", "device closure with external session I/O distinguished from internal progression", "session remains active across repeated root epochs", "live ranking read while search remains active", "epoch/generation publication ordering and no torn/stale-current ranking", "graph/evaluator reuse and stale root-relative work rejection", "bounded/incremental reclamation under pressure", "reference parity/invariants", "cancel/device-error/teardown", "final-binary/resource evidence", "zero required skips"],
+      "falsifier": "Any internal active-search decision requires CPU progress, ranking observation requires terminal search, reroot requires rebuilding all retained state, stale-epoch work contaminates the current root, or semantic/resource/lifecycle parity fails.",
+      "rollback": "Do not promote the engine; preserve evidence, unload/close all resources and return the first divergence to its owning branch or CUDA-JS peer issue.",
+      "cleanup": "Verify no live/orphaned CUDA-JS Driver/compiler/session resources, packages, processes or generated residue.",
+      "integration": "Produces the first persistent-session implementation candidate, not release acceptance."
     },
     {
       "id": "ENGINE-PERF-LINUX-01",
-      "title": "Representative performance, search quality, hardware profiles and Linux qualification",
+      "title": "Representative persistent-session performance, search quality, hardware profiles and Linux qualification",
       "owner": "performance/portability validation",
       "status": "blocked_by_windows_candidate",
       "depends_on": ["ENGINE-WINDOWS-01", "CUDA-JS Linux issue 4 for native Linux pair"],
       "write_boundary": ["benchmark/conformance plans", "raw evidence manifests", "Linux compatible-pair capsule", "profile documentation"],
-      "outcome": "Establish representative semantic/search-quality/resource-equivalent performance and qualify or explicitly exclude each Windows/Linux hardware/toolchain profile.",
-      "non_goals": ["using WDDM host timing for fine claims", "claiming Linux from portable tests", "multi-GPU production support without a separate plan"],
-      "acceptance": ["GPU event/profiler timing", "occupancy/final resources", "several workloads and at least two hardware profiles when available", "native Linux link/load/launch/cleanup", "honest unsupported-profile behavior"],
-      "falsifier": "Performance comparisons change semantics/work/stopping/quality, or Linux/native identity cannot be established.",
-      "rollback": "Narrow supported profiles and keep unqualified targets explicitly unsupported.",
-      "cleanup": "Dispose profiler output/builds/caches and device resources; retain only curated exact evidence.",
-      "integration": "Gates stabilization/release planning and records the Linux gap until actually closed."
+      "outcome": "Establish representative semantic/search-quality/resource-equivalent performance for long-lived sessions, including search throughput, live-ranking freshness/publication cost, reroot transition latency and reclamation behavior, and qualify or explicitly exclude each Windows/Linux hardware/toolchain profile.",
+      "non_goals": ["using WDDM host timing for fine claims", "claiming Linux from portable tests", "multi-GPU production support without a separate plan", "requiring one ranking cadence across policies"],
+      "acceptance": ["GPU event/profiler timing", "occupancy/final resources", "long-running repeated-reroot workload", "ranking publication overhead/freshness at declared cadence", "reroot and reclamation latency/resource effects", "several workloads and at least two hardware profiles when available", "native Linux link/load/long-lived-session/sideband/cleanup", "honest unsupported-profile behavior"],
+      "falsifier": "Performance comparisons change semantics/work/stopping/quality/ranking cadence, long-lived publication/reclamation destabilizes resource bounds, or Linux/native identity cannot be established.",
+      "rollback": "Narrow supported profiles/session capabilities and keep unqualified targets explicitly unsupported.",
+      "cleanup": "Dispose profiler output/builds/caches and device/session resources; retain only curated exact evidence.",
+      "integration": "Gates stabilization/release planning and records the Linux/session-profile gap until actually closed."
     },
     {
       "id": "ENGINE-RELEASE-01",
@@ -325,44 +361,47 @@
       "status": "deferred",
       "depends_on": ["ENGINE-PERF-LINUX-01", "full exact-head sanity", "independent PR review"],
       "write_boundary": ["public SDK/package", "release manifests", "installation/upgrade docs", "compatibility policy"],
-      "outcome": "Publish a versioned CUDA-MCGS package and exact CUDA-JS compatibility profile with installation, contribution, security, migration and support documentation.",
-      "non_goals": ["premature public API freeze", "paid private-repository controls", "unsupported platform claims"],
-      "acceptance": ["release-ready exact revision", "package/install smoke", "license/provenance", "compatibility/migration", "cleanup and rollback drill"],
-      "falsifier": "The implementation or evidence is not stable enough to support the promised public boundary.",
-      "rollback": "Remain private pre-release and revise the affected upstream branch.",
+      "outcome": "Publish a versioned CUDA-MCGS package and exact CUDA-JS compatibility profile with long-lived Search Session/root-update/live-ranking contracts, installation, contribution, security, migration and support documentation.",
+      "non_goals": ["premature public API freeze", "paid private-repository controls", "unsupported platform claims", "promising indefinite operation on unqualified watchdog/runtime profiles"],
+      "acceptance": ["release-ready exact revision", "package/install smoke", "session create/reroot/read-ranking/cancel/close public-contract smoke", "license/provenance", "compatibility/migration", "cleanup and rollback drill"],
+      "falsifier": "The implementation or evidence is not stable enough to support the promised public/session boundary.",
+      "rollback": "Remain public pre-release and revise the affected upstream branch.",
       "cleanup": "Remove failed release candidates and verify remote/package state through owning systems.",
       "integration": "Final parent reconciliation only after every focus branch is accounted for on one exact revision."
     }
   ],
   "dependency_order": [
-    "A: settle and accept stage/channel/domain/policy/evaluator/graph/resource semantics",
-    "B: freeze complete Search IR and Search Composer outputs",
-    "C: implement Stage PTX/Search Image and scheduler mechanisms behind accepted contracts",
-    "D: build reference and Windows native engine, then reconcile end to end",
-    "E: validate representative performance/search quality and native Linux profiles",
+    "A: settle and accept stage/channel/domain/policy/evaluator/graph/resource semantics including persistent Search Session, root-epoch, reroot and live-ranking contracts",
+    "B: freeze complete Search IR and Search Composer outputs including session/control/observation identity",
+    "C: implement Stage PTX/Search Image and scheduler mechanisms behind accepted contracts and satisfy CUDA-JS generic relocatable-code plus long-lived-operation/sideband capability gates",
+    "D: build reference and Windows native persistent-session engine, then reconcile repeated reroot/live-ranking behavior end to end",
+    "E: validate representative persistent-session performance/search quality and native Linux profiles",
     "F: perform full exact-head sanity, independent review, packaging and release"
   ],
   "invalidation_rules": [
-      "A material stage/checkpoint/capability change invalidates dependent channel, Search IR, composer, Stage PTX, scheduler and native evidence.",
-    "A domain/policy/evaluator/graph/resource contract change invalidates every generated layout/artifact and affected oracle result.",
-    "A CUDA-JS compiler/runtime public contract or exact-peer revision change invalidates the compatible-pair, artifact and native evidence keys.",
-    "A scheduler or resource-profile change invalidates native progress, resource, performance and cleanup evidence.",
+    "A material stage/checkpoint/capability change invalidates dependent channel, Search IR, composer, Stage PTX, scheduler and native evidence.",
+    "A domain/policy/evaluator/graph/resource/root-epoch/live-ranking contract change invalidates every generated layout/artifact and affected oracle/session result.",
+    "A CUDA-JS compiler/runtime/long-lived-operation/sideband public contract or exact-peer revision change invalidates the compatible-pair, artifact, session-I/O and native evidence keys.",
+    "A scheduler, ranking-publication or resource/reclamation-profile change invalidates native progress, freshness, resource, performance and cleanup evidence.",
     "A test-oracle change invalidates every result produced by the previous oracle."
   ],
   "integration_closure": [
     "every focus branch has accepted output or an explicit blocker/supersession",
     "accepted specs, Search IR, implementation, generated artifacts, reference oracle, native engine and package identity agree",
-    "one exact Windows compatible pair passes required conformance with no host-produced active-search decisions",
-    "performance claims use semantically/search-quality/resource-equivalent workloads and final artifact identity",
+    "one exact Windows compatible pair sustains a long-lived Search Session across repeated reroots, keeps internal search device-owned, accepts bounded external root updates, exposes coherent root-epoch-matched live ranking while search remains active, and cleans up terminally",
+    "stale root-epoch work cannot contaminate current ranking/result and retained graph/evaluator state follows explicit reuse/invalidation ownership",
+    "finite resources remain bounded across many root epochs with deterministic pressure/reclamation behavior rather than monotonic leaked session state",
+    "performance claims use semantically/search-quality/resource/ranking-cadence-equivalent workloads and final artifact identity",
     "Linux claims remain explicitly absent until native qualification passes",
     "all local/remote/generated/device/research/coordination state has verified disposition",
     "issue tracker, STATUS.md, specifications and next_step.yaml describe the same current truth"
   ],
   "blockers": [
-    "SPEC-0003 through SPEC-0005 are proposals and the remaining domain/policy/evaluator/graph/resource/scheduler/output contracts are not accepted.",
+    "SPEC-0003 through SPEC-0005 are proposals and the remaining domain/policy/evaluator/graph/resource/scheduler/output/session contracts are not accepted.",
     "CUDA-JS source-to-relocatable-PTX public capability remains tracked in issue 35 and must not be touched until active compiler/LTO work finishes.",
-    "No representative Stage PTX cost envelope, scheduler selection, production graph store, generated engine, or exact released compatible pair exists.",
-    "Native Linux CUDA-JS compiler/driver and CUDA-MCGS compatible-pair evidence remains absent."
+    "CUDA-JS does not yet expose an accepted generic long-lived-operation plus bounded sideband control/observation profile; issue 38 owns the required research/specification and the current terminal-wait finite-deadline execution profile is not sufficient evidence for persistent-session acceptance.",
+    "No representative Stage PTX cost envelope, scheduler selection, production graph store, root-epoch/live-ranking native implementation, generated engine, or exact released compatible pair exists.",
+    "Native Linux CUDA-JS compiler/driver/long-lived-session and CUDA-MCGS compatible-pair evidence remains absent."
   ],
   "retained_evidence": {
     "ptx_discovery": "experiments/ptx-extension-composition-prototype; 42/42 portable and 25/25 Windows-native; retained as bounded mechanism evidence, not production schema/architecture",
@@ -375,17 +414,19 @@
       "node JSON parse and required-key validation",
       "./scripts/verify-docs.sh",
       "exact diff/status inspection",
-      "issue tracker read-back after publication"
+      "issue tracker and CUDA-JS issue 38 read-back after publication"
     ],
     "implementation_floor": [
       "owner-local fast and contract capsules",
-      "deterministic reference differential/invariant evidence",
+      "deterministic reference differential/invariant evidence including repeated reroot, stale-epoch isolation and live-ranking generations",
       "portable Windows/Linux schema/generation evidence where applicable",
-      "exact Windows native compatible-pair identity and final-binary/resource/lifecycle evidence",
-      "representative performance/search-quality equivalence before optimization claims",
-      "native Linux qualification before any Linux runtime claim"
+      "exact Windows native compatible-pair identity plus long-lived operation, sideband ordering, final-binary/resource/lifecycle evidence",
+      "live ranking observation while search remains active and root-epoch matching under concurrent search updates",
+      "bounded many-root-epoch memory/reclamation evidence",
+      "representative performance/search-quality/ranking-cadence equivalence before optimization claims",
+      "native Linux qualification before any Linux runtime/session claim"
     ],
-    "claim_rule": "Every claim names the exact revision/artifact/environment and discloses required checks not run; portable, sampled, synthetic, or Windows-only evidence never expands into a native Linux or release claim."
+    "claim_rule": "Every claim names the exact revision/artifact/environment and discloses required checks not run; portable, sampled, synthetic, Windows-only, bounded-session or one-root evidence never expands into a native Linux, arbitrary-duration, multi-root persistent-session or release claim."
   },
-  "handoff": "Begin with ENGINE-STAGE-01 and ENGINE-CHANNEL-01 proposal review as one semantic packet. Do not begin production code or modify CUDA-JS. Keep Windows as the first native target, maintain portable/Linux schemas and test plans in every applicable branch, and preserve the explicit native Linux gap until CUDA-JS issue 4 and an exact CUDA-MCGS compatible-pair run actually close it."
+  "handoff": "Begin with ENGINE-STAGE-01 and ENGINE-CHANNEL-01 proposal review as one semantic packet. Treat parent plan 15 persistent-session/root-epoch/live-ranking requirements as downstream invariants but do not force them into internal stage-channel semantics. Do not begin production code. Do not modify CUDA-JS implementation from this repository: CUDA-JS issue 35 owns relocatable device code and CUDA-JS issue 38 owns generic long-lived-operation/sideband research/specification. Keep Windows as the first native target, maintain portable/Linux schemas and test plans in every applicable branch, and preserve the explicit native Linux gap until CUDA-JS issue 4 and an exact CUDA-MCGS compatible-pair persistent-session run actually close it."
 }
