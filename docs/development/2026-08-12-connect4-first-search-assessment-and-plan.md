@@ -2,7 +2,7 @@
 
 **Status:** Superseded
 
-The exact original assessment/execution plan is preserved at [`../archive/plans/2026-08-12-connect4-first-search-assessment-and-plan.md`](../archive/plans/2026-08-12-connect4-first-search-assessment-and-plan.md).
+The exact original assessment/execution plan is preserved byte-for-byte at [`../archive/plans/2026-08-12-connect4-first-search-assessment-and-plan.md.txt`](../archive/plans/2026-08-12-connect4-first-search-assessment-and-plan.md.txt).
 
 It was archived on 2026-08-12 after the bounded CUDA-free Connect Four MCGS reference experiment was integrated into protected `main` at `ded3ef7d5257e28183a3b60c8fbff1f0ea8aed0b`.
 
