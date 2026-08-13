@@ -4,144 +4,92 @@
 
 **Updated:** 2026-08-12
 
-## Phase
+## Current repository state
 
-CUDA-MCGS is a **public pre-release repository in framework definition, research, specification, and bounded evidence gathering**. `main` is the integration trunk. Public visibility is not a product release, stable API promise, native platform-support claim, released CUDA-MCGS/CUDA-JS compatible-pair claim, or chess engine release.
+The latest evidence-bearing protected `main` baseline before this documentation-only plan reconciliation is:
 
-No production search runtime or final production component decomposition has been accepted.
+```text
+ded3ef7d5257e28183a3b60c8fbff1f0ea8aed0b
+```
 
-## North star
+CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
 
-> **CUDA-MCGS is a contract-defined universal GPU-resident MCGS framework with a universal least-authority extension/composition substrate and finite specialized Search Images.**
+No production universal search runtime/component decomposition has yet been accepted.
 
-[`ADR-0018`](docs/decisions/ADR-0018-universal-core-extension-product-layering.md) separates:
+## Accepted architecture
+
+The north star remains:
+
+> **CUDA-MCGS is a contract-defined universal GPU-resident MCGS framework with a universal schema-backed least-authority extension/composition substrate and finite statically specialized engines.**
+
+ADR-0018 separates:
 
 1. universal product-neutral MCGS semantic core;
-2. universal product-neutral extension/composition mechanics;
-3. downstream domain/search products such as chess.
+2. universal extension/composition mechanics;
+3. downstream domain/search products.
 
-Universal completion does not require chess completion. Product needs cannot silently become universal fields/contracts.
+Extension-surface stability is schema/semantic stability, not unconditional runtime presence. Concrete ports/hooks/context/channels/storage are materialized only for selected capabilities; an absent capability contributes no solely extension-owned hot-path residue.
 
-## Accepted project state
+SPEC-0001 and SPEC-0002 remain accepted foundational authority. SPEC-0000 and SPEC-0003 through SPEC-0006 remain proposals requiring review/revision before their owned production implementation.
 
-- The universal graph-search framework, not a first game/domain, is the CUDA-MCGS universal product.
-- The project charter and ADR-0001 through ADR-0018 are accepted within their scopes.
-- ADR-0018 clarifies that generic bounded result/observation semantics are universal while ranked root-action/move output belongs only to selected output/product contracts.
-- [`SPEC-0001`](docs/specs/SPEC-0001-device-search-publication-and-resources.md) remains accepted authority for backend-neutral publication channels, state-node/parent-edge ownership, identity-before-path-cycle ordering, finite-resource accounting, typed exhaustion, partial-result validity, and scheduler-neutral conformance.
-- [`SPEC-0002`](docs/specs/SPEC-0002-search-ir-and-reference-semantics.md) remains accepted authority for foundational Search IR 0.1.0 representation, strict normalization, canonical identity, and deterministic CUDA-free reference semantics within the SPEC-0001 boundary.
-- SPEC-0001/SPEC-0002 do not mandate ranked actions; their ranking language constrains later selected ranking outputs when present.
-- Generic Node/CUDA Driver/compiler/linker/launch/completion/resource lifecycle remains owned by independent public peer `iteathen/CUDA-JS`.
-- Repository/component organization and the no-Python ecosystem policy remain binding.
-- Repository licensing is `AGPL-3.0-or-later` with a separately negotiated commercial-license option.
+## Bounded evidence already integrated
 
-## Current universal proposal direction
+- accepted Search IR 0.1.0 deterministic CUDA-free reference evidence;
+- bounded CUDA-only MCGS feasibility evidence, not universal authority;
+- bounded PTX extension-composition mechanism/cost evidence, not production CUDA ownership;
+- integrated SESSION-001-class CUDA-free learning evidence for admission-before-mutation, stale epochs, reroot/reclamation separation, generation-safe reuse and read-only observations;
+- integrated CUDA-free Connect Four MCGS reference/product experiment at the current evidence baseline, retained as a downstream semantic oracle rather than a universal template.
 
-### Universal core
+Completed evidence is not reopened by the forward plan.
 
-Product-neutral contract families own domain, policy, evaluator, generic output payloads, graph/path/transposition, Search Session/root lifecycle, finite resources, device-owned progress, Search IR/Composer, conformance, and package semantics.
+## CUDA-JS boundary
 
-Domain/policy/evaluator/output/resource contracts are intentionally meaningful independently of the optional Stage extension model. A framework with every optional capability removed must still have coherent universal MCGS semantics and a finite core resource plan.
+Current peer baseline is protected CUDA-JS `fe9ed78939d3876790291421cec367fde58a8310` / `cuda-js@0.1.0-alpha.5`.
 
-Search policy owns selection/reservation/widening/policy statistics/backup/stopping/reuse semantics. A separate universal output family owns generic bounded complete/partial/evaluation/proof/sequence/diagnostic/custom/absent result payloads. Ranking is a downstream output/product transformation/schema, not mandatory policy meaning.
+CUDA-JS now implements portable/software:
 
-### Universal extension/composition substrate
+- typed RDC (SPEC-0010);
+- extended scalar ABI (SPEC-0011);
+- Device LTO (SPEC-0012);
+- restricted Device-JS (SPEC-0013);
+- opaque operation lifecycle (SPEC-0016).
 
-[`SPEC-0003`](docs/specs/SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](docs/specs/SPEC-0004-async-stage-channels.md), and [`SPEC-0005`](docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) propose:
+Those capabilities retain exact native qualification gates where required. CUDA-JS issue #38 / SPEC-0014 long-lived sideband remains proposal/portable-evidence work rather than accepted production support.
 
-- finite semantic per-work-item Search Stages;
-- stable least-authority Stage Extension Surfaces;
-- minimal universal base checkpoint contexts;
-- namespaced selected capability-specific context/state/resources;
-- bounded nonblocking internal Async Stage Channels;
-- zero-or-one optional composed Stage PTX input per stage;
-- exact absent-capability/product deletion.
+The owner-directed production boundary remains: CUDA-MCGS owns search/domain/product semantics and restricted Device-JS/Search Program source; CUDA-JS owns CUDA-specific lowering/artifacts/compiler/ABI/runtime mechanics and generic GPU primitives. Maintained CUDA-MCGS production must not require a local CUDA-specific implementation escape path.
 
-The substrate is universal; individual capability semantics are not automatically universal. A capability that changes search meaning must name the selected domain/policy/evaluator/output/session/product contract owning that meaning.
+## Current unfinished work
 
-### Search Session
+The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`](docs/development/2026-08-12-v0-forward-plan.md).
 
-[`SPEC-0006`](docs/specs/SPEC-0006-search-session-control-and-observation.md) proposes generic long-lived Search Session semantics:
+Current focus is **ENGINE-CONTRACT-01**: settle the unfinished universal domain/policy/evaluator/output/graph/resource/scheduler/session semantic owners independently of optional Search Stage mechanics before production lowering.
 
-- finite root epochs;
-- root-update validation/admission before root-update-specific mutation;
-- typed full-arena new-root pressure/admission behavior;
-- one authoritative root commit;
-- old-epoch stale-work isolation and accounting;
-- explicit retain/retain-if-key-valid/transform/reset/invalidate reuse classification;
-- separation of reroot from generation-safe reclamation;
-- generic bounded read-only observation publication whose payload meaning is owned by the selected output/product contract;
-- finite stale-safe generation/counter exhaustion/restart behavior.
+After core semantics:
 
-Ranked moves/actions are not required by SPEC-0006.
+- accept the schema-backed extension substrate with selected-only attachment points and zero unused-capability residue;
+- extend Search IR/Composer for accepted core + namespaced capability/product specialization inputs;
+- build consolidated materially different CUDA-free reference/conformance domains;
+- formalize Connect Four downstream product semantics and run the Device-JS external deletion test after neutral native Device-JS evidence;
+- build one finite Windows universal engine through an exact public CUDA-JS pair;
+- treat live Search Session native sideband/concurrency as an optional profile, not a finite-engine release blocker;
+- continue scheduler/performance/Linux evidence, then package/release stabilization.
 
-## Downstream chess product
+Chess remains a separately tracked downstream proposal and does not gate universal parent completion.
 
-[`CHESS-0001`](docs/specs/products/chess/CHESS-0001-search-product.md) and issue #45 define chess as a downstream product proposal.
+## Claim limits / blockers
 
-Chess owns chess board/history/legal-move/terminal identity, chess policy/evaluator semantics, any ranked legal-move/best-move/MultiPV observation, chess-specific extension capabilities, chess reroot/reuse rules, and chess product quality/support evidence.
+- no production universal engine is accepted yet;
+- core semantic contract families remain incomplete;
+- SPEC-0003/0004/0005/0006 are proposal-only;
+- complete Search IR/Composer specialization/resource identity is incomplete;
+- neutral native Device-JS DJS-2 and CUDA-MCGS external deletion/compatible-pair evidence are unfinished;
+- production generic sideband and SESSION-002 native live-session evidence are absent;
+- native Linux compatible-pair evidence is absent.
 
-Deleting chess must leave universal CUDA-MCGS architecture, Search IR, extension mechanics and conformance complete. Chess implementation/release does **not** gate universal CUDA-MCGS parent completion.
+Portable/reference/mechanism evidence is not native support. A missing optional execution capability is not automatically a blocker for a profile that does not select it.
 
-## Bounded evidence
+## Plan reconciliation
 
-### CUDA-only MCGS prototype
+The former Connect Four experiment plan, CUDA-isolation amendment, and schema-18/plan-16 `next_step` are preserved unchanged under [`docs/archive/plans/`](docs/archive/plans/) with archival reasons and replacement paths. Their former development paths are explicit Superseded pointers where applicable.
 
-`experiments/cuda-device-mcgs-prototype/` remains bounded non-production evidence for device closure, transposition node/edge ownership, path-local cycles, finite capacity and scheduler-ticket mechanisms. Its fixed two-action scalar-value domain is not universal authority.
-
-### Search IR reference
-
-`experiments/search-ir-reference/` remains the accepted deterministic CUDA-free reference evidence for SPEC-0001/SPEC-0002's bounded foundation. Its exact accepted evidence remains separate from later proposal changes.
-
-### PTX composition discovery
-
-`experiments/ptx-extension-composition-prototype/` remains bounded mechanism/cost evidence. It supports static composition, exact unused disappearance, and a warning against fine PTX calls. It does not define the production capability schema or Stage PTX cost envelope.
-
-### SESSION-001
-
-Draft PR #43 / issue #42 contain bounded CUDA-free SESSION-001 learning evidence. The exact prototype head referenced by plan 16 is `97e1755bcc2f9e0e7c3b8df4defba9475864e57c`.
-
-Important observed lessons carried into SPEC-0006/plan 16:
-
-- observation publication must not materialize/expand search state;
-- root-update admission occurs before root-update-specific mutation;
-- old root-epoch work cannot publish new-epoch root-relative effects;
-- reroot and reclamation are separate transitions;
-- storage reuse needs stale-safe generation/incarnation handling;
-- finite root-update capacity pressure needs an explicit typed strategy;
-- root/observation/reclamation generations need explicit stale-safe exhaustion behavior;
-- reroot statistics/cache reuse is contract-selected, not universal.
-
-SESSION-001 proves no native CUDA concurrency, memory ordering, sideband transport, scheduler performance, or universal statistics-reuse policy.
-
-## Canonical plan packet
-
-[`next_step.yaml`](next_step.yaml) in this architecture packet is **schema 18 / parent plan 16**.
-
-Its lanes are:
-
-- **universal core** — domain, policy, evaluator, output, graph, Search Session, resources;
-- **universal extension substrate** — Search Stages/surfaces, internal channels, Stage PTX;
-- **universal integration/native** — Search IR/Composer, scheduler, reference, Windows native, performance/Linux, release;
-- **downstream products** — chess as a separately tracked non-gating lane.
-
-The plan's crucial dependency correction is that universal domain/policy/evaluator/output/resource semantics no longer depend on the Stage extension model. The core resource owner defines generic optional resource-contribution/admission rules; the Composer later integrates selected Stage/Channel/product contributions into a concrete Search Image plan.
-
-## Current blockers and claim limits
-
-- ADR-0018 layering is accepted, but SPEC-0000 and SPEC-0003 through SPEC-0006 are proposals and require review/acceptance before production lowering.
-- Universal domain/policy/evaluator/output/graph/session/resource/scheduler contracts are incomplete.
-- Complete Search IR does not yet represent core versus namespaced capability/product specialization inputs, generic output families, Search Session semantics, and capability-specific context/resource deletion.
-- First production root-update admission/full-arena pressure strategy and reroot reuse classifications are not accepted.
-- SESSION-002 native concurrent root-update/stale-work/reclamation/observation evidence does not exist.
-- CUDA-JS issue #35 remains the consumer-neutral relocatable-device-code dependency; issue #38 remains the generic long-lived sideband capability research/specification dependency.
-- No representative Stage PTX cost envelope, scheduler selection, production graph store, generated universal engine, or released compatible pair exists.
-- Native Linux CUDA-JS/CUDA-MCGS compatible-pair evidence remains absent.
-- CHESS-0001 is proposal-only and intentionally not a universal blocker.
-
-## Repository/public status
-
-The canonical repository is public. Historical private-to-public preparation/checklist documents remain for provenance and audit; they no longer describe current visibility.
-
-`main` is protected. Public visibility does not waive specification, evidence, security, review, cleanup, platform qualification, compatible-pair, packaging or release gates.
-
-Security-sensitive reports follow [`SECURITY.md`](SECURITY.md). Contribution workflow follows [`CONTRIBUTING.md`](CONTRIBUTING.md).
+[`next_step.yaml`](next_step.yaml) now contains only unfinished forward work. Plans remain below accepted ADR/spec/charter authority.
