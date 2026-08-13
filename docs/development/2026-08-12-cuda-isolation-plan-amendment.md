@@ -2,7 +2,7 @@
 
 **Status:** Superseded
 
-The exact owner-directed amendment is preserved at [`../archive/plans/2026-08-12-cuda-isolation-plan-amendment.md`](../archive/plans/2026-08-12-cuda-isolation-plan-amendment.md).
+The exact owner-directed amendment is preserved byte-for-byte at [`../archive/plans/2026-08-12-cuda-isolation-plan-amendment.md.txt`](../archive/plans/2026-08-12-cuda-isolation-plan-amendment.md.txt).
 
 It was archived on 2026-08-12 after CUDA-JS protected `main` `fe9ed78939d3876790291421cec367fde58a8310` integrated accepted portable/software SPEC-0013 Device-JS. The amendment's completed dependency step is therefore historical, but its **owner-directed production invariant remains active**:
 
