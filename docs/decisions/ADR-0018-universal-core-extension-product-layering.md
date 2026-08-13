@@ -41,12 +41,14 @@ CUDA-MCGS also owns a universal extension substrate for behavior that should be 
 The substrate consists of:
 
 - finite semantic Search Stages;
-- stable stage-owned entry/exit Stage Extension Surfaces;
+- schema-declared, stage-owned entry/exit Stage Extension Surface contracts whose concrete attachment points are materialized only when selected capabilities require them;
 - namespaced/versioned capability contracts and schemas;
 - bounded Async Stage Channels for nonblocking cross-stage/cross-surface dataflow;
 - deterministic pre-ignition capability composition;
 - zero-or-one optional composed Stage PTX input per stage in the version-zero realization;
 - exact finite resource, provenance, compatibility and Search Image identity.
+
+Stability applies to the schema identity and semantics of an extension surface, not to unconditional runtime presence. A specialization materializes only the attachment points required by its selected capability set. An unselected capability contributes no hook/port, dispatch branch, context field, channel, storage, synchronization, or other solely extension-owned runtime residue.
 
 The **substrate is universal; individual capability semantics are not automatically universal**.
 
