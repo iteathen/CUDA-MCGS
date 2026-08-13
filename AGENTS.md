@@ -1,4 +1,4 @@
-# UMCGS Agent Entry Point
+# CUDA-MCGS Agent Entry Point
 
 This file is the mandatory first read for every human or automated developer. The canonical operating manual is [`agent_files/AGENTS.md`](agent_files/AGENTS.md). Tool-specific files are compatibility pointers only and may not create competing rules.
 
@@ -17,7 +17,7 @@ Before changing anything:
 9. For a requested sanity check, audit, whole-project review, complete review, incident review, or release-readiness claim, read [`agent_files/general_foundation/SANITY_CHECKING.md`](agent_files/general_foundation/SANITY_CHECKING.md) and [`SEMANTIC_INTERROGATION.md`](agent_files/general_foundation/SEMANTIC_INTERROGATION.md) before deep inspection.
 10. For PR readiness, review, approval, or merge work, read [`agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) before acting on the PR.
 11. Read [`agent_files/SYSTEM_REGISTRY.md`](agent_files/SYSTEM_REGISTRY.md) to identify the owning boundary and source of truth.
-12. Read [`agent_files/general_foundation/PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and the UMCGS layout in [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md) before creating, moving, or splitting project artifacts.
+12. Read [`agent_files/general_foundation/PROJECT_ORGANIZATION.md`](agent_files/general_foundation/PROJECT_ORGANIZATION.md) and the CUDA-MCGS layout in [`agent_files/application_specific/REPOSITORY_ORGANIZATION.md`](agent_files/application_specific/REPOSITORY_ORGANIZATION.md) before creating, moving, or splitting project artifacts.
 13. Read the accepted ADRs and specifications relevant to the task. Load detailed design doctrine linked from `PRINCIPLES.md` when the task changes a component, contract, dependency, foundational representation, compatibility boundary, or reusable name.
 14. Inspect repository status, existing work, and current project state.
 15. Apply the reasoning, token-backpressure, focus-branch, execution-readiness, testing, and cleanup gates before editing.
@@ -42,7 +42,7 @@ A plan, budget, or focus-branch map organizes work beneath authority. Token pres
 
 ## Current phase
 
-UMCGS is pre-release, documentation-first, and prepared for transition to a public collaboration model while defining a universal GPU-resident Monte Carlo Graph Search framework. The canonical GitHub repository remains private until its visibility is explicitly changed. The public contribution, review, security-reporting, licensing, and CI posture is prepared in advance; the visibility switch itself does not authorize production implementation or constitute a CUDA-MCGS product release. Production implementation may begin only for a clearly owned boundary with accepted governing specifications, an assessment disposition that permits implementation, and a dependency-ready plan/focus branch—or an explicitly authorized disposable experiment.
+CUDA-MCGS is a **public pre-release repository** in documentation-first framework definition, specification, and bounded evidence gathering while defining a universal GPU-resident Monte Carlo Graph Search framework. Public visibility is established, but it does not authorize production implementation, create a stable API/support promise, or constitute a CUDA-MCGS product release. Production implementation may begin only for a clearly owned boundary with accepted governing specifications, an assessment disposition that permits implementation, and a dependency-ready plan/focus branch—or an explicitly authorized disposable experiment.
 
 The first product is the generic framework, not a chess engine. Chess, Go, text search, planning, optimization, policy-only search, evaluation-only search, partially observable search, and other workloads are adapters or conformance domains. None may permanently shape the core.
 
