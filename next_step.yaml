@@ -4,9 +4,10 @@
   "status": "ready_for_contract_review",
   "objective": "Accept the unfinished product-neutral CUDA-MCGS semantic contract packet in dependency-correct order, then accept the schema-backed least-authority extension substrate, extend Search IR/Composer, and proceed to reference/native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. CUDA-JS owns restricted Device-JS language/helpers, all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and their qualification.",
-  "exact_current_revisions": {
-    "cuda_mcgs_main": "ded3ef7d5257e28183a3b60c8fbff1f0ea8aed0b",
-    "cuda_js_main": "fe9ed78939d3876790291421cec367fde58a8310",
+  "exact_input_revisions": {
+    "cuda_mcgs_implementation_baseline": "ded3ef7d5257e28183a3b60c8fbff1f0ea8aed0b",
+    "cuda_js_current_main": "83f44a21f6bf556f3ff6d58acaee644659777383",
+    "cuda_js_implementation_baseline": "fe9ed78939d3876790291421cec367fde58a8310",
     "cuda_js_package": "cuda-js@0.1.0-alpha.5"
   },
   "authority": [
@@ -80,7 +81,7 @@
   ],
   "archived_plan_provenance": [
     "docs/archive/plans/2026-08-12-next-step-plan16.json",
-    "docs/archive/plans/2026-08-12-connect4-first-search-assessment-and-plan.md",
-    "docs/archive/plans/2026-08-12-cuda-isolation-plan-amendment.md"
+    "docs/archive/plans/2026-08-12-connect4-first-search-assessment-and-plan.md.txt",
+    "docs/archive/plans/2026-08-12-cuda-isolation-plan-amendment.md.txt"
   ]
 }
