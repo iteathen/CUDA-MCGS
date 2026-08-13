@@ -44,7 +44,7 @@ Completed evidence is not reopened by the forward plan.
 
 ## CUDA-JS boundary
 
-Current peer baseline is protected CUDA-JS `fe9ed78939d3876790291421cec367fde58a8310` / `cuda-js@0.1.0-alpha.5`.
+Current peer `main` is protected CUDA-JS `83f44a21f6bf556f3ff6d58acaee644659777383`. Its latest implementation-bearing baseline is `fe9ed78939d3876790291421cec367fde58a8310`, package `cuda-js@0.1.0-alpha.5`; the later CUDA-JS revision is documentation/plan reconciliation only.
 
 CUDA-JS now implements portable/software:
 
@@ -90,6 +90,6 @@ Portable/reference/mechanism evidence is not native support. A missing optional 
 
 ## Plan reconciliation
 
-The former Connect Four experiment plan, CUDA-isolation amendment, and schema-18/plan-16 `next_step` are preserved unchanged under [`docs/archive/plans/`](docs/archive/plans/) with archival reasons and replacement paths. Their former development paths are explicit Superseded pointers where applicable.
+The former Connect Four experiment plan, CUDA-isolation amendment, and schema-18/plan-16 `next_step` are preserved byte-for-byte under [`docs/archive/plans/`](docs/archive/plans/) with archival reasons and replacement paths. Historical Markdown snapshots that contain pre-governance status/relative-link semantics are stored as `.md.txt` so their bytes are preserved without being reinterpreted as active documentation.
 
-[`next_step.yaml`](next_step.yaml) now contains only unfinished forward work. Plans remain below accepted ADR/spec/charter authority.
+Their former development paths are explicit Superseded pointers. [`next_step.yaml`](next_step.yaml) now contains only unfinished forward work. Plans remain below accepted ADR/spec/charter authority.
