@@ -96,6 +96,19 @@ Every substantial component is a movable brick with:
 
 Consumers request changes through contracts. They do not mutate another component’s internals or deep-import private files.
 
+### Non-negotiable isolation, naming, and transient topology
+
+These rules are part of LEGO correctness, not optional naming guidance.
+
+- **Complete module isolation:** a brick's internal logic, types, state, and names describe only its own domain and local contract. Never reference another module/repository/product/provider name, foreign object type, or neighbor-specific context merely because that neighbor is connected today. External identity belongs in composition or in the adapter that intrinsically owns that integration.
+- **Agnostic interface naming:** ports, inputs, outputs, events, properties, commands, queries, DTOs, callbacks, and public types are named for local data, intent, or action, never for the identity of the current upstream source or downstream target. Domain-specific vocabulary is valid only inside the component that owns that domain.
+- **Transient topology:** every external connection is temporary. Replacing, removing, isolating, or rewiring a neighbor must not require changes to internal logic or vocabulary. Composition owns relationships and lifecycle wiring; bricks do not discover neighbors or branch on product/repository/provider identity.
+- **Rewiring test:** replace the current neighbor mentally with another conforming implementation or remove it. If internal names become false, foreign types appear, or topology-specific branches are needed, redesign the boundary before implementation.
+- **No abstraction theater:** do not add a port, interface, callback registry, event bus, or generic wrapper merely to look modular. Boundaries exist only for real ownership, substitution, lifecycle, failure, or testing value; direct private calls inside one brick are preferred otherwise.
+- **Single authority remains explicit:** neutral naming is not permission for `common`, `shared`, `generic`, `manager`, callback, or registry dumping grounds with competing ownership.
+
+A violation is an architecture defect and a stop condition before implementation or acceptance, not a cleanup-level naming issue.
+
 ## Focus branches for large or complex tasks
 
 - Keep one canonical parent task and integration spine owning global authority, engineering contract, value ordering, invariants, vocabulary, dependency state, testing, token posture, contradictions, cleanup, and closure.
