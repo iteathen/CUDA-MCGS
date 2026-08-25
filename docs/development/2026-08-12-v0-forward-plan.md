@@ -6,7 +6,7 @@
 
 **Parent plan version:** `CUDA-MCGS-V0/22`
 
-**CUDA-MCGS input baseline:** protected `main` `098a8ce3e6c5abfcccc0209efe8d4564ad75d13f`.
+**CUDA-MCGS input baseline:** protected `main` `0ba119fbecaa116e29699a47fa867921fd08516d`.
 
 **CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
 
@@ -68,7 +68,7 @@ Completed output:
 
 ## ENGINE-EXTENSION-01 — schema-backed extension substrate
 
-**Current focus.** The critical assessment and dependency-ordered semantic focus-branch map are [`2026-08-25-engine-extension-01-assessment-and-plan.md`](2026-08-25-engine-extension-01-assessment-and-plan.md). `EXT-STAGE-01`, `EXT-CHANNEL-01` and `EXT-COMPOSE-01` integrated decision-complete SPEC-0003/0004/0005 proposals through PRs #82/#84/#86. `EXT-INTEGRATE-01` is reconciling the exact 248-requirement packet on frozen input `main@098a8ce` before schema/reference handoff.
+**Completed proposal node.** The critical assessment and dependency-ordered semantic focus-branch map are [`2026-08-25-engine-extension-01-assessment-and-plan.md`](2026-08-25-engine-extension-01-assessment-and-plan.md). `EXT-STAGE-01`, `EXT-CHANNEL-01` and `EXT-COMPOSE-01` integrated decision-complete SPEC-0003/0004/0005 proposals through PRs #82/#84/#86; `EXT-INTEGRATE-01` reconciled the exact 248-requirement packet through PR #87 at `main@0ba119f`. This completed proposal scope only, not semantic acceptance or implementation.
 
 Review/revise SPEC-0003 through SPEC-0005 into decision-complete proposals only after their relationship to the core owners is explicit. Final semantic acceptance follows normalized schema/reference evidence rather than preceding it.
 
@@ -88,6 +88,8 @@ The revised SPEC-0005 replaces the older Stage-PTX-input model with a restricted
 The assessment classified device-scope release/acquire publication as a missing consumer-neutral Device-JS capability in [CUDA-JS #123](https://github.com/iteathen/CUDA-JS/issues/123). Native Async Stage Channel qualification depends on that public capability; backend-neutral specification/schema/reference work does not. CUDA-MCGS must not substitute relaxed observation, fake RMW reads, undocumented fence recipes or native code.
 
 ## ENGINE-IR-COMPOSER-01 — normalized Search IR and Search Composer
+
+**Current focus.** Begin with a critical assessment and focus-branch map over all 989 proposal requirements, existing accepted Search IR 0.1.0 evidence and strict component/package organization before changing schema/normalizer/Composer code.
 
 After the core and extension proposals are decision-complete, execute an explicitly bounded, non-production schema/normalizer/reference-composer evidence node:
 
