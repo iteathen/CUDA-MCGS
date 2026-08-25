@@ -122,3 +122,30 @@ The four normalized structural profile identities are:
 The policy schema has checkout-neutral source digest `6adb8df41fd6f340ee1fbd7f0644dfa82e9da2b91588f5bc3074d8cda8e27720`. The framework envelope now binds the first domain, graph and policy profiles and has identity `d18318439640da4db0899860aecdd791dc83b0e13784cf75e0ad3aa72b1dfd9e` over 10,422 canonical bytes. Coverage identity is `5a3f6dd33d7406102f3d1412387a814542eaf60300d3f07b01d9265a041cae6d`; expanded requirement routing identity is `4c80d82fcae74839990e269dabcbecf0d454308c8c5b118bd53fb3498461c65d`. Exactly 348 framework/domain/graph/policy requirements now have final evidence lanes; all remain partial, pending or deferred. The other 641 requirements remain pending their semantic-owner leaves.
 
 This slice is structural/normalizer evidence only. It does not qualify policy behavior, concurrent backup/reservation publication, device memory ordering, evaluator execution, scheduling, CUDA-JS lowering or a compatible native pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
+
+## IR-EVALUATOR-01
+
+**Started:** 2026-08-25T02:55:23-07:00
+
+**Evidence completed:** 2026-08-25T03:25:06-07:00
+
+The expanded capsule passes 290/290 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy cases and adds strict normalized optional evaluator-profile evidence across:
+
+- proposal-only, evaluation-only and combined capabilities with exact non-overlapping input/output ownership and no unconsumed output;
+- collision-verified result-affecting input keys, arbitrary-width shapes and explicit output family, coordinates, numeric representation, validity and uncertainty;
+- finite request coverage/fallback, batch-one progress, batch-sensitive identity, bounded continuation/workspace and explicit randomness semantics;
+- exactly one terminal release/acquire publication per capability, optional exact-key cache lookup and device-owned progress with no host progress loop;
+- pre-ignition resident artifact provenance, optional mutable state, complete resource/status/port/reuse/lifecycle declarations and structural deletion of unselected capability/product data; and
+- restricted Device-JS program-contribution identity with exact domain/graph inputs and no model framework, scheduler, CUDA mechanism, C/C++ or native implementation selection.
+
+The five normalized structural profile identities are:
+
+- `evaluator.synthetic-vector-combined`: `4526786361316b2cebcc416f5c2525a695dbdd76957594220dd85908fbff2212` over 37,691 canonical bytes;
+- `evaluator.synthetic-proposal-only-stateless`: `3fce14d0c4b3581974da1ec029e93d4daaa6fe0d8318d29fb47a819e4cb0b97a` over 23,604 canonical bytes;
+- `evaluator.synthetic-proof-evaluation-only`: `1ad7e64c89eccc50d30badead06d0b8bdd713a237591071974dd6ea120fbf9e0` over 27,982 canonical bytes;
+- `evaluator.synthetic-analytic-evaluation-only`: `b0d990352baa2ac7db5b4aec260818152b606d793bd5d3426daced71cf313bf0` over 23,927 canonical bytes; and
+- `evaluator.synthetic-batch-sensitive-resumable`: `4706e1331dfd59a58a04baab6649ff902360acdf303786def4eaaec5c1495001` over 37,225 canonical bytes.
+
+The evaluator schema has checkout-neutral source digest `65484bc9bd3e338f9a6f4b1e663662f716d7574dd341d77f632885c058be4520`. Exact evaluator references leave the evaluator-absent policy identity unchanged while changing the three selected policy identities to `501c2357f4050f972285e1150083ef3414a241bc77f501ab863670ee307a7dc8`, `1177714121d5eaa31062645cd6c090b8a11ec12fc3cc006420dcecc10fca6dc5` and `b050c8271dad16cce3ae4699ed2397fdfd2176ab8a491e79ede9ab5edcfd1faa`. The framework envelope intentionally leaves the optional evaluator structurally absent and retains identity `d18318439640da4db0899860aecdd791dc83b0e13784cf75e0ad3aa72b1dfd9e` over 10,422 canonical bytes. Coverage identity is `3fd0f1c0eeceb70f49c4b87dbdf238d84fc86bf683596478f3ecca02d117f888`; expanded requirement routing identity is `8d68f979369a2cf1d83bb2b2a27cc64d868ddff347d457031aee9978635075b8`. Exactly 469 framework/domain/graph/policy/evaluator requirements now have final evidence lanes; all remain partial, pending or deferred. The other 520 requirements remain pending their semantic-owner leaves.
+
+This slice is structural/normalizer evidence only. It does not qualify evaluator behavior, concurrent evaluator execution/publication, device memory ordering, model/framework integration, scheduling, CUDA-JS lowering or a compatible native pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.

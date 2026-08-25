@@ -72,8 +72,8 @@
       "requirementPrefix": "EVAL-",
       "primaryOwner": "CUDA-MCGS universal evaluator semantics",
       "plannedLeaf": "IR-EVALUATOR-01",
-      "currentDisposition": "pending-owner-classification",
-      "completionStatus": "pending"
+      "currentDisposition": "section-classified",
+      "completionStatus": "in-progress"
     },
     {
       "contract": "SPEC-0010",
@@ -583,6 +583,193 @@
       "classificationStatus": "classified"
     },
     {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-PROFILE-",
+      "requirementCount": 8,
+      "primaryDisposition": "structural-schema",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-EVALUATOR-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:evaluator-profile.schema.json", "normalizer:evaluator-profile", "case:normalize-evaluator-profiles", "case:reject-evaluator-native-program-language"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-MODE-",
+      "requirementCount": 6,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["semantic-normalizer", "deterministic-composition"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:evaluator-mode-matrix", "case:evaluator-absent-zero-residue", "case:evaluator-capability-deletion", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-INPUT-",
+      "requirementCount": 7,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-EVALUATOR-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:evaluator-profile", "case:evaluator-history-cache-full-key", "case:reject-evaluator-history-input-key", "case:reject-evaluator-input-randomness-key", "case:reject-evaluator-stateless-borrow", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-REQUEST-",
+      "requirementCount": 10,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:evaluator-profile", "case:reject-evaluator-request-capability-coverage", "case:reject-evaluator-required-capability-fallback", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-PROPOSAL-",
+      "requirementCount": 6,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-EVALUATOR-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:evaluator-proposal-ownership-link", "case:evaluator-policy-profile-linkage", "case:evaluator-capability-deletion", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-OUTPUT-",
+      "requirementCount": 8,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["engine-reference-oracle", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-EVALUATOR-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:evaluator-mode-matrix", "case:reject-evaluator-scalar-coordinate-count", "case:reject-evaluator-vector-coordinate-count", "case:reject-evaluator-publication-completeness"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-BATCH-",
+      "requirementCount": 10,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:evaluator-batch-one-progress", "case:evaluator-batch-semantics-matrix", "case:evaluator-resumable-workspace-closure", "case:reject-evaluator-batch-sensitive-order-identity", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-PUB-",
+      "requirementCount": 8,
+      "primaryDisposition": "native-compatible-pair-qualification",
+      "supportingDispositions": ["engine-reference-oracle", "semantic-normalizer"],
+      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "evidenceStatus": "deferred",
+      "evidenceRefs": ["normalizer:evaluator-profile", "case:reject-evaluator-publication-terminal-state", "case:reject-evaluator-publication-authority", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-CACHE-",
+      "requirementCount": 8,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:evaluator-history-cache-full-key", "case:reject-evaluator-cache-incomplete-key", "case:reject-evaluator-cache-hash-only", "case:reject-evaluator-cache-resource-residue", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-RESIDENT-",
+      "requirementCount": 8,
+      "primaryDisposition": "native-compatible-pair-qualification",
+      "supportingDispositions": ["semantic-normalizer", "deterministic-composition"],
+      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "evidenceStatus": "deferred",
+      "evidenceRefs": ["case:evaluator-resident-artifact-boundary", "case:reject-evaluator-artifact-post-ignition-residence", "case:reject-evaluator-host-progress-loop", "case:reject-evaluator-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-PROGRESS-",
+      "requirementCount": 7,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-PROGRESS-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:evaluator-batch-one-progress", "case:evaluator-resumable-workspace-closure", "case:reject-evaluator-host-progress-loop", "planned:IR-PROGRESS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-REUSE-",
+      "requirementCount": 6,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:evaluator-profile", "case:evaluator-history-cache-full-key", "case:reject-evaluator-reuse-coverage", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-LIFE-",
+      "requirementCount": 10,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-RESOURCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:evaluator-profile", "case:reject-evaluator-lifecycle-state-gap", "case:reject-evaluator-required-status", "case:reject-evaluator-required-resource-class", "case:reject-evaluator-workspace-resource-residue", "case:reject-evaluator-randomness-resource-residue", "planned:IR-RESOURCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-SEC-",
+      "requirementCount": 6,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-EVALUATOR-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:reject-evaluator-artifact-provenance", "case:reject-evaluator-program-input-drift", "case:reject-evaluator-diagnostic-payload-authority", "case:reject-evaluator-incomplete-persistence", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-CLEANUP-",
+      "requirementCount": 3,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["native-compatible-pair-qualification", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["case:evaluator-absent-zero-residue", "case:evaluator-capability-deletion", "case:reject-evaluator-cleanup-coverage", "case:reject-evaluator-reuse-coverage", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-COMPAT-",
+      "requirementCount": 4,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:evaluator-policy-profile-linkage", "case:evaluator-identity-content-sensitive", "case:evaluator-product-data-deletion", "case:reject-evaluator-program-input-drift", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-IR-",
+      "requirementCount": 6,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-EVALUATOR-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:evaluator-profile.schema.json", "normalizer:evaluator-profile", "case:evaluator-profile-order-independent", "case:evaluator-absent-zero-residue", "case:evaluator-capability-deletion"],
+      "classificationStatus": "classified"
+    },
+    {
       "contract": "SPEC-0010",
       "requirementPrefix": "GRAPH-PROFILE-",
       "requirementCount": 6,
@@ -729,7 +916,7 @@
   "totals": {
     "contracts": 12,
     "requirements": 989,
-    "classified": 348,
-    "pending": 641
+    "classified": 469,
+    "pending": 520
   }
 }

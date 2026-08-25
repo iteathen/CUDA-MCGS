@@ -24,6 +24,15 @@ function profileReference(id) {
   return { id, schema: schemaReference(`cuda-mcgs.${id}-profile`), identity: contentIdentity(`${id}:profile`) };
 }
 
+function evaluatorReference(result, schemaSha) {
+  if (!result || !schemaSha) return null;
+  return {
+    id: result.normalized.id,
+    schema: { id: result.normalized.schema, version: '0.2.0', sha256: schemaSha },
+    identity: identityReference(result.identity),
+  };
+}
+
 function catalogContract(inspected) {
   const contract = inspected.contractSet.contracts.find(({ id }) => id === 'SPEC-0008');
   return { kind: 'catalog', id: contract.id, specificationIdentity: contract.specificationIdentity, sha256: contract.sha256 };
@@ -284,7 +293,7 @@ function resources(profile, { reservationSelected, backupSelected, evaluatorMode
 }
 
 function buildProfile(profile, inspected, domainResult, graphResult, domainSchemaSha, graphSchemaSha, options) {
-  const evaluatorProfile = options.evaluatorMode === 'absent' ? null : profileReference(`evaluator.synthetic-${profile}`);
+  const evaluatorProfile = options.evaluatorMode === 'absent' ? null : (options.evaluatorProfile ?? profileReference(`evaluator.synthetic-${profile}`));
   const reservationSelected = options.reservation !== false;
   const backupSelected = options.value !== 'none';
   const proof = options.value === 'proof';
@@ -317,12 +326,14 @@ function buildProfile(profile, inspected, domainResult, graphResult, domainSchem
   };
 }
 
-export function buildPolicyProfiles(inspected, domainResults, graphResults, domainSchemaSha, graphSchemaSha) {
+export function buildPolicyProfiles(inspected, domainResults, graphResults, domainSchemaSha, graphSchemaSha, evaluatorResults = null, evaluatorSchemaSha = null) {
+  const evaluatorById = new Map((evaluatorResults ?? []).map((result) => [result.normalized.id, result]));
+  const selectedEvaluator = (id) => evaluatorReference(evaluatorById.get(id), evaluatorSchemaSha) ?? undefined;
   return [
     { input: buildProfile('synthetic-scalar-absent', inspected, domainResults[0], graphResults[0], domainSchemaSha, graphSchemaSha, { evaluatorMode: 'absent', value: 'scalar', reservation: true, admissionMode: 'progressive' }), domain: domainResults[0], graph: graphResults[0] },
-    { input: buildProfile('synthetic-vector-combined', inspected, domainResults[1], graphResults[1], domainSchemaSha, graphSchemaSha, { evaluatorMode: 'combined', value: 'vector', reservation: true, admissionMode: 'sampled', stochastic: true }), domain: domainResults[1], graph: graphResults[1] },
-    { input: buildProfile('synthetic-proposal-only-stateless', inspected, domainResults[2], graphResults[3], domainSchemaSha, graphSchemaSha, { evaluatorMode: 'proposal-only', value: 'none', reservation: false, admissionMode: 'lazy', intrinsic: false }), domain: domainResults[2], graph: graphResults[3] },
-    { input: buildProfile('synthetic-proof-evaluation-only', inspected, domainResults[2], graphResults[2], domainSchemaSha, graphSchemaSha, { evaluatorMode: 'evaluation-only', value: 'proof', reservation: false, admissionMode: 'lazy', ordered: true }), domain: domainResults[2], graph: graphResults[2] },
+    { input: buildProfile('synthetic-vector-combined', inspected, domainResults[1], graphResults[1], domainSchemaSha, graphSchemaSha, { evaluatorMode: 'combined', evaluatorProfile: selectedEvaluator('evaluator.synthetic-vector-combined'), value: 'vector', reservation: true, admissionMode: 'sampled', stochastic: true }), domain: domainResults[1], graph: graphResults[1] },
+    { input: buildProfile('synthetic-proposal-only-stateless', inspected, domainResults[2], graphResults[3], domainSchemaSha, graphSchemaSha, { evaluatorMode: 'proposal-only', evaluatorProfile: selectedEvaluator('evaluator.synthetic-proposal-only-stateless'), value: 'none', reservation: false, admissionMode: 'lazy', intrinsic: false }), domain: domainResults[2], graph: graphResults[3] },
+    { input: buildProfile('synthetic-proof-evaluation-only', inspected, domainResults[2], graphResults[2], domainSchemaSha, graphSchemaSha, { evaluatorMode: 'evaluation-only', evaluatorProfile: selectedEvaluator('evaluator.synthetic-proof-evaluation-only'), value: 'proof', reservation: false, admissionMode: 'lazy', ordered: true }), domain: domainResults[2], graph: graphResults[2] },
   ];
 }
 
