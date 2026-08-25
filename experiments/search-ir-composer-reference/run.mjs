@@ -37,6 +37,12 @@ import {
   evaluatorSyntheticContentIdentity,
   evaluatorSyntheticSchemaReference,
 } from './src/evaluator-fixtures.mjs';
+import { normalizeResourceProfile } from './src/resource.mjs';
+import {
+  buildResourceProfiles,
+  resourceSyntheticContentIdentity,
+  resourceSyntheticSchemaReference,
+} from './src/resource-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -62,6 +68,7 @@ const domainProfileSchema = await readJson(path.join(schemaRoot, 'domain-profile
 const graphProfileSchema = await readJson(path.join(schemaRoot, 'graph-profile.schema.json'));
 const policyProfileSchema = await readJson(path.join(schemaRoot, 'policy-profile.schema.json'));
 const evaluatorProfileSchema = await readJson(path.join(schemaRoot, 'evaluator-profile.schema.json'));
+const resourceProfileSchema = await readJson(path.join(schemaRoot, 'resource-profile.schema.json'));
 const frameworkSelectionInput = await readJson(path.join(experimentRoot, 'fixtures', 'minimal.framework-selection.json'));
 
 const cases = [];
@@ -86,7 +93,7 @@ await runCase('normalize-contract-set', () => {
 await runCase('normalize-requirement-coverage', () => {
   const normalized = normalizeRequirementCoverage(coverageInput);
   assert.equal(normalized.contracts.length, 12);
-  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 469, pending: 520 });
+  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 543, pending: 446 });
 });
 
 await runCase('canonical-order-independent', () => {
@@ -137,13 +144,14 @@ await runCase('coverage-owner-route-closure', () => {
 });
 
 await runCase('coverage-honest-classification-progress', () => {
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 469);
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 520);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 543);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 446);
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0000').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0007').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0008').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0009').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0010').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
+  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0011').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
 });
 
 await runCase('catalog-identity-content-sensitive', () => {
@@ -224,8 +232,8 @@ await runCase('reject-coverage-classification-count-drift', async () => {
 
 await runCase('reject-expanded-coverage-total-drift', async () => {
   const mutated = clone(coverageInput);
-  mutated.totals.classified = 470;
-  mutated.totals.pending = 519;
+  mutated.totals.classified = 544;
+  mutated.totals.pending = 445;
   await assert.rejects(() => inspectCatalog(repositoryRoot, contractSetInput, mutated), { code: 'COVERAGE_TOTALS' });
 });
 
@@ -1152,6 +1160,31 @@ await runCase('normalize-policy-profiles', async () => {
     'policy.synthetic-vector-combined',
     'policy.synthetic-proposal-only-stateless',
     'policy.synthetic-proof-evaluation-only',
+  ]);
+});
+
+let resourceFixtures;
+let resourceProfileInputs;
+let resourceProfiles;
+let resourceSchemaSha;
+let knownResourceProfiles;
+await runCase('normalize-resource-profiles', async () => {
+  resourceSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'resource-profile.schema.json')));
+  resourceFixtures = buildResourceProfiles(inspected, domainProfiles, graphProfiles, policyProfiles, evaluatorProfiles, {
+    domain: domainSchemaSha, graph: graphSchemaSha, policy: policySchemaSha, evaluator: evaluatorSchemaSha,
+  });
+  resourceProfileInputs = resourceFixtures;
+  knownResourceProfiles = [
+    ...domainProfiles.map((result) => ({ ...result, schemaSha: domainSchemaSha })),
+    ...graphProfiles.map((result) => ({ ...result, schemaSha: graphSchemaSha })),
+    ...policyProfiles.map((result) => ({ ...result, schemaSha: policySchemaSha })),
+    ...evaluatorProfiles.map((result) => ({ ...result, schemaSha: evaluatorSchemaSha })),
+  ];
+  resourceProfiles = resourceProfileInputs.map((input) => normalizeResourceProfile(input, inspected, knownResourceProfiles));
+  assert.deepEqual(resourceProfiles.map(({ normalized }) => normalized.id), [
+    'resource.synthetic-evaluator-absent',
+    'resource.synthetic-evaluator-workspace',
+    'resource.synthetic-live-session',
   ]);
 });
 
@@ -2119,9 +2152,545 @@ await runCase('reject-evaluator-duplicate-reuse', () => {
   assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_REUSE_DUPLICATE' });
 });
 
+await runCase('resource-profile-matrix', () => {
+  assert.deepEqual(resourceProfiles.map(({ normalized }) => normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0009')), [false, true, true]);
+  assert.deepEqual(resourceProfiles.map(({ normalized }) => normalized.reserves.some(({ purpose }) => purpose === 'root-update')), [false, false, true]);
+  assert(resourceProfiles.every(({ normalized }) => normalized.classes.length === normalized.partitions.length && normalized.classes.length === normalized.ledgers.length));
+});
+
+await runCase('resource-evaluator-absent-zero-residue', () => {
+  const normalized = resourceProfiles[0].normalized;
+  assert(!normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0009'));
+  assert(!normalized.classes.some(({ contributor }) => contributor.startsWith('owner.evaluator.')));
+  assert(!normalized.programContribution.inputs.some(({ id }) => id.startsWith('evaluator.')));
+});
+
+await runCase('resource-upstream-exact-coverage', () => {
+  const normalized = resourceProfiles[1].normalized;
+  for (const result of [domainProfiles[1], graphProfiles[1], policyProfiles[1], evaluatorProfiles[0]]) {
+    const contributor = normalized.contributors.find(({ profile }) => profile.id === result.normalized.id);
+    const expected = result.normalized.resources.filter(({ maximum }) => maximum !== '0').map(({ id }) => id).sort();
+    assert.deepEqual(contributor.classes, expected);
+  }
+});
+
+await runCase('resource-profile-order-independent', () => {
+  const reordered = clone(resourceProfileInputs[1]);
+  for (const key of ['contributors', 'classes', 'pools', 'partitions', 'reserves', 'admissionGroups', 'ledgers', 'watermarks', 'ports', 'statuses', 'providerRequirements', 'productData']) reordered[key].reverse();
+  reordered.exhaustion.causes.reverse(); reordered.cleanup.kinds.reverse(); reordered.programContribution.inputs.reverse();
+  for (const contributor of reordered.contributors) contributor.classes.reverse();
+  for (const entry of reordered.classes) { entry.consumers.reverse(); entry.memorySpaces.reverse(); entry.access.reverse(); }
+  for (const reserve of reordered.reserves) { reserve.eligibleOwners.reverse(); reserve.eligibleTransitions.reverse(); }
+  for (const group of reordered.admissionGroups) { group.classes.reverse(); group.provisionalLimits.reverse(); }
+  for (const watermark of reordered.watermarks) watermark.responses.reverse();
+  for (const portInput of reordered.ports) portInput.statuses.reverse();
+  assert.deepEqual(normalizeResourceProfile(reordered, inspected, knownResourceProfiles).identity, resourceProfiles[1].identity);
+});
+
+await runCase('resource-meaningful-admission-order-sensitive', () => {
+  const mutated = clone(resourceProfileInputs[0]);
+  const compound = mutated.admissionGroups.find(({ atomicity }) => atomicity === 'all-or-none-transaction');
+  compound.globalOrder.reverse();
+  assert.notDeepEqual(normalizeResourceProfile(mutated, inspected, knownResourceProfiles).identity, resourceProfiles[0].identity);
+});
+
+await runCase('resource-arbitrary-width-checked-formula', () => {
+  const mutated = clone(resourceProfileInputs[0]);
+  const selected = mutated.classes.find(({ id }) => id.endsWith('class-ledger-records'));
+  const boundary = 340282366920938463463374607431768211455n;
+  const maximum = (boundary * 2n).toString();
+  selected.formula = { basis: 'maximum-live', unitsPerInstance: '2', maximumInstances: boundary.toString(), maximumUnits: maximum };
+  selected.range.identityMaximum = (boundary + 1n).toString();
+  const selectedPool = mutated.pools.find(({ id }) => id === mutated.partitions.find(({ class: id }) => id === selected.id).pool);
+  selectedPool.capacity = maximum; selectedPool.largestGuaranteedRequest = maximum;
+  const selectedPartition = mutated.partitions.find(({ class: id }) => id === selected.id); selectedPartition.capacity = maximum;
+  const selectedWatermark = mutated.watermarks.find(({ class: id }) => id === selected.id);
+  selectedWatermark.normalUpTo = (boundary / 2n).toString(); selectedWatermark.highAt = boundary.toString(); selectedWatermark.criticalAt = (boundary + boundary / 2n).toString(); selectedWatermark.exhaustedAt = maximum;
+  const selectedProvider = mutated.providerRequirements.find(({ pool }) => pool === selectedPool.id); selectedProvider.capacity = maximum;
+  mutated.admissionGroups.find(({ id }) => id === selected.admissionGroup).provisionalLimits.find(({ class: classId }) => classId === selected.id).maximumUnits = maximum;
+  const normalized = normalizeResourceProfile(mutated, inspected, knownResourceProfiles).normalized;
+  assert.equal(normalized.classes.find(({ id }) => id === selected.id).formula.maximumUnits, maximum);
+});
+
+await runCase('resource-core-compound-and-reserves', () => {
+  for (const { normalized } of resourceProfiles) {
+    assert(normalized.admissionGroups.some(({ atomicity, classes }) => atomicity === 'all-or-none-transaction' && classes.length === 2));
+    assert(normalized.reserves.some(({ purpose, borrow }) => purpose === 'terminal-result' && borrow.kind === 'none'));
+    assert(normalized.reserves.some(({ purpose, borrow }) => purpose === 'progress-cleanup' && borrow.kind === 'none'));
+  }
+});
+
+await runCase('resource-live-session-root-reserve', () => {
+  const normalized = resourceProfiles[2].normalized;
+  const reserve = normalized.reserves.find(({ purpose }) => purpose === 'root-update');
+  assert(reserve);
+  assert.equal(normalized.classes.find(({ id }) => id === reserve.class).lifetime, 'session');
+  assert(normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0006'));
+});
+
+await runCase('resource-pressure-owner-separation', () => {
+  for (const { normalized } of resourceProfiles) for (const watermark of normalized.watermarks) {
+    const resourceClass = normalized.classes.find(({ id }) => id === watermark.class);
+    assert(watermark.responses.some(({ state, owner }) => state === 'high' && owner === resourceClass.contributor));
+    assert(watermark.responses.some(({ state, owner }) => state === 'critical' && owner === resourceClass.contributor));
+    assert(watermark.responses.some(({ state, owner }) => state === 'exhausted' && owner === resourceClass.contributor));
+  }
+});
+
+await runCase('resource-provider-projection-neutral', () => {
+  for (const requirement of resourceProfiles[1].normalized.providerRequirements) {
+    assert.deepEqual(Object.keys(requirement).sort(), ['access', 'alignment', 'capacity', 'id', 'lifecycle', 'memorySpaces', 'opaqueResult', 'pool', 'unit']);
+    assert.deepEqual(Object.keys(requirement.opaqueResult).sort(), ['algorithm', 'sha256']);
+    for (const forbidden of ['allocator', 'cuda', 'pointer', 'scheduler', 'stream']) assert(!(forbidden in requirement));
+  }
+});
+
+await runCase('resource-lifecycle-cleanup-closure', () => {
+  assert(resourceProfiles.every(({ normalized }) => normalized.lifecycle.states.at(-1) === 'released'));
+  assert(resourceProfiles.every(({ normalized }) => normalized.cleanup.kinds.includes('retired-range') && normalized.cleanup.kinds.includes('quarantined-range')));
+});
+
+await runCase('resource-zero-source-elimination', () => {
+  const result = domainProfiles[0];
+  const zero = result.normalized.resources.filter(({ maximum }) => maximum === '0');
+  const normalized = resourceProfiles[0].normalized;
+  for (const resource of zero) assert(!normalized.classes.some(({ sourceResource }) => sourceResource === resource.id));
+});
+
+await runCase('resource-program-input-closure', () => {
+  for (const { normalized } of resourceProfiles) assert.deepEqual(normalized.programContribution.inputs.map(({ id }) => id), normalized.contributors.map(({ profile }) => profile).sort((left, right) => (left.id < right.id ? -1 : (left.id > right.id ? 1 : 0))).map(({ id }) => id));
+});
+
+await runCase('resource-safe-alias-proof', () => {
+  const mutated = clone(resourceProfileInputs[0]);
+  const shared = mutated.partitions.filter(({ pool }) => pool === mutated.pools.find(({ id }) => id.endsWith('pool-terminal-progress')).id);
+  shared[1].offset = '0';
+  const proof = resourceSyntheticSchemaReference('cuda-mcgs.synthetic-resource-alias-proof');
+  for (const entry of shared) entry.alias = { kind: 'proven', group: 'resource.synthetic.alias-core', proof, exclusiveLifetime: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-resource-alias-lifetime'), releaseOrder: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-resource-alias-release') };
+  assert.equal(normalizeResourceProfile(mutated, inspected, knownResourceProfiles).normalized.partitions.filter(({ alias }) => alias.kind === 'proven').length, 2);
+});
+
+await runCase('resource-available-pressure-direction', () => {
+  const mutated = clone(resourceProfileInputs[0]);
+  const watermark = mutated.watermarks[0];
+  const maximum = BigInt(mutated.classes.find(({ id }) => id === watermark.class).formula.maximumUnits);
+  watermark.measured = 'available'; watermark.comparison = 'available-at-most';
+  watermark.normalUpTo = maximum.toString(); watermark.highAt = ((maximum * 3n) / 4n).toString(); watermark.criticalAt = (maximum / 2n).toString(); watermark.exhaustedAt = '0';
+  assert.equal(normalizeResourceProfile(mutated, inspected, knownResourceProfiles).normalized.watermarks.find(({ id }) => id === watermark.id).comparison, 'available-at-most');
+});
+
+await runCase('resource-bounded-borrow-proof', () => {
+  const mutated = clone(resourceProfileInputs[0]);
+  const lifetimeRank = new Map([['transaction', 0], ['work', 1], ['root', 2], ['session', 3], ['engine', 4]]);
+  const pair = mutated.partitions.flatMap((targetPartition) => {
+    const targetClass = mutated.classes.find(({ id }) => id === targetPartition.class);
+    if (mutated.reserves.some(({ partition }) => partition === targetPartition.id)) return [];
+    return mutated.partitions.filter(({ id }) => id !== targetPartition.id).map((donorPartition) => ({ targetPartition, targetClass, donorPartition, donorPool: mutated.pools.find(({ id }) => id === donorPartition.pool) }));
+  }).find(({ targetClass, donorPool }) => donorPool.unit === targetClass.unit && targetClass.memorySpaces.every((space) => donorPool.memorySpaces.includes(space)) && targetClass.access.every((access) => donorPool.access.includes(access)) && lifetimeRank.get(donorPool.lifetime) >= lifetimeRank.get(targetClass.lifetime));
+  assert(pair);
+  const { targetClass, targetPartition, donorPartition } = pair;
+  const targetContributor = mutated.contributors.find(({ id }) => id === targetClass.contributor);
+  mutated.reserves.push({
+    id: 'resource.synthetic.custom-borrow', purpose: 'custom', class: targetClass.id, partition: targetPartition.id, minimum: '1', maximum: '1',
+    eligibleOwners: [targetContributor.id], eligibleTransitions: ['resource.transition-custom'],
+    borrow: {
+      kind: 'bounded', donorPartitions: [donorPartition.id], safety: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-safety'),
+      returnTrigger: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-return'), deadlineWorkUnits: '64',
+      watermarkEffect: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-watermark'), terminationReserve: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-termination'),
+    },
+    release: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-release'), priority: '9',
+  });
+  assert(normalizeResourceProfile(mutated, inspected, knownResourceProfiles).normalized.reserves.some(({ borrow }) => borrow.kind === 'bounded'));
+});
+
+await runCase('resource-identity-content-sensitive', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.exhaustion.publication.sha256 = '0'.repeat(64);
+  assert.notDeepEqual(normalizeResourceProfile(mutated, inspected, knownResourceProfiles).identity, resourceProfiles[0].identity);
+});
+
+await runCase('resource-schema-closed', () => {
+  assert.equal(resourceProfileSchema.properties.schema.const, 'cuda-mcgs.resource-profile/0.2.0');
+  assert.equal(resourceProfileSchema.additionalProperties, false);
+  for (const name of ['contributor', 'resourceClass', 'pool', 'partition', 'reserve', 'provisionalLimit', 'admissionGroup', 'ledger', 'watermark', 'providerRequirement', 'programContribution']) assert.equal(resourceProfileSchema.$defs[name].additionalProperties, false);
+});
+
+await runCase('resource-framework-selection-link', () => {
+  const selected = frameworkSelection.normalized.profiles.find(({ role }) => role === 'resource');
+  assert.equal(selected.schema.id, resourceProfileInputs[0].schema);
+  assert.equal(selected.schema.sha256, resourceSchemaSha);
+  assert.equal(selected.identity.sha256, resourceProfiles[0].identity.sha256);
+});
+
+await runCase('reject-resource-unknown-field', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.cudaAllocator = 'managed';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_ROOT_FIELDS' });
+});
+
+await runCase('reject-resource-contract-drift', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.contract.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_CONTRACT_DRIFT' });
+});
+
+await runCase('reject-resource-contributor-schema-drift', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.contributors.find(({ profile }) => profile.id === domainProfiles[0].normalized.id).profile.schema.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_CONTRIBUTOR_PROFILE' });
+});
+
+await runCase('reject-resource-contributor-contract-drift', () => {
+  const mutated = clone(resourceProfileInputs[0]);
+  const contributor = mutated.contributors.find(({ profile }) => profile.id === domainProfiles[0].normalized.id);
+  contributor.contract = clone(mutated.contributors.find(({ profile }) => profile.id === graphProfiles[0].normalized.id).contract);
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_CONTRIBUTOR_PROFILE' });
+});
+
+await runCase('reject-resource-duplicate-contributor', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.contributors.push(clone(mutated.contributors[0]));
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_CONTRIBUTOR_DUPLICATE' });
+});
+
+await runCase('reject-resource-duplicate-contributor-profile', () => {
+  const mutated = clone(resourceProfileInputs[0]); const duplicate = clone(mutated.contributors[0]); duplicate.id = 'owner.duplicate-profile'; duplicate.classes = [];
+  mutated.contributors.push(duplicate);
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_CONTRIBUTOR_PROFILE_DUPLICATE' });
+});
+
+await runCase('reject-resource-contributor-class-coverage', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.contributors[0].classes.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_CLASS_CONTRIBUTOR' });
+});
+
+await runCase('reject-resource-class-source-drift', () => {
+  const mutated = clone(resourceProfileInputs[0]); const selected = mutated.classes.find(({ contributor }) => contributor === `owner.${domainProfiles[0].normalized.id}`); selected.formula.maximumUnits = (BigInt(selected.formula.maximumUnits) + 1n).toString(); selected.formula.maximumInstances = selected.formula.maximumUnits;
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_CLASS_SOURCE' });
+});
+
+await runCase('reject-resource-formula-arithmetic', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.classes[0].formula.unitsPerInstance = '2';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_FORMULA_ARITHMETIC' });
+});
+
+await runCase('reject-resource-class-range', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.classes[0].minimumUnits = (BigInt(mutated.classes[0].formula.maximumUnits) + 1n).toString();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_CLASS_RANGE' });
+});
+
+await runCase('reject-resource-identity-range', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.classes[0].range.identityMaximum = mutated.classes[0].formula.maximumInstances;
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_IDENTITY_RANGE' });
+});
+
+await runCase('reject-resource-duplicate-class', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.classes.push(clone(mutated.classes[0]));
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_CLASS_DUPLICATE' });
+});
+
+await runCase('reject-resource-pool-range', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.pools[0].largestGuaranteedRequest = (BigInt(mutated.pools[0].capacity) + 1n).toString();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_POOL_RANGE' });
+});
+
+await runCase('reject-resource-duplicate-pool', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.pools.push(clone(mutated.pools[0]));
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_POOL_DUPLICATE' });
+});
+
+await runCase('reject-resource-unused-pool', () => {
+  const mutated = clone(resourceProfileInputs[0]); const extra = clone(mutated.pools[0]); extra.id = 'resource.synthetic.unused-pool'; extra.providerRequirement = 'resource.synthetic.unused-provider'; mutated.pools.push(extra);
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_POOL_COVERAGE' });
+});
+
+await runCase('reject-resource-partition-reference', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.partitions[0].pool = 'resource.unknown-pool';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PARTITION_REFERENCE' });
+});
+
+await runCase('reject-resource-partition-unit', () => {
+  const mutated = clone(resourceProfileInputs[0]); const selected = mutated.partitions.find(({ class: id }) => mutated.classes.find(({ id: classId, unit }) => classId === id && unit !== 'bytes')); selected.pool = mutated.pools.find(({ unit }) => unit === 'bytes').id;
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PARTITION_UNIT' });
+});
+
+await runCase('reject-resource-partition-memory-compatibility', () => {
+  const mutated = clone(resourceProfileInputs[0]); const terminal = mutated.classes.find(({ id }) => id.endsWith('class-terminal-envelope')); const partition = mutated.partitions.find(({ class: classId }) => classId === terminal.id); mutated.pools.find(({ id }) => id === partition.pool).memorySpaces = ['device-search'];
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PARTITION_COMPATIBILITY' });
+});
+
+await runCase('reject-resource-partition-pool-alignment', () => {
+  const mutated = clone(resourceProfileInputs[0]); const partition = mutated.partitions[0]; mutated.pools.find(({ id }) => id === partition.pool).alignment = (BigInt(partition.alignment) * 2n).toString();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PARTITION_ALIGNMENT' });
+});
+
+await runCase('reject-resource-partition-alignment', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.partitions[0].offset = '1';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PARTITION_ALIGNMENT' });
+});
+
+await runCase('reject-resource-partition-range', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.partitions[0].capacity = (BigInt(mutated.pools.find(({ id }) => id === mutated.partitions[0].pool).capacity) + 1n).toString();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PARTITION_RANGE' });
+});
+
+await runCase('reject-resource-partition-overlap', () => {
+  const mutated = clone(resourceProfileInputs[0]); const shared = mutated.partitions.filter(({ pool }) => pool === mutated.pools.find(({ id }) => id.endsWith('pool-terminal-progress')).id); shared[1].offset = '0';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PARTITION_OVERLAP' });
+});
+
+await runCase('reject-resource-alias-proof-mismatch', () => {
+  const mutated = clone(resourceProfileInputs[0]); const shared = mutated.partitions.filter(({ pool }) => pool === mutated.pools.find(({ id }) => id.endsWith('pool-terminal-progress')).id); shared[1].offset = '0';
+  shared[0].alias = { kind: 'proven', group: 'resource.synthetic.alias-a', proof: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-alias-a'), exclusiveLifetime: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-alias-life'), releaseOrder: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-alias-order') };
+  shared[1].alias = { ...clone(shared[0].alias), group: 'resource.synthetic.alias-b' };
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PARTITION_OVERLAP' });
+});
+
+await runCase('reject-resource-alias-lifetime-mismatch', () => {
+  const mutated = clone(resourceProfileInputs[0]); const shared = mutated.partitions.filter(({ pool }) => pool === mutated.pools.find(({ id }) => id.endsWith('pool-terminal-progress')).id); shared[1].offset = '0';
+  const alias = { kind: 'proven', group: 'resource.synthetic.alias', proof: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-alias-proof'), exclusiveLifetime: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-alias-life'), releaseOrder: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-alias-order') };
+  shared[0].alias = clone(alias); shared[1].alias = clone(alias); shared[1].alias.exclusiveLifetime = resourceSyntheticSchemaReference('cuda-mcgs.synthetic-other-alias-life');
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PARTITION_OVERLAP' });
+});
+
+await runCase('reject-resource-partition-cleanup-order', () => {
+  const mutated = clone(resourceProfileInputs[0]); const shared = mutated.partitions.filter(({ pool }) => pool === mutated.pools.find(({ id }) => id.endsWith('pool-terminal-progress')).id); shared[1].cleanupOrder = shared[0].cleanupOrder;
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PARTITION_CLEANUP' });
+});
+
+await runCase('reject-resource-partition-coverage', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.partitions.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PARTITION_COVERAGE' });
+});
+
+await runCase('reject-resource-terminal-reserve-missing', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.reserves = mutated.reserves.filter(({ purpose }) => purpose !== 'terminal-result');
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_REQUIRED' });
+});
+
+await runCase('reject-resource-reserve-owner', () => {
+  const mutated = clone(resourceProfileInputs[0]); const reserve = mutated.reserves.find(({ purpose }) => purpose === 'terminal-result'); reserve.class = mutated.reserves.find(({ purpose }) => purpose === 'progress-cleanup').class; reserve.partition = mutated.reserves.find(({ purpose }) => purpose === 'progress-cleanup').partition;
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_OWNER' });
+});
+
+await runCase('reject-resource-reserve-unknown-eligible-owner', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.reserves[0].eligibleOwners.push('owner.unknown');
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_OWNER' });
+});
+
+await runCase('reject-resource-reserve-range', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.reserves[0].maximum = (BigInt(mutated.reserves[0].maximum) + 1n).toString();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_RANGE' });
+});
+
+await runCase('reject-resource-reserve-total', () => {
+  const mutated = clone(resourceProfileInputs[0]); const selected = clone(mutated.reserves[0]); selected.id = 'resource.synthetic.extra-reserve'; selected.purpose = 'custom'; mutated.reserves.push(selected);
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_RANGE' });
+});
+
+await runCase('reject-resource-root-reserve-missing', () => {
+  const mutated = clone(resourceProfileInputs[2]); mutated.reserves = mutated.reserves.filter(({ purpose }) => purpose !== 'root-update');
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_OWNER' });
+});
+
+await runCase('reject-resource-borrow-incomplete', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.reserves[0].borrow = { kind: 'bounded' };
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_BORROW_FIELDS' });
+});
+
+await runCase('reject-resource-protected-reserve-borrow', () => {
+  const mutated = clone(resourceProfileInputs[0]); const reserve = mutated.reserves.find(({ purpose }) => purpose === 'terminal-result');
+  reserve.borrow = {
+    kind: 'bounded', donorPartitions: [mutated.partitions.find(({ id }) => id !== reserve.partition).id], safety: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-safety'),
+    returnTrigger: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-return'), deadlineWorkUnits: '64', watermarkEffect: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-watermark'), terminationReserve: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-termination'),
+  };
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_PROTECTION' });
+});
+
+await runCase('reject-resource-borrow-donor', () => {
+  const mutated = clone(resourceProfileInputs[0]); const resourceContributor = mutated.contributors.find(({ id }) => id === 'owner.resource-core'); const targetClass = mutated.classes.find(({ contributor }) => contributor === resourceContributor.id); const targetPartition = mutated.partitions.find(({ class: classId }) => classId === targetClass.id);
+  mutated.reserves.push({ id: 'resource.synthetic.invalid-borrow', purpose: 'custom', class: targetClass.id, partition: targetPartition.id, minimum: '1', maximum: '1', eligibleOwners: [resourceContributor.id], eligibleTransitions: ['resource.transition-custom'], borrow: { kind: 'bounded', donorPartitions: ['resource.unknown-partition'], safety: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-safety'), returnTrigger: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-return'), deadlineWorkUnits: '64', watermarkEffect: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-watermark'), terminationReserve: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-termination') }, release: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-borrow-release'), priority: '9' });
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_BORROW_DONOR' });
+});
+
+await runCase('reject-resource-admission-coverage', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.classes[0].admissionGroup = 'resource.unknown-admission';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_ADMISSION_COVERAGE' });
+});
+
+await runCase('reject-resource-admission-order', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.admissionGroups.find(({ atomicity }) => atomicity === 'all-or-none-transaction').globalOrder.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_ADMISSION_ORDER' });
+});
+
+await runCase('reject-resource-admission-provisional-coverage', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.admissionGroups.find(({ atomicity }) => atomicity === 'all-or-none-transaction').provisionalLimits.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_ADMISSION_PROVISIONAL' });
+});
+
+await runCase('reject-resource-admission-atomicity', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.admissionGroups.find(({ atomicity }) => atomicity === 'all-or-none-transaction').atomicity = 'single-cas';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_ADMISSION_ATOMICITY' });
+});
+
+await runCase('reject-resource-class-in-multiple-admission-groups', () => {
+  const mutated = clone(resourceProfileInputs[0]); const extra = clone(mutated.admissionGroups.find(({ atomicity }) => atomicity === 'single-cas')); extra.id = 'resource.synthetic.extra-admission'; mutated.admissionGroups.push(extra);
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_ADMISSION_COVERAGE' });
+});
+
+await runCase('reject-resource-duplicate-admission', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.admissionGroups.push(clone(mutated.admissionGroups[0]));
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_ADMISSION_DUPLICATE' });
+});
+
+await runCase('reject-resource-ledger-states', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.ledgers[0].states.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_LEDGER_STATES' });
+});
+
+await runCase('reject-resource-ledger-range', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.ledgers[0].counterMaximum = (BigInt(mutated.classes.find(({ id }) => id === mutated.ledgers[0].class).range.counterMaximum) + 1n).toString();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_LEDGER_RANGE' });
+});
+
+await runCase('reject-resource-ledger-coverage', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.ledgers.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_LEDGER_COVERAGE' });
+});
+
+await runCase('reject-resource-watermark-range', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.watermarks[0].highAt = (BigInt(mutated.watermarks[0].criticalAt) + 1n).toString();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_WATERMARK_RANGE' });
+});
+
+await runCase('reject-resource-watermark-direction', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.watermarks[0].measured = 'available'; mutated.watermarks[0].comparison = 'available-at-most';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_WATERMARK_RANGE' });
+});
+
+await runCase('reject-resource-critical-response-missing', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.watermarks[0].responses = mutated.watermarks[0].responses.filter(({ state }) => state !== 'critical');
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_WATERMARK_RESPONSE' });
+});
+
+await runCase('reject-resource-response-owner', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.watermarks[0].responses[0].owner = 'owner.unknown';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESPONSE_OWNER' });
+});
+
+await runCase('reject-resource-response-reserve', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.watermarks[0].responses[0].reserve = 'resource.unknown-reserve';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESPONSE_RESERVE' });
+});
+
+await runCase('reject-resource-response-reserve-eligibility', () => {
+  const mutated = clone(resourceProfileInputs[0]); const watermark = mutated.watermarks.find(({ class: classId }) => mutated.classes.find(({ id }) => id === classId).contributor.startsWith('owner.domain.')); const owner = watermark.responses[0].owner; mutated.reserves.find(({ purpose }) => purpose === 'progress-cleanup').eligibleOwners = mutated.reserves.find(({ purpose }) => purpose === 'progress-cleanup').eligibleOwners.filter((id) => id !== owner);
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESPONSE_RESERVE' });
+});
+
+await runCase('reject-resource-watermark-coverage', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.watermarks.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_WATERMARK_COVERAGE' });
+});
+
+await runCase('reject-resource-exhaustion-cause-gap', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.exhaustion.causes.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_EXHAUSTION_CAUSE' });
+});
+
+await runCase('reject-resource-terminal-reserve-drift', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.exhaustion.terminalReserve = mutated.reserves.find(({ purpose }) => purpose === 'progress-cleanup').id;
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_EXHAUSTION_RESERVE' });
+});
+
+await runCase('reject-resource-host-growth', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.exhaustion.hostGrowth = 'on-demand';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_EXHAUSTION_CONTRACT' });
+});
+
+await runCase('reject-resource-first-cause-mutable', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.exhaustion.firstCause = 'latest-wins';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_EXHAUSTION_CONTRACT' });
+});
+
+await runCase('reject-resource-counter-wrap', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.exhaustion.counterWrap = 'saturate';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_EXHAUSTION_CONTRACT' });
+});
+
+await runCase('reject-resource-lifecycle-state-gap', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.lifecycle.states.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_LIFECYCLE_STATES' });
+});
+
+await runCase('reject-resource-required-status', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.statuses.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_STATUS_REQUIRED' });
+});
+
+await runCase('reject-resource-required-status-class', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.statuses.find(({ code }) => code === 'resource-internal-failure').class = 'normal';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_STATUS_CLASS' });
+});
+
+await runCase('reject-resource-required-port', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.ports.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PORT_REQUIRED' });
+});
+
+await runCase('reject-resource-active-port-phase', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.ports.find(({ id }) => id === 'reserve-resource').phase = 'host-preignition';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PORT_PHASE' });
+});
+
+await runCase('reject-resource-preignition-port-phase', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.ports.find(({ id }) => id === 'compose-resource-plan').phase = 'device-active';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PORT_PHASE' });
+});
+
+await runCase('reject-resource-port-status', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.ports[0].statuses[0] = 'resource.unknown-status';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PORT_STATUS' });
+});
+
+await runCase('reject-resource-provider-drift', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.providerRequirements[0].capacity = (BigInt(mutated.providerRequirements[0].capacity) + 1n).toString();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PROVIDER_POOL' });
+});
+
+await runCase('reject-resource-provider-coverage', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.providerRequirements.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PROVIDER_COVERAGE' });
+});
+
+await runCase('reject-resource-cleanup-coverage', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.cleanup.kinds.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_CLEANUP_COVERAGE' });
+});
+
+await runCase('reject-resource-native-program-language', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.programContribution.language = 'cuda-cpp';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PROGRAM_LANGUAGE' });
+});
+
+await runCase('reject-resource-program-input-drift', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.programContribution.inputs.pop();
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PROGRAM_INPUTS' });
+});
+
+await runCase('reject-resource-diagnostic-authority', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.diagnostics.rawAddresses = true;
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_DIAGNOSTIC_AUTHORITY' });
+});
+
+await runCase('reject-resource-incomplete-persistence', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.compatibility.persistence = { kind: 'versioned' };
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PERSISTENCE_FIELDS' });
+});
+
+await runCase('reject-resource-product-owner', () => {
+  const mutated = clone(resourceProfileInputs[0]); mutated.productData.push({ ownerContract: clone(mutated.contract), schema: resourceSyntheticSchemaReference('cuda-mcgs.synthetic-resource-product'), identity: resourceSyntheticContentIdentity('invalid-resource-product') });
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PRODUCT_OWNER' });
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 290,
+  expected: 381,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -2129,7 +2698,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 290 - cases.length,
+  notDiscovered: 381 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -2144,6 +2713,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/graph-profile.schema.json',
   'schemas/search-ir/0.2.0/policy-profile.schema.json',
   'schemas/search-ir/0.2.0/evaluator-profile.schema.json',
+  'schemas/search-ir/0.2.0/resource-profile.schema.json',
   'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
   'experiments/search-ir-composer-reference/src/catalog.mjs',
   'experiments/search-ir-composer-reference/src/validation.mjs',
@@ -2156,6 +2726,8 @@ const sourcePaths = [
   'experiments/search-ir-composer-reference/src/policy-fixtures.mjs',
   'experiments/search-ir-composer-reference/src/evaluator.mjs',
   'experiments/search-ir-composer-reference/src/evaluator-fixtures.mjs',
+  'experiments/search-ir-composer-reference/src/resource.mjs',
+  'experiments/search-ir-composer-reference/src/resource-fixtures.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -2175,6 +2747,7 @@ const evidence = {
   graphProfileIdentities: graphProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   policyProfileIdentities: policyProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   evaluatorProfileIdentities: evaluatorProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
+  resourceProfileIdentities: resourceProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
     classified: inspected?.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length ?? 0,
@@ -2184,14 +2757,15 @@ const evidence = {
   summary,
   cases,
   claimLimits: [
-    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy and evaluator profile normalization only.',
-    'The framework, domain, graph, policy and evaluator requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
+    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy, evaluator and resource profile normalization only.',
+    'The framework, domain, graph, policy, evaluator and resource requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
     'Domain evidence covers strict normalized profile selection and three synthetic structural instances, not behavioral oracle, publication/concurrency, native or compatible-pair qualification.',
     'Graph evidence covers four strict structural instances, bounded ownership/layout/lifecycle/publication checks and zero-residue optional modes, not behavioral oracle, concurrent reclamation, native or compatible-pair qualification.',
     'Policy evidence covers four strict structural instances, role/record/admission/value/cycle/backup/stop/reuse checks and zero-residue optional modes, not behavioral oracle, concurrent backup, native or compatible-pair qualification.',
     'Evaluator evidence covers five strict structural instances, proposal/evaluation/combined modes, typed inputs/outputs, request/batch/publication/cache/resident-artifact/progress/reuse/lifecycle checks and zero-residue optional modes, not behavioral oracle, concurrent evaluator execution, native or compatible-pair qualification.',
     'Evaluator absence is represented by structural omission from framework selection; this capsule does not create or validate a synthetic disabled evaluator profile.',
-    'No resource/progress/output/session/extension/package profile body, derived plan, complete cross-owner Composer, generated Search Program or production lowering claim.',
+    'Resource evidence covers three strict finite-plan instances, contribution composition, exact arithmetic, partitions/reserves/admission/ledgers/pressure/exhaustion/lifecycle/provider projections and evaluator-absence zero residue, not behavioral oracle, concurrent accounting, physical CUDA-JS allocation, native or compatible-pair qualification.',
+    'No progress/output/session/extension/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');

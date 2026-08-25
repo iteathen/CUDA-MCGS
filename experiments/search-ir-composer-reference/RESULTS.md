@@ -149,3 +149,28 @@ The five normalized structural profile identities are:
 The evaluator schema has checkout-neutral source digest `65484bc9bd3e338f9a6f4b1e663662f716d7574dd341d77f632885c058be4520`. Exact evaluator references leave the evaluator-absent policy identity unchanged while changing the three selected policy identities to `501c2357f4050f972285e1150083ef3414a241bc77f501ab863670ee307a7dc8`, `1177714121d5eaa31062645cd6c090b8a11ec12fc3cc006420dcecc10fca6dc5` and `b050c8271dad16cce3ae4699ed2397fdfd2176ab8a491e79ede9ab5edcfd1faa`. The framework envelope intentionally leaves the optional evaluator structurally absent and retains identity `d18318439640da4db0899860aecdd791dc83b0e13784cf75e0ad3aa72b1dfd9e` over 10,422 canonical bytes. Coverage identity is `3fd0f1c0eeceb70f49c4b87dbdf238d84fc86bf683596478f3ecca02d117f888`; expanded requirement routing identity is `8d68f979369a2cf1d83bb2b2a27cc64d868ddff347d457031aee9978635075b8`. Exactly 469 framework/domain/graph/policy/evaluator requirements now have final evidence lanes; all remain partial, pending or deferred. The other 520 requirements remain pending their semantic-owner leaves.
 
 This slice is structural/normalizer evidence only. It does not qualify evaluator behavior, concurrent evaluator execution/publication, device memory ordering, model/framework integration, scheduling, CUDA-JS lowering or a compatible native pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
+
+## IR-RESOURCE-01
+
+**Started:** 2026-08-25T03:28:09-07:00
+
+**Evidence completed:** 2026-08-25T04:02:05-07:00
+
+The expanded capsule passes 381/381 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator cases and adds strict normalized finite logical-resource evidence across:
+
+- exact selected-owner contribution coverage, zero-capacity source elimination, arbitrary-width checked quantity formulas and explicit class/pool/partition/unit/alignment/range ownership;
+- disjoint partitions or exact compatible alias proofs, variable-arena fit metadata and consumer-neutral opaque CUDA-JS provider requirements without raw pointers, allocators, streams or scheduler choices;
+- all-or-none compound admission groups, explicit global order, conservation ledgers, terminal/progress reserves and a session-selected root-update reserve;
+- monotone device-visible pressure facts with high/exhausted responses retained by each semantic contributor instead of generic resource policy choosing victims or changing search meaning;
+- typed first-cause exhaustion, no-wrap identity/generation/counter ranges, active device-side ports, lifecycle/status closure and complete cleanup disposition; and
+- restricted Device-JS program-contribution identity with exact selected profile inputs and no host growth/progress loop, allocator implementation, CUDA mechanism, C/C++ or native implementation selection.
+
+The three normalized structural resource-plan identities are:
+
+- `resource.synthetic-evaluator-absent`: `31d61ef1b6cbfcafd02330206a862a487936827cd5718b29a5b696c71de28a28` over 163,354 canonical bytes;
+- `resource.synthetic-evaluator-workspace`: `86015029d424aee91840eff529df9f5d2d6c0ce5be0c87a2f7a79f36909a3dcb` over 292,640 canonical bytes; and
+- `resource.synthetic-live-session`: `12895427504fec2d734c8d23e1841fad033c9101c240e338a5f2e04d3073dccd` over 316,145 canonical bytes.
+
+The resource schema has checkout-neutral source digest `54aaaaae27a945596d14f494e477473091e3e1ed0d019b51ea0661a8948d875b`. The framework envelope now binds the first resource plan together with the first domain, graph and policy profiles while retaining structural evaluator absence; its identity is `b22a3c2089a8a8adf60059a3c2f78d0c0aa6aa64ddc3b9d01ab103e483dbfa85` over 10,422 canonical bytes. Coverage identity is `da449206b27136c751d616369570008e06296a9d31884889cd07867cfd1ab511`; expanded requirement routing identity is `634d9c7c6cc7defcfb12724ac63db43c3a206997e008294cfaf1bfee38d5f1a3`. Exactly 543 framework/domain/graph/policy/evaluator/resource requirements now have final evidence lanes; all remain partial, pending or deferred. The other 446 requirements remain pending their semantic-owner leaves.
+
+This slice is structural/normalizer evidence only. It does not qualify concurrent resource accounting, semantic owner behavior under pressure, physical CUDA-JS allocation, device memory ordering, progress scheduling, CUDA-JS lowering or a compatible native pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
