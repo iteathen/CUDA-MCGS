@@ -8,9 +8,9 @@
 
 **CUDA-MCGS input baseline:** protected `main` `05d4925b8241537d586d4e44672b4e23647bc297`.
 
-**CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
+**CUDA-JS authority baseline:** protected `main` `05008fb988558e909cb3802fa12a73d612e70bf0`.
 
-**CUDA-JS implementation/package baseline:** `b6062f691a27093df0e5d55e482e69ebbd39a9eb`, package `cuda-js@0.1.0-alpha.6`.
+**CUDA-JS implementation/package baseline:** `05008fb988558e909cb3802fa12a73d612e70bf0`, package `cuda-js@0.1.0-alpha.7`; exact pair selection remains separate.
 
 ## Outcome
 
@@ -136,9 +136,9 @@ After `ENGINE-CONTRACT-ACCEPTANCE-01` and selected CUDA-JS Device-JS native evid
 
 A missing generic GPU primitive is routed to CUDA-JS when it has a natural consumer-neutral contract; no local CUDA escape hatch is permitted. If that separation is unnatural, reconsider the CUDA-MCGS design.
 
-## ENGINE-WINDOWS-01 — first finite native universal engine
+## ENGINE-LINUX-01 — first finite native universal engine
 
-A finite terminal Windows engine may proceed only after `ENGINE-CONTRACT-ACCEPTANCE-01`, the relevant semantic/IR/Search Program/adapter contracts are accepted, and the selected CUDA-JS capabilities have exact native evidence.
+A finite terminal native Linux x86-64 engine may proceed only after `ENGINE-CONTRACT-ACCEPTANCE-01`, the relevant semantic/IR/Search Program/adapter contracts are accepted, and the selected CUDA-JS capabilities have exact Ubuntu 24.04 reference-profile evidence. The universal inputs remain distribution-neutral; Ubuntu is the first exact qualification cell rather than a core assumption.
 
 Required:
 
@@ -162,14 +162,15 @@ It additionally requires:
 
 Host control publishes bounded externally supplied attention/root/budget/priority or other selected inputs and asynchronously reads coherent observations; it never advances internal search. Observation-to-host-decision-to-control-write, polling/relaunch and callback progression loops are prohibited.
 
-## ENGINE-PERF-LINUX-01
+## ENGINE-PERF-01
 
 After correctness/lifecycle are established:
 
 - select scheduler topology from evidence while preserving device closure;
 - characterize representative resource/performance/search-quality behavior without elevating one domain metric to universal semantics;
-- complete native Linux CUDA-JS/CUDA-MCGS pair work on qualified hardware;
-- keep Linux support claims exact and independent from portable/reference evidence.
+- characterize the exact Linux CUDA-JS/CUDA-MCGS pair on qualified hardware before any representative performance claim;
+- keep Linux support and performance claims exact and independent from portable/reference or retained Windows evidence;
+- add secondary Windows performance/qualification only as a separate profile, never as the reference-platform substitute.
 
 ## RELEASE-01
 

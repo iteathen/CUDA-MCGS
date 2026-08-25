@@ -9,7 +9,7 @@
 The protected CUDA-MCGS `main` input baseline for the active contract packet is:
 
 ```text
-b7d3141738f5586efb1e86014925ee849251e673
+711a0570115ecf08d005a07408ee77f3c6671cba
 ```
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
@@ -46,7 +46,7 @@ Completed evidence is not reopened by the forward plan.
 
 ## CUDA-JS boundary
 
-Current peer authority `main` is CUDA-JS `2135216b1a9fd88066a1c82b61ae533645eac9c2`. The selected implementation/package baseline remains `b6062f691a27093df0e5d55e482e69ebbd39a9eb`, package `cuda-js@0.1.0-alpha.6`, until a later exact pair deliberately selects another release.
+Current peer authority `main` is CUDA-JS `05008fb988558e909cb3802fa12a73d612e70bf0`, package `cuda-js@0.1.0-alpha.7`. No exact CUDA-MCGS pair is selected merely by recording that current peer input; issue #32 still requires one deliberately frozen CUDA-MCGS artifact and CUDA-JS revision/package.
 
 CUDA-JS now publishes the generic contract families needed for the current CUDA-MCGS boundary, including:
 
@@ -72,9 +72,11 @@ The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`]
 
 **ENGINE-EXTENSION-01** completed its proposal-packet scope through PR #87 at `main@0ba119f`. Its critical assessment/execution record is [`docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md`](docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md). SPEC-0003/0004/0005 are decision-complete 80/90/78-requirement optional stage/channel/restricted Device-JS composition proposals. Together with the core packet, they hand 989 unique proposal requirements to schema/reference work.
 
-Current focus is **ENGINE-IR-COMPOSER-01**. Its [critical assessment and focus map](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and sequences owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. `IR-CATALOG-01` through `IR-STAGE-01` and both Stage-to-Channel prerequisites are integrated through PRs #90–#102 at `main@b7d3141`. `IR-CHANNEL-01` is active: its strict optional profile, exact Stage action-grant binding, explicit ordering, exact recomposed resource/progress deletion, finite item/lifecycle semantics, required evaluator-like and advisory secondary profiles and logical happens-before/ownership reference traces pass 781/781 CUDA-free cases with 911 classified / 78 pending requirements. SPEC-0005 still owns final Search Program/package inputs; production lowering remains blocked until every schema/reference leaf and the later integrated semantic-acceptance gate complete.
+Current focus is **ENGINE-IR-COMPOSER-01**. Its [critical assessment and focus map](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and sequences owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. `IR-CATALOG-01` through `IR-CHANNEL-01` are integrated through PR #103 at `main@1baadc5`; the strict Channel profile and logical ordering/reference traces pass within the 781/781 CUDA-free Composer capsule with 911 classified / 78 pending requirements. `IR-PROGRAM-PACKAGE-01` is now the dependency-ready leaf under SPEC-0005 ownership. Production lowering remains blocked until every schema/reference leaf and the later integrated semantic-acceptance gate complete.
 
-The assessment found one consumer-neutral CUDA-JS gap: current accepted Device-JS cannot truthfully express device-scope release/acquire publication for a multi-word internal channel payload. [CUDA-JS #123](https://github.com/iteathen/CUDA-JS/issues/123) owns the bounded generic helper assessment. Backend-neutral proposal/schema/reference work continues; native internal-channel qualification depends on that public capability rather than a CUDA-MCGS workaround.
+Project-owner direction plus CUDA-JS ADR-0006 now make native Linux x86-64 the reference platform for the first exact compatible pair and finite universal engine. Ubuntu 24.04 LTS is the first exact CUDA-JS qualification cell. Existing Windows CUDA-JS evidence remains valid as a secondary profile; it no longer determines CUDA-MCGS forward sequencing. This is a downstream native-plan change only and does not alter or shortcut the active backend-neutral Search IR/semantic gates.
+
+The assessment found one consumer-neutral CUDA-JS gap: device-scope release/acquire publication for a multi-word internal channel payload. [CUDA-JS #123](https://github.com/iteathen/CUDA-JS/issues/123) has now integrated that bounded generic helper in `cuda-js@0.1.0-alpha.7`. Backend-neutral proposal/schema/reference work remains independent; later native internal-channel qualification must consume the public capability and prove the exact pair rather than adding a CUDA-MCGS workaround.
 
 After core semantics:
 
@@ -83,9 +85,9 @@ After core semantics:
 - build consolidated materially different CUDA-free reference/conformance domains;
 - accept the integrated semantic contract/schema packet after that reference evidence agrees on one exact revision;
 - formalize Connect Four downstream product semantics and run the Device-JS external deletion test after neutral native Device-JS evidence;
-- build one finite Windows universal engine through an exact public CUDA-JS pair;
+- build one finite native Linux universal engine through an exact public CUDA-JS pair;
 - treat live Search Session native sideband/concurrency as an optional profile, not a finite-engine release blocker;
-- continue scheduler/performance/Linux evidence, then package/release stabilization.
+- continue representative Linux scheduler/resource/performance evidence and secondary platform qualification, then package/release stabilization.
 
 Chess remains a separately tracked downstream proposal and does not gate universal parent completion.
 
@@ -93,7 +95,7 @@ Chess remains a separately tracked downstream proposal and does not gate univers
 
 - no production universal engine is accepted yet;
 - semantic-owner schema/normalizer/Composer representation beyond the active Search Session fragment and cross-owner deletion evidence are not implemented;
-- device-scope release/acquire Device-JS publication helpers remain unimplemented/unqualified in CUDA-JS #123;
+- CUDA-JS #123 release/acquire Device-JS publication helpers are integrated in `cuda-js@0.1.0-alpha.7`; their exact CUDA-MCGS channel-pair qualification remains downstream;
 - complete Search IR/Composer specialization identity is incomplete;
 - CUDA-MCGS external deletion/compatible-pair evidence is unfinished;
 - SESSION-002 native live-session evidence for the selected CUDA-JS mailbox profile is absent;
