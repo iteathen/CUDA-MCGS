@@ -24,7 +24,7 @@ The universal core is complete without chess and without any optional capability
 
 CUDA-MCGS is therefore a **search compiler/composer plus a finite specialized device program**, consuming the independent generic CUDA-JS runtime rather than owning Node/CUDA Driver plumbing.
 
-[`SPEC-0001`](../specs/SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](../specs/SPEC-0002-search-ir-and-reference-semantics.md) accept the foundational publication/graph/path/resource/Search IR slice. [`SPEC-0000`](../specs/SPEC-0000-framework-requirements.md) and [`SPEC-0006`](../specs/SPEC-0006-search-session-control-and-observation.md) through [`SPEC-0013`](../specs/SPEC-0013-result-and-observation-publication.md) are the integrated decision-complete core proposal packet. [`SPEC-0003`](../specs/SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](../specs/SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](../specs/SPEC-0005-stage-ptx-and-search-image-composition.md) remain the optional extension-substrate proposal family to reconcile next. None authorizes production lowering before schema/reference acceptance.
+[`SPEC-0001`](../specs/SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](../specs/SPEC-0002-search-ir-and-reference-semantics.md) accept the foundational publication/graph/path/resource/Search IR slice. [`SPEC-0000`](../specs/SPEC-0000-framework-requirements.md) and [`SPEC-0006`](../specs/SPEC-0006-search-session-control-and-observation.md) through [`SPEC-0013`](../specs/SPEC-0013-result-and-observation-publication.md) are the decision-complete 741-requirement core proposal packet. [`SPEC-0003`](../specs/SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](../specs/SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](../specs/SPEC-0005-stage-ptx-and-search-image-composition.md) are the decision-complete 248-requirement optional extension proposal packet under final reconciliation. None authorizes production lowering before schema/reference acceptance.
 
 ## 1. Universal core inputs
 
@@ -62,7 +62,7 @@ A concrete Search Image may select:
 
 - a finite graph of semantic per-work-item **Search Stages**;
 - stable stage-owned entry/exit **Stage Extension Surfaces**;
-- a minimal **universal base checkpoint context** for each surface;
+- a minimal extension-only **base checkpoint context** viewing source-owner stable facts for each materialized surface;
 - namespaced/versioned selected **capabilities** that may contribute specialization-only context/state/resources;
 - bounded internal **Async Stage Channels**;
 - version-zero composed restricted Device-JS **stage capability program units**.
@@ -77,7 +77,7 @@ A capability that changes search meaning must identify the owning selected domai
 
 ### 2.1 Search Stages
 
-A Search Stage is one semantic operational state and one complete mutation interval for one logical work item. It is not searched domain state, a global phase, kernel, module, launch, CUDA Graph node or product phase.
+A Search Stage owns one semantic operational state, stable entry/exit and transition commitment around one complete mutation interval for one logical work item. Source contracts retain ownership of the domain/graph/policy/evaluator/output/resource/progress/session facts and mutations coordinated inside it. A stage is not searched domain state, a global phase, kernel, module, launch, CUDA Graph node or product phase.
 
 A stage boundary is justified by a universal operational invariant/readiness transition. A stage must survive the **first-consumer deletion test**: if deleting the first product/capability destroys the stage's semantic purpose, that stage is product-specific rather than universal substrate.
 
@@ -86,9 +86,9 @@ A stage boundary is justified by a universal operational invariant/readiness tra
 A surface exists only at stable stage entry/exit boundaries and grants least authority.
 
 ```text
-universal stage checkpoint
+selected stage checkpoint
         │
-        ├── base context: stable product-neutral facts
+        ├── base context: least-authority source-owner stable facts
         │
         ├── capability A context: only if A selected
         ├── capability B context: only if B selected
@@ -167,16 +167,16 @@ The Composer must:
 - validate internal Async Stage Channels and Search Session control/observation contracts;
 - resolve widths/layouts/ranges/finite capacities;
 - select only profile-declared graph/reclamation/reduction/progress mechanism requirements behind accepted owner semantics;
-- generate deterministic code/artifact/package identity;
+- generate deterministic restricted Device-JS Search Program/source/package identity while keeping CUDA-JS artifact/runtime identity separate;
 - fail before ignition for incompatible semantics, resources, versions, permissions or provenance.
 
-CUDA-JS receives consumer-neutral artifacts/resources/launch/sideband requirements. It does not interpret Search IR, stages, capabilities, roots, chess or output meaning.
+CUDA-JS receives canonical restricted Device-JS source/function metadata and consumer-neutral resource/operation/capability requests through public contracts, then returns opaque public realization identities/results. It does not interpret Search IR, stages, capabilities, roots, chess or output meaning.
 
 ## 5. Restricted Device-JS realization and zero residue
 
 Version zero expresses CUDA-MCGS-owned device behavior in restricted Device-JS/Search Program source. CUDA-JS may use PTX, LTO, fusion or another qualified realization behind its public contracts.
 
-A stage with no selected capability contributes no solely extension-owned source, call, capability context/state/resource, synchronization, package input or generated-artifact residue. A stage with selected capabilities contributes exactly one semantic stage capability program unit for the complete selected set.
+No selected capability means the complete extension profile/stage graph/surface/context/channel/source/resource/package contribution is absent. Each materialized surface with selected capabilities contributes exactly one semantic stage capability program unit for its complete selected set; deleting one capability removes every solely owned contribution.
 
 Artifact granularity does not imply semantic ownership: one semantic program unit may contain reusable framework capability behavior and product-specific capability behavior because both bind to the same stable checkpoint. CUDA-JS may realize that unit across one or more opaque generated artifacts.
 
@@ -186,7 +186,7 @@ A strong product-deletion check compares otherwise equivalent images with and wi
 
 ## 6. Search Image and pre-ignition boundary
 
-The **Search Image** is a fully resolved finite executable specialization: device artifacts plus layouts, resource plan, selected contracts/capabilities/product schemas, compatibility identity, initial configuration and required resident state.
+The **Search Image** is the complete finite executable specialization: the CUDA-MCGS semantic engine profile, restricted Device-JS Search Program/execution package, layouts/resources/configuration and selected contracts/capabilities/products bound to an opaque qualified CUDA-JS realization and compatible-pair identity.
 
 Before ignition, the host may validate, compose, compile/link, allocate, upload and prepare launch/session resources.
 
