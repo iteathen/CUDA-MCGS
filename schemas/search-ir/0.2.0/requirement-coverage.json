@@ -16,8 +16,8 @@
       "requirementPrefix": "FRAMEWORK-",
       "primaryOwner": "CUDA-MCGS universal framework composition, ownership and conformance map",
       "plannedLeaf": "IR-FOUNDATION-01",
-      "currentDisposition": "pending-owner-classification",
-      "completionStatus": "pending"
+      "currentDisposition": "section-classified",
+      "completionStatus": "in-progress"
     },
     {
       "contract": "SPEC-0003",
@@ -108,10 +108,177 @@
       "completionStatus": "pending"
     }
   ],
+  "classifications": [
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-AUTH-",
+      "requirementCount": 4,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer"],
+      "plannedEvidenceOwner": "IR-FOUNDATION-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:framework-contract-selection", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-CLEANUP-",
+      "requirementCount": 4,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-COMPAT-",
+      "requirementCount": 5,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:framework-selection-identity-content-sensitive", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-DEVICE-",
+      "requirementCount": 6,
+      "primaryDisposition": "native-compatible-pair-qualification",
+      "supportingDispositions": ["cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "evidenceStatus": "deferred",
+      "evidenceRefs": ["proof:adr-0019-source-boundary", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-EXT-",
+      "requirementCount": 6,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["planned:IR-STAGE-01", "planned:IR-CHANNEL-01", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-IR-",
+      "requirementCount": 8,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-COMPOSER-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:framework-selection.schema.json", "normalizer:framework-selection", "planned:IR-COMPOSER-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-LAYER-",
+      "requirementCount": 4,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["cross-specification-proof"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["planned:IR-DELETION-ID-01", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-LIFE-",
+      "requirementCount": 9,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-OWNER-",
+      "requirementCount": 9,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-FOUNDATION-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:framework-selection", "case:reject-dependency-cycle", "case:reject-role-contract-mismatch", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-PACKAGE-",
+      "requirementCount": 3,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["planned:IR-PROGRAM-PACKAGE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-PERSIST-",
+      "requirementCount": 2,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-PRODUCT-",
+      "requirementCount": 4,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["cross-specification-proof"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:namespaced-product-second-instance-and-deletion", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-PROFILE-",
+      "requirementCount": 8,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-FOUNDATION-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:primitives.schema.json", "schema:framework-selection.schema.json", "normalizer:framework-selection", "case:framework-selection-order-independent"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-RESOURCE-",
+      "requirementCount": 5,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-RESOURCE-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["planned:IR-RESOURCE-01", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-SEC-",
+      "requirementCount": 3,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-FOUNDATION-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:reject-framework-selection-unknown-field", "case:reject-profile-contract-digest-drift", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    }
+  ],
   "totals": {
     "contracts": 12,
     "requirements": 989,
-    "classified": 0,
-    "pending": 989
+    "classified": 80,
+    "pending": 909
   }
 }

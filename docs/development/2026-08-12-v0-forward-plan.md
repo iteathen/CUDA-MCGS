@@ -6,7 +6,7 @@
 
 **Parent plan version:** `CUDA-MCGS-V0/22`
 
-**CUDA-MCGS input baseline:** protected `main` `e6c4c9c6f7577fcec15cde0f9ed4cd64e72eb118`.
+**CUDA-MCGS input baseline:** protected `main` `e0aa5cda6f8e321ae23dfc806babd5c072fe4279`.
 
 **CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
 
@@ -89,7 +89,7 @@ The assessment classified device-scope release/acquire publication as a missing 
 
 ## ENGINE-IR-COMPOSER-01 — normalized Search IR and Search Composer
 
-**Current focus.** The critical assessment and dependency-ordered semantic focus map are [`2026-08-25-engine-ir-composer-01-assessment-and-plan.md`](2026-08-25-engine-ir-composer-01-assessment-and-plan.md). It preserves accepted Search IR 0.1.0, assigns proposal Search IR 0.2.0 fragments to their semantic owners and keeps the reference Composer under bounded experiments rather than prematurely creating a production component. `IR-CATALOG-01` freezes the exact twelve-contract, 989-requirement input and pending owner routes; `IR-FOUNDATION-01` follows with shared strict primitives and the closed envelope only.
+**Current focus.** The critical assessment and dependency-ordered semantic focus map are [`2026-08-25-engine-ir-composer-01-assessment-and-plan.md`](2026-08-25-engine-ir-composer-01-assessment-and-plan.md). It preserves accepted Search IR 0.1.0, assigns proposal Search IR 0.2.0 fragments to their semantic owners and keeps the reference Composer under bounded experiments rather than prematurely creating a production component. `IR-CATALOG-01` freezes the exact twelve-contract, 989-requirement input. `IR-FOUNDATION-01` adds representation-only primitives and the closed selection/binding envelope; the next leaf supplies the domain-owned profile body rather than broadening the envelope.
 
 After the core and extension proposals are decision-complete, execute an explicitly bounded, non-production schema/normalizer/reference-composer evidence node:
 

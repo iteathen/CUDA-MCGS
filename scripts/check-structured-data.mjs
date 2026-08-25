@@ -93,6 +93,7 @@ try {
   for (const jsonPath of [
     ...recursiveFiles(path.join(root, "schemas"), (name) => name.endsWith(".json")),
     ...recursiveFiles(path.join(root, "experiments", "search-ir-reference", "fixtures"), (name) => name.endsWith(".json")),
+    ...recursiveFiles(path.join(root, "experiments", "search-ir-composer-reference", "fixtures"), (name) => name.endsWith(".json")),
   ]) {
     loadJsonCompatible(jsonPath, "JSON artifact");
   }
@@ -134,9 +135,10 @@ try {
   );
   if (proposalCoverage.schema !== "cuda-mcgs.search-ir.requirement-coverage/0.2.0"
       || proposalCoverage.contractSet !== proposalContractSet.schema
-      || proposalCoverage.totals?.classified !== 0
-      || proposalCoverage.totals?.pending !== 989) {
-    throw new Error("Search IR 0.2.0 catalog coverage must honestly remain 0 classified and 989 pending");
+      || !Number.isSafeInteger(proposalCoverage.totals?.classified)
+      || !Number.isSafeInteger(proposalCoverage.totals?.pending)
+      || proposalCoverage.totals.classified + proposalCoverage.totals.pending !== 989) {
+    throw new Error("Search IR 0.2.0 coverage must partition exactly 989 classified/pending requirements");
   }
 
   // Templates deliberately remain JSON-compatible so they need no YAML parser.

@@ -1,6 +1,19 @@
-import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+
+import {
+  assertExactArray,
+  assertInteger,
+  assertString,
+  canonicalIdentity,
+  compareRaw,
+  exactKeys,
+  fail,
+  sourceTextSha256,
+  uniqueBy,
+} from './validation.mjs';
+
+export { canonicalBytes, canonicalIdentity, sourceTextSha256 } from './validation.mjs';
 
 const CONTRACT_SET_SCHEMA = 'cuda-mcgs.search-ir.contract-set/0.2.0';
 const COVERAGE_SCHEMA = 'cuda-mcgs.search-ir.requirement-coverage/0.2.0';
@@ -14,84 +27,6 @@ const FINAL_DISPOSITIONS = [
   'cross-specification-proof',
   'native-compatible-pair-qualification',
 ];
-
-export class CatalogError extends Error {
-  constructor(code, message) {
-    super(`${code}: ${message}`);
-    this.name = 'CatalogError';
-    this.code = code;
-  }
-}
-
-function fail(code, message) {
-  throw new CatalogError(code, message);
-}
-
-function isRecord(value) {
-  return value !== null && typeof value === 'object' && !Array.isArray(value);
-}
-
-function exactKeys(value, expected, code, label) {
-  if (!isRecord(value)) fail(code, `${label} must be an object`);
-  const actual = Object.keys(value).sort(compareRaw);
-  const canonicalExpected = [...expected].sort(compareRaw);
-  if (actual.length !== canonicalExpected.length || actual.some((key, index) => key !== canonicalExpected[index])) {
-    fail(code, `${label} fields must be exactly ${canonicalExpected.join(', ')}`);
-  }
-}
-
-function compareRaw(left, right) {
-  return left < right ? -1 : left > right ? 1 : 0;
-}
-
-function assertString(value, pattern, code, label) {
-  if (typeof value !== 'string' || !pattern.test(value)) fail(code, `${label} is invalid`);
-}
-
-function assertInteger(value, minimum, code, label) {
-  if (!Number.isSafeInteger(value) || value < minimum) fail(code, `${label} is invalid`);
-}
-
-function assertExactArray(actual, expected, code, label) {
-  if (!Array.isArray(actual)
-      || actual.length !== expected.length
-      || actual.some((value, index) => value !== expected[index])) {
-    fail(code, `${label} is not canonical`);
-  }
-}
-
-function uniqueBy(values, key, code, label) {
-  const seen = new Set();
-  for (const value of values) {
-    const identity = value[key];
-    if (seen.has(identity)) fail(code, `${label} duplicates ${identity}`);
-    seen.add(identity);
-  }
-}
-
-function canonicalValue(value) {
-  if (Array.isArray(value)) return value.map(canonicalValue);
-  if (!isRecord(value)) return value;
-  return Object.fromEntries(Object.keys(value).sort(compareRaw).map((key) => [key, canonicalValue(value[key])]));
-}
-
-export function canonicalBytes(value) {
-  return Buffer.from(JSON.stringify(canonicalValue(value)), 'utf8');
-}
-
-export function canonicalIdentity(value) {
-  const bytes = canonicalBytes(value);
-  return {
-    algorithm: 'sha256',
-    byteLength: bytes.byteLength,
-    sha256: createHash('sha256').update(bytes).digest('hex'),
-  };
-}
-
-export function sourceTextSha256(bytes) {
-  const normalized = Buffer.from(bytes.toString('utf8').replace(/\r\n?/g, '\n'), 'utf8');
-  return createHash('sha256').update(normalized).digest('hex');
-}
 
 function normalizeArtifact(input, index) {
   exactKeys(input, ['role', 'sourcePath', 'sha256'], 'CATALOG_FOUNDATION_FIELDS', `foundation artifact ${index}`);
@@ -179,14 +114,52 @@ function normalizeCoverageEntry(input, index) {
   assertString(input.requirementPrefix, /^[A-Z][A-Z0-9-]*-$/, 'COVERAGE_PREFIX', `${input.contract} requirementPrefix`);
   if (typeof input.primaryOwner !== 'string' || input.primaryOwner.length === 0) fail('COVERAGE_OWNER', `${input.contract} primaryOwner is invalid`);
   assertString(input.plannedLeaf, /^IR-[A-Z-]+-01$/, 'COVERAGE_LEAF', `${input.contract} plannedLeaf`);
-  if (input.currentDisposition !== 'pending-owner-classification' || input.completionStatus !== 'pending') {
-    fail('COVERAGE_PREMATURE_COMPLETION', `${input.contract} cannot claim classification in the catalog leaf`);
+  const validRouteState = (input.currentDisposition === 'pending-owner-classification' && input.completionStatus === 'pending')
+    || (input.currentDisposition === 'section-classified' && input.completionStatus === 'in-progress');
+  if (!validRouteState) {
+    fail('COVERAGE_PREMATURE_COMPLETION', `${input.contract} has an invalid route-level classification state`);
   }
   return { ...input };
 }
 
+function normalizeClassification(input, index) {
+  exactKeys(input, ['contract', 'requirementPrefix', 'requirementCount', 'primaryDisposition', 'supportingDispositions', 'plannedEvidenceOwner', 'evidenceStatus', 'evidenceRefs', 'classificationStatus'], 'COVERAGE_CLASSIFICATION_FIELDS', `classification ${index}`);
+  assertString(input.contract, /^SPEC-[0-9]{4}$/, 'COVERAGE_CLASSIFICATION_CONTRACT', `classification ${index} contract`);
+  assertString(input.requirementPrefix, /^[A-Z][A-Z0-9-]*-$/, 'COVERAGE_CLASSIFICATION_PREFIX', `${input.contract} classification prefix`);
+  assertInteger(input.requirementCount, 1, 'COVERAGE_CLASSIFICATION_COUNT', `${input.requirementPrefix} requirementCount`);
+  if (!FINAL_DISPOSITIONS.includes(input.primaryDisposition)) fail('COVERAGE_CLASSIFICATION_DISPOSITION', `${input.requirementPrefix} primary disposition is invalid`);
+  if (!Array.isArray(input.supportingDispositions)
+      || input.supportingDispositions.some((disposition) => !FINAL_DISPOSITIONS.includes(disposition) || disposition === input.primaryDisposition)
+      || new Set(input.supportingDispositions).size !== input.supportingDispositions.length) {
+    fail('COVERAGE_CLASSIFICATION_DISPOSITION', `${input.requirementPrefix} supporting dispositions are invalid`);
+  }
+  assertString(input.plannedEvidenceOwner, /^(?:IR|ENGINE)-[A-Z0-9-]+-01$/, 'COVERAGE_CLASSIFICATION_OWNER', `${input.requirementPrefix} plannedEvidenceOwner`);
+  assertString(input.evidenceStatus, /^(?:partial|pending|deferred)$/, 'COVERAGE_CLASSIFICATION_STATUS', `${input.requirementPrefix} evidenceStatus`);
+  if (input.classificationStatus !== 'classified') fail('COVERAGE_CLASSIFICATION_STATUS', `${input.requirementPrefix} classificationStatus is invalid`);
+  if (!Array.isArray(input.evidenceRefs) || input.evidenceRefs.length === 0
+      || input.evidenceRefs.some((reference) => typeof reference !== 'string' || !/^(?:schema|normalizer|case|proof|planned):[a-zA-Z0-9./_-]+$/.test(reference))
+      || new Set(input.evidenceRefs).size !== input.evidenceRefs.length) {
+    fail('COVERAGE_CLASSIFICATION_EVIDENCE', `${input.requirementPrefix} evidenceRefs are invalid`);
+  }
+  return {
+    contract: input.contract,
+    requirementPrefix: input.requirementPrefix,
+    requirementCount: input.requirementCount,
+    primaryDisposition: input.primaryDisposition,
+    supportingDispositions: [...input.supportingDispositions].sort(compareRaw),
+    plannedEvidenceOwner: input.plannedEvidenceOwner,
+    evidenceStatus: input.evidenceStatus,
+    evidenceRefs: [...input.evidenceRefs].sort(compareRaw),
+    classificationStatus: input.classificationStatus,
+  };
+}
+
+function classificationKey(classification) {
+  return `${classification.contract}\0${classification.requirementPrefix}`;
+}
+
 export function normalizeRequirementCoverage(input) {
-  exactKeys(input, ['schema', 'contractSet', 'allowedFinalDispositions', 'contracts', 'totals'], 'COVERAGE_ROOT_FIELDS', 'requirement coverage');
+  exactKeys(input, ['schema', 'contractSet', 'allowedFinalDispositions', 'contracts', 'classifications', 'totals'], 'COVERAGE_ROOT_FIELDS', 'requirement coverage');
   if (input.schema !== COVERAGE_SCHEMA || input.contractSet !== CONTRACT_SET_SCHEMA) {
     fail('COVERAGE_SCHEMA', 'coverage schema/contract-set identity is incompatible');
   }
@@ -196,17 +169,24 @@ export function normalizeRequirementCoverage(input) {
   }
   const contracts = input.contracts.map(normalizeCoverageEntry).sort((left, right) => compareRaw(left.contract, right.contract));
   uniqueBy(contracts, 'contract', 'COVERAGE_CONTRACT_DUPLICATE', 'coverage contract');
+  if (!Array.isArray(input.classifications)) fail('COVERAGE_CLASSIFICATION_COUNT', 'classifications must be an array');
+  const classifications = input.classifications.map(normalizeClassification).sort((left, right) => compareRaw(classificationKey(left), classificationKey(right)));
+  const classificationKeys = classifications.map(classificationKey);
+  if (new Set(classificationKeys).size !== classificationKeys.length) fail('COVERAGE_CLASSIFICATION_DUPLICATE', 'classification repeats a contract/prefix');
   exactKeys(input.totals, ['contracts', 'requirements', 'classified', 'pending'], 'COVERAGE_TOTAL_FIELDS', 'coverage totals');
   if (input.totals.contracts !== 12 || input.totals.requirements !== 989
-      || input.totals.classified !== 0 || input.totals.pending !== 989) {
-    fail('COVERAGE_TOTALS', 'catalog coverage must honestly report 0 classified and 989 pending');
+      || !Number.isSafeInteger(input.totals.classified) || !Number.isSafeInteger(input.totals.pending)
+      || input.totals.classified < 0 || input.totals.pending < 0
+      || input.totals.classified + input.totals.pending !== 989) {
+    fail('COVERAGE_TOTALS', 'coverage totals must partition exactly 989 requirements');
   }
   return {
     schema: input.schema,
     contractSet: input.contractSet,
     allowedFinalDispositions: [...input.allowedFinalDispositions],
     contracts,
-    totals: { contracts: 12, requirements: 989, classified: 0, pending: 989 },
+    classifications,
+    totals: { ...input.totals },
   };
 }
 
@@ -267,13 +247,20 @@ export async function inspectCatalog(repositoryRoot, contractSetInput, coverageI
     for (const id of ids) {
       if (globalIds.has(id)) fail('CATALOG_REQUIREMENT_DUPLICATE', `requirement ID ${id} is defined by multiple contracts`);
       globalIds.add(id);
+      const matchingClassifications = coverage.classifications.filter((classification) => classification.contract === contract.id && id.startsWith(classification.requirementPrefix));
+      if (matchingClassifications.length > 1) fail('COVERAGE_CLASSIFICATION_OVERLAP', `${id} matches multiple classifications`);
+      const classification = matchingClassifications[0] ?? null;
       requirements.push({
         id,
         contract: contract.id,
         primaryOwner: route.primaryOwner,
         plannedLeaf: route.plannedLeaf,
-        currentDisposition: route.currentDisposition,
-        completionStatus: route.completionStatus,
+        currentDisposition: classification?.primaryDisposition ?? route.currentDisposition,
+        supportingDispositions: classification?.supportingDispositions ?? [],
+        plannedEvidenceOwner: classification?.plannedEvidenceOwner ?? route.plannedLeaf,
+        evidenceStatus: classification?.evidenceStatus ?? 'pending',
+        evidenceRefs: classification?.evidenceRefs ?? [],
+        classificationStatus: classification?.classificationStatus ?? 'pending',
       });
     }
     contractSummaries.push({ id: contract.id, requirements: ids.length, sourceSha256: contract.sha256 });
@@ -285,6 +272,24 @@ export async function inspectCatalog(repositoryRoot, contractSetInput, coverageI
   }
   if (requirements.length !== 989 || globalIds.size !== 989) {
     fail('CATALOG_REQUIREMENT_TOTAL', `expected 989 unique requirements, found ${globalIds.size}`);
+  }
+  for (const classification of coverage.classifications) {
+    const matched = requirements.filter((requirement) => requirement.contract === classification.contract && requirement.id.startsWith(classification.requirementPrefix));
+    if (matched.length !== classification.requirementCount) {
+      fail('COVERAGE_CLASSIFICATION_COUNT', `${classification.requirementPrefix} expected ${classification.requirementCount}, found ${matched.length}`);
+    }
+  }
+  const classified = requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length;
+  const pending = requirements.length - classified;
+  if (classified !== coverage.totals.classified || pending !== coverage.totals.pending) {
+    fail('COVERAGE_TOTALS', `expanded coverage is ${classified} classified and ${pending} pending`);
+  }
+  for (const route of coverage.contracts) {
+    const routeHasClassification = coverage.classifications.some(({ contract }) => contract === route.contract);
+    const expectedState = routeHasClassification ? ['section-classified', 'in-progress'] : ['pending-owner-classification', 'pending'];
+    if (route.currentDisposition !== expectedState[0] || route.completionStatus !== expectedState[1]) {
+      fail('COVERAGE_ROUTE_STATE', `${route.contract} route state disagrees with its classifications`);
+    }
   }
 
   return {
