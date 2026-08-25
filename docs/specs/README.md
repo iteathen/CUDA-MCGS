@@ -76,7 +76,7 @@ Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider 
 
 These proposals do not authorize production lowering. The complete Search IR must represent selected universal semantics plus namespaced capability/product inputs without promoting first-product fields into universal core meaning.
 
-SPEC-0000 and SPEC-0006 through SPEC-0013 form the decision-complete core proposal packet. SPEC-0003 is the decision-complete optional stage/surface/capability proposal; SPEC-0004 and SPEC-0005 remain its dependency-ordered channel and restricted Device-JS composition reconciliation inputs. Neither packet is accepted until strict schema/normalizer/Composer and consolidated CUDA-free reference evidence pass atomically at the integrated acceptance gate.
+SPEC-0000 and SPEC-0006 through SPEC-0013 form the decision-complete core proposal packet. SPEC-0003 and SPEC-0004 are the decision-complete optional stage/surface/capability and internal-channel proposals; SPEC-0005 remains their restricted Device-JS composition reconciliation input. Neither packet is accepted until strict schema/normalizer/Composer and consolidated CUDA-free reference evidence pass atomically at the integrated acceptance gate.
 
 ## Domain/search product specifications
 
