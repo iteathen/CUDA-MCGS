@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/requirement-coverage.schema.json",
+  "title": "CUDA-MCGS Search IR 0.2.0 proposal requirement coverage",
+  "description": "Closed owner-routing skeleton expanded from normative requirement IDs by the reference catalog capsule.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "contractSet", "allowedFinalDispositions", "contracts", "totals"],
+  "properties": {
+    "schema": { "const": "cuda-mcgs.search-ir.requirement-coverage/0.2.0" },
+    "contractSet": { "const": "cuda-mcgs.search-ir.contract-set/0.2.0" },
+    "allowedFinalDispositions": {
+      "const": [
+        "structural-schema",
+        "semantic-normalizer",
+        "deterministic-composition",
+        "ir-identity-deletion-rejection",
+        "engine-reference-oracle",
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ]
+    },
+    "contracts": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": { "$ref": "#/$defs/coverage" }
+    },
+    "totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contracts", "requirements", "classified", "pending"],
+      "properties": {
+        "contracts": { "const": 12 },
+        "requirements": { "const": 989 },
+        "classified": { "const": 0 },
+        "pending": { "const": 989 }
+      }
+    }
+  },
+  "$defs": {
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract", "requirementPrefix", "primaryOwner", "plannedLeaf", "currentDisposition", "completionStatus"],
+      "properties": {
+        "contract": { "type": "string", "pattern": "^SPEC-[0-9]{4}$" },
+        "requirementPrefix": { "type": "string", "pattern": "^[A-Z][A-Z0-9-]*-$" },
+        "primaryOwner": { "type": "string", "minLength": 1 },
+        "plannedLeaf": { "type": "string", "pattern": "^IR-[A-Z-]+-01$" },
+        "currentDisposition": { "const": "pending-owner-classification" },
+        "completionStatus": { "const": "pending" }
+      }
+    }
+  }
+}

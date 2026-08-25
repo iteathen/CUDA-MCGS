@@ -89,7 +89,7 @@ The assessment classified device-scope release/acquire publication as a missing 
 
 ## ENGINE-IR-COMPOSER-01 — normalized Search IR and Search Composer
 
-**Current focus.** The critical assessment and dependency-ordered semantic focus map are [`2026-08-25-engine-ir-composer-01-assessment-and-plan.md`](2026-08-25-engine-ir-composer-01-assessment-and-plan.md). It preserves accepted Search IR 0.1.0, assigns proposal Search IR 0.2.0 fragments to their semantic owners, keeps the reference Composer under bounded experiments rather than prematurely creating a production component, and makes `IR-CATALOG-01` the first implementation leaf.
+**Current focus.** The critical assessment and dependency-ordered semantic focus map are [`2026-08-25-engine-ir-composer-01-assessment-and-plan.md`](2026-08-25-engine-ir-composer-01-assessment-and-plan.md). It preserves accepted Search IR 0.1.0, assigns proposal Search IR 0.2.0 fragments to their semantic owners and keeps the reference Composer under bounded experiments rather than prematurely creating a production component. `IR-CATALOG-01` freezes the exact twelve-contract, 989-requirement input and pending owner routes; `IR-FOUNDATION-01` follows with shared strict primitives and the closed envelope only.
 
 After the core and extension proposals are decision-complete, execute an explicitly bounded, non-production schema/normalizer/reference-composer evidence node:
 

@@ -1,0 +1,183 @@
+{
+  "schema": "cuda-mcgs.search-ir.contract-set/0.2.0",
+  "representation": "cuda-mcgs.search-ir/0.2.0",
+  "status": "proposal-evidence",
+  "authorityBaseline": "be80710e7d982a67d626811ccac2b6fe7bd3c9bb",
+  "sourceDigest": "sha256-utf8-lf-v1",
+  "foundation": {
+    "representation": "cuda-mcgs.search-ir/0.1.0",
+    "governingContract": "SPEC-0002/0.1.0",
+    "artifacts": [
+      {
+        "role": "governing-specification",
+        "sourcePath": "docs/specs/SPEC-0002-search-ir-and-reference-semantics.md",
+        "sha256": "30255d1ac1d23d9c270c5fb7736aaf4ea53c561b86a1c559d9dc6415d64d4e88"
+      },
+      {
+        "role": "structural-schema",
+        "sourcePath": "schemas/search-ir/0.1.0/search-ir.schema.json",
+        "sha256": "58c10fc13abc53f2f015defe76f774f476252267a295491faeb769f72077836a"
+      },
+      {
+        "role": "semantic-normalizer",
+        "sourcePath": "experiments/search-ir-reference/src/normalize.mjs",
+        "sha256": "6d115102b3950a58a1e26ede1b37e9a038891e0afadac4bf13e49335af92fd91"
+      },
+      {
+        "role": "identity-fixture",
+        "sourcePath": "experiments/search-ir-reference/fixtures/expected-identity.json",
+        "sha256": "b6676ebfbdcd36ffac50513db554302fa80138a3a64ca60377d0a2dd22f22540"
+      }
+    ]
+  },
+  "contracts": [
+    {
+      "id": "SPEC-0000",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0000@0.1.0-draft",
+      "draftVersion": "0.1.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS universal framework composition, ownership and conformance map",
+      "sourcePath": "docs/specs/SPEC-0000-framework-requirements.md",
+      "sha256": "94ec8ab4fb61ecf94c0acf9d2143bd4922f4bdd32363a40d547ba7444f21d4e1",
+      "requirementPrefix": "FRAMEWORK-",
+      "requirementCount": 80,
+      "plannedLeaf": "IR-FOUNDATION-01"
+    },
+    {
+      "id": "SPEC-0003",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0003@0.3.0-draft",
+      "draftVersion": "0.3.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS optional stage/surface/capability semantics",
+      "sourcePath": "docs/specs/SPEC-0003-search-stage-and-extension-surface.md",
+      "sha256": "62b0399740432cad196bff045af44a427f23e2f3480ab5b57807b66579b02fb8",
+      "requirementPrefix": "EXT-",
+      "requirementCount": 80,
+      "plannedLeaf": "IR-STAGE-01"
+    },
+    {
+      "id": "SPEC-0004",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0004@0.3.0-draft",
+      "draftVersion": "0.3.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS optional internal channel item/publication/ownership-transfer semantics",
+      "sourcePath": "docs/specs/SPEC-0004-async-stage-channels.md",
+      "sha256": "ca48e1e64ec4e02d88f1bb55d8904d0d6f1aff659cc82366faf6e87cfff54262",
+      "requirementPrefix": "CHANNEL-",
+      "requirementCount": 90,
+      "plannedLeaf": "IR-CHANNEL-01"
+    },
+    {
+      "id": "SPEC-0005",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0005@0.4.0-draft",
+      "draftVersion": "0.4.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS deterministic restricted Device-JS Search Program composition and CUDA-MCGS/CUDA-JS execution-package boundary",
+      "sourcePath": "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
+      "sha256": "278a6df65efcc27269d621775369d8a356c91d85498daac25b720ac3fd5c85e7",
+      "requirementPrefix": "COMPOSE-",
+      "requirementCount": 78,
+      "plannedLeaf": "IR-PROGRAM-PACKAGE-01"
+    },
+    {
+      "id": "SPEC-0006",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0006@0.1.0-draft",
+      "draftVersion": "0.1.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS optional Search Session external lifecycle semantics",
+      "sourcePath": "docs/specs/SPEC-0006-search-session-control-and-observation.md",
+      "sha256": "5716008d6a0b6979d4ced5dd8f27c4e0d49e3e18b0c1bb3b59543d36a9dd6b0a",
+      "requirementPrefix": "SESSION-",
+      "requirementCount": 59,
+      "plannedLeaf": "IR-SESSION-01"
+    },
+    {
+      "id": "SPEC-0007",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0007@0.1.0-draft",
+      "draftVersion": "0.1.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS universal domain semantics",
+      "sourcePath": "docs/specs/SPEC-0007-domain-state-action-and-transition.md",
+      "sha256": "69512d49a4b0c5aae055bbba5c0a152db129f54037d7933f7f3b044a2547ad39",
+      "requirementPrefix": "DOMAIN-",
+      "requirementCount": 84,
+      "plannedLeaf": "IR-DOMAIN-01"
+    },
+    {
+      "id": "SPEC-0008",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0008@0.1.0-draft",
+      "draftVersion": "0.1.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS universal search-policy semantics",
+      "sourcePath": "docs/specs/SPEC-0008-search-policy-and-backup.md",
+      "sha256": "c33e33acf52f774b27e987c607da670344742a3075438bfc34984b34ac98dc11",
+      "requirementPrefix": "POLICY-",
+      "requirementCount": 91,
+      "plannedLeaf": "IR-POLICY-01"
+    },
+    {
+      "id": "SPEC-0009",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0009@0.1.0-draft",
+      "draftVersion": "0.1.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS universal evaluator semantics",
+      "sourcePath": "docs/specs/SPEC-0009-evaluator-contract.md",
+      "sha256": "649e81f302ebab86a125fa42292fc73b16421bb9b8460e8218f5bc76440bb55c",
+      "requirementPrefix": "EVAL-",
+      "requirementCount": 121,
+      "plannedLeaf": "IR-EVALUATOR-01"
+    },
+    {
+      "id": "SPEC-0010",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0010@0.1.0-draft",
+      "draftVersion": "0.1.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS universal graph/storage semantics",
+      "sourcePath": "docs/specs/SPEC-0010-graph-storage-and-reclamation.md",
+      "sha256": "3a1ba6789648c47c8837713f9f61a0fd77ee4fa6fcfda8c24d1fd19f42895206",
+      "requirementPrefix": "GRAPH-",
+      "requirementCount": 93,
+      "plannedLeaf": "IR-GRAPH-01"
+    },
+    {
+      "id": "SPEC-0011",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0011@0.1.0-draft",
+      "draftVersion": "0.1.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS universal finite search-resource semantics",
+      "sourcePath": "docs/specs/SPEC-0011-finite-search-resources.md",
+      "sha256": "286d25aefbbc5ce58bdf338cbf64778662af36671337f17aad867bb04aa8eda2",
+      "requirementPrefix": "RESOURCE-",
+      "requirementCount": 74,
+      "plannedLeaf": "IR-RESOURCE-01"
+    },
+    {
+      "id": "SPEC-0012",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0012@0.1.0-draft",
+      "draftVersion": "0.1.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS universal device-owned progress semantics",
+      "sourcePath": "docs/specs/SPEC-0012-device-owned-search-progress.md",
+      "sha256": "709912998eadbd8001e1bed7103610c4b034cf864d5f991786fa983bbc031058",
+      "requirementPrefix": "PROGRESS-",
+      "requirementCount": 51,
+      "plannedLeaf": "IR-PROGRESS-01"
+    },
+    {
+      "id": "SPEC-0013",
+      "specificationIdentity": "CUDA-MCGS-SPEC-0013@0.1.0-draft",
+      "draftVersion": "0.1.0",
+      "status": "Proposal",
+      "semanticOwner": "CUDA-MCGS universal external result/observation publication semantics",
+      "sourcePath": "docs/specs/SPEC-0013-result-and-observation-publication.md",
+      "sha256": "f9890c2814cfb2e647fdc9372fb9aa3ea02a8b561d9e35b530b5bcbd83f40087",
+      "requirementPrefix": "OUTPUT-",
+      "requirementCount": 88,
+      "plannedLeaf": "IR-OUTPUT-01"
+    }
+  ],
+  "totals": {
+    "contracts": 12,
+    "requirements": 989
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/contract-set.schema.json",
+  "title": "CUDA-MCGS Search IR 0.2.0 proposal contract set",
+  "description": "Closed catalog of the accepted Search IR foundation and the proposal contracts consumed by Search IR 0.2.0 evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "representation", "status", "authorityBaseline", "sourceDigest", "foundation", "contracts", "totals"],
+  "properties": {
+    "schema": { "const": "cuda-mcgs.search-ir.contract-set/0.2.0" },
+    "representation": { "const": "cuda-mcgs.search-ir/0.2.0" },
+    "status": { "const": "proposal-evidence" },
+    "authorityBaseline": { "$ref": "#/$defs/gitSha" },
+    "sourceDigest": { "const": "sha256-utf8-lf-v1" },
+    "foundation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["representation", "governingContract", "artifacts"],
+      "properties": {
+        "representation": { "const": "cuda-mcgs.search-ir/0.1.0" },
+        "governingContract": { "const": "SPEC-0002/0.1.0" },
+        "artifacts": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/$defs/artifact" }
+        }
+      }
+    },
+    "contracts": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": { "$ref": "#/$defs/contract" }
+    },
+    "totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contracts", "requirements"],
+      "properties": {
+        "contracts": { "const": 12 },
+        "requirements": { "const": 989 }
+      }
+    }
+  },
+  "$defs": {
+    "gitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "sourcePath": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._/-]+$" },
+    "leaf": {
+      "enum": [
+        "IR-FOUNDATION-01",
+        "IR-DOMAIN-01",
+        "IR-GRAPH-01",
+        "IR-POLICY-01",
+        "IR-EVALUATOR-01",
+        "IR-RESOURCE-01",
+        "IR-PROGRESS-01",
+        "IR-OUTPUT-01",
+        "IR-SESSION-01",
+        "IR-STAGE-01",
+        "IR-CHANNEL-01",
+        "IR-PROGRAM-PACKAGE-01"
+      ]
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "sourcePath", "sha256"],
+      "properties": {
+        "role": {
+          "enum": ["governing-specification", "structural-schema", "semantic-normalizer", "identity-fixture"]
+        },
+        "sourcePath": { "$ref": "#/$defs/sourcePath" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "specificationIdentity", "draftVersion", "status", "semanticOwner", "sourcePath", "sha256", "requirementPrefix", "requirementCount", "plannedLeaf"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^SPEC-[0-9]{4}$" },
+        "specificationIdentity": { "type": "string", "pattern": "^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\\.[0-9]+\\.[0-9]+-draft$" },
+        "draftVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "status": { "const": "Proposal" },
+        "semanticOwner": { "type": "string", "minLength": 1 },
+        "sourcePath": { "type": "string", "pattern": "^docs/specs/SPEC-[0-9]{4}-[a-z0-9-]+\\.md$" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "requirementPrefix": { "type": "string", "pattern": "^[A-Z][A-Z0-9-]*-$" },
+        "requirementCount": { "type": "integer", "minimum": 1 },
+        "plannedLeaf": { "$ref": "#/$defs/leaf" }
+      }
+    }
+  }
+}

@@ -116,6 +116,29 @@ try {
     throw new Error("Search IR identity fixture must contain a canonical SHA-256 identity");
   }
 
+  const proposalContractSet = loadJsonCompatible(
+    path.join(root, "schemas", "search-ir", "0.2.0", "contract-set.json"),
+    "Search IR 0.2.0 proposal contract set",
+  );
+  if (proposalContractSet.schema !== "cuda-mcgs.search-ir.contract-set/0.2.0"
+      || proposalContractSet.representation !== "cuda-mcgs.search-ir/0.2.0"
+      || proposalContractSet.status !== "proposal-evidence"
+      || proposalContractSet.totals?.contracts !== 12
+      || proposalContractSet.totals?.requirements !== 989) {
+    throw new Error("Search IR 0.2.0 contract set must remain bounded proposal evidence for 12 contracts and 989 requirements");
+  }
+
+  const proposalCoverage = loadJsonCompatible(
+    path.join(root, "schemas", "search-ir", "0.2.0", "requirement-coverage.json"),
+    "Search IR 0.2.0 proposal requirement coverage",
+  );
+  if (proposalCoverage.schema !== "cuda-mcgs.search-ir.requirement-coverage/0.2.0"
+      || proposalCoverage.contractSet !== proposalContractSet.schema
+      || proposalCoverage.totals?.classified !== 0
+      || proposalCoverage.totals?.pending !== 989) {
+    throw new Error("Search IR 0.2.0 catalog coverage must honestly remain 0 classified and 989 pending");
+  }
+
   // Templates deliberately remain JSON-compatible so they need no YAML parser.
   for (const templatePath of immediateFiles(path.join(root, "agent_files", "templates"), (name) => name.endsWith(".yaml"))) {
     const data = loadJsonCompatible(templatePath, "JSON-compatible template");
