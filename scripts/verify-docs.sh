@@ -11,6 +11,7 @@ required=(
   STATUS.md
   next_step.yaml
   CONTRIBUTING.md
+  LICENSING.md
   CLAUDE.md
   GEMINI.md
   .github/CODEOWNERS
@@ -117,6 +118,8 @@ required=(
   docs/decisions/ADR-0015-engineering-judgment-and-value-ordering.md
   docs/decisions/ADR-0016-token-backpressure-and-practice-floor.md
   docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md
+  docs/decisions/ADR-0018-universal-core-extension-product-layering.md
+  docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md
   docs/development/README.md
   docs/research/README.md
   docs/research/2026-08-10-cuda-js-assumption-audit.md

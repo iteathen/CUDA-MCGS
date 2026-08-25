@@ -8,6 +8,8 @@ This document defines the scope and common invariants that detailed versioned CU
 
 The framework architecture follows [`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md): universal MCGS semantics, universal extension/composition mechanics, and downstream domain/search products are separate semantic layers.
 
+Production source and execution-boundary conformance follow [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md): maintained implementation is ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts, post-ignition host interaction is narrow and asynchronous, and an unnaturally expressed generic GPU mechanism is escalated as a potential CUDA-JS capability rather than implemented through a local native escape path.
+
 ## 1. Three-layer conformance model
 
 ### 1.1 Universal MCGS semantic core
@@ -318,7 +320,13 @@ Before ignition, CUDA-MCGS/CUDA-JS may configure, validate schemas, compose, com
 
 After ignition, host callbacks, host-controlled internal phase progression, extension discovery/binding, late code loading, polling that supplies an internal search decision, filesystem/network service, or CPU-computed intermediate results are non-conforming unless the engine is explicitly diagnostic/reference.
 
-An accepted Search Session profile may receive bounded external environment/domain root updates and expose bounded observations through a generic sideband mechanism. Those operations do not authorize host-owned internal search progression.
+An accepted Search Session profile may receive bounded external environment/domain root updates or other externally supplied attention/control changes and expose bounded coherent observations through a generic sideband mechanism. Each selected input has a finite, versioned, generation-scoped admission/publication/application contract. Those operations do not authorize host-owned internal search progression, and delayed or absent observation consumption cannot block search.
+
+An observation-to-host-decision-to-control-write, polling/relaunch, or callback loop required to choose the next internal search step is non-conforming. The external input must represent outside intent or environment state rather than a CPU-computed search intermediate.
+
+Production CUDA-MCGS device behavior is authored as restricted Device-JS. C/C++, CUDA C++, native addons, direct FFI/Driver access, hand-written PTX, embedded CUDA source and subprocess native search implementations are non-conforming production paths. CUDA-JS-generated device artifacts remain opaque versioned dependency outputs.
+
+When an existing CUDA-JS public contract cannot express a naturally generic GPU mechanism directly, safely and with bounded resource/synchronization/lifecycle semantics, the design pauses for capability classification under ADR-0019. A consumer-neutral mechanism is specified and independently qualified in CUDA-JS; MCGS/domain/product policy remains here. A private import, local native implementation or semantically distorted workaround is not an alternative conformance path.
 
 Device closure does not imply one physical topology. Persistent-kernel, cooperative, device-owned multi-kernel, graph-based or future mechanisms may conform when they preserve device-owned progress and resource/performance contracts.
 

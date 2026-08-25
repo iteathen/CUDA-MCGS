@@ -40,7 +40,15 @@ Domain-specific behavior belongs in adapters or specialized generated code.
 
 After ignition, production active search must not wait for CPU-generated intermediate decisions. Device-resident behavior includes all selected domain transitions, action production, identity, terminal/cycle handling, evaluator execution, selection, expansion, backup, scheduling, stopping, and output ranking.
 
-The host owns lifecycle and asynchronous control, not phase-by-phase search orchestration.
+The host owns lifecycle and narrow asynchronous interaction, not phase-by-phase search orchestration. Bounded coherent observation/result reads, externally supplied attention/control changes, cancellation, completion and teardown are permitted only when their absence does not block progress and they cannot form a host read-decide-write or polling/relaunch search loop.
+
+## Production language and CUDA-JS boundary
+
+Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js host source and restricted Device-JS device-program source consumed through versioned public CUDA-JS contracts. C/C++, CUDA C++, native addons, direct FFI/Driver calls, hand-authored PTX, embedded CUDA source and subprocess native search implementations are prohibited in CUDA-MCGS production. CUDA-JS is not subject to this restriction and may use JIT, native code and CUDA-specific implementation wherever needed or desired; its generated CUDA artifacts remain opaque dependency outputs to CUDA-MCGS.
+
+Do not satisfy this rule by contorting a generic GPU mechanism around an inadequate current API. If natural expression would require material semantic distortion, host progression, unsafe synchronization, artificial kernel fragmentation, duplicated generic lifecycle or private CUDA-JS internals, stop at the boundary and classify a consumer-neutral CUDA-JS capability. Its contract must own bounded resources, synchronization, lifecycle, failure and qualification without knowing MCGS policy. If that separation is not natural, reconsider the CUDA-MCGS design.
+
+The inclination to write native CUDA-MCGS code triggers this analysis immediately; it is a clue that CUDA-JS may be incomplete even before a workaround exists. Classify first, then either extend CUDA-JS, use an already natural public contract, or revise CUDA-MCGS policy/design.
 
 ## Finite specialization
 

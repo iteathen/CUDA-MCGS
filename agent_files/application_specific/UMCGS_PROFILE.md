@@ -14,6 +14,8 @@ UMCGS owns Search IR, graph-search semantics, finite search-resource policy, sea
 
 The peer `CUDA-JS` repository owns generic Node/CUDA Driver runtime behavior. Dependency is one-way through versioned public packages/artifacts and compatibility manifests. UMCGS may not depend on CUDA-JS private source; CUDA-JS may not know Search IR or MCGS.
 
+Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS submitted through that public boundary. CUDA-JS remains free to use JIT and native/CUDA implementation wherever needed or desired. If its public surface cannot express a needed generic GPU mechanism naturally and safely, classify a consumer-neutral CUDA-JS capability rather than adding native/CUDA source or distorting CUDA-MCGS semantics. Search policy remains here; generic mechanism remains in CUDA-JS.
+
 ## Current phase
 
 The project is defining version-zero UMCGS search and UMCGS-to-CUDA-JS contracts, ownership, memory/resource behavior, conformance, and test architecture before production implementation.

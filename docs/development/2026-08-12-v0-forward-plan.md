@@ -2,11 +2,11 @@
 
 **Status:** Proposal
 
-**Date:** 2026-08-12
+**Last reconciled:** 2026-08-24
 
-**CUDA-MCGS input baseline:** protected `main` `ded3ef7d5257e28183a3b60c8fbff1f0ea8aed0b`.
+**CUDA-MCGS input baseline:** protected `main` `bfb31ea3d595a5f1851efffa96dc8986a01e490d`.
 
-**CUDA-JS input baseline:** protected `main` `fe9ed78939d3876790291421cec367fde58a8310`, package `cuda-js@0.1.0-alpha.5`.
+**CUDA-JS input baseline:** protected `main` `b6062f691a27093df0e5d55e482e69ebbd39a9eb`, package `cuda-js@0.1.0-alpha.6`.
 
 ## Outcome
 
@@ -33,7 +33,9 @@ CUDA-JS owns:
 - generic CUDA memory/resource/operation/launch/completion/error/teardown mechanisms;
 - generic sideband/concurrency/platform capabilities and their qualification.
 
-A maintained CUDA-MCGS production path must not require `.cu`/`.cuh`, hand-authored PTX, CUDA headers/options/ABI logic, Driver calls, raw CUDA handles, or CUDA-specific thread/atomic/barrier syntax. Existing CUDA experiments remain bounded evidence only.
+A maintained CUDA-MCGS production path is JavaScript only: ordinary Node.js plus restricted Device-JS through versioned public CUDA-JS contracts. It must not require C/C++, CUDA C++, `.cu`/`.cuh`, hand-authored PTX, embedded CUDA source, native addons, direct FFI/Driver calls, raw CUDA handles, or subprocess native search. This restriction does not apply to CUDA-JS, which may use JIT, native code and CUDA-specific implementation wherever needed or desired. Existing CUDA-MCGS experiments remain bounded evidence only; CUDA-JS-generated artifacts remain opaque dependency outputs.
+
+The current CUDA-JS surface is not assumed complete. If a naturally generic GPU mechanism cannot be expressed directly, safely and with bounded resource/synchronization/lifecycle semantics, stop and classify it under ADR-0019 rather than distort CUDA-MCGS or add a local escape path. The capability may be motivated by this first consumer, but CUDA-JS must own a consumer-neutral contract and independent qualification while CUDA-MCGS retains search policy.
 
 ## Dependency law
 
@@ -101,7 +103,7 @@ Build a consolidated deterministic CUDA-free universal reference/conformance lay
 
 ## PRODUCT-CONNECT4-01 — formal product and external deletion
 
-After relevant universal contracts and neutral CUDA-JS Device-JS native DJS-2 evidence are ready:
+After relevant universal contracts and selected CUDA-JS Device-JS native evidence are ready:
 
 1. define a downstream Connect Four product specification selecting the needed universal contracts/capabilities;
 2. express the production-oriented device algorithm in CUDA-MCGS-owned restricted Device-JS/Search Program source;
@@ -110,7 +112,7 @@ After relevant universal contracts and neutral CUDA-JS Device-JS native DJS-2 ev
 5. prove maintained CUDA-MCGS production source requires no CUDA-specific implementation;
 6. record first-consumer deletion: deleting Connect Four leaves universal CUDA-MCGS coherent, and deleting CUDA-MCGS leaves CUDA-JS Device-JS coherent.
 
-A missing generic GPU primitive is routed to CUDA-JS; no local CUDA escape hatch is permitted.
+A missing generic GPU primitive is routed to CUDA-JS when it has a natural consumer-neutral contract; no local CUDA escape hatch is permitted. If that separation is unnatural, reconsider the CUDA-MCGS design.
 
 ## ENGINE-WINDOWS-01 — first finite native universal engine
 
@@ -121,6 +123,7 @@ Required:
 - one exact public CUDA-JS compatible pair;
 - pre-ignition deterministic specialization and finite resource plan;
 - device-owned active search progress with no CPU-produced intermediate search decisions;
+- pure Node.js/restricted Device-JS maintained production source through public CUDA-JS contracts;
 - exact independent reference/oracle comparison;
 - typed pressure/failure behavior and terminal resource/lifecycle evidence;
 - no claim that optional long-lived sideband, multi-stream, graph/cooperative, RDC or LTO mechanisms are required unless the selected engine profile actually uses them.
@@ -132,10 +135,10 @@ Long-lived external root/control/observation during active device work is a **se
 It additionally requires:
 
 - accepted SPEC-0006 session semantics;
-- an accepted/natively qualified generic CUDA-JS sideband capability derived from issue #38/SPEC-0014 work;
+- the accepted CUDA-JS SPEC-0014 publication-mailbox capability plus exact native qualification for the selected live-session pair;
 - SESSION-002-class native evidence for concurrent root updates, stale work, generation-safe reclamation, coherent read-only observation and teardown.
 
-Host control publishes bounded external inputs/observations; it never advances internal search.
+Host control publishes bounded externally supplied attention/root/budget/priority or other selected inputs and asynchronously reads coherent observations; it never advances internal search. Observation-to-host-decision-to-control-write, polling/relaunch and callback progression loops are prohibited.
 
 ## ENGINE-PERF-LINUX-01
 
@@ -170,6 +173,8 @@ Do not:
 - use extension surfaces to bypass core semantic ownership;
 - make Search Stage acceptance a prerequisite for stating independent core domain/policy/evaluator/output/resource semantics;
 - make CUDA-MCGS own CUDA/PTX/LTO/source/compiler/Driver implementation;
+- add C/C++, CUDA C++, a native addon, direct FFI, embedded CUDA source or a subprocess native search path;
+- force an unnatural CUDA-MCGS workaround when the missing behavior is a naturally generic CUDA-JS capability;
 - require a host relaunch/polling loop to advance active search;
 - require sideband/multi-stream/graphs/RDC/LTO merely because CUDA-JS exposes or plans them;
 - claim native support from reference/portable evidence;

@@ -1,14 +1,13 @@
 {
-  "schema_version": 19,
-  "updated": "2026-08-12",
+  "schema_version": 20,
+  "updated": "2026-08-24",
   "status": "ready_for_contract_review",
-  "objective": "Accept the unfinished product-neutral CUDA-MCGS semantic contract packet in dependency-correct order, then accept the schema-backed least-authority extension substrate, extend Search IR/Composer, and proceed to reference/native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
-  "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. CUDA-JS owns restricted Device-JS language/helpers, all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and their qualification.",
+  "objective": "Accept the unfinished product-neutral CUDA-MCGS semantic contract packet in dependency-correct order, then accept the schema-backed least-authority extension substrate, extend Search IR/Composer, and proceed to pure Node.js/restricted Device-JS reference/native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
+  "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_implementation_baseline": "ded3ef7d5257e28183a3b60c8fbff1f0ea8aed0b",
-    "cuda_js_plan_reconciliation_baseline": "83f44a21f6bf556f3ff6d58acaee644659777383",
-    "cuda_js_implementation_baseline": "fe9ed78939d3876790291421cec367fde58a8310",
-    "cuda_js_package": "cuda-js@0.1.0-alpha.5"
+    "cuda_mcgs_authority_input_baseline": "bfb31ea3d595a5f1851efffa96dc8986a01e490d",
+    "cuda_js_implementation_baseline": "b6062f691a27093df0e5d55e482e69ebbd39a9eb",
+    "cuda_js_package": "cuda-js@0.1.0-alpha.6"
   },
   "authority": [
     "AGENTS.md",
@@ -17,6 +16,7 @@
     "docs/decisions/ADR-0003-device-resident-active-search.md",
     "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
     "docs/decisions/ADR-0018-universal-core-extension-product-layering.md",
+    "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
     "docs/specs/SPEC-0001-device-search-publication-and-resources.md",
     "docs/specs/SPEC-0002-search-ir-and-reference-semantics.md"
   ],
@@ -32,7 +32,7 @@
     "normalized Search IR and deterministic Search Composer separating universal base from namespaced capability/product specialization inputs",
     "consolidated CUDA-free universal reference/conformance across materially different domains/evaluator/output shapes",
     "formal downstream Connect Four product specification and Device-JS external deletion proof",
-    "first finite Windows universal CUDA-MCGS engine through one exact public CUDA-JS compatible pair",
+    "first finite Windows universal CUDA-MCGS engine in pure Node.js/restricted Device-JS through one exact public CUDA-JS compatible pair",
     "optional live-session native profile only after accepted session semantics plus generic CUDA-JS sideband capability",
     "representative scheduler/resource/performance evidence and native Linux continuation",
     "public SDK/package/release only after exact-head and compatibility stabilization"
@@ -45,17 +45,17 @@
     "downstream_products": ["PRODUCT-CONNECT4-01", "CHESS-0001 remains independently proposal-only"]
   },
   "current_cuda_js_dependency_state": {
-    "implemented_portable_software": ["SPEC-0010 RDC", "SPEC-0011 scalar ABI", "SPEC-0012 Device LTO", "SPEC-0013 Device-JS", "SPEC-0016 operation lifecycle"],
-    "native_qualification_still_open": ["issues #35, #39, #42, #43, #51 as applicable to claimed profiles"],
-    "proposal_only_production_gap": ["issue #38 / SPEC-0014 long-lived sideband; EXP-013 is portable evidence only"],
-    "not_default_blockers": ["RDC", "Device LTO", "multi-stream", "CUDA Graph/cooperative execution", "long-lived sideband unless the selected engine/session profile requires it"]
+    "public_capabilities": ["SPEC-0010 RDC", "SPEC-0011 scalar ABI", "SPEC-0012 Device LTO", "SPEC-0013 Device-JS", "SPEC-0014 publication mailboxes", "SPEC-0016 operation lifecycle", "SPEC-0018 bounded multi-operation scheduling", "SPEC-0019 asynchronous transfers", "SPEC-0022 scoped atomic observation"],
+    "exact_pair_gate": ["CUDA-JS issue #32 remains open until one frozen CUDA-MCGS artifact and selected CUDA-JS revision/package complete compatible-pair qualification"],
+    "not_default_blockers": ["RDC", "Device LTO", "multi-operation scheduling", "CUDA Graph/cooperative execution", "publication mailboxes unless the selected engine/session profile requires them"],
+    "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
   "blockers": [
     "SPEC-0000 and SPEC-0003 through SPEC-0006 remain proposals and require review/revision/acceptance before their owned production lowering",
     "explicit universal domain/policy/evaluator/output/resource/scheduler owners are incomplete",
     "complete Search IR/Composer representation for selected contract/capability/product inputs is incomplete",
-    "CUDA-JS neutral Device-JS native DJS-2 evidence and CUDA-MCGS external deletion/compatible-pair evidence remain unfinished",
-    "SESSION-002 native live-session concurrency evidence is absent and generic CUDA-JS sideband production remains unaccepted",
+    "CUDA-MCGS external deletion and exact compatible-pair evidence remain unfinished",
+    "SESSION-002 native live-session concurrency evidence for the selected CUDA-JS mailbox profile is absent",
     "native Linux compatible-pair evidence is absent"
   ],
   "validation": [
@@ -73,7 +73,9 @@
     "make chess, Connect Four, games, boards, ranked moves, best-action/top-k, scalar value or one evaluator/search formula universal",
     "use extension surfaces as a back door to redefine core semantics",
     "maintain CUDA-specific .cu/.cuh/PTX/header/compiler/ABI/Driver implementation in CUDA-MCGS production",
+    "maintain C/C++, CUDA C++, a native addon, direct FFI, embedded CUDA source or subprocess native search implementation in CUDA-MCGS production",
     "create a local CUDA escape path when a generic CUDA-JS primitive is missing",
+    "force a semantically distorted or lifecycle-unsafe CUDA-MCGS expression when a naturally generic CUDA-JS capability is missing",
     "require host-produced intermediates or a host decision/relaunch loop for active search progress",
     "treat CUDA-JS portable implementation as native qualification",
     "make sideband, multi-stream, graph/cooperative, RDC or LTO universal or pair prerequisites without a selected-profile need",
