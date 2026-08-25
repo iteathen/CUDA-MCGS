@@ -97,6 +97,16 @@ import {
   buildCudaJsRealizationFixture,
   buildProgramPackageProfile,
 } from './src/program-package-fixtures.mjs';
+import {
+  composeResolvedEngine,
+  createResolvedComposerInput,
+  normalizeResolvedComposerInput,
+  tryComposeResolvedEngine,
+} from './src/composer.mjs';
+import {
+  referenceComposerPreset,
+  resolveReferenceConvenienceCall,
+} from './src/composer-presets.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -132,6 +142,7 @@ const programPackageProfileSchema = await readJson(path.join(schemaRoot, 'progra
 const searchProgramSchema = await readJson(path.join(schemaRoot, 'search-program.schema.json'));
 const executionPackageSchema = await readJson(path.join(schemaRoot, 'execution-package.schema.json'));
 const compatiblePairRecordSchema = await readJson(path.join(schemaRoot, 'compatible-pair-record.schema.json'));
+const resolvedComposerInputSchema = await readJson(path.join(schemaRoot, 'resolved-composer-input.schema.json'));
 const frameworkSelectionInput = await readJson(path.join(experimentRoot, 'fixtures', 'minimal.framework-selection.json'));
 
 const cases = [];
@@ -1433,6 +1444,168 @@ await runCase('build-canonical-execution-packages', () => {
   executionPackages = programPackageProfiles.map((profile, index) => buildExecutionPackage(profile, searchPrograms[index]));
   assert(executionPackages.every(({ normalized }) => normalized.schema === 'cuda-mcgs.execution-package/0.2.0'));
   assert.equal(new Set(executionPackages.map(({ identity }) => identity.sha256)).size, 4);
+});
+
+const withoutGenerator = (profile) => {
+  const template = clone(profile);
+  delete template.generator;
+  return template;
+};
+let convenientComposerCall;
+let explicitResolvedComposerInput;
+let convenientComposition;
+let explicitComposition;
+await runCase('resolved-composer-schema-closed', () => {
+  assert.equal(resolvedComposerInputSchema.additionalProperties, false);
+  assert.equal(resolvedComposerInputSchema.properties.schema.const, 'cuda-mcgs.resolved-composer-input/0.2.0');
+  const visit = (node, location = '#') => {
+    if (Array.isArray(node)) return node.forEach((entry, index) => visit(entry, `${location}/${index}`));
+    if (!node || typeof node !== 'object') return;
+    if (node.type === 'object') assert.equal(node.additionalProperties, false, `${location} must be closed`);
+    for (const [key, value] of Object.entries(node)) visit(value, `${location}/${key}`);
+  };
+  visit(resolvedComposerInputSchema);
+});
+
+await runCase('composer-convenience-explicit-equivalence', () => {
+  const template = withoutGenerator(programPackageFixtures[0].input);
+  convenientComposerCall = resolveReferenceConvenienceCall(template);
+  explicitResolvedComposerInput = createResolvedComposerInput(template, clone(referenceComposerPreset));
+  assert.deepEqual(convenientComposerCall.resolvedInput.normalized, explicitResolvedComposerInput.normalized);
+  assert.deepEqual(convenientComposerCall.resolvedInput.identity, explicitResolvedComposerInput.identity);
+  assert.deepEqual(convenientComposerCall.trace, {
+    kind: 'convenience-defaults',
+    supplied: [],
+    resolved: ['generator.maxCallDepth', 'generator.maxFunctions', 'generator.maxSourceBytes'],
+  });
+  assert.equal('trace' in convenientComposerCall.resolvedInput.normalized, false);
+});
+
+await runCase('composer-default-provenance-complete', () => {
+  const { policy, rules } = convenientComposerCall.resolvedInput.normalized.resolution;
+  assert.deepEqual(policy, {
+    id: referenceComposerPreset.id,
+    version: referenceComposerPreset.version,
+    revision: referenceComposerPreset.revision,
+  });
+  assert.deepEqual(rules.map(({ field }) => field), ['generator.maxCallDepth', 'generator.maxFunctions', 'generator.maxSourceBytes']);
+  assert(rules.every(({ owner, version, revision, selection, material, reason, value }) => owner === policy.id
+    && version === policy.version
+    && revision === policy.revision
+    && selection === 'default-equivalent'
+    && material === true
+    && reason.startsWith('composer.reason.')
+    && typeof value === 'string'));
+});
+
+await runCase('composer-one-canonical-downstream-path', () => {
+  convenientComposition = composeResolvedEngine(convenientComposerCall.resolvedInput.normalized, inspected, programPackageFixtures[0].context);
+  explicitComposition = composeResolvedEngine(explicitResolvedComposerInput.normalized, inspected, programPackageFixtures[0].context);
+  assert.deepEqual(convenientComposition.compositionProfile.identity, explicitComposition.compositionProfile.identity);
+  assert.deepEqual(convenientComposition.searchProgram.identity, explicitComposition.searchProgram.identity);
+  assert.deepEqual(convenientComposition.executionPackage.identity, explicitComposition.executionPackage.identity);
+  assert.deepEqual(convenientComposition.publication.identity, explicitComposition.publication.identity);
+  assert.deepEqual(convenientComposition.executionPackage.identity, executionPackages[0].identity);
+});
+
+await runCase('composer-resolved-input-order-independent', () => {
+  const reordered = clone(explicitResolvedComposerInput.normalized);
+  reordered.resolution.rules.reverse();
+  assert.deepEqual(normalizeResolvedComposerInput(reordered).identity, explicitResolvedComposerInput.identity);
+});
+
+await runCase('composer-byte-repeatability', () => {
+  const repeated = composeResolvedEngine(clone(explicitResolvedComposerInput.normalized), inspected, programPackageFixtures[0].context);
+  assert.deepEqual(repeated.resolvedInput.identity, explicitComposition.resolvedInput.identity);
+  assert.deepEqual(repeated.publication.identity, explicitComposition.publication.identity);
+});
+
+await runCase('composer-explicit-override-identity-sensitive', () => {
+  const generator = clone(referenceComposerPreset);
+  generator.maxFunctions = '2048';
+  const overridden = createResolvedComposerInput(withoutGenerator(programPackageFixtures[0].input), generator);
+  assert.notDeepEqual(overridden.identity, explicitResolvedComposerInput.identity);
+  assert.equal(overridden.normalized.resolution.rules.find(({ field }) => field === 'generator.maxFunctions').selection, 'explicit-override');
+  const composition = composeResolvedEngine(overridden.normalized, inspected, programPackageFixtures[0].context);
+  assert.notDeepEqual(composition.compositionProfile.identity, explicitComposition.compositionProfile.identity);
+  assert.notDeepEqual(composition.executionPackage.identity, explicitComposition.executionPackage.identity);
+});
+
+await runCase('composer-material-policy-version-identity-sensitive', () => {
+  const versioned = clone(explicitResolvedComposerInput.normalized);
+  versioned.profile.generator.version = '0.1.1';
+  versioned.resolution.policy.version = '0.1.1';
+  for (const rule of versioned.resolution.rules) {
+    rule.version = '0.1.1';
+    rule.selection = 'explicit-override';
+  }
+  const normalized = normalizeResolvedComposerInput(versioned);
+  assert.notDeepEqual(normalized.identity, explicitResolvedComposerInput.identity);
+  const composition = composeResolvedEngine(normalized.normalized, inspected, programPackageFixtures[0].context);
+  assert.notDeepEqual(composition.executionPackage.identity, explicitComposition.executionPackage.identity);
+});
+
+await runCase('composer-convenience-deletion-complete-surface-coherent', async () => {
+  const composerSource = await readFile(path.join(experimentRoot, 'src', 'composer.mjs'), 'utf8');
+  assert.equal(composerSource.includes('composer-presets.mjs'), false);
+  const direct = composeResolvedEngine(clone(explicitResolvedComposerInput.normalized), inspected, programPackageFixtures[0].context);
+  assert.deepEqual(direct.publication.identity, convenientComposition.publication.identity);
+});
+
+await runCase('composer-static-no-runtime-interpreter-or-registry', async () => {
+  const composerSource = await readFile(path.join(experimentRoot, 'src', 'composer.mjs'), 'utf8');
+  const presetSource = await readFile(path.join(experimentRoot, 'src', 'composer-presets.mjs'), 'utf8');
+  for (const source of [composerSource, presetSource]) {
+    assert.equal(/\beval\s*\(/u.test(source), false);
+    assert.equal(/new\s+Function\b/u.test(source), false);
+    assert.equal(/runtime[- ]registry|node:ffi|\.cu\b|\.ptx\b/iu.test(source), false);
+  }
+});
+
+await runCase('reject-composer-resolved-input-unknown-field', () => {
+  const mutated = clone(explicitResolvedComposerInput.normalized);
+  mutated.adaptation = 'post-ignition';
+  assert.throws(() => normalizeResolvedComposerInput(mutated), { code: 'COMPOSER_ROOT_FIELDS' });
+});
+
+await runCase('reject-composer-owner-conflict', () => {
+  const mutated = clone(explicitResolvedComposerInput.normalized);
+  mutated.resolution.rules[0].owner = 'composer.conflicting-owner';
+  const result = tryComposeResolvedEngine(mutated, inspected, programPackageFixtures[0].context);
+  assert.equal(result.status, 'failure');
+  assert.equal(result.publication, null);
+  assert.equal(result.diagnostic.code, 'COMPOSER_RULE_OWNER');
+});
+
+await runCase('reject-composer-reason-conflict', () => {
+  const mutated = clone(explicitResolvedComposerInput.normalized);
+  mutated.resolution.rules[0].reason = 'composer.reason.bounded-function-set';
+  assert.throws(() => normalizeResolvedComposerInput(mutated), { code: 'COMPOSER_RULE_REASON' });
+});
+
+await runCase('reject-composer-rule-version-conflict', () => {
+  const mutated = clone(explicitResolvedComposerInput.normalized);
+  mutated.resolution.rules[0].version = '0.1.1';
+  assert.throws(() => normalizeResolvedComposerInput(mutated), { code: 'COMPOSER_RULE_OWNER' });
+});
+
+await runCase('reject-composer-missing-foundational-profile', () => {
+  const mutated = clone(explicitResolvedComposerInput.normalized);
+  delete mutated.profile.semanticEngine.outputProfile;
+  const result = tryComposeResolvedEngine(mutated, inspected, programPackageFixtures[0].context);
+  assert.equal(result.status, 'failure');
+  assert.equal(result.publication, null);
+  assert.equal(result.diagnostic.code, 'COMPOSE_ENGINE_FIELDS');
+});
+
+await runCase('composer-partial-failure-publishes-nothing', () => {
+  const mutated = clone(explicitResolvedComposerInput.normalized);
+  mutated.profile.sourceUnits[0].source += ' ';
+  assert.doesNotThrow(() => normalizeResolvedComposerInput(mutated));
+  const result = tryComposeResolvedEngine(mutated, inspected, programPackageFixtures[0].context);
+  assert.equal(result.status, 'failure');
+  assert.equal(result.publication, null);
+  assert.equal(result.diagnostic.code, 'COMPOSE_SOURCE_IDENTITY');
 });
 
 await runCase('program-package-schemas-closed', () => {
@@ -5596,7 +5769,7 @@ await runCase('channel-reference-cancellation-preserves-borrow-accounting', () =
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 839,
+  expected: 855,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -5604,7 +5777,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 839 - cases.length,
+  notDiscovered: 855 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -5629,6 +5802,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/search-program.schema.json',
   'schemas/search-ir/0.2.0/execution-package.schema.json',
   'schemas/search-ir/0.2.0/compatible-pair-record.schema.json',
+  'schemas/search-ir/0.2.0/resolved-composer-input.schema.json',
   'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
   'experiments/search-ir-composer-reference/src/catalog.mjs',
   'experiments/search-ir-composer-reference/src/validation.mjs',
@@ -5655,6 +5829,8 @@ const sourcePaths = [
   'experiments/search-ir-composer-reference/src/channel-fixtures.mjs',
   'experiments/search-ir-composer-reference/src/program-package.mjs',
   'experiments/search-ir-composer-reference/src/program-package-fixtures.mjs',
+  'experiments/search-ir-composer-reference/src/composer.mjs',
+  'experiments/search-ir-composer-reference/src/composer-presets.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -5693,6 +5869,8 @@ const evidence = {
   programPackageProfileIdentities: programPackageProfiles?.map(({ normalized, identity, semanticEngineIdentity: engine }) => ({ id: normalized.id, ...identity, semanticEngineSha256: engine.sha256 })) ?? [],
   searchProgramIdentities: searchPrograms?.map(({ normalized, identity }) => ({ id: normalized.compositionProfileIdentity.sha256, ...identity, sourceSha256: normalized.sourceIdentity.sha256 })) ?? [],
   executionPackageIdentities: executionPackages?.map(({ normalized, identity }) => ({ id: normalized.program.identity.sha256, ...identity })) ?? [],
+  resolvedComposerInputIdentity: explicitResolvedComposerInput ? { ...explicitResolvedComposerInput.identity } : null,
+  composerPublicationIdentity: explicitComposition ? { ...explicitComposition.publication.identity } : null,
   compatiblePairIdentity: compatiblePair ? { ...compatiblePair.identity } : null,
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
@@ -5717,7 +5895,8 @@ const evidence = {
     'Search Stage evidence covers two materially different strict selected profiles, one same-profile first-product deletion projection, stable entry/exit surfaces, least-authority source-owner ports, deterministic capability order, finite resource/progress/counter/lifecycle closure and whole-substrate absence, not native execution or compatible-pair qualification.',
     'Async Stage Channel evidence covers strict optional selected/absent profiles, exact Stage action grants, finite resource/progress/item/claim/publication/cancellation/reclamation semantics, evaluator-like required request/result and advisory multi-borrow secondary work, first-product deletion and a bounded logical happens-before/ownership reference oracle. It does not select a CUDA queue/layout/topology or claim native publication; the former CUDA-JS #123 public-capability gap is resolved, while exact native compatible-pair qualification remains mandatory.',
     'Program/package evidence covers four strict composition profiles, canonical restricted Device-JS Search Programs, consumer-neutral CUDA-JS request projections, opaque success/failure realization fixtures, exact first-consumer deletion and a complete reference-only compatible-pair record. It remains proposal evidence and does not claim CUDA-JS compilation, native artifacts, installed-package support or a qualified pair.',
-    'The reference Composer statically assembles exact owner-provided source snapshots and metadata; CUDA-JS still exclusively validates/lowers Device-JS syntax and owns all generated CUDA/native artifacts and runtime resources.',
+    'Composer evidence covers a strict resolved-input envelope, material owner/reason/version provenance, convenient/explicit canonical equivalence, removable-facade deletion and failure-atomic publication. It does not declare a public SDK API, runtime registry, adaptive post-ignition behavior or production implementation.',
+    'The reference Composer statically assembles exact owner-provided source snapshots and metadata through the existing Program Package path; CUDA-JS still exclusively validates/lowers Device-JS syntax and owns all generated CUDA/native artifacts and runtime resources.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');

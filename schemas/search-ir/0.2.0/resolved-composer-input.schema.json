@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/resolved-composer-input.schema.json",
+  "title": "CUDA-MCGS canonical resolved Composer input proposal evidence",
+  "description": "Closed pre-admission envelope for one complete Program Package profile and its material resolution-rule provenance. Caller invocation history is deliberately outside semantic identity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "representation", "status", "profile", "resolution"],
+  "properties": {
+    "schema": { "const": "cuda-mcgs.resolved-composer-input/0.2.0" },
+    "representation": { "const": "cuda-mcgs.search-ir/0.2.0" },
+    "status": { "const": "proposal-evidence" },
+    "profile": { "$ref": "program-package-profile.schema.json" },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "rules"],
+      "properties": {
+        "policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "version", "revision"],
+          "properties": {
+            "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "version": { "$ref": "primitives.schema.json#/$defs/version" },
+            "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+          }
+        },
+        "rules": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/resolutionRule" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "resolutionRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "owner", "reason", "version", "revision", "selection", "material", "value"],
+      "properties": {
+        "field": {
+          "enum": [
+            "generator.maxCallDepth",
+            "generator.maxFunctions",
+            "generator.maxSourceBytes"
+          ]
+        },
+        "owner": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "reason": {
+          "enum": [
+            "composer.reason.bounded-call-graph",
+            "composer.reason.bounded-function-set",
+            "composer.reason.bounded-source-snapshot"
+          ]
+        },
+        "version": { "$ref": "primitives.schema.json#/$defs/version" },
+        "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "selection": { "enum": ["default-equivalent", "explicit-override"] },
+        "material": { "const": true },
+        "value": { "$ref": "primitives.schema.json#/$defs/decimalUint" }
+      }
+    }
+  }
+}

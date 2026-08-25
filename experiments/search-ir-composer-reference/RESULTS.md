@@ -360,3 +360,22 @@ Their Search Program identities are `7f0974b1194cebd5880f6cbef0c9cf2ea06dbc52637
 The strict program-package, Search Program, execution-package and compatible-pair schemas have checkout-neutral source digests `126db1391c94e4f3fd4058b95e91a28fa00c2d954384ae79c8aa0b5abc05e614`, `fbe78e5ac54cc64372389b7853fecca9578f577f599562405536d85211a8a1c2`, `a85b5ebe495a6a05cdc2ef5ca07a4b371fb9febd837efb01218de8519f8b413b` and `402757189cb9da7270aefba72e42f19ee45329662027a8318527b5c9b2725510`. Coverage identity is `3d88ab22aa73f61eb291d12ebc6ef31d2830c00377ce1810322785fae160e864`; expanded requirement routing identity is `687a4c32c3bb44332744f92bdf6d0a1136eda565c7f9e88fbba57499f8cc8b69`. All 989 proposal requirements now have classified evidence lanes, but every lane remains explicitly partial or deferred.
 
 This slice is strict structural, normalization and bounded static-composition evidence only. It does not validate Device-JS syntax, compile through CUDA-JS, inspect or own generated native artifacts, run on a GPU, qualify an installed package or prove an exact native compatible pair. No proposal contract is accepted, no production component is authorized and no native/CUDA-specific implementation is added to CUDA-MCGS. The integrated `IR-COMPOSER-01`, `IR-DELETION-ID-01`, `ENGINE-REFERENCE-01`, `ENGINE-CONTRACT-ACCEPTANCE-01` and `ENGINE-NATIVE-01` gates remain downstream.
+
+## IR-COMPOSER-01
+
+**Focused evidence assembled:** 2026-08-25T16:26:08.3570000-07:00
+
+**Full repository validation completed:** 2026-08-25T16:26:17.2510323-07:00
+
+The expanded capsule passes 855/855 CUDA-free cases. It retains all 839 prior catalog/owner/composition/package cases and adds sixteen bounded Composer cases across:
+
+- a closed `cuda-mcgs.resolved-composer-input/0.2.0` envelope that binds one complete Program Package profile to exactly three material finite-generation rules;
+- exact rule owner, reason, version/revision, selection class and effective value, with invocation history excluded from semantic identity;
+- byte-identical convenient and equivalent complete-surface resolved inputs, composition profiles, Search Programs, execution packages and atomic publications;
+- canonical rule-order independence, byte repeatability, explicit-override sensitivity and material policy-version sensitivity;
+- complete-surface composition after removal of the reference-default facade, plus static absence of runtime interpretation/registry, native FFI and CUDA/PTX source paths; and
+- strict rejection of unknown/adaptive fields, owner/reason/version conflicts and missing foundational profile facts, with a byte-material late source failure publishing no valid partial result.
+
+The equivalent resolved-input identity is `598f988853335f02c9839c0535bfd65fe9deb2bcf8f63472504176f8bd0b145e` over 31,061 canonical bytes. The final atomic Composer publication identity is `25425c54b93070b303d16ffe5d9a7f15abb054fbfd9702243bee04bf3187da72` over 546 canonical bytes. The resolved-input schema has checkout-neutral source digest `f3a65b12cda9ad57e6d0708a3ebc7d1b5925399a89fd0d26322d5ba0cc3a6b11`. The frozen contract-set, coverage and expanded-requirement identities remain unchanged, and all 989 proposal requirements remain classified partial or deferred rather than silently reworded or accepted.
+
+This slice proves only deterministic pre-admission resolution and failure-atomic composition through the already owned Program Package/Search Program/execution-package path. It does not declare a stable facade/class/function API, default foundational domain meaning, hidden post-ignition adaptation, production implementation, Device-JS compilation, GPU behavior, native support or an exact compatible pair. `IR-DELETION-ID-01`, integrated reference evidence, semantic acceptance and native qualification remain downstream.

@@ -125,7 +125,7 @@ function sourceIdentity(source) {
   return { algorithm: 'sha256', sha256: createHash('sha256').update(source, 'utf8').digest('hex') };
 }
 
-function normalizeGenerator(input) {
+export function normalizeProgramGenerator(input) {
   exactKeys(input, ['id', 'version', 'revision', 'language', 'canonicalization', 'maxSourceBytes', 'maxFunctions', 'maxCallDepth'], 'COMPOSE_GENERATOR_FIELDS', 'generator');
   assertNamespacedId(input.id, 'COMPOSE_GENERATOR_ID', 'generator id');
   assertVersion(input.version, 'COMPOSE_GENERATOR_VERSION', 'generator version');
@@ -384,7 +384,7 @@ export function normalizeProgramPackageProfile(input, inspected, suppliedContext
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'semanticEngine', 'generator', 'sourceUnits', 'functions', 'programUnits', 'publicRequirements', 'resources', 'operations', 'manifests', 'provenance', 'compatibility', 'deletion'], 'COMPOSE_ROOT_FIELDS', 'program/package profile');
   if (input.schema !== PROFILE_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('COMPOSE_SCHEMA', 'unsupported program/package schema/representation/status');
   assertNamespacedId(input.id, 'COMPOSE_PROFILE_ID', 'program/package profile id'); assertVersion(input.version, 'COMPOSE_PROFILE_VERSION', 'program/package profile version');
-  const generator = normalizeGenerator(input.generator);
+  const generator = normalizeProgramGenerator(input.generator);
   const profileResults = suppliedContext.profileResults ?? [];
   const profileById = new Map(profileResults.map((result) => [result.normalized.id, result]));
   if (profileById.size !== profileResults.length) fail('COMPOSE_CONTEXT_PROFILE', 'context repeats a profile');

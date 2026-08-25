@@ -1,7 +1,7 @@
 {
-  "schema_version": 55,
+  "schema_version": 56,
   "updated": "2026-08-25",
-  "status": "ir_composer_ready_os_neutral_linux_reference_direction",
+  "status": "ir_deletion_identity_ready_os_neutral_linux_reference_direction",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
@@ -29,15 +29,15 @@
     "parent_plan_version": "CUDA-MCGS-V0/22",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": "docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md",
-    "active_leaf": "IR-COMPOSER-01",
+    "active_leaf": "IR-DELETION-ID-01",
     "ready_queued_leaves": [],
-    "next_action": "Execute dependency-ready IR-COMPOSER-01 after IR-PROGRAM-PACKAGE-01 integration: reconcile the deterministic static Composer across every selected owner, reject owner conflict and partial publication, and add issue #109 resolved-input/default reason/version provenance plus convenience-to-explicit canonical-equivalence and convenience-layer deletion evidence under ADR-0020. Preserve the frozen 989-requirement packet and public CUDA-JS-only projection. Keep platform facts out of semantic IR and engine contracts; the first exact native realization later qualifies on Linux under the owner direction and CUDA-JS ADR-0006.",
-    "exit": "Equivalent explicit/resolved inputs produce one canonical Search Program/package identity; selected owner conflicts, incomplete mappings and partial failures publish no valid output; resolved material defaults are inspectable/versioned identity inputs; and deleting convenience or optional capability/product inputs leaves only truthfully changed selected-owner identity."
+    "next_action": "Execute dependency-ready IR-DELETION-ID-01 after IR-COMPOSER-01 integration: reconcile cross-profile semantic sensitivity, materially different second instances and exact evaluator/live/session/extension/channel/capability/product structural deletion through the one canonical Composer path. Preserve the frozen 989-requirement packet, resolved-input identity rules and public CUDA-JS-only projection. Keep platform facts out of semantic IR and engine contracts; the first exact native realization later qualifies on Linux under the owner direction and CUDA-JS ADR-0006.",
+    "exit": "Materially different engines cannot collide; removing every optional capability/product owner leaves no solely owned source, function, resource, requirement, operation, manifest or identity residue; and every surviving byte change is explained by a truthfully changed selected-owner or composed identity."
   },
   "deliverables": [
     "decision-complete product-neutral domain, policy, evaluator, generic output, graph/storage, finite-resource, device-owned progress and Search Session proposals",
     "decision-complete schema-backed Search Stage/Extension Surface/Async Channel/restricted Device-JS composition proposals with zero unused-capability residue",
-    "normalized Search IR and deterministic Search Composer separating universal base from namespaced capability/product specialization inputs, with issue #109 owning dependency-safe resolved-input provenance and convenience-equivalence follow-on evidence",
+    "normalized Search IR and deterministic Search Composer separating universal base from namespaced capability/product specialization inputs, with resolved-input provenance, convenience equivalence and removable-facade evidence complete before public API design",
     "consolidated CUDA-free universal reference/conformance across materially different domains/evaluator/output shapes",
     "integrated acceptance of the semantic contracts, normalized schemas and reference oracles on one exact revision before production lowering",
     "formal downstream Connect Four product specification and Device-JS external deletion proof",
@@ -63,10 +63,10 @@
     "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
   "blockers": [
-    "all 989 proposal requirements require complete strict schema/normalizer/Composer and CUDA-free reference evidence plus integrated semantic acceptance before their owned production lowering",
+    "all 989 proposal requirements require complete cross-profile deletion/identity reconciliation, CUDA-free reference evidence and integrated semantic acceptance before their owned production lowering",
     "CUDA-JS native Linux Driver/compiler/installed-package qualification under issue #4 is incomplete and blocks the first native Linux compatible pair, not backend-neutral contract/schema/reference work",
-    "integrated cross-owner Composer reconciliation plus resolved-input/default provenance and convenience-equivalence evidence are incomplete",
-    "the complete cross-profile external deletion matrix and exact native compatible-pair evidence remain unfinished",
+    "the complete cross-profile external deletion/identity matrix remains unfinished after deterministic Composer and resolved-input/default equivalence evidence",
+    "exact native compatible-pair evidence remains unfinished",
     "SESSION-002 native live-session concurrency evidence for the selected CUDA-JS mailbox profile is absent",
     "native Linux compatible-pair evidence is absent"
   ],
