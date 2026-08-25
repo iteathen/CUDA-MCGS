@@ -93,6 +93,7 @@ The current `IR-STAGE-01` slice adds only the optional SPEC-0003-owned stage/sur
 - finite per-work-item stage graphs whose entry/exit checkpoints do not select a kernel, barrier, persistent scheduler, runtime registry or fixed universal pipeline;
 - exact selected-contributor/profile identities, known domain/graph/policy source-port cross-checks, least-authority checkpoint permissions, aligned bounded base context and selected-only namespaced contribution/resource ownership;
 - canonical capability ordering with explicit noncommuting-effect constraints, finite counters/outcomes, released pending workers/leases and complete lifecycle/cleanup disposition;
+- versioned channel requirement references that let the downstream Channel profile bind exact Stage/capability identities without a cyclic pair of content hashes;
 - deterministic generator/program identities and first-party-reviewed restricted Device-JS provenance through consumer-neutral public CUDA-JS requirements only; and
 - section-level evidence classification for all 80 Search Stage requirements, with behavioral schedule/failure exploration, Async Stage Channel semantics, native execution and compatible-pair qualification left partial, pending or deferred.
 
