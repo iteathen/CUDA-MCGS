@@ -269,7 +269,7 @@ Performance claims require exact identity, representative workload, baseline/tar
 
 ## 17. Publication and release
 
-Before a **repository-visibility publication** such as changing `iteathen/UMCGS` from private to public, verify against the exact intended public `main` revision:
+Before a **repository-visibility publication** such as making an ecosystem repository public, verify against the exact intended public default-branch revision:
 
 - `LICENSE`, `LICENSING.md`, `CONTRIBUTING.md`, `SECURITY.md`, CODEOWNERS, issue/PR templates, and public claims are coherent;
 - the current tree and the full reachable Git history have been audited for credentials, private keys, tokens, private endpoints, private user data, sensitive machine artifacts, or material that was safe only under private visibility;
@@ -285,6 +285,6 @@ Repository visibility is independent from a **CUDA-MCGS product release**. Befor
 
 ## Current phase
 
-UMCGS is public-transition-ready at the repository-collaboration layer but remains private until the explicit visibility switch; it has no accepted production CUDA-MCGS implementation or product release. The mandatory current check is `./scripts/verify-docs.sh`, plus task-specific engineering judgment, assessment, focus-branch, token-backpressure, testing, execution, cleanup, sanity, PR-review, merge, security, publication, or specialist validation.
+CUDA-MCGS is a public pre-release repository with no accepted production CUDA-MCGS implementation or product release. Public visibility does not widen implementation, support, compatibility or release claims. The mandatory current check is `./scripts/verify-docs.sh`, plus task-specific engineering judgment, assessment, focus-branch, token-backpressure, testing, execution, cleanup, sanity, PR-review, merge, security, publication, or specialist validation.
 
 Repository licensing is `AGPL-3.0-or-later` with a separately negotiated commercial-license option. Third-party implementation reuse and public distribution require provenance/license compatibility and donor-artifact disposition.

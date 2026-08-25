@@ -6,7 +6,7 @@ CUDA-MCGS is pre-release research and engineering software. Security reports are
 
 Do **not** open a public issue containing exploit details for a vulnerability that could expose credentials, private data, arbitrary native execution, unsafe pointer/resource access, or another exploitable security boundary.
 
-Use GitHub's private vulnerability reporting / Security Advisory flow for `iteathen/UMCGS` when it is available. If private reporting is unavailable, open only a minimal public issue asking the maintainer to establish a private security contact; do not include vulnerability details, secrets, proof-of-concept payloads, or sensitive logs in that issue.
+Use GitHub's private vulnerability reporting / Security Advisory flow for `iteathen/CUDA-MCGS` when it is available. If private reporting is unavailable, open only a minimal public issue asking the maintainer to establish a private security contact; do not include vulnerability details, secrets, proof-of-concept payloads, or sensitive logs in that issue.
 
 Include the detailed reproduction only through the private channel: affected commit/version, platform, Node/CUDA/Driver/toolkit/GPU identity where relevant, expected behavior, observed behavior, minimal reproduction, and any evidence that secrets or external systems may have been affected.
 

@@ -1,11 +1,11 @@
 {
-  "schema_version": 21,
+  "schema_version": 22,
   "updated": "2026-08-24",
   "status": "ready_for_contract_review",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then proceed to pure Node.js/restricted Device-JS native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "9a7d694614b48c548ee522dde491375a939e00ac",
+    "cuda_mcgs_authority_input_baseline": "b02f73d38d61e2ae64e50f9775a60e51bde04188",
     "cuda_js_authority_baseline": "2135216b1a9fd88066a1c82b61ae533645eac9c2",
     "cuda_js_implementation_baseline": "b6062f691a27093df0e5d55e482e69ebbd39a9eb",
     "cuda_js_package": "cuda-js@0.1.0-alpha.6"
@@ -23,12 +23,15 @@
   ],
   "current_focus": {
     "id": "ENGINE-CONTRACT-01",
+    "parent_plan_version": "CUDA-MCGS-V0/22",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
-    "next_action": "Review and revise SPEC-0000 plus the unfinished product-neutral domain/policy/evaluator/output/graph/resource/session owners into decision-complete proposals. Make their meaning independent of optional Search Stage mechanics and make every schema/reference/native-profile obligation explicit. Do not claim acceptance or begin production lowering until the later integrated semantic-acceptance node completes.",
-    "exit": "The universal core semantic owners are decision-complete proposals or explicitly split into dependency-ready proposal nodes, with no first-product/extension/CUDA implementation leakage and with exact inputs to bounded Search IR/reference evidence."
+    "focus_branch_map": "docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md",
+    "active_leaf": "EC-DOMAIN-01",
+    "next_action": "Author the decision-complete product-neutral domain state/action/transition/identity/history/node-role proposal defined by EC-DOMAIN-01. Preserve graph/policy/evaluator/output/resource/progress/session ownership boundaries and record exact later schema/reference obligations. Do not claim acceptance, edit a later leaf, or begin production lowering.",
+    "exit": "Every EC-* proposal leaf is integrated, blocked or superseded on one exact revision; all owners are decision-complete without first-product/extension/CUDA implementation leakage; and exact schema/reference obligations are handed to the next nodes."
   },
   "deliverables": [
-    "decision-complete product-neutral domain, policy, evaluator, generic output, graph/storage, finite-resource, scheduler/device-progress and Search Session proposals",
+    "decision-complete product-neutral domain, policy, evaluator, generic output, graph/storage, finite-resource, device-owned progress and Search Session proposals",
     "decision-complete schema-backed Search Stage/Extension Surface/Async Channel/restricted Device-JS composition proposals with zero unused-capability residue",
     "normalized Search IR and deterministic Search Composer separating universal base from namespaced capability/product specialization inputs",
     "consolidated CUDA-free universal reference/conformance across materially different domains/evaluator/output shapes",
@@ -55,7 +58,7 @@
   },
   "blockers": [
     "SPEC-0000 and SPEC-0003 through SPEC-0006 remain proposals and require decision-complete revision, bounded schema/reference evidence and integrated semantic acceptance before their owned production lowering",
-    "explicit universal domain/policy/evaluator/output/resource/scheduler owners are incomplete",
+    "explicit universal domain/policy/evaluator/output/graph/resource/device-progress/session owners are incomplete; EC-DOMAIN-01 is the only dependency-ready leaf",
     "complete Search IR/Composer representation for selected contract/capability/product inputs is incomplete",
     "CUDA-MCGS external deletion and exact compatible-pair evidence remain unfinished",
     "SESSION-002 native live-session concurrency evidence for the selected CUDA-JS mailbox profile is absent",

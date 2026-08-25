@@ -4,7 +4,7 @@
 
 **Policy ID:** `UMCGS-ECO-LANG-001`
 
-**Scope:** `iteathen/UMCGS`, `iteathen/CUDA-JS`, and every future repository, package, installer, tool, integration project, benchmark project, or extracted component whose primary purpose is to build, test, package, release, operate, or extend the UMCGS ecosystem.
+**Scope:** `iteathen/CUDA-MCGS`, `iteathen/CUDA-JS`, and every future repository, package, installer, tool, integration project, benchmark project, or extracted component whose primary purpose is to build, test, package, release, operate, or extend the UMCGS ecosystem.
 
 ## Rule
 

@@ -16,7 +16,7 @@ Passing CI does not override a demonstrated defect. A stale approval does not au
 
 ## Current UMCGS phase
 
-UMCGS is pre-release and prepared for transition to a public repository/collaboration model while remaining in framework-definition/development. The canonical repository remains private until its visibility is explicitly changed. Once public, ordinary forks, pull requests, CODEOWNERS/branch-protection enforcement, and public GitHub-hosted CI become the collaboration posture; that visibility change does not constitute a CUDA-MCGS product release or stable compatibility promise.
+CUDA-MCGS is a public pre-release repository in framework-definition/development. Ordinary forks, pull requests, configured CODEOWNERS/branch-protection enforcement, and public GitHub-hosted CI are the collaboration posture; public visibility does not constitute a CUDA-MCGS product release or stable compatibility promise.
 
 ```text
 fork/*, feature/*, or agent/* -> pull request -> main

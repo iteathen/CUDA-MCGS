@@ -7,7 +7,7 @@ This file applies [`../general_foundation/PROJECT_ORGANIZATION.md`](../general_f
 ## Multi-repository topology
 
 ```text
-iteathen/UMCGS
+iteathen/CUDA-MCGS
   owns universal graph-search contracts, specialization,
   generated search programs, search conformance, and CUDA-JS adapter
         │

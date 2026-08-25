@@ -4,7 +4,9 @@
 
 **Last reconciled:** 2026-08-24
 
-**CUDA-MCGS input baseline:** protected `main` `9a7d694614b48c548ee522dde491375a939e00ac`.
+**Parent plan version:** `CUDA-MCGS-V0/22`
+
+**CUDA-MCGS input baseline:** protected `main` `b02f73d38d61e2ae64e50f9775a60e51bde04188`.
 
 **CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
 
@@ -52,10 +54,12 @@ The current CUDA-JS surface is not assumed complete. If a naturally generic GPU 
 
 **Current focus.** Production universal lowering remains blocked. This node makes the owning semantics decision-complete proposals; it does not claim acceptance before their schema/reference obligations have decisive evidence.
 
+The canonical execution record beneath accepted authority for this plan node—critical assessment, exact semantic focus-branch map, dependency graph, branch contracts, falsifiers, token posture, cleanup obligations and current leaf—is [`2026-08-24-engine-contract-01-assessment-and-plan.md`](2026-08-24-engine-contract-01-assessment-and-plan.md). `EC-DOMAIN-01` is the only dependency-ready leaf. The universal semantic owner is **device-owned search progress**; physical scheduler mechanisms remain later profile selections.
+
 Remaining work:
 
 - review/revise proposal SPEC-0000 against ADR-0018;
-- author or split explicit product-neutral owners for domain, policy, evaluator, generic output, graph/storage, finite resources and scheduler/device-progress semantics where the current proposal packet is incomplete;
+- author explicit product-neutral owners for domain, policy, evaluator, generic output, graph/storage, finite resources and device-owned progress semantics according to the focus-branch map;
 - review/revise SPEC-0006 Search Session/control/observation against those owners, including admission-before-mutation, root epochs, stale-work disposition, reroot/reclamation separation, reuse classifications, read-only observations and stale-safe finite counters;
 - ensure generic result/observation payloads do not imply ranking, scalar value, legal moves, games, or one evaluator shape;
 - keep Search Stage vocabulary out of core semantics unless a core contract actually requires it.

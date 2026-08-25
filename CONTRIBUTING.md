@@ -1,15 +1,15 @@
 # Contributing to CUDA-MCGS
 
-CUDA-MCGS is a pre-release, documentation-first project prepared for public contribution. The canonical `iteathen/UMCGS` repository remains private until its visibility is explicitly changed; product-facing references use **CUDA-MCGS**.
+CUDA-MCGS is a public pre-release, documentation-first project open to public contribution. The canonical repository is `iteathen/CUDA-MCGS`; existing accepted UMCGS identifiers remain stable specification and governance identifiers.
 
 Before making a material change, read [`AGENTS.md`](AGENTS.md) and the relevant governance/specification files it routes to. The project is intentionally contract-first: proposals and experiments do not silently authorize production implementation.
 
 ## Public contribution workflow
 
-Once the canonical repository is public, use the normal public GitHub contribution model:
+Use the normal public GitHub contribution model:
 
 1. Open or reference an issue when the change is substantial, architectural, security-sensitive, cross-component, or likely to require design/specification work.
-2. Fork `iteathen/UMCGS` or create a short-lived topic branch when you have appropriate repository access.
+2. Fork `iteathen/CUDA-MCGS` or create a short-lived topic branch when you have appropriate repository access.
 3. Keep one pull request to one coherent ownership-sized outcome. Do not bundle unrelated cleanup or speculative redesign.
 4. Rebase/update from current `main` before final review when the base materially affects the change.
 5. Run `./scripts/verify-docs.sh` for every durable repository change plus every task-specific capsule required by the affected contract.
