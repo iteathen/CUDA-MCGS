@@ -153,6 +153,7 @@ required=(
   schemas/search-ir/0.2.0/framework-selection.schema.json
   schemas/search-ir/0.2.0/domain-profile.schema.json
   schemas/search-ir/0.2.0/graph-profile.schema.json
+  schemas/search-ir/0.2.0/policy-profile.schema.json
   experiments/search-ir-reference/README.md
   experiments/search-ir-reference/RESULTS.md
   experiments/search-ir-reference/fixtures/baseline.search-ir.json
@@ -172,6 +173,8 @@ required=(
   experiments/search-ir-composer-reference/src/domain-fixtures.mjs
   experiments/search-ir-composer-reference/src/graph.mjs
   experiments/search-ir-composer-reference/src/graph-fixtures.mjs
+  experiments/search-ir-composer-reference/src/policy.mjs
+  experiments/search-ir-composer-reference/src/policy-fixtures.mjs
   experiments/search-ir-composer-reference/run.mjs
   experiments/ptx-extension-composition-prototype/README.md
   experiments/ptx-extension-composition-prototype/RESULTS.md

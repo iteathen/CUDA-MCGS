@@ -25,6 +25,12 @@ import {
   graphSyntheticProfileReference,
   graphSyntheticSchemaReference,
 } from './src/graph-fixtures.mjs';
+import { normalizePolicyProfile } from './src/policy.mjs';
+import {
+  buildPolicyProfiles,
+  policySyntheticContentIdentity,
+  policySyntheticSchemaReference,
+} from './src/policy-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -48,6 +54,7 @@ const primitivesSchema = await readJson(path.join(schemaRoot, 'primitives.schema
 const frameworkSelectionSchema = await readJson(path.join(schemaRoot, 'framework-selection.schema.json'));
 const domainProfileSchema = await readJson(path.join(schemaRoot, 'domain-profile.schema.json'));
 const graphProfileSchema = await readJson(path.join(schemaRoot, 'graph-profile.schema.json'));
+const policyProfileSchema = await readJson(path.join(schemaRoot, 'policy-profile.schema.json'));
 const frameworkSelectionInput = await readJson(path.join(experimentRoot, 'fixtures', 'minimal.framework-selection.json'));
 
 const cases = [];
@@ -72,7 +79,7 @@ await runCase('normalize-contract-set', () => {
 await runCase('normalize-requirement-coverage', () => {
   const normalized = normalizeRequirementCoverage(coverageInput);
   assert.equal(normalized.contracts.length, 12);
-  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 257, pending: 732 });
+  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 348, pending: 641 });
 });
 
 await runCase('canonical-order-independent', () => {
@@ -123,10 +130,11 @@ await runCase('coverage-owner-route-closure', () => {
 });
 
 await runCase('coverage-honest-classification-progress', () => {
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 257);
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 732);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 348);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 641);
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0000').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0007').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
+  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0008').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0010').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
 });
 
@@ -208,8 +216,8 @@ await runCase('reject-coverage-classification-count-drift', async () => {
 
 await runCase('reject-expanded-coverage-total-drift', async () => {
   const mutated = clone(coverageInput);
-  mutated.totals.classified = 258;
-  mutated.totals.pending = 731;
+  mutated.totals.classified = 349;
+  mutated.totals.pending = 640;
   await assert.rejects(() => inspectCatalog(repositoryRoot, contractSetInput, mutated), { code: 'COVERAGE_TOTALS' });
 });
 
@@ -716,9 +724,10 @@ let graphFixtures;
 let graphProfileInputs;
 let graphProfiles;
 let graphSchemaSha;
+let domainSchemaSha;
 await runCase('normalize-graph-profiles', async () => {
   graphSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'graph-profile.schema.json')));
-  const domainSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'domain-profile.schema.json')));
+  domainSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'domain-profile.schema.json')));
   graphFixtures = buildGraphProfiles(inspected, domainProfiles, domainSchemaSha);
   graphProfileInputs = graphFixtures.map(({ input }) => input);
   graphProfiles = graphFixtures.map(({ input, domain }) => normalizeGraphProfile(input, inspected, domain));
@@ -1103,9 +1112,457 @@ await runCase('reject-graph-owner-contract-crossing', () => {
   assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_REGION_CONTRACT_KIND' });
 });
 
+let policyFixtures;
+let policyProfileInputs;
+let policyProfiles;
+let policySchemaSha;
+await runCase('normalize-policy-profiles', async () => {
+  policySchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'policy-profile.schema.json')));
+  policyFixtures = buildPolicyProfiles(inspected, domainProfiles, graphProfiles, domainSchemaSha, graphSchemaSha);
+  policyProfileInputs = policyFixtures.map(({ input }) => input);
+  policyProfiles = policyFixtures.map(({ input, domain, graph }) => normalizePolicyProfile(input, inspected, domain, graph));
+  assert.deepEqual(policyProfiles.map(({ normalized }) => normalized.id), [
+    'policy.synthetic-scalar-absent',
+    'policy.synthetic-vector-combined',
+    'policy.synthetic-proposal-only-stateless',
+    'policy.synthetic-proof-evaluation-only',
+  ]);
+});
+
+await runCase('policy-evaluator-mode-matrix', () => {
+  assert.deepEqual(policyProfiles.map(({ normalized }) => normalized.evaluatorMode), ['absent', 'combined', 'proposal-only', 'evaluation-only']);
+  assert.equal(policyProfiles[0].normalized.value.family, 'scalar');
+  assert.equal(policyProfiles[1].normalized.value.family, 'vector');
+  assert.equal(policyProfiles[2].normalized.value.kind, 'none');
+  assert.equal(policyProfiles[3].normalized.value.family, 'proof-lattice');
+});
+
+await runCase('policy-profile-second-instances-distinct', () => {
+  assert.equal(new Set(policyProfiles.map(({ identity }) => identity.sha256)).size, 4);
+  assert.deepEqual(policyProfiles.map(({ normalized }) => normalized.backup.kind), ['transactional', 'transactional', 'none', 'transactional']);
+  assert.equal(policyProfiles[1].normalized.value.coordinates.length, 3);
+  assert.equal(policyProfiles[3].normalized.backup.concurrencyOrder, 'deterministic-sequence');
+});
+
+await runCase('policy-profile-order-independent', () => {
+  const reordered = clone(policyProfileInputs[1]);
+  for (const key of ['roleHandlers', 'records', 'reuse', 'ports', 'resources', 'statuses', 'productData']) reordered[key].reverse();
+  reordered.selection.inputs.reverse();
+  reordered.selection.noSelectionOutcomes.reverse();
+  reordered.reservation.scopes.reverse();
+  reordered.admission.sources.reverse();
+  reordered.cycle.partitions.reverse();
+  reordered.programContribution.inputs.reverse();
+  for (const handler of reordered.roleHandlers) handler.candidateSources.reverse();
+  for (const record of reordered.records) record.operations.reverse();
+  for (const portInput of reordered.ports) {
+    portInput.records.reverse();
+    portInput.statuses.reverse();
+  }
+  assert.deepEqual(normalizePolicyProfile(reordered, inspected, policyFixtures[1].domain, policyFixtures[1].graph).identity, policyProfiles[1].identity);
+});
+
+await runCase('policy-arbitrary-width-bounds', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  const boundary = '340282366920938463463374607431768211455';
+  mutated.stop.budgets[0].limit = boundary;
+  mutated.resources.find(({ id }) => id.endsWith('resource-record-bytes')).maximum = boundary;
+  const normalized = normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph).normalized;
+  assert.equal(normalized.stop.budgets[0].limit, boundary);
+  assert.equal(normalized.resources.find(({ id }) => id.endsWith('resource-record-bytes')).maximum, boundary);
+});
+
+await runCase('policy-stateless-zero-residue', () => {
+  const normalized = policyProfiles[2].normalized;
+  assert.equal(normalized.graphProfile.mode, 'stateless');
+  assert.equal(normalized.cycle.kind, 'none');
+  assert.equal(normalized.backup.kind, 'none');
+  assert.equal(normalized.reservation.kind, 'none');
+  assert(!normalized.selection.inputs.some((entry) => ['ready-edges', 'path-facts'].includes(entry)));
+  assert(!normalized.ports.some(({ id }) => ['classify-path-response', 'prepare-backup', 'apply-backup-step', 'complete-backup', 'fail-backup'].includes(id)));
+});
+
+await runCase('policy-product-data-deletion', () => {
+  const selected = clone(policyProfileInputs[0]);
+  selected.productData.push({
+    ownerContract: {
+      kind: 'namespaced', id: 'product.synthetic-policy-option', version: '0.1.0',
+      schema: 'cuda-mcgs.synthetic-policy-option-contract/0.1.0', sha256: policySyntheticContentIdentity('product-contract').sha256,
+    },
+    schema: policySyntheticSchemaReference('cuda-mcgs.synthetic-policy-option'),
+    identity: policySyntheticContentIdentity('product-policy-option'),
+  });
+  assert.notDeepEqual(normalizePolicyProfile(selected, inspected, policyFixtures[0].domain, policyFixtures[0].graph).identity, policyProfiles[0].identity);
+  selected.productData = [];
+  assert.deepEqual(normalizePolicyProfile(selected, inspected, policyFixtures[0].domain, policyFixtures[0].graph).identity, policyProfiles[0].identity);
+});
+
+await runCase('policy-identity-content-sensitive', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.selection.eligibility.sha256 = '0'.repeat(64);
+  assert.notDeepEqual(normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph).identity, policyProfiles[0].identity);
+});
+
+await runCase('policy-schema-closed', () => {
+  assert.equal(policyProfileSchema.properties.schema.const, 'cuda-mcgs.policy-profile/0.2.0');
+  assert.equal(policyProfileSchema.additionalProperties, false);
+  assert.equal(policyProfileSchema.$defs.record.additionalProperties, false);
+  assert.equal(policyProfileSchema.$defs.programContribution.additionalProperties, false);
+});
+
+await runCase('policy-framework-selection-link', async () => {
+  const selected = frameworkSelection.normalized.profiles.find(({ role }) => role === 'policy');
+  assert.equal(selected.schema.id, policyProfileInputs[0].schema);
+  assert.equal(selected.schema.sha256, policySchemaSha);
+  assert.equal(selected.identity.sha256, policyProfiles[0].identity.sha256);
+});
+
+await runCase('reject-policy-unknown-field', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.uctConstant = 1.414;
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_ROOT_FIELDS' });
+});
+
+await runCase('reject-policy-contract-drift', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.contract.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_CONTRACT_DRIFT' });
+});
+
+await runCase('reject-policy-domain-identity-drift', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.domainProfile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_DOMAIN_DRIFT' });
+});
+
+await runCase('reject-policy-domain-port-drift', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.domainProfile.classifyRolePort.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_DOMAIN_PORT_DRIFT' });
+});
+
+await runCase('reject-policy-graph-identity-drift', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.graphProfile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_GRAPH_DRIFT' });
+});
+
+await runCase('reject-policy-graph-port-drift', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.graphProfile.reserveEdgePort.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_GRAPH_PORT_DRIFT' });
+});
+
+await runCase('reject-policy-unknown-domain-role', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.roleHandlers[0].role = 'domain.unknown-role';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_ROLE_UNKNOWN' });
+});
+
+await runCase('reject-policy-role-category-drift', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  const handler = mutated.roleHandlers.find(({ category }) => category === 'decision');
+  handler.category = 'chance';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_ROLE_CATEGORY' });
+});
+
+await runCase('reject-policy-role-coverage', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.roleHandlers.pop();
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_ROLE_COVERAGE' });
+});
+
+await runCase('reject-policy-terminal-handler', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.roleHandlers.find(({ category }) => category === 'terminal').candidateSources = ['action-source'];
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_ROLE_TERMINAL' });
+});
+
+await runCase('reject-policy-role-selection-mode', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.roleHandlers.find(({ category }) => category === 'decision').selectionMode = 'sample';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_ROLE_SELECTION' });
+});
+
+await runCase('reject-policy-duplicate-record', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.records.push(clone(mutated.records[0]));
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_RECORD_DUPLICATE' });
+});
+
+await runCase('reject-policy-record-storage-scope', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.records.find(({ scope }) => scope === 'edge').storage.objectRole = 'root-anchor';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_RECORD_STORAGE' });
+});
+
+await runCase('reject-policy-record-numeric-width', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  const numeric = mutated.records.find(({ semanticKind }) => semanticKind === 'statistic').numeric;
+  numeric.accumulationBits = '16';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_NUMERIC_WIDTH' });
+});
+
+await runCase('reject-policy-result-visible-private-record', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.records.find(({ resultVisible }) => resultVisible).visibility = 'private';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_RECORD_VISIBLE' });
+});
+
+await runCase('reject-policy-accounting-without-numeric-rules', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.records.find(({ semanticKind }) => semanticKind === 'statistic').numeric = { kind: 'none' };
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_RECORD_NUMERIC' });
+});
+
+await runCase('reject-policy-selection-randomness', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.selection.tie = 'explicit-random';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_SELECTION_RANDOMNESS' });
+});
+
+await runCase('reject-policy-selection-cancellation-bound', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.selection.bounds.maxWorkUnits = '1';
+  mutated.selection.bounds.cancellationObservationWorkUnits = '2';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_BOUNDS_CANCELLATION' });
+});
+
+await runCase('reject-policy-reservation-port-residue', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.ports = mutated.ports.filter(({ id }) => id !== 'release-in-flight');
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_RESERVATION_RESIDUE' });
+});
+
+await runCase('reject-policy-reservation-without-record', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.records.find(({ semanticKind }) => semanticKind === 'reservation').semanticKind = 'custom';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_RESERVATION_RECORD' });
+});
+
+await runCase('reject-policy-domain-source-drift', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  const source = mutated.admission.sources.find(({ kind }) => kind === 'intrinsic-domain');
+  source.source = { ...source.source, sha256: '0'.repeat(64) };
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_SOURCE_DOMAIN' });
+});
+
+await runCase('reject-policy-external-source-without-profile', () => {
+  const mutated = clone(policyProfileInputs[1]);
+  mutated.admission.sources.find(({ kind }) => kind === 'evaluator-proposal').producerProfile = { kind: 'none' };
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[1].domain, policyFixtures[1].graph), { code: 'POLICY_SOURCE_PROFILE' });
+});
+
+await runCase('reject-policy-required-source-fallback', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.admission.sources.find(({ kind }) => kind === 'intrinsic-domain').fallback = 'skip-source';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_SOURCE_FALLBACK' });
+});
+
+await runCase('reject-policy-intrinsic-only-fallback-without-source', () => {
+  const mutated = clone(policyProfileInputs[2]);
+  mutated.admission.sources[0].fallback = 'intrinsic-only';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[2].domain, policyFixtures[2].graph), { code: 'POLICY_SOURCE_FALLBACK' });
+});
+
+await runCase('reject-policy-source-random-bound', () => {
+  const mutated = clone(policyProfileInputs[1]);
+  mutated.admission.sources[0].maxRandomInputs = '9';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[1].domain, policyFixtures[1].graph), { code: 'POLICY_SOURCE_RANDOMNESS' });
+});
+
+await runCase('reject-policy-evaluator-mode-contradiction', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.evaluatorMode = 'combined';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_EVALUATOR_MODE' });
+});
+
+await runCase('reject-policy-evaluator-absent-residue', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.selection.inputs.push('evaluator-facts');
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_EVALUATOR_RESIDUE' });
+});
+
+await runCase('reject-policy-scalar-coordinate-count', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  const extra = clone(mutated.value.coordinates[0]);
+  extra.id = 'policy.synthetic-scalar-absent.coordinate-extra';
+  mutated.value.coordinates.push(extra);
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_VALUE_COORDINATES' });
+});
+
+await runCase('reject-policy-vector-coordinate-count', () => {
+  const mutated = clone(policyProfileInputs[1]);
+  mutated.value.coordinates = [mutated.value.coordinates[0]];
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[1].domain, policyFixtures[1].graph), { code: 'POLICY_VALUE_COORDINATES' });
+});
+
+await runCase('reject-policy-evaluator-value-mode', () => {
+  const mutated = clone(policyProfileInputs[1]);
+  mutated.evaluatorMode = 'proposal-only';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[1].domain, policyFixtures[1].graph), { code: 'POLICY_EVALUATOR_MODE' });
+});
+
+await runCase('reject-policy-external-value-without-profile', () => {
+  const mutated = clone(policyProfileInputs[1]);
+  mutated.value.adapters.find(({ kind }) => kind === 'evaluator').sourceProfile = { kind: 'none' };
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[1].domain, policyFixtures[1].graph), { code: 'POLICY_VALUE_PROFILE' });
+});
+
+await runCase('reject-policy-cycle-domain-port-drift', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.cycle.domainRelationPort = { ...mutated.cycle.domainRelationPort, sha256: '0'.repeat(64) };
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_CYCLE_DOMAIN_PORT' });
+});
+
+await runCase('reject-policy-duplicate-cycle-partition', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.cycle.partitions.push(clone(mutated.cycle.partitions[0]));
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_CYCLE_PARTITION_DUPLICATE' });
+});
+
+await runCase('reject-policy-backup-target', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.backup.targets[0] = 'policy.unknown-record';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_BACKUP_TARGET' });
+});
+
+await runCase('reject-policy-backup-order', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.backup.concurrencyOrder = 'deterministic-sequence';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_BACKUP_ORDER' });
+});
+
+await runCase('reject-policy-backup-idempotence', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.backup.idempotence = 'best-effort';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_BACKUP_KIND' });
+});
+
+await runCase('reject-policy-backup-without-visible-record', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.records.find(({ resultVisible }) => resultVisible).resultVisible = false;
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_BACKUP_VISIBLE' });
+});
+
+await runCase('reject-policy-value-none-residue', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.value = { kind: 'none' };
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_VALUE_RESIDUE' });
+});
+
+await runCase('reject-policy-stop-budget-range', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.stop.budgets[0].initial = '18446744073709551616';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_BUDGET_RANGE' });
+});
+
+await runCase('reject-policy-undeclared-stop-cause', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.stop.causePriority[0] = 'policy.unknown-stop';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_STATUS_REFERENCE' });
+});
+
+await runCase('reject-policy-reuse-unknown-record', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.reuse[0].record = 'policy.unknown-record';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_REUSE_RECORD' });
+});
+
+await runCase('reject-policy-reuse-coverage', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.reuse.pop();
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_REUSE_COVERAGE' });
+});
+
+await runCase('reject-policy-required-status', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.statuses = mutated.statuses.filter(({ code }) => code !== 'statistics-overflow');
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_STATUS_REQUIRED' });
+});
+
+await runCase('reject-policy-status-class', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.statuses.find(({ code }) => code === 'cancelled').class = 'normal';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_STATUS_CLASS' });
+});
+
+await runCase('reject-policy-role-status-reference', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.roleHandlers[0].failure = 'policy.unknown-failure';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_STATUS_REFERENCE' });
+});
+
+await runCase('reject-policy-port-record', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.ports[0].records[0] = 'policy.unknown-record';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_PORT_RECORD' });
+});
+
+await runCase('reject-policy-port-status', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.ports[0].statuses[0] = 'policy.unknown-status';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_PORT_STATUS' });
+});
+
+await runCase('reject-policy-resource-range', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.resources[0].minimum = '1048577';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_RESOURCE_RANGE' });
+});
+
+await runCase('reject-policy-required-resource-pressure', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.resources = mutated.resources.filter(({ pressureStatus }) => pressureStatus !== 'policy-internal-failure');
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_RESOURCE_REQUIRED' });
+});
+
+await runCase('reject-policy-reservation-resource-residue', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.resources = mutated.resources.filter(({ pressureStatus }) => pressureStatus !== 'reservation-capacity');
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_RESERVATION_RESIDUE' });
+});
+
+await runCase('reject-policy-incomplete-persistence', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.compatibility.persistence = { kind: 'versioned' };
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_PERSISTENCE_FIELDS' });
+});
+
+await runCase('reject-policy-native-program-language', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.programContribution.language = 'cuda-cpp';
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_PROGRAM_LANGUAGE' });
+});
+
+await runCase('reject-policy-program-input-identity-drift', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.programContribution.inputs[0].identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_PROGRAM_INPUTS' });
+});
+
+await runCase('reject-policy-stateless-graph-residue', () => {
+  const mutated = clone(policyProfileInputs[2]);
+  mutated.selection.inputs.push('ready-edges');
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[2].domain, policyFixtures[2].graph), { code: 'POLICY_STATELESS_GRAPH_RESIDUE' });
+});
+
+await runCase('reject-policy-product-owner', () => {
+  const mutated = clone(policyProfileInputs[0]);
+  mutated.productData.push({
+    ownerContract: {
+      kind: 'catalog', id: 'product.invalid-policy-owner', version: '0.1.0',
+      schema: 'cuda-mcgs.invalid-policy-owner/0.1.0', sha256: '0'.repeat(64),
+    },
+    schema: policySyntheticSchemaReference('cuda-mcgs.synthetic-invalid-policy-product'),
+    identity: policySyntheticContentIdentity('invalid-policy-product'),
+  });
+  assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_PRODUCT_OWNER' });
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 135,
+  expected: 200,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -1113,7 +1570,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 135 - cases.length,
+  notDiscovered: 200 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -1126,6 +1583,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/framework-selection.schema.json',
   'schemas/search-ir/0.2.0/domain-profile.schema.json',
   'schemas/search-ir/0.2.0/graph-profile.schema.json',
+  'schemas/search-ir/0.2.0/policy-profile.schema.json',
   'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
   'experiments/search-ir-composer-reference/src/catalog.mjs',
   'experiments/search-ir-composer-reference/src/validation.mjs',
@@ -1134,6 +1592,8 @@ const sourcePaths = [
   'experiments/search-ir-composer-reference/src/domain-fixtures.mjs',
   'experiments/search-ir-composer-reference/src/graph.mjs',
   'experiments/search-ir-composer-reference/src/graph-fixtures.mjs',
+  'experiments/search-ir-composer-reference/src/policy.mjs',
+  'experiments/search-ir-composer-reference/src/policy-fixtures.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -1151,6 +1611,7 @@ const evidence = {
   frameworkSelectionIdentity: frameworkSelection?.identity ?? null,
   domainProfileIdentities: domainProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   graphProfileIdentities: graphProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
+  policyProfileIdentities: policyProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
     classified: inspected?.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length ?? 0,
@@ -1160,11 +1621,12 @@ const evidence = {
   summary,
   cases,
   claimLimits: [
-    'Proposal contract catalog plus shared representation primitives and framework, domain and graph profile normalization only.',
-    'The framework, domain and graph requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
+    'Proposal contract catalog plus shared representation primitives and framework, domain, graph and policy profile normalization only.',
+    'The framework, domain, graph and policy requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
     'Domain evidence covers strict normalized profile selection and three synthetic structural instances, not behavioral oracle, publication/concurrency, native or compatible-pair qualification.',
     'Graph evidence covers four strict structural instances, bounded ownership/layout/lifecycle/publication checks and zero-residue optional modes, not behavioral oracle, concurrent reclamation, native or compatible-pair qualification.',
-    'No policy/evaluator/resource/progress/output/session/extension/package profile body, derived plan, cross-owner Composer, generated Search Program or production lowering claim.',
+    'Policy evidence covers four strict structural instances, role/record/admission/value/cycle/backup/stop/reuse checks and zero-residue optional modes, not behavioral oracle, concurrent backup, native or compatible-pair qualification.',
+    'No evaluator/resource/progress/output/session/extension/package profile body, derived plan, cross-owner Composer, generated Search Program or production lowering claim.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');
