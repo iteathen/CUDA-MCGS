@@ -510,7 +510,9 @@ export function normalizeProgressProfile(input, inspectedCatalog, resourceResult
   const noProgress = normalizeNoProgress(input.noProgress, contributorById);
   const stop = normalizeStop(input.stop);
   for (const required of stop.mustDrainKinds) if (!workClasses.some(({ kind }) => kind === required)) fail('PROGRESS_STOP_DRAIN', `stop profile has no ${required} work class`);
-  const closure = normalizeClosure(input.closure, workClasses, contributors.some(({ contract: ownerContract, optional }) => ownerContract.id === 'SPEC-0013' && optional));
+  const outputOwner = contributors.find(({ contract: ownerContract }) => ownerContract.id === 'SPEC-0013');
+  const hasLiveOutput = resourceResult.normalized.classes.some(({ contributor, id }) => contributor === outputOwner?.id && id.endsWith('class-live-observation'));
+  const closure = normalizeClosure(input.closure, workClasses, hasLiveOutput);
   const lifecycle = normalizeLifecycle(input.lifecycle);
   const statuses = input.statuses.map(normalizeStatus).sort((left, right) => compareRaw(left.code, right.code)); uniqueBy(statuses, 'code', 'PROGRESS_STATUS_DUPLICATE', 'status');
   const statusCodes = new Set(statuses.map(({ code }) => code)); for (const required of STATUS_CLASSES.keys()) if (!statusCodes.has(required)) fail('PROGRESS_STATUS_REQUIRED', `required status ${required} is absent`);

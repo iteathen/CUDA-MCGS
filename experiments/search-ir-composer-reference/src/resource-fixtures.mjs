@@ -203,17 +203,23 @@ function buildProfile(profile, inspected, selected, schemaShas, options = {}) {
   if (selected.evaluator) addKnownOwner(profile, selected.evaluator, schemaShas.evaluator, contributors, classes, true);
 
   const terminalClassId = `resource.${profile}.class-terminal-envelope`;
+  const workingClassId = `resource.${profile}.class-output-working`;
+  const observationClassId = `resource.${profile}.class-live-observation`;
   const progressClassId = `resource.${profile}.class-progress-cleanup`;
   const ledgerClassId = `resource.${profile}.class-ledger-records`;
-  const outputContributor = opaqueContributor(profile, inspected, `output.${profile}`, 'SPEC-0013', [terminalClassId], options.liveOutput === true);
+  const outputContributor = opaqueContributor(profile, inspected, `output.${profile}`, 'SPEC-0013', [terminalClassId, workingClassId, ...(options.liveOutput === true ? [observationClassId] : [])], false);
   const progressContributor = opaqueContributor(profile, inspected, `progress.${profile}`, 'SPEC-0012', [progressClassId]);
   const resourceContributor = internalContributor(profile, inspected, [ledgerClassId]);
   contributors.push(outputContributor, progressContributor, resourceContributor);
   const coreAdmission = `resource.${profile}.admission-terminal-progress`;
   const terminalClass = resourceClass(profile, outputContributor.id, { id: terminalClassId, unit: 'bytes', minimum: '4096', maximum: '4096', alignment: '256', scope: 'per-engine', pressureStatus: 'output-terminal-capacity' }, { id: terminalClassId, sourceResource: terminalClassId, basis: 'fixed', admissionGroup: coreAdmission, ownerPressureStatus: 'output-terminal-capacity', memorySpaces: ['device-publication'], access: ['read', 'write', 'publish'] });
+  const workingClass = resourceClass(profile, outputContributor.id, { id: workingClassId, unit: 'bytes', minimum: '0', maximum: '131072', alignment: '256', scope: 'per-engine', pressureStatus: 'output-capacity' }, { id: workingClassId, sourceResource: workingClassId, basis: 'maximum-live', ownerPressureStatus: 'output-capacity', memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'] });
+  const observationClass = options.liveOutput === true
+    ? resourceClass(profile, outputContributor.id, { id: observationClassId, unit: 'bytes', minimum: '0', maximum: '65536', alignment: '256', scope: 'per-engine', pressureStatus: 'output-observation-capacity' }, { id: observationClassId, sourceResource: observationClassId, basis: 'maximum-live', ownerPressureStatus: 'output-observation-capacity', memorySpaces: ['device-publication'], access: ['read', 'write', 'atomic', 'publish'], lifetime: 'session' })
+    : null;
   const progressClass = resourceClass(profile, progressContributor.id, { id: progressClassId, unit: 'bytes', minimum: '8192', maximum: '8192', alignment: '256', scope: 'per-engine', pressureStatus: 'progress-cleanup-capacity' }, { id: progressClassId, sourceResource: progressClassId, basis: 'optional-reserve', admissionGroup: coreAdmission, ownerPressureStatus: 'progress-cleanup-capacity' });
   const ledgerClass = resourceClass(profile, resourceContributor.id, { id: ledgerClassId, unit: 'records', minimum: '1024', maximum: '65536', alignment: '8', scope: 'per-engine', pressureStatus: 'resource-capacity' }, { id: ledgerClassId, sourceResource: ledgerClassId, basis: 'maximum-live', ownerPressureStatus: 'resource-capacity' });
-  classes.push(terminalClass, progressClass, ledgerClass);
+  classes.push(terminalClass, workingClass, ...(observationClass ? [observationClass] : []), progressClass, ledgerClass);
 
   let rootClass = null;
   if (options.session) {

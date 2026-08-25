@@ -49,8 +49,8 @@
         "specificationIdentity": "CUDA-MCGS-SPEC-0013@0.1.0-draft",
         "sha256": "f9890c2814cfb2e647fdc9372fb9aa3ea02a8b561d9e35b530b5bcbd83f40087"
       },
-      "schema": { "id": "cuda-mcgs.output-profile/0.2.0", "version": "0.2.0", "sha256": "01cd823127382f1c4b90b8a27c1ff970cf26970913edb22880cf7c973d8ba613" },
-      "identity": { "algorithm": "sha256", "sha256": "a34591debdf3232b0dd4080709f8238c82a6bef019afaa8aa8a6e46799b2fd44" }
+      "schema": { "id": "cuda-mcgs.output-profile/0.2.0", "version": "0.2.0", "sha256": "b6e0d0723152d3d41b4bb7f636fbc4cf0a292a673858fc07f30aa83a83e58c07" },
+      "identity": { "algorithm": "sha256", "sha256": "fe820714a4986b96bd0bb87485b9dac804873760f4d83abd5075a72861463fc1" }
     },
     {
       "id": "owner.policy",
@@ -86,7 +86,7 @@
         "sha256": "709912998eadbd8001e1bed7103610c4b034cf864d5f991786fa983bbc031058"
       },
       "schema": { "id": "cuda-mcgs.progress-profile/0.2.0", "version": "0.2.0", "sha256": "68a76619ceec2ac0a195536b88caf3e753a9086cd18c7b4344f39437ea4d503a" },
-      "identity": { "algorithm": "sha256", "sha256": "b3208aa17799c01680ce9c34fee958fa183db771f62bd09a853a1b0c30f1a109" }
+      "identity": { "algorithm": "sha256", "sha256": "d4a4133698a88da9475c28d207b94b2575bbab85186f57f7ade58b2e1454c392" }
     },
     {
       "id": "owner.resource",
@@ -98,7 +98,7 @@
         "sha256": "286d25aefbbc5ce58bdf338cbf64778662af36671337f17aad867bb04aa8eda2"
       },
       "schema": { "id": "cuda-mcgs.resource-profile/0.2.0", "version": "0.2.0", "sha256": "54aaaaae27a945596d14f494e477473091e3e1ed0d019b51ea0661a8948d875b" },
-      "identity": { "algorithm": "sha256", "sha256": "31d61ef1b6cbfcafd02330206a862a487936827cd5718b29a5b696c71de28a28" }
+      "identity": { "algorithm": "sha256", "sha256": "8c0a3cfd56f28acffebd1227b46ca73adba665828182c24678bdf535096ba4f5" }
     }
   ],
   "dependencies": [
