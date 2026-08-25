@@ -56,8 +56,8 @@
       "requirementPrefix": "DOMAIN-",
       "primaryOwner": "CUDA-MCGS universal domain semantics",
       "plannedLeaf": "IR-DOMAIN-01",
-      "currentDisposition": "pending-owner-classification",
-      "completionStatus": "pending"
+      "currentDisposition": "section-classified",
+      "completionStatus": "in-progress"
     },
     {
       "contract": "SPEC-0008",
@@ -273,12 +273,155 @@
       "evidenceStatus": "partial",
       "evidenceRefs": ["case:reject-framework-selection-unknown-field", "case:reject-profile-contract-digest-drift", "planned:ENGINE-REFERENCE-01"],
       "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-ACTION-",
+      "requirementCount": 11,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:domain-profile", "case:normalize-domain-profiles", "case:reject-domain-source-hidden-randomness", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-CLEANUP-",
+      "requirementCount": 4,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-COMPAT-",
+      "requirementCount": 6,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:domain-identity-content-sensitive", "case:domain-product-data-deletion", "case:reject-domain-persistence-scope", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-HISTORY-",
+      "requirementCount": 6,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:domain-profile", "case:reject-domain-history-participation", "case:reject-domain-history-unbounded", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-IR-",
+      "requirementCount": 5,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-DOMAIN-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:domain-profile.schema.json", "normalizer:domain-profile", "case:domain-profile-order-independent", "planned:IR-COMPOSER-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-LIFE-",
+      "requirementCount": 7,
+      "primaryDisposition": "native-compatible-pair-qualification",
+      "supportingDispositions": ["engine-reference-oracle", "cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "evidenceStatus": "deferred",
+      "evidenceRefs": ["proof:adr-0019-source-boundary", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-PROFILE-",
+      "requirementCount": 6,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["structural-schema", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DOMAIN-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:domain-profile.schema.json", "normalizer:domain-profile", "case:normalize-domain-profiles", "case:reject-domain-native-program-language"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-RESOURCE-",
+      "requirementCount": 8,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-RESOURCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:domain-profile", "case:domain-arbitrary-width-bounds", "case:reject-domain-resource-range", "planned:IR-RESOURCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-ROLE-",
+      "requirementCount": 6,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:domain-profile", "case:domain-profile-second-instances-distinct", "case:reject-domain-role-successor", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-ROOT-",
+      "requirementCount": 4,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:domain-profile", "case:reject-domain-root-value-role", "planned:IR-SESSION-01", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-SEC-",
+      "requirementCount": 5,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DOMAIN-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:reject-domain-unknown-field", "case:reject-domain-contract-drift", "case:reject-domain-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-STATE-",
+      "requirementCount": 8,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:domain-profile", "case:domain-identity-content-sensitive", "case:reject-domain-identity-key-role", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-TRANSITION-",
+      "requirementCount": 8,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:domain-profile", "case:domain-profile-second-instances-distinct", "case:reject-domain-cancellation-bound", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
     }
   ],
   "totals": {
     "contracts": 12,
     "requirements": 989,
-    "classified": 80,
-    "pending": 909
+    "classified": 164,
+    "pending": 825
   }
 }
