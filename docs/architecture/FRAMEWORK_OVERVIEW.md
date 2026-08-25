@@ -24,6 +24,23 @@ The universal core is complete without chess and without any optional capability
 
 CUDA-MCGS is therefore a **search compiler/composer plus a finite specialized device program**, consuming the independent generic CUDA-JS runtime rather than owning Node/CUDA Driver plumbing.
 
+It is also a **library product**, not merely an internal framework. Under [`ADR-0020`](../decisions/ADR-0020-complete-library-and-resolved-defaults.md), one complete composable system is exposed through progressive disclosure:
+
+```text
+convenience facade + documented presets
+                    │
+                    ▼
+complete composable contracts/components
+                    │
+                    ▼
+canonical resolution + normalized framework profile
+                    │
+                    ▼
+Search IR / Composer / finite specialized Search Image
+```
+
+The upper layer adds ease but owns no parallel search semantics. Minimal and explicit calls converge before admission; equivalent resolved profiles have the same canonical identity. Defaults have named owners and provenance, and may adapt only from declared capabilities, stable contracts and unambiguous call shape. Required domain/evaluator/identity facts are never guessed. Low-level schema, Search IR and extension tools remain available beneath the complete surface for integrations that need them.
+
 [`SPEC-0001`](../specs/SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](../specs/SPEC-0002-search-ir-and-reference-semantics.md) accept the foundational publication/graph/path/resource/Search IR slice. [`SPEC-0000`](../specs/SPEC-0000-framework-requirements.md) and [`SPEC-0006`](../specs/SPEC-0006-search-session-control-and-observation.md) through [`SPEC-0013`](../specs/SPEC-0013-result-and-observation-publication.md) are the decision-complete 741-requirement core proposal packet. [`SPEC-0003`](../specs/SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](../specs/SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](../specs/SPEC-0005-stage-ptx-and-search-image-composition.md) are the decision-complete 248-requirement optional extension proposal packet under final reconciliation. None authorizes production lowering before schema/reference acceptance.
 
 ## 1. Universal core inputs
@@ -160,6 +177,8 @@ Search Image / execution package
 
 The Composer must:
 
+- resolve convenience, preset and explicit inputs through one canonical pre-ignition path;
+- expose the complete resolved profile and provenance of each applied default or adaptive selection;
 - normalize universal contracts without embedding first-product fields as core meaning;
 - validate namespaced selected capability/product schemas under their owners;
 - construct/validate the stage graph and stable base contexts only when the selected extension profile requires them;
@@ -169,6 +188,8 @@ The Composer must:
 - select only profile-declared graph/reclamation/reduction/progress mechanism requirements behind accepted owner semantics;
 - generate deterministic restricted Device-JS Search Program/source/package identity while keeping CUDA-JS artifact/runtime identity separate;
 - fail before ignition for incompatible semantics, resources, versions, permissions or provenance.
+
+Semantically material defaults participate in profile/package/cache identity. Explicit selections override defaults; conflicts fail rather than silently choosing. No resolved default may create hidden post-ignition adaptation or host-owned search progress.
 
 CUDA-JS receives canonical restricted Device-JS source/function metadata and consumer-neutral resource/operation/capability requests through public contracts, then returns opaque public realization identities/results. It does not interpret Search IR, stages, capabilities, roots, chess or output meaning.
 

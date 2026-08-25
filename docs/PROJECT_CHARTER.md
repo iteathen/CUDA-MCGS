@@ -4,9 +4,11 @@
 
 ## Purpose
 
-Create a universal framework capable of specifying, specializing, and executing GPU-resident Monte Carlo Graph Search systems across unrelated domains and evaluator types.
+Create a complete library that makes GPU-resident Monte Carlo Graph Search easy to use while retaining a universal framework capable of specifying, specializing, and executing systems across unrelated domains and evaluator types.
 
 The framework should support board games, text search, planning, optimization, move ordering, evaluation-only search, partially observable problems, and future MCGS-style workloads without making one application the permanent shape of the core.
+
+Under [`decisions/ADR-0020-complete-library-and-resolved-defaults.md`](decisions/ADR-0020-complete-library-and-resolved-defaults.md), the complete composable surface is authoritative and ease is layered over it through progressive disclosure. Convenience calls and presets resolve into the same canonical normalized profile and specialization path as fully explicit calls. Defaults are bounded, documented, inspectable, overridable and versioned when semantically material; they may not fabricate missing domain meaning or adapt hidden search semantics after ignition.
 
 ## Product boundary
 

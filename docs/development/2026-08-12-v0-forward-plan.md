@@ -14,7 +14,7 @@
 
 ## Outcome
 
-Complete a contract-defined universal GPU-resident MCGS framework with schema-backed, least-authority extension support and statically specialized finite engines, without letting the first domain/product or CUDA implementation details become universal core meaning.
+Complete a library that makes GPU-resident MCGS easy to use while retaining a contract-defined universal framework, schema-backed least-authority extension support and statically specialized finite engines, without letting the first domain/product, convenience facade or CUDA implementation details become universal core meaning.
 
 This plan contains **unfinished work only**. Completed layering correction, Search IR foundation, bounded reference/mechanism experiments, Connect Four reference work, and CUDA-JS portable capability implementations are inputs, not tasks to repeat.
 
@@ -49,6 +49,7 @@ The current CUDA-JS surface is not assumed complete. If a naturally generic GPU 
 4. Search IR/Composer integrates accepted core contracts and selected namespaced capability/product inputs; it does not create their semantics.
 5. CUDA-JS realization happens after semantic normalization and cannot learn MCGS/domain/product meaning.
 6. Downstream products such as Connect Four/chess consume the framework and do not gate universal core completion.
+7. Convenience calls, presets and explicit composition resolve through one canonical normalized-profile path; ease does not create a second runtime or semantic authority.
 
 ## ENGINE-CONTRACT-01 — universal semantic contract proposal packet
 
@@ -101,6 +102,8 @@ After the core and extension proposals are decision-complete, execute an explici
 - prohibit runtime schema interpretation or host-owned active-search decisions.
 
 The Composer may select a CUDA-JS capability such as RDC/LTO only when a later concrete realization needs it and its claimed profile is qualified; availability alone does not make it a framework dependency. This node authorizes representation and CUDA-free reference evidence only, not production CUDA lowering.
+
+ADR-0020 and [issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) now govern the public-library input boundary. The exact 989-requirement catalog remains frozen through the active owner leaf. At the next dependency-safe reconciliation, the plan must add resolved-input/default provenance and prove that a convenience call and its explicit equivalent produce the same canonical profile and identity before `ENGINE-CONTRACT-ACCEPTANCE-01`. Exact SDK class/function names and production facade implementation remain downstream of accepted semantics.
 
 ## ENGINE-REFERENCE-01 — universal reference/conformance
 

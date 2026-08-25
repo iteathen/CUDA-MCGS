@@ -20,6 +20,8 @@ The extension substrate is universal; a selected capability's payload is not aut
 
 [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) additionally governs every production proposal: ordinary Node.js plus restricted Device-JS is the maintained source boundary; post-ignition host interaction is narrow and asynchronous; and an unnatural expression of a generic GPU mechanism is classified as a CUDA-JS capability gap rather than implemented as native CUDA-MCGS code.
 
+[`ADR-0020`](../decisions/ADR-0020-complete-library-and-resolved-defaults.md) establishes the public-library direction: the complete composable surface is authoritative, while convenience calls and presets resolve into the same canonical normalized framework profile. Defaults must be owned, bounded, deterministic, inspectable, overridable and identity-bearing when material. The currently frozen 989-requirement Composer packet is not rewritten mid-leaf; resolved-input provenance and convenience-equivalence requirements enter at the next dependency-safe proposal/evidence boundary before integrated semantic acceptance.
+
 ## Current accepted contracts
 
 - [`SPEC-0001-device-search-publication-and-resources.md`](SPEC-0001-device-search-publication-and-resources.md) — backend-neutral publication, graph identity/edge ownership, path-cycle ordering, finite-resource exhaustion, partial-result validity and scheduler-neutral conformance, version 0.1.0.
