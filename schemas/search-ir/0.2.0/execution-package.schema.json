@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/execution-package.schema.json",
+  "title": "CUDA-MCGS public execution-package and CUDA-JS request projection proposal evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "status", "semantic", "program", "cudaJs", "manifests", "compatibility", "provenance", "deletion"],
+  "properties": {
+    "schema": { "const": "cuda-mcgs.execution-package/0.2.0" },
+    "status": { "const": "proposal-evidence" },
+    "semantic": {
+      "type": "object", "additionalProperties": false,
+      "required": ["engineIdentity", "selectedProfiles", "entryPointRoles", "resourcePlan", "progressPlan", "outputProfile", "sessionProfile", "stageProfile", "channelProfile"],
+      "properties": {
+        "engineIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
+        "selectedProfiles": { "type": "array", "minItems": 6, "items": { "$ref": "program-package-profile.schema.json#/$defs/profileReference" } },
+        "entryPointRoles": { "type": "array", "minItems": 1, "items": { "type": "object", "additionalProperties": false, "required": ["role", "function"], "properties": { "role": { "$ref": "primitives.schema.json#/$defs/namespacedId" }, "function": { "type": "string" } } } },
+        "resourcePlan": { "$ref": "program-package-profile.schema.json#/$defs/profileReference" }, "progressPlan": { "$ref": "program-package-profile.schema.json#/$defs/profileReference" }, "outputProfile": { "$ref": "program-package-profile.schema.json#/$defs/profileReference" }, "sessionProfile": { "$ref": "program-package-profile.schema.json#/$defs/optionalProfileReference" }, "stageProfile": { "$ref": "program-package-profile.schema.json#/$defs/optionalProfileReference" }, "channelProfile": { "$ref": "program-package-profile.schema.json#/$defs/optionalProfileReference" }
+      }
+    },
+    "program": { "type": "object", "additionalProperties": false, "required": ["schema", "identity", "sourceIdentity", "functions"], "properties": { "schema": { "const": "cuda-mcgs.search-program/0.2.0" }, "identity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "sourceIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "functions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/publicFunction" } } } },
+    "cudaJs": {
+      "type": "object", "additionalProperties": false, "required": ["schema", "requirements", "deviceProgram", "resources", "operations", "lifecycle"],
+      "properties": {
+        "schema": { "const": "cuda-mcgs.cuda-js-request-projection/0.2.0" },
+        "requirements": { "type": "array", "minItems": 2, "items": { "$ref": "primitives.schema.json#/$defs/schemaReference" } },
+        "deviceProgram": { "type": "object", "additionalProperties": false, "required": ["source", "functions"], "properties": { "source": { "type": "string", "minLength": 1 }, "functions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/publicFunction" } } } },
+        "resources": { "type": "array", "items": { "$ref": "#/$defs/publicResource" } },
+        "operations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/publicOperation" } },
+        "lifecycle": { "type": "object", "additionalProperties": false, "required": ["compile", "allocate", "load", "admit", "ignite", "cancel", "complete", "teardown"], "properties": { "compile": { "const": "pre-ignition" }, "allocate": { "const": "pre-ignition" }, "load": { "const": "pre-ignition" }, "admit": { "const": "pre-ignition" }, "ignite": { "const": "single-device-owned-transition" }, "cancel": { "const": "public-lifecycle-operation" }, "complete": { "const": "public-lifecycle-operation" }, "teardown": { "const": "public-lifecycle-operation" } } }
+      }
+    },
+    "manifests": { "$ref": "program-package-profile.schema.json#/$defs/manifests" }, "compatibility": { "$ref": "program-package-profile.schema.json#/$defs/compatibility" }, "provenance": { "$ref": "program-package-profile.schema.json#/$defs/provenance" }, "deletion": { "$ref": "program-package-profile.schema.json#/$defs/deletion" }
+  },
+  "$defs": {
+    "publicFunction": {
+      "type": "object", "additionalProperties": false, "required": ["name", "kind", "parameters", "returns"],
+      "properties": { "name": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" }, "kind": { "enum": ["kernel", "device"] }, "parameters": { "type": "array", "items": { "$ref": "program-package-profile.schema.json#/$defs/parameter" } }, "returns": { "enum": ["void", "bool", "u32", "i32", "u64", "f32"] } }
+    },
+    "publicResource": {
+      "type": "object", "additionalProperties": false, "required": ["id", "kind", "byteLength", "alignment", "access"],
+      "properties": { "id": { "type": "string", "pattern": "^resource-[0-9]+$" }, "kind": { "const": "device-memory" }, "byteLength": { "$ref": "primitives.schema.json#/$defs/decimalUint" }, "alignment": { "$ref": "primitives.schema.json#/$defs/decimalUint" }, "access": { "type": "array", "minItems": 1, "items": { "enum": ["read", "write", "atomic", "publish"] } } }
+    },
+    "publicBinding": {
+      "type": "object", "additionalProperties": false, "required": ["parameter", "source"],
+      "properties": {
+        "parameter": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" },
+        "source": {
+          "oneOf": [
+            { "type": "object", "additionalProperties": false, "required": ["kind", "resource"], "properties": { "kind": { "const": "resource" }, "resource": { "type": "string", "pattern": "^resource-[0-9]+$" } } },
+            { "type": "object", "additionalProperties": false, "required": ["kind", "schema"], "properties": { "kind": { "const": "scalar" }, "schema": { "$ref": "primitives.schema.json#/$defs/schemaReference" } } }
+          ]
+        }
+      }
+    },
+    "publicOperation": {
+      "type": "object", "additionalProperties": false, "required": ["id", "function", "bindings", "grid", "block", "dynamicSharedBytes", "maxPending"],
+      "properties": { "id": { "type": "string", "pattern": "^operation-[0-9]+$" }, "function": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" }, "bindings": { "type": "array", "items": { "$ref": "#/$defs/publicBinding" } }, "grid": { "$ref": "program-package-profile.schema.json#/$defs/dim3" }, "block": { "$ref": "program-package-profile.schema.json#/$defs/dim3" }, "dynamicSharedBytes": { "$ref": "primitives.schema.json#/$defs/decimalUint" }, "maxPending": { "$ref": "primitives.schema.json#/$defs/decimalUint" } }
+    }
+  }
+}

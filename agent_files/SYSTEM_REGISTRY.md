@@ -54,7 +54,7 @@ This registry tells developers and agents where durable information and future i
 
 | Product area | Owns | Location | Current status |
 |---|---|---|---|
-| `schemas` | Versioned CUDA-MCGS machine-readable universal and namespaced selected contracts/metaschemas | [`../schemas/`](../schemas/README.md) | Active; Search IR 0.1.0 accepted, 0.2.0 proposal catalog/foundation/domain/graph/policy/evaluator/resource evidence active |
+| `schemas` | Versioned CUDA-MCGS machine-readable universal and namespaced selected contracts/metaschemas | [`../schemas/`](../schemas/README.md) | Active; Search IR 0.1.0 accepted, 0.2.0 strict owner/profile/program/package proposal evidence active |
 | `components` | Production universal CUDA-MCGS search components | [`../components/`](../components/README.md) | Reserved; no implementation authorized |
 | `adapters` | Universal/domain/product policy, evaluator, output, domain, and peer-runtime adapters | [`../adapters/`](../adapters/README.md) | Reserved |
 | `conformance` | Universal reference backend, synthetic domains, search-contract suites, and public peer-boundary compatibility | [`../conformance/`](../conformance/README.md) | Reserved |
@@ -74,7 +74,7 @@ This registry tells developers and agents where durable information and future i
 | `contract.device-search-state-v0` | Device publication channels, state-node/parent-edge ownership, path-cycle ordering, finite-resource accounting, exhaustion, partial-result validity, scheduler-neutral conformance | [`../docs/specs/SPEC-0001-device-search-publication-and-resources.md`](../docs/specs/SPEC-0001-device-search-publication-and-resources.md) | Accepted semantic contract; complete Search IR/production lowering pending |
 | `contract.search-ir` | Backend-neutral Search IR 0.1.0 shape, normalization, versioning, and canonical identity | [`../docs/specs/SPEC-0002-search-ir-and-reference-semantics.md`](../docs/specs/SPEC-0002-search-ir-and-reference-semantics.md) and [`../schemas/search-ir/0.1.0/`](../schemas/search-ir/0.1.0/) | Accepted bounded semantic contract; complete representation/production lowering pending |
 | `reference.search-ir` | Independent deterministic interpretation of accepted publication, graph, path, resource, stop, and partial-result semantics | [`../experiments/search-ir-reference/`](../experiments/search-ir-reference/README.md) | Accepted disposable reference; no production/CUDA/product authority |
-| `evidence.search-ir-composer` | CUDA-free proposal Search IR 0.2.0 catalog, strict owner-profile normalization, canonical identities and bounded deletion/rejection evidence | [`../experiments/search-ir-composer-reference/`](../experiments/search-ir-composer-reference/README.md) and [`../schemas/search-ir/0.2.0/`](../schemas/search-ir/0.2.0/) | Bounded proposal evidence; no contract acceptance or production/native authority |
+| `evidence.search-ir-composer` | CUDA-free proposal Search IR 0.2.0 catalog, strict owner-profile normalization, static restricted Device-JS Search Program/public-package composition, canonical identities and bounded deletion/rejection/reference-pair evidence | [`../experiments/search-ir-composer-reference/`](../experiments/search-ir-composer-reference/README.md) and [`../schemas/search-ir/0.2.0/`](../schemas/search-ir/0.2.0/) | Bounded proposal evidence; no Device-JS compiler, contract acceptance or production/native authority |
 
 ## Planned universal CUDA-MCGS boundaries
 

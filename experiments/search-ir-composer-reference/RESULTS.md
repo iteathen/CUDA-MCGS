@@ -329,3 +329,34 @@ The normalized selected Channel identities are:
 Deleting the evaluator-like first product yields `channel.synthetic-evaluator-and-audit` identity `7e4129312a1aeeb58529e117c648aacf86d26522e88e723b23dbfa3bb3d17721` over 22,514 canonical bytes. The Channel schema has checkout-neutral source digest `55e790c24c87aa1324a0f2920971b53b07bf15935d7dd5f2ba03683287bcec68`. The framework envelope intentionally retains complete channel absence and identity `2d5fd4eb17ac1f82a655175109d90e5f41f707d90c11d2667b44c41612e4ba3a` over 10,422 canonical bytes. Coverage identity is `b4319fb2310e87902e588cb437cb329d56ef1fcb2381e3fe0be89f69a18c0df3`; expanded requirement routing identity is `dfe691fe623ff37239a5b847e861f483a658318f02948a8c83e14b167acb324a`. Exactly 911 framework/domain/graph/policy/evaluator/resource/progress/output/session/stage/channel requirements now have final evidence lanes; all remain partial, pending or deferred. The remaining 78 program/package requirements stay pending their SPEC-0005 owner leaf.
 
 This slice supplies structural normalization plus a bounded logical publication/ownership/progress reference oracle. It does not select or qualify a physical queue, memory layout, CUDA atomic spelling, scheduler topology, device race behavior or exact CUDA-MCGS/CUDA-JS pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added to CUDA-MCGS. CUDA-JS issue #123 remains the sole identified generic capability dependency for later native Channel qualification.
+
+The former CUDA-JS #123 capability dependency was subsequently resolved by the public device-scope release/acquire Device-JS contract in `cuda-js@0.1.0-alpha.7`. That closes the generic API gap; it does not retroactively turn this logical reference trace into native evidence or satisfy the exact compatible-pair gate.
+
+## IR-PROGRAM-PACKAGE-01
+
+**Focused evidence assembled:** 2026-08-25T15:27:46.8129338-07:00
+
+**Full repository validation completed:** 2026-08-25T15:32:30.0953165-07:00
+
+The expanded capsule passes 839/839 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource/progress/output/session/stage/channel cases and adds strict SPEC-0005-owned composition/package evidence across:
+
+- four closed composition profiles covering core-only structural absence, selected Stage/Channel composition, a materially different secondary capability and same-profile first-product deletion;
+- complete exact source-unit, function, semantic-owner, call/helper and program-unit mapping with finite source/function/call-depth bounds, canonical code-unit ordering and LF-normalized source identity;
+- deterministic restricted Device-JS Search Programs plus content-sensitive program/package identities and repeatable source/package bytes;
+- selected-only public requirements and exact logical-resource/operation projections, with MCGS semantics retained on the CUDA-MCGS side and the CUDA-JS Device-JS request limited to its public `{ source, functions }` contract;
+- opaque one-artifact, multi-artifact and failure realizations without parsing native output or accepting CUDA-JS-private fields;
+- exact removal of the evaluator-request Channel and product-priority Stage capability while every unowned source unit remains byte-identical and shared requirement retention follows surviving ownership; and
+- a complete content-sensitive reference-only compatible-pair record that explicitly rejects native qualification and exact-pair drift.
+
+The four composition-profile identities are:
+
+- `program-package.core-only`: `a5f9c3b174916d5ab22676d4d4ff69c9d16840b76bb30fb44dc666063fcd4c3f` over 29,982 canonical bytes;
+- `program-package.selected-extension`: `8049dc47bfb41b2d1ec220a7167b024c3d232f03518064b78cfab6d961d0e1b2` over 61,450 canonical bytes;
+- `program-package.secondary-capability`: `2a63fd8da6bad766cf5cf36e1a6aa35ae47135470d2f94e6f3133b059ba10f22` over 54,301 canonical bytes; and
+- first-product-deleted `program-package.selected-extension`: `99744ed28151a399c57e3162876233ed1369e9ed38ede8fd3ed8e0ba49aadd6b` over 54,149 canonical bytes.
+
+Their Search Program identities are `7f0974b1194cebd5880f6cbef0c9cf2ea06dbc526371e2bac208b3967e96f93c`, `35e6ba3710ec9f0a7364719c92025c6dab85d94195beeae60d698c75bc58a5c7`, `d5900e8eeea00f97b6e4d06efb49580dd32581bd3050a78280612fbd9af082b9` and `3c9c54d39c1494a89d37df2e80e16fd0956b8abfafc860cae4006cef6d004e46`. Their execution-package identities are `39e4da410a297e92a997981cd7332239ae6bc284ff1f37b50b95f4545e355672`, `ac508f82c2718298543dfbc8b35c08cc2efb513a075ab4ca18879628dba016d2`, `5e1d428e5406947c4e64a276fbec6bfa3c475b27034ac6f68f80ccce3f5fa5e7` and `f55debd273543697e261dc9ca57404b89fd3ebcab53740817310287566b088dc`. The reference-only compatible-pair identity is `11820d10410341eaaa238f4f291fcdec901c5f545539a2be40625a288d503a7f` over 3,975 canonical bytes.
+
+The strict program-package, Search Program, execution-package and compatible-pair schemas have checkout-neutral source digests `126db1391c94e4f3fd4058b95e91a28fa00c2d954384ae79c8aa0b5abc05e614`, `fbe78e5ac54cc64372389b7853fecca9578f577f599562405536d85211a8a1c2`, `a85b5ebe495a6a05cdc2ef5ca07a4b371fb9febd837efb01218de8519f8b413b` and `402757189cb9da7270aefba72e42f19ee45329662027a8318527b5c9b2725510`. Coverage identity is `3d88ab22aa73f61eb291d12ebc6ef31d2830c00377ce1810322785fae160e864`; expanded requirement routing identity is `687a4c32c3bb44332744f92bdf6d0a1136eda565c7f9e88fbba57499f8cc8b69`. All 989 proposal requirements now have classified evidence lanes, but every lane remains explicitly partial or deferred.
+
+This slice is strict structural, normalization and bounded static-composition evidence only. It does not validate Device-JS syntax, compile through CUDA-JS, inspect or own generated native artifacts, run on a GPU, qualify an installed package or prove an exact native compatible pair. No proposal contract is accepted, no production component is authorized and no native/CUDA-specific implementation is added to CUDA-MCGS. The integrated `IR-COMPOSER-01`, `IR-DELETION-ID-01`, `ENGINE-REFERENCE-01`, `ENGINE-CONTRACT-ACCEPTANCE-01` and `ENGINE-NATIVE-01` gates remain downstream.

@@ -97,15 +97,25 @@ The integrated `IR-STAGE-01` slice adds only the optional SPEC-0003-owned stage/
 - deterministic generator/program identities and first-party-reviewed restricted Device-JS provenance through consumer-neutral public CUDA-JS requirements only; and
 - section-level evidence classification for all 80 Search Stage requirements, with behavioral schedule/failure exploration, Async Stage Channel semantics, native execution and compatible-pair qualification left partial, pending or deferred.
 
-The current `IR-CHANNEL-01` slice adds only the optional SPEC-0004-owned internal asynchronous dataflow selection:
+The integrated `IR-CHANNEL-01` slice adds only the optional SPEC-0004-owned internal asynchronous dataflow selection:
 
 - canonical null absence, a required evaluator-like request/result channel, a materially different advisory secondary-work channel and an exact same-profile first-consumer deletion projection;
 - final binding of versioned Stage requirements to exact Stage/capability/surface action grants, with no Channel-side authority widening and no cyclic Stage/Channel content identity;
 - finite item/generation/correlation/payload/state/claim/counter contracts, explicit unordered or owner-defined cross-item ordering, single-transfer and immutable multi-borrow ownership, exact admission/resource conservation and typed pressure/rollback;
 - scheduler-neutral producer/consumer/completion/reclamation/pending descriptors, released workers and mutable leases, finite producer/escape paths, required-cycle rejection and typed no-progress;
 - logical device-scope release/acquire happens-before semantics plus a CUDA-free reference model that rejects missing release/acquire, uninitialized publication, stale or exhausted generations, pending-capacity overflow, over-borrow, ownership-erasing cancellation, unsafe reclaim and late-result resurrection;
-- cancellation/expiry/stale/reclamation/teardown closure, restricted Device-JS/public CUDA-JS requirements only and an explicit native-qualification block on CUDA-JS issue #123; and
+- cancellation/expiry/stale/reclamation/teardown closure and restricted Device-JS/public CUDA-JS requirements only; the former CUDA-JS #123 publication gap is resolved in `cuda-js@0.1.0-alpha.7`, while exact native pair qualification remains separate; and
 - section-level evidence classification for all 90 Async Stage Channel requirements, with physical CUDA realization and compatible-pair qualification left partial or deferred.
+
+The current `IR-PROGRAM-PACKAGE-01` slice adds only SPEC-0005-owned static composition and public-package evidence:
+
+- four strict composition profiles spanning core-only structural absence, selected Stage/Channel composition, a materially different secondary capability and same-profile first-product deletion;
+- complete source-unit/function/semantic-owner mapping, deterministic JavaScript code-unit ordering, exact LF-normalized source identity and finite source/function/call-depth bounds;
+- canonical restricted Device-JS Search Programs with selected-only owner source, functions, resources, operations and public requirements;
+- a semantic execution-package side beside a deliberately consumer-neutral CUDA-JS projection whose Device-JS request is exactly `{ source, functions }` and whose resource/operation requests contain no MCGS meaning;
+- opaque CUDA-JS success/failure fixtures and a complete reference-only compatible-pair record that rejects private realization fields and native qualification claims;
+- exact deletion of the evaluator-request Channel and product-priority Stage capability while every unowned source unit remains byte-identical and shared public requirements follow remaining ownership; and
+- section-level evidence classification for all 78 composition requirements, with integrated Composer/deletion reconciliation, behavioral reference evidence, native realization and exact compatible-pair qualification still partial or deferred.
 
 Normative sentences remain solely in [`docs/specs/`](../../docs/specs/). The checked-in catalog records identities, owners, counts, paths and `sha256-utf8-lf-v1` digests; the explicit LF-normalized UTF-8 digest contract is checkout-platform independent. The capsule expands the IDs directly from the frozen sources and fails on source, metadata, count, prefix, uniqueness or coverage-route drift. Hierarchical requirement families use their one most-specific matching classification prefix, allowing bare `SESSION-###` requirements to retain the contract prefix while nested `SESSION-ROOT-###` and similar families keep independent owners/evidence.
 
@@ -115,4 +125,4 @@ Run with Node.js 26 or newer:
 node experiments/search-ir-composer-reference/run.mjs
 ```
 
-Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic framework selection fixture binds the exact schema digests and normalized identities of the first domain, graph, policy, resource, progress and output profiles while leaving the optional evaluator, Search Session, stage extension, Async Stage Channel and live output structurally absent; selected policy/resource/progress/output/session/stage/channel fixtures bind exact normalized upstream profiles through public identities and ports. The remaining owner identities are opaque structural placeholders. Synthetic schema/program digests prove representation closure only and are not executable domain/graph/policy/evaluator/resource/progress/output/session/stage/channel production implementations or native evidence. Later focus leaves supply deterministic restricted Device-JS/Search Program composition and cross-owner deletion/identity oracles. Native CUDA-JS qualification remains separate.
+Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic framework selection fixture binds the exact schema digests and normalized identities of the first domain, graph, policy, resource, progress and output profiles while leaving the optional evaluator, Search Session, stage extension, Async Stage Channel and live output structurally absent; selected policy/resource/progress/output/session/stage/channel/package fixtures bind exact normalized upstream profiles through public identities and ports. The reference Composer assembles exact owner-provided source snapshots and public metadata but does not validate or lower Device-JS syntax; CUDA-JS retains that authority and owns every generated native artifact/runtime resource. These fixtures prove bounded representation/composition closure only, not production behavior or native support. Later focus leaves reconcile the full cross-owner Composer and deletion/identity matrices. Native CUDA-JS qualification remains separate.

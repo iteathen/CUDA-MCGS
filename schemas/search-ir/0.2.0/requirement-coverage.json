@@ -40,8 +40,8 @@
       "requirementPrefix": "COMPOSE-",
       "primaryOwner": "CUDA-MCGS deterministic restricted Device-JS Search Program composition and CUDA-MCGS/CUDA-JS execution-package boundary",
       "plannedLeaf": "IR-PROGRAM-PACKAGE-01",
-      "currentDisposition": "pending-owner-classification",
-      "completionStatus": "pending"
+      "currentDisposition": "section-classified",
+      "completionStatus": "in-progress"
     },
     {
       "contract": "SPEC-0006",
@@ -1747,12 +1747,166 @@
       "evidenceStatus": "partial",
       "evidenceRefs": ["case:channel-reference-serial-publication", "case:channel-reference-multiborrow-accounting", "case:channel-reference-producer-service-while-pending", "case:channel-reference-typed-no-progress", "case:reject-channel-reference-missing-release", "case:reject-channel-reference-missing-acquire", "case:reject-channel-reference-borrow-bound", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
       "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-AUTH-",
+      "requirementCount": 3,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["structural-schema", "semantic-normalizer"],
+      "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:program-package-profile.schema.json", "normalizer:program-package-profile", "case:program-package-schemas-closed", "case:reject-program-package-unknown-field", "case:reject-program-package-native-option"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-SOURCE-",
+      "requirementCount": 4,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-COMPOSER-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:program-package-profile", "normalizer:search-program-composer", "case:search-program-byte-repeatability", "case:program-source-content-sensitive", "case:reject-native-or-cuda-source", "case:reject-source-digest-mismatch"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-LEGO-",
+      "requirementCount": 6,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer", "deterministic-composition", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:core-only-extension-absence", "case:selected-extension-source-and-requirement-presence", "case:complete-function-source-owner-mapping", "case:stage-program-unit-declared-order", "case:reject-unselected-source-owner", "case:first-consumer-deletion-zero-owned-source-residue"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-PROFILE-",
+      "requirementCount": 6,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["structural-schema", "deterministic-composition"],
+      "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:program-package-profile.schema.json", "normalizer:program-package-profile", "case:normalize-program-package-profiles", "case:program-package-order-independent", "case:complete-function-source-owner-mapping", "case:reject-executable-provenance-gap"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-CAP-",
+      "requirementCount": 6,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:public-requirement-selected-only-closure", "case:selected-extension-source-and-requirement-presence", "case:reject-helper-without-public-requirement", "case:reject-unavailable-public-capability-before-ignition", "case:reject-public-requirement-owner-gap", "planned:ENGINE-NATIVE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-PROGRAM-",
+      "requirementCount": 10,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-COMPOSER-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:search-program.schema.json", "normalizer:search-program-composer", "case:compose-canonical-search-programs", "case:complete-function-source-owner-mapping", "case:stage-program-unit-declared-order", "case:reject-function-call-cycle", "case:reject-kernel-call-target", "case:reject-stage-effect-order-mutation", "case:reject-program-unit-function-duplication", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-DELETE-",
+      "requirementCount": 6,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "cross-specification-proof"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:core-only-extension-absence", "case:first-consumer-deletion-zero-owned-source-residue", "case:first-consumer-deletion-zero-package-residue", "case:reject-deletion-owner-omission", "case:reject-deletion-source-coverage-gap", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-PACKAGE-",
+      "requirementCount": 7,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["structural-schema", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:execution-package.schema.json", "normalizer:execution-package-builder", "case:build-canonical-execution-packages", "case:public-resource-projection-is-generic-subset", "case:public-operation-projection-is-generic", "case:package-lifecycle-is-pre-ignition-closed", "case:opaque-cuda-js-failure-is-not-package-success"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-IDENTITY-",
+      "requirementCount": 6,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:program-package-order-independent", "case:search-program-byte-repeatability", "case:execution-package-byte-repeatability", "case:program-source-content-sensitive", "case:program-metadata-content-sensitive", "case:materially-different-capability-package-distinct", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-RUNTIME-",
+      "requirementCount": 7,
+      "primaryDisposition": "native-compatible-pair-qualification",
+      "supportingDispositions": ["deterministic-composition", "cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-NATIVE-01",
+      "evidenceStatus": "deferred",
+      "evidenceRefs": ["case:cuda-js-projection-has-no-semantic-metadata-keys", "case:cuda-js-projection-matches-public-device-js-request", "case:opaque-cuda-js-single-artifact-success", "case:opaque-cuda-js-multiple-artifact-success", "case:reject-private-cuda-js-realization-field", "planned:ENGINE-NATIVE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-LIFE-",
+      "requirementCount": 6,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:package-lifecycle-is-pre-ignition-closed", "case:opaque-cuda-js-single-artifact-success", "case:opaque-cuda-js-failure-is-not-package-success", "case:reject-incomplete-cuda-js-realization-resources", "case:reject-package-profile-program-mismatch", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-COST-",
+      "requirementCount": 4,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["cross-specification-proof", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:program-package-profile.schema.json", "normalizer:program-package-profile", "case:public-resource-projection-is-generic-subset", "case:public-operation-projection-is-generic", "case:reject-resource-provider-mismatch", "case:reject-operation-binding-omission", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-IR-",
+      "requirementCount": 4,
+      "primaryDisposition": "structural-schema",
+      "supportingDispositions": ["semantic-normalizer", "deterministic-composition", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:program-package-profile.schema.json", "schema:search-program.schema.json", "schema:execution-package.schema.json", "schema:compatible-pair-record.schema.json", "case:program-package-schemas-closed", "case:compose-canonical-search-programs", "case:build-canonical-execution-packages"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-CONFORMANCE-",
+      "requirementCount": 3,
+      "primaryDisposition": "native-compatible-pair-qualification",
+      "supportingDispositions": ["cross-specification-proof", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "ENGINE-NATIVE-01",
+      "evidenceStatus": "deferred",
+      "evidenceRefs": ["schema:compatible-pair-record.schema.json", "case:complete-compatible-pair-reference-record", "case:compatible-pair-content-sensitive", "case:reject-compatible-pair-package-mismatch", "case:reject-compatible-pair-capability-mismatch", "case:reject-reference-pair-native-qualification-claim", "planned:ENGINE-CONTRACT-ACCEPTANCE-01", "planned:ENGINE-NATIVE-01"],
+      "classificationStatus": "classified"
     }
   ],
   "totals": {
     "contracts": 12,
     "requirements": 989,
-    "classified": 911,
-    "pending": 78
+    "classified": 989,
+    "pending": 0
   }
 }

@@ -57,6 +57,7 @@ import {
 } from './src/progress-fixtures.mjs';
 import { normalizeOutputProfile } from './src/output.mjs';
 import {
+  buildOutputProfile,
   buildOutputProfiles,
   outputSyntheticContentIdentity,
   outputSyntheticSchemaReference,
@@ -82,6 +83,20 @@ import {
   buildChannelProfiles,
   channelSyntheticSchemaReference,
 } from './src/channel-fixtures.mjs';
+import {
+  assertOwnerDeletion,
+  buildExecutionPackage,
+  composeSearchProgram,
+  normalizeCompatiblePair,
+  normalizeCudaJsRealization,
+  normalizeProgramPackageProfile,
+} from './src/program-package.mjs';
+import {
+  buildCompatiblePairFixture,
+  buildCudaJsFailureFixture,
+  buildCudaJsRealizationFixture,
+  buildProgramPackageProfile,
+} from './src/program-package-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -113,6 +128,10 @@ const outputProfileSchema = await readJson(path.join(schemaRoot, 'output-profile
 const sessionProfileSchema = await readJson(path.join(schemaRoot, 'session-profile.schema.json'));
 const stageProfileSchema = await readJson(path.join(schemaRoot, 'stage-profile.schema.json'));
 const channelProfileSchema = await readJson(path.join(schemaRoot, 'channel-profile.schema.json'));
+const programPackageProfileSchema = await readJson(path.join(schemaRoot, 'program-package-profile.schema.json'));
+const searchProgramSchema = await readJson(path.join(schemaRoot, 'search-program.schema.json'));
+const executionPackageSchema = await readJson(path.join(schemaRoot, 'execution-package.schema.json'));
+const compatiblePairRecordSchema = await readJson(path.join(schemaRoot, 'compatible-pair-record.schema.json'));
 const frameworkSelectionInput = await readJson(path.join(experimentRoot, 'fixtures', 'minimal.framework-selection.json'));
 
 const cases = [];
@@ -137,7 +156,7 @@ await runCase('normalize-contract-set', () => {
 await runCase('normalize-requirement-coverage', () => {
   const normalized = normalizeRequirementCoverage(coverageInput);
   assert.equal(normalized.contracts.length, 12);
-  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 911, pending: 78 });
+  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 989, pending: 0 });
 });
 
 await runCase('canonical-order-independent', () => {
@@ -188,8 +207,8 @@ await runCase('coverage-owner-route-closure', () => {
 });
 
 await runCase('coverage-honest-classification-progress', () => {
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 911);
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 78);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 989);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 0);
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0000').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0007').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0008').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
@@ -199,6 +218,9 @@ await runCase('coverage-honest-classification-progress', () => {
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0012').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0013').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0006').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
+  const compositionRequirements = inspected.requirements.filter(({ contract }) => contract === 'SPEC-0005');
+  assert.equal(compositionRequirements.length, 78);
+  assert(compositionRequirements.every(({ evidenceStatus }) => ['partial', 'deferred'].includes(evidenceStatus)));
 });
 
 await runCase('catalog-identity-content-sensitive', () => {
@@ -1346,6 +1368,412 @@ await runCase('normalize-channel-profiles', async () => {
   channelDeletedInput = buildChannelFirstProductDeletedProfile(inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult);
   channelDeletedProfile = normalizeChannelProfile(channelDeletedInput, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult);
   assert.deepEqual(channelProfiles.map(({ normalized }) => normalized.id), ['channel.synthetic-evaluator-and-audit', 'channel.synthetic-secondary-work']);
+});
+
+let packageOutputSelectedInput;
+let packageOutputSelectedResult;
+let packageOutputDeletedInput;
+let packageOutputDeletedResult;
+await runCase('normalize-program-package-output-profiles', () => {
+  packageOutputSelectedInput = buildOutputProfile('synthetic-stage-channels-package', inspected, channelResourceResult, channelProgressResult, { structured: true });
+  packageOutputSelectedResult = { ...normalizeOutputProfile(packageOutputSelectedInput, inspected, channelResourceResult, channelProgressResult), schemaSha: outputSchemaSha };
+  packageOutputDeletedInput = buildOutputProfile('synthetic-stage-channels-package', inspected, channelDeletedResourceResult, channelDeletedProgressResult, { structured: true });
+  packageOutputDeletedResult = { ...normalizeOutputProfile(packageOutputDeletedInput, inspected, channelDeletedResourceResult, channelDeletedProgressResult), schemaSha: outputSchemaSha };
+  assert.equal(packageOutputSelectedResult.normalized.id, packageOutputDeletedResult.normalized.id);
+  assert.notDeepEqual(packageOutputSelectedResult.identity, packageOutputDeletedResult.identity);
+});
+
+const withSchema = (result, schemaSha) => ({ ...result, schemaSha });
+let programPackageFixtures;
+let programPackageProfiles;
+let searchPrograms;
+let executionPackages;
+let programPackageSchemaSha;
+let searchProgramSchemaSha;
+let executionPackageSchemaSha;
+let compatiblePairSchemaSha;
+await runCase('normalize-program-package-profiles', async () => {
+  programPackageSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'program-package-profile.schema.json')));
+  searchProgramSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'search-program.schema.json')));
+  executionPackageSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'execution-package.schema.json')));
+  compatiblePairSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'compatible-pair-record.schema.json')));
+  const coreContext = {
+    profileResults: [withSchema(domainProfiles[0], domainSchemaSha), withSchema(graphProfiles[0], graphSchemaSha), withSchema(policyProfiles[0], policySchemaSha), withSchema(resourceProfiles[0], resourceSchemaSha), withSchema(progressProfiles[0], progressSchemaSha), withSchema(outputProfiles[0], outputSchemaSha)],
+    resourceResult: withSchema(resourceProfiles[0], resourceSchemaSha), progressResult: withSchema(progressProfiles[0], progressSchemaSha), outputResult: withSchema(outputProfiles[0], outputSchemaSha), stageResult: null, channelResult: null, sessionResult: null,
+  };
+  const selectedContext = {
+    profileResults: [withSchema(domainProfiles[1], domainSchemaSha), withSchema(graphProfiles[1], graphSchemaSha), withSchema(policyProfiles[1], policySchemaSha), withSchema(evaluatorProfiles[0], evaluatorSchemaSha), channelResourceResult, channelProgressResult, packageOutputSelectedResult, channelStageResult, withSchema(channelProfiles[0], channelSchemaSha)],
+    resourceResult: channelResourceResult, progressResult: channelProgressResult, outputResult: packageOutputSelectedResult, stageResult: channelStageResult, channelResult: withSchema(channelProfiles[0], channelSchemaSha), sessionResult: null,
+  };
+  const secondaryContext = {
+    profileResults: [withSchema(domainProfiles[1], domainSchemaSha), withSchema(graphProfiles[1], graphSchemaSha), withSchema(policyProfiles[1], policySchemaSha), withSchema(evaluatorProfiles[0], evaluatorSchemaSha), channelDeletedResourceResult, channelDeletedProgressResult, packageOutputDeletedResult, channelDeletedStageResult, withSchema(channelProfiles[1], channelSchemaSha)],
+    resourceResult: channelDeletedResourceResult, progressResult: channelDeletedProgressResult, outputResult: packageOutputDeletedResult, stageResult: channelDeletedStageResult, channelResult: withSchema(channelProfiles[1], channelSchemaSha), sessionResult: null,
+  };
+  const deletedContext = {
+    profileResults: [withSchema(domainProfiles[1], domainSchemaSha), withSchema(graphProfiles[1], graphSchemaSha), withSchema(policyProfiles[1], policySchemaSha), withSchema(evaluatorProfiles[0], evaluatorSchemaSha), channelDeletedResourceResult, channelDeletedProgressResult, packageOutputDeletedResult, channelDeletedStageResult, withSchema(channelDeletedProfile, channelSchemaSha)],
+    resourceResult: channelDeletedResourceResult, progressResult: channelDeletedProgressResult, outputResult: packageOutputDeletedResult, stageResult: channelDeletedStageResult, channelResult: withSchema(channelDeletedProfile, channelSchemaSha), sessionResult: null,
+  };
+  programPackageFixtures = [
+    buildProgramPackageProfile(inspected, coreContext, 'core-only'),
+    buildProgramPackageProfile(inspected, selectedContext, 'selected-extension'),
+    buildProgramPackageProfile(inspected, secondaryContext, 'secondary-capability'),
+    buildProgramPackageProfile(inspected, deletedContext, 'selected-extension'),
+  ];
+  programPackageProfiles = programPackageFixtures.map(({ input, context }) => normalizeProgramPackageProfile(input, inspected, context));
+  assert.deepEqual(programPackageProfiles.map(({ normalized }) => normalized.id), ['program-package.core-only', 'program-package.selected-extension', 'program-package.secondary-capability', 'program-package.selected-extension']);
+});
+
+await runCase('compose-canonical-search-programs', () => {
+  searchPrograms = programPackageProfiles.map(composeSearchProgram);
+  assert(searchPrograms.every(({ normalized }) => normalized.schema === 'cuda-mcgs.search-program/0.2.0'));
+  assert.equal(new Set(searchPrograms.map(({ identity }) => identity.sha256)).size, 4);
+});
+
+await runCase('build-canonical-execution-packages', () => {
+  executionPackages = programPackageProfiles.map((profile, index) => buildExecutionPackage(profile, searchPrograms[index]));
+  assert(executionPackages.every(({ normalized }) => normalized.schema === 'cuda-mcgs.execution-package/0.2.0'));
+  assert.equal(new Set(executionPackages.map(({ identity }) => identity.sha256)).size, 4);
+});
+
+await runCase('program-package-schemas-closed', () => {
+  for (const schema of [programPackageProfileSchema, searchProgramSchema, executionPackageSchema, compatiblePairRecordSchema]) {
+    assert.equal(schema.additionalProperties, false);
+    const visit = (node, location = '#') => {
+      if (Array.isArray(node)) return node.forEach((entry, index) => visit(entry, `${location}/${index}`));
+      if (!node || typeof node !== 'object') return;
+      if (node.type === 'object') assert.equal(node.additionalProperties, false, `${schema.$id}${location} must be closed`);
+      for (const [key, value] of Object.entries(node)) visit(value, `${location}/${key}`);
+    };
+    visit(schema);
+  }
+  assert.equal(programPackageProfileSchema.properties.schema.const, 'cuda-mcgs.program-package-profile/0.2.0');
+  assert.equal(searchProgramSchema.properties.schema.const, 'cuda-mcgs.search-program/0.2.0');
+  assert.equal(executionPackageSchema.properties.schema.const, 'cuda-mcgs.execution-package/0.2.0');
+  assert.equal(compatiblePairRecordSchema.properties.schema.const, 'cuda-mcgs.compatible-pair-record/0.2.0');
+  assert.deepEqual(compatiblePairRecordSchema.properties.status.enum, ['reference-fixture', 'exact-compatible-pair']);
+});
+
+await runCase('program-package-order-independent', () => {
+  const mutated = clone(programPackageFixtures[1].input);
+  for (const key of ['sourceUnits', 'functions', 'programUnits', 'publicRequirements', 'resources', 'operations']) mutated[key].reverse();
+  mutated.semanticEngine.profiles.reverse(); mutated.deletion.records.reverse();
+  assert.deepEqual(normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[1].context).identity, programPackageProfiles[1].identity);
+});
+
+await runCase('search-program-byte-repeatability', () => {
+  const repeated = composeSearchProgram(normalizeProgramPackageProfile(clone(programPackageFixtures[1].input), inspected, programPackageFixtures[1].context));
+  assert.deepEqual(repeated.identity, searchPrograms[1].identity);
+  assert.equal(repeated.normalized.source, searchPrograms[1].normalized.source);
+});
+
+await runCase('execution-package-byte-repeatability', () => {
+  const repeated = buildExecutionPackage(programPackageProfiles[1], searchPrograms[1]);
+  assert.deepEqual(repeated.identity, executionPackages[1].identity);
+});
+
+await runCase('program-source-content-sensitive', () => {
+  const mutated = clone(programPackageFixtures[0].input);
+  mutated.sourceUnits[0].source = `${mutated.sourceUnits[0].source.trimEnd()}\n// content-sensitive\n`;
+  mutated.sourceUnits[0].sourceIdentity.sha256 = sourceTextSha256(Buffer.from(mutated.sourceUnits[0].source, 'utf8'));
+  const changed = normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context);
+  assert.notDeepEqual(changed.identity, programPackageProfiles[0].identity);
+  assert.notDeepEqual(composeSearchProgram(changed).identity, searchPrograms[0].identity);
+});
+
+await runCase('program-metadata-content-sensitive', () => {
+  const mutated = clone(programPackageFixtures[0].input);
+  mutated.functions.find(({ kind }) => kind === 'kernel').semanticRole = 'engine.execute-alternate';
+  assert.notDeepEqual(normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context).identity, programPackageProfiles[0].identity);
+});
+
+await runCase('core-only-extension-absence', () => {
+  const profile = programPackageProfiles[0].normalized;
+  assert.deepEqual(profile.semanticEngine.stageProfile, { kind: 'absent' });
+  assert.deepEqual(profile.semanticEngine.channelProfile, { kind: 'absent' });
+  assert(!profile.sourceUnits.some(({ kind }) => ['stage-capability', 'channel'].includes(kind)));
+  assert(!profile.publicRequirements.some(({ contract }) => contract.id === 'cuda-js.device-publication-release-acquire/0.1.0'));
+});
+
+await runCase('selected-extension-source-and-requirement-presence', () => {
+  const profile = programPackageProfiles[1].normalized;
+  assert.equal(profile.semanticEngine.stageProfile.kind, 'selected');
+  assert.equal(profile.semanticEngine.channelProfile.kind, 'selected');
+  assert(profile.sourceUnits.some(({ kind }) => kind === 'stage-capability'));
+  assert(profile.sourceUnits.some(({ kind }) => kind === 'channel'));
+  assert(profile.publicRequirements.some(({ contract }) => contract.id === 'cuda-js.device-publication-release-acquire/0.1.0'));
+});
+
+let removedProductOwners;
+await runCase('first-consumer-deletion-zero-owned-source-residue', () => {
+  const beforeProfileOwner = executionPackages[1].normalized.semantic.channelProfile.profile.id;
+  removedProductOwners = searchPrograms[1].normalized.deletion.selectedOwners.filter((owner) => owner !== beforeProfileOwner && !searchPrograms[3].normalized.deletion.selectedOwners.includes(owner));
+  assert.deepEqual(removedProductOwners, ['channel.synthetic-evaluator-request', 'extension-capability.synthetic-channel-stage.product-priority']);
+  assertOwnerDeletion(searchPrograms[1].normalized, searchPrograms[3].normalized, removedProductOwners);
+});
+
+await runCase('first-consumer-deletion-zero-package-residue', () => {
+  for (const removedOwner of removedProductOwners) assert(!JSON.stringify(executionPackages[3].normalized).includes(`\"${removedOwner}\"`));
+  assert.notDeepEqual(executionPackages[1].identity, executionPackages[3].identity);
+});
+
+await runCase('materially-different-capability-package-distinct', () => {
+  assert.notDeepEqual(executionPackages[1].identity, executionPackages[2].identity);
+  assert.notDeepEqual(searchPrograms[1].normalized.sourceIdentity, searchPrograms[2].normalized.sourceIdentity);
+});
+
+await runCase('complete-function-source-owner-mapping', () => {
+  for (const program of searchPrograms.map(({ normalized }) => normalized)) {
+    const mapped = new Set(program.sourceMap.flatMap(({ functions }) => functions));
+    assert.equal(mapped.size, program.functions.length);
+    assert(program.functions.every(({ name, sourceUnit }) => mapped.has(name) && program.sourceMap.some(({ id }) => id === sourceUnit)));
+  }
+});
+
+await runCase('stage-program-unit-declared-order', () => {
+  const units = programPackageProfiles[1].normalized.programUnits.filter(({ kind }) => kind === 'stage-capability');
+  assert(units.length > 0);
+  assert(units.every(({ contributors, effectOrder }) => contributors.length === effectOrder.length && new Set(effectOrder).size === contributors.length));
+});
+
+await runCase('public-requirement-selected-only-closure', () => {
+  const core = new Set(programPackageProfiles[0].normalized.publicRequirements.map(({ contract }) => contract.id));
+  const selected = new Set(programPackageProfiles[1].normalized.publicRequirements.map(({ contract }) => contract.id));
+  assert(core.has('cuda-js.device-js/0.1.0') && core.has('cuda-js.operation-lifecycle/0.1.0'));
+  assert(!core.has('cuda-js.device-publication-release-acquire/0.1.0'));
+  assert(selected.has('cuda-js.device-publication-release-acquire/0.1.0'));
+});
+
+await runCase('public-resource-projection-is-generic-subset', () => {
+  const profileResources = programPackageProfiles[1].normalized.resources.filter(({ kind }) => kind === 'device-memory');
+  const projected = executionPackages[1].normalized.cudaJs.resources;
+  assert.equal(projected.length, profileResources.length);
+  assert(projected.every(({ id, kind }) => /^resource-[0-9]+$/.test(id) && kind === 'device-memory'));
+});
+
+await runCase('public-operation-projection-is-generic', () => {
+  const projected = executionPackages[1].normalized.cudaJs.operations;
+  assert.deepEqual(projected.map(({ id }) => id), ['operation-0']);
+  assert.equal(projected[0].function, 'engine_step');
+  assert(projected[0].bindings.every(({ source }) => source.kind === 'resource' && /^resource-[0-9]+$/.test(source.resource)));
+});
+
+await runCase('cuda-js-projection-has-no-semantic-metadata-keys', () => {
+  const projection = clone(executionPackages[1].normalized.cudaJs);
+  projection.deviceProgram.source = '';
+  const keys = JSON.stringify(projection);
+  for (const forbidden of ['semanticEngine', 'selectedProfiles', 'entryPointRoles', 'ownerProfile', 'semanticRole', 'stageProfile', 'channelProfile', 'productData', 'searchIr']) assert(!keys.includes(forbidden));
+});
+
+await runCase('cuda-js-projection-matches-public-device-js-request', () => {
+  const request = executionPackages[1].normalized.cudaJs.deviceProgram;
+  assert.deepEqual(Object.keys(request).sort(), ['functions', 'source']);
+  assert(request.functions.every((entry) => Object.keys(entry).sort().join(',') === 'kind,name,parameters,returns'));
+});
+
+await runCase('package-lifecycle-is-pre-ignition-closed', () => {
+  assert.deepEqual(executionPackages[1].normalized.cudaJs.lifecycle, {
+    compile: 'pre-ignition', allocate: 'pre-ignition', load: 'pre-ignition', admit: 'pre-ignition', ignite: 'single-device-owned-transition', cancel: 'public-lifecycle-operation', complete: 'public-lifecycle-operation', teardown: 'public-lifecycle-operation',
+  });
+});
+
+let realizationOne;
+let realizationMany;
+await runCase('opaque-cuda-js-single-artifact-success', () => {
+  realizationOne = normalizeCudaJsRealization(buildCudaJsRealizationFixture(executionPackages[1], 'selected-single', 1), executionPackages[1]);
+  assert.equal(realizationOne.normalized.artifacts.length, 1);
+});
+
+await runCase('opaque-cuda-js-multiple-artifact-success', () => {
+  realizationMany = normalizeCudaJsRealization(buildCudaJsRealizationFixture(executionPackages[1], 'selected-multiple', 3), executionPackages[1]);
+  assert.equal(realizationMany.normalized.artifacts.length, 3);
+  assert.deepEqual(executionPackages[1].identity, buildExecutionPackage(programPackageProfiles[1], searchPrograms[1]).identity);
+});
+
+await runCase('opaque-cuda-js-failure-is-not-package-success', () => {
+  const failure = normalizeCudaJsRealization(buildCudaJsFailureFixture('missing-capability'), executionPackages[1]);
+  assert.equal(failure.normalized.status, 'failure');
+  assert.equal(failure.identity, null);
+  assert.throws(() => normalizeCompatiblePair({}, executionPackages[1], searchPrograms[1], failure), { code: 'COMPOSE_PAIR_INPUT' });
+});
+
+let compatiblePairInput;
+let compatiblePair;
+await runCase('complete-compatible-pair-reference-record', () => {
+  compatiblePairInput = buildCompatiblePairFixture(executionPackages[1], searchPrograms[1], realizationOne, 'selected-pair');
+  compatiblePair = normalizeCompatiblePair(compatiblePairInput, executionPackages[1], searchPrograms[1], realizationOne);
+  assert.equal(compatiblePair.normalized.claim.qualification, 'reference-only');
+  assert.equal(compatiblePair.normalized.claim.native, false);
+});
+
+await runCase('compatible-pair-content-sensitive', () => {
+  const mutated = clone(compatiblePairInput); mutated.environment.device = syntheticContentIdentity('different-pair-device');
+  assert.notDeepEqual(normalizeCompatiblePair(mutated, executionPackages[1], searchPrograms[1], realizationOne).identity, compatiblePair.identity);
+});
+
+await runCase('reject-program-package-unknown-field', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.targetOperatingSystem = process.platform;
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_ROOT_FIELDS' });
+});
+
+await runCase('reject-program-package-native-option', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.nativeOptions = ['--use_fast_math'];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_ROOT_FIELDS' });
+});
+
+await runCase('reject-native-or-cuda-source', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.sourceUnits[0].source = '#include <cuda.h>\n'; mutated.sourceUnits[0].sourceIdentity.sha256 = sourceTextSha256(Buffer.from(mutated.sourceUnits[0].source));
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_SOURCE_BOUNDARY' });
+});
+
+await runCase('reject-source-digest-mismatch', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.sourceUnits[0].source += '// changed\n';
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_SOURCE_IDENTITY' });
+  const bounded = clone(programPackageFixtures[0].input); bounded.generator.maxSourceBytes = '1';
+  assert.throws(() => normalizeProgramPackageProfile(bounded, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_SOURCE_BOUNDS' });
+  const composedBound = clone(programPackageFixtures[0].input); composedBound.generator.maxSourceBytes = `${Math.max(...composedBound.sourceUnits.map(({ source }) => Buffer.byteLength(source, 'utf8')))}`;
+  assert.throws(() => normalizeProgramPackageProfile(composedBound, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_SOURCE_BOUNDS' });
+});
+
+await runCase('reject-source-function-omission', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.sourceUnits[0].functions = [];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_SOURCE_FUNCTIONS' });
+});
+
+await runCase('reject-function-source-mapping-gap', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.functions[0].sourceUnit = mutated.sourceUnits.at(-1).id;
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_FUNCTION_SOURCE' });
+});
+
+await runCase('reject-function-name-collision', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.functions[1].name = mutated.functions[0].name;
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_FUNCTION_SOURCE' });
+  const bounded = clone(programPackageFixtures[0].input); bounded.generator.maxFunctions = '1';
+  assert.throws(() => normalizeProgramPackageProfile(bounded, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_FUNCTION_BOUNDS' });
+});
+
+await runCase('reject-function-call-cycle', () => {
+  const mutated = clone(programPackageFixtures[0].input); const devices = mutated.functions.filter(({ kind }) => kind === 'device'); devices[0].calls = [devices[1].name]; devices[1].calls = [devices[0].name];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_FUNCTION_CYCLE' });
+  const bounded = clone(programPackageFixtures[0].input); const boundedDevices = bounded.functions.filter(({ kind }) => kind === 'device'); boundedDevices[0].calls = [boundedDevices[1].name]; bounded.generator.maxCallDepth = '1';
+  assert.throws(() => normalizeProgramPackageProfile(bounded, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_FUNCTION_DEPTH' });
+});
+
+await runCase('reject-kernel-call-target', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.functions.find(({ kind }) => kind === 'device').calls = ['engine_step'];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_FUNCTION_CALL' });
+});
+
+await runCase('reject-unsupported-device-js-helper', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.functions.find(({ kind }) => kind === 'device').helpers = ['gpu.native.cuda'];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_HELPER_UNSUPPORTED' });
+});
+
+await runCase('reject-helper-without-public-requirement', () => {
+  const mutated = clone(programPackageFixtures[0].input); const fn = mutated.functions.find(({ kind }) => kind === 'device'); const unit = mutated.sourceUnits.find(({ id }) => id === fn.sourceUnit); unit.source += '// gpu.atomic.storeReleaseDevice\n'; unit.sourceIdentity.sha256 = sourceTextSha256(Buffer.from(unit.source)); fn.helpers = ['gpu.atomic.store-release-device'];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_HELPER_REQUIREMENT' });
+});
+
+await runCase('reject-unselected-source-owner', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.sourceUnits[0].ownerProfile = 'owner.unselected';
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_SOURCE_OWNER' });
+});
+
+await runCase('reject-executable-provenance-gap', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.sourceUnits[0].provenance.trust = 'explicit-third-party';
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_PROVENANCE_TRUST' });
+});
+
+await runCase('reject-unavailable-public-capability-before-ignition', () => {
+  const fixture = programPackageFixtures[1]; const unavailable = new Set(fixture.context.availableRequirements); unavailable.delete('cuda-js.device-publication-release-acquire/0.1.0');
+  assert.throws(() => normalizeProgramPackageProfile(fixture.input, inspected, { ...fixture.context, availableRequirements: unavailable }), { code: 'COMPOSE_UNSUPPORTED_CAPABILITY' });
+});
+
+await runCase('reject-public-requirement-owner-gap', () => {
+  const mutated = clone(programPackageFixtures[1].input); mutated.publicRequirements[0].consumers = ['owner.unselected'];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[1].context), { code: 'COMPOSE_PUBLIC_REQUIREMENT_CONSUMER' });
+  const extra = clone(programPackageFixtures[0].input); const contract = clone(extra.publicRequirements[0].contract);
+  contract.id = 'cuda-js.unselected-capability/0.1.0'; contract.sha256 = 'f'.repeat(64);
+  extra.publicRequirements.push({ contract, consumers: [extra.id], qualification: 'portable' });
+  const availableRequirements = new Set(programPackageFixtures[0].context.availableRequirements); availableRequirements.add(contract.id);
+  assert.throws(() => normalizeProgramPackageProfile(extra, inspected, { ...programPackageFixtures[0].context, availableRequirements }), { code: 'COMPOSE_PUBLIC_REQUIREMENT_CLOSURE' });
+});
+
+await runCase('reject-resource-provider-mismatch', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.resources[0].capacity = `${BigInt(mutated.resources[0].capacity) + 1n}`;
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_RESOURCE_PROVIDER' });
+});
+
+await runCase('reject-resource-provider-omission', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.resources.pop();
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_RESOURCE_COVERAGE' });
+});
+
+await runCase('reject-operation-binding-omission', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.operations[0].bindings = [];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_OPERATION_BINDING' });
+});
+
+await runCase('reject-operation-entry-point-gap', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.operations[0].entryPoint = mutated.functions.find(({ kind }) => kind === 'device').name;
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_OPERATION_ENTRY' });
+});
+
+await runCase('reject-stage-effect-order-mutation', () => {
+  const mutated = clone(programPackageFixtures[1].input); const unit = mutated.programUnits.find(({ kind }) => kind === 'stage-capability'); unit.effectOrder.reverse();
+  if (unit.effectOrder.length > 1) assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[1].context), { code: 'COMPOSE_PROGRAM_UNIT_ORDER' });
+  else assert.equal(unit.effectOrder.length, 1);
+});
+
+await runCase('reject-program-unit-function-duplication', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.programUnits[1].functions = [...mutated.programUnits[0].functions];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_PROGRAM_UNIT_COVERAGE' });
+});
+
+await runCase('reject-deletion-owner-omission', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.deletion.records.pop();
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_DELETION_OWNER' });
+});
+
+await runCase('reject-deletion-source-coverage-gap', () => {
+  const mutated = clone(programPackageFixtures[0].input); const owner = mutated.deletion.records.find(({ sourceUnits }) => sourceUnits.length > 0); owner.sourceUnits = [];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_DELETION_COVERAGE' });
+  const misassigned = clone(programPackageFixtures[0].input); const sourceOwner = misassigned.deletion.records.find(({ sourceUnits }) => sourceUnits.length > 0); const wrongOwner = misassigned.deletion.records.find(({ owner: id }) => id !== sourceOwner.owner);
+  wrongOwner.sourceUnits.push(sourceOwner.sourceUnits[0]);
+  assert.throws(() => normalizeProgramPackageProfile(misassigned, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_DELETION_OWNERSHIP' });
+});
+
+await runCase('reject-package-profile-program-mismatch', () => {
+  assert.throws(() => buildExecutionPackage(programPackageProfiles[0], searchPrograms[1]), { code: 'COMPOSE_PACKAGE_INPUT' });
+});
+
+await runCase('reject-private-cuda-js-realization-field', () => {
+  const mutated = buildCudaJsRealizationFixture(executionPackages[1], 'private-field'); mutated.ptx = '// private';
+  assert.throws(() => normalizeCudaJsRealization(mutated, executionPackages[1]), { code: 'COMPOSE_REALIZATION_FIELDS' });
+});
+
+await runCase('reject-incomplete-cuda-js-realization-resources', () => {
+  const mutated = buildCudaJsRealizationFixture(executionPackages[1], 'resource-gap'); mutated.resources.pop();
+  assert.throws(() => normalizeCudaJsRealization(mutated, executionPackages[1]), { code: 'COMPOSE_REALIZATION_COVERAGE' });
+});
+
+await runCase('reject-compatible-pair-package-mismatch', () => {
+  const mutated = clone(compatiblePairInput); mutated.cudaMcgs.executionPackage = syntheticContentIdentity('wrong-package');
+  assert.throws(() => normalizeCompatiblePair(mutated, executionPackages[1], searchPrograms[1], realizationOne), { code: 'COMPOSE_PAIR_MCGS' });
+});
+
+await runCase('reject-compatible-pair-capability-mismatch', () => {
+  const mutated = clone(compatiblePairInput); mutated.cudaJs.capabilities.pop();
+  assert.throws(() => normalizeCompatiblePair(mutated, executionPackages[1], searchPrograms[1], realizationOne), { code: 'COMPOSE_PAIR_CAPABILITY' });
+});
+
+await runCase('reject-reference-pair-native-qualification-claim', () => {
+  const mutated = clone(compatiblePairInput); mutated.claim = { scope: 'native', qualification: 'exact-compatible-pair', native: true };
+  assert.throws(() => normalizeCompatiblePair(mutated, executionPackages[1], searchPrograms[1], realizationOne), { code: 'COMPOSE_PAIR_CLAIM' });
+});
+
+await runCase('reject-compatible-pair-private-field', () => {
+  const mutated = clone(compatiblePairInput); mutated.cudaJs.cachePath = 'private';
+  assert.throws(() => normalizeCompatiblePair(mutated, executionPackages[1], searchPrograms[1], realizationOne), { code: 'COMPOSE_PAIR_CUDA_JS_FIELDS' });
 });
 
 await runCase('policy-evaluator-mode-matrix', () => {
@@ -5168,7 +5596,7 @@ await runCase('channel-reference-cancellation-preserves-borrow-accounting', () =
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 781,
+  expected: 839,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -5176,7 +5604,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 781 - cases.length,
+  notDiscovered: 839 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -5197,6 +5625,10 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/session-profile.schema.json',
   'schemas/search-ir/0.2.0/stage-profile.schema.json',
   'schemas/search-ir/0.2.0/channel-profile.schema.json',
+  'schemas/search-ir/0.2.0/program-package-profile.schema.json',
+  'schemas/search-ir/0.2.0/search-program.schema.json',
+  'schemas/search-ir/0.2.0/execution-package.schema.json',
+  'schemas/search-ir/0.2.0/compatible-pair-record.schema.json',
   'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
   'experiments/search-ir-composer-reference/src/catalog.mjs',
   'experiments/search-ir-composer-reference/src/validation.mjs',
@@ -5221,6 +5653,8 @@ const sourcePaths = [
   'experiments/search-ir-composer-reference/src/stage-fixtures.mjs',
   'experiments/search-ir-composer-reference/src/channel.mjs',
   'experiments/search-ir-composer-reference/src/channel-fixtures.mjs',
+  'experiments/search-ir-composer-reference/src/program-package.mjs',
+  'experiments/search-ir-composer-reference/src/program-package-fixtures.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -5256,6 +5690,10 @@ const evidence = {
   channelDeletedStageProfileIdentity: channelDeletedStageResult ? { id: channelDeletedStageResult.normalized.id, ...channelDeletedStageResult.identity } : null,
   channelProfileIdentities: channelProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   channelFirstProductDeletedIdentity: channelDeletedProfile ? { id: channelDeletedProfile.normalized.id, ...channelDeletedProfile.identity } : null,
+  programPackageProfileIdentities: programPackageProfiles?.map(({ normalized, identity, semanticEngineIdentity: engine }) => ({ id: normalized.id, ...identity, semanticEngineSha256: engine.sha256 })) ?? [],
+  searchProgramIdentities: searchPrograms?.map(({ normalized, identity }) => ({ id: normalized.compositionProfileIdentity.sha256, ...identity, sourceSha256: normalized.sourceIdentity.sha256 })) ?? [],
+  executionPackageIdentities: executionPackages?.map(({ normalized, identity }) => ({ id: normalized.program.identity.sha256, ...identity })) ?? [],
+  compatiblePairIdentity: compatiblePair ? { ...compatiblePair.identity } : null,
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
     classified: inspected?.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length ?? 0,
@@ -5278,7 +5716,8 @@ const evidence = {
     'Search Session evidence covers two strict selected instances plus terminal-only absence, bounded root/control/observation transactions, epoch/reuse/stale/reclamation/counter/lifecycle/cleanup checks and exact upstream owner bindings, not behavioral oracle, concurrent session execution, physical sideband realization, native or compatible-pair qualification.',
     'Search Stage evidence covers two materially different strict selected profiles, one same-profile first-product deletion projection, stable entry/exit surfaces, least-authority source-owner ports, deterministic capability order, finite resource/progress/counter/lifecycle closure and whole-substrate absence, not native execution or compatible-pair qualification.',
     'Async Stage Channel evidence covers strict optional selected/absent profiles, exact Stage action grants, finite resource/progress/item/claim/publication/cancellation/reclamation semantics, evaluator-like required request/result and advisory multi-borrow secondary work, first-product deletion and a bounded logical happens-before/ownership reference oracle. It does not select a CUDA queue/layout/topology or claim native publication; CUDA-JS #123 and exact compatible-pair qualification remain mandatory.',
-    'No complete program/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
+    'Program/package evidence covers four strict composition profiles, canonical restricted Device-JS Search Programs, consumer-neutral CUDA-JS request projections, opaque success/failure realization fixtures, exact first-consumer deletion and a complete reference-only compatible-pair record. It remains proposal evidence and does not claim CUDA-JS compilation, native artifacts, installed-package support or a qualified pair.',
+    'The reference Composer statically assembles exact owner-provided source snapshots and metadata; CUDA-JS still exclusively validates/lowers Device-JS syntax and owns all generated CUDA/native artifacts and runtime resources.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');

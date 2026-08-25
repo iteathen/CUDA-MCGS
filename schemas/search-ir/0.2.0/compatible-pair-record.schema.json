@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/compatible-pair-record.schema.json",
+  "title": "CUDA-MCGS and CUDA-JS exact compatible-pair record proposal evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "status", "cudaMcgs", "cudaJs", "environment", "evidence", "claim", "cleanup"],
+  "properties": {
+    "schema": { "const": "cuda-mcgs.compatible-pair-record/0.2.0" },
+    "status": { "enum": ["reference-fixture", "exact-compatible-pair"] },
+    "cudaMcgs": {
+      "type": "object", "additionalProperties": false, "required": ["repository", "revision", "package", "searchIr", "searchProgram", "executionPackage"],
+      "properties": { "repository": { "const": "iteathen/UMCGS" }, "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" }, "package": { "type": "string" }, "searchIr": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "searchProgram": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "executionPackage": { "$ref": "primitives.schema.json#/$defs/contentIdentity" } }
+    },
+    "cudaJs": {
+      "type": "object", "additionalProperties": false, "required": ["repository", "revision", "package", "apiSchema", "capabilities", "deviceProgram", "artifacts", "resources", "operations", "runtime"],
+      "properties": { "repository": { "const": "iteathen/CUDA-JS" }, "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" }, "package": { "type": "string" }, "apiSchema": { "$ref": "primitives.schema.json#/$defs/decimalUint" }, "capabilities": { "type": "array", "minItems": 2, "items": { "$ref": "primitives.schema.json#/$defs/schemaReference" } }, "deviceProgram": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "artifacts": { "type": "array", "minItems": 1, "items": { "$ref": "primitives.schema.json#/$defs/contentIdentity" } }, "resources": { "type": "array", "items": { "$ref": "primitives.schema.json#/$defs/contentIdentity" } }, "operations": { "type": "array", "minItems": 1, "items": { "$ref": "primitives.schema.json#/$defs/contentIdentity" } }, "runtime": { "$ref": "primitives.schema.json#/$defs/contentIdentity" } }
+    },
+    "environment": { "type": "object", "additionalProperties": false, "required": ["platform", "architecture", "device", "toolchain"], "properties": { "platform": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "architecture": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "device": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "toolchain": { "$ref": "primitives.schema.json#/$defs/contentIdentity" } } },
+    "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "primitives.schema.json#/$defs/contentIdentity" } },
+    "claim": { "type": "object", "additionalProperties": false, "required": ["scope", "qualification", "native"], "properties": { "scope": { "type": "string", "minLength": 1 }, "qualification": { "enum": ["reference-only", "exact-compatible-pair"] }, "native": { "type": "boolean" } } },
+    "cleanup": { "type": "object", "additionalProperties": false, "required": ["status", "disposition"], "properties": { "status": { "enum": ["complete", "retained-evidence", "quarantined"] }, "disposition": { "$ref": "primitives.schema.json#/$defs/schemaReference" } } }
+  },
+  "allOf": [
+    { "if": { "properties": { "status": { "const": "reference-fixture" } } }, "then": { "properties": { "claim": { "properties": { "qualification": { "const": "reference-only" }, "native": { "const": false } } } } } },
+    { "if": { "properties": { "status": { "const": "exact-compatible-pair" } } }, "then": { "properties": { "claim": { "properties": { "qualification": { "const": "exact-compatible-pair" }, "native": { "const": true } } } } } }
+  ]
+}
