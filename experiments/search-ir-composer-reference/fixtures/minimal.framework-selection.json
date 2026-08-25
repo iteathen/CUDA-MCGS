@@ -37,8 +37,8 @@
         "specificationIdentity": "CUDA-MCGS-SPEC-0010@0.1.0-draft",
         "sha256": "3a1ba6789648c47c8837713f9f61a0fd77ee4fa6fcfda8c24d1fd19f42895206"
       },
-      "schema": { "id": "cuda-mcgs.graph-profile/0.2.0", "version": "0.2.0", "sha256": "b5d167722bbe03ee1f728a2b9979419d4c5e2aced139076c144e6d65123b74a0" },
-      "identity": { "algorithm": "sha256", "sha256": "60474a30320dfa54ac10386397daf6618e06b2b8aafeb7259b64e4622470d654" }
+      "schema": { "id": "cuda-mcgs.graph-profile/0.2.0", "version": "0.2.0", "sha256": "607f67f008f7846346018b2c0837de6f20031bc9eed4ca442a85890508a5c716" },
+      "identity": { "algorithm": "sha256", "sha256": "0b2dfe8585e89898619cc1d60bb9407495a3efa80bd60357447ff236dc3e9e98" }
     },
     {
       "id": "owner.output",

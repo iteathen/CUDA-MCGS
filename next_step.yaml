@@ -1,11 +1,11 @@
 {
-  "schema_version": 41,
+  "schema_version": 42,
   "updated": "2026-08-25",
-  "status": "ready_for_ir_graph",
+  "status": "ready_for_ir_policy",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then proceed to pure Node.js/restricted Device-JS native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "05d4925b8241537d586d4e44672b4e23647bc297",
+    "cuda_mcgs_authority_input_baseline": "ee5b0348585842096324c315a079d05cbe64b9d4",
     "cuda_js_authority_baseline": "2135216b1a9fd88066a1c82b61ae533645eac9c2",
     "cuda_js_implementation_baseline": "b6062f691a27093df0e5d55e482e69ebbd39a9eb",
     "cuda_js_package": "cuda-js@0.1.0-alpha.6"
@@ -26,9 +26,9 @@
     "parent_plan_version": "CUDA-MCGS-V0/22",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": "docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md",
-    "active_leaf": "IR-GRAPH-01",
+    "active_leaf": "IR-POLICY-01",
     "ready_queued_leaves": [],
-    "next_action": "After IR-DOMAIN-01 integrates, implement only the SPEC-0010-owned Search IR 0.2.0 graph/storage profile schema, semantic normalizer, canonical/boundary/invalid fixtures and exact 93-requirement evidence classification. Consume domain identity/equality/history only through public semantic references; keep graph object/reference/region/transposition/path/reclamation ownership separate from policy, evaluator, scheduler and CUDA realization.",
+    "next_action": "After IR-GRAPH-01 integrates, implement only the SPEC-0008-owned Search IR 0.2.0 policy/backup profile schema, semantic normalizer, canonical/boundary/invalid fixtures and exact 91-requirement evidence classification. Consume domain and graph facts only through their public identities, ports and opaque owner-region contracts; keep scalar/zero-sum/ranking/formula, evaluator, scheduler and CUDA realization assumptions out of universal policy semantics.",
     "exit": "Strict schemas/metaschemas, canonical normalization, deterministic reference Composer/Search Program/package generation and structural deletion evidence represent every selected requirement needed by the 989-requirement proposal packet without inventing semantics or CUDA-specific implementation."
   },
   "deliverables": [

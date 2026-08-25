@@ -93,3 +93,69 @@ export function normalizeDecimalUint(value, label = 'decimal unsigned integer') 
   }
   return value;
 }
+
+export function compareDecimalUint(left, right) {
+  normalizeDecimalUint(left, 'left decimal unsigned integer');
+  normalizeDecimalUint(right, 'right decimal unsigned integer');
+  if (left.length !== right.length) return left.length < right.length ? -1 : 1;
+  return compareRaw(left, right);
+}
+
+export function addDecimalUint(left, right) {
+  normalizeDecimalUint(left, 'left decimal unsigned integer');
+  normalizeDecimalUint(right, 'right decimal unsigned integer');
+  let carry = 0;
+  let result = '';
+  for (let leftIndex = left.length - 1, rightIndex = right.length - 1; leftIndex >= 0 || rightIndex >= 0 || carry > 0; leftIndex -= 1, rightIndex -= 1) {
+    const sum = (leftIndex >= 0 ? left.charCodeAt(leftIndex) - 48 : 0)
+      + (rightIndex >= 0 ? right.charCodeAt(rightIndex) - 48 : 0)
+      + carry;
+    result = `${sum % 10}${result}`;
+    carry = Math.floor(sum / 10);
+  }
+  return result;
+}
+
+export function multiplyDecimalUint(left, right) {
+  normalizeDecimalUint(left, 'left decimal unsigned integer');
+  normalizeDecimalUint(right, 'right decimal unsigned integer');
+  if (left === '0' || right === '0') return '0';
+  const digits = Array(left.length + right.length).fill(0);
+  for (let leftIndex = left.length - 1; leftIndex >= 0; leftIndex -= 1) {
+    for (let rightIndex = right.length - 1; rightIndex >= 0; rightIndex -= 1) {
+      const position = leftIndex + rightIndex + 1;
+      const product = (left.charCodeAt(leftIndex) - 48) * (right.charCodeAt(rightIndex) - 48) + digits[position];
+      digits[position] = product % 10;
+      digits[position - 1] += Math.floor(product / 10);
+    }
+  }
+  return digits.join('').replace(/^0+/, '');
+}
+
+function subtractDecimalUint(left, right) {
+  let borrow = 0;
+  let result = '';
+  for (let leftIndex = left.length - 1, rightIndex = right.length - 1; leftIndex >= 0; leftIndex -= 1, rightIndex -= 1) {
+    let digit = left.charCodeAt(leftIndex) - 48 - borrow - (rightIndex >= 0 ? right.charCodeAt(rightIndex) - 48 : 0);
+    if (digit < 0) {
+      digit += 10;
+      borrow = 1;
+    } else {
+      borrow = 0;
+    }
+    result = `${digit}${result}`;
+  }
+  return result.replace(/^0+(?=[0-9])/, '');
+}
+
+export function modDecimalUint(dividend, divisor) {
+  normalizeDecimalUint(dividend, 'decimal dividend');
+  normalizeDecimalUint(divisor, 'decimal divisor');
+  if (divisor === '0') throw new RangeError('decimal divisor must be positive');
+  let remainder = '0';
+  for (const digit of dividend) {
+    remainder = `${remainder === '0' ? '' : remainder}${digit}`.replace(/^0+(?=[0-9])/, '');
+    while (compareDecimalUint(remainder, divisor) >= 0) remainder = subtractDecimalUint(remainder, divisor);
+  }
+  return remainder;
+}

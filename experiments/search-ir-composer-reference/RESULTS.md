@@ -68,3 +68,30 @@ The three normalized structural profile identities are:
 The domain schema has checkout-neutral source digest `34262bf95d2dff5fc450afb8c46f5fba2165b45f33a60918ea94a9f9302fe4e1`. The framework envelope now binds the first profile and has identity `a825105cdd6920fb53f64f5b2ea0960c7ba6c3e799ed2e674ae9de2265119c5a` over 10,422 canonical bytes. Coverage identity is `41610ceaa6ef2f796e25f2eaeae50722119034ce614e44f244a2921062794c87`; expanded requirement routing identity is `e2cc6b2ab14653a558bbdb12157b67ea83da995912984332532b74a17530942e`. Exactly 164 framework/domain requirements now have final evidence lanes; all remain partial, pending or deferred. The other 825 requirements remain pending their semantic-owner leaves.
 
 This slice is structural/normalizer evidence only. The synthetic schema and source identities are opaque fixture inputs, not executable implementations. Domain equality, history, production, transition, publication, cancellation and cleanup behavior still requires `ENGINE-REFERENCE-01`; publication/concurrency and compatible-pair behavior remains later native evidence. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
+
+## IR-GRAPH-01
+
+**Started:** 2026-08-25T01:54:07-07:00
+
+**Evidence completed:** 2026-08-25T02:21:41-07:00
+
+The expanded capsule passes 135/135 CUDA-free cases. It retains all catalog/foundation/domain cases and adds strict normalized graph-profile evidence across:
+
+- arbitrary-width finite arena and typed index/generation reference ranges with stale-reference rejection and no public raw address;
+- graph-owned object/layout regions separated from exact opaque domain/product owner regions and their independent lifecycle/schema identities;
+- collision-verified transposition sharing through domain public identity/equality ports, isolated nodes, bounded paths with identity-before-relation and protected root anchors;
+- release/acquire terminal-aware device publication contracts and reachable object lifecycles;
+- bounded reclamation with complete protection-source accounting, quiescence identity and generation advance before slot reuse;
+- explicit no-reclamation retention and stateless selections that retain no object, layout, port, resource, failure, diagnostic capacity or program residue; and
+- restricted Device-JS program-contribution identity with no allocator, scheduler, physical CUDA topology or native implementation selection.
+
+The four normalized structural profile identities are:
+
+- `graph.synthetic-transposing`: `0b2dfe8585e89898619cc1d60bb9407495a3efa80bd60357447ff236dc3e9e98` over 41,460 canonical bytes;
+- `graph.synthetic-reclaiming`: `c6c04b745d6d6aa3d990090f966871926c42b55c01938817f54029d9cd53e277` over 51,270 canonical bytes;
+- `graph.synthetic-isolated`: `ee7d117db4d4fc6840bcf919813199e791740865476c2dd3b2d6c67ccca8efb9` over 36,848 canonical bytes; and
+- `graph.synthetic-stateless`: `3cf2c09eab0f9097b3330ffc76fea8cf2a906d961e3481e82122147a75ef1d87` over 1,831 canonical bytes.
+
+The graph schema has checkout-neutral source digest `607f67f008f7846346018b2c0837de6f20031bc9eed4ca442a85890508a5c716`. The framework envelope now binds the first domain and graph profiles and has identity `3914da7de0b193fa8ae2f11439dd246555aef8f6fd180e44ce711e9118ca61f8` over 10,422 canonical bytes. Coverage identity is `0816937419296c51d69b2a5c1dda42682f52bbb28a81b97991e1df6f19694097`; expanded requirement routing identity is `4f91f07eae8f89f8a273532d64ac2eb03d58dd91407aa8b6e43c0b7dd0c68252`. Exactly 257 framework/domain/graph requirements now have final evidence lanes; all remain partial, pending or deferred. The other 732 requirements remain pending their semantic-owner leaves.
+
+This slice is structural/normalizer evidence only. It does not qualify concurrent reclamation, device memory ordering, a storage allocator, a search scheduler, CUDA-JS lowering or a compatible native pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
