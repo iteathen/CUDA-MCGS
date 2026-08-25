@@ -10,9 +10,12 @@
 
 This proposal defines the version-zero artifact realization for the **universal Stage Extension Surface substrate**. PTX is selected instead of device LTO for this profile. Artifact composition does not promote one capability or product into universal MCGS meaning.
 
+> **Revision required before acceptance:** [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) now prohibits CUDA-MCGS-authored or maintained PTX in production. References in this draft to CUDA-MCGS source-authored/generated Stage PTX describe the older proposal and are not implementation authority. The next revision must express CUDA-MCGS-owned semantics in restricted Device-JS/Search Program inputs and treat any CUDA-JS-generated PTX/cubin/LTO as opaque realization outputs while preserving the selected-only composition and zero-residue invariants.
+
 ## 1. Normative references
 
 - [`../decisions/ADR-0018-universal-core-extension-product-layering.md`](../decisions/ADR-0018-universal-core-extension-product-layering.md) owns core/extension/product separation.
+- [`../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) owns the pure Node/Device-JS production boundary and supersedes this draft's CUDA-MCGS-authored PTX realization assumptions.
 - [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) owns publication/resource foundations.
 - [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) owns foundational Search IR/normalization.
 - [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) proposes universal Search Stage/surface/base-context/capability semantics.
@@ -190,7 +193,7 @@ CUDA-JS owns:
 
 CUDA-JS MUST NOT interpret Search IR, stage IDs, capabilities, product/chess schemas, root updates, output meaning or search-resource policy. CUDA-MCGS MUST NOT reach through CUDA-JS public contracts into private handles.
 
-Source-authored relocatable PTX currently depends on the consumer-neutral CUDA-JS capability tracked in issue #35. Long-lived Search Session sideband behavior is separately tracked in CUDA-JS issue #38. Neither issue may be redefined with CUDA-MCGS/chess semantics.
+CUDA-JS now publishes generic Device-JS, artifact-composition and publication-mailbox capabilities at the reconciled peer baseline. Availability does not qualify this CUDA-MCGS profile: the revised semantic-input/artifact-output package still requires exact compatible-pair evidence under CUDA-JS issue #32. No CUDA-JS capability may be redefined with CUDA-MCGS/chess semantics.
 
 ## 11. Search Session/control boundary
 

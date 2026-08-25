@@ -2,14 +2,14 @@
 
 **Status:** Informational
 
-**Updated:** 2026-08-12
+**Updated:** 2026-08-24
 
 ## Current repository state
 
-The latest evidence-bearing protected `main` baseline before this documentation-only plan reconciliation is:
+The protected `main` input baseline for this authority reconciliation is:
 
 ```text
-ded3ef7d5257e28183a3b60c8fbff1f0ea8aed0b
+bfb31ea3d595a5f1851efffa96dc8986a01e490d
 ```
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
@@ -28,6 +28,8 @@ ADR-0018 separates:
 2. universal extension/composition mechanics;
 3. downstream domain/search products.
 
+ADR-0019 requires maintained CUDA-MCGS production source to be JavaScript only: ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts. CUDA-JS remains free to use JIT and native/CUDA implementation wherever needed or desired. The ADR preserves device-owned progress across narrow asynchronous observation/control/lifecycle interaction and makes an unnaturally expressed generic GPU mechanism a CUDA-JS capability-classification stop rather than authority for native CUDA-MCGS code.
+
 Extension-surface stability is schema/semantic stability, not unconditional runtime presence. Concrete ports/hooks/context/channels/storage are materialized only for selected capabilities; an absent capability contributes no solely extension-owned hot-path residue.
 
 SPEC-0001 and SPEC-0002 remain accepted foundational authority. SPEC-0000 and SPEC-0003 through SPEC-0006 remain proposals requiring review/revision before their owned production implementation.
@@ -44,19 +46,23 @@ Completed evidence is not reopened by the forward plan.
 
 ## CUDA-JS boundary
 
-Current peer `main` is protected CUDA-JS `83f44a21f6bf556f3ff6d58acaee644659777383`. Its latest implementation-bearing baseline is `fe9ed78939d3876790291421cec367fde58a8310`, package `cuda-js@0.1.0-alpha.5`; the later CUDA-JS revision is documentation/plan reconciliation only.
+Current peer `main` is CUDA-JS `b6062f691a27093df0e5d55e482e69ebbd39a9eb`, package `cuda-js@0.1.0-alpha.6`.
 
-CUDA-JS now implements portable/software:
+CUDA-JS now publishes the generic contract families needed for the current CUDA-MCGS boundary, including:
 
 - typed RDC (SPEC-0010);
 - extended scalar ABI (SPEC-0011);
 - Device LTO (SPEC-0012);
 - restricted Device-JS (SPEC-0013);
-- opaque operation lifecycle (SPEC-0016).
+- publication mailboxes (SPEC-0014);
+- opaque operation lifecycle (SPEC-0016);
+- bounded multi-operation scheduling (SPEC-0018);
+- asynchronous transfers (SPEC-0019);
+- scoped atomic observation (SPEC-0022).
 
-Those capabilities retain exact native qualification gates where required. CUDA-JS issue #38 / SPEC-0014 long-lived sideband remains proposal/portable-evidence work rather than accepted production support.
+Those capabilities retain exact native qualification and compatible-pair gates where required. CUDA-JS issue #32 remains open for the first frozen CUDA-MCGS/CUDA-JS compatible-pair evidence; the former issue #38 publication-mailbox gap is closed and integrated.
 
-The owner-directed production boundary remains: CUDA-MCGS owns search/domain/product semantics and restricted Device-JS/Search Program source; CUDA-JS owns CUDA-specific lowering/artifacts/compiler/ABI/runtime mechanics and generic GPU primitives. Maintained CUDA-MCGS production must not require a local CUDA-specific implementation escape path.
+The owner-directed production boundary remains: CUDA-MCGS owns JavaScript-only search/domain/product semantics and restricted Device-JS/Search Program source; CUDA-JS owns and may implement CUDA-specific lowering/artifacts/compiler/ABI/runtime mechanics and generic GPU primitives with JIT/native code. CUDA-MCGS must not require a local native/CUDA-specific escape path. A mechanism that cannot be expressed naturally through the current public contract is classified for consumer-neutral CUDA-JS ownership rather than forced into CUDA-MCGS.
 
 ## Current unfinished work
 
@@ -82,8 +88,8 @@ Chess remains a separately tracked downstream proposal and does not gate univers
 - core semantic contract families remain incomplete;
 - SPEC-0003/0004/0005/0006 are proposal-only;
 - complete Search IR/Composer specialization/resource identity is incomplete;
-- neutral native Device-JS DJS-2 and CUDA-MCGS external deletion/compatible-pair evidence are unfinished;
-- production generic sideband and SESSION-002 native live-session evidence are absent;
+- CUDA-MCGS external deletion/compatible-pair evidence is unfinished;
+- SESSION-002 native live-session evidence for the selected CUDA-JS mailbox profile is absent;
 - native Linux compatible-pair evidence is absent.
 
 Portable/reference/mechanism evidence is not native support. A missing optional execution capability is not automatically a blocker for a profile that does not select it.

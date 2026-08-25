@@ -35,6 +35,7 @@ const allowedTopLevelFiles = new Set([
   "GEMINI.md",
   "LICENSE",
   "LICENSE.md",
+  "LICENSING.md",
   "Makefile",
   "README.md",
   "SECURITY.md",

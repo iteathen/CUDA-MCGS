@@ -13,6 +13,7 @@ This proposal defines universal semantics for a long-lived Search Session that m
 ## 1. Normative references
 
 - [`../decisions/ADR-0018-universal-core-extension-product-layering.md`](../decisions/ADR-0018-universal-core-extension-product-layering.md) owns the universal-core / extension-substrate / product separation.
+- [`../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) owns the pure Node/Device-JS production boundary, narrow asynchronous host exceptions and missing CUDA-JS capability escalation rule.
 - [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) owns publication, graph incarnation, finite-resource and stop foundations.
 - [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) owns the accepted foundational Search IR representation and reference semantics within its scope.
 - [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) proposes internal Search Stage and extension-surface semantics.
@@ -28,6 +29,7 @@ This specification family owns:
 - Search Session identity and incarnation;
 - current logical search root and root epoch;
 - externally supplied root-update admission and commit semantics;
+- externally supplied attention/control change identity, admission and application semantics when selected;
 - old-epoch work disposition;
 - contract-selected state/statistics reuse across reroot;
 - separation of reroot from reclamation;
@@ -71,7 +73,13 @@ Root-relative work, paths, reservations, outputs, observations and product state
 
 A **root update** is an externally supplied Search Session input requesting a new accepted root. It is environment/domain input, not a host-selected internal search step.
 
-### 3.5 Session observation
+### 3.5 External attention/control change
+
+An **external attention/control change** is a bounded input expressing outside intent or environment state, such as a root, budget, priority, attention allocation or cancellation change selected by the concrete session profile. It is not a CPU-computed intermediate that tells the engine how to perform its next internal selection, scheduling, evaluation, expansion or backup step.
+
+The owning profile MUST declare the input schema/version, authority, identity/idempotence, finite capacity, generation/epoch scope, admission-before-mutation rule, publication/commit ordering, device-side application point, stale disposition, pressure outcome, cancellation/terminal interaction and observation visibility. Naming an input "attention" or "control" does not exempt it from device-closure requirements.
+
+### 3.6 Session observation
 
 A **Session observation** is a bounded immutable publication derived from completely published search state for a selected observation schema. Examples may include evaluation summaries, proof state, frontier summaries, diagnostics, search-quality data, or product-defined ranked candidates. These examples do not make any one payload universal.
 
@@ -86,6 +94,10 @@ SESSION-003. Observation requests/reads MUST NOT be required to unlock internal 
 SESSION-004. A root update may change the environment/domain fact that defines the current search root. That external fact does not authorize a host micro-step loop for internal search progression.
 
 SESSION-005. Internal Search Stages and Async Stage Channels remain device-owned mechanisms. External Search Session control/observation ports are a separate boundary and MUST NOT be represented as arbitrary internal extension callbacks.
+
+SESSION-006. A host observation-to-decision-to-control-write, polling/relaunch or callback loop MUST NOT be required to advance internal search. An externally supplied control change MAY alter an accepted outside objective or environment fact, but it MUST NOT encode a CPU-selected next internal search step.
+
+SESSION-007. Control application and observation publication MUST be independently progress-safe: delayed input, absent input, delayed reads or absent reads cannot leave internal search waiting for host participation unless the selected stopping/cancellation contract has already ended active search.
 
 ## 5. Root-update validation and admission
 
@@ -276,7 +288,7 @@ At minimum, when enabled, it MUST represent:
 
 The CUDA-MCGS-to-CUDA-JS package MUST express only the generic mechanism requirements needed to realize those selected ports. CUDA-JS MUST NOT interpret root identity, reroot, chess moves, observation payloads, ranking or MCGS semantics.
 
-The current CUDA-JS bounded terminal-wait execution profile is not by itself evidence for a long-lived Search Session with sideband control/observation. The consumer-neutral capability tracked in CUDA-JS issue #38 remains a compatibility dependency for native acceptance of that profile.
+CUDA-JS SPEC-0014 publication mailboxes provide an accepted generic asynchronous mechanism, but their availability is not CUDA-MCGS Search Session qualification. Any selected live-session profile still requires exact compatible-pair evidence for its declared control/observation schemas, concurrency, visibility, finite pressure, cancellation and teardown semantics.
 
 ## 15. Conformance requirements
 

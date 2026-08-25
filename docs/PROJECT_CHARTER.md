@@ -44,6 +44,8 @@ Chess search is a separately specified product layer. Chess legal-move ranking, 
 
 CUDA-MCGS does **not** own generic Node.js/CUDA Driver bindings, CPU-call ABI generation, native/JIT packaging, generic memory primitives, NVRTC/link/load plumbing, event-loop delivery, or generic CUDA resource handles. Those responsibilities belong to the independent `iteathen/CUDA-JS` repository under ADR-0014.
 
+Under [`ADR-0019`](decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md), maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS submitted through public CUDA-JS contracts. It does not own or maintain C/C++, CUDA C++, native addons, direct FFI/Driver access, hand-authored PTX, embedded CUDA source, or a subprocess native search implementation. This does not restrict CUDA-JS: CUDA-JS may use JIT, native code and CUDA-specific implementation wherever needed or desired behind its consumer-neutral public contracts. Its generated device artifacts are opaque versioned outputs to CUDA-MCGS.
+
 ## Ecosystem language policy
 
 Python is prohibited throughout CUDA-MCGS, CUDA-JS, and every future project whose primary purpose is to build, test, package, release, operate, or extend the CUDA-MCGS ecosystem.
@@ -64,9 +66,19 @@ The external CUDA runtime contract must not become a back door for embedding one
 
 After search ignition, no active selection, expansion, transition, legality/domain analysis, evaluation, backup, scheduling, stopping decision, or selected search-semantic output computation may require a CPU-produced intermediate result.
 
-The host may configure, compile, load, allocate, launch, publish bounded external Search Session inputs through an accepted sideband contract, request cancellation asynchronously, observe bounded published outputs, and consume completed results through CUDA-JS. It must not become an oracle or progress coordinator on the active-search critical path.
+The host may configure, compile, load, allocate and launch before ignition. After ignition it may asynchronously read bounded coherent observations/results, submit externally supplied attention/root/budget/priority or other accepted control changes, request cancellation, and perform completion/error/teardown lifecycle work through CUDA-JS. Those operations must have finite, versioned, generation-scoped admission/publication semantics and must not become an oracle or progress coordinator on the active-search critical path.
 
 Externally supplied domain facts such as a new accepted search root are inputs to the Search Session, not host-owned internal search decisions.
+
+An observation-to-host-decision-to-control-write, polling/relaunch, or callback loop that is required to advance internal search is non-conforming. Delayed or absent observation consumption must not block search progress.
+
+## CUDA-JS capability escalation rule
+
+CUDA-MCGS uses an existing CUDA-JS public contract only when it expresses the needed generic GPU mechanism naturally, safely, with bounded resources/lifecycle, and without distorting search semantics. A requirement that would otherwise invite C/C++, CUDA-specific source, private imports, host progression, unsafe synchronization, artificial kernel fragmentation, or duplicated generic lifecycle is treated as a potential CUDA-JS capability gap rather than forced into CUDA-MCGS.
+
+The inclination to reach for native code in CUDA-MCGS is enough to trigger this classification before implementation. It is evidence that CUDA-JS may be incomplete, not permission to create the native path and not by itself proof that the capability belongs in CUDA-JS.
+
+A promoted CUDA-JS capability must be consumer-neutral, independently qualified, and explicit about ownership, exclusions, resources, synchronization, failure, cancellation, teardown, compatibility and first-consumer deletion. CUDA-MCGS retains all search/domain/evaluator/product policy; if the need cannot be described without that policy, the CUDA-MCGS design is reconsidered instead of exporting it.
 
 ## Resource rule
 

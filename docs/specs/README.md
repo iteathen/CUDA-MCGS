@@ -18,6 +18,8 @@ Accepted status governs only within declared scope. Proposal specifications supp
 
 The extension substrate is universal; a selected capability's payload is not automatically universal core meaning. Product-specific schemas must disappear with the product/capability rather than widening every Search Image.
 
+[`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) additionally governs every production proposal: ordinary Node.js plus restricted Device-JS is the maintained source boundary; post-ignition host interaction is narrow and asynchronous; and an unnatural expression of a generic GPU mechanism is classified as a CUDA-JS capability gap rather than implemented as native CUDA-MCGS code.
+
 ## Current accepted contracts
 
 - [`SPEC-0001-device-search-publication-and-resources.md`](SPEC-0001-device-search-publication-and-resources.md) — backend-neutral publication, graph identity/edge ownership, path-cycle ordering, finite-resource exhaustion, partial-result validity and scheduler-neutral conformance, version 0.1.0.
@@ -62,7 +64,7 @@ Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider 
 - [`SPEC-0000-framework-requirements.md`](SPEC-0000-framework-requirements.md) — framework map and cross-cutting three-layer conformance requirements.
 - [`SPEC-0003-search-stage-and-extension-surface.md`](SPEC-0003-search-stage-and-extension-surface.md) — universal Search Stage/surface/base-context/capability composition semantics and product-capability isolation.
 - [`SPEC-0004-async-stage-channels.md`](SPEC-0004-async-stage-channels.md) — bounded **internal** cross-stage/cross-surface dataflow, pending/ready progress, publication, pressure, cancellation and reclamation.
-- [`SPEC-0005-stage-ptx-and-search-image-composition.md`](SPEC-0005-stage-ptx-and-search-image-composition.md) — zero-or-one optional Stage PTX per stage, capability-specific specialization-only context, empty/product deletion, ABI/identity and cost gates.
+- [`SPEC-0005-stage-ptx-and-search-image-composition.md`](SPEC-0005-stage-ptx-and-search-image-composition.md) — older zero-or-one Stage PTX artifact proposal; selected-only/zero-residue invariants remain relevant, but its CUDA-MCGS-authored PTX assumptions require revision to restricted Device-JS inputs and opaque CUDA-JS-generated outputs under ADR-0019 before acceptance.
 - [`SPEC-0006-search-session-control-and-observation.md`](SPEC-0006-search-session-control-and-observation.md) — generic long-lived Search Session/root-update admission/root epochs/stale work/reuse/reclamation and read-only bounded observation semantics, without requiring ranked actions.
 
 These proposals do not authorize production lowering. The complete Search IR must represent selected universal semantics plus namespaced capability/product inputs without promoting first-product fields into universal core meaning.

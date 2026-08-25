@@ -105,6 +105,8 @@ Downstream products consume universal contracts; they do not define them. Produc
 
 Generic Node/V8 bindings, CUDA Driver call machinery, generic memory providers, NVRTC/link/load, generic long-lived sideband mechanisms, launch/completion/error/teardown, and generic runtime packaging belong to independent `iteathen/CUDA-JS` and must not become CUDA-MCGS component/product entries.
 
+Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts. CUDA-JS may use JIT, native code and CUDA-specific implementation wherever needed or desired behind those contracts. A generic GPU mechanism that cannot be expressed naturally, safely and with bounded lifecycle/resource semantics through the current surface is classified for consumer-neutral CUDA-JS ownership under ADR-0019; it is not a new CUDA-MCGS native component. Search/domain/evaluator/product policy remains in the owning CUDA-MCGS boundary.
+
 ## Adding, changing, archiving, or removing a registry entry
 
 A coherent change must include:
