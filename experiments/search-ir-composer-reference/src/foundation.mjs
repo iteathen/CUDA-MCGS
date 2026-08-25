@@ -50,26 +50,26 @@ const IDENTITY_POLICY = Object.freeze({
   targetIndependent: true,
 });
 
-function assertNamespacedId(value, code, label) {
+export function assertNamespacedId(value, code, label) {
   assertString(value, /^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$/, code, label);
 }
 
-function assertVersion(value, code, label) {
+export function assertVersion(value, code, label) {
   assertString(value, /^[0-9]+\.[0-9]+\.[0-9]+$/, code, label);
 }
 
-function assertSha256(value, code, label) {
+export function assertSha256(value, code, label) {
   assertString(value, /^[0-9a-f]{64}$/, code, label);
 }
 
-function normalizeContentIdentity(input, code, label) {
+export function normalizeContentIdentity(input, code, label) {
   exactKeys(input, ['algorithm', 'sha256'], code, label);
   if (input.algorithm !== 'sha256') fail(code, `${label} algorithm must be sha256`);
   assertSha256(input.sha256, code, `${label} sha256`);
   return { algorithm: 'sha256', sha256: input.sha256 };
 }
 
-function normalizeSchemaReference(input, label) {
+export function normalizeSchemaReference(input, label) {
   exactKeys(input, ['id', 'version', 'sha256'], 'FOUNDATION_PROFILE_SCHEMA', label);
   assertString(input.id, /^[a-z][a-z0-9.-]+\/[0-9]+\.[0-9]+\.[0-9]+$/, 'FOUNDATION_PROFILE_SCHEMA', `${label} id`);
   assertVersion(input.version, 'FOUNDATION_PROFILE_VERSION', `${label} version`);

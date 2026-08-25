@@ -151,6 +151,7 @@ required=(
   schemas/search-ir/0.2.0/requirement-coverage.json
   schemas/search-ir/0.2.0/primitives.schema.json
   schemas/search-ir/0.2.0/framework-selection.schema.json
+  schemas/search-ir/0.2.0/domain-profile.schema.json
   experiments/search-ir-reference/README.md
   experiments/search-ir-reference/RESULTS.md
   experiments/search-ir-reference/fixtures/baseline.search-ir.json
@@ -166,6 +167,8 @@ required=(
   experiments/search-ir-composer-reference/src/catalog.mjs
   experiments/search-ir-composer-reference/src/validation.mjs
   experiments/search-ir-composer-reference/src/foundation.mjs
+  experiments/search-ir-composer-reference/src/domain.mjs
+  experiments/search-ir-composer-reference/src/domain-fixtures.mjs
   experiments/search-ir-composer-reference/run.mjs
   experiments/ptx-extension-composition-prototype/README.md
   experiments/ptx-extension-composition-prototype/RESULTS.md

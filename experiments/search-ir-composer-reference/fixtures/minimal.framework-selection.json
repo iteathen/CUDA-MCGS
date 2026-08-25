@@ -25,8 +25,8 @@
         "specificationIdentity": "CUDA-MCGS-SPEC-0007@0.1.0-draft",
         "sha256": "69512d49a4b0c5aae055bbba5c0a152db129f54037d7933f7f3b044a2547ad39"
       },
-      "schema": { "id": "cuda-mcgs.domain-profile/0.2.0", "version": "0.2.0", "sha256": "0595c80af06026b238f1e5bad99dd7c7765b32d59b39779e703a71d885afe8a6" },
-      "identity": { "algorithm": "sha256", "sha256": "62330e6c9d8b330e1e5d120d4ce4d577990e1a9ffbbe4886f237be64e6fdf6f6" }
+      "schema": { "id": "cuda-mcgs.domain-profile/0.2.0", "version": "0.2.0", "sha256": "34262bf95d2dff5fc450afb8c46f5fba2165b45f33a60918ea94a9f9302fe4e1" },
+      "identity": { "algorithm": "sha256", "sha256": "29e77567df47d4aeb63660ae22c344d1a4b9d5eb68ebb30aadde80905d0f2b0d" }
     },
     {
       "id": "owner.graph",

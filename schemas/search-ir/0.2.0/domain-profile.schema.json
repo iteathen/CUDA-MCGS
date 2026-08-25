@@ -1,0 +1,465 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/domain-profile.schema.json",
+  "title": "CUDA-MCGS Search IR 0.2.0 domain profile",
+  "description": "Closed product-neutral domain-owned state, action, history, role, transition, outcome and semantic-port selection. It contains no graph, policy, evaluator, scheduler, output-publication or CUDA mechanism meaning.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "representation", "status", "contract", "id", "version", "valueSchemas", "identity", "history", "rootForms", "roles", "actionSources", "transitionModes", "ports", "resources", "failures", "diagnostics", "compatibility", "programContribution", "productData"],
+  "properties": {
+    "schema": { "const": "cuda-mcgs.domain-profile/0.2.0" },
+    "representation": { "const": "cuda-mcgs.search-ir/0.2.0" },
+    "status": { "const": "proposal-evidence" },
+    "contract": { "$ref": "primitives.schema.json#/$defs/catalogContractReference" },
+    "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+    "version": { "$ref": "primitives.schema.json#/$defs/version" },
+    "valueSchemas": { "type": "array", "minItems": 17, "items": { "$ref": "#/$defs/valueSchema" } },
+    "identity": { "$ref": "#/$defs/identity" },
+    "history": { "$ref": "#/$defs/history" },
+    "rootForms": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/rootForm" } },
+    "roles": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/role" } },
+    "actionSources": { "type": "array", "items": { "$ref": "#/$defs/actionSource" } },
+    "transitionModes": { "type": "array", "items": { "$ref": "#/$defs/transitionMode" } },
+    "ports": { "type": "array", "minItems": 10, "items": { "$ref": "#/$defs/port" } },
+    "resources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/resource" } },
+    "failures": { "type": "array", "minItems": 12, "items": { "$ref": "#/$defs/failure" } },
+    "diagnostics": { "$ref": "#/$defs/diagnostics" },
+    "compatibility": { "$ref": "#/$defs/compatibility" },
+    "programContribution": { "$ref": "#/$defs/programContribution" },
+    "productData": { "type": "array", "items": { "$ref": "#/$defs/productData" } }
+  },
+  "$defs": {
+    "decimalUint": { "$ref": "primitives.schema.json#/$defs/decimalUint" },
+    "semanticRole": {
+      "enum": ["action", "action-cursor", "action-key", "diagnostic", "history", "identity-key", "operation-status", "path-relation", "random-input", "role-key", "root-descriptor", "state", "terminal-outcome", "transition-input", "transition-metadata", "transition-output", "truth-value"]
+    },
+    "valueSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "semanticRole", "schema", "family", "maxEncodedBytes", "alignmentBytes", "memorySpaces", "decoding"],
+      "properties": {
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "semanticRole": { "$ref": "#/$defs/semanticRole" },
+        "schema": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "family": { "enum": ["unit", "fixed-record", "variable-record", "tagged-union", "scalar", "vector", "namespaced"] },
+        "maxEncodedBytes": { "$ref": "#/$defs/decimalUint" },
+        "alignmentBytes": { "$ref": "#/$defs/decimalUint" },
+        "memorySpaces": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["host-admission", "device-search", "device-publication", "durable"] }
+        },
+        "decoding": { "enum": ["canonical-bytes", "profile-semantic-equivalence"] }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "keyValue", "stateEquality", "actionEquality", "actionScope", "collisionVerification", "behaviorFacts", "readyPayloads"],
+      "properties": {
+        "scope": { "enum": ["engine-incarnation", "session-incarnation", "persistence-namespace"] },
+        "keyValue": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "stateEquality": { "enum": ["canonical-bytes", "semantic-port"] },
+        "actionEquality": { "enum": ["canonical-bytes", "semantic-port"] },
+        "actionScope": { "$ref": "#/$defs/actionScope" },
+        "collisionVerification": { "const": "authoritative-equality-port" },
+        "behaviorFacts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" }
+        },
+        "readyPayloads": { "const": "immutable" }
+      }
+    },
+    "actionScope": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "const": "origin-state-view-and-production-incarnation" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "transferContract"],
+          "properties": {
+            "kind": { "const": "profile-transferable" },
+            "transferContract": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
+          }
+        }
+      ]
+    },
+    "history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["disposition", "valueSchema", "identityParticipation", "finiteRule", "reuse"],
+      "properties": {
+        "disposition": { "enum": ["embedded", "carried", "hybrid", "none"] },
+        "valueSchema": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "identityParticipation": { "enum": ["embedded-state", "carried-history", "state-and-history", "none"] },
+        "finiteRule": { "$ref": "#/$defs/finiteHistoryRule" },
+        "reuse": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/reuse" }
+        }
+      }
+    },
+    "finiteHistoryRule": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "const": "none" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "bound", "exhaustion"],
+          "properties": {
+            "kind": { "enum": ["maximum-depth", "exact-summary"] },
+            "bound": { "$ref": "#/$defs/decimalUint" },
+            "exhaustion": { "const": "domain-history-exhausted" }
+          }
+        }
+      ]
+    },
+    "reuse": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["boundary", "disposition"],
+          "properties": {
+            "boundary": { "enum": ["reroot", "restart", "persistence"] },
+            "disposition": { "enum": ["invalid", "resettable", "valid"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["boundary", "disposition", "adapter"],
+          "properties": {
+            "boundary": { "enum": ["reroot", "restart", "persistence"] },
+            "disposition": { "const": "transformable" },
+            "adapter": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
+          }
+        }
+      ]
+    },
+    "rootForm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "authority", "schema", "valueSchema"],
+      "properties": {
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "authority": { "enum": ["complete-state", "product-authority", "external-environment", "namespaced"] },
+        "schema": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "valueSchema": { "$ref": "primitives.schema.json#/$defs/namespacedId" }
+      }
+    },
+    "role": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "category", "terminal", "terminalOutcomeValue"],
+          "properties": {
+            "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "category": { "enum": ["terminal", "custom"] },
+            "terminal": { "const": true },
+            "terminalOutcomeValue": { "$ref": "primitives.schema.json#/$defs/namespacedId" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "category", "terminal", "selectorAuthority", "actionSources", "transitionMode", "successorRoles", "zeroActionDisposition"],
+          "properties": {
+            "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "category": { "enum": ["decision", "chance", "automatic", "observation", "custom"] },
+            "terminal": { "const": false },
+            "selectorAuthority": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "actionSources": { "type": "array", "minItems": 1, "maxItems": 1, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+            "transitionMode": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "successorRoles": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+            "zeroActionDisposition": { "$ref": "primitives.schema.json#/$defs/namespacedId" }
+          }
+        }
+      ]
+    },
+    "actionSource": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "mode", "ordering", "multiplicity", "cursorValue", "candidateValue", "maxActions", "bounds", "completion", "randomness", "semantics"],
+          "properties": {
+            "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "kind": { "const": "intrinsic" },
+            "mode": { "enum": ["exhaustive", "paged", "sparse", "lazy", "sampled", "custom"] },
+            "ordering": { "enum": ["semantic", "non-semantic"] },
+            "multiplicity": { "enum": ["unique", "repeatable-sample"] },
+            "cursorValue": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "candidateValue": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "maxActions": { "$ref": "#/$defs/decimalUint" },
+            "bounds": { "$ref": "#/$defs/executionBounds" },
+            "completion": { "enum": ["complete", "finite-complete", "budget-bounded-open", "sample-bounded", "custom"] },
+            "randomness": { "$ref": "#/$defs/randomness" },
+            "semantics": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "ordering", "multiplicity", "candidateValue", "producerContract", "producerSchema", "candidateAuthority"],
+          "properties": {
+            "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "kind": { "const": "admitted-proposal" },
+            "ordering": { "enum": ["semantic", "non-semantic"] },
+            "multiplicity": { "enum": ["unique", "repeatable-sample"] },
+            "candidateValue": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "producerContract": { "$ref": "primitives.schema.json#/$defs/contractReference" },
+            "producerSchema": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+            "candidateAuthority": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "members", "ordering", "multiplicity", "deduplication", "completion"],
+          "properties": {
+            "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "kind": { "const": "combined" },
+            "members": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+            "ordering": { "enum": ["semantic", "non-semantic"] },
+            "multiplicity": { "enum": ["unique", "repeatable-sample"] },
+            "deduplication": { "enum": ["domain-equality", "preserve-multiplicity"] },
+            "completion": { "enum": ["all-complete", "budget-bounded"] }
+          }
+        }
+      ]
+    },
+    "randomness": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "maxInputs"],
+          "properties": { "kind": { "const": "none" }, "maxInputs": { "const": "0" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "maxInputs", "semantics"],
+          "properties": {
+            "kind": { "const": "explicit-input" },
+            "maxInputs": { "$ref": "#/$defs/decimalUint" },
+            "semantics": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
+          }
+        }
+      ]
+    },
+    "transitionMode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "inputValue", "outputValue", "metadataValue", "randomness", "observation", "numericRules", "semantics"],
+      "properties": {
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "kind": { "enum": ["deterministic", "explicit-outcome", "sampled-stochastic", "observation-bearing", "custom"] },
+        "inputValue": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "outputValue": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "metadataValue": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "randomness": { "$ref": "#/$defs/randomness" },
+        "observation": { "enum": ["none", "successor-state", "transition-metadata", "history-update", "domain-port"] },
+        "numericRules": { "type": "array", "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/schemaReference" } },
+        "semantics": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
+      }
+    },
+    "executionBounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxWorkUnits", "maxReads", "maxWrites", "maxRandomInputs", "cancellationObservationWorkUnits"],
+      "properties": {
+        "maxWorkUnits": { "$ref": "#/$defs/decimalUint" },
+        "maxReads": { "$ref": "#/$defs/decimalUint" },
+        "maxWrites": { "$ref": "#/$defs/decimalUint" },
+        "maxRandomInputs": { "$ref": "#/$defs/decimalUint" },
+        "cancellationObservationWorkUnits": { "$ref": "#/$defs/decimalUint" }
+      }
+    },
+    "completion": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "const": "bounded" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "continuationValue", "maxResumptions", "partialPublication"],
+          "properties": {
+            "kind": { "const": "resumable" },
+            "continuationValue": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "maxResumptions": { "$ref": "#/$defs/decimalUint" },
+            "partialPublication": { "const": "forbidden" }
+          }
+        }
+      ]
+    },
+    "port": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "contract", "inputs", "outputs", "failures", "bounds", "completion"],
+      "properties": {
+        "id": { "enum": ["action-key", "advance-history", "apply-transition", "classify-path-relation", "classify-role", "equal-action", "equal-state", "identity-key", "produce-actions", "terminal-outcome", "validate-action", "validate-root"] },
+        "contract": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "inputs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+        "outputs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+        "failures": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+        "bounds": { "$ref": "#/$defs/executionBounds" },
+        "completion": { "$ref": "#/$defs/completion" }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "unit", "minimum", "maximum", "alignment", "memorySpaces", "scope", "pressureOutcome"],
+      "properties": {
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "unit": { "enum": ["bytes", "records", "items", "work-units", "random-inputs", "diagnostics"] },
+        "minimum": { "$ref": "#/$defs/decimalUint" },
+        "maximum": { "$ref": "#/$defs/decimalUint" },
+        "alignment": { "$ref": "#/$defs/decimalUint" },
+        "memorySpaces": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["host-admission", "device-search", "device-publication", "durable"] } },
+        "scope": { "enum": ["per-engine", "per-worker", "per-invocation"] },
+        "pressureOutcome": { "type": "string" }
+      }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "kind", "diagnostic"],
+      "properties": {
+        "code": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)*$" },
+        "kind": { "enum": ["input", "capacity", "cancellation", "compatibility", "exhaustion", "unsupported", "internal"] },
+        "diagnostic": { "type": "boolean" }
+      }
+    },
+    "diagnostics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority", "maxRecords", "maxBytes", "overflow"],
+      "properties": {
+        "authority": { "const": "non-authoritative" },
+        "maxRecords": { "$ref": "#/$defs/decimalUint" },
+        "maxBytes": { "$ref": "#/$defs/decimalUint" },
+        "overflow": { "enum": ["drop", "count", "terminal"] }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["crossProfileEquality", "persistence", "hostDeviceRepresentation"],
+      "properties": {
+        "crossProfileEquality": { "const": "false-unless-versioned-compatibility" },
+        "persistence": { "$ref": "#/$defs/persistence" },
+        "hostDeviceRepresentation": { "$ref": "#/$defs/hostDeviceRepresentation" }
+      }
+    },
+    "persistence": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "const": "none" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "encoding", "namespace", "integrity", "migration", "rollback", "partialWriteRecovery", "retention"],
+          "properties": {
+            "kind": { "const": "versioned" },
+            "encoding": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+            "namespace": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "integrity": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+            "migration": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+            "rollback": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+            "partialWriteRecovery": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+            "retention": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
+          }
+        }
+      ]
+    },
+    "hostDeviceRepresentation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "const": "identical" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "adapter", "roundTripEvidence"],
+          "properties": {
+            "kind": { "const": "versioned-adapter" },
+            "adapter": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+            "roundTripEvidence": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }
+          }
+        }
+      ]
+    },
+    "programContribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["language", "sourceIdentity", "inputs", "provenance"],
+      "properties": {
+        "language": { "const": "restricted-device-js" },
+        "sourceIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "schema", "identity"],
+            "properties": {
+              "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+              "schema": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+              "identity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }
+            }
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["origin", "revision", "license"],
+          "properties": {
+            "origin": { "enum": ["first-party", "third-party-reviewed"] },
+            "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+            "license": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "productData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ownerContract", "schema", "identity"],
+      "properties": {
+        "ownerContract": { "$ref": "primitives.schema.json#/$defs/namespacedContractReference" },
+        "schema": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "identity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }
+      }
+    }
+  }
+}

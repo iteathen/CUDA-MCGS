@@ -141,6 +141,19 @@ try {
     throw new Error("Search IR 0.2.0 coverage must partition exactly 989 classified/pending requirements");
   }
 
+  const domainProfileSchema = loadJsonCompatible(
+    path.join(root, "schemas", "search-ir", "0.2.0", "domain-profile.schema.json"),
+    "Search IR 0.2.0 domain profile schema",
+  );
+  if (domainProfileSchema.$schema !== "https://json-schema.org/draft/2020-12/schema"
+      || domainProfileSchema.properties?.schema?.const !== "cuda-mcgs.domain-profile/0.2.0"
+      || domainProfileSchema.properties?.representation?.const !== "cuda-mcgs.search-ir/0.2.0"
+      || domainProfileSchema.properties?.programContribution?.$ref !== "#/$defs/programContribution"
+      || domainProfileSchema.$defs?.programContribution?.properties?.language?.const !== "restricted-device-js"
+      || domainProfileSchema.additionalProperties !== false) {
+    throw new Error("Search IR 0.2.0 domain profile must remain closed proposal evidence with restricted Device-JS program contribution only");
+  }
+
   // Templates deliberately remain JSON-compatible so they need no YAML parser.
   for (const templatePath of immediateFiles(path.join(root, "agent_files", "templates"), (name) => name.endsWith(".yaml"))) {
     const data = loadJsonCompatible(templatePath, "JSON-compatible template");
