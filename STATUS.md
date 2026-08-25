@@ -42,7 +42,8 @@ SPEC-0001 and SPEC-0002 remain accepted foundational authority. SPEC-0000 and SP
 - bounded CUDA-only MCGS feasibility evidence, not universal authority;
 - bounded PTX extension-composition mechanism/cost evidence, not production CUDA ownership;
 - integrated SESSION-001-class CUDA-free learning evidence for admission-before-mutation, stale epochs, reroot/reclamation separation, generation-safe reuse and read-only observations;
-- integrated CUDA-free Connect Four MCGS reference/product experiment at the current evidence baseline, retained as a downstream semantic oracle rather than a universal template.
+- integrated CUDA-free Connect Four MCGS reference/product experiment at the current evidence baseline, retained as a downstream semantic oracle rather than a universal template; and
+- proposal Search IR 0.2.0 owner schemas plus deterministic static Composer evidence through `IR-COMPOSER-01`, including resolved material-default provenance, convenient/explicit canonical equivalence, removable-facade deletion and failure-atomic publication across 855/855 CUDA-free cases.
 
 Completed evidence is not reopened by the forward plan.
 
@@ -74,9 +75,9 @@ The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`]
 
 **ENGINE-EXTENSION-01** completed its proposal-packet scope through PR #87 at `main@0ba119f`. Its critical assessment/execution record is [`docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md`](docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md). SPEC-0003/0004/0005 are decision-complete 80/90/78-requirement optional stage/channel/restricted Device-JS composition proposals. Together with the core packet, they hand 989 unique proposal requirements to schema/reference work.
 
-Current focus is **ENGINE-IR-COMPOSER-01**. Its [critical assessment and focus map](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and sequences owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. `IR-CATALOG-01` through `IR-PROGRAM-PACKAGE-01` integrate through PR #111. The strict SPEC-0005 composition/Search Program/execution-package/compatible-pair schemas and static selected-only public CUDA-JS projection pass in the 839/839 CUDA-free capsule with all 989 requirements classified partial or deferred. `IR-COMPOSER-01` is the next dependency-ready leaf, including issue #109 resolved-input/default provenance and convenience-equivalence reconciliation. Production lowering remains blocked on integrated Composer/deletion reconciliation, reference evidence and the later semantic-acceptance/native gates.
+Current focus is **ENGINE-IR-COMPOSER-01**. Its [critical assessment and focus map](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and sequences owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. `IR-CATALOG-01` through `IR-PROGRAM-PACKAGE-01` integrate through PR #111. `IR-COMPOSER-01` adds a closed resolved-input envelope, exact material rule provenance, convenient/explicit identity equivalence, removable-facade deletion and failure-atomic publication; the expanded CUDA-free capsule passes 855/855 with all 989 requirements still classified partial or deferred. `IR-DELETION-ID-01` is the next dependency-ready leaf. Production lowering remains blocked on complete deletion/identity reconciliation, integrated reference evidence and the later semantic-acceptance/native gates.
 
-The 989-requirement proposal packet and its exact source digests remain frozen while this evidence node is active. ADR-0020 shapes the canonical normalization boundary without silently changing the packet. [Issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) queues resolved-input/default provenance and convenience-to-explicit equivalence for `IR-COMPOSER-01`, the next dependency-safe reconciliation before integrated semantic acceptance; exact public API spellings and SDK implementation remain later work.
+The 989-requirement proposal packet and its exact source digests remain frozen while this evidence node is active. ADR-0020 shapes the canonical normalization boundary without silently changing the packet. [Issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) retains future public API/SDK work; overload-like JavaScript invocation forms and later TypeScript overload signatures are suitable progressive-disclosure tools only when their shapes are unambiguous and every form resolves through the same canonical profile/package path. Exact class/function names and signatures remain later specification work.
 
 Project-owner direction plus CUDA-JS ADR-0006 require OS-neutral CUDA-MCGS contracts and engine architecture while making native Linux x86-64 the reference implementation and primary qualification platform for the first exact compatible pair. Ubuntu 24.04 LTS is the first exact CUDA-JS qualification cell. Existing Windows CUDA-JS evidence remains valid as a peer profile; it no longer determines CUDA-MCGS forward sequencing. This is a downstream realization/qualification choice only and does not alter or shortcut the active backend-neutral Search IR/semantic gates.
 
@@ -98,9 +99,9 @@ Chess remains a separately tracked downstream proposal and does not gate univers
 ## Claim limits / blockers
 
 - no production universal engine is accepted yet;
-- semantic-owner schema/normalizer/Composer representation beyond the active Search Session fragment and cross-owner deletion evidence are not implemented;
+- complete cross-profile deletion/identity reconciliation and behavioral reference evidence are not implemented;
 - CUDA-JS #123 release/acquire Device-JS publication helpers are integrated in `cuda-js@0.1.0-alpha.7`; their exact CUDA-MCGS channel-pair qualification remains downstream;
-- complete Search IR/Composer specialization identity is incomplete;
+- complete cross-profile deletion/specialization identity evidence is unfinished;
 - CUDA-MCGS external deletion/compatible-pair evidence is unfinished;
 - SESSION-002 native live-session evidence for the selected CUDA-JS mailbox profile is absent;
 - native Linux compatible-pair evidence is absent.

@@ -164,6 +164,7 @@ required=(
   schemas/search-ir/0.2.0/search-program.schema.json
   schemas/search-ir/0.2.0/execution-package.schema.json
   schemas/search-ir/0.2.0/compatible-pair-record.schema.json
+  schemas/search-ir/0.2.0/resolved-composer-input.schema.json
   experiments/search-ir-reference/README.md
   experiments/search-ir-reference/RESULTS.md
   experiments/search-ir-reference/fixtures/baseline.search-ir.json
@@ -201,6 +202,8 @@ required=(
   experiments/search-ir-composer-reference/src/channel-fixtures.mjs
   experiments/search-ir-composer-reference/src/program-package.mjs
   experiments/search-ir-composer-reference/src/program-package-fixtures.mjs
+  experiments/search-ir-composer-reference/src/composer.mjs
+  experiments/search-ir-composer-reference/src/composer-presets.mjs
   experiments/search-ir-composer-reference/run.mjs
 )
 
