@@ -6,7 +6,7 @@
 
 **Parent plan version:** `CUDA-MCGS-V0/22`
 
-**CUDA-MCGS input baseline:** protected `main` `8fab14205089f540376340c93e52e3bd0c96d1d2`.
+**CUDA-MCGS input baseline:** protected `main` `98caeb5276cb4c734f7521ca91857ed41febf70d`.
 
 **CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
 
@@ -54,12 +54,12 @@ The current CUDA-JS surface is not assumed complete. If a naturally generic GPU 
 
 **Current focus.** Production universal lowering remains blocked. This node makes the owning semantics decision-complete proposals; it does not claim acceptance before their schema/reference obligations have decisive evidence.
 
-The canonical execution record beneath accepted authority for this plan node—critical assessment, exact semantic focus-branch map, dependency graph, branch contracts, falsifiers, token posture, cleanup obligations and current leaf—is [`2026-08-24-engine-contract-01-assessment-and-plan.md`](2026-08-24-engine-contract-01-assessment-and-plan.md). `EC-DOMAIN-01`, `EC-GRAPH-01`, `EC-POLICY-01`, `EC-EVALUATOR-01` and `EC-OUTPUT-01` are integrated as proposals SPEC-0007, SPEC-0010, SPEC-0008, SPEC-0009 and SPEC-0013. `EC-RESOURCE-01` is the single active leaf. The universal semantic owner is **device-owned search progress**; physical scheduler mechanisms remain later profile selections.
+The canonical execution record beneath accepted authority for this plan node—critical assessment, exact semantic focus-branch map, dependency graph, branch contracts, falsifiers, token posture, cleanup obligations and current leaf—is [`2026-08-24-engine-contract-01-assessment-and-plan.md`](2026-08-24-engine-contract-01-assessment-and-plan.md). `EC-DOMAIN-01`, `EC-GRAPH-01`, `EC-POLICY-01`, `EC-EVALUATOR-01`, `EC-OUTPUT-01` and `EC-RESOURCE-01` are integrated as proposals SPEC-0007, SPEC-0010, SPEC-0008, SPEC-0009, SPEC-0013 and SPEC-0011. `EC-PROGRESS-01` is the single active leaf. The universal semantic owner is **device-owned search progress**; physical scheduler mechanisms remain later profile selections.
 
 Remaining work:
 
 - review/revise proposal SPEC-0000 against ADR-0018;
-- author the remaining explicit product-neutral owners for finite resources and device-owned progress semantics according to the focus-branch map;
+- author the remaining explicit product-neutral owner for device-owned progress semantics according to the focus-branch map;
 - review/revise SPEC-0006 Search Session/control/observation against those owners, including admission-before-mutation, root epochs, stale-work disposition, reroot/reclamation separation, reuse classifications, read-only observations and stale-safe finite counters;
 - ensure generic result/observation payloads do not imply ranking, scalar value, legal moves, games, or one evaluator shape;
 - keep Search Stage vocabulary out of core semantics unless a core contract actually requires it.
