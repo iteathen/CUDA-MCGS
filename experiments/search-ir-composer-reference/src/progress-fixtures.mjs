@@ -228,6 +228,8 @@ function buildProfile(profile, inspected, resourceResult) {
     },
   ];
   const sessionContributor = contributors.find(({ contract }) => contract.id === 'SPEC-0006');
+  const outputContributor = contributors.find(({ contract }) => contract.id === 'SPEC-0013');
+  const hasLiveOutput = resourcePlan.classes.some(({ contributor: owner, id }) => owner === outputContributor.id && id.endsWith('class-live-observation'));
   const selectedProgressContribution = resourcePlan.contributors.find(({ contract }) => contract.id === 'SPEC-0012');
   return {
     schema: 'cuda-mcgs.progress-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence',
@@ -255,7 +257,7 @@ function buildProfile(profile, inspected, resourceResult) {
       workClasses: workClasses.map(({ id }) => id), workAccounting: 'all-admitted-terminal', channels: 'all-required-terminal',
       ownerTransitions: 'ready-or-quarantined', resources: 'conservation-reconciled', terminalOutput: 'publishable-from-reserve',
       publication: schemaReference(`cuda-mcgs.synthetic-${profile}-closure-publication`), observationAckRequired: false,
-      outputBorrow: sessionContributor ? { kind: 'bounded-postsemantic', maximum: '1', teardown: schemaReference(`cuda-mcgs.synthetic-${profile}-output-borrow-teardown`) } : { kind: 'none' },
+      outputBorrow: hasLiveOutput ? { kind: 'bounded-postsemantic', maximum: '1', teardown: schemaReference(`cuda-mcgs.synthetic-${profile}-output-borrow-teardown`) } : { kind: 'none' },
       conflict: schemaReference(`cuda-mcgs.synthetic-${profile}-closure-conflict`),
     },
     lifecycle: {

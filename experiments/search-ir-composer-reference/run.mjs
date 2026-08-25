@@ -49,6 +49,12 @@ import {
   progressSyntheticContentIdentity,
   progressSyntheticSchemaReference,
 } from './src/progress-fixtures.mjs';
+import { normalizeOutputProfile } from './src/output.mjs';
+import {
+  buildOutputProfiles,
+  outputSyntheticContentIdentity,
+  outputSyntheticSchemaReference,
+} from './src/output-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -76,6 +82,7 @@ const policyProfileSchema = await readJson(path.join(schemaRoot, 'policy-profile
 const evaluatorProfileSchema = await readJson(path.join(schemaRoot, 'evaluator-profile.schema.json'));
 const resourceProfileSchema = await readJson(path.join(schemaRoot, 'resource-profile.schema.json'));
 const progressProfileSchema = await readJson(path.join(schemaRoot, 'progress-profile.schema.json'));
+const outputProfileSchema = await readJson(path.join(schemaRoot, 'output-profile.schema.json'));
 const frameworkSelectionInput = await readJson(path.join(experimentRoot, 'fixtures', 'minimal.framework-selection.json'));
 
 const cases = [];
@@ -100,7 +107,7 @@ await runCase('normalize-contract-set', () => {
 await runCase('normalize-requirement-coverage', () => {
   const normalized = normalizeRequirementCoverage(coverageInput);
   assert.equal(normalized.contracts.length, 12);
-  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 594, pending: 395 });
+  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 682, pending: 307 });
 });
 
 await runCase('canonical-order-independent', () => {
@@ -151,8 +158,8 @@ await runCase('coverage-owner-route-closure', () => {
 });
 
 await runCase('coverage-honest-classification-progress', () => {
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 594);
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 395);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 682);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 307);
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0000').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0007').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0008').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
@@ -1212,6 +1219,22 @@ await runCase('normalize-progress-profiles', async () => {
   ]);
 });
 
+let outputProfileInputs;
+let outputProfiles;
+let outputSchemaSha;
+let outputProgressResults;
+await runCase('normalize-output-profiles', async () => {
+  outputSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'output-profile.schema.json')));
+  outputProgressResults = progressProfiles.map((result) => ({ ...result, schemaSha: progressSchemaSha }));
+  outputProfileInputs = buildOutputProfiles(inspected, progressResourceResults, outputProgressResults);
+  outputProfiles = outputProfileInputs.map((input, index) => normalizeOutputProfile(input, inspected, progressResourceResults[index], outputProgressResults[index]));
+  assert.deepEqual(outputProfiles.map(({ normalized }) => normalized.id), [
+    'output.synthetic-evaluator-absent',
+    'output.synthetic-evaluator-workspace',
+    'output.synthetic-live-session',
+  ]);
+});
+
 await runCase('policy-evaluator-mode-matrix', () => {
   assert.deepEqual(policyProfiles.map(({ normalized }) => normalized.evaluatorMode), ['absent', 'combined', 'proposal-only', 'evaluation-only']);
   assert.equal(policyProfiles[0].normalized.value.family, 'scalar');
@@ -2252,6 +2275,32 @@ await runCase('resource-live-session-root-reserve', () => {
   assert(normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0006'));
 });
 
+await runCase('resource-live-output-terminal-isolation', () => {
+  const normalized = resourceProfiles[2].normalized;
+  const outputOwner = normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0013');
+  const outputClasses = normalized.classes.filter(({ contributor }) => contributor === outputOwner.id);
+  const terminal = outputClasses.find(({ id }) => id.endsWith('class-terminal-envelope'));
+  const observation = outputClasses.find(({ id }) => id.endsWith('class-live-observation'));
+  const terminalPartition = normalized.partitions.find(({ class: classId }) => classId === terminal.id);
+  const observationPartition = normalized.partitions.find(({ class: classId }) => classId === observation.id);
+  assert.notEqual(terminalPartition.pool, observationPartition.pool);
+  assert.equal(normalized.reserves.find(({ purpose }) => purpose === 'terminal-result').class, terminal.id);
+  assert(!normalized.reserves.some(({ class: classId }) => classId === observation.id));
+});
+
+await runCase('resource-output-working-capacity-isolation', () => {
+  for (const { normalized } of resourceProfiles) {
+    const outputOwner = normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0013');
+    const terminal = normalized.classes.find(({ contributor, id }) => contributor === outputOwner.id && id.endsWith('class-terminal-envelope'));
+    const working = normalized.classes.find(({ contributor, id }) => contributor === outputOwner.id && id.endsWith('class-output-working'));
+    const terminalPartition = normalized.partitions.find(({ class: classId }) => classId === terminal.id);
+    const workingPartition = normalized.partitions.find(({ class: classId }) => classId === working.id);
+    assert.notEqual(terminalPartition.pool, workingPartition.pool);
+    assert(!normalized.reserves.some(({ class: classId }) => classId === working.id));
+    assert.equal(working.ownerPressureStatus, 'output-capacity');
+  }
+});
+
 await runCase('resource-pressure-owner-separation', () => {
   for (const { normalized } of resourceProfiles) for (const watermark of normalized.watermarks) {
     const resourceClass = normalized.classes.find(({ id }) => id === watermark.class);
@@ -3239,9 +3288,550 @@ await runCase('reject-progress-unselected-output-borrow', () => {
   assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_OUTPUT_BORROW_KIND' });
 });
 
+await runCase('output-profile-second-instances-distinct', () => {
+  assert.equal(new Set(outputProfiles.map(({ identity }) => identity.sha256)).size, 3);
+  assert.deepEqual(outputProfiles.map(({ normalized }) => normalized.observations.kind), ['absent', 'absent', 'selected']);
+});
+
+await runCase('output-envelope-only-terminal-valid', () => {
+  const normalized = outputProfiles[0].normalized;
+  assert.equal(normalized.fields.length, 0);
+  assert.equal(normalized.terminalEnvelope.emptyPayloadValid, true);
+  assert.equal(normalized.terminal.sessionRequired, false);
+  assert.deepEqual(normalized.terminalEnvelope.completionClasses, ['complete', 'failed', 'no-valid-result', 'valid-partial']);
+});
+
+await runCase('output-structured-terminal-owner-preservation', () => {
+  const normalized = outputProfiles[1].normalized;
+  assert.equal(normalized.fields.length, 4);
+  assert(normalized.fields.every((field) => normalized.contributors.some(({ id }) => id === field.owner)));
+  assert(normalized.fields.every(({ sourceFact, sourcePort }) => sourceFact.sha256 === sourcePort.sha256));
+});
+
+await runCase('output-live-observation-isolated-bounded-read', () => {
+  const normalized = outputProfiles[2].normalized;
+  const observation = normalized.observations.profiles[0];
+  const terminalClass = progressResourceResults[2].normalized.classes.find(({ id }) => id.endsWith('class-terminal-envelope')).id;
+  assert(!observation.resources.includes(terminalClass));
+  assert.equal(observation.hostProgress, 'none');
+  assert.equal(observation.readOnly, true);
+  assert.equal(observation.pressure.terminalEffect, 'none');
+  assert.equal(observation.pressure.searchEffect, 'none');
+});
+
+await runCase('output-profile-order-independent', () => {
+  const reordered = clone(outputProfileInputs[2]);
+  for (const key of ['contributors', 'schemas', 'fields', 'ports', 'statuses', 'permissions', 'productData']) reordered[key].reverse();
+  reordered.terminalEnvelope.fields.reverse();
+  reordered.terminalEnvelope.completionClasses.reverse();
+  reordered.cleanup.kinds.reverse();
+  reordered.programContribution.inputs.reverse();
+  for (const contributorInput of reordered.contributors) contributorInput.sourceFacts.reverse();
+  for (const profile of reordered.observations.profiles) {
+    profile.schemas.reverse(); profile.triggers.reverse(); profile.freshness.reverse(); profile.resources.reverse();
+  }
+  assert.deepEqual(normalizeOutputProfile(reordered, inspected, progressResourceResults[2], outputProgressResults[2]).identity, outputProfiles[2].identity);
+});
+
+await runCase('output-meaningful-field-order-sensitive', () => {
+  const mutated = clone(outputProfileInputs[1]); mutated.schemas[0].fieldOrder.reverse();
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_SCHEMA_FIELD' });
+});
+
+await runCase('output-arbitrary-width-bounds', () => {
+  const mutated = clone(outputProfileInputs[1]);
+  const boundary = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+  mutated.fields[0].bounds.maxDepth = boundary;
+  mutated.fields[0].bounds.counterMaximum = boundary;
+  const normalized = normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]).normalized;
+  assert.equal(normalized.fields.find(({ id }) => id === mutated.fields[0].id).bounds.maxDepth, boundary);
+});
+
+await runCase('output-terminal-reserve-exactness', () => {
+  for (let index = 0; index < outputProfiles.length; index += 1) {
+    const normalized = outputProfiles[index].normalized;
+    const reserve = progressResourceResults[index].normalized.reserves.find(({ id }) => id === normalized.terminalEnvelope.terminalReserve);
+    const terminalClass = progressResourceResults[index].normalized.classes.find(({ id }) => id.endsWith('class-terminal-envelope'));
+    assert.equal(reserve.purpose, 'terminal-result');
+    assert.equal(reserve.class, terminalClass.id);
+    assert(BigInt(normalized.terminalEnvelope.maxBytes) <= BigInt(reserve.maximum));
+  }
+});
+
+await runCase('output-publication-release-acquire-contract', () => {
+  for (const { normalized } of outputProfiles) {
+    assert.deepEqual(normalized.publication.states, ['vacant', 'reserved', 'capturing', 'publishing', 'ready', 'released', 'retired', 'reusable']);
+    assert.equal(normalized.publication.fullBeforeReady, true);
+    assert.equal(normalized.publication.readyImmutable, true);
+    assert.equal(normalized.publication.hostDelivery, 'asynchronous-bounded-read');
+    assert.equal(normalized.publication.hostEffect, 'transfer-borrow-only');
+  }
+});
+
+await runCase('output-terminal-only-zero-live-residue', () => {
+  for (const { normalized } of outputProfiles.slice(0, 2)) {
+    assert.equal(normalized.observations.kind, 'absent');
+    assert(!normalized.schemas.some(({ kind }) => kind === 'live'));
+    assert(!normalized.ports.some(({ id }) => ['admit-observation-request', 'capture-observation', 'resume-observation'].includes(id)));
+    assert(!normalized.cleanup.kinds.some((kind) => kind.startsWith('observation-') || ['sequence', 'continuation'].includes(kind)));
+  }
+});
+
+await runCase('output-schema-closed', () => {
+  assert.equal(outputProfileSchema.properties.schema.const, 'cuda-mcgs.output-profile/0.2.0');
+  assert.equal(outputProfileSchema.additionalProperties, false);
+  for (const name of ['contributor', 'sourceFact', 'terminalEnvelope', 'outputSchema', 'serialization', 'field', 'terminal', 'observation', 'workspace', 'snapshot', 'publication', 'lifecycle', 'disposition', 'consumerPolicy', 'port', 'status', 'programContribution']) assert.equal(outputProfileSchema.$defs[name].additionalProperties, false);
+});
+
+await runCase('output-framework-selection-link', () => {
+  const selected = frameworkSelection.normalized.profiles.find(({ role }) => role === 'output');
+  assert.equal(selected.schema.id, outputProfileInputs[0].schema);
+  assert.equal(selected.schema.sha256, outputSchemaSha);
+  assert.equal(selected.identity.sha256, outputProfiles[0].identity.sha256);
+});
+
+await runCase('output-program-input-exactness', () => {
+  for (const { normalized } of outputProfiles) {
+    assert(normalized.programContribution.inputs.some(({ id }) => id === normalized.resourcePlan.id));
+    assert(normalized.programContribution.inputs.some(({ id }) => id === normalized.progressPlan.id));
+    assert(normalized.contributors.every(({ profile }) => normalized.programContribution.inputs.some(({ id }) => id === profile.id)));
+    assert.equal(normalized.programContribution.language, 'restricted-device-js');
+  }
+});
+
+await runCase('output-product-data-deletion', () => {
+  const selected = clone(outputProfileInputs[0]);
+  selected.productData.push({
+    ownerContract: { kind: 'namespaced', id: 'product.synthetic-output-option', version: '0.1.0', schema: 'cuda-mcgs.synthetic-output-product-contract/0.1.0', sha256: outputSyntheticContentIdentity('product-contract').sha256 },
+    schema: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-product'), identity: outputSyntheticContentIdentity('output-product'),
+  });
+  const withProduct = normalizeOutputProfile(selected, inspected, progressResourceResults[0], outputProgressResults[0]);
+  assert.notDeepEqual(withProduct.identity, outputProfiles[0].identity);
+  selected.productData = [];
+  assert.deepEqual(normalizeOutputProfile(selected, inspected, progressResourceResults[0], outputProgressResults[0]).identity, outputProfiles[0].identity);
+});
+
+await runCase('output-persistence-cleanup-selection', () => {
+  const selected = clone(outputProfileInputs[0]);
+  selected.compatibility.persistence = {
+    kind: 'versioned', encoding: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-encoding'), namespace: 'output.persistence.synthetic',
+    integrity: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-integrity'), provenance: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-provenance'),
+    migration: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-migration'), recovery: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-recovery'),
+    retention: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-retention'), secureDeletion: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-secure-deletion'),
+  };
+  selected.cleanup.kinds.push('persisted-artifact');
+  const withPersistence = normalizeOutputProfile(selected, inspected, progressResourceResults[0], outputProgressResults[0]);
+  assert(withPersistence.normalized.cleanup.kinds.includes('persisted-artifact'));
+  assert.notDeepEqual(withPersistence.identity, outputProfiles[0].identity);
+});
+
+await runCase('output-identity-content-sensitive', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.publication.borrow.sha256 = '0'.repeat(64);
+  assert.notDeepEqual(normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]).identity, outputProfiles[0].identity);
+});
+
+await runCase('reject-output-unknown-field', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.nativeTransfer = 'ffi';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_ROOT_FIELDS' });
+});
+
+await runCase('reject-output-contract-drift', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.contract.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_CONTRACT_DRIFT' });
+});
+
+await runCase('reject-output-resource-plan-drift', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.resourcePlan.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PLAN' });
+});
+
+await runCase('reject-output-progress-plan-drift', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.progressPlan.schema.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PLAN' });
+});
+
+await runCase('reject-output-resource-contribution-drift', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.resourceContribution.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_CONTRIBUTION' });
+});
+
+await runCase('reject-output-progress-contribution-drift', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.progressContribution.schema.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_CONTRIBUTION' });
+});
+
+await runCase('reject-output-contributor-omission', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.contributors.pop();
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_CONTRIBUTOR_COUNT' });
+});
+
+await runCase('reject-output-contributor-optionality-drift', () => {
+  const mutated = clone(outputProfileInputs[1]); mutated.contributors.find(({ optional }) => optional).optional = false;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_CONTRIBUTOR_PROFILE' });
+});
+
+await runCase('reject-output-contributor-profile-drift', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.contributors[0].profile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_CONTRIBUTOR_PROFILE' });
+});
+
+await runCase('reject-output-contributor-private-fact', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.contributors[0].sourceFacts[0].fact = outputSyntheticSchemaReference('cuda-mcgs.synthetic-private-output-source');
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_CONTRIBUTOR_FACT' });
+});
+
+await runCase('reject-output-terminal-envelope-field-gap', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.terminalEnvelope.fields.pop();
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_ENVELOPE_FIELD' });
+});
+
+await runCase('reject-output-terminal-completion-class-gap', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.terminalEnvelope.completionClasses.pop();
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_COMPLETION_CLASS' });
+});
+
+await runCase('reject-output-terminal-empty-payload-invalid', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.terminalEnvelope.emptyPayloadValid = false;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_ENVELOPE_CONTRACT' });
+});
+
+await runCase('reject-output-terminal-reserve-drift', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.terminalEnvelope.terminalReserve = progressResourceResults[0].normalized.reserves.find(({ purpose }) => purpose === 'progress-cleanup').id;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_TERMINAL_RESERVE' });
+});
+
+await runCase('reject-output-terminal-capacity-overflow', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.terminalEnvelope.maxBytes = '4097';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_TERMINAL_CAPACITY' });
+});
+
+await runCase('reject-output-duplicate-schema', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.schemas.push(clone(mutated.schemas[0]));
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_SCHEMA_DUPLICATE' });
+});
+
+await runCase('reject-output-multiple-terminal-schemas', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.schemas.find(({ kind }) => kind === 'live').kind = 'terminal';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_TERMINAL_SCHEMA' });
+});
+
+await runCase('reject-output-field-order-duplicate', () => {
+  const mutated = clone(outputProfileInputs[1]); mutated.schemas[0].fieldOrder[1] = mutated.schemas[0].fieldOrder[0];
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_SCHEMA_FIELD' });
+});
+
+await runCase('reject-output-field-owner', () => {
+  const mutated = clone(outputProfileInputs[1]); mutated.fields[0].owner = 'owner.unknown';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_FIELD_OWNER' });
+});
+
+await runCase('reject-output-private-field-source', () => {
+  const mutated = clone(outputProfileInputs[1]); mutated.fields[0].sourceFact = outputSyntheticSchemaReference('cuda-mcgs.synthetic-private-field-source');
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_FIELD_SOURCE' });
+});
+
+await runCase('reject-output-private-field-port', () => {
+  const mutated = clone(outputProfileInputs[1]); mutated.fields[0].sourcePort = outputSyntheticSchemaReference('cuda-mcgs.synthetic-private-field-port');
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_FIELD_SOURCE' });
+});
+
+await runCase('reject-output-terminal-field-not-terminal-ready', () => {
+  const mutated = clone(outputProfileInputs[1]); const field = mutated.fields[0]; const owner = mutated.contributors.find(({ id }) => id === field.owner); const ready = owner.sourceFacts.find(({ readiness }) => readiness === 'ready').fact; field.sourceFact = clone(ready); field.sourcePort = clone(ready);
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_FIELD_READINESS' });
+});
+
+await runCase('reject-output-product-field-catalog-owner', () => {
+  const mutated = clone(outputProfileInputs[1]); const field = mutated.fields[0]; const terminalSchema = mutated.schemas.find(({ kind }) => kind === 'terminal'); const productSchema = clone(terminalSchema);
+  productSchema.id = 'output-schema.synthetic-evaluator-workspace.product'; productSchema.kind = 'product'; productSchema.fieldOrder = [field.id];
+  terminalSchema.fieldOrder = terminalSchema.fieldOrder.filter((id) => id !== field.id); field.schema = productSchema.id; mutated.schemas.push(productSchema);
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_FIELD_PRODUCT_OWNER' });
+});
+
+await runCase('reject-output-field-schema', () => {
+  const mutated = clone(outputProfileInputs[1]); mutated.fields[0].schema = 'output-schema.unknown';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_FIELD_SCHEMA' });
+});
+
+await runCase('reject-output-field-shape-zero', () => {
+  const mutated = clone(outputProfileInputs[1]); mutated.fields[0].shape = ['0'];
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_FIELD_SHAPE' });
+});
+
+await runCase('reject-output-ranking-without-policy-owner', () => {
+  const mutated = clone(outputProfileInputs[1]); mutated.fields.find(({ semanticRole }) => semanticRole === 'domain-outcome').semanticRole = 'ranking';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_FIELD_RANKING' });
+});
+
+await runCase('reject-output-source-mutating-projection', () => {
+  const mutated = clone(outputProfileInputs[1]); mutated.fields[0].projection.sourceMutation = 'allowed';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_PROJECTION_AUTHORITY' });
+});
+
+await runCase('reject-output-field-cancellation-bound', () => {
+  const mutated = clone(outputProfileInputs[1]); mutated.fields[0].bounds.cancellationObservationWorkUnits = '1025';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[1], outputProgressResults[1]), { code: 'OUTPUT_BOUNDS_CANCELLATION' });
+});
+
+await runCase('reject-output-physical-serialization-alignment', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.schemas[0].serialization.alignment = 'cuda-struct-alignment';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_SERIALIZATION_ALIGNMENT' });
+});
+
+await runCase('reject-output-terminal-cut', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.terminal.cut = 'host-polled';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_TERMINAL_CONTRACT' });
+});
+
+await runCase('reject-output-terminal-session-required', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.terminal.sessionRequired = true;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_TERMINAL_CONTRACT' });
+});
+
+await runCase('reject-output-observation-residue-when-absent', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations = { kind: 'absent' };
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_OBSERVATION_RESIDUE' });
+});
+
+await runCase('reject-output-observation-nonlive-schema', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations.profiles[0].schemas[0] = mutated.schemas.find(({ kind }) => kind === 'terminal').id;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_OBSERVATION_SCHEMA' });
+});
+
+await runCase('reject-output-observation-duplicate-schema-assignment', () => {
+  const mutated = clone(outputProfileInputs[2]); const duplicate = clone(mutated.observations.profiles[0]); duplicate.id = 'output-observation.synthetic-live-session.second'; mutated.observations.profiles.push(duplicate);
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_OBSERVATION_COVERAGE' });
+});
+
+await runCase('reject-output-observation-terminal-resource', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations.profiles[0].resources[0] = progressResourceResults[2].normalized.classes.find(({ id }) => id.endsWith('class-terminal-envelope')).id;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_OBSERVATION_RESOURCE' });
+});
+
+await runCase('reject-output-observation-foreign-resource', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations.profiles[0].resources[0] = progressResourceResults[2].normalized.classes.find(({ contributor }) => contributor !== progressResourceResults[2].normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0013').id).id;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_OBSERVATION_RESOURCE' });
+});
+
+await runCase('reject-output-observation-write-authority', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations.profiles[0].readOnly = false;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_OBSERVATION_AUTHORITY' });
+});
+
+await runCase('reject-output-observation-host-progress', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations.profiles[0].hostProgress = 'poll-and-relaunch';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_OBSERVATION_AUTHORITY' });
+});
+
+await runCase('reject-output-observation-capacity', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations.profiles[0].maxSlots = '17';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_OBSERVATION_CAPACITY' });
+});
+
+await runCase('reject-output-observation-counter-range', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations.profiles[0].cadence.counterMaximum = '1024';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_OBSERVATION_RANGE' });
+});
+
+await runCase('reject-output-observation-pressure-affects-search', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations.profiles[0].pressure.searchEffect = 'stop';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_PRESSURE_AUTHORITY' });
+});
+
+await runCase('reject-output-observation-freshness-gap', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations.profiles[0].freshness.pop();
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_OBSERVATION_FRESHNESS' });
+});
+
+await runCase('reject-output-observation-runtime-schema', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations.profiles[0].request.runtimeSchema = 'accepted';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_REQUEST_SCHEMA' });
+});
+
+await runCase('reject-output-workspace-resource-drift', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.workspace.resource = progressResourceResults[0].normalized.classes.find(({ id }) => id.endsWith('class-terminal-envelope')).id;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_WORKSPACE_RESOURCE' });
+});
+
+await runCase('reject-output-workspace-host-spill', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.workspace.hostSpill = 'host-overflow';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_WORKSPACE_SPILL' });
+});
+
+await runCase('reject-output-workspace-capacity', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.workspace.scratchBytes = '131072';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_WORKSPACE_CAPACITY' });
+});
+
+await runCase('reject-output-terminal-only-live-counter-residue', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.workspace.counters.push('requested');
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_WORKSPACE_COUNTER' });
+});
+
+await runCase('reject-output-diagnostic-workspace-overflow', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.diagnostics.maxBytes = '32769';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_WORKSPACE_CAPACITY' });
+});
+
+await runCase('reject-output-snapshot-version-proof-gap', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.snapshot.versionRelation = null;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_SNAPSHOT_PROTOCOL' });
+});
+
+await runCase('reject-output-publication-state-order', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.publication.states.reverse();
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PUBLICATION_CONTRACT' });
+});
+
+await runCase('reject-output-publication-before-full', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.publication.fullBeforeReady = false;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PUBLICATION_CONTRACT' });
+});
+
+await runCase('reject-output-zero-borrow-capacity', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.publication.maxBorrows = '0';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PUBLICATION_RANGE' });
+});
+
+await runCase('reject-output-publication-workspace-overflow', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.publication.maxBorrows = '65';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PUBLICATION_RANGE' });
+});
+
+await runCase('reject-output-observation-borrow-workspace-overflow', () => {
+  const mutated = clone(outputProfileInputs[2]); mutated.observations.profiles[0].maxBorrows = '65';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2]), { code: 'OUTPUT_OBSERVATION_RANGE' });
+});
+
+await runCase('reject-output-host-read-advances-search', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.publication.hostEffect = 'advance-search';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PUBLICATION_CONTRACT' });
+});
+
+await runCase('reject-output-private-native-mechanism', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.publication.mechanism = 'direct-driver-ffi';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PUBLICATION_CONTRACT' });
+});
+
+await runCase('reject-output-lifecycle-state-gap', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.lifecycle.states.pop();
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_LIFECYCLE_STATES' });
+});
+
+await runCase('reject-output-terminal-only-live-elision-drift', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.lifecycle.terminalOnlyElidesLive = false;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_LIFECYCLE_STATES' });
+});
+
+await runCase('reject-output-lifecycle-disposition-gap', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.lifecycle.dispositions.pop();
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_LIFECYCLE_DISPOSITION' });
+});
+
+await runCase('reject-output-terminal-only-live-disposition-residue', () => {
+  const mutated = clone(outputProfileInputs[0]); const extra = clone(outputProfileInputs[2].lifecycle.dispositions.find(({ id }) => id === 'observation-slot')); mutated.lifecycle.dispositions.push(extra);
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_LIFECYCLE_DISPOSITION' });
+});
+
+await runCase('reject-output-required-status', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.statuses = mutated.statuses.filter(({ code }) => code !== 'output-terminal-capacity');
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_STATUS_REQUIRED' });
+});
+
+await runCase('reject-output-status-class', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.statuses.find(({ code }) => code === 'output-terminal-capacity').class = 'pending';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_STATUS_CLASS' });
+});
+
+await runCase('reject-output-required-port', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.ports = mutated.ports.filter(({ id }) => id !== 'publish-output');
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PORT_REQUIRED' });
+});
+
+await runCase('reject-output-host-terminal-capture', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.ports.find(({ id }) => id === 'capture-terminal-payload').phase = 'host-async';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PORT_PHASE' });
+});
+
+await runCase('reject-output-device-host-acquire', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.ports.find(({ id }) => id === 'acquire-output').phase = 'device-active';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PORT_PHASE' });
+});
+
+await runCase('reject-output-port-source-mutation', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.ports[0].sourceMutation = 'allowed';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PORT_AUTHORITY' });
+});
+
+await runCase('reject-output-port-status', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.ports[0].statuses[0] = 'output.unknown-status';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PORT_STATUS' });
+});
+
+await runCase('reject-output-duplicate-permission', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.permissions.push(clone(mutated.permissions[0]));
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PERMISSION' });
+});
+
+await runCase('reject-output-consumer-permission-drift', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.consumerPolicy.permission = outputSyntheticSchemaReference('cuda-mcgs.synthetic-unselected-consumer-permission');
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_CONSUMER_PERMISSION' });
+});
+
+await runCase('reject-output-diagnostic-memory-dump', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.diagnostics.deviceMemoryDump = true;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_DIAGNOSTIC_AUTHORITY' });
+});
+
+await runCase('reject-output-native-transfer-identity-semantics', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.compatibility.nativeTransferIdentityOpaque = false;
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_COMPAT_IDENTITY' });
+});
+
+await runCase('reject-output-incomplete-persistence', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.compatibility.persistence = { kind: 'versioned' };
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PERSISTENCE_FIELDS' });
+});
+
+await runCase('reject-output-persistence-cleanup-gap', () => {
+  const mutated = clone(outputProfileInputs[0]);
+  mutated.compatibility.persistence = {
+    kind: 'versioned', encoding: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-encoding'), namespace: 'output.persistence.synthetic',
+    integrity: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-integrity'), provenance: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-provenance'),
+    migration: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-migration'), recovery: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-recovery'),
+    retention: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-retention'), secureDeletion: outputSyntheticSchemaReference('cuda-mcgs.synthetic-output-persistence-secure-deletion'),
+  };
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_CLEANUP_KIND' });
+});
+
+await runCase('reject-output-cleanup-coverage', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.cleanup.kinds.pop();
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_CLEANUP_KIND' });
+});
+
+await runCase('reject-output-live-cleanup-residue', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.cleanup.kinds.push('observation-slot');
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_CLEANUP_KIND' });
+});
+
+await runCase('reject-output-native-program-language', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.programContribution.language = 'cuda-cpp';
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PROGRAM_LANGUAGE' });
+});
+
+await runCase('reject-output-program-input-drift', () => {
+  const mutated = clone(outputProfileInputs[0]); mutated.programContribution.inputs.pop();
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PROGRAM_INPUTS' });
+});
+
+await runCase('reject-output-product-owner', () => {
+  const mutated = clone(outputProfileInputs[0]);
+  mutated.productData.push({ ownerContract: clone(mutated.contract), schema: outputSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-output-product'), identity: outputSyntheticContentIdentity('invalid-output-product') });
+  assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PRODUCT_OWNER' });
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 470,
+  expected: 567,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -3249,7 +3839,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 470 - cases.length,
+  notDiscovered: 567 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -3266,6 +3856,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/evaluator-profile.schema.json',
   'schemas/search-ir/0.2.0/resource-profile.schema.json',
   'schemas/search-ir/0.2.0/progress-profile.schema.json',
+  'schemas/search-ir/0.2.0/output-profile.schema.json',
   'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
   'experiments/search-ir-composer-reference/src/catalog.mjs',
   'experiments/search-ir-composer-reference/src/validation.mjs',
@@ -3282,6 +3873,8 @@ const sourcePaths = [
   'experiments/search-ir-composer-reference/src/resource-fixtures.mjs',
   'experiments/search-ir-composer-reference/src/progress.mjs',
   'experiments/search-ir-composer-reference/src/progress-fixtures.mjs',
+  'experiments/search-ir-composer-reference/src/output.mjs',
+  'experiments/search-ir-composer-reference/src/output-fixtures.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -3303,6 +3896,7 @@ const evidence = {
   evaluatorProfileIdentities: evaluatorProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   resourceProfileIdentities: resourceProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   progressProfileIdentities: progressProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
+  outputProfileIdentities: outputProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
     classified: inspected?.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length ?? 0,
@@ -3312,8 +3906,8 @@ const evidence = {
   summary,
   cases,
   claimLimits: [
-    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy, evaluator, resource and progress profile normalization only.',
-    'The framework, domain, graph, policy, evaluator, resource and progress requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
+    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy, evaluator, resource, progress and output profile normalization only.',
+    'The framework, domain, graph, policy, evaluator, resource, progress and output requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
     'Domain evidence covers strict normalized profile selection and three synthetic structural instances, not behavioral oracle, publication/concurrency, native or compatible-pair qualification.',
     'Graph evidence covers four strict structural instances, bounded ownership/layout/lifecycle/publication checks and zero-residue optional modes, not behavioral oracle, concurrent reclamation, native or compatible-pair qualification.',
     'Policy evidence covers four strict structural instances, role/record/admission/value/cycle/backup/stop/reuse checks and zero-residue optional modes, not behavioral oracle, concurrent backup, native or compatible-pair qualification.',
@@ -3321,7 +3915,8 @@ const evidence = {
     'Evaluator absence is represented by structural omission from framework selection; this capsule does not create or validate a synthetic disabled evaluator profile.',
     'Resource evidence covers three strict finite-plan instances, contribution composition, exact arithmetic, partitions/reserves/admission/ledgers/pressure/exhaustion/lifecycle/provider projections and evaluator-absence zero residue, not behavioral oracle, concurrent accounting, physical CUDA-JS allocation, native or compatible-pair qualification.',
     'Progress evidence covers three scheduler-neutral work/readiness/fairness/no-progress/stop/closure plans, including evaluator absence and selected live-session external wait, not behavioral oracle, schedule exploration, physical scheduler/CUDA-JS execution, native or compatible-pair qualification.',
-    'No output/session/extension/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
+    'Output evidence covers three strict terminal/live profile instances, exact source readiness, finite workspace/observation/terminal capacity, snapshot/publication/borrow/lifecycle/consumer/cleanup checks and terminal-only zero live residue, not behavioral oracle, concurrent publication, physical CUDA-JS transfer, native or compatible-pair qualification.',
+    'No session/extension/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');

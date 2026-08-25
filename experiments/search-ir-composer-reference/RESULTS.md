@@ -167,9 +167,9 @@ The expanded capsule passes 381/381 CUDA-free cases. It retains all catalog/foun
 
 The three normalized structural resource-plan identities are:
 
-- `resource.synthetic-evaluator-absent`: `31d61ef1b6cbfcafd02330206a862a487936827cd5718b29a5b696c71de28a28` over 163,354 canonical bytes;
-- `resource.synthetic-evaluator-workspace`: `86015029d424aee91840eff529df9f5d2d6c0ce5be0c87a2f7a79f36909a3dcb` over 292,640 canonical bytes; and
-- `resource.synthetic-live-session`: `12895427504fec2d734c8d23e1841fad033c9101c240e338a5f2e04d3073dccd` over 316,145 canonical bytes.
+- `resource.synthetic-evaluator-absent`: `8c0a3cfd56f28acffebd1227b46ca73adba665828182c24678bdf535096ba4f5` over 172,352 canonical bytes;
+- `resource.synthetic-evaluator-workspace`: `7102a92f493b706e7c01abcf48bb83b6f6472b3abe8518953ea5ca0ee808b578` over 301,884 canonical bytes; and
+- `resource.synthetic-live-session`: `c3d94c872e7bad5b11cf12d41b7cfa14dea5132d825aec4c1fac6c58c052c86a` over 333,519 canonical bytes. The IR-OUTPUT-01 preflight correction separates mandatory output working capacity and selected live-observation capacity from the protected terminal-result class/reserve.
 
 The resource schema has checkout-neutral source digest `54aaaaae27a945596d14f494e477473091e3e1ed0d019b51ea0661a8948d875b`. The framework envelope now binds the first resource plan together with the first domain, graph and policy profiles while retaining structural evaluator absence; its identity is `b22a3c2089a8a8adf60059a3c2f78d0c0aa6aa64ddc3b9d01ab103e483dbfa85` over 10,422 canonical bytes. Coverage identity is `da449206b27136c751d616369570008e06296a9d31884889cd07867cfd1ab511`; expanded requirement routing identity is `634d9c7c6cc7defcfb12724ac63db43c3a206997e008294cfaf1bfee38d5f1a3`. Exactly 543 framework/domain/graph/policy/evaluator/resource requirements now have final evidence lanes; all remain partial, pending or deferred. The other 446 requirements remain pending their semantic-owner leaves.
 
@@ -181,7 +181,7 @@ This slice is structural/normalizer evidence only. It does not qualify concurren
 
 **Evidence completed:** 2026-08-25T04:28:07-07:00
 
-The expanded capsule passes 470/470 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource cases and adds strict normalized device-progress evidence across:
+The expanded capsule passes 471/471 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource cases and adds strict normalized device-progress evidence across:
 
 - exact selected resource-plan owner/contribution coverage, public-transition ownership and structural evaluator/session deletion;
 - finite work admission/production/step/continuation/retry/wait/cancellation bounds, owner resources, stale-safe retry and explicit terminal dispositions;
@@ -193,10 +193,37 @@ The expanded capsule passes 470/470 CUDA-free cases. It retains all catalog/foun
 
 The three normalized structural progress-profile identities are:
 
-- `progress.synthetic-evaluator-absent`: `b3208aa17799c01680ce9c34fee958fa183db771f62bd09a853a1b0c30f1a109` over 53,191 canonical bytes;
-- `progress.synthetic-evaluator-workspace`: `098260fadc403b778926eebb3beba47560eca30c944f12783833b7b12a95c966` over 62,254 canonical bytes; and
-- `progress.synthetic-live-session`: `27e577f8ce4f19127312ecbcacc6edd4a4a527a7385701969967a5da5b79e4c5` over 67,877 canonical bytes.
+- `progress.synthetic-evaluator-absent`: `d4a4133698a88da9475c28d207b94b2575bbab85186f57f7ade58b2e1454c392` over 53,250 canonical bytes;
+- `progress.synthetic-evaluator-workspace`: `107b9092e35042d74461ff5ded7a29a56861ecaa85e5fa69daa8f9e1bafe3104` over 62,316 canonical bytes; and
+- `progress.synthetic-live-session`: `cbc212494293b68e20df3c9bdc76805f3a24317a0dd60b59973fcc875f75873d` over 67,990 canonical bytes after binding the corrected mandatory output-working and selected live-observation resource classes.
 
 The progress schema has checkout-neutral source digest `68a76619ceec2ac0a195536b88caf3e753a9086cd18c7b4344f39437ea4d503a`. The framework envelope now binds the first progress plan together with the first domain, graph, policy and resource profiles while retaining structural evaluator absence; its identity is `609fb7e89f369e9362add2200aaea330119b098062db66ce2c83b3927b7bca35` over 10,422 canonical bytes. Coverage identity is `ef19d7060f46d7b42a48d2f9500aa97afe2ddc0fc1a661b09d3198849a9a85e8`; expanded requirement routing identity is `93c37ef96ef70992c3a9a029cdfb516bb3d32ba661e6446a7c4f94f356912395`. Exactly 594 framework/domain/graph/policy/evaluator/resource/progress requirements now have final evidence lanes; all remain partial, pending or deferred. The other 395 requirements remain pending their semantic-owner leaves.
 
 This slice is structural/normalizer evidence only. It does not qualify behavioral progress under multiple schedules, concurrent readiness/publication, physical scheduling, CUDA-JS execution/lowering, device memory ordering or a compatible native pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
+
+## IR-OUTPUT-01
+
+**Started:** 2026-08-25T04:38:54-07:00
+
+**Focused evidence assembled:** 2026-08-25T05:15:10-07:00
+
+**Full repository validation completed:** 2026-08-25T05:15:38-07:00
+
+The expanded capsule passes 567/567 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource/progress cases and adds strict normalized output evidence across:
+
+- a mandatory immutable terminal envelope with four typed completion classes, valid empty semantic payload, terminal-quiescent capture and session-independent asynchronous reading;
+- exact read-only source-owner facts, explicit schema/field order, units/perspectives/validity/failure/presence semantics and no framework-owned ranking or evaluator/game assumption;
+- protected terminal-result capacity plus mandatory finite output scratch/continuation/diagnostic/borrow/transfer capacity and selected-only finite live-observation capacity in separate classes/pools that cannot borrow from or pressure terminal publication;
+- optional live profiles with bounded device/ready/external triggers, freshness metadata, versioned cuts, drop/coalescing accounting and no host read-decide-write progression;
+- release publication, acquire observation, immutable ready payloads, bounded borrow/transfer, stale/generation rejection, typed lifecycle/status/cleanup closure and exact terminal-only live-state deletion; and
+- restricted Device-JS program-contribution identity plus an opaque public CUDA-JS mechanism boundary, with no direct FFI/Driver access, C/C++, CUDA-specific implementation selection or host progress loop.
+
+The three normalized structural output-profile identities are:
+
+- `output.synthetic-evaluator-absent`: `fe820714a4986b96bd0bb87485b9dac804873760f4d83abd5075a72861463fc1` over 30,704 canonical bytes;
+- `output.synthetic-evaluator-workspace`: `15c452aeb0d6404ed1383284cf3ca653b58082b99a3a92d06fdf989782161a28` over 42,716 canonical bytes; and
+- `output.synthetic-live-session`: `155bb633667b3f55c029d11442c07a7dcbca64b179c89c276201cf5000b6035d` over 52,518 canonical bytes.
+
+The output schema has checkout-neutral source digest `b6e0d0723152d3d41b4bb7f636fbc4cf0a292a673858fc07f30aa83a83e58c07`. The framework envelope now binds the first output profile with the first domain, graph, policy, resource and progress profiles while retaining structural evaluator/session/live-output absence; its identity is `2d5fd4eb17ac1f82a655175109d90e5f41f707d90c11d2667b44c41612e4ba3a` over 10,422 canonical bytes. Coverage identity is `c932e68605a788658fe8e3ab9f4ff4d8cdc25722a3bacddf438609ecf14ca761`; expanded requirement routing identity is `a381251cf334171ac1218a3ba8686b59942c8653c81e908c467f0200a051a4e0`. Exactly 682 framework/domain/graph/policy/evaluator/resource/progress/output requirements now have final evidence lanes; all remain partial, pending or deferred. The other 307 requirements remain pending their semantic-owner leaves.
+
+This slice is structural/normalizer evidence only. It does not qualify concurrent publication/borrowing, behavioral snapshot consistency, physical CUDA-JS transfer, GPU memory ordering, compatible-pair execution or native live observation. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
