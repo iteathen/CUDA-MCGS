@@ -4,9 +4,11 @@
 
 **Last reconciled:** 2026-08-24
 
-**CUDA-MCGS input baseline:** protected `main` `bfb31ea3d595a5f1851efffa96dc8986a01e490d`.
+**CUDA-MCGS input baseline:** protected `main` `9a7d694614b48c548ee522dde491375a939e00ac`.
 
-**CUDA-JS input baseline:** protected `main` `b6062f691a27093df0e5d55e482e69ebbd39a9eb`, package `cuda-js@0.1.0-alpha.6`.
+**CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
+
+**CUDA-JS implementation/package baseline:** `b6062f691a27093df0e5d55e482e69ebbd39a9eb`, package `cuda-js@0.1.0-alpha.6`.
 
 ## Outcome
 
@@ -46,25 +48,25 @@ The current CUDA-JS surface is not assumed complete. If a naturally generic GPU 
 5. CUDA-JS realization happens after semantic normalization and cannot learn MCGS/domain/product meaning.
 6. Downstream products such as Connect Four/chess consume the framework and do not gate universal core completion.
 
-## ENGINE-CONTRACT-01 — universal semantic contract packet
+## ENGINE-CONTRACT-01 — universal semantic contract proposal packet
 
-**Current focus.** Production universal lowering remains blocked until the owning semantics are accepted.
+**Current focus.** Production universal lowering remains blocked. This node makes the owning semantics decision-complete proposals; it does not claim acceptance before their schema/reference obligations have decisive evidence.
 
 Remaining work:
 
-- review/revise/accept proposal SPEC-0000 against ADR-0018;
+- review/revise proposal SPEC-0000 against ADR-0018;
 - author or split explicit product-neutral owners for domain, policy, evaluator, generic output, graph/storage, finite resources and scheduler/device-progress semantics where the current proposal packet is incomplete;
 - review/revise SPEC-0006 Search Session/control/observation against those owners, including admission-before-mutation, root epochs, stale-work disposition, reroot/reclamation separation, reuse classifications, read-only observations and stale-safe finite counters;
 - ensure generic result/observation payloads do not imply ranking, scalar value, legal moves, games, or one evaluator shape;
 - keep Search Stage vocabulary out of core semantics unless a core contract actually requires it.
 
-**Acceptance:** each semantic fact/lifecycle has one owner; first-consumer deletion and materially different second-instance tests pass conceptually; finite resource/failure behavior is explicit; no product/CUDA implementation fact leaks into universal meaning.
+**Exit:** each semantic fact/lifecycle has one proposed owner; first-consumer deletion and materially different second-instance tests pass conceptually; finite resource/failure behavior and schema/reference obligations are explicit; no product/CUDA implementation fact leaks into universal meaning. Final semantic acceptance occurs at `ENGINE-CONTRACT-ACCEPTANCE-01`.
 
 **Falsifier:** a core contract becomes incoherent when all extension capabilities or chess/Connect Four are deleted.
 
 ## ENGINE-EXTENSION-01 — schema-backed extension substrate
 
-Review/revise/accept SPEC-0003 through SPEC-0005 only after their relationship to the core owners is explicit.
+Review/revise SPEC-0003 through SPEC-0005 into decision-complete proposals only after their relationship to the core owners is explicit. Final semantic acceptance follows normalized schema/reference evidence rather than preceding it.
 
 Required shape:
 
@@ -77,20 +79,20 @@ Required shape:
 - absent capability/product removes its hook/port/context/channel/storage/synchronization residue exactly;
 - capability semantics that alter domain/policy/evaluator/output/session/resource meaning name the accepted owning contract rather than redefining it through the surface.
 
-SPEC-0005 wording must respect the CUDA-JS boundary: CUDA-MCGS owns semantic Search Program/composition identity, while CUDA-JS owns CUDA/PTX/LTO realization. RDC/LTO are optional generic realization mechanisms, not universal semantic requirements.
+The revised SPEC-0005 replaces the older Stage-PTX-input model with a restricted Device-JS/Search Program input and opaque CUDA-JS-generated artifact-output contract. Its remaining review must preserve CUDA-MCGS semantic composition identity and CUDA-JS ownership of lowering and CUDA/PTX/cubin/LTO realization. RDC/LTO are optional generic realization mechanisms, not universal semantic requirements.
 
 ## ENGINE-IR-COMPOSER-01 — normalized Search IR and Search Composer
 
-After enough semantic/extension contracts are accepted:
+After the core and extension proposals are decision-complete, execute an explicitly bounded, non-production schema/normalizer/reference-composer evidence node:
 
 - extend Search IR beyond accepted 0.1.0 foundations to represent selected domain/policy/evaluator/output/resource/session contracts, namespaced capability/product inputs and exact versions;
 - distinguish universal base meaning from specialization-only fields;
 - normalize finite resource contributions before code generation;
-- deterministically compose one semantic Search Program/package input for CUDA-JS;
+- deterministically compose one semantic restricted Device-JS/Search Program/package input for CUDA-JS;
 - preserve exact absent-capability/product deletion and canonical identity;
 - prohibit runtime schema interpretation or host-owned active-search decisions.
 
-The Composer may select a CUDA-JS capability such as RDC/LTO only when the concrete realization needs it and its claimed profile is qualified; availability alone does not make it a framework dependency.
+The Composer may select a CUDA-JS capability such as RDC/LTO only when a later concrete realization needs it and its claimed profile is qualified; availability alone does not make it a framework dependency. This node authorizes representation and CUDA-free reference evidence only, not production CUDA lowering.
 
 ## ENGINE-REFERENCE-01 — universal reference/conformance
 
@@ -101,9 +103,21 @@ Build a consolidated deterministic CUDA-free universal reference/conformance lay
 - exercise graph/transposition/path/cycle/resource/output/session rules at boundaries;
 - use the integrated Connect Four experiment as a downstream product oracle, never as universal implementation authority.
 
+## ENGINE-CONTRACT-ACCEPTANCE-01 — integrated semantic acceptance
+
+After the proposal, Search IR/Composer and universal reference nodes agree on one exact revision:
+
+- accept the product-neutral core specifications and SPEC-0000 only when every semantic owner, range, lifecycle, failure, finite-resource and compatibility obligation is complete;
+- accept SPEC-0003 through SPEC-0005 only when their selected-only schema, identity, permission, resource and deletion semantics are represented and reference-falsified;
+- accept SPEC-0006 semantic session/control/observation contract only when its normalized representation and CUDA-free lifecycle/concurrency model are coherent with the core owners;
+- distinguish backend-neutral semantic acceptance from native production-profile qualification;
+- preserve every native publication, race, final-artifact, performance, compatible-pair and teardown obligation as a later profile gate rather than using it circularly as a prerequisite for the contract that defines what native evidence must prove.
+
+**Acceptance:** accepted specs, normalized Search IR, reference oracles, indexes/status and downstream plan dependencies agree on one exact revision. No production component or native-support claim is created by this node.
+
 ## PRODUCT-CONNECT4-01 — formal product and external deletion
 
-After relevant universal contracts and selected CUDA-JS Device-JS native evidence are ready:
+After `ENGINE-CONTRACT-ACCEPTANCE-01` and selected CUDA-JS Device-JS native evidence are ready:
 
 1. define a downstream Connect Four product specification selecting the needed universal contracts/capabilities;
 2. express the production-oriented device algorithm in CUDA-MCGS-owned restricted Device-JS/Search Program source;
@@ -116,7 +130,7 @@ A missing generic GPU primitive is routed to CUDA-JS when it has a natural consu
 
 ## ENGINE-WINDOWS-01 — first finite native universal engine
 
-A finite terminal Windows engine may proceed after the relevant semantic/IR/Search Program/adapter contracts are accepted and the selected CUDA-JS capabilities have exact native evidence.
+A finite terminal Windows engine may proceed only after `ENGINE-CONTRACT-ACCEPTANCE-01`, the relevant semantic/IR/Search Program/adapter contracts are accepted, and the selected CUDA-JS capabilities have exact native evidence.
 
 Required:
 

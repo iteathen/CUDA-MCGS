@@ -6,10 +6,10 @@
 
 ## Current repository state
 
-The protected `main` input baseline for this authority reconciliation is:
+The protected CUDA-MCGS `main` input baseline for this sequencing reconciliation is:
 
 ```text
-bfb31ea3d595a5f1851efffa96dc8986a01e490d
+9a7d694614b48c548ee522dde491375a939e00ac
 ```
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
@@ -46,7 +46,7 @@ Completed evidence is not reopened by the forward plan.
 
 ## CUDA-JS boundary
 
-Current peer `main` is CUDA-JS `b6062f691a27093df0e5d55e482e69ebbd39a9eb`, package `cuda-js@0.1.0-alpha.6`.
+Current peer authority `main` is CUDA-JS `2135216b1a9fd88066a1c82b61ae533645eac9c2`. The selected implementation/package baseline remains `b6062f691a27093df0e5d55e482e69ebbd39a9eb`, package `cuda-js@0.1.0-alpha.6`, until a later exact pair deliberately selects another release.
 
 CUDA-JS now publishes the generic contract families needed for the current CUDA-MCGS boundary, including:
 
@@ -68,13 +68,14 @@ The owner-directed production boundary remains: CUDA-MCGS owns JavaScript-only s
 
 The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`](docs/development/2026-08-12-v0-forward-plan.md).
 
-Current focus is **ENGINE-CONTRACT-01**: settle the unfinished universal domain/policy/evaluator/output/graph/resource/scheduler/session semantic owners independently of optional Search Stage mechanics before production lowering.
+Current focus is **ENGINE-CONTRACT-01**: settle the unfinished universal domain/policy/evaluator/output/graph/resource/scheduler/session semantic owners as decision-complete proposals independently of optional Search Stage mechanics. Those proposals then receive bounded normalized Search IR/Composer and universal reference evidence before one integrated semantic-acceptance gate. Production lowering remains blocked until that acceptance gate completes.
 
 After core semantics:
 
-- accept the schema-backed extension substrate with selected-only attachment points and zero unused-capability residue;
-- extend Search IR/Composer for accepted core + namespaced capability/product specialization inputs;
+- make the schema-backed extension substrate proposals decision-complete with selected-only attachment points and zero unused-capability residue;
+- extend Search IR/Composer in a bounded non-production evidence node for proposed core + namespaced capability/product specialization inputs;
 - build consolidated materially different CUDA-free reference/conformance domains;
+- accept the integrated semantic contract/schema packet after that reference evidence agrees on one exact revision;
 - formalize Connect Four downstream product semantics and run the Device-JS external deletion test after neutral native Device-JS evidence;
 - build one finite Windows universal engine through an exact public CUDA-JS pair;
 - treat live Search Session native sideband/concurrency as an optional profile, not a finite-engine release blocker;
@@ -92,7 +93,7 @@ Chess remains a separately tracked downstream proposal and does not gate univers
 - SESSION-002 native live-session evidence for the selected CUDA-JS mailbox profile is absent;
 - native Linux compatible-pair evidence is absent.
 
-Portable/reference/mechanism evidence is not native support. A missing optional execution capability is not automatically a blocker for a profile that does not select it.
+Portable/reference/mechanism evidence is not native support. Conversely, native profile evidence is not a prerequisite for accepting a backend-neutral semantic contract when the contract instead records that native evidence as a later production-profile gate. A missing optional execution capability is not automatically a blocker for a profile that does not select it.
 
 ## Plan reconciliation
 

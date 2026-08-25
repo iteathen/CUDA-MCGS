@@ -1,264 +1,247 @@
-# SPEC-0005: Stage PTX and Search Image Composition
+# SPEC-0005: Restricted Device-JS and Search Image Composition
 
 **Status:** Proposal
 
-**Draft version:** 0.2.0
+**Draft version:** 0.3.0
+
+**Stable path note:** The historical filename is retained for link compatibility. Stage PTX is no longer the CUDA-MCGS-owned production input.
 
 **Owner:** CUDA-MCGS Search Composer and CUDA-MCGS-to-CUDA-JS package boundary
 
-**Consumers:** Stage contracts, universal/product capability providers, code generation, resource planning, CUDA-JS adapter, artifact cache, conformance, packaging, and release
+**Consumers:** Search Stage contracts, universal/product capability providers, Search IR, resource planning, CUDA-JS adapter, conformance, packaging and release
 
-This proposal defines the version-zero artifact realization for the **universal Stage Extension Surface substrate**. PTX is selected instead of device LTO for this profile. Artifact composition does not promote one capability or product into universal MCGS meaning.
-
-> **Revision required before acceptance:** [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) now prohibits CUDA-MCGS-authored or maintained PTX in production. References in this draft to CUDA-MCGS source-authored/generated Stage PTX describe the older proposal and are not implementation authority. The next revision must express CUDA-MCGS-owned semantics in restricted Device-JS/Search Program inputs and treat any CUDA-JS-generated PTX/cubin/LTO as opaque realization outputs while preserving the selected-only composition and zero-residue invariants.
+This proposal defines how CUDA-MCGS composes selected search and extension semantics into restricted Device-JS/Search Program inputs while treating every CUDA/PTX/cubin/LTO/native realization as a CUDA-JS-owned opaque output. Artifact realization does not promote one capability, product or CUDA mechanism into universal MCGS meaning.
 
 ## 1. Normative references
 
-- [`../decisions/ADR-0018-universal-core-extension-product-layering.md`](../decisions/ADR-0018-universal-core-extension-product-layering.md) owns core/extension/product separation.
-- [`../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) owns the pure Node/Device-JS production boundary and supersedes this draft's CUDA-MCGS-authored PTX realization assumptions.
+- [`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md) owns core/extension/product separation and selected-only extension materialization.
+- [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) owns the JavaScript-only CUDA-MCGS production boundary, device closure and CUDA-JS capability-escalation rule.
 - [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) owns publication/resource foundations.
-- [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) owns foundational Search IR/normalization.
-- [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) proposes universal Search Stage/surface/base-context/capability semantics.
-- [`SPEC-0004`](SPEC-0004-async-stage-channels.md) proposes internal cross-stage dataflow.
-- [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) proposes Search Session/root-update/observation semantics and keeps external sideband I/O distinct from Stage PTX attachment.
-- CUDA-JS public contracts own generic NVRTC, nvJitLink, artifact, module, memory, launch, long-lived-operation/sideband mechanism, error and lifecycle mechanics.
+- [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) owns foundational Search IR normalization/reference semantics.
+- [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) proposes Search Stage/surface/base-context/capability semantics.
+- [`SPEC-0004`](SPEC-0004-async-stage-channels.md) proposes internal nonblocking dataflow.
+- [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) proposes Search Session semantics and keeps external sideband operations distinct from internal stage composition.
+- Versioned public CUDA-JS contracts own restricted Device-JS validation/lowering, generated artifact realization, native/JIT compilation/link/load, generic resources, operations, publication, errors and teardown.
 
-## 2. Governing artifact rule
+Accepted authority governs every conflict with this proposal.
 
-For version zero:
+## 2. Governing source and artifact rule
 
-> **A stage whose selected capability set is non-empty contributes exactly one composed Stage PTX input. A stage with no selected capability contributes no solely extension-owned PTX, call, capability context/state/resource or synchronization residue.**
+For production CUDA-MCGS:
 
-Several capabilities at one stage share one Stage Extension Surface and one Stage PTX. They do not become one PTX input or runtime call per capability.
+> **CUDA-MCGS authors and maintains only ordinary Node.js and restricted Device-JS/Search Program source. CUDA-JS owns every CUDA-specific generated or native realization.**
 
-The one-Stage-PTX rule is an artifact/composition rule. It says nothing about whether the capability semantics are universal, reusable, product-specific, experimental or chess-specific.
+A selected stage capability set contributes one deterministic **stage capability program unit** to the semantic Search Program. The unit is a normalized composition concept, not necessarily one source file, function, PTX input, module, kernel, launch or final binary object.
 
-## 3. Stage PTX
+A stage with no selected optional capability contributes no solely extension-owned source, call, context, state, channel, resource, synchronization, package input or generated-artifact residue.
 
-**Stage PTX** is the one CUDA-MCGS-generated relocatable PTX composition input implementing the complete selected optional capability set for one Search Stage.
+CUDA-MCGS MUST NOT author, maintain, patch or interpret C, C++, CUDA C++, `.cu`/`.cuh`, PTX, cubin, LTO, native addons, direct FFI/Driver calls or subprocess native search implementations. CUDA-JS MAY use any of those mechanisms behind its public consumer-neutral contracts.
 
-It is:
+## 3. Scope
 
-- generated before ignition from normalized selected contracts/schemas;
-- owned/versioned by the stage-composition boundary;
-- permitted to export entry/exit symbols only when those checkpoints exist;
-- permitted to import only declared generated ABI symbols/least-authority capabilities;
-- fully included in finite resource and artifact identity;
-- trusted executable content under the selected package profile.
+This specification owns:
 
-Stage PTX is not necessarily:
+- deterministic semantic Search Program composition;
+- selected capability ordering and least-authority binding;
+- restricted Device-JS stage capability program units;
+- CUDA-MCGS execution-package meaning and identity;
+- selected-only source/context/resource contribution and deletion behavior;
+- semantic requirements placed on CUDA-JS-generated outputs;
+- compatible-pair evidence obligations without transferring artifact ownership.
 
-- a separate cubin/module;
-- a separate kernel;
-- a launch or CUDA Graph node;
-- the unit scheduled by the device scheduler;
-- the semantic representation of a stage;
-- a universal capability API exposed to products at runtime.
+It does not own:
 
-The Search Image may link universal core behavior, selected domain/policy/evaluator/product behavior, and all selected Stage PTX inputs into one cubin or another accepted finite module set.
+- restricted Device-JS language syntax, helper implementation or CUDA lowering;
+- PTX ISA, CUDA ABI, compiler/linker/provider behavior or final artifact format;
+- CUDA module/function/memory/launch/completion internals;
+- one scheduler topology, domain, product, evaluator or output policy;
+- a guarantee that RDC, Device LTO, CUDA Graphs, cooperative execution or another optional CUDA mechanism is selected.
 
-## 4. Semantic ownership of capability providers
+## 4. Capability-provider semantic inputs
 
-Capability providers may be CUDA-MCGS-owned, product-owned or user-supplied under an accepted trust profile. They provide namespaced schema-constrained semantic/lowering inputs; they do not add independently discovered runtime fragments.
+Capability providers may be CUDA-MCGS-owned, product-owned or user-supplied under an accepted trust profile. They supply schema-constrained semantic inputs and restricted Device-JS behavior; they do not supply independently discovered native fragments.
 
-Every capability input MUST identify:
+Every selected capability input MUST identify:
 
-- semantic owner and contract/version;
+- namespaced semantic owner, contract and version;
 - required stage/checkpoint/base-context version;
 - capability-specific configuration/context/state schemas;
-- declared search-semantic effects and the selected domain/policy/evaluator/output/session/product contract authorizing those effects;
-- finite resource contribution;
-- provenance/trust/license identity;
-- deletion behavior when absent.
+- declared semantic effects and the selected domain/policy/evaluator/output/session/product contract authorizing them;
+- finite persistent/scratch/workspace/channel/resource contribution;
+- deterministic ordering requirements;
+- failure, pressure, cancellation and deletion behavior;
+- provenance, trust and license identity.
 
-A product capability such as a future chess tablebase or move-ordering capability may be compiled into Stage PTX without adding chess fields to universal stage base context. Its specialization-only context/data exists only in Search Images that select it.
+A capability without an owning contract for its semantic effects fails before composition. Product-specific inputs remain namespaced specialization inputs and do not widen the universal base context.
 
-A capability that cannot identify the contract owning its semantic effects is rejected before generation.
+## 5. Deterministic Search Program composition
 
-## 5. Capability composition before PTX emission
+Before ignition, the Search Composer MUST:
 
-Before generating Stage PTX, the Search Composer MUST:
+1. normalize the selected universal, capability and product contracts;
+2. sort each selected stage capability set canonically;
+3. validate checkpoint, context, type, permission, semantic-owner, ordering, publication and finite-resource compatibility;
+4. merge the minimum universal base checkpoint context with only selected namespaced contributions;
+5. prove writes commute or impose one declared deterministic order;
+6. validate selected Async Stage Channels and owned state/workspace;
+7. compose the complete selected optional behavior for each stage into one semantic stage capability program unit;
+8. emit only required restricted Device-JS entry/exit behavior and declared public CUDA-JS dependencies;
+9. produce one normalized semantic Search Program and versioned execution package;
+10. prove omitted capabilities leave no solely capability-owned source, context, resource or package residue.
 
-1. normalize/sort the selected stage capability set deterministically;
-2. validate checkpoint/base-context/type/permission/semantic-owner/ordering/publication/resource compatibility;
-3. merge the minimum universal base checkpoint context with only selected namespaced capability context contributions;
-4. resolve write conflicts/noncommutative ordering or fail closed;
-5. validate internal Async Stage Channels and capability-owned workspace/state;
-6. combine capability logic into one stage-owned lowering unit;
-7. compute persistent/scratch/queue/model/workspace contributions;
-8. emit only required entry/exit exports and declared imports;
-9. record exact generation/provenance/options/bytes in package identity;
-10. prove omitted capabilities leave no solely capability-owned context/code/resource residue.
+There is no active-search capability registry, schema interpreter, fragment loop, callback table, function-pointer lookup, product-controlled late binding or host callback progression.
 
-There is no active-search capability registry, schema interpreter, fragment loop, callback table, function-pointer lookup or product-controlled late binding.
+The number of Device-JS source files/functions and the CUDA-JS-selected realization topology are private build details unless a public package contract makes them observable. Physical fusion or splitting MUST preserve the semantic composition and identity contract.
 
-## 6. Checkpoint ABI
-
-Each emitted checkpoint symbol MUST have a namespaced deterministic symbol and fully specified device ABI including:
-
-- symbol kind/linkage/visibility;
-- PTX ISA version, virtual target and address size;
-- parameter count, widths, alignment, address spaces and const/write semantics;
-- stage/work-item identity/generation;
-- universal base context layout ID/version/byte size;
-- selected capability-context layout identity/byte size;
-- result/control signal representation;
-- publication/thread-scope assumptions;
-- allowed calling scope/convergence requirements;
-- stack/local/shared/register/workspace bounds where enforceable;
-- error mapping and no-host-callback behavior.
-
-Raw device addresses are not ordinary persistent identities. Pointer-like parameters are prevalidated bounded capabilities tied to Search Image lifetime.
-
-If entry and exit checkpoints both exist, they remain two symbols within one Stage PTX. The contract defines any shared read-only configuration/persistent capability state. They MUST NOT share an incomplete stage mutation lease across the interval.
-
-A product-specific ABI contribution is namespaced and part of the selected capability layout; it does not alter the universal base checkpoint ABI for engines that do not select it.
-
-## 7. Empty-capability and first-product disappearance
-
-For a stage with an empty selected capability set, generation omits everything attributable solely to optional extension. Mandatory stage execution and mandatory internal channels are unaffected.
-
-Omitted artifacts include:
-
-- Stage PTX input/exported checkpoint symbols;
-- call sites/enable branches/indirect dispatch;
-- capability-specific context packing/construction;
-- capability persistent state/workspace/queues/diagnostics;
-- capability-only synchronization.
-
-The same rule applies to product deletion: removing the chess product/capabilities from an otherwise comparable engine MUST remove solely chess-owned Stage PTX/context/state/resources without changing universal stage semantics.
-
-The conformance oracle is exact generated/final-artifact equivalence where deterministic toolchain behavior permits it, or a stricter approved structural equivalence proving no retained cost. Source structure alone is insufficient.
-
-## 8. Bound-stage cost contract
-
-Stage-level direct calls are not generic dispatch, but they are not free. Final binaries charge code size, register pressure, stack/local/shared memory, occupancy and latency to the realized engine.
-
-Prior bounded Windows evidence showed retained calls for fine PTX functions and one coarse call approaching an inline control only after sufficient synthetic work. Therefore:
-
-- Stage PTX is allowed only at stable semantic checkpoints, not tiny mid-stage operations;
-- a stage MUST NOT be invented solely for a PTX attachment point or one product optimization;
-- representative evidence compares Stage PTX against equivalent fused/generated controls;
-- profiles whose boundaries are too fine fuse capability behavior into selected mandatory lowering, combine stages where semantics permit, or reject the profile;
-- no fixed cheap-enough threshold is accepted from the synthetic probe.
-
-The semantic extension contract remains independent of realization. Future accepted profiles may fuse, precompile or use LTO/another mechanism while preserving the same surface/capability semantics.
-
-## 9. Search Image identity
-
-Deterministic Search Image identity includes at least:
-
-- normalized universal Search IR/schema/contract versions;
-- exact stage graph/versions/checkpoints and universal base contexts;
-- selected capability IDs/versions/schemas/semantic owners;
-- product contract/profile identities material to generated behavior;
-- generated capability-context/layout/ABI versions;
-- ordered Stage PTX bytes/digests;
-- generator version/source revision;
-- capability-provider provenance/trust identity;
-- PTX ISA/virtual target/address size/imports/exports;
-- compilation/link options/final GPU target;
-- toolkit/NVRTC/nvJitLink identity where material;
-- exact required CUDA-JS package/API/capability profile;
-- selected domain/policy/evaluator/session/resource identities;
-- finite memory plan/scheduler profile;
-- selected observation/output contracts;
-- diagnostics/instrumentation selection.
-
-Unknown/missing/incompatible inputs fail before ignition. Cache reuse across incomplete identity is prohibited.
-
-A product-only capability change invalidates affected product Search Images. It does not change universal contract versions unless universal meaning actually changed.
-
-## 10. CUDA-JS ownership boundary
+## 6. CUDA-MCGS / CUDA-JS ownership boundary
 
 CUDA-MCGS owns:
 
-- stage/surface/capability semantics;
-- product-capability semantic binding to selected owning contracts;
-- normalization/lowering/Stage PTX generation;
-- ABI/symbol meaning;
-- ordered composition and complete Search Image identity;
-- finite search/capability/product resources and semantic conformance;
-- compatible-pair acceptance.
+- Search IR and Search Program semantics;
+- stage/surface/capability/product binding;
+- deterministic semantic ordering;
+- restricted Device-JS search/domain/capability source;
+- finite search/capability/product resource requirements;
+- semantic package identity, conformance and compatible-pair acceptance.
 
 CUDA-JS owns:
 
-- generic source/PTX/binary handling;
-- NVRTC/nvJitLink provider behavior;
-- generic artifact caching;
-- CUDA module/function/memory/launch/completion resources;
-- generic long-lived-operation/sideband mechanisms;
-- generic diagnostics/recovery/teardown;
-- generic Windows/Linux runtime qualification.
+- restricted Device-JS syntax/helper/type validation;
+- lowering and generated CUDA C++/PTX/cubin/LTO or other artifacts;
+- compiler/linker/provider/ABI/cache behavior;
+- generic module/function/memory/launch/operation/publication resources;
+- generic diagnostics, recovery, cancellation and teardown;
+- Windows/Linux/runtime qualification.
 
-CUDA-JS MUST NOT interpret Search IR, stage IDs, capabilities, product/chess schemas, root updates, output meaning or search-resource policy. CUDA-MCGS MUST NOT reach through CUDA-JS public contracts into private handles.
+CUDA-JS MUST NOT interpret Search IR, stage, capability, product, root-update, output or search-resource-policy meaning. CUDA-MCGS MUST NOT access CUDA-JS private source, raw handles or artifact internals.
 
-CUDA-JS now publishes generic Device-JS, artifact-composition and publication-mailbox capabilities at the reconciled peer baseline. Availability does not qualify this CUDA-MCGS profile: the revised semantic-input/artifact-output package still requires exact compatible-pair evidence under CUDA-JS issue #32. No CUDA-JS capability may be redefined with CUDA-MCGS/chess semantics.
+If the public CUDA-JS surface cannot express a required generic GPU mechanism naturally, safely and with bounded synchronization/resource/lifecycle semantics, composition stops for ADR-0019 capability classification. A private import, local native implementation or distorted Device-JS workaround is non-conforming.
 
-## 11. Search Session/control boundary
+## 7. Public package and generated-output contract
 
-Stage PTX composition occurs before ignition. It MUST NOT be used as a mechanism for late root-update binding or host-serviced observations.
+The CUDA-MCGS execution package MUST identify:
 
-A selected capability may consume root epoch/session facts at a stable checkpoint if SPEC-0003 and SPEC-0006 grant those facts, but external root-update/control/observation ports remain Search Session/package operations.
+- normalized Search IR and semantic Search Program identity;
+- selected domain/policy/evaluator/session/resource/product contracts;
+- exact stage graph/checkpoints/base contexts when selected;
+- selected capability IDs, schemas and semantic owners;
+- restricted Device-JS source/input digests and required public helper/language profile;
+- declared public imports/exports and typed function/argument/launch descriptions;
+- finite generic CUDA-JS resource and operation requirements;
+- required CUDA-JS package/API/capability/evidence profile;
+- compilation target/options only through public CUDA-JS contract fields;
+- provenance, checksums, compatibility and result/observation manifests.
 
-An observation capability may maintain observation-local buffers/publication metadata, but merely requesting/publishing observation MUST NOT mutate search-semantic state.
+CUDA-JS returns or records generated-output identities, resource summaries, errors and lifecycle evidence through public contracts. CUDA-MCGS treats CUDA C++/PTX/cubin/LTO/native bytes as opaque. It may verify public digests, manifests and attestations and consume CUDA-JS-owned artifact-inspection evidence; it MUST NOT patch, parse or reinterpret artifact implementation.
+
+One semantic Search Program may be realized by one or multiple generated artifacts. Artifact count and form do not change semantic ownership and are not universal requirements.
+
+## 8. Empty-capability and first-consumer deletion
+
+For a stage with an empty selected capability set, composition omits everything attributable solely to optional extension behavior:
+
+- stage capability Device-JS behavior and calls;
+- enable branches or indirect dispatch;
+- capability-specific context packing and layout;
+- capability persistent state, workspace, queues and diagnostics;
+- capability-only synchronization and package requirements.
+
+The corresponding CUDA-JS-generated output MUST contain no solely omitted-capability behavior/resource residue under the qualified profile. CUDA-JS owns the native artifact oracle; CUDA-MCGS owns the semantic/source/package comparison and compatible-pair conclusion.
+
+Deleting the first product/capability MUST leave universal stage semantics and CUDA-JS coherent. Deleting CUDA-MCGS MUST leave every promoted CUDA-JS mechanism consumer-neutral.
+
+## 9. Cost and realization neutrality
+
+Stable semantic checkpoints are not assumed free. A selected implementation charges code size, registers, stack/local/shared memory, occupancy, synchronization, memory traffic and latency to the concrete engine profile.
+
+Representative qualification compares selected stage capability behavior with an equivalent fused/generated control under identical semantic work, resource limits and output/search-quality obligations. The selected profile may use fusion, inlining, RDC, Device LTO, ordinary linking or another CUDA-JS mechanism. Availability of a mechanism does not make it a framework dependency.
+
+Historical Stage PTX experiments remain bounded mechanism/cost evidence. They do not authorize CUDA-MCGS-owned PTX, fix one artifact granularity or select a production mechanism.
+
+## 10. Identity and compatibility
+
+Deterministic semantic Search Program/package identity includes every input capable of changing CUDA-MCGS-owned meaning or emitted restricted Device-JS source, including:
+
+- normalized contract/Search IR/schema versions;
+- stage/checkpoint/base-context identities;
+- selected capabilities/products and their schemas/owners;
+- ordering, permissions and selected resource contributions;
+- restricted Device-JS source/input digests and generator revision;
+- selected domain/policy/evaluator/session/resource/output identities;
+- required CUDA-JS public contract/capability profile;
+- diagnostics/instrumentation selection.
+
+CUDA-JS separately owns complete native/generated cache identity, including compiler/toolkit/provider/architecture/options/artifact inputs. The compatible-pair record binds both identities without making either repository own the other's private key space.
+
+Unknown, missing or incompatible inputs fail before ignition. A product-only change invalidates affected product packages without changing universal contract versions when universal meaning is unchanged.
+
+## 11. Session and device-closure boundary
+
+Composition, validation, lowering, allocation and load occur before ignition. No required capability is discovered, generated, linked, loaded or rebound during active search.
+
+A selected capability may consume session/root-epoch facts only when SPEC-0003 and SPEC-0006 grant them. External root/control/observation ports remain Search Session/package operations and MUST NOT become internal callbacks.
+
+After ignition, CUDA-JS execution may use any qualified device-owned topology, but CUDA-MCGS internal search progress MUST NOT require a CPU-produced intermediate, host polling/relaunch, callback progression or late compilation decision.
 
 ## 12. Security and provenance
 
-Stage PTX is executable content. Production packages MUST:
+Restricted Device-JS and generated artifacts are executable inputs/outputs. Production packages MUST:
 
-- accept trusted/signed sources by default;
-- validate manifest/exact bytes before native work;
-- reject unknown imports/exports/address spaces/ABI categories/architectures;
-- bind executable capabilities to Search Image lifetime;
-- preserve exact provenance/license/reuse decisions;
-- avoid arbitrary-address authority outside explicitly unsafe profiles;
-- fail closed on digest/signature/ABI/compatibility mismatch.
+- use trusted/authorized sources under the selected profile;
+- validate schemas, versions, permissions, digests and resource bounds before native work;
+- reject undeclared public imports/exports and unsupported capability profiles;
+- bind executable capabilities/resources to package/session lifetime;
+- preserve source/generator/package/artifact provenance and license decisions;
+- expose no ordinary arbitrary-address authority;
+- fail closed on identity, compatibility or qualification mismatch.
 
-Product ownership does not confer native authority. A chess/user capability is held to the same least-authority/provenance/security rules as a reusable framework capability.
-
-CUDA-MCGS does not implement a custom PTX parser as generic CUDA validity authority. It validates owned manifest/ABI constraints; CUDA-JS/nvJitLink owns generic link validity, and final-binary inspection owns emitted-behavior evidence.
+CUDA-MCGS validates its semantic/package contract. CUDA-JS validates Device-JS and native/generated implementation contracts. Product ownership grants no native authority.
 
 ## 13. Lifecycle and rollback
 
-Composition/link/load/resource allocation occur before ignition. Partial creation unwinds all task-owned compiler/linker/module/memory resources through CUDA-JS public lifecycle contracts. After ignition, no required Stage PTX is discovered/generated/linked/loaded/rebound.
+Partial composition fails without publishing a valid package. Partial CUDA-JS validation/lowering/link/load/allocation unwinds through CUDA-JS public lifecycle contracts. Every task/runtime source, package, cache, module, allocation, operation, diagnostic and generated artifact receives an owned disposition.
 
-Device-resident activation may change under the finite plan but does not permit late code mutation or host-provided search decisions.
+Device-resident activation may change within the finite preplanned profile but does not permit late code mutation or unplanned resource acquisition. Product/capability removal occurs by deterministic recomposition before ignition, not active-session native unload.
 
-Product removal/disable before composition removes its capability code/resources under deterministic generation. Product removal is not a runtime unload operation during active search unless a future accepted contract explicitly defines such behavior.
+## 14. Semantic conformance
 
-## 14. Conformance requirements
+One consolidated CUDA-free schema/reference capsule MUST cover:
 
-One consolidated compatible-pair capsule MUST cover:
+- stage with no optional capability and exact semantic/source/package disappearance;
+- entry-only, exit-only and entry-plus-exit capability behavior;
+- several capabilities composed into one deterministic stage capability program unit;
+- canonical selection/order and content-sensitive package identity;
+- universal base context unchanged by deleting a product capability;
+- namespaced product context/source only when selected;
+- incompatible types, writes, permissions, resources, versions, semantic owners and public dependency profiles rejected before ignition;
+- semantic parity with the owning reference oracle;
+- first-product deletion and a materially different non-product capability;
+- capability-gap classification when a required generic mechanism is absent.
 
-- stage with no optional capability and exact disappearance;
-- entry-only/exit-only/entry-plus-exit Stage PTX;
-- several capabilities composed into one Stage PTX;
-- deterministic ordering/bytes/package identity;
-- universal base context unchanged by deleting product capability;
-- namespaced product capability context only when selected;
-- incompatible types/writes/resources/versions/semantic owners/digests/PTX profiles/architectures rejected before ignition;
-- exact imports/exports/ABI layouts;
-- direct execution and semantic parity with reference oracle;
-- final cubin/SASS call/resource inspection;
-- representative fused-control comparison using GPU timing/profiling/occupancy evidence;
-- pressure/allocation/link failure/recovery/graceful teardown;
-- exact CUDA-MCGS/CUDA-JS compatible-pair identity;
-- chess capability deletion from an otherwise comparable image with zero chess-only residue;
-- a materially different non-chess capability proving the same universal extension substrate;
-- Windows native acceptance first and separately reported Linux gap until qualified.
+These tests establish semantic composition, not native CUDA support.
 
-Portable schema/generation tests run on Windows/Linux-capable environments, but portable success is not native Linux nvJitLink/cubin/SASS/launch/cleanup/performance support.
-
-## 15. Acceptance blockers
+## 15. Semantic acceptance blockers
 
 This proposal cannot become accepted until:
 
-- SPEC-0003 stage/base-context/capability semantics and relevant domain/policy/evaluator/storage/session contracts are accepted;
-- complete Stage PTX ABI/schema/generator ownership is specified;
-- capability-specific context contribution/deletion is normalized in Search IR/Search Image identity;
-- CUDA-JS issue #35 is resolved or another accepted source-to-relocatable-PTX route exists;
-- representative stage-level cost evidence passes on selected Windows profile;
-- final-binary/resource/failure/cleanup conformance passes for an exact compatible pair;
-- first-product deletion and materially different second-capability tests prove the substrate is not chess-shaped;
-- Linux is qualified for the claimed profile or explicitly excluded.
+- SPEC-0003 stage/base-context/capability semantics and relevant core contracts are decision-complete;
+- restricted Device-JS/Search Program inputs and opaque CUDA-JS-generated outputs are represented by a versioned public package contract;
+- capability-specific context/resource/identity/deletion obligations are represented by bounded Search IR/reference evidence accepted atomically with this contract;
+- the CUDA-free semantic conformance capsule passes with first-consumer deletion and a materially different second capability;
+- source/package security, provenance, compatibility, failure and cleanup obligations are explicit;
+- no remaining normative text makes CUDA-MCGS the owner of CUDA-specific source or artifacts.
+
+## 16. Production-profile qualification
+
+A concrete native profile additionally requires:
+
+- exact CUDA-MCGS Search IR, restricted Device-JS source/package and CUDA-JS package/revision identity;
+- independent CUDA-JS qualification for every selected generic capability;
+- CUDA-JS-generated artifact, ABI, resource and failure evidence through public contracts;
+- empty-capability final-output/resource disappearance evidence;
+- representative fused-control cost/performance/occupancy evidence when claimed;
+- native publication, cancellation, partial-creation rollback and teardown evidence;
+- exact compatible-pair semantic parity;
+- separately scoped Windows/Linux support evidence.
+
+These gates qualify a production profile after semantic acceptance. They are not circular prerequisites for accepting the backend-neutral composition contract.

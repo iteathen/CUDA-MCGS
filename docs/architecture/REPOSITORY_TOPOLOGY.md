@@ -12,7 +12,7 @@ Owns the universal graph-search product:
 
 - Search IR;
 - domain, graph, policy, evaluator, output, and finite-resource contracts;
-- semantic Search Stage graph, useful entry/exit surfaces, stage capabilities, Async Stage Channels, Stage PTX semantics, and Search Composer;
+- semantic Search Stage graph, useful entry/exit surfaces, stage capabilities, Async Stage Channels, restricted Device-JS program semantics, and Search Composer;
 - search-specific capability resolution and specialization;
 - search-specific layouts and generated device programs/Search Images;
 - graph/transposition/path/publication/reclamation semantics;
@@ -54,14 +54,14 @@ Search IR + Search Stage/surface/channel resolution
 Search Composer
   - contract/schema compatibility
   - finite memory/layout plan
-  - one optional composed Stage PTX input per required stage
+  - one optional semantic stage capability program unit per required stage
   - scheduler/profile selection
   - complete artifact/cache identity
       │
       ▼
 CUDA-MCGS execution package
   - required CUDA-JS contract/capabilities
-  - relocatable PTX/source/binary modules and complete cache inputs
+  - restricted Device-JS/Search Program inputs and public CUDA-JS realization requirements
   - opaque memory/resource requirements
   - arguments and launch descriptions
   - initial data/model/configuration
@@ -90,7 +90,7 @@ CUDA-MCGS expresses requirements through public CUDA-JS capability and evidence 
 - The CUDA-MCGS Search Composer owns stage/capability/channel composition decisions; CUDA-JS owns generic compile/link/load mechanisms.
 - No consumer relies on a peer repository's branch, worktree, internal path, unversioned generated file, or local build directory.
 - Compatibility is expressed as public version/capability profiles and exact tested revision/artifact pairs.
-- Generated artifacts identify every material search schema/contract, stage graph/checkpoint/capability/channel, ordered Stage PTX input, generator/compiler, CUDA-JS runtime contract, platform, Driver/toolkit, GPU architecture, build/link option, model/adapter input, scheduler, and resource profile.
+- Compatible-pair identity covers every material search schema/contract, stage graph/checkpoint/capability/channel, ordered semantic program input, CUDA-MCGS generator, CUDA-JS compiler/runtime contract, platform, Driver/toolkit, GPU architecture, build/link option, model/adapter input, scheduler, and resource profile without exposing private CUDA-JS artifact internals.
 - Higher-level projects such as cuVS, cuFFT, cuCollections, or RAPIDS are not baseline active-search runtime dependencies. Methodology/source reuse follows explicit dependency/provenance rules.
 
 ## Release and test ownership
@@ -100,7 +100,7 @@ CUDA-JS releases generic runtime packages and publishes backend-neutral capabili
 Testing is divided as follows:
 
 - CUDA-JS owns generic runtime conformance, resource lifetime, error, ABI, compilation/link/load, launch, completion, cancellation, and teardown capsules.
-- CUDA-MCGS owns Search IR semantics, stage/surface/channel compatibility, search-specific memory planning, generated package correctness, device closure, empty-capability disappearance/Stage PTX cost evidence, search quality, and synthetic-domain conformance.
+- CUDA-MCGS owns Search IR semantics, stage/surface/channel compatibility, search-specific memory planning, generated semantic package correctness, device closure, empty-capability disappearance/selected-capability cost conclusions, search quality, and synthetic-domain conformance. CUDA-JS owns final artifact/resource inspection evidence.
 - Cross-repository integration owns a small compatibility capsule keyed by exact CUDA-MCGS and CUDA-JS revisions/artifacts. It does not duplicate either repository's complete test suite.
 
 ## Adapter placement

@@ -30,7 +30,7 @@ The universal core does **not** require a ranked root-action list, best-move out
 
 ### Universal extension and composition substrate
 
-CUDA-MCGS owns a universal schema-backed extension substrate consisting of semantic Search Stages, schema-selected least-authority Stage Extension Surface contracts, bounded Async Stage Channels, deterministic capability composition, generated checkpoint contexts/ABIs, finite extension resources, and specialized Stage PTX/Search Image realization.
+CUDA-MCGS owns a universal schema-backed extension substrate consisting of semantic Search Stages, schema-selected least-authority Stage Extension Surface contracts, bounded Async Stage Channels, deterministic capability composition, generated checkpoint contexts/contracts, finite extension resources, and specialized restricted Device-JS/Search Program semantics. CUDA-JS exclusively owns the generated CUDA/PTX/cubin/LTO/native realization.
 
 Stability belongs to the extension contract/schema, not to unconditional runtime presence. Concrete attachment points are materialized only for capabilities selected into a specialization; unused capabilities contribute no extension hook/port, dispatch, context, channel, storage, synchronization, or other solely extension-owned runtime residue.
 

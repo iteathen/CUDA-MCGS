@@ -48,6 +48,8 @@ The substrate consists of:
 - zero-or-one optional composed Stage PTX input per stage in the version-zero realization;
 - exact finite resource, provenance, compatibility and Search Image identity.
 
+[`ADR-0019`](ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) later fixed the production-source boundary: the “Stage PTX input” bullet above is retained as historical decision context, not current implementation authority. CUDA-MCGS now supplies one semantic restricted Device-JS stage capability program unit; CUDA-JS exclusively owns any generated PTX/cubin/LTO/native realization. The selected-only and zero-residue decision remains unchanged.
+
 Stability applies to the schema identity and semantics of an extension surface, not to unconditional runtime presence. A specialization materializes only the attachment points required by its selected capability set. An unselected capability contributes no hook/port, dispatch branch, context field, channel, storage, synchronization, or other solely extension-owned runtime residue.
 
 The **substrate is universal; individual capability semantics are not automatically universal**.
