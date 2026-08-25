@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/framework-selection.schema.json",
+  "title": "CUDA-MCGS Search IR 0.2.0 framework selection envelope",
+  "description": "Closed pre-ignition selection and public-binding envelope. Owner profile bodies and derived plans remain in their owning schemas.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "representation", "status", "contractSet", "frameworkContract", "profiles", "dependencies", "bindings", "identityPolicy"],
+  "properties": {
+    "schema": { "const": "cuda-mcgs.framework-selection/0.2.0" },
+    "representation": { "const": "cuda-mcgs.search-ir/0.2.0" },
+    "status": { "const": "proposal-evidence" },
+    "contractSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "identity"],
+      "properties": {
+        "schema": { "const": "cuda-mcgs.search-ir.contract-set/0.2.0" },
+        "identity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }
+      }
+    },
+    "frameworkContract": { "$ref": "primitives.schema.json#/$defs/catalogContractReference" },
+    "profiles": {
+      "type": "array",
+      "minItems": 7,
+      "items": { "$ref": "#/$defs/profile" }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/dependency" }
+    },
+    "bindings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/binding" }
+    },
+    "identityPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonicalization", "digest", "unorderedStringOrder", "pathIndependent", "targetIndependent"],
+      "properties": {
+        "canonicalization": { "const": "utf8-json-sorted-keys-and-owned-sets-v1" },
+        "digest": { "const": "sha256" },
+        "unorderedStringOrder": { "const": "javascript-utf16-code-units" },
+        "pathIndependent": { "const": true },
+        "targetIndependent": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "role": {
+      "enum": ["domain", "graph", "policy", "evaluator", "resource", "progress", "output", "session", "stage-extension", "async-channel", "program-package", "product", "capability"]
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "contract", "schema", "identity"],
+      "properties": {
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "role": { "$ref": "#/$defs/role" },
+        "contract": { "$ref": "primitives.schema.json#/$defs/contractReference" },
+        "schema": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "identity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["consumer", "provider", "reason"],
+      "properties": {
+        "consumer": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "provider": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "reason": { "$ref": "primitives.schema.json#/$defs/publicReference" }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "producer", "consumers", "permissions", "representationOwner", "lifecycleOwner", "epochScope", "resourceContributions", "progressDependencies"],
+      "properties": {
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "version": { "$ref": "primitives.schema.json#/$defs/version" },
+        "producer": { "$ref": "primitives.schema.json#/$defs/publicReference" },
+        "consumers": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "primitives.schema.json#/$defs/publicReference" }
+        },
+        "permissions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "primitives.schema.json#/$defs/publicReference" }
+        },
+        "representationOwner": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "lifecycleOwner": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "epochScope": { "$ref": "primitives.schema.json#/$defs/publicReference" },
+        "resourceContributions": {
+          "type": "array",
+          "items": { "$ref": "primitives.schema.json#/$defs/publicReference" }
+        },
+        "progressDependencies": {
+          "type": "array",
+          "items": { "$ref": "primitives.schema.json#/$defs/publicReference" }
+        }
+      }
+    }
+  }
+}

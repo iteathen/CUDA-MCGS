@@ -1,11 +1,11 @@
 {
-  "schema_version": 39,
+  "schema_version": 40,
   "updated": "2026-08-25",
-  "status": "ready_for_ir_foundation",
+  "status": "ready_for_ir_domain",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then proceed to pure Node.js/restricted Device-JS native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "be80710e7d982a67d626811ccac2b6fe7bd3c9bb",
+    "cuda_mcgs_authority_input_baseline": "e0aa5cda6f8e321ae23dfc806babd5c072fe4279",
     "cuda_js_authority_baseline": "2135216b1a9fd88066a1c82b61ae533645eac9c2",
     "cuda_js_implementation_baseline": "b6062f691a27093df0e5d55e482e69ebbd39a9eb",
     "cuda_js_package": "cuda-js@0.1.0-alpha.6"
@@ -26,9 +26,9 @@
     "parent_plan_version": "CUDA-MCGS-V0/22",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": "docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md",
-    "active_leaf": "IR-FOUNDATION-01",
+    "active_leaf": "IR-DOMAIN-01",
     "ready_queued_leaves": [],
-    "next_action": "After IR-CATALOG-01 integrates, define only the shared Search IR 0.2.0 structural primitives, closed framework envelope and canonical normalization/identity rules. Keep semantic-owner fields in their later owner fragments, represent optional owners by omission, reject unknowns before derivation, and preserve accepted Search IR 0.1.0 byte-for-byte with its existing identity and 18-case capsule.",
+    "next_action": "After IR-FOUNDATION-01 integrates, implement only the SPEC-0007-owned Search IR 0.2.0 domain profile schema, semantic normalizer, canonical/boundary/invalid fixtures and exact 84-requirement evidence classification. Preserve arbitrary state/action/outcome/history/role families, finite resumable work and namespaced product additions without importing graph layout, policy, evaluator, output, scheduler or CUDA mechanism meaning.",
     "exit": "Strict schemas/metaschemas, canonical normalization, deterministic reference Composer/Search Program/package generation and structural deletion evidence represent every selected requirement needed by the 989-requirement proposal packet without inventing semantics or CUDA-specific implementation."
   },
   "deliverables": [

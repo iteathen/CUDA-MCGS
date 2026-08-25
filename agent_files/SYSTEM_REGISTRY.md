@@ -54,7 +54,7 @@ This registry tells developers and agents where durable information and future i
 
 | Product area | Owns | Location | Current status |
 |---|---|---|---|
-| `schemas` | Versioned CUDA-MCGS machine-readable universal and namespaced selected contracts/metaschemas | [`../schemas/`](../schemas/README.md) | Active; Search IR 0.1.0 accepted, 0.2.0 proposal catalog/coverage evidence active |
+| `schemas` | Versioned CUDA-MCGS machine-readable universal and namespaced selected contracts/metaschemas | [`../schemas/`](../schemas/README.md) | Active; Search IR 0.1.0 accepted, 0.2.0 proposal catalog/foundation evidence active |
 | `components` | Production universal CUDA-MCGS search components | [`../components/`](../components/README.md) | Reserved; no implementation authorized |
 | `adapters` | Universal/domain/product policy, evaluator, output, domain, and peer-runtime adapters | [`../adapters/`](../adapters/README.md) | Reserved |
 | `conformance` | Universal reference backend, synthetic domains, search-contract suites, and public peer-boundary compatibility | [`../conformance/`](../conformance/README.md) | Reserved |

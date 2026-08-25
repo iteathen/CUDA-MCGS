@@ -1,0 +1,228 @@
+{
+  "schema": "cuda-mcgs.framework-selection/0.2.0",
+  "representation": "cuda-mcgs.search-ir/0.2.0",
+  "status": "proposal-evidence",
+  "contractSet": {
+    "schema": "cuda-mcgs.search-ir.contract-set/0.2.0",
+    "identity": {
+      "algorithm": "sha256",
+      "sha256": "c809cb1ba8dbe45d1b6b68ee63822ca72daecde2528974acb085a5500b512c46"
+    }
+  },
+  "frameworkContract": {
+    "kind": "catalog",
+    "id": "SPEC-0000",
+    "specificationIdentity": "CUDA-MCGS-SPEC-0000@0.1.0-draft",
+    "sha256": "94ec8ab4fb61ecf94c0acf9d2143bd4922f4bdd32363a40d547ba7444f21d4e1"
+  },
+  "profiles": [
+    {
+      "id": "owner.domain",
+      "role": "domain",
+      "contract": {
+        "kind": "catalog",
+        "id": "SPEC-0007",
+        "specificationIdentity": "CUDA-MCGS-SPEC-0007@0.1.0-draft",
+        "sha256": "69512d49a4b0c5aae055bbba5c0a152db129f54037d7933f7f3b044a2547ad39"
+      },
+      "schema": { "id": "cuda-mcgs.domain-profile/0.2.0", "version": "0.2.0", "sha256": "0595c80af06026b238f1e5bad99dd7c7765b32d59b39779e703a71d885afe8a6" },
+      "identity": { "algorithm": "sha256", "sha256": "62330e6c9d8b330e1e5d120d4ce4d577990e1a9ffbbe4886f237be64e6fdf6f6" }
+    },
+    {
+      "id": "owner.graph",
+      "role": "graph",
+      "contract": {
+        "kind": "catalog",
+        "id": "SPEC-0010",
+        "specificationIdentity": "CUDA-MCGS-SPEC-0010@0.1.0-draft",
+        "sha256": "3a1ba6789648c47c8837713f9f61a0fd77ee4fa6fcfda8c24d1fd19f42895206"
+      },
+      "schema": { "id": "cuda-mcgs.graph-profile/0.2.0", "version": "0.2.0", "sha256": "b5d167722bbe03ee1f728a2b9979419d4c5e2aced139076c144e6d65123b74a0" },
+      "identity": { "algorithm": "sha256", "sha256": "60474a30320dfa54ac10386397daf6618e06b2b8aafeb7259b64e4622470d654" }
+    },
+    {
+      "id": "owner.output",
+      "role": "output",
+      "contract": {
+        "kind": "catalog",
+        "id": "SPEC-0013",
+        "specificationIdentity": "CUDA-MCGS-SPEC-0013@0.1.0-draft",
+        "sha256": "f9890c2814cfb2e647fdc9372fb9aa3ea02a8b561d9e35b530b5bcbd83f40087"
+      },
+      "schema": { "id": "cuda-mcgs.output-profile/0.2.0", "version": "0.2.0", "sha256": "01cd823127382f1c4b90b8a27c1ff970cf26970913edb22880cf7c973d8ba613" },
+      "identity": { "algorithm": "sha256", "sha256": "a34591debdf3232b0dd4080709f8238c82a6bef019afaa8aa8a6e46799b2fd44" }
+    },
+    {
+      "id": "owner.policy",
+      "role": "policy",
+      "contract": {
+        "kind": "catalog",
+        "id": "SPEC-0008",
+        "specificationIdentity": "CUDA-MCGS-SPEC-0008@0.1.0-draft",
+        "sha256": "c33e33acf52f774b27e987c607da670344742a3075438bfc34984b34ac98dc11"
+      },
+      "schema": { "id": "cuda-mcgs.policy-profile/0.2.0", "version": "0.2.0", "sha256": "400b86c45f375994e7428ed2a9171fd2e302ab072b3f2fe147792498cb821dc6" },
+      "identity": { "algorithm": "sha256", "sha256": "88416f5761fd049e0fafc4340a063029bc4ba3b5a7e59504fe65adf6b6c48241" }
+    },
+    {
+      "id": "owner.program-package",
+      "role": "program-package",
+      "contract": {
+        "kind": "catalog",
+        "id": "SPEC-0005",
+        "specificationIdentity": "CUDA-MCGS-SPEC-0005@0.4.0-draft",
+        "sha256": "278a6df65efcc27269d621775369d8a356c91d85498daac25b720ac3fd5c85e7"
+      },
+      "schema": { "id": "cuda-mcgs.program-package-profile/0.2.0", "version": "0.2.0", "sha256": "aa4ef4718a1bd217023ea7d6c2f3cc7b376928b747957420d2d14790e39f26b2" },
+      "identity": { "algorithm": "sha256", "sha256": "6817db5ed9b94bd6ac64795ab02163ed17624dc2b7dde7f9ff8c2cbd30a0bfd5" }
+    },
+    {
+      "id": "owner.progress",
+      "role": "progress",
+      "contract": {
+        "kind": "catalog",
+        "id": "SPEC-0012",
+        "specificationIdentity": "CUDA-MCGS-SPEC-0012@0.1.0-draft",
+        "sha256": "709912998eadbd8001e1bed7103610c4b034cf864d5f991786fa983bbc031058"
+      },
+      "schema": { "id": "cuda-mcgs.progress-profile/0.2.0", "version": "0.2.0", "sha256": "e24ddb86ba760a0e11ca17fdfff139768220974915616102d03120454e711cc5" },
+      "identity": { "algorithm": "sha256", "sha256": "0b5e61b453c66c8b31a4a8a868381fd567f8e1543e4c879ac1ff21876c960ed2" }
+    },
+    {
+      "id": "owner.resource",
+      "role": "resource",
+      "contract": {
+        "kind": "catalog",
+        "id": "SPEC-0011",
+        "specificationIdentity": "CUDA-MCGS-SPEC-0011@0.1.0-draft",
+        "sha256": "286d25aefbbc5ce58bdf338cbf64778662af36671337f17aad867bb04aa8eda2"
+      },
+      "schema": { "id": "cuda-mcgs.resource-profile/0.2.0", "version": "0.2.0", "sha256": "f6ecee90fad2c573eb01599f38d77b65101a9fd8bdd1d602636375f9ea40d887" },
+      "identity": { "algorithm": "sha256", "sha256": "ff200df5509227e4e566aeed027718c97dbeab4793d74ad29a21284e9906c3e7" }
+    }
+  ],
+  "dependencies": [
+    { "consumer": "owner.graph", "provider": "owner.domain", "reason": { "ownerProfile": "owner.domain", "id": "domain.identity", "version": "0.1.0" } },
+    { "consumer": "owner.policy", "provider": "owner.domain", "reason": { "ownerProfile": "owner.domain", "id": "domain.roles", "version": "0.1.0" } },
+    { "consumer": "owner.policy", "provider": "owner.graph", "reason": { "ownerProfile": "owner.graph", "id": "graph.ready-facts", "version": "0.1.0" } },
+    { "consumer": "owner.resource", "provider": "owner.domain", "reason": { "ownerProfile": "owner.domain", "id": "domain.resource-contribution", "version": "0.1.0" } },
+    { "consumer": "owner.resource", "provider": "owner.graph", "reason": { "ownerProfile": "owner.graph", "id": "graph.resource-contribution", "version": "0.1.0" } },
+    { "consumer": "owner.resource", "provider": "owner.policy", "reason": { "ownerProfile": "owner.policy", "id": "policy.resource-contribution", "version": "0.1.0" } },
+    { "consumer": "owner.progress", "provider": "owner.graph", "reason": { "ownerProfile": "owner.graph", "id": "graph.progress-transition", "version": "0.1.0" } },
+    { "consumer": "owner.progress", "provider": "owner.policy", "reason": { "ownerProfile": "owner.policy", "id": "policy.work-readiness", "version": "0.1.0" } },
+    { "consumer": "owner.progress", "provider": "owner.resource", "reason": { "ownerProfile": "owner.resource", "id": "resource.admission-transition", "version": "0.1.0" } },
+    { "consumer": "owner.output", "provider": "owner.graph", "reason": { "ownerProfile": "owner.graph", "id": "graph.ready-view", "version": "0.1.0" } },
+    { "consumer": "owner.output", "provider": "owner.policy", "reason": { "ownerProfile": "owner.policy", "id": "policy.ready-result-facts", "version": "0.1.0" } },
+    { "consumer": "owner.output", "provider": "owner.progress", "reason": { "ownerProfile": "owner.progress", "id": "progress.closure", "version": "0.1.0" } },
+    { "consumer": "owner.output", "provider": "owner.resource", "reason": { "ownerProfile": "owner.resource", "id": "resource.terminal-reserve", "version": "0.1.0" } },
+    { "consumer": "owner.program-package", "provider": "owner.domain", "reason": { "ownerProfile": "owner.domain", "id": "domain.program-input", "version": "0.1.0" } },
+    { "consumer": "owner.program-package", "provider": "owner.graph", "reason": { "ownerProfile": "owner.graph", "id": "graph.program-input", "version": "0.1.0" } },
+    { "consumer": "owner.program-package", "provider": "owner.output", "reason": { "ownerProfile": "owner.output", "id": "output.program-input", "version": "0.1.0" } },
+    { "consumer": "owner.program-package", "provider": "owner.policy", "reason": { "ownerProfile": "owner.policy", "id": "policy.program-input", "version": "0.1.0" } },
+    { "consumer": "owner.program-package", "provider": "owner.progress", "reason": { "ownerProfile": "owner.progress", "id": "progress.program-input", "version": "0.1.0" } },
+    { "consumer": "owner.program-package", "provider": "owner.resource", "reason": { "ownerProfile": "owner.resource", "id": "resource.program-input", "version": "0.1.0" } }
+  ],
+  "bindings": [
+    {
+      "id": "binding.domain-identity",
+      "version": "0.1.0",
+      "producer": { "ownerProfile": "owner.domain", "id": "domain.identity", "version": "0.1.0" },
+      "consumers": [
+        { "ownerProfile": "owner.graph", "id": "graph.domain-identity", "version": "0.1.0" },
+        { "ownerProfile": "owner.policy", "id": "policy.domain-identity", "version": "0.1.0" }
+      ],
+      "permissions": [
+        { "ownerProfile": "owner.domain", "id": "permission.domain-read-identity", "version": "0.1.0" }
+      ],
+      "representationOwner": "owner.domain",
+      "lifecycleOwner": "owner.domain",
+      "epochScope": { "ownerProfile": "owner.domain", "id": "domain.search-incarnation", "version": "0.1.0" },
+      "resourceContributions": [],
+      "progressDependencies": []
+    },
+    {
+      "id": "binding.graph-ready-facts",
+      "version": "0.1.0",
+      "producer": { "ownerProfile": "owner.graph", "id": "graph.ready-facts", "version": "0.1.0" },
+      "consumers": [
+        { "ownerProfile": "owner.output", "id": "output.graph-ready-view", "version": "0.1.0" },
+        { "ownerProfile": "owner.policy", "id": "policy.graph-ready-facts", "version": "0.1.0" }
+      ],
+      "permissions": [
+        { "ownerProfile": "owner.graph", "id": "permission.graph-read-ready", "version": "0.1.0" }
+      ],
+      "representationOwner": "owner.graph",
+      "lifecycleOwner": "owner.graph",
+      "epochScope": { "ownerProfile": "owner.domain", "id": "domain.search-incarnation", "version": "0.1.0" },
+      "resourceContributions": [
+        { "ownerProfile": "owner.graph", "id": "graph.resource-contribution", "version": "0.1.0" }
+      ],
+      "progressDependencies": [
+        { "ownerProfile": "owner.graph", "id": "graph.publication-readiness", "version": "0.1.0" }
+      ]
+    },
+    {
+      "id": "binding.policy-ready-result",
+      "version": "0.1.0",
+      "producer": { "ownerProfile": "owner.policy", "id": "policy.ready-result-facts", "version": "0.1.0" },
+      "consumers": [
+        { "ownerProfile": "owner.output", "id": "output.policy-ready-facts", "version": "0.1.0" }
+      ],
+      "permissions": [
+        { "ownerProfile": "owner.policy", "id": "permission.policy-read-result", "version": "0.1.0" }
+      ],
+      "representationOwner": "owner.policy",
+      "lifecycleOwner": "owner.policy",
+      "epochScope": { "ownerProfile": "owner.domain", "id": "domain.search-incarnation", "version": "0.1.0" },
+      "resourceContributions": [],
+      "progressDependencies": [
+        { "ownerProfile": "owner.policy", "id": "policy.backup-applied", "version": "0.1.0" }
+      ]
+    },
+    {
+      "id": "binding.resource-admission",
+      "version": "0.1.0",
+      "producer": { "ownerProfile": "owner.resource", "id": "resource.admission-transition", "version": "0.1.0" },
+      "consumers": [
+        { "ownerProfile": "owner.output", "id": "output.resource-admission", "version": "0.1.0" },
+        { "ownerProfile": "owner.progress", "id": "progress.resource-admission", "version": "0.1.0" }
+      ],
+      "permissions": [
+        { "ownerProfile": "owner.resource", "id": "permission.resource-read-admission", "version": "0.1.0" }
+      ],
+      "representationOwner": "owner.resource",
+      "lifecycleOwner": "owner.resource",
+      "epochScope": { "ownerProfile": "owner.domain", "id": "domain.search-incarnation", "version": "0.1.0" },
+      "resourceContributions": [
+        { "ownerProfile": "owner.resource", "id": "resource.composed-plan", "version": "0.1.0" }
+      ],
+      "progressDependencies": []
+    },
+    {
+      "id": "binding.progress-closure",
+      "version": "0.1.0",
+      "producer": { "ownerProfile": "owner.progress", "id": "progress.closure", "version": "0.1.0" },
+      "consumers": [
+        { "ownerProfile": "owner.output", "id": "output.progress-closure", "version": "0.1.0" },
+        { "ownerProfile": "owner.program-package", "id": "program-package.progress-closure", "version": "0.1.0" }
+      ],
+      "permissions": [
+        { "ownerProfile": "owner.progress", "id": "permission.progress-read-closure", "version": "0.1.0" }
+      ],
+      "representationOwner": "owner.progress",
+      "lifecycleOwner": "owner.progress",
+      "epochScope": { "ownerProfile": "owner.domain", "id": "domain.search-incarnation", "version": "0.1.0" },
+      "resourceContributions": [],
+      "progressDependencies": [
+        { "ownerProfile": "owner.progress", "id": "progress.all-selected-work", "version": "0.1.0" }
+      ]
+    }
+  ],
+  "identityPolicy": {
+    "canonicalization": "utf8-json-sorted-keys-and-owned-sets-v1",
+    "digest": "sha256",
+    "unorderedStringOrder": "javascript-utf16-code-units",
+    "pathIndependent": true,
+    "targetIndependent": true
+  }
+}

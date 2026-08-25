@@ -149,6 +149,8 @@ required=(
   schemas/search-ir/0.2.0/contract-set.json
   schemas/search-ir/0.2.0/requirement-coverage.schema.json
   schemas/search-ir/0.2.0/requirement-coverage.json
+  schemas/search-ir/0.2.0/primitives.schema.json
+  schemas/search-ir/0.2.0/framework-selection.schema.json
   experiments/search-ir-reference/README.md
   experiments/search-ir-reference/RESULTS.md
   experiments/search-ir-reference/fixtures/baseline.search-ir.json
@@ -160,7 +162,10 @@ required=(
   experiments/search-ir-reference/run.mjs
   experiments/search-ir-composer-reference/README.md
   experiments/search-ir-composer-reference/RESULTS.md
+  experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json
   experiments/search-ir-composer-reference/src/catalog.mjs
+  experiments/search-ir-composer-reference/src/validation.mjs
+  experiments/search-ir-composer-reference/src/foundation.mjs
   experiments/search-ir-composer-reference/run.mjs
   experiments/ptx-extension-composition-prototype/README.md
   experiments/ptx-extension-composition-prototype/RESULTS.md
