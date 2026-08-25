@@ -64,7 +64,7 @@ The packet is complete only when each semantic fact has one visible owner, every
 ### Derived ownership requirements
 
 - **Device-owned progress is the universal owner; a scheduler is a later mechanism/profile.** Naming the semantic owner `scheduler` would imply an algorithm and blur accepted scheduler neutrality.
-- **Generic result/observation publication is independent of policy and Search Session.** Policy owns interpretation/statistics; output owns bounded payload selection/publication; Search Session owns optional live publication lifecycle.
+- **Generic result/observation publication is independent of policy and Search Session.** Policy owns interpretation/statistics; output owns bounded payload selection/publication; Search Session owns optional external request/borrow and root-epoch lifecycle coordination.
 - **Graph storage does not own domain identity or policy statistics.** It stores and publishes their selected representations through declared contracts.
 - **The resource contract aggregates finite contributions but does not own their semantic purpose or generic CUDA allocation.** CUDA-JS remains the generic allocation/lifetime owner.
 - **Search Session is downstream of the other owners.** It coordinates root epochs/reuse classifications; it does not invent graph, policy, evaluator, output, or resource meaning.
@@ -173,8 +173,8 @@ Provisional specification paths become authoritative only if their proposal bran
 | `EC-RESOURCE-01` | `integrated proposal` | Finite search-resource composition/admission/pressure/exhaustion contract | Graph, policy, evaluator, output contributions | [`SPEC-0011`](../specs/SPEC-0011-finite-search-resources.md) at `main@98caeb5` | A selected owner can acquire unplanned memory or has no typed saturation behavior. |
 | `EC-PROGRESS-01` | `integrated proposal` | Device-owned readiness/progress/fairness/deadlock/stop semantics | Graph, policy, evaluator, output, resource contracts | [`SPEC-0012`](../specs/SPEC-0012-device-owned-search-progress.md) at `main@7c20146` | Semantics require a persistent queue, CUDA Graph, host relaunch, or exact schedule. |
 | `EC-SESSION-01` | `integrated proposal` | Reconciled optional Search Session/root/control/observation proposal | All prior owners | [`SPEC-0006`](../specs/SPEC-0006-search-session-control-and-observation.md) at `main@5fe5777` | A rejected update mutates state, stale work contaminates a new epoch, or live reads advance search. |
-| `EC-FRAMEWORK-01` | `active` | Cross-cutting proposal map with no duplicate owner | All proposal outputs | Revised `SPEC-0000` | SPEC-0000 independently owns a fact already assigned to a leaf or extension/product contract. |
-| `EC-INTEGRATE-01` | `planned` | One exact proposal packet, branch dispositions, downstream handoff | Every integrated or explicitly disposed leaf | Specs index, registry, plan/status/next-step/issues | Any planned branch is unaccounted, terms contradict, dependencies cycle, or later nodes must invent meaning. |
+| `EC-FRAMEWORK-01` | `integrated proposal` | Cross-cutting proposal map with no duplicate owner | All proposal outputs | [`SPEC-0000`](../specs/SPEC-0000-framework-requirements.md) at `main@1ef7324` | SPEC-0000 independently owns a fact already assigned to a leaf or extension/product contract. |
+| `EC-INTEGRATE-01` | `active` | One exact proposal packet, branch dispositions, downstream handoff | Every integrated or explicitly disposed leaf | Specs index, registry, plan/status/next-step/issues | Any planned branch is unaccounted, terms contradict, dependencies cycle, or later nodes must invent meaning. |
 
 ### Common branch contract
 
@@ -236,4 +236,23 @@ Task-created tracked documentation is retained as reviewable proposal output onl
 
 `EC-SESSION-01` ran from 2026-08-24T23:35:01-07:00 through exact-head author review at 2026-08-24T23:41:47-07:00 and merged through PR #76 as `main@5fe57778723012c0a6c8bd5ef1501341962040f0` at 2026-08-24T23:42:43-07:00. Its output is a decision-complete optional proposal with exact terminal-only zero live-session residue, not accepted production or sideband-mechanism authority.
 
-`EC-FRAMEWORK-01` is the single active semantic leaf. It reconciles SPEC-0000 against all integrated owner proposals without acquiring their semantics, making extension mechanics foundational or importing product/CUDA implementation facts. No production implementation or schema mutation is ready.
+`EC-FRAMEWORK-01` ran from 2026-08-24T23:45:38-07:00 through exact-head author review at 2026-08-24T23:53:14-07:00 and merged through PR #78 as `main@1ef73244ecec507ae70b81ceaa29128621fbbe4a` at 2026-08-24T23:53:57-07:00. Its output is a decision-complete composition/ownership proposal, not accepted schema, package, production or CUDA-mechanism authority.
+
+`EC-INTEGRATE-01` is the single active semantic leaf on frozen packet input `main@1ef73244ecec507ae70b81ceaa29128621fbbe4a`. It reconciles proposal ownership, active routing, exact downstream schema/reference obligations, issue state and cleanup before handing control to the extension-substrate node.
+
+## Frozen proposal-packet reconciliation
+
+The declared review is **full for the ENGINE-CONTRACT-01 normative proposal packet**, frozen at `main@1ef73244ecec507ae70b81ceaa29128621fbbe4a` (tree `fa69cdcb2fd36e9a7cc358938adb22047bf2370e`). Included normative surfaces are SPEC-0000 and SPEC-0006 through SPEC-0013, their accepted authority, cross-owner boundaries and downstream evidence obligations. Active architecture/index/registry/plan/status routing was inspected at that base and its corrections are frozen separately by this integration leaf's exact-head review. Extension specifications, product semantics, schema implementation, native behavior and performance are excluded except at their packet boundaries and are not claimed reviewed or complete.
+
+The nine specifications define 741 unique normative requirement IDs with no duplicate definitions. Reconciliation found one owner per material semantic boundary: framework composition; domain; graph/storage; optional evaluator; policy; output publication; finite resources; device progress; and optional Search Session transaction/request lifecycle. Session coordinates source-owner dispositions but does not own reclamation, progress, resource policy or output publication. CUDA-JS remains the only CUDA/JIT/native mechanism owner, while maintained CUDA-MCGS production source remains ordinary Node.js plus restricted Device-JS.
+
+No unresolved packet contradiction, semantic dependency cycle, first-product assumption, mandatory evaluator/live-session/extension residue, host-progression path or CUDA-MCGS-native escape remains in the normative packet. Explanatory routing that blurred Session ownership is corrected in this integration leaf. Proposal status and production-lowering prohibitions remain unchanged.
+
+The exact downstream handoff is:
+
+1. `ENGINE-EXTENSION-01` makes SPEC-0003 through SPEC-0005 decision-complete as optional downstream composition with exact absent-capability deletion and no core-owner override.
+2. `ENGINE-IR-COMPOSER-01` implements strict schemas/metaschemas, canonical normalization, every selected `*-IR`/compatibility/deletion/resource/progress/output/session/package obligation and deterministic JavaScript/restricted Device-JS source/package generation evidence.
+3. `ENGINE-REFERENCE-01` implements all owner and 31 framework integration cases across materially different domains, absent/selected evaluator/output/session/extension profiles, pressure, schedules, stale state, cancellation, teardown and oracle mutations.
+4. `ENGINE-CONTRACT-ACCEPTANCE-01` reconciles those exact outputs atomically on one frozen revision before any production lowering. Native, compatible-pair, optional live-session, performance/Linux and product qualification remain later independent gates.
+
+The integration leaf creates only tracked documentation and GitHub coordination. No generated package, schema, cache, process, device allocation, credential or runtime resource is authorized or retained.

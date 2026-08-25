@@ -31,7 +31,7 @@ These accepted contracts do not require a ranked-action output. Their references
 
 ### Universal MCGS core
 
-Planned/partial families include:
+Universal proposal and evidence families include:
 
 - normalized Search IR and specialization identity;
 - domain/state/action/transition/identity/history contract;
@@ -39,9 +39,9 @@ Planned/partial families include:
 - evaluator/model semantics/resident execution;
 - graph storage/transpositions/paths/cycles/reclamation;
 - finite resource/memory planning and typed pressure/exhaustion;
-- Search Session/root-update/reroot/stale-work/reuse/reclamation semantics;
+- optional external Search Session root/control transactions and observation-request/borrow coordination across source-owned stale-work, reuse, reclamation and publication semantics;
 - generic bounded result/observation publication;
-- device-owned scheduler/progress/device closure;
+- device-owned progress/device closure without scheduler-mechanism selection;
 - Search Composer and generated Search Image/package;
 - CUDA-MCGS-to-CUDA-JS compatibility/error/lifecycle contract;
 - deterministic reference/synthetic conformance/diagnostics.
@@ -61,7 +61,7 @@ Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider 
 
 ## Current universal proposals
 
-- [`SPEC-0000-framework-requirements.md`](SPEC-0000-framework-requirements.md) — framework map and cross-cutting three-layer conformance requirements.
+- [`SPEC-0000-framework-requirements.md`](SPEC-0000-framework-requirements.md) — LEGO owner/dependency map, normalized framework profile, top-level lifecycle, deletion, package boundary and integrated conformance obligations.
 - [`SPEC-0003-search-stage-and-extension-surface.md`](SPEC-0003-search-stage-and-extension-surface.md) — universal Search Stage/surface/base-context/capability composition semantics and product-capability isolation.
 - [`SPEC-0004-async-stage-channels.md`](SPEC-0004-async-stage-channels.md) — bounded **internal** cross-stage/cross-surface dataflow, pending/ready progress, publication, pressure, cancellation and reclamation.
 - [`SPEC-0005-stage-ptx-and-search-image-composition.md`](SPEC-0005-stage-ptx-and-search-image-composition.md) — revised restricted Device-JS/Search Program input and opaque CUDA-JS-generated artifact-output proposal, retaining selected-only/zero-residue invariants without CUDA-MCGS-owned PTX.
@@ -76,13 +76,15 @@ Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider 
 
 These proposals do not authorize production lowering. The complete Search IR must represent selected universal semantics plus namespaced capability/product inputs without promoting first-product fields into universal core meaning.
 
+SPEC-0000 and SPEC-0006 through SPEC-0013 form the decision-complete core proposal packet. SPEC-0003 through SPEC-0005 remain the next optional extension-substrate reconciliation input. Neither packet is accepted until strict schema/normalizer/Composer and consolidated CUDA-free reference evidence pass atomically at the integrated acceptance gate.
+
 ## Domain/search product specifications
 
 Products live downstream of universal contracts. Their conformance cannot substitute for universal second-instance tests, and product requirements cannot amend universal semantics by usage.
 
 Current product proposal:
 
-- [`products/chess/CHESS-0001-search-product.md`](products/chess/CHESS-0001-search-product.md) — chess domain/policy/evaluator/session/output/extension layering, including a future chess-specific ranked legal-move observation built on generic SPEC-0006 publication rather than universal ranking semantics.
+- [`products/chess/CHESS-0001-search-product.md`](products/chess/CHESS-0001-search-product.md) — chess domain/policy/evaluator/session/output/extension layering, including a future chess-specific ranked legal-move observation published by generic SPEC-0013 output semantics and coordinated by optional SPEC-0006 session semantics.
 
 Future Go/planning/optimization/text-search or other products should be able to replace the chess product without foundational redesign.
 
