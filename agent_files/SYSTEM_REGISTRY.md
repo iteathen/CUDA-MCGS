@@ -83,7 +83,7 @@ The active dependency graph and owner-level proposal outputs are governed beneat
 
 | Planned boundary ID | Intended responsibility | Governing work |
 |---|---|---|
-| `contract.domain` | Product-neutral state/action/transition/identity/history/node-role semantics | Universal domain contract v0 |
+| `contract.domain` | Product-neutral state/action/transition/identity/history/node-role semantics | [`../docs/specs/SPEC-0007-domain-state-action-and-transition.md`](../docs/specs/SPEC-0007-domain-state-action-and-transition.md) proposal |
 | `contract.policy` | Product-neutral selection/reservation/widening/policy statistics/backup/stopping and reroot reuse classification | Universal search-policy contract v0 |
 | `contract.evaluator` | Resident evaluator semantics/capabilities/batching/workspace/publication and reroot cache validity | Universal evaluator contract v0 |
 | `contract.graph` | Graph/node/edge/path/transposition/generation/reclamation mechanics | Universal graph/storage contract v0 |

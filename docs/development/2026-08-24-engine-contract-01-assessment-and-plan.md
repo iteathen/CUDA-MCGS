@@ -165,16 +165,16 @@ Provisional specification paths become authoritative only if their proposal bran
 
 | Branch | Status | One owner / output | Dependencies | Provisional durable output | Cheapest decisive falsifier |
 |---|---|---|---|---|---|
-| `EC-DOMAIN-01` | `ready` | Domain state/action/transition/identity/history/node-role contract | Frozen parent, SPEC-0001/0002 | `SPEC-0007-domain-state-action-and-transition.md` | A stochastic, history-sensitive, or lazy-action domain requires foundational redesign. |
-| `EC-GRAPH-01` | `planned` | Graph/storage/path/transposition/generation/reclamation contract | `EC-DOMAIN-01` | `SPEC-0010-graph-storage-and-reclamation.md` | Graph storage must interpret domain equality or policy statistics to remain valid. |
+| `EC-DOMAIN-01` | `integrated proposal` | Domain state/action/transition/identity/history/node-role contract | Frozen parent, SPEC-0001/0002 | [`SPEC-0007`](../specs/SPEC-0007-domain-state-action-and-transition.md) at `main@6364710` | A stochastic, history-sensitive, or lazy-action domain requires foundational redesign. |
+| `EC-GRAPH-01` | `active` | Graph/storage/path/transposition/generation/reclamation contract | Integrated `EC-DOMAIN-01` | `SPEC-0010-graph-storage-and-reclamation.md` | Graph storage must interpret domain equality or policy statistics to remain valid. |
 | `EC-POLICY-01` | `planned` | Selection/reservation/widening/statistics/backup/stopping contract | `EC-DOMAIN-01`, graph public meaning | `SPEC-0008-search-policy-and-backup.md` | A non-zero-sum vector or ordered backup cannot fit without changing graph/domain contracts. |
-| `EC-EVALUATOR-01` | `planned` | Evaluator capability/residency/batching/workspace/publication/reuse contract | `EC-DOMAIN-01` | `SPEC-0009-evaluator-contract.md` | Proposal-only, evaluation-only, or distributional evaluation requires another interface, or an engine with no evaluator retains evaluator residue. |
+| `EC-EVALUATOR-01` | `ready; queued` | Evaluator capability/residency/batching/workspace/publication/reuse contract | Integrated `EC-DOMAIN-01` | `SPEC-0009-evaluator-contract.md` | Proposal-only, evaluation-only, or distributional evaluation requires another interface, or an engine with no evaluator retains evaluator residue. |
 | `EC-OUTPUT-01` | `planned` | Generic bounded terminal result/live observation payload publication contract | SPEC-0001, domain/policy/evaluator outputs | `SPEC-0013-result-and-observation-publication.md` | Deleting ranked actions leaves the contract incoherent, or observation changes search semantics. |
 | `EC-RESOURCE-01` | `planned` | Finite search-resource composition/admission/pressure/exhaustion contract | Graph, policy, evaluator, output contributions | `SPEC-0011-finite-search-resources.md` | A selected owner can acquire unplanned memory or has no typed saturation behavior. |
 | `EC-PROGRESS-01` | `planned` | Device-owned readiness/progress/fairness/deadlock/stop semantics | Graph, policy, evaluator, output, resource contracts | `SPEC-0012-device-owned-search-progress.md` | Semantics require a persistent queue, CUDA Graph, host relaunch, or exact schedule. |
 | `EC-SESSION-01` | `planned` | Reconciled optional Search Session/root/control/observation proposal | All prior owners | Revised `SPEC-0006` | A rejected update mutates state, stale work contaminates a new epoch, or live reads advance search. |
 | `EC-FRAMEWORK-01` | `planned` | Cross-cutting proposal map with no duplicate owner | All proposal outputs | Revised `SPEC-0000` | SPEC-0000 independently owns a fact already assigned to a leaf or extension/product contract. |
-| `EC-INTEGRATE-01` | `planned` | One exact proposal packet, branch dispositions, downstream handoff | Every accepted leaf | Specs index, registry, plan/status/next-step/issues | Any planned branch is unaccounted, terms contradict, dependencies cycle, or later nodes must invent meaning. |
+| `EC-INTEGRATE-01` | `planned` | One exact proposal packet, branch dispositions, downstream handoff | Every integrated or explicitly disposed leaf | Specs index, registry, plan/status/next-step/issues | Any planned branch is unaccounted, terms contradict, dependencies cycle, or later nodes must invent meaning. |
 
 ### Common branch contract
 
@@ -220,4 +220,6 @@ Task-created tracked documentation is retained as reviewable proposal output onl
 
 ## Current readiness and next safe action
 
-`EC-DOMAIN-01` is the only dependency-ready semantic leaf. Its first operation is to author the product-neutral domain proposal against the frozen integrated parent packet. No production implementation, schema mutation, or adjacent contract work is ready.
+`EC-DOMAIN-01` ran from 2026-08-24T22:23:04-07:00 through exact-head author review at 2026-08-24T22:33:26-07:00 and merged through PR #60 as `main@6364710bc6534ae1084ca0c928003c1cfad51515` at 2026-08-24T22:34:01-07:00. Its output is a decision-complete proposal, not accepted production authority.
+
+`EC-GRAPH-01` is the single active semantic leaf because it unlocks the policy chain. `EC-EVALUATOR-01` is independently dependency-ready but remains queued under the one-active-leaf rule. No production implementation or schema mutation is ready.
