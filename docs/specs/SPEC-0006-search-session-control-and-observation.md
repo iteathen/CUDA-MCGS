@@ -4,23 +4,28 @@
 
 **Draft version:** 0.1.0
 
-**Owner:** CUDA-MCGS Search Session and search-lifecycle semantics
+**Owner:** CUDA-MCGS optional Search Session external lifecycle semantics
 
-**Consumers:** domain/policy/graph/resource/output contracts, Search IR, Search Composer, scheduler, CUDA-MCGS-to-CUDA-JS package, reference/native conformance, and domain/search products
+**Consumers:** framework contract; Search IR; Search Composer; CUDA-MCGS-to-CUDA-JS package; reference/native conformance; domain/search products
 
-This proposal defines universal semantics for a long-lived Search Session that may accept bounded external root updates while device-owned search continues and may publish bounded read-only observations without requiring search termination. It deliberately does **not** define ranked moves, best actions, top-k output, chess semantics, or one physical sideband mechanism.
+This proposal defines the optional universal external-lifecycle brick for a long-lived Search Session: bounded root/control admission and commit, session/root epochs, stale-work coordination, owner-defined reuse, cancellation/completion and bounded observation request/borrow coordination while device-owned search continues. It deliberately does **not** define source-owner semantics, observation payload publication, ranked moves, chess, a scheduler or one sideband mechanism. A terminal-only engine removes every live-session-owned field, port, resource, branch and synchronization dependency.
 
-## 1. Normative references
+## 1. Authority, applicability, and normative references
+
+Specification identity is `CUDA-MCGS-SPEC-0006@0.1.0-draft`.
+
+A concrete engine selects either `session-absent` or one normalized Search Session profile. `session-absent` retains the ordinary one-shot engine/search/terminal-result lifecycle owned by the framework/output contracts but contributes exact zero root-update, live-control, live-observation-request, session-epoch, sideband or retained-session state.
 
 - [`../decisions/ADR-0018-universal-core-extension-product-layering.md`](../decisions/ADR-0018-universal-core-extension-product-layering.md) owns the universal-core / extension-substrate / product separation.
 - [`../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) owns the pure Node/Device-JS production boundary, narrow asynchronous host exceptions and missing CUDA-JS capability escalation rule.
+- [`../decisions/ADR-0002-universal-contracts-specialized-engines.md`](../decisions/ADR-0002-universal-contracts-specialized-engines.md), [`../decisions/ADR-0003-device-resident-active-search.md`](../decisions/ADR-0003-device-resident-active-search.md) and [`../decisions/ADR-0005-lego-design-hierarchy.md`](../decisions/ADR-0005-lego-design-hierarchy.md) own finite specialization, device closure and LEGO ownership.
 - [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) owns publication, graph incarnation, finite-resource and stop foundations.
 - [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) owns the accepted foundational Search IR representation and reference semantics within its scope.
-- [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) proposes internal Search Stage and extension-surface semantics.
-- [`SPEC-0004`](SPEC-0004-async-stage-channels.md) proposes internal nonblocking dataflow.
+- [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md), [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md), [`SPEC-0009`](SPEC-0009-evaluator-contract.md), [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md), [`SPEC-0011`](SPEC-0011-finite-search-resources.md), [`SPEC-0012`](SPEC-0012-device-owned-search-progress.md) and [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md) propose the exact domain, policy, evaluator, graph, resource, progress and output owners consumed here.
+- [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) and [`SPEC-0004`](SPEC-0004-async-stage-channels.md) are informative extension-substrate adjacency, not session prerequisites or owner authority.
 - CUDA-JS public contracts own generic long-lived-operation, memory/publication, sideband transport, completion, error and teardown mechanisms when such capabilities are accepted.
 
-Accepted authority governs any conflict with this proposal.
+Accepted authority governs any conflict with this proposal. This proposal neither supersedes another specification nor authorizes production implementation.
 
 ## 2. Scope and non-goals
 
@@ -30,11 +35,11 @@ This specification family owns:
 - current logical search root and root epoch;
 - externally supplied root-update admission and commit semantics;
 - externally supplied attention/control change identity, admission and application semantics when selected;
-- old-epoch work disposition;
-- contract-selected state/statistics reuse across reroot;
+- coordination of old-epoch work dispositions declared by their owners;
+- collection and commit ordering of owner-defined reuse classifications across reroot;
 - separation of reroot from reclamation;
 - generation-safe reclamation obligations that are visible at the session boundary;
-- generic bounded Search Session observation publication;
+- bounded external observation request/borrow coordination against SPEC-0013 publication;
 - finite root-epoch and observation-generation behavior;
 - external control/observation versus internal device-owned progress;
 - session-specific pressure, cancellation, terminal and restart behavior.
@@ -48,12 +53,15 @@ It does not define:
 - internal Async Stage Channel semantics, which remain SPEC-0004-owned;
 - one persistent-kernel topology;
 - a production graph-store or reclamation algorithm.
+- domain root validity, graph liveness/reclamation, policy/evaluator reuse meaning, resource capacity/pressure policy, device progress/fairness, output payload/snapshot/publication semantics or CUDA-JS allocation/transport/operation lifecycle.
+
+The Search Session owns the external transaction and epoch boundary; each contributing contract owns its own prepare/reuse/stale/cleanup semantics. Physical fusion does not transfer that authority.
 
 ## 3. Terms
 
 ### 3.1 Search Session
 
-A **Search Session** is one logical lifetime of a composed CUDA-MCGS engine instance across zero or more root changes. It owns a session identity, session incarnation, finite resource plan, lifecycle state, current root contract state, and selected observation/control capabilities.
+A **Search Session** is one logical lifetime of a composed CUDA-MCGS engine instance across zero or more root changes. It owns a session identity, session incarnation, lifecycle state, current root contract state and selected observation/control capabilities, and it binds the selected finite resource plan owned by SPEC-0011 composition.
 
 A long-lived Search Session may span many root epochs. Long-lived does not mean unbounded memory, immortal device resources, one kernel lifetime, or unlimited counter width.
 
@@ -82,6 +90,22 @@ The owning profile MUST declare the input schema/version, authority, identity/id
 ### 3.6 Session observation
 
 A **Session observation** is a bounded immutable publication derived from completely published search state for a selected observation schema. Examples may include evaluation summaries, proof state, frontier summaries, diagnostics, search-quality data, or product-defined ranked candidates. These examples do not make any one payload universal.
+
+### 3.7 Session transaction and public ports
+
+A **session transaction** is a stale-safe bounded prepare/commit/abort operation for one root or selected control change. It binds command identity, session/root epochs, contributing owner preparations, compound resource admission, commit state and exactly-once cleanup.
+
+The semantic ports are `validateSessionInput`, `prepareRootUpdate`, `prepareControlChange`, `commitSessionTransaction`, `abortSessionTransaction`, `requestObservation`, `acquireObservation`, `releaseObservation`, `requestCancellation`, `completeSession` and `teardownSession`. They are not mandatory functions, callbacks, stages, kernels or ABI symbols.
+
+SESSION-PROFILE-001. The normalized profile declares session/command/root/epoch identities and ranges, selected input schemas/permissions/idempotence, contributing owner prepare/commit/abort/reuse/stale ports, compound resource admission, observation profiles/borrows, cancellation/completion/teardown, failure/diagnostics, compatibility and zero-residue deletion.
+
+SESSION-PROFILE-002. Unknown/duplicate owners or schemas, ambiguous authority/idempotence/commit, missing owner disposition, incomplete resource admission, nonterminal transaction, unbounded input/borrow/wait, insufficient epoch width, host-progress dependency or missing cleanup rejects specialization before ignition.
+
+SESSION-PROFILE-003. Meaning-insensitive collections normalize canonically; command/commit/reuse order that affects meaning is explicit. Every session-affecting input contributes to profile/package identity.
+
+SESSION-PROFILE-004. Host validation/composition may use ordinary Node.js. Post-ignition session application/capture coordination uses restricted Device-JS/Search Program inputs through public CUDA-JS contracts. CUDA-MCGS may not implement sideband/lifecycle with C/C++, CUDA C++, direct FFI, hand PTX, a native addon/subprocess or CUDA-JS-private API.
+
+SESSION-PROFILE-005. A naturally generic GPU sideband/atomic-observation/operation-lifecycle need that cannot be expressed naturally with bounded resources, synchronization, cleanup and qualification through public CUDA-JS stops for consumer-neutral CUDA-JS capability classification. Session meaning is not distorted and native CUDA-MCGS code is not authorized.
 
 ## 4. Device-owned progress boundary
 
@@ -122,6 +146,28 @@ SESSION-ROOT-003. When establishing a valid new root requires resource reservati
 
 SESSION-ROOT-004. A later commit-time epoch/session assertion is defense in depth and does not replace pre-mutation admission.
 
+SESSION-ROOT-005. Duplicate/replayed command identity returns the original terminal disposition or a typed duplicate/stale result without applying prepare, epoch advance, resource transfer or owner mutation twice.
+
+SESSION-ROOT-006. Prepare gathers exact domain root validity, graph anchor/materialization, policy/evaluator/output reuse plans, resource compound lease and progress stale-work plan without changing current authority. Every participant publishes prepared or typed failure for the same transaction incarnation.
+
+SESSION-ROOT-007. Commit has one logical linearization point and publishes the new root/epoch only after all required prepares succeed. Owner mutations that cannot be made visible atomically are ordered behind that point with old/new epoch guards; a partial post-commit failure is fatal/quarantined and cannot be reported as rejected with the old state silently restored.
+
+SESSION-ROOT-008. Concurrent root/control commands have one declared order, conflict/coalescing rule and bounded queue/capacity. Host arrival timing cannot create two authoritative roots or an unbounded command backlog.
+
+SESSION-ROOT-009. Prepared graph objects, resource leases, reuse plans and stale-work plans remain transaction-scoped and non-authoritative before commit. Abort releases or restores every prepared contribution exactly once; an owner that cannot provide a bounded recoverable abort rejects the profile before ignition.
+
+### 5.1 External control admission and application
+
+SESSION-CONTROL-001. Each selected control schema names its semantic owner, authority, bounded representation, valid session/root epoch, idempotence and exact effect. The Session coordinates the transaction but does not reinterpret a product objective, policy parameter, resource limit or cancellation request.
+
+SESSION-CONTROL-002. A control command passes schema, authority, epoch, conflict, capacity and compound-resource admission before control-specific mutation. Rejection leaves all semantic owner state unchanged and returns a typed disposition.
+
+SESSION-CONTROL-003. A control transaction has one declared linearization point relative to root commit, cancellation and completion. Every participating owner prepares, commits or aborts under the same transaction incarnation; duplicate, stale and partially committed dispositions follow the root transaction rules.
+
+SESSION-CONTROL-004. The selected profile declares the bounded device-side application point and visibility of a committed change. No host callback, relaunch, observation response or subsequent control input is required to apply it or keep internal search progressing.
+
+SESSION-CONTROL-005. A control change may alter only an accepted external objective, environment fact or owner-declared operating bound. It cannot name an internal work item, choose a next search step, acknowledge internal progress or encode an unbounded program.
+
 ## 6. Finite root-update pressure
 
 A concrete long-lived profile MUST define what happens when a valid authoritative root cannot be established inside the current finite resource plan.
@@ -136,7 +182,7 @@ Permitted strategy families include, when explicitly specified and proven:
 
 The profile MUST NOT use unplanned allocation, silently exceed the memory plan, destroy the old authoritative root before the new root is commit-ready, or partially apply the root update and then report rejection.
 
-The resource contract owns which strategy is selected and how its capacity is budgeted. A domain/search product may strengthen the requirement, for example by requiring reserved ability to accept one authoritative next-state root.
+The normalized Session/product profile selects its semantic update outcome and each source owner supplies its permitted prepare/reuse/reclaim response. SPEC-0011 owns composition, reserve and atomic admission accounting but never selects semantic victims or update policy. A domain/search product may strengthen the requirement, for example by requiring reserved ability to accept one authoritative next-state root.
 
 ## 7. Root-update commit and publication
 
@@ -170,7 +216,7 @@ SESSION-EPOCH-003. Every old-epoch reservation terminates with exactly one decla
 
 SESSION-EPOCH-004. Stale disposition releases or transfers every owned reservation/resource exactly once.
 
-SESSION-EPOCH-005. Scheduler nondeterminism may change how much old work completed before commit, but conservation, stale isolation and new-epoch correctness remain invariant.
+SESSION-EPOCH-005. Progress/schedule nondeterminism may change how much old work completed before commit, but conservation, stale isolation and new-epoch correctness remain invariant.
 
 ## 9. Reuse classification
 
@@ -185,7 +231,7 @@ Every persistent state family affected by reroot MUST classify itself into one o
 - **invalidate/retire** — must not be consumed after commit and becomes reclamation input;
 - **product-defined** — namespaced product rule with the same explicit validity/lifecycle obligations.
 
-At minimum, the owning graph/domain/policy/evaluator/output/extension contracts MUST classify material state such as:
+At minimum, the owning graph/domain/policy/evaluator/output/resource/progress/extension contracts MUST classify material state such as:
 
 - state-node identity and immutable state representation;
 - transposition entries;
@@ -195,6 +241,8 @@ At minimum, the owning graph/domain/policy/evaluator/output/extension contracts 
 - path/history/repetition state;
 - widening/proposal continuation state;
 - observation/publication state;
+- root-update leases, reserves and pressure evidence;
+- queued/in-flight work, readiness records and completion accounting;
 - extension-capability persistent state.
 
 A product-specific reuse decision MUST NOT silently become universal core meaning.
@@ -215,32 +263,25 @@ SESSION-RECLAIM-005. Pressure may prioritize reclamation, but reclamation failur
 
 ## 11. Generic observation publication
 
-Observation is an optional selected contract. A concrete engine may expose zero, one, or multiple namespaced observation schemas.
+Observation is optional and SPEC-0013 owns its selected schema, source bindings, snapshot consistency, slots/sequences/borrows, pressure/drop/coalescing and immutable publication. Search Session owns only bounded external request authorization, session/root epoch binding, acquisition/release coordination and teardown ordering for those selected profiles. Selecting no live observation and no root/control input removes all live-session sideband state.
 
-Each observation contract MUST define:
-
-- schema identity/version and semantic owner;
-- session/root/session-epoch scope;
-- publication generation/incarnation;
-- source facts and their required publication states;
-- bounded payload shape/capacity;
-- progress/freshness metadata;
-- ordering and validity rules;
-- whether the observation is periodic, demand-triggered, threshold-triggered, or another bounded policy;
-- pressure/drop/coalescing behavior;
-- compatibility and Search Image identity contribution.
-
-SESSION-OBS-001. Publishing an observation MUST be read-only with respect to search-semantic state. It MUST NOT expand a node, materialize a child, advance selection, change visits/values/reservations, run evaluator work, alter policy state, or trigger root-update-specific mutation merely to satisfy observation.
+SESSION-OBS-001. Session request/capture coordination invokes only the selected SPEC-0013 read-only capture port. It MUST NOT expand a node, materialize a child, advance selection, change visits/values/reservations, run evaluator work, alter policy state, or trigger root-update-specific mutation merely to satisfy a request.
 
 Observation-local buffers, sequence counters and publication bookkeeping may mutate under the observation owner, but those mutations MUST NOT change the search result that would exist if no observation were requested.
 
-SESSION-OBS-002. A consumer observes either an older complete snapshot or a newer complete snapshot, never a partially published payload.
+SESSION-OBS-002. Session acquisition returns only an output-owner-published complete immutable snapshot or a typed unavailable/stale/pressure outcome, never a partially published payload.
 
-SESSION-OBS-003. Root-relative observations include the root epoch. Consumers MUST be able to distinguish an older-root snapshot from the currently accepted root.
+SESSION-OBS-003. Session binding validates the root epoch carried by a root-relative observation and preserves it on acquisition. It cannot relabel an older-root snapshot as current.
 
-SESSION-OBS-004. Observation cadence MUST NOT change search semantics unless the selected product/policy contract explicitly makes observation a semantic input, in which case it is not merely an observation and must be modeled under its true owner.
+SESSION-OBS-004. Session request cadence cannot change search semantics. If an external input consumes observed facts and changes an accepted product/policy objective, that later input is a separately authorized control command under its true owner, never an implicit observation acknowledgement or host progress loop.
 
-SESSION-OBS-005. Terminal result publication remains distinct from live observation. Search need not terminate to publish or consume a live observation.
+SESSION-OBS-005. Session completion and acquisition preserve SPEC-0013's distinction between terminal result and live observation. A live acquisition cannot force search termination, and a live slot cannot satisfy guaranteed terminal publication.
+
+SESSION-OBS-006. An external observation request selects only a pre-normalized SPEC-0013 profile/projection, carries session/root/profile identity and receives a typed accepted/rejected/stale/pressure disposition. It cannot introduce a runtime schema, field path, callback or device program.
+
+SESSION-OBS-007. Borrow/read completion affects only observation slot/transfer/session-teardown lifetime. It cannot acknowledge internal work, advance the next capture or change root/control authority.
+
+SESSION-OBS-008. A slow/abandoned consumer follows the selected finite borrow cancellation/quiescence rule. Session teardown cannot reuse/release backing state until the output/CUDA-JS owning systems prove reads/transfers terminal.
 
 A ranked root-action list is one possible product/policy observation schema. It is not mandated by this universal specification.
 
@@ -271,6 +312,28 @@ Root updates, observations, cancellation and terminal completion are distinct se
 
 The terminal result reports the final session/root epoch and any typed root-update/pressure/observation failure material to result validity.
 
+SESSION-LIFE-001. Session lifecycle is `profile-normalized → resources-admitted → initialized → active/external-wait → cancelling/draining → terminal → released`, with typed failure/quarantine. `session-absent` specializes away this lifecycle.
+
+SESSION-LIFE-002. Cancellation has one declared ordering point against command admission/commit and is idempotent. A command either commits before cancellation and receives its normal stale/drain disposition or fails/cancels without partial authority mutation.
+
+SESSION-LIFE-003. Completion freezes command admission, coordinates progress closure and SPEC-0013 terminal capture, and publishes terminal Session identity/root epoch only after every transaction/work/borrow relevant to validity is terminal or quarantined.
+
+SESSION-LIFE-004. Teardown stops inputs/observation acquisition, aborts prepared transactions, drains/disposes work, releases owner borrows/protections/resources in dependency order, preserves the terminal result through its authorized borrow, then releases opaque CUDA-JS operations/resources.
+
+SESSION-LIFE-005. Session contributes finite command/update slots, transaction records, epoch/counters, root/control payloads, compound admission, stale-work coordination, observation requests/borrows, diagnostics and teardown resources to SPEC-0011. No hidden queue, host spill or emergency update buffer is permitted.
+
+SESSION-LIFE-006. Applicable statuses include `invalid-session-profile`, `session-command-capacity`, `session-command-duplicate`, `session-command-stale`, `session-control-invalid`, `session-control-conflict`, `root-invalid`, `root-update-pressure`, `root-update-conflict`, `root-epoch-exhausted`, `session-cancelling`, `session-restart-required`, `session-terminal` and `session-internal-failure`, with exact normal/pending/reject/stop/fatal meaning.
+
+SESSION-SEC-001. External commands and observation requests are untrusted until authority/permission, schema/version, size/range, session/root/profile identity, replay/idempotence and resource validation passes. Least-authority inputs cannot carry raw pointers, CUDA handles, callbacks, arbitrary code or private owner paths.
+
+SESSION-SEC-002. Diagnostics are bounded and expose command/transaction/epoch/owner/cause without arbitrary domain/model/device bytes. Conflicting authority, partial commit or epoch alias quarantines affected session/result evidence rather than fabricating rollback.
+
+SESSION-SEC-003. The normalized profile declares session persistence absent unless a separate owning contract is selected. Selected persistence requires a canonical versioned encoding, compatibility/migration and rollback/recovery rules, authorization, bounded retention and cleanup; raw device pointers, CUDA handles, in-flight transactions and borrowed publications are never durable authority.
+
+SESSION-COMPAT-001. Compatibility requires matching session/command/root schemas, owner prepare/reuse/stale dispositions, transaction/commit order, epoch ranges, observation profiles/borrows, cancellation/completion/teardown and permissions—not one sideband transport.
+
+SESSION-COMPAT-002. Search Composer/package identity binds all normalized Session semantics and restricted Device-JS inputs; CUDA-JS mailbox/transfer/operation/native identity remains opaque and separately bound.
+
 ## 14. Search IR and package requirements
 
 The complete Search IR MUST represent selected Search Session capabilities without embedding one product payload.
@@ -278,13 +341,22 @@ The complete Search IR MUST represent selected Search Session capabilities witho
 At minimum, when enabled, it MUST represent:
 
 - session/root identity and finite epoch profile;
-- selected root-update schema(s) and admission/pressure policy;
+- selected root/control schema(s), semantic owners, permissions, application points and admission/pressure policy;
 - root-relative work classes and stale disposition;
 - reroot reuse classifications or references to their owning contracts;
 - reclamation/generation policy;
 - selected observation schema identities, capacities, scope and publication rules;
 - finite counter/exhaustion behavior;
-- cancellation/terminal interactions.
+- cancellation/terminal interactions;
+- persistence absent or the selected persistence-owner identity and compatibility policy.
+
+SESSION-IR-001. Search IR additionally represents command authority/idempotence/order, owner prepare/commit/abort ports, compound resource transaction, observation request/borrow coordination, failures/permissions and cleanup.
+
+SESSION-IR-002. Normalization rejects unknown/duplicate owners/schemas, missing prepare/abort/stale/reuse disposition, ambiguous commit/cancel order, insufficient epoch width, unbounded command/borrow, host-progress dependency, hidden resource and missing teardown.
+
+SESSION-IR-003. Search IR names semantic ports and consumer-neutral mechanism requirements without raw pointers, CUDA symbols/atomics/streams/events/mailbox layout, scheduler topology, host callback or product payload meaning.
+
+SESSION-IR-004. A terminal-only `session-absent` image/package contains no command/update/control/observation-request/session-epoch/sideband/borrow field, branch, resource, code or synchronization dependency. Deletion is inspected in normalized schema, layout, generated code and runtime plan.
 
 The CUDA-MCGS-to-CUDA-JS package MUST express only the generic mechanism requirements needed to realize those selected ports. CUDA-JS MUST NOT interpret root identity, reroot, chess moves, observation payloads, ranking or MCGS semantics.
 
@@ -313,7 +385,17 @@ One consolidated Search Session capsule MUST include stable cases for applicable
 17. old complete observation distinguishable after reroot;
 18. observation-generation exhaustion and root-epoch exhaustion fail closed;
 19. cancellation/root-update race disposition;
-20. oracle sensitivity for epoch, generation, admission-before-mutation and observation-read-only guards.
+20. duplicate/replayed command exactly-once disposition;
+21. concurrent root/control ordering and bounded capacity;
+22. every owner prepare failure aborting with old authority intact;
+23. post-commit partial failure producing fatal quarantine rather than false rejection/rollback;
+24. terminal-only `session-absent` zero generated/runtime residue;
+25. observation borrow/transfer quiescence before teardown/reuse;
+26. invalid/stale/unauthorized control rejected without owner mutation;
+27. accepted external objective/budget/attention control applied exactly once at its device-visible point without host-owned progress;
+28. root/control/cancellation/completion race resolved by the normalized transaction order;
+29. persistence absent with zero residue and, when selected, restart/migration/recovery rejecting stale or in-flight authority;
+30. oracle sensitivity for epoch, generation, admission-before-mutation, transaction abort/commit, device application and observation-read-only guards.
 
 CUDA-free reference evidence owns semantic ordering and invariants. Native CUDA evidence additionally owns actual publication scope, memory ordering, concurrent workers, root-update interaction, reclamation races, final resource identity and cleanup.
 
@@ -337,11 +419,15 @@ Before a native live-session profile is qualified, a `SESSION-002`-class experim
 
 This proposal cannot become accepted until:
 
-- domain, policy, evaluator, graph and resource contracts define their reroot reuse classifications;
+- every integrated domain, graph, policy, evaluator, output, resource and progress owner is reconciled without duplicate authority and supplies required prepare/reuse/stale/cleanup ports;
 - the session/control/observation schema, identity and normalization obligations are decision-complete and implemented by the bounded Search IR/reference evidence accepted atomically with this contract;
-- root-update pressure/admission policy is specified for the first production profile;
-- scheduler progress and old-epoch disposition are proven in the CUDA-free semantic reference model;
+- representative finite reserved-root, reject-on-pressure and restart-required dispositions plus terminal-only deletion are proven in the CUDA-free semantic reference model;
+- device-owned progress, old-epoch disposition, duplicate/concurrent commands, partial-commit fatal handling and borrow/teardown are proven in that reference model;
 - the CUDA-MCGS-to-CUDA-JS package requirements identify the generic long-lived sideband capability profile without importing its mechanism into session semantics;
 - product-specific observations such as chess ranked moves remain downstream and do not leak into universal acceptance criteria.
 
-A selected native live-session profile additionally requires actual concurrent scheduler progress, CUDA publication/reclamation evidence, an exact qualified CUDA-JS sideband pair, pressure/cancellation/teardown evidence and separately scoped platform support. Those production-profile gates do not block semantic acceptance of an optional Search Session contract and do not make the live-session profile a prerequisite for the finite terminal engine.
+A selected native live-session profile additionally requires actual concurrent device progress, CUDA publication/reclamation evidence, an exact qualified CUDA-JS sideband pair, pressure/cancellation/teardown evidence and separately scoped platform support. Those production-profile gates do not block semantic acceptance of an optional Search Session contract and do not make the live-session profile a prerequisite for the finite terminal engine.
+
+Production Session lowering remains prohibited until semantic acceptance. Changing command/root/epoch authority, transaction prepare/commit/abort, reuse/stale coordination, observation request/borrow, cancellation/completion/teardown, permissions or compatibility invalidates affected framework/Search IR/normalizers, generated packages, persisted sessions, product adapters and reference/native approvals. The ENGINE-CONTRACT-01 integration spine reconciles invalidation.
+
+Every command/transaction, compound lease, old-epoch work coordination record, observation request/borrow/transfer, diagnostic and retained session artifact receives release/retain/abort/retire/quarantine disposition. Implementation, testing, review, persistence, security, generated/JIT/ABI, performance and cleanup trigger specialist doctrine from root agent authority.
