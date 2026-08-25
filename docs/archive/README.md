@@ -9,3 +9,4 @@ An archive record states original path, archive date/path, source revision, reas
 Archived material is evidence of history, not current authority.
 
 - [`plans/README.md`](plans/README.md) records the exact former Connect Four, CUDA-isolation, and schema-18/plan-16 planning artifacts archived during the 2026-08-12 unfinished-plan reconciliation, with replacement paths and reasons.
+- [`experiments/README.md`](experiments/README.md) records non-executable conclusions and provenance from deleted experiments.

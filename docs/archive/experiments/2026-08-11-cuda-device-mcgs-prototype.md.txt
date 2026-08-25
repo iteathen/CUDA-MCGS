@@ -1,0 +1,15 @@
+# Historical CUDA Device-Resident MCGS Prototype Summary
+
+Original path: experiments/cuda-device-mcgs-prototype/
+Introduced: 2026-08-11
+Source commit: 5a55dc30b7145839bc8715c4ae3fa8c1fbf0d59e
+Archived/removed: 2026-08-25
+Authority: historical evidence only
+
+The disposable CUDA C++ prototype showed, on one GTX 1660 Ti/CUDA 13.3 profile, that a finite synthetic graph-search loop could execute inside one launch; distinguish state-node identity from incoming edge statistics; resolve transpositions before path-local cycle handling; report bounded node exhaustion; and reduce global scheduler ticket claims through warp batching without establishing a reliable timing win.
+
+Its most important defect finding was an observed stale payload after premature readiness publication. Device-scope release/acquire eliminated the bounded observed failure. The durable rule is semantic publication ownership in CUDA-MCGS SPEC-0001; generic Device-JS release/acquire is now tracked by CUDA-JS #123. The direct CUDA runtime result never qualified CUDA-JS or a compatible pair.
+
+The prototype also exposed a counter bug in which failed atomic-add admissions inflated the live count, and it intentionally retained a non-production conflation of in-flight reservations and completed visits. Those conclusions are now explicit in SPEC-0001 and CUDA-free reference evidence.
+
+No executable source, build command, binary, CUDA fixture or performance claim is retained. See docs/development/2026-08-25-native-experiment-disposition-audit.md for the complete current-owner map and unresolved gaps.

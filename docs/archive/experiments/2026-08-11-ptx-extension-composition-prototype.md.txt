@@ -1,0 +1,15 @@
+# Historical PTX Extension Composition Prototype Summary
+
+Original path: experiments/ptx-extension-composition-prototype/
+Introduced: 2026-08-11
+Source commit: c11d7911a4f0841a44404f851d93070c63c97086
+Archived/removed: 2026-08-25
+Authority: historical evidence only
+
+The disposable capsule recorded 42/42 portable cases and 25/25 Windows-native cases on its exact old environment. It showed deterministic pre-native validation and ordering, byte-identical unbound/no-point artifacts on that fixture, stable link failure and recovery, and direct multi-input link/load/launch through the public CUDA-JS facade when valid PTX existed.
+
+It also found the actual generic missing capability: ordinary NVRTC compilation at the tested revision eliminated standalone device definitions, while hand-authored PTX linked. CUDA-JS issue #35 and accepted SPEC-0010 now own typed relocatable-device-code compilation. The workaround is therefore deleted rather than promoted.
+
+The synthetic cost probe showed that direct static symbols did not imply fusion: fine call-per-hook shapes retained calls and increased code/registers, while coarse boundaries sometimes amortized overhead. The durable conclusion is only that semantic extension topology must not dictate native call topology. SPEC-0005 owns that rule; CUDA-JS owns private realization. The recorded timing and artifact figures are not production thresholds or current validation.
+
+No PTX bytes, native consumer, parser/checker, runner, generated artifact or performance claim is retained. See docs/development/2026-08-25-native-experiment-disposition-audit.md for the complete current-owner map and unresolved gaps.

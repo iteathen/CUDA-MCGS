@@ -20,7 +20,7 @@ The authorized implementation is deliberately small and disposable:
 - a CUDA-free deterministic reference model and invariant capsule;
 - portable Windows and Linux execution of the same reference capsule, with platform evidence reported separately.
 
-This is not authorization for a production graph store, CUDA code generator, scheduler, domain adapter, evaluator, memory planner, output adapter, persistence system, CUDA-JS adapter, or public release. The retained CUDA-only prototype remains separate evidence and MUST NOT be imported by this reference implementation.
+This is not authorization for a production graph store, CUDA code generator, scheduler, domain adapter, evaluator, memory planner, output adapter, persistence system, CUDA-JS adapter, or public release. The deleted CUDA-only prototype remains historical provenance only and MUST NOT be reconstructed or imported by this reference implementation.
 
 ## 2. Normative authority
 
@@ -122,7 +122,7 @@ The canonical digest MUST be identical across Windows and Linux for the same nor
 
 ## 8. Deterministic reference capsule
 
-The reference implementation under [`../../experiments/search-ir-reference/`](../../experiments/search-ir-reference/) is independent of the CUDA-only prototype and uses no CUDA or CUDA-JS code. It owns semantic falsification, not performance or target-mechanism proof.
+The reference implementation under [`../../experiments/search-ir-reference/`](../../experiments/search-ir-reference/) is independent of the deleted historical CUDA-only prototype and uses no CUDA or CUDA-JS code. It owns semantic falsification, not performance or target-mechanism proof.
 
 The capsule has stable cases for:
 

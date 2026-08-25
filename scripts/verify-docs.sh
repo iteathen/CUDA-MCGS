@@ -143,7 +143,6 @@ required=(
   scripts/check-structured-data.mjs
   scripts/run-search-ir-reference.mjs
   scripts/run-search-ir-composer-reference.mjs
-  scripts/run-ptx-extension-prototype.mjs
   schemas/search-ir/0.1.0/search-ir.schema.json
   schemas/search-ir/0.2.0/contract-set.schema.json
   schemas/search-ir/0.2.0/contract-set.json
@@ -185,18 +184,6 @@ required=(
   experiments/search-ir-composer-reference/src/progress.mjs
   experiments/search-ir-composer-reference/src/progress-fixtures.mjs
   experiments/search-ir-composer-reference/run.mjs
-  experiments/ptx-extension-composition-prototype/README.md
-  experiments/ptx-extension-composition-prototype/RESULTS.md
-  experiments/ptx-extension-composition-prototype/FINDINGS.md
-  experiments/ptx-extension-composition-prototype/fixtures/extension-surface.json
-  experiments/ptx-extension-composition-prototype/fixtures/fragment-bias.json
-  experiments/ptx-extension-composition-prototype/fixtures/fragment-observer.json
-  experiments/ptx-extension-composition-prototype/fixtures/ptx/bias.ptx
-  experiments/ptx-extension-composition-prototype/fixtures/ptx/observer.ptx
-  experiments/ptx-extension-composition-prototype/src/model.mjs
-  experiments/ptx-extension-composition-prototype/src/run-portable.mjs
-  experiments/ptx-extension-composition-prototype/src/native-consumer.mjs
-  experiments/ptx-extension-composition-prototype/run.mjs
 )
 
 for path in "${required[@]}"; do
@@ -259,7 +246,12 @@ fi
 "$node_bin" scripts/check-structured-data.mjs
 "$node_bin" scripts/run-search-ir-reference.mjs
 "$node_bin" scripts/run-search-ir-composer-reference.mjs
-"$node_bin" scripts/run-ptx-extension-prototype.mjs portable-check
+
+native_source_files="$(find . -path './.git' -prune -o -type f \( -name '*.cu' -o -name '*.cuh' -o -name '*.ptx' \) -print)"
+if [[ -n "$native_source_files" ]]; then
+  printf 'CUDA-MCGS must not contain CUDA C++ or PTX source/fixtures:\n%s\n' "$native_source_files" >&2
+  exit 1
+fi
 
 for form in .github/ISSUE_TEMPLATE/*.yml; do
   if [[ "$(basename "$form")" == config.yml ]]; then

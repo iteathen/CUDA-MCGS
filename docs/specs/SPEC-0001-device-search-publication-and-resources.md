@@ -216,6 +216,6 @@ All task and runtime state receives an explicit disposition. Device allocations,
 
 ## 13. Current implementation disposition
 
-The CUDA-only prototype in [`../../experiments/cuda-device-mcgs-prototype/`](../../experiments/cuda-device-mcgs-prototype/) is non-normative evidence for this specification. It exercises a specialized subset and may be used as a mutation/reproduction fixture. It is not the Search IR, production lowering, scheduler, graph store, resource planner, conformance adapter, or CUDA-JS integration.
+The deleted CUDA-only prototype is summarized as non-executable historical provenance in [`../archive/experiments/2026-08-11-cuda-device-mcgs-prototype.md.txt`](../archive/experiments/2026-08-11-cuda-device-mcgs-prototype.md.txt). Its useful semantic findings are owned here and by CUDA-free Search IR/reference evidence; it is not a current mutation fixture, production lowering, scheduler, graph store, resource planner, conformance adapter or CUDA-JS integration.
 
 No production implementation is authorized by this specification alone.

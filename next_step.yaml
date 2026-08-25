@@ -69,7 +69,7 @@
   "validation": [
     "./scripts/verify-docs.sh",
     "node experiments/search-ir-reference/run.mjs",
-    "node experiments/ptx-extension-composition-prototype/run.mjs portable-check",
+    "bounded native-experiment disposition audit and zero tracked .cu/.cuh/.ptx files",
     "contract-specific reference/conformance capsules before production acceptance",
     "exact CUDA-JS/CUDA-MCGS native/compatible-pair evidence before support/release claims",
     "protected target read-back after merge"

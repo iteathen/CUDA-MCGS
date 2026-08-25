@@ -10,7 +10,7 @@ node scripts/run-search-ir-reference.mjs
 
 The capsule checks one canonical baseline, object-key and semantic-set ordering independence, minimum capacities, eight invalid mutations, and the seven stable SPEC-0001 conformance families. It writes ignored evidence to `experiments/search-ir-reference/build/evidence.json`.
 
-The reference never imports the CUDA-only prototype, CUDA-JS, a GPU library, or a platform-specific representation. Matching Windows/Linux results prove only Search IR normalization and deterministic reference semantics. They do not prove CUDA lowering, native Linux CUDA, a production scheduler, performance, search quality, or a compatible runtime pair.
+The reference never imports or reconstructs the deleted historical CUDA-only prototype, CUDA-JS, a GPU library, or a platform-specific representation. Matching Windows/Linux results prove only Search IR normalization and deterministic reference semantics. They do not prove CUDA lowering, native Linux CUDA, a production scheduler, performance, search quality, or a compatible runtime pair.
 
 ## Files
 

@@ -59,7 +59,7 @@ This registry tells developers and agents where durable information and future i
 | `adapters` | Universal/domain/product policy, evaluator, output, domain, and peer-runtime adapters | [`../adapters/`](../adapters/README.md) | Reserved |
 | `conformance` | Universal reference backend, synthetic domains, search-contract suites, and public peer-boundary compatibility | [`../conformance/`](../conformance/README.md) | Reserved |
 | `benchmarks` | Cross-component reproducible universal and separately namespaced product performance/search-quality suites | [`../benchmarks/`](../benchmarks/README.md) | Reserved |
-| `experiments` | Disposable research/prototypes | [`../experiments/`](../experiments/README.md) | Active; CUDA and CUDA-free bounded evidence retained |
+| `experiments` | Disposable research/prototypes | [`../experiments/`](../experiments/README.md) | Active; CUDA-free bounded evidence only; deleted native experiment conclusions are archived as non-executable provenance |
 | `examples` | Minimal public-surface usage examples | [`../examples/`](../examples/README.md) | Reserved |
 | `tools` | CUDA-MCGS-owned developer/build/search-specialization tools | [`../tools/`](../tools/README.md) | Reserved |
 | `scripts` | Thin repository task entry points | [`../scripts/`](../scripts/) | Active |

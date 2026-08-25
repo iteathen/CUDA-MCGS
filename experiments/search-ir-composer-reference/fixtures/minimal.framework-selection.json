@@ -6,7 +6,7 @@
     "schema": "cuda-mcgs.search-ir.contract-set/0.2.0",
     "identity": {
       "algorithm": "sha256",
-      "sha256": "c809cb1ba8dbe45d1b6b68ee63822ca72daecde2528974acb085a5500b512c46"
+      "sha256": "35f91df0308809a18ab6ae64c89729f243e75810ffd6b2b763535b76b5e1dc04"
     }
   },
   "frameworkContract": {
@@ -71,7 +71,7 @@
         "kind": "catalog",
         "id": "SPEC-0005",
         "specificationIdentity": "CUDA-MCGS-SPEC-0005@0.4.0-draft",
-        "sha256": "278a6df65efcc27269d621775369d8a356c91d85498daac25b720ac3fd5c85e7"
+        "sha256": "38f4377121634a992c43d54c3901752fd929ca6f0187bef76aef35ebb0cc3324"
       },
       "schema": { "id": "cuda-mcgs.program-package-profile/0.2.0", "version": "0.2.0", "sha256": "aa4ef4718a1bd217023ea7d6c2f3cc7b376928b747957420d2d14790e39f26b2" },
       "identity": { "algorithm": "sha256", "sha256": "6817db5ed9b94bd6ac64795ab02163ed17624dc2b7dde7f9ff8c2cbd30a0bfd5" }
