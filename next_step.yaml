@@ -1,11 +1,11 @@
 {
-  "schema_version": 49,
+  "schema_version": 50,
   "updated": "2026-08-25",
-  "status": "ready_for_ir_stage_channel_cycle_fix",
+  "status": "ready_for_ir_stage_channel_permission_fix",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then proceed to pure Node.js/restricted Device-JS native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "eaae16a8f89c37b669107841e0d356bad40246a0",
+    "cuda_mcgs_authority_input_baseline": "8d9f86eb2a8c66ea5d5598f4d6230b36ac5c669a",
     "cuda_js_authority_baseline": "2135216b1a9fd88066a1c82b61ae533645eac9c2",
     "cuda_js_implementation_baseline": "b6062f691a27093df0e5d55e482e69ebbd39a9eb",
     "cuda_js_package": "cuda-js@0.1.0-alpha.6"
@@ -28,7 +28,7 @@
     "focus_branch_map": "docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md",
     "active_leaf": "IR-STAGE-CHANNEL-CYCLE-FIX",
     "ready_queued_leaves": [],
-    "next_action": "Correct the Stage-to-Channel identity edge found during IR-CHANNEL-01 preflight: a Stage capability carries a versioned channel requirement reference, the downstream IR-CHANNEL-01 profile binds that requirement to exact Stage/capability identities, and SPEC-0005 later owns the final program/package input. Revalidate exact zero-channel residue, identity and cleanup without implementing channel behavior, native publication, product policy, physical CUDA topology, host progress loops or CUDA-JS-private mechanisms.",
+    "next_action": "Complete the Stage-to-Channel prerequisite found during IR-CHANNEL-01 preflight: each versioned Stage channel requirement grants exact per-surface produce/claim/observe/complete/cancel/release actions, the downstream IR-CHANNEL-01 profile may only bind those grants, and SPEC-0005 later owns the final program/package input. Revalidate exact zero-channel residue, identity, permission failure and cleanup without implementing channel behavior, native publication, product policy, physical CUDA topology, host progress loops or CUDA-JS-private mechanisms.",
     "exit": "Strict schemas/metaschemas, canonical normalization, deterministic reference Composer/Search Program/package generation and structural deletion evidence represent every selected requirement needed by the 989-requirement proposal packet without inventing semantics or CUDA-specific implementation."
   },
   "deliverables": [

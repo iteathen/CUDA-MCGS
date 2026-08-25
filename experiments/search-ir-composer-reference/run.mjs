@@ -4216,7 +4216,7 @@ await runCase('reject-session-product-owner', () => {
 await runCase('stage-schema-closed', () => {
   assert.equal(stageProfileSchema.properties.schema.const, 'cuda-mcgs.stage-profile/0.2.0');
   assert.equal(stageProfileSchema.additionalProperties, false);
-  for (const name of ['owner', 'permission', 'counter', 'workItem', 'stageEntry', 'stageExecution', 'stageOutcome', 'stage', 'contextField', 'invocation', 'surface', 'contribution', 'effect', 'activation', 'provenance', 'capability', 'status', 'lifecycle', 'diagnostics', 'compatibility', 'cleanup', 'programContribution']) assert.equal(stageProfileSchema.$defs[name].additionalProperties, false);
+  for (const name of ['owner', 'permission', 'counter', 'workItem', 'stageEntry', 'stageExecution', 'stageOutcome', 'stage', 'contextField', 'invocation', 'surface', 'contribution', 'effect', 'activation', 'channelBinding', 'channelRequirement', 'provenance', 'capability', 'status', 'lifecycle', 'diagnostics', 'compatibility', 'cleanup', 'programContribution']) assert.equal(stageProfileSchema.$defs[name].additionalProperties, false);
 });
 
 await runCase('stage-profile-second-instance-distinct', () => {
@@ -4340,10 +4340,20 @@ await runCase('stage-cleanup-selected-only-closure', () => {
 });
 
 await runCase('stage-channel-requirement-avoids-profile-identity-cycle', () => {
-  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].channels.push(stageSyntheticSchemaReference('cuda-mcgs.synthetic-required-channel'));
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].channels.push({ requirement: stageSyntheticSchemaReference('cuda-mcgs.synthetic-required-channel'), bindings: [{ surface: mutated.capabilities[0].bindings[0], actions: ['produce', 'cancel'] }] });
   mutated.cleanup.kinds.push('channel-binding'); const normalized = normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult);
   assert.equal(normalized.normalized.capabilities.filter(({ channels }) => channels.length === 1).length, 1);
   assert.deepEqual(normalized.normalized.programContribution.inputs, stageProfiles[0].normalized.programContribution.inputs);
+});
+
+await runCase('reject-stage-channel-permission-outside-capability-surface', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[1].channels.push({ requirement: stageSyntheticSchemaReference('cuda-mcgs.synthetic-required-channel'), bindings: [{ surface: mutated.capabilities[0].bindings[0], actions: ['produce'] }] });
+  mutated.cleanup.kinds.push('channel-binding'); assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_CHANNEL' });
+});
+
+await runCase('reject-stage-channel-unknown-action', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].channels.push({ requirement: stageSyntheticSchemaReference('cuda-mcgs.synthetic-required-channel'), bindings: [{ surface: mutated.capabilities[0].bindings[0], actions: ['block-worker'] }] });
+  mutated.cleanup.kinds.push('channel-binding'); assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_CHANNEL' });
 });
 
 await runCase('reject-stage-unknown-field', () => {
@@ -4602,7 +4612,7 @@ await runCase('reject-stage-cleanup-gap', () => {
 });
 
 await runCase('reject-stage-channel-cleanup-residue-gap', () => {
-  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].channels.push(stageSyntheticSchemaReference('cuda-mcgs.synthetic-pending-channel'));
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].channels.push({ requirement: stageSyntheticSchemaReference('cuda-mcgs.synthetic-pending-channel'), bindings: [{ surface: mutated.capabilities[0].bindings[0], actions: ['produce'] }] });
   assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CLEANUP_COVERAGE' });
 });
 
@@ -4633,7 +4643,7 @@ await runCase('reject-stage-product-owner', () => {
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 702,
+  expected: 704,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -4641,7 +4651,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 702 - cases.length,
+  notDiscovered: 704 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 

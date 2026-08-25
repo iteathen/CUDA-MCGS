@@ -261,11 +261,13 @@ This slice is structural/normalizer evidence only. It does not prove concurrent 
 
 **Stage-to-Channel identity correction started:** 2026-08-25T06:37:38.0748497-07:00
 
-**Focused evidence assembled:** 2026-08-25T06:38:45.8540000-07:00
+**Stage channel-action authority completion started:** 2026-08-25T06:42:56.0107359-07:00
 
-**Full repository validation completed:** 2026-08-25T06:41:06.7788173-07:00
+**Focused evidence assembled:** 2026-08-25T06:45:35.4350000-07:00
 
-The expanded capsule passes 702/702 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource/progress/output/session cases and adds strict normalized optional Search Stage/Extension Surface/capability evidence across:
+**Full repository validation completed:** 2026-08-25T06:46:38.9202456-07:00
+
+The expanded capsule passes 704/704 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource/progress/output/session cases and adds strict normalized optional Search Stage/Extension Surface/capability evidence across:
 
 - complete extension-substrate absence when no capability is selected, two materially different selected profiles and one same-profile first-product deletion projection;
 - finite reachable per-work-item stage graphs with explicit entry stage, stable entry/exit checkpoints, terminal paths, finite generation/transition/invocation counters and no physical scheduler, global barrier, kernel-per-stage or persistent-execution selection;
@@ -275,7 +277,7 @@ The expanded capsule passes 702/702 CUDA-free cases. It retains all catalog/foun
 - first-party-reviewed generator/capability/program provenance and restricted Device-JS program identity requiring only versioned consumer-neutral CUDA-JS contracts, with runtime discovery, native artifacts, direct FFI/Driver access and host progress excluded; and
 - closed canonical schema/normalization plus negative cases for graph, owner, permission, context, alignment, resource, ordering, counter, lifecycle, cleanup and public-contract drift.
 
-IR-CHANNEL-01 preflight found that making `capabilities[].channels` point at final content-addressed Channel profiles would create an identity cycle: the Channel profile must itself bind the exact selected Stage/capability profile. The corrected Stage field is a versioned channel requirement schema reference. IR-CHANNEL-01 owns the final bound profile, and SPEC-0005 later owns adding that final profile to Search Program/package identity. The correction changes no selected channel behavior, CUDA-JS mechanism or normalized identity for the two channel-absent Stage fixtures.
+IR-CHANNEL-01 preflight found that making `capabilities[].channels` point at final content-addressed Channel profiles would create an identity cycle: the Channel profile must itself bind the exact selected Stage/capability profile. The corrected Stage field carries a versioned channel requirement plus exact granted surface/actions. IR-CHANNEL-01 owns the final bound profile, and SPEC-0005 later owns adding that final profile to Search Program/package identity. This prevents both the identity cycle and Channel-side invention of Stage authority. The correction changes no selected channel behavior, CUDA-JS mechanism or normalized identity for the two channel-absent Stage fixtures.
 
 The selected stage-specific composed-plan identities are:
 
@@ -287,6 +289,6 @@ The normalized selected structural Stage identities are:
 - `extension.synthetic-capability-pair`: `fa5c87af16eecf6cb9f94ffcdf68e5aa75b9df34aef53ba5f9c647c4a4582052` over 42,608 canonical bytes; and
 - `extension.synthetic-proof-stage`: `5482148a5f6a1681f76c80c3bca30508c2649399a45807e6cfda963d2e2131b9` over 27,332 canonical bytes.
 
-Deleting the first product capability yields `extension.synthetic-capability-pair` identity `f27c385b9167d58fe44cc65621fe334ceab18409934e5ff1f04a35fb928f7aa0` over 33,829 canonical bytes while preserving the remaining stage graph and shared exit base context byte-for-byte. The Stage schema has checkout-neutral source digest `7655f7ab2766232855c456d36f6d362f33c540dec0b39652e168939aaf5fac8c`. The framework envelope intentionally retains complete stage-substrate absence and identity `2d5fd4eb17ac1f82a655175109d90e5f41f707d90c11d2667b44c41612e4ba3a` over 10,422 canonical bytes. Coverage identity is `cbcadf002ced2ae03213fd259d84a583d639b4a3c4a0e639b94b31721fcfc7b3`; expanded requirement routing identity is `10d0a7142e99eb7007d342bf73638616a453923ca313308ac309bfe6527e4bdf`. Exactly 821 framework/domain/graph/policy/evaluator/resource/progress/output/session/stage requirements now have final evidence lanes; all remain partial, pending or deferred. The other 168 Async Stage Channel and program/package requirements remain pending their semantic-owner leaves.
+Deleting the first product capability yields `extension.synthetic-capability-pair` identity `f27c385b9167d58fe44cc65621fe334ceab18409934e5ff1f04a35fb928f7aa0` over 33,829 canonical bytes while preserving the remaining stage graph and shared exit base context byte-for-byte. The Stage schema has checkout-neutral source digest `52ad6bca5b110440f78f066d21fa59e8c36780a1b0af5ac754572a975f1ae5b9`. The framework envelope intentionally retains complete stage-substrate absence and identity `2d5fd4eb17ac1f82a655175109d90e5f41f707d90c11d2667b44c41612e4ba3a` over 10,422 canonical bytes. Coverage identity is `924f5cbdbd67feeb8e2716b543847ee144b2a747c233b7be6ee86ec08fd4cd49`; expanded requirement routing identity is `c9a3fae6a0e06fb8b7002b131a933e86d9b2d85e289cc16e91424ecb252c19cf`. Exactly 821 framework/domain/graph/policy/evaluator/resource/progress/output/session/stage requirements now have final evidence lanes; all remain partial, pending or deferred. The other 168 Async Stage Channel and program/package requirements remain pending their semantic-owner leaves.
 
 This slice is structural/normalizer evidence only. It does not prove several-schedule behavior, all failure/cancellation timing points, concurrent publication, SPEC-0004 channel semantics, generated Search Program/package composition, native execution or compatible-pair qualification. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added. The known generic device-scope release/acquire helper gap remains owned by CUDA-JS issue #123 and blocks later native internal-channel qualification, not this backend-neutral Stage evidence; no new CUDA-JS capability gap was found here.
