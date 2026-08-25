@@ -67,6 +67,7 @@ Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider 
 - [`SPEC-0005-stage-ptx-and-search-image-composition.md`](SPEC-0005-stage-ptx-and-search-image-composition.md) — revised restricted Device-JS/Search Program input and opaque CUDA-JS-generated artifact-output proposal, retaining selected-only/zero-residue invariants without CUDA-MCGS-owned PTX.
 - [`SPEC-0006-search-session-control-and-observation.md`](SPEC-0006-search-session-control-and-observation.md) — generic long-lived Search Session/root-update admission/root epochs/stale work/reuse/reclamation and read-only bounded observation semantics, without requiring ranked actions.
 - [`SPEC-0007-domain-state-action-and-transition.md`](SPEC-0007-domain-state-action-and-transition.md) — product-neutral state/action/transition/identity/history/node-role/terminal-outcome semantics, including collision verification, intrinsic and admitted action sources, finite execution and explicit downstream evidence obligations.
+- [`SPEC-0010-graph-storage-and-reclamation.md`](SPEC-0010-graph-storage-and-reclamation.md) — graph object/reference/publication/transposition/path/root-protection/reclamation semantics, with opaque owner regions, stale-safe generations, optional reclamation and no storage-mechanism selection.
 
 These proposals do not authorize production lowering. The complete Search IR must represent selected universal semantics plus namespaced capability/product inputs without promoting first-product fields into universal core meaning.
 
