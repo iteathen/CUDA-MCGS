@@ -9,7 +9,7 @@
 The protected CUDA-MCGS `main` input baseline for the active contract packet is:
 
 ```text
-6364710bc6534ae1084ca0c928003c1cfad51515
+4970757505770ac38c97fcedac9f072b147b0efe
 ```
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
@@ -32,7 +32,7 @@ ADR-0019 requires maintained CUDA-MCGS production source to be JavaScript only: 
 
 Extension-surface stability is schema/semantic stability, not unconditional runtime presence. Concrete ports/hooks/context/channels/storage are materialized only for selected capabilities; an absent capability contributes no solely extension-owned hot-path residue.
 
-SPEC-0001 and SPEC-0002 remain accepted foundational authority. SPEC-0000 and SPEC-0003 through SPEC-0007 remain proposals requiring review/revision and integrated evidence before their owned production implementation.
+SPEC-0001 and SPEC-0002 remain accepted foundational authority. SPEC-0000, SPEC-0003 through SPEC-0007 and SPEC-0010 remain proposals requiring review/revision and integrated evidence before their owned production implementation.
 
 ## Bounded evidence already integrated
 
@@ -68,9 +68,9 @@ The owner-directed production boundary remains: CUDA-MCGS owns JavaScript-only s
 
 The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`](docs/development/2026-08-12-v0-forward-plan.md).
 
-Current focus is **ENGINE-CONTRACT-01** under parent plan `CUDA-MCGS-V0/22`. Its critical assessment and semantic focus-branch map are [`docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md`](docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md). `EC-DOMAIN-01` is integrated as proposal [`SPEC-0007`](docs/specs/SPEC-0007-domain-state-action-and-transition.md) at `main@6364710bc6534ae1084ca0c928003c1cfad51515`. `EC-GRAPH-01` is the single active leaf; `EC-EVALUATOR-01` is also dependency-ready but queued. Device-owned progress remains intentionally separate from any later physical scheduler selection.
+Current focus is **ENGINE-CONTRACT-01** under parent plan `CUDA-MCGS-V0/22`. Its critical assessment and semantic focus-branch map are [`docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md`](docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md). `EC-DOMAIN-01` and `EC-GRAPH-01` are integrated as proposals [`SPEC-0007`](docs/specs/SPEC-0007-domain-state-action-and-transition.md) and [`SPEC-0010`](docs/specs/SPEC-0010-graph-storage-and-reclamation.md). `EC-POLICY-01` is the single active leaf; `EC-EVALUATOR-01` remains dependency-ready but queued. Device-owned progress remains intentionally separate from any later physical scheduler selection.
 
-The remaining graph/policy/evaluator/output/resource/progress/session proposals then receive bounded normalized Search IR/Composer and universal reference evidence before one integrated semantic-acceptance gate. Production lowering remains blocked until that acceptance gate completes.
+The remaining policy/evaluator/output/resource/progress/session proposals then receive bounded normalized Search IR/Composer and universal reference evidence before one integrated semantic-acceptance gate. Production lowering remains blocked until that acceptance gate completes.
 
 After core semantics:
 
