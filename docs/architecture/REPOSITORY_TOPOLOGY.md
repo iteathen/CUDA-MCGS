@@ -2,11 +2,11 @@
 
 **Status:** Informational
 
-The accepted boundary is two peer repositories with one-way dependency and versioned artifacts. CUDA-MCGS is the product-facing name of the search framework currently hosted in `iteathen/UMCGS`; existing accepted UMCGS identifiers remain authoritative until a separate naming/repository migration is accepted.
+The accepted boundary is two peer repositories with one-way dependency and versioned artifacts. CUDA-MCGS is the product-facing name of the search framework hosted in `iteathen/CUDA-MCGS`; existing accepted UMCGS identifiers remain authoritative until a separate identifier migration is accepted.
 
 ## Repositories
 
-### `iteathen/UMCGS` — CUDA-MCGS search framework
+### `iteathen/CUDA-MCGS` — CUDA-MCGS search framework
 
 Owns the universal graph-search product:
 

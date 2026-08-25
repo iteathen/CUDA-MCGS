@@ -6,10 +6,10 @@
 
 ## Current repository state
 
-The protected CUDA-MCGS `main` input baseline for this sequencing reconciliation is:
+The protected CUDA-MCGS `main` input baseline for the active contract packet is:
 
 ```text
-9a7d694614b48c548ee522dde491375a939e00ac
+b02f73d38d61e2ae64e50f9775a60e51bde04188
 ```
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
@@ -68,7 +68,9 @@ The owner-directed production boundary remains: CUDA-MCGS owns JavaScript-only s
 
 The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`](docs/development/2026-08-12-v0-forward-plan.md).
 
-Current focus is **ENGINE-CONTRACT-01**: settle the unfinished universal domain/policy/evaluator/output/graph/resource/scheduler/session semantic owners as decision-complete proposals independently of optional Search Stage mechanics. Those proposals then receive bounded normalized Search IR/Composer and universal reference evidence before one integrated semantic-acceptance gate. Production lowering remains blocked until that acceptance gate completes.
+Current focus is **ENGINE-CONTRACT-01** under parent plan `CUDA-MCGS-V0/22`. Its critical assessment and semantic focus-branch map are [`docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md`](docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md). The only dependency-ready leaf is `EC-DOMAIN-01`; it defines product-neutral state/action/transition/identity/history/node-role semantics. Device-owned progress is intentionally named and owned separately from any later physical scheduler selection.
+
+The remaining domain/policy/evaluator/output/graph/resource/progress/session proposals then receive bounded normalized Search IR/Composer and universal reference evidence before one integrated semantic-acceptance gate. Production lowering remains blocked until that acceptance gate completes.
 
 After core semantics:
 

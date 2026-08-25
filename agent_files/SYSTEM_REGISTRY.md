@@ -79,6 +79,8 @@ This registry tells developers and agents where durable information and future i
 
 These IDs are planning anchors only. Exact contracts/names/implementation locations are not accepted until their version-zero specifications settle ownership.
 
+The active dependency graph and owner-level proposal outputs are governed beneath accepted authority by [`../docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md`](../docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md). Device-owned progress is the semantic owner; a physical scheduler is a later mechanism/profile selection.
+
 | Planned boundary ID | Intended responsibility | Governing work |
 |---|---|---|
 | `contract.domain` | Product-neutral state/action/transition/identity/history/node-role semantics | Universal domain contract v0 |
@@ -89,6 +91,7 @@ These IDs are planning anchors only. Exact contracts/names/implementation locati
 | `contract.output` | Generic bounded result/observation publication contracts; no mandatory ranked-action payload | Universal output/observation contract family |
 | `contract.extensions` | Universal Search Stage/base-context/capability/Async Channel/restricted Device-JS Search Program extension-composition substrate | [`../docs/specs/SPEC-0003-search-stage-and-extension-surface.md`](../docs/specs/SPEC-0003-search-stage-and-extension-surface.md), [`../docs/specs/SPEC-0004-async-stage-channels.md`](../docs/specs/SPEC-0004-async-stage-channels.md), [`../docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md`](../docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) proposals |
 | `contract.resources` | Search-memory plan, capacities, root-update admission reserve/pressure, capability/product resources, exhaustion/cancellation/teardown | Universal resource contract v0 |
+| `contract.progress` | Device-owned work readiness, progress, fairness, typed no-progress/deadlock, stopping and scheduler-neutral semantics | Universal device-owned search-progress contract v0 |
 | `contract.cuda-js-package` | CUDA-MCGS-generated Search Image/execution package and compatibility manifest for peer CUDA-JS | Interop contract v0 |
 | `tool.search-schema` | Parse, validate, normalize, diff, and generate universal plus namespaced selected search contracts | Future accepted component specification |
 | `tool.search-compiler` | Capability/product resolution, search specialization, layouts/device code, and execution-package generation | Future accepted component specification |

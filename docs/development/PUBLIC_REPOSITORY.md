@@ -1,14 +1,14 @@
-# Public Repository Transition
+# Public Repository Transition Record
 
 **Status:** Informational
 
-**Updated:** 2026-08-12
+**Updated:** 2026-08-24
 
-This document is the operational checklist for changing `iteathen/UMCGS` from private to public visibility. It does not itself change repository visibility and it does not represent a CUDA-MCGS product release.
+The repository is now public as `iteathen/CUDA-MCGS`. This document is retained as the provenance and audit checklist for that visibility transition; it is not an active instruction to repeat the transition and it does not represent a CUDA-MCGS product release.
 
 ## Intended public posture
 
-Once visibility is public:
+The continuing public posture is:
 
 - `main` remains the canonical integration trunk;
 - contributors use forks or short-lived branches and pull requests rather than private intake repositories;
@@ -18,9 +18,9 @@ Once visibility is public:
 - AGPL-3.0-or-later plus the separately negotiated commercial-license option remains the licensing model;
 - public visibility does **not** mean production readiness, native Linux support, a stable API, or a released CUDA-MCGS/CUDA-JS compatible pair.
 
-## Hard pre-visibility gates
+## Historical pre-visibility gates
 
-Before changing visibility, verify all of the following against the exact intended public `main` revision:
+The transition required verification of all of the following against the exact intended public `main` revision:
 
 1. **License and legal surface**
    - `LICENSE` contains the GNU Affero General Public License v3 text;
@@ -83,11 +83,11 @@ A history rewrite is high-consequence: it changes commit SHAs, can invalidate si
 
 ## History-scan limitation
 
-GitHub secret-scanning alerts for the current private repository were not accessible to the connected integration during this preparation pass. Therefore this document deliberately does **not** certify the full Git history as secret-free.
+GitHub secret-scanning alerts for the repository before publication were not accessible to the connected integration during the preparation pass. Therefore this record deliberately does **not** certify the full Git history as secret-free.
 
-Before the visibility switch, perform an authenticated full-history secret scan using an appropriate local or GitHub security tool and inspect any findings. This is a hard gate because making a repository public exposes reachable Git history, not only the current checkout.
+Before the visibility switch, the transition required an authenticated full-history secret scan using an appropriate local or GitHub security tool and inspection of any findings. This was a hard gate because making a repository public exposes reachable Git history, not only the current checkout.
 
-## Visibility-switch sequence
+## Historical visibility-switch sequence
 
 1. Freeze the exact public-ready `main` SHA.
 2. Complete the full-history secret/private-material audit and resolve every blocking finding.

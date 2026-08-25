@@ -2,7 +2,7 @@
 
 **Status:** Informational
 
-CUDA-MCGS is the product-facing name of the universal MCGS framework hosted in `iteathen/UMCGS`. Existing accepted UMCGS ADR/specification identifiers remain authoritative until a separate naming/repository migration is accepted.
+CUDA-MCGS is the product-facing name of the universal MCGS framework hosted in `iteathen/CUDA-MCGS`. Existing accepted UMCGS ADR/specification identifiers remain authoritative until a separate identifier migration is accepted.
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with schema-backed extension support.**
 

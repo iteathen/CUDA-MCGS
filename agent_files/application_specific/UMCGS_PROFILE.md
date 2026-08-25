@@ -18,7 +18,7 @@ Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus
 
 ## Current phase
 
-The project is defining version-zero UMCGS search and UMCGS-to-CUDA-JS contracts, ownership, memory/resource behavior, conformance, and test architecture before production implementation.
+The project is a public pre-release repository defining version-zero CUDA-MCGS search and CUDA-MCGS-to-CUDA-JS contracts, ownership, memory/resource behavior, conformance, and test architecture before production implementation. Public visibility is not a stable API, support promise, or product release.
 
 ## Ecosystem language constraint
 
@@ -70,10 +70,10 @@ Follow the engineering, design, organization, registry, focus-branch, testing, t
 
 ## Licensing status
 
-UMCGS has no public release and no selected project license. License selection is deferred and is not a blocker to original private pre-release work.
+CUDA-MCGS is licensed under `AGPL-3.0-or-later` with a separately negotiated commercial-license option. The repository is public, but no CUDA-MCGS product/package release or stable compatibility promise exists.
 
-Before adapting third-party implementation, record exact revision/license and make an explicit reuse decision. Select a distribution license before public release.
+Before adapting third-party implementation, record exact revision/license and make an explicit reuse decision. Public distribution must preserve project-license and third-party compatibility/provenance requirements.
 
 ## Current next boundary
 
-Define the domain, policy, evaluator, full resource/memory, output, and execution-package semantics that the accepted Search IR 0.1.0 must compose before production lowering. Preserve the CUDA-free Windows/Linux reference gate, then select an exact public CUDA-JS revision for the CUDA-MCGS-to-CUDA-JS compatibility contract.
+Execute the `ENGINE-CONTRACT-01` focus-branch map beginning with product-neutral domain semantics, then integrate graph, policy, evaluator, output, resource, device-owned progress and Search Session proposals before bounded Search IR/reference evidence. Production lowering and exact CUDA-JS pair qualification remain later gates.
