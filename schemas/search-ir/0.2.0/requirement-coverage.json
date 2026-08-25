@@ -64,8 +64,8 @@
       "requirementPrefix": "POLICY-",
       "primaryOwner": "CUDA-MCGS universal search-policy semantics",
       "plannedLeaf": "IR-POLICY-01",
-      "currentDisposition": "pending-owner-classification",
-      "completionStatus": "pending"
+      "currentDisposition": "section-classified",
+      "completionStatus": "in-progress"
     },
     {
       "contract": "SPEC-0009",
@@ -418,6 +418,171 @@
       "classificationStatus": "classified"
     },
     {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-PROFILE-",
+      "requirementCount": 6,
+      "primaryDisposition": "structural-schema",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-POLICY-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:policy-profile.schema.json", "normalizer:policy-profile", "case:normalize-policy-profiles", "case:reject-policy-native-program-language"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-RECORD-",
+      "requirementCount": 8,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-record-storage-scope", "case:reject-policy-accounting-without-numeric-rules", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-SELECT-",
+      "requirementCount": 7,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-POLICY-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-role-selection-mode", "case:reject-policy-selection-randomness", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-RESERVE-",
+      "requirementCount": 6,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-reservation-port-residue", "case:reject-policy-reservation-without-record", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-WIDEN-",
+      "requirementCount": 7,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["cross-specification-proof", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-POLICY-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-domain-source-drift", "case:reject-policy-intrinsic-only-fallback-without-source", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-VALUE-",
+      "requirementCount": 7,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["engine-reference-oracle", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-POLICY-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:policy-evaluator-mode-matrix", "case:reject-policy-scalar-coordinate-count", "case:reject-policy-vector-coordinate-count", "case:policy-stateless-zero-residue"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-CYCLE-",
+      "requirementCount": 4,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-cycle-domain-port-drift", "case:policy-stateless-zero-residue", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-BACKUP-",
+      "requirementCount": 11,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:policy-profile-second-instances-distinct", "case:reject-policy-backup-order", "case:reject-policy-backup-idempotence", "case:reject-policy-backup-without-visible-record", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-STOP-",
+      "requirementCount": 7,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:policy-profile", "case:policy-arbitrary-width-bounds", "case:reject-policy-stop-budget-range", "case:reject-policy-undeclared-stop-cause", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-REUSE-",
+      "requirementCount": 5,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-reuse-unknown-record", "case:reject-policy-reuse-coverage", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-LIFE-",
+      "requirementCount": 8,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-RESOURCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-required-status", "case:reject-policy-required-resource-pressure", "planned:IR-RESOURCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-SEC-",
+      "requirementCount": 5,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-POLICY-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:reject-policy-unknown-field", "case:reject-policy-program-input-identity-drift", "case:reject-policy-incomplete-persistence", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-CLEANUP-",
+      "requirementCount": 2,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["case:reject-policy-backup-without-visible-record", "case:reject-policy-reservation-without-record", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-COMPAT-",
+      "requirementCount": 3,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:policy-identity-content-sensitive", "case:policy-product-data-deletion", "case:reject-policy-program-input-identity-drift", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-IR-",
+      "requirementCount": 5,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-POLICY-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:policy-profile.schema.json", "normalizer:policy-profile", "case:policy-profile-order-independent", "case:policy-framework-selection-link"],
+      "classificationStatus": "classified"
+    },
+    {
       "contract": "SPEC-0010",
       "requirementPrefix": "GRAPH-PROFILE-",
       "requirementCount": 6,
@@ -564,7 +729,7 @@
   "totals": {
     "contracts": 12,
     "requirements": 989,
-    "classified": 257,
-    "pending": 732
+    "classified": 348,
+    "pending": 641
   }
 }

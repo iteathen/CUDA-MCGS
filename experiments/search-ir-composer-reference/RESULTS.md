@@ -95,3 +95,30 @@ The four normalized structural profile identities are:
 The graph schema has checkout-neutral source digest `607f67f008f7846346018b2c0837de6f20031bc9eed4ca442a85890508a5c716`. The framework envelope now binds the first domain and graph profiles and has identity `3914da7de0b193fa8ae2f11439dd246555aef8f6fd180e44ce711e9118ca61f8` over 10,422 canonical bytes. Coverage identity is `0816937419296c51d69b2a5c1dda42682f52bbb28a81b97991e1df6f19694097`; expanded requirement routing identity is `4f91f07eae8f89f8a273532d64ac2eb03d58dd91407aa8b6e43c0b7dd0c68252`. Exactly 257 framework/domain/graph requirements now have final evidence lanes; all remain partial, pending or deferred. The other 732 requirements remain pending their semantic-owner leaves.
 
 This slice is structural/normalizer evidence only. It does not qualify concurrent reclamation, device memory ordering, a storage allocator, a search scheduler, CUDA-JS lowering or a compatible native pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
+
+## IR-POLICY-01
+
+**Started:** 2026-08-25T02:25:49-07:00
+
+**Evidence completed:** 2026-08-25T02:48:28-07:00
+
+The expanded capsule passes 200/200 CUDA-free cases. It retains all catalog/foundation/domain/graph cases and adds strict normalized policy-profile evidence across:
+
+- exact handling for every selected domain role without assuming a game, alternating player, maximization rule or fixed action count;
+- policy-owned record scopes/storage/numeric/visibility semantics, bounded reservations and intrinsic/evaluator candidate admission through exact public domain/graph/profile references;
+- evaluator modes `absent`, `proposal-only`, `evaluation-only` and `combined`, with evaluator-specific selection/value/resource/program inputs absent when unselected;
+- scalar role-relative, three-coordinate non-zero-sum vector, proof-lattice ordered and no-value policy families with explicit source conversion and perspective;
+- bounded cycle partitions, transactional occurrence-owned exactly-once backup, must-drain after first result-visible mutation, deterministic sequencing where order affects meaning, typed stopping budgets and complete reroot dispositions;
+- materialized and stateless graph profiles, with the stateless/no-value instance retaining no path, ready-edge, cycle, backup, reservation or value-only residue; and
+- restricted Device-JS program-contribution identity with exact domain/graph/evaluator inputs and no scheduler, CUDA mechanism, C/C++ or native implementation selection.
+
+The four normalized structural profile identities are:
+
+- `policy.synthetic-scalar-absent`: `953c7793a69e53dbb5babe980a9fccf195aef2e5ea7fba1ec9770970362f4a26` over 34,929 canonical bytes;
+- `policy.synthetic-vector-combined`: `cf55e7df019354d42ccd80e173afff53ff447ab03506bbee3b66c6541779487c` over 40,112 canonical bytes;
+- `policy.synthetic-proposal-only-stateless`: `0acac4449d2b225f4abe6e0de2f3bc0bb2075bff4824460a5066c584f46081fe` over 15,547 canonical bytes; and
+- `policy.synthetic-proof-evaluation-only`: `d99c90375cd9a12bf15eff435c833cf54d03e4ef888a8173784f8d34440502ad` over 32,577 canonical bytes.
+
+The policy schema has checkout-neutral source digest `6adb8df41fd6f340ee1fbd7f0644dfa82e9da2b91588f5bc3074d8cda8e27720`. The framework envelope now binds the first domain, graph and policy profiles and has identity `d18318439640da4db0899860aecdd791dc83b0e13784cf75e0ad3aa72b1dfd9e` over 10,422 canonical bytes. Coverage identity is `5a3f6dd33d7406102f3d1412387a814542eaf60300d3f07b01d9265a041cae6d`; expanded requirement routing identity is `4c80d82fcae74839990e269dabcbecf0d454308c8c5b118bd53fb3498461c65d`. Exactly 348 framework/domain/graph/policy requirements now have final evidence lanes; all remain partial, pending or deferred. The other 641 requirements remain pending their semantic-owner leaves.
+
+This slice is structural/normalizer evidence only. It does not qualify policy behavior, concurrent backup/reservation publication, device memory ordering, evaluator execution, scheduling, CUDA-JS lowering or a compatible native pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
