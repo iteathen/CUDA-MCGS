@@ -1,11 +1,11 @@
 {
-  "schema_version": 33,
+  "schema_version": 34,
   "updated": "2026-08-25",
   "status": "ready_for_contract_review",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then proceed to pure Node.js/restricted Device-JS native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "1aa8b8d145553fe6415787d30226a03d4e01822f",
+    "cuda_mcgs_authority_input_baseline": "ce5efc4af7b66e42ef4deca18824bbd0036ac8ff",
     "cuda_js_authority_baseline": "2135216b1a9fd88066a1c82b61ae533645eac9c2",
     "cuda_js_implementation_baseline": "b6062f691a27093df0e5d55e482e69ebbd39a9eb",
     "cuda_js_package": "cuda-js@0.1.0-alpha.6"
@@ -26,9 +26,9 @@
     "parent_plan_version": "CUDA-MCGS-V0/22",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": "docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md",
-    "active_leaf": "EXT-STAGE-01",
+    "active_leaf": "EXT-CHANNEL-01",
     "ready_queued_leaves": [],
-    "next_action": "Revise SPEC-0003 as the optional stage/surface/capability semantic owner against the complete core packet. Assign unique normative IDs; make whole-substrate and capability deletion exact; keep source-owner semantics outside stage ownership; delegate resources/progress/output/session meaning; prohibit partial-mutation exposure, runtime discovery and scheduler/product assumptions; record exact schema/reference obligations without implementing them.",
+    "next_action": "Revise SPEC-0004 as the optional nonblocking internal device-dataflow owner against integrated SPEC-0003 and core owners. Assign unique normative IDs; define finite request/result identity, publication, ownership and stale/cancel/teardown semantics; delegate aggregate resources to SPEC-0011 and global progress/closure to SPEC-0012; keep external session/output boundaries separate; route native release/acquire qualification through CUDA-JS #123 without a workaround.",
     "exit": "SPEC-0003 through SPEC-0005 are decision-complete optional extension-substrate proposals with exact owner dependencies, selected-only materialization, zero absent-capability residue, bounded channels/resources/lifecycle, deterministic JavaScript/restricted Device-JS composition identity and explicit schema/reference obligations."
   },
   "deliverables": [
@@ -59,7 +59,7 @@
     "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
   "blockers": [
-    "SPEC-0003 through SPEC-0005 require dependency-ordered decision-complete extension-substrate revision; all proposal contracts require bounded schema/reference evidence and integrated semantic acceptance before their owned production lowering",
+    "SPEC-0004 and SPEC-0005 require dependency-ordered decision-complete extension-substrate revision; all proposal contracts require bounded schema/reference evidence and integrated semantic acceptance before their owned production lowering",
     "CUDA-JS issue #123 release/acquire Device-JS publication support is absent and blocks native internal-channel qualification, not backend-neutral contract/schema/reference work",
     "complete Search IR/Composer representation for selected contract/capability/product inputs is incomplete",
     "CUDA-MCGS external deletion and exact compatible-pair evidence remain unfinished",

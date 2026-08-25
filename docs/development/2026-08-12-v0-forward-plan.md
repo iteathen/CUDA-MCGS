@@ -6,7 +6,7 @@
 
 **Parent plan version:** `CUDA-MCGS-V0/22`
 
-**CUDA-MCGS input baseline:** protected `main` `1aa8b8d145553fe6415787d30226a03d4e01822f`.
+**CUDA-MCGS input baseline:** protected `main` `ce5efc4af7b66e42ef4deca18824bbd0036ac8ff`.
 
 **CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
 
@@ -68,7 +68,7 @@ Completed output:
 
 ## ENGINE-EXTENSION-01 — schema-backed extension substrate
 
-**Current focus.** The critical assessment and dependency-ordered semantic focus-branch map are [`2026-08-25-engine-extension-01-assessment-and-plan.md`](2026-08-25-engine-extension-01-assessment-and-plan.md). `EXT-STAGE-01` revises SPEC-0003 first; channel and composition leaves consume its exact integrated output.
+**Current focus.** The critical assessment and dependency-ordered semantic focus-branch map are [`2026-08-25-engine-extension-01-assessment-and-plan.md`](2026-08-25-engine-extension-01-assessment-and-plan.md). `EXT-STAGE-01` integrated the decision-complete 80-requirement SPEC-0003 proposal through PR #82 at `main@ce5efc4`. `EXT-CHANNEL-01` is active; composition consumes its exact integrated output.
 
 Review/revise SPEC-0003 through SPEC-0005 into decision-complete proposals only after their relationship to the core owners is explicit. Final semantic acceptance follows normalized schema/reference evidence rather than preceding it.
 
