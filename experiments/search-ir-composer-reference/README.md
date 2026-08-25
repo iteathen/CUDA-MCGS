@@ -107,7 +107,7 @@ The integrated `IR-CHANNEL-01` slice adds only the optional SPEC-0004-owned inte
 - cancellation/expiry/stale/reclamation/teardown closure and restricted Device-JS/public CUDA-JS requirements only; the former CUDA-JS #123 publication gap is resolved in `cuda-js@0.1.0-alpha.7`, while exact native pair qualification remains separate; and
 - section-level evidence classification for all 90 Async Stage Channel requirements, with physical CUDA realization and compatible-pair qualification left partial or deferred.
 
-The current `IR-PROGRAM-PACKAGE-01` slice adds only SPEC-0005-owned static composition and public-package evidence:
+The integrated `IR-PROGRAM-PACKAGE-01` slice adds only SPEC-0005-owned static composition and public-package evidence:
 
 - four strict composition profiles spanning core-only structural absence, selected Stage/Channel composition, a materially different secondary capability and same-profile first-product deletion;
 - complete source-unit/function/semantic-owner mapping, deterministic JavaScript code-unit ordering, exact LF-normalized source identity and finite source/function/call-depth bounds;
