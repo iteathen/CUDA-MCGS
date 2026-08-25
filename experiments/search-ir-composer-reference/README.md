@@ -35,13 +35,21 @@ The integrated `IR-GRAPH-01` slice adds only SPEC-0010-owned normalized graph/st
 - four synthetic structural instances spanning sharing, isolated nodes, reclamation and stateless search without selecting an allocator, scheduler, GPU topology or CUDA mechanism; and
 - section-level evidence classification for all 93 graph requirements, with behavioral, concurrent reclamation and native obligations left partial, pending or deferred.
 
-The current `IR-POLICY-01` slice adds only SPEC-0008-owned normalized search-policy selection:
+The integrated `IR-POLICY-01` slice adds only SPEC-0008-owned normalized search-policy selection:
 
 - exact domain-role handling plus policy-owned records, finite numeric/storage rules, selection, reservation and candidate-admission semantics;
 - evaluator-absent, proposal-only, evaluation-only and combined modes through opaque exact profile references, without absorbing evaluator execution/readiness ownership;
 - scalar, vector, proof-lattice and no-value structural instances with explicit perspective, algebra, cycle response, transactional exactly-once backup, stopping and reroot reuse;
 - materialized and stateless graph bindings, with exact removal of path/edge/backup/reservation/value/evaluator residue when inapplicable; and
 - section-level evidence classification for all 91 policy requirements, with behavioral, concurrent backup, composition and native obligations left partial, pending or deferred.
+
+The current `IR-EVALUATOR-01` slice adds only the optional SPEC-0009-owned evaluator selection:
+
+- proposal-only, evaluation-only and combined capabilities with complete exact input/output ownership, arbitrary-width shapes, numeric/validity/uncertainty metadata and result-affecting identity keys;
+- finite request fallback, batch-one progress, batch-sensitive identity, resumable workspace, one terminal publication per capability and optional collision-verified cache semantics;
+- pre-ignition resident artifact provenance, optional mutable state, explicit resources/statuses/ports/reuse/lifecycle and device-owned progress with no host progress loop;
+- five materially different vector-combined, stateless proposal-only, proof, artifact-free analytic and batch-sensitive resumable structural instances; and
+- section-level evidence classification for all 121 evaluator requirements, with evaluator absence represented by structural omission and behavioral, concurrent execution, composition and native obligations left partial, pending or deferred.
 
 Normative sentences remain solely in [`docs/specs/`](../../docs/specs/). The checked-in catalog records identities, owners, counts, paths and `sha256-utf8-lf-v1` digests; the explicit LF-normalized UTF-8 digest contract is checkout-platform independent. The capsule expands the IDs directly from the frozen sources and fails on source, metadata, count, prefix, uniqueness or coverage-route drift.
 
@@ -51,4 +59,4 @@ Run with Node.js 26 or newer:
 node experiments/search-ir-composer-reference/run.mjs
 ```
 
-Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic selection fixture now binds the exact schema digests and normalized identities of the first domain, graph and policy profiles; the other owner identities remain opaque structural placeholders. Synthetic schema/program digests prove representation closure only and are not executable domain/graph/policy implementations or behavioral/native evidence. Later focus leaves supply the remaining owned bodies, then deterministic restricted Device-JS/Search Program composition and cross-owner deletion/identity oracles. Native CUDA-JS qualification remains separate.
+Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic framework selection fixture binds the exact schema digests and normalized identities of the first domain, graph and policy profiles while leaving the optional evaluator structurally absent; selected policy fixtures bind exact normalized evaluator profiles through public identities and ports. The other owner identities remain opaque structural placeholders. Synthetic schema/program digests prove representation closure only and are not executable domain/graph/policy/evaluator implementations or behavioral/native evidence. Later focus leaves supply the remaining owned bodies, then deterministic restricted Device-JS/Search Program composition and cross-owner deletion/identity oracles. Native CUDA-JS qualification remains separate.

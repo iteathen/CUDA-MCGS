@@ -31,6 +31,12 @@ import {
   policySyntheticContentIdentity,
   policySyntheticSchemaReference,
 } from './src/policy-fixtures.mjs';
+import { normalizeEvaluatorProfile } from './src/evaluator.mjs';
+import {
+  buildEvaluatorProfiles,
+  evaluatorSyntheticContentIdentity,
+  evaluatorSyntheticSchemaReference,
+} from './src/evaluator-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -55,6 +61,7 @@ const frameworkSelectionSchema = await readJson(path.join(schemaRoot, 'framework
 const domainProfileSchema = await readJson(path.join(schemaRoot, 'domain-profile.schema.json'));
 const graphProfileSchema = await readJson(path.join(schemaRoot, 'graph-profile.schema.json'));
 const policyProfileSchema = await readJson(path.join(schemaRoot, 'policy-profile.schema.json'));
+const evaluatorProfileSchema = await readJson(path.join(schemaRoot, 'evaluator-profile.schema.json'));
 const frameworkSelectionInput = await readJson(path.join(experimentRoot, 'fixtures', 'minimal.framework-selection.json'));
 
 const cases = [];
@@ -79,7 +86,7 @@ await runCase('normalize-contract-set', () => {
 await runCase('normalize-requirement-coverage', () => {
   const normalized = normalizeRequirementCoverage(coverageInput);
   assert.equal(normalized.contracts.length, 12);
-  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 348, pending: 641 });
+  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 469, pending: 520 });
 });
 
 await runCase('canonical-order-independent', () => {
@@ -130,11 +137,12 @@ await runCase('coverage-owner-route-closure', () => {
 });
 
 await runCase('coverage-honest-classification-progress', () => {
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 348);
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 641);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 469);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 520);
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0000').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0007').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0008').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
+  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0009').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0010').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
 });
 
@@ -216,8 +224,8 @@ await runCase('reject-coverage-classification-count-drift', async () => {
 
 await runCase('reject-expanded-coverage-total-drift', async () => {
   const mutated = clone(coverageInput);
-  mutated.totals.classified = 349;
-  mutated.totals.pending = 640;
+  mutated.totals.classified = 470;
+  mutated.totals.pending = 519;
   await assert.rejects(() => inspectCatalog(repositoryRoot, contractSetInput, mutated), { code: 'COVERAGE_TOTALS' });
 });
 
@@ -1112,13 +1120,31 @@ await runCase('reject-graph-owner-contract-crossing', () => {
   assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_REGION_CONTRACT_KIND' });
 });
 
+let evaluatorFixtures;
+let evaluatorProfileInputs;
+let evaluatorProfiles;
+let evaluatorSchemaSha;
+await runCase('normalize-evaluator-profiles', async () => {
+  evaluatorSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'evaluator-profile.schema.json')));
+  evaluatorFixtures = buildEvaluatorProfiles(inspected, domainProfiles, graphProfiles, domainSchemaSha, graphSchemaSha);
+  evaluatorProfileInputs = evaluatorFixtures.map(({ input }) => input);
+  evaluatorProfiles = evaluatorFixtures.map(({ input, domain, graph }) => normalizeEvaluatorProfile(input, inspected, domain, graph));
+  assert.deepEqual(evaluatorProfiles.map(({ normalized }) => normalized.id), [
+    'evaluator.synthetic-vector-combined',
+    'evaluator.synthetic-proposal-only-stateless',
+    'evaluator.synthetic-proof-evaluation-only',
+    'evaluator.synthetic-analytic-evaluation-only',
+    'evaluator.synthetic-batch-sensitive-resumable',
+  ]);
+});
+
 let policyFixtures;
 let policyProfileInputs;
 let policyProfiles;
 let policySchemaSha;
 await runCase('normalize-policy-profiles', async () => {
   policySchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'policy-profile.schema.json')));
-  policyFixtures = buildPolicyProfiles(inspected, domainProfiles, graphProfiles, domainSchemaSha, graphSchemaSha);
+  policyFixtures = buildPolicyProfiles(inspected, domainProfiles, graphProfiles, domainSchemaSha, graphSchemaSha, evaluatorProfiles, evaluatorSchemaSha);
   policyProfileInputs = policyFixtures.map(({ input }) => input);
   policyProfiles = policyFixtures.map(({ input, domain, graph }) => normalizePolicyProfile(input, inspected, domain, graph));
   assert.deepEqual(policyProfiles.map(({ normalized }) => normalized.id), [
@@ -1560,9 +1586,542 @@ await runCase('reject-policy-product-owner', () => {
   assert.throws(() => normalizePolicyProfile(mutated, inspected, policyFixtures[0].domain, policyFixtures[0].graph), { code: 'POLICY_PRODUCT_OWNER' });
 });
 
+await runCase('evaluator-mode-matrix', () => {
+  assert.deepEqual(evaluatorProfiles.map(({ normalized }) => normalized.mode), ['combined', 'proposal-only', 'evaluation-only', 'evaluation-only', 'evaluation-only']);
+  assert.deepEqual(evaluatorProfiles.map(({ normalized }) => normalized.capabilities.length), [2, 1, 1, 1, 1]);
+  assert.equal(evaluatorProfiles[0].normalized.outputs.find(({ family }) => family === 'vector').coordinates.length, 3);
+  assert.equal(evaluatorProfiles[4].normalized.outputs[0].family, 'distribution');
+});
+
+await runCase('evaluator-absent-zero-residue', () => {
+  assert(!frameworkSelection.normalized.profiles.some(({ role }) => role === 'evaluator'));
+  const policy = policyProfiles[0].normalized;
+  assert.equal(policy.evaluatorMode, 'absent');
+  assert(!policy.selection.inputs.includes('evaluator-facts'));
+  assert(!policy.resources.some(({ id }) => id.includes('evaluator')));
+  assert(!policy.programContribution.inputs.some(({ id }) => id.startsWith('evaluator.')));
+});
+
+await runCase('evaluator-profile-second-instances-distinct', () => {
+  assert.equal(new Set(evaluatorProfiles.map(({ identity }) => identity.sha256)).size, evaluatorProfiles.length);
+  assert.deepEqual(evaluatorProfiles.map(({ normalized }) => normalized.cache.kind), ['selected', 'none', 'none', 'none', 'none']);
+  assert.deepEqual(evaluatorProfiles.map(({ normalized }) => normalized.artifacts.length), [1, 0, 1, 0, 1]);
+  assert.equal(evaluatorProfiles[4].normalized.mutableState.kind, 'selected');
+});
+
+await runCase('evaluator-policy-profile-linkage', () => {
+  const selected = [
+    { policy: policyProfiles[1].normalized, evaluator: evaluatorProfiles[0], source: 'admission' },
+    { policy: policyProfiles[2].normalized, evaluator: evaluatorProfiles[1], source: 'admission' },
+    { policy: policyProfiles[3].normalized, evaluator: evaluatorProfiles[2], source: 'value' },
+  ];
+  for (const entry of selected) {
+    const reference = entry.source === 'admission'
+      ? entry.policy.admission.sources.find(({ kind }) => kind === 'evaluator-proposal').producerProfile
+      : entry.policy.value.adapters.find(({ kind }) => kind === 'evaluator').sourceProfile;
+    assert.equal(reference.id, entry.evaluator.normalized.id);
+    assert.equal(reference.schema.sha256, evaluatorSchemaSha);
+    assert.equal(reference.identity.sha256, entry.evaluator.identity.sha256);
+  }
+});
+
+await runCase('evaluator-profile-order-independent', () => {
+  const reordered = clone(evaluatorProfileInputs[0]);
+  for (const key of ['capabilities', 'inputs', 'outputs', 'artifacts', 'workspaces', 'publications', 'ports', 'resources', 'statuses', 'reuse', 'productData']) reordered[key].reverse();
+  reordered.request.capabilities.reverse();
+  reordered.programContribution.inputs.reverse();
+  reordered.cache.keyFacts.reverse();
+  reordered.execution.workClasses.reverse();
+  for (const capability of reordered.capabilities) {
+    capability.purposes.reverse(); capability.requirementClasses.reverse(); capability.inputs.reverse(); capability.outputs.reverse();
+  }
+  for (const input of reordered.inputs) { input.dependencies.reverse(); input.keyFacts.reverse(); }
+  for (const publication of reordered.publications) { publication.consumers.reverse(); publication.states.reverse(); }
+  for (const portInput of reordered.ports) portInput.statuses.reverse();
+  assert.deepEqual(normalizeEvaluatorProfile(reordered, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph).identity, evaluatorProfiles[0].identity);
+});
+
+await runCase('evaluator-arbitrary-width-ranges', () => {
+  const mutated = clone(evaluatorProfileInputs[3]);
+  const boundary = '340282366920938463463374607431768211455';
+  mutated.inputs[0].shape.axes[0].maximum = boundary;
+  mutated.inputs[0].shape.maxElements = boundary;
+  mutated.resources.find(({ class: resourceClass }) => resourceClass === 'input').maximum = boundary;
+  const normalized = normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph).normalized;
+  assert.equal(normalized.inputs[0].shape.maxElements, boundary);
+  assert.equal(normalized.resources.find(({ class: resourceClass }) => resourceClass === 'input').maximum, boundary);
+});
+
+await runCase('evaluator-history-cache-full-key', () => {
+  const normalized = evaluatorProfiles[0].normalized;
+  assert(normalized.inputs.some(({ sourceKind, keyFacts }) => sourceKind === 'history' && keyFacts.includes('history') && keyFacts.includes('root')));
+  assert(normalized.cache.keyFacts.includes('history'));
+  assert(normalized.cache.keyFacts.includes('artifact-generation'));
+  assert.equal(normalized.cache.collisionVerification, 'full-key-after-hash');
+});
+
+await runCase('evaluator-batch-one-progress', () => {
+  assert(evaluatorProfiles.every(({ normalized }) => normalized.batching.minimumReadyItems === '1'));
+  assert(evaluatorProfiles.every(({ normalized }) => BigInt(normalized.batching.maxDelayWorkUnits) > 0n));
+  assert(evaluatorProfiles.every(({ normalized }) => normalized.execution.deviceOwned && normalized.execution.hostProgress === 'none'));
+});
+
+await runCase('evaluator-batch-semantics-matrix', () => {
+  assert.equal(evaluatorProfiles[0].normalized.batching.semantics, 'batch-independent');
+  assert.equal(evaluatorProfiles[0].normalized.batching.determinism, 'tolerance-equivalent');
+  assert.equal(evaluatorProfiles[4].normalized.batching.semantics, 'batch-sensitive');
+  assert.notEqual(evaluatorProfiles[4].normalized.batching.order.kind, 'none');
+  assert(evaluatorProfiles[4].normalized.inputs.every(({ keyFacts }) => keyFacts.includes('batch-context')));
+});
+
+await runCase('evaluator-resumable-workspace-closure', () => {
+  const normalized = evaluatorProfiles[4].normalized;
+  assert.equal(normalized.batching.continuation.kind, 'bounded');
+  assert(normalized.workspaces.some(({ scope }) => scope === 'per-continuation'));
+  assert(normalized.ports.some(({ id }) => id === 'resume-evaluation-batch'));
+  assert(normalized.resources.some(({ class: resourceClass }) => resourceClass === 'continuation'));
+  assert(normalized.resources.some(({ class: resourceClass }) => resourceClass === 'randomness'));
+  assert(normalized.cleanup.classes.includes('continuation'));
+  assert(normalized.cleanup.classes.includes('mutable-state'));
+});
+
+await runCase('evaluator-proposal-ownership-link', () => {
+  for (const index of [0, 1]) {
+    const normalized = evaluatorProfiles[index].normalized;
+    assert(normalized.capabilities.some(({ kind }) => kind === 'proposal'));
+    assert.equal(normalized.domainProfile.validateActionPort.sha256, evaluatorFixtures[index].domain.normalized.ports.find(({ id }) => id === 'validate-action').contract.sha256);
+    assert(!normalized.capabilities.some(({ id }) => id.includes('admission') || id.includes('edge')));
+  }
+});
+
+await runCase('evaluator-resident-artifact-boundary', () => {
+  for (const index of [0, 2, 4]) {
+    const normalized = evaluatorProfiles[index].normalized;
+    assert(normalized.artifacts.every(({ residentBeforeIgnition, compatibility, provenance }) => residentBeforeIgnition && compatibility.sha256 && provenance.revision === '125ac4de64d8db2c0027ff4e0e434f9c0a8dcb4d' && provenance.review.sha256));
+    assert(normalized.resources.some(({ class: resourceClass }) => resourceClass === 'artifact'));
+  }
+  assert.equal(evaluatorProfiles[3].normalized.artifacts.length, 0);
+  assert(!evaluatorProfiles[3].normalized.resources.some(({ class: resourceClass }) => resourceClass === 'artifact'));
+});
+
+await runCase('evaluator-capability-deletion', () => {
+  const selected = clone(evaluatorProfileInputs[0]);
+  const proposal = selected.capabilities.find(({ kind }) => kind === 'proposal');
+  const proposalOutputs = new Set(proposal.outputs);
+  selected.capabilities = selected.capabilities.filter(({ id }) => id !== proposal.id);
+  selected.outputs = selected.outputs.filter(({ id }) => !proposalOutputs.has(id));
+  selected.request.capabilities = selected.request.capabilities.filter(({ capability }) => capability !== proposal.id);
+  selected.publications = selected.publications.filter(({ capability }) => capability !== proposal.id);
+  selected.mode = 'evaluation-only';
+  const withoutProposal = normalizeEvaluatorProfile(selected, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph);
+  assert.notDeepEqual(withoutProposal.identity, evaluatorProfiles[0].identity);
+  assert(!withoutProposal.normalized.capabilities.some(({ kind }) => kind === 'proposal'));
+  assert(!withoutProposal.normalized.outputs.some(({ family }) => family === 'candidate-set'));
+});
+
+await runCase('evaluator-product-data-deletion', () => {
+  const selected = clone(evaluatorProfileInputs[3]);
+  selected.productData.push({
+    ownerContract: {
+      kind: 'namespaced', id: 'product.synthetic-evaluator-option', version: '0.1.0',
+      schema: 'cuda-mcgs.synthetic-evaluator-option-contract/0.1.0', sha256: evaluatorSyntheticContentIdentity('product-contract').sha256,
+    },
+    schema: evaluatorSyntheticSchemaReference('cuda-mcgs.synthetic-evaluator-option'),
+    identity: evaluatorSyntheticContentIdentity('product-evaluator-option'),
+  });
+  assert.notDeepEqual(normalizeEvaluatorProfile(selected, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph).identity, evaluatorProfiles[3].identity);
+  selected.productData = [];
+  assert.deepEqual(normalizeEvaluatorProfile(selected, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph).identity, evaluatorProfiles[3].identity);
+});
+
+await runCase('evaluator-identity-content-sensitive', () => {
+  const mutated = clone(evaluatorProfileInputs[3]);
+  mutated.execution.comparison.sha256 = '0'.repeat(64);
+  assert.notDeepEqual(normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph).identity, evaluatorProfiles[3].identity);
+});
+
+await runCase('evaluator-schema-closed', () => {
+  assert.equal(evaluatorProfileSchema.properties.schema.const, 'cuda-mcgs.evaluator-profile/0.2.0');
+  assert.equal(evaluatorProfileSchema.additionalProperties, false);
+  assert.equal(evaluatorProfileSchema.$defs.capability.additionalProperties, false);
+  assert.equal(evaluatorProfileSchema.$defs.input.additionalProperties, false);
+  assert.equal(evaluatorProfileSchema.$defs.programContribution.additionalProperties, false);
+  assert.equal(evaluatorProfileSchema.$defs.lifecycle.additionalProperties, false);
+  assert.equal(evaluatorProfileSchema.$defs.cleanup.additionalProperties, false);
+});
+
+await runCase('reject-evaluator-lifecycle-state-gap', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.lifecycle.states.splice(4, 1);
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_LIFECYCLE_STATES' });
+});
+
+await runCase('reject-evaluator-cleanup-coverage', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.cleanup.classes = mutated.cleanup.classes.filter((item) => item !== 'input-lease');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_CLEANUP_COVERAGE' });
+});
+
+await runCase('reject-evaluator-unknown-field', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.framework = 'tensorflow';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_ROOT_FIELDS' });
+});
+
+await runCase('reject-evaluator-contract-drift', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.contract.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_CONTRACT_DRIFT' });
+});
+
+await runCase('reject-evaluator-policy-contract-drift', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.policyContract.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_CONTRACT_DRIFT' });
+});
+
+await runCase('reject-evaluator-domain-identity-drift', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.domainProfile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_DOMAIN_DRIFT' });
+});
+
+await runCase('reject-evaluator-domain-state-schema-drift', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.domainProfile.stateSchema = { ...mutated.domainProfile.stateSchema, sha256: '0'.repeat(64) };
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_DOMAIN_SCHEMA_DRIFT' });
+});
+
+await runCase('reject-evaluator-domain-action-port-drift', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.domainProfile.validateActionPort = { ...mutated.domainProfile.validateActionPort, sha256: '0'.repeat(64) };
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_DOMAIN_PORT_DRIFT' });
+});
+
+await runCase('reject-evaluator-graph-identity-drift', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.graphProfile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_GRAPH_DRIFT' });
+});
+
+await runCase('reject-evaluator-graph-port-drift', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.graphProfile.validateReferencePort = { ...mutated.graphProfile.validateReferencePort, sha256: '0'.repeat(64) };
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_GRAPH_PORT_DRIFT' });
+});
+
+await runCase('reject-evaluator-mode-contradiction', () => {
+  const mutated = clone(evaluatorProfileInputs[1]); mutated.mode = 'combined';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[1].domain, evaluatorFixtures[1].graph), { code: 'EVALUATOR_MODE' });
+});
+
+await runCase('reject-evaluator-duplicate-capability', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.capabilities.push(clone(mutated.capabilities[0]));
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_CAPABILITY_DUPLICATE' });
+});
+
+await runCase('reject-evaluator-capability-unknown-input', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.capabilities[0].inputs[0] = 'evaluator.unknown-input';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_CAPABILITY_INPUT' });
+});
+
+await runCase('reject-evaluator-capability-output-overlap', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.capabilities[1].outputs[0] = mutated.capabilities[0].outputs[0];
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_CAPABILITY_OVERLAP' });
+});
+
+await runCase('reject-evaluator-unused-output', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.capabilities[0].outputs = [];
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_CAPABILITY_OUTPUT' });
+});
+
+await runCase('reject-evaluator-domain-input-source', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.inputs.find(({ sourceKind }) => sourceKind === 'state').source = evaluatorSyntheticSchemaReference('cuda-mcgs.invalid-state-source');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_INPUT_DOMAIN' });
+});
+
+await runCase('reject-evaluator-input-incomplete-key', () => {
+  const mutated = clone(evaluatorProfileInputs[3]); mutated.inputs[0].keyFacts = mutated.inputs[0].keyFacts.filter((fact) => fact !== 'precision-execution');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph), { code: 'EVALUATOR_INPUT_KEY' });
+});
+
+await runCase('reject-evaluator-input-randomness-key', () => {
+  const mutated = clone(evaluatorProfileInputs[3]); mutated.inputs[0].maxRandomInputs = '1';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph), { code: 'EVALUATOR_INPUT_RANDOMNESS' });
+});
+
+await runCase('reject-evaluator-history-input-key', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); const history = mutated.inputs.find(({ sourceKind }) => sourceKind === 'history'); history.keyFacts = history.keyFacts.filter((fact) => fact !== 'history');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_INPUT_KEY' });
+});
+
+await runCase('reject-evaluator-stateless-borrow', () => {
+  const mutated = clone(evaluatorProfileInputs[1]); mutated.inputs[0].lifetime = 'protected-borrow'; mutated.inputs[0].memoryExpectation = 'device-resident-view';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[1].domain, evaluatorFixtures[1].graph), { code: 'EVALUATOR_INPUT_GRAPH' });
+});
+
+await runCase('reject-evaluator-shape-axis-range', () => {
+  const mutated = clone(evaluatorProfileInputs[3]); mutated.inputs[0].shape.axes[0].minimum = '4097';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph), { code: 'EVALUATOR_SHAPE_RANGE' });
+});
+
+await runCase('reject-evaluator-shape-product', () => {
+  const mutated = clone(evaluatorProfileInputs[3]); mutated.inputs[0].shape.maxElements = '1';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph), { code: 'EVALUATOR_SHAPE_RANGE' });
+});
+
+await runCase('reject-evaluator-numeric-width', () => {
+  const mutated = clone(evaluatorProfileInputs[3]); mutated.outputs[0].numeric.accumulationBits = '16';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph), { code: 'EVALUATOR_NUMERIC_WIDTH' });
+});
+
+await runCase('reject-evaluator-scalar-coordinate-count', () => {
+  const mutated = clone(evaluatorProfileInputs[3]); const extra = clone(mutated.outputs[0].coordinates[0]); extra.id = 'evaluator.synthetic-analytic-evaluation-only.coordinate-extra'; mutated.outputs[0].coordinates.push(extra);
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph), { code: 'EVALUATOR_OUTPUT_COORDINATES' });
+});
+
+await runCase('reject-evaluator-vector-coordinate-count', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); const output = mutated.outputs.find(({ family }) => family === 'vector'); output.coordinates = [output.coordinates[0]];
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_OUTPUT_COORDINATES' });
+});
+
+await runCase('reject-evaluator-artifact-post-ignition-residence', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.artifacts[0].residentBeforeIgnition = false;
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_ARTIFACT_RESIDENCE' });
+});
+
+await runCase('reject-evaluator-artifact-provenance', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.artifacts[0].provenance.revision = 'working-tree';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PROVENANCE_REVISION' });
+});
+
+await runCase('reject-evaluator-mutable-artifact-without-state', () => {
+  const mutated = clone(evaluatorProfileInputs[4]); mutated.mutableState = { kind: 'none' };
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[4].domain, evaluatorFixtures[4].graph), { code: 'EVALUATOR_STATE_RESIDUE' });
+});
+
+await runCase('reject-evaluator-request-unknown-capability', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.request.capabilities[0].capability = 'evaluator.unknown-capability';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_REQUEST_CAPABILITY' });
+});
+
+await runCase('reject-evaluator-request-capability-coverage', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.request.capabilities.pop();
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_REQUEST_CAPABILITY_COVERAGE' });
+});
+
+await runCase('reject-evaluator-required-capability-fallback', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.request.capabilities[0].fallback = 'detach';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_REQUEST_FALLBACK' });
+});
+
+await runCase('reject-evaluator-batch-one-progress', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.batching.minimumReadyItems = '2';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_BATCH_PROGRESS' });
+});
+
+await runCase('reject-evaluator-batch-sensitive-order-identity', () => {
+  const mutated = clone(evaluatorProfileInputs[4]); mutated.batching.order = { kind: 'none' };
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[4].domain, evaluatorFixtures[4].graph), { code: 'EVALUATOR_BATCH_IDENTITY' });
+});
+
+await runCase('reject-evaluator-batch-random-bound', () => {
+  const mutated = clone(evaluatorProfileInputs[4]); mutated.batching.bounds.maxRandomInputs = '1';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[4].domain, evaluatorFixtures[4].graph), { code: 'EVALUATOR_BATCH_RANDOMNESS' });
+});
+
+await runCase('reject-evaluator-continuation-without-workspace', () => {
+  const mutated = clone(evaluatorProfileInputs[4]); mutated.workspaces = mutated.workspaces.filter(({ scope }) => scope !== 'per-continuation');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[4].domain, evaluatorFixtures[4].graph), { code: 'EVALUATOR_CONTINUATION_WORKSPACE' });
+});
+
+await runCase('reject-evaluator-continuation-workspace-residue', () => {
+  const mutated = clone(evaluatorProfileInputs[3]); mutated.workspaces.push(clone(evaluatorProfileInputs[4].workspaces.find(({ scope }) => scope === 'per-continuation')));
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph), { code: 'EVALUATOR_CONTINUATION_RESIDUE' });
+});
+
+await runCase('reject-evaluator-publication-unknown-capability', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.publications[0].capability = 'evaluator.unknown-capability';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PUBLICATION_CAPABILITY' });
+});
+
+await runCase('reject-evaluator-publication-terminal-state', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.publications[0].states = mutated.publications[0].states.filter((state) => state !== 'ready');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PUBLICATION_STATE' });
+});
+
+await runCase('reject-evaluator-publication-authority', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.publications[0].producer = 'policy';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PUBLICATION_AUTHORITY' });
+});
+
+await runCase('reject-evaluator-publication-coverage', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.publications.pop();
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PUBLICATION_COVERAGE' });
+});
+
+await runCase('reject-evaluator-publication-completeness', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.capabilities[0].independentPublication = false;
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PUBLICATION_COMPLETENESS' });
+});
+
+await runCase('reject-evaluator-cache-incomplete-key', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.cache.keyFacts = mutated.cache.keyFacts.filter((fact) => fact !== 'history');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_CACHE_KEY' });
+});
+
+await runCase('reject-evaluator-cache-hash-only', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.cache.collisionVerification = 'hash-only';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_CACHE_KIND' });
+});
+
+await runCase('reject-evaluator-cache-status', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.cache.pressureStatus = 'evaluator.unknown-pressure';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_CACHE_STATUS' });
+});
+
+await runCase('reject-evaluator-host-progress-loop', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.execution.hostProgress = 'host-batch-loop';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_DEVICE_CLOSURE' });
+});
+
+await runCase('reject-evaluator-required-status', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.statuses = mutated.statuses.filter(({ code }) => code !== 'evaluator-generation-exhausted');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_STATUS_REQUIRED' });
+});
+
+await runCase('reject-evaluator-status-class', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.statuses.find(({ code }) => code === 'evaluator-cancelled').class = 'normal';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_STATUS_CLASS' });
+});
+
+await runCase('reject-evaluator-required-port', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.ports = mutated.ports.filter(({ id }) => id !== 'initialize-evaluator');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PORT_REQUIRED' });
+});
+
+await runCase('reject-evaluator-port-status', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.ports[0].statuses[0] = 'evaluator.unknown-status';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PORT_STATUS' });
+});
+
+await runCase('reject-evaluator-cache-port-residue', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.ports = mutated.ports.filter(({ id }) => id !== 'lookup-evaluator-cache');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_CACHE_RESIDUE' });
+});
+
+await runCase('reject-evaluator-resume-port-residue', () => {
+  const mutated = clone(evaluatorProfileInputs[4]); mutated.ports = mutated.ports.filter(({ id }) => id !== 'resume-evaluation-batch');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[4].domain, evaluatorFixtures[4].graph), { code: 'EVALUATOR_CONTINUATION_RESIDUE' });
+});
+
+await runCase('reject-evaluator-resource-range', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.resources[0].minimum = '262145';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_RESOURCE_RANGE' });
+});
+
+await runCase('reject-evaluator-required-resource-class', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.resources = mutated.resources.filter(({ class: resourceClass }) => resourceClass !== 'queue');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_RESOURCE_REQUIRED' });
+});
+
+await runCase('reject-evaluator-artifact-resource-residue', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.resources = mutated.resources.filter(({ class: resourceClass }) => resourceClass !== 'artifact');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_ARTIFACT_RESIDUE' });
+});
+
+await runCase('reject-evaluator-state-resource-residue', () => {
+  const mutated = clone(evaluatorProfileInputs[4]); mutated.resources = mutated.resources.filter(({ class: resourceClass }) => resourceClass !== 'state');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[4].domain, evaluatorFixtures[4].graph), { code: 'EVALUATOR_STATE_RESIDUE' });
+});
+
+await runCase('reject-evaluator-workspace-resource-residue', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.resources = mutated.resources.filter(({ class: resourceClass }) => resourceClass !== 'workspace');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_WORKSPACE_RESIDUE' });
+});
+
+await runCase('reject-evaluator-cache-resource-residue', () => {
+  const mutated = clone(evaluatorProfileInputs[3]); mutated.resources.push(clone(evaluatorProfileInputs[0].resources.find(({ class: resourceClass }) => resourceClass === 'cache')));
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph), { code: 'EVALUATOR_CACHE_RESIDUE' });
+});
+
+await runCase('reject-evaluator-randomness-resource-residue', () => {
+  const mutated = clone(evaluatorProfileInputs[4]); mutated.resources = mutated.resources.filter(({ class: resourceClass }) => resourceClass !== 'randomness');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[4].domain, evaluatorFixtures[4].graph), { code: 'EVALUATOR_RANDOMNESS_RESIDUE' });
+});
+
+await runCase('reject-evaluator-reuse-coverage', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.reuse.pop();
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_REUSE_COVERAGE' });
+});
+
+await runCase('reject-evaluator-incomplete-persistence', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.compatibility.persistence = { kind: 'versioned' };
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PERSISTENCE_FIELDS' });
+});
+
+await runCase('reject-evaluator-native-program-language', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.programContribution.language = 'cuda-cpp';
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PROGRAM_LANGUAGE' });
+});
+
+await runCase('reject-evaluator-program-input-drift', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.programContribution.inputs[0].identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PROGRAM_INPUTS' });
+});
+
+await runCase('reject-evaluator-diagnostic-payload-authority', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.diagnostics.rawAddresses = true;
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_DIAGNOSTIC_AUTHORITY' });
+});
+
+await runCase('reject-evaluator-product-owner', () => {
+  const mutated = clone(evaluatorProfileInputs[0]);
+  mutated.productData.push({
+    ownerContract: { kind: 'catalog', id: 'product.invalid-evaluator-owner', version: '0.1.0', schema: 'cuda-mcgs.invalid-evaluator-owner/0.1.0', sha256: '0'.repeat(64) },
+    schema: evaluatorSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-evaluator-product'), identity: evaluatorSyntheticContentIdentity('invalid-evaluator-product'),
+  });
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PRODUCT_OWNER' });
+});
+
+await runCase('reject-evaluator-batch-independent-residue', () => {
+  const mutated = clone(evaluatorProfileInputs[3]); mutated.inputs[0].keyFacts.push('batch-context');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph), { code: 'EVALUATOR_BATCH_RESIDUE' });
+});
+
+await runCase('reject-evaluator-artifact-key-residue', () => {
+  const mutated = clone(evaluatorProfileInputs[3]); mutated.inputs[0].keyFacts.push('artifact-generation');
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[3].domain, evaluatorFixtures[3].graph), { code: 'EVALUATOR_ARTIFACT_RESIDUE' });
+});
+
+await runCase('reject-evaluator-duplicate-input', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.inputs.push(clone(mutated.inputs[0]));
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_INPUT_DUPLICATE' });
+});
+
+await runCase('reject-evaluator-duplicate-artifact', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.artifacts.push(clone(mutated.artifacts[0]));
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_ARTIFACT_DUPLICATE' });
+});
+
+await runCase('reject-evaluator-duplicate-publication', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.publications.push(clone(mutated.publications[0]));
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PUBLICATION_DUPLICATE' });
+});
+
+await runCase('reject-evaluator-duplicate-status', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.statuses.push(clone(mutated.statuses[0]));
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_STATUS_DUPLICATE' });
+});
+
+await runCase('reject-evaluator-duplicate-port', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.ports.push(clone(mutated.ports[0]));
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_PORT_DUPLICATE' });
+});
+
+await runCase('reject-evaluator-duplicate-resource', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.resources.push(clone(mutated.resources[0]));
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_RESOURCE_DUPLICATE' });
+});
+
+await runCase('reject-evaluator-duplicate-reuse', () => {
+  const mutated = clone(evaluatorProfileInputs[0]); mutated.reuse.push(clone(mutated.reuse[0]));
+  assert.throws(() => normalizeEvaluatorProfile(mutated, inspected, evaluatorFixtures[0].domain, evaluatorFixtures[0].graph), { code: 'EVALUATOR_REUSE_DUPLICATE' });
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 200,
+  expected: 290,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -1570,7 +2129,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 200 - cases.length,
+  notDiscovered: 290 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -1584,6 +2143,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/domain-profile.schema.json',
   'schemas/search-ir/0.2.0/graph-profile.schema.json',
   'schemas/search-ir/0.2.0/policy-profile.schema.json',
+  'schemas/search-ir/0.2.0/evaluator-profile.schema.json',
   'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
   'experiments/search-ir-composer-reference/src/catalog.mjs',
   'experiments/search-ir-composer-reference/src/validation.mjs',
@@ -1594,6 +2154,8 @@ const sourcePaths = [
   'experiments/search-ir-composer-reference/src/graph-fixtures.mjs',
   'experiments/search-ir-composer-reference/src/policy.mjs',
   'experiments/search-ir-composer-reference/src/policy-fixtures.mjs',
+  'experiments/search-ir-composer-reference/src/evaluator.mjs',
+  'experiments/search-ir-composer-reference/src/evaluator-fixtures.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -1612,6 +2174,7 @@ const evidence = {
   domainProfileIdentities: domainProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   graphProfileIdentities: graphProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   policyProfileIdentities: policyProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
+  evaluatorProfileIdentities: evaluatorProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
     classified: inspected?.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length ?? 0,
@@ -1621,12 +2184,14 @@ const evidence = {
   summary,
   cases,
   claimLimits: [
-    'Proposal contract catalog plus shared representation primitives and framework, domain, graph and policy profile normalization only.',
-    'The framework, domain, graph and policy requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
+    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy and evaluator profile normalization only.',
+    'The framework, domain, graph, policy and evaluator requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
     'Domain evidence covers strict normalized profile selection and three synthetic structural instances, not behavioral oracle, publication/concurrency, native or compatible-pair qualification.',
     'Graph evidence covers four strict structural instances, bounded ownership/layout/lifecycle/publication checks and zero-residue optional modes, not behavioral oracle, concurrent reclamation, native or compatible-pair qualification.',
     'Policy evidence covers four strict structural instances, role/record/admission/value/cycle/backup/stop/reuse checks and zero-residue optional modes, not behavioral oracle, concurrent backup, native or compatible-pair qualification.',
-    'No evaluator/resource/progress/output/session/extension/package profile body, derived plan, cross-owner Composer, generated Search Program or production lowering claim.',
+    'Evaluator evidence covers five strict structural instances, proposal/evaluation/combined modes, typed inputs/outputs, request/batch/publication/cache/resident-artifact/progress/reuse/lifecycle checks and zero-residue optional modes, not behavioral oracle, concurrent evaluator execution, native or compatible-pair qualification.',
+    'Evaluator absence is represented by structural omission from framework selection; this capsule does not create or validate a synthetic disabled evaluator profile.',
+    'No resource/progress/output/session/extension/package profile body, derived plan, complete cross-owner Composer, generated Search Program or production lowering claim.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');
