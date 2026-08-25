@@ -74,7 +74,7 @@ The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`]
 
 Current focus is **ENGINE-IR-COMPOSER-01**. Its [critical assessment and focus map](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and sequences owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. `IR-CATALOG-01` through `IR-CHANNEL-01` are integrated through PR #103 at `main@1baadc5`; the strict Channel profile and logical ordering/reference traces pass within the 781/781 CUDA-free Composer capsule with 911 classified / 78 pending requirements. `IR-PROGRAM-PACKAGE-01` is now the dependency-ready leaf under SPEC-0005 ownership. Production lowering remains blocked until every schema/reference leaf and the later integrated semantic-acceptance gate complete.
 
-Project-owner direction plus CUDA-JS ADR-0006 now make native Linux x86-64 the reference platform for the first exact compatible pair and finite universal engine. Ubuntu 24.04 LTS is the first exact CUDA-JS qualification cell. Existing Windows CUDA-JS evidence remains valid as a secondary profile; it no longer determines CUDA-MCGS forward sequencing. This is a downstream native-plan change only and does not alter or shortcut the active backend-neutral Search IR/semantic gates.
+Project-owner direction plus CUDA-JS ADR-0006 require OS-neutral CUDA-MCGS contracts and engine architecture while making native Linux x86-64 the reference implementation and primary qualification platform for the first exact compatible pair. Ubuntu 24.04 LTS is the first exact CUDA-JS qualification cell. Existing Windows CUDA-JS evidence remains valid as a peer profile; it no longer determines CUDA-MCGS forward sequencing. This is a downstream realization/qualification choice only and does not alter or shortcut the active backend-neutral Search IR/semantic gates.
 
 The assessment found one consumer-neutral CUDA-JS gap: device-scope release/acquire publication for a multi-word internal channel payload. [CUDA-JS #123](https://github.com/iteathen/CUDA-JS/issues/123) has now integrated that bounded generic helper in `cuda-js@0.1.0-alpha.7`. Backend-neutral proposal/schema/reference work remains independent; later native internal-channel qualification must consume the public capability and prove the exact pair rather than adding a CUDA-MCGS workaround.
 
@@ -85,7 +85,7 @@ After core semantics:
 - build consolidated materially different CUDA-free reference/conformance domains;
 - accept the integrated semantic contract/schema packet after that reference evidence agrees on one exact revision;
 - formalize Connect Four downstream product semantics and run the Device-JS external deletion test after neutral native Device-JS evidence;
-- build one finite native Linux universal engine through an exact public CUDA-JS pair;
+- build one finite OS-neutral native universal engine through an exact public CUDA-JS pair and qualify its first realization on Linux;
 - treat live Search Session native sideband/concurrency as an optional profile, not a finite-engine release blocker;
 - continue representative Linux scheduler/resource/performance evidence and secondary platform qualification, then package/release stabilization.
 

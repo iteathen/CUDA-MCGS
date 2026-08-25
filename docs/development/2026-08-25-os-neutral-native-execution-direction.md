@@ -1,4 +1,4 @@
-# Linux-first native execution direction
+# OS-neutral native execution with a Linux reference profile
 
 **Status:** Informational
 
@@ -10,13 +10,13 @@
 
 ## Decision
 
-CUDA-MCGS adopts native Linux x86-64 as the reference platform for its first finite native universal engine and exact CUDA-JS compatible pair. Ubuntu 24.04 LTS is the first exact qualification cell selected by CUDA-JS; CUDA-MCGS remains distribution-neutral at its semantic, Search IR, Search Program and execution-package boundaries.
+CUDA-MCGS keeps its public contracts, semantic core, Search IR, Search Program, execution package and engine design OS-neutral. Native Linux x86-64 is the reference implementation and primary qualification platform for the first finite native universal engine and exact CUDA-JS compatible pair. Ubuntu 24.04 LTS is the first exact qualification cell selected by CUDA-JS, not an operating-system or distribution assumption in CUDA-MCGS.
 
-Windows is not removed. Existing CUDA-JS Windows evidence remains valid and a CUDA-MCGS Windows profile may be qualified later, but Windows no longer determines the forward native-engine sequence. WSL is a separate profile and cannot substitute for native Linux evidence.
+Windows is not removed or architecturally subordinate. Existing CUDA-JS Windows evidence remains valid and a CUDA-MCGS Windows peer profile may be qualified later, but Windows no longer determines the forward native-engine sequence. WSL is a separate profile and cannot substitute for native Linux evidence.
 
 ## Why this does not change the universal core
 
-Platform identity belongs to the CUDA-JS adapter/realization and exact compatible-pair evidence. CUDA-MCGS core contracts continue to own product-neutral graph/search/policy/evaluator/output/resource/session meaning without OS, loader, Driver-model or distro assumptions. The same normalized Search IR and Search Program/package inputs must remain portable; platform/toolchain/device facts enter only the lowering/package/evidence identity that can change native realization.
+Platform identity belongs to the private CUDA-JS adapter/realization and exact compatible-pair evidence. CUDA-MCGS core contracts continue to own product-neutral graph/search/policy/evaluator/output/resource/session meaning without OS, loader, Driver-model or distro assumptions. The same normalized Search IR and Search Program/package inputs must remain portable; platform/toolchain/device facts enter only the lowering/package/evidence identity that can change native realization.
 
 The current Windows-first wording was a sequencing artifact from available hardware, not a semantic dependency. Replacing it does not reopen completed CUDA-free reference evidence or accepted CUDA-JS Windows qualification.
 
@@ -26,7 +26,7 @@ The current Windows-first wording was a sequencing artifact from available hardw
 2. Complete CUDA-JS issue #4's canonical Linux DriverActor, compiler-provider and installed-package chain on exact Ubuntu 24.04 hardware.
 3. Freeze one CUDA-MCGS Search Program/package/adapter artifact and one selected CUDA-JS revision/package.
 4. Run the first exact single-device Linux compatible-pair evidence under CUDA-JS issue #32.
-5. Build and qualify `ENGINE-LINUX-01`, the first finite terminal native universal engine, through public CUDA-JS contracts only.
+5. Build `ENGINE-NATIVE-01`, the first OS-neutral finite terminal native universal engine, through public CUDA-JS contracts only; qualify its first exact realization on the Linux reference cell.
 6. Run representative Linux resource/performance work after correctness and lifecycle pass.
 7. Qualify the independent-replica multi-GPU profile only on a controlled native Linux host with at least two independently visible physical GPUs.
 

@@ -136,9 +136,9 @@ After `ENGINE-CONTRACT-ACCEPTANCE-01` and selected CUDA-JS Device-JS native evid
 
 A missing generic GPU primitive is routed to CUDA-JS when it has a natural consumer-neutral contract; no local CUDA escape hatch is permitted. If that separation is unnatural, reconsider the CUDA-MCGS design.
 
-## ENGINE-LINUX-01 — first finite native universal engine
+## ENGINE-NATIVE-01 — first finite OS-neutral native universal engine
 
-A finite terminal native Linux x86-64 engine may proceed only after `ENGINE-CONTRACT-ACCEPTANCE-01`, the relevant semantic/IR/Search Program/adapter contracts are accepted, and the selected CUDA-JS capabilities have exact Ubuntu 24.04 reference-profile evidence. The universal inputs remain distribution-neutral; Ubuntu is the first exact qualification cell rather than a core assumption.
+A finite terminal native engine may proceed only after `ENGINE-CONTRACT-ACCEPTANCE-01`, the relevant semantic/IR/Search Program/adapter contracts are accepted, and the selected CUDA-JS capabilities have exact Ubuntu 24.04 reference-profile evidence. Engine contracts and universal inputs remain OS- and distribution-neutral; Linux/Ubuntu identify the first native realization and exact qualification cell rather than the engine architecture.
 
 Required:
 
@@ -170,7 +170,7 @@ After correctness/lifecycle are established:
 - characterize representative resource/performance/search-quality behavior without elevating one domain metric to universal semantics;
 - characterize the exact Linux CUDA-JS/CUDA-MCGS pair on qualified hardware before any representative performance claim;
 - keep Linux support and performance claims exact and independent from portable/reference or retained Windows evidence;
-- add secondary Windows performance/qualification only as a separate profile, never as the reference-platform substitute.
+- add Windows performance/qualification as a separate peer profile, never as a substitute for the first Linux reference cell or as a reason to shape shared engine contracts.
 
 ## RELEASE-01
 
