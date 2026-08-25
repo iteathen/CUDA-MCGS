@@ -38,7 +38,7 @@ CUDA-MCGS provides a universal way to extend a specialized engine without turnin
 - namespaced/versioned selected capability contracts and specialization-only context/state/resources;
 - bounded nonblocking internal **Async Stage Channels**;
 - deterministic pre-ignition composition;
-- zero-or-one optional composed **Stage PTX** input per stage in the version-zero realization.
+- zero-or-one optional semantic **stage capability program unit** per stage in restricted Device-JS/Search Program source.
 
 The **substrate is universal; an individual capability's semantics are not automatically universal**. Product-specific capability fields exist only in Search Images selecting them. If a capability changes domain/policy/evaluator/output/session meaning, that effect must also be owned by the selected corresponding contract/profile.
 
@@ -115,7 +115,7 @@ Current universal proposals:
 - [`SPEC-0000`](docs/specs/SPEC-0000-framework-requirements.md) — complete three-layer framework map.
 - [`SPEC-0003`](docs/specs/SPEC-0003-search-stage-and-extension-surface.md) — universal Search Stage/surface/base-context/capability semantics.
 - [`SPEC-0004`](docs/specs/SPEC-0004-async-stage-channels.md) — universal internal nonblocking channel/readiness semantics.
-- [`SPEC-0005`](docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) — Stage PTX/Search Image composition and product/capability deletion.
+- [`SPEC-0005`](docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) — restricted Device-JS/Search Image composition, opaque CUDA-JS-generated outputs and product/capability deletion.
 - [`SPEC-0006`](docs/specs/SPEC-0006-search-session-control-and-observation.md) — generic Search Session/root-update/reroot/reclamation/read-only observation semantics.
 
 Downstream product proposal:

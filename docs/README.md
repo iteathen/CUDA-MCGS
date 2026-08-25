@@ -58,7 +58,7 @@ Search Stage
 stable entry/exit surface
   contract + Context Schema + capability set
         ↓
-zero or one optional composed Stage PTX
+zero or one optional semantic stage capability program unit
         ↓
 Search Composer
         ↓
@@ -67,7 +67,7 @@ finite specialized Search Image
 
 Semantic category and owned invariant define a stage; usefulness validates its granularity. Binding, compatibility resolution, composition, and memory planning occur before ignition. Cross-stage/cross-surface dataflow uses bounded Async Stage Channels; blocking is prohibited. Active search remains device-closed, and stages with no capabilities retain no extension residue.
 
-The expanded prior-art record identifies cuVS/cuFFT as composition methodology, nvJitLink/NVRTC as CUDA-JS-owned platform substrate, Atos/Groute/Gunrock as irregular scheduling comparisons, CUDA Graphs as a restricted scheduler candidate, cuCollections as a transposition-table benchmark/source-donor candidate, and CCCL/libcu++/CUB as low-level CUDA primitives. Relocatable Stage PTX—not LTO—is selected for version zero; none of the higher-level libraries is promoted into a mandatory active-search dependency.
+The expanded prior-art record identifies cuVS/cuFFT as composition methodology, nvJitLink/NVRTC as CUDA-JS-owned platform substrate, Atos/Groute/Gunrock as irregular scheduling comparisons, CUDA Graphs as a restricted scheduler candidate, cuCollections as a transposition-table benchmark/source-donor candidate, and CCCL/libcu++/CUB as low-level CUDA primitives. Restricted Device-JS/Search Program input is selected at the CUDA-MCGS boundary; CUDA-JS may choose PTX, LTO or another qualified realization without making that mechanism universal search meaning. None of the higher-level libraries is promoted into a mandatory active-search dependency.
 
 ## Repository split references
 

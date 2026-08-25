@@ -331,16 +331,17 @@ The disposable `SESSION-001` experiment tracked in CUDA-MCGS issue #42 is bounde
 
 Its synthetic policy reuses node/edge statistics across reroot and therefore does not establish a universal reuse rule.
 
-Before production acceptance, a native `SESSION-002`-class experiment SHOULD exercise actual concurrent GPU workers with root-epoch publication, old-work drain/abandonment, read-only observation snapshots, generation-safe reclamation and full-arena root-update pressure while preserving device-owned progress.
+Before a native live-session profile is qualified, a `SESSION-002`-class experiment SHOULD exercise actual concurrent GPU workers with root-epoch publication, old-work drain/abandonment, read-only observation snapshots, generation-safe reclamation and full-arena root-update pressure while preserving device-owned progress.
 
 ## 17. Acceptance blockers
 
 This proposal cannot become accepted until:
 
 - domain, policy, evaluator, graph and resource contracts define their reroot reuse classifications;
-- the complete Search IR representation for session/control/observation is normalized;
+- the session/control/observation schema, identity and normalization obligations are decision-complete and implemented by the bounded Search IR/reference evidence accepted atomically with this contract;
 - root-update pressure/admission policy is specified for the first production profile;
-- scheduler progress and old-epoch disposition are proven under actual concurrent execution;
-- native CUDA publication/reclamation evidence exists for the selected Windows profile;
-- the CUDA-MCGS-to-CUDA-JS package identifies an accepted generic long-lived sideband capability;
+- scheduler progress and old-epoch disposition are proven in the CUDA-free semantic reference model;
+- the CUDA-MCGS-to-CUDA-JS package requirements identify the generic long-lived sideband capability profile without importing its mechanism into session semantics;
 - product-specific observations such as chess ranked moves remain downstream and do not leak into universal acceptance criteria.
+
+A selected native live-session profile additionally requires actual concurrent scheduler progress, CUDA publication/reclamation evidence, an exact qualified CUDA-JS sideband pair, pressure/cancellation/teardown evidence and separately scoped platform support. Those production-profile gates do not block semantic acceptance of an optional Search Session contract and do not make the live-session profile a prerequisite for the finite terminal engine.

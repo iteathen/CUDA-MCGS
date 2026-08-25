@@ -1,11 +1,12 @@
 {
-  "schema_version": 20,
+  "schema_version": 21,
   "updated": "2026-08-24",
   "status": "ready_for_contract_review",
-  "objective": "Accept the unfinished product-neutral CUDA-MCGS semantic contract packet in dependency-correct order, then accept the schema-backed least-authority extension substrate, extend Search IR/Composer, and proceed to pure Node.js/restricted Device-JS reference/native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
+  "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then proceed to pure Node.js/restricted Device-JS native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "bfb31ea3d595a5f1851efffa96dc8986a01e490d",
+    "cuda_mcgs_authority_input_baseline": "9a7d694614b48c548ee522dde491375a939e00ac",
+    "cuda_js_authority_baseline": "2135216b1a9fd88066a1c82b61ae533645eac9c2",
     "cuda_js_implementation_baseline": "b6062f691a27093df0e5d55e482e69ebbd39a9eb",
     "cuda_js_package": "cuda-js@0.1.0-alpha.6"
   },
@@ -23,14 +24,15 @@
   "current_focus": {
     "id": "ENGINE-CONTRACT-01",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
-    "next_action": "Review and revise SPEC-0000 plus the unfinished product-neutral domain/policy/evaluator/output/graph/resource/session owners as one semantic packet. Make their meaning independent of optional Search Stage mechanics. Review SPEC-0006 against those owners. Do not begin production lowering until the owning contracts are accepted.",
-    "exit": "The universal core semantic owners are accepted or explicitly split into dependency-ready acceptance nodes, with no first-product/extension/CUDA implementation leakage."
+    "next_action": "Review and revise SPEC-0000 plus the unfinished product-neutral domain/policy/evaluator/output/graph/resource/session owners into decision-complete proposals. Make their meaning independent of optional Search Stage mechanics and make every schema/reference/native-profile obligation explicit. Do not claim acceptance or begin production lowering until the later integrated semantic-acceptance node completes.",
+    "exit": "The universal core semantic owners are decision-complete proposals or explicitly split into dependency-ready proposal nodes, with no first-product/extension/CUDA implementation leakage and with exact inputs to bounded Search IR/reference evidence."
   },
   "deliverables": [
-    "accepted product-neutral domain, policy, evaluator, generic output, graph/storage, finite-resource, scheduler/device-progress and Search Session contracts",
-    "accepted schema-backed Search Stage/Extension Surface/Async Channel composition contracts with zero unused-capability residue",
+    "decision-complete product-neutral domain, policy, evaluator, generic output, graph/storage, finite-resource, scheduler/device-progress and Search Session proposals",
+    "decision-complete schema-backed Search Stage/Extension Surface/Async Channel/restricted Device-JS composition proposals with zero unused-capability residue",
     "normalized Search IR and deterministic Search Composer separating universal base from namespaced capability/product specialization inputs",
     "consolidated CUDA-free universal reference/conformance across materially different domains/evaluator/output shapes",
+    "integrated acceptance of the semantic contracts, normalized schemas and reference oracles on one exact revision before production lowering",
     "formal downstream Connect Four product specification and Device-JS external deletion proof",
     "first finite Windows universal CUDA-MCGS engine in pure Node.js/restricted Device-JS through one exact public CUDA-JS compatible pair",
     "optional live-session native profile only after accepted session semantics plus generic CUDA-JS sideband capability",
@@ -40,18 +42,19 @@
   "forward_lanes": {
     "universal_core": ["ENGINE-CONTRACT-01", "ENGINE-REFERENCE-01"],
     "universal_extension_substrate": ["ENGINE-EXTENSION-01"],
-    "universal_integration": ["ENGINE-IR-COMPOSER-01", "ENGINE-WINDOWS-01", "ENGINE-PERF-LINUX-01", "RELEASE-01"],
+    "universal_integration": ["ENGINE-IR-COMPOSER-01", "ENGINE-CONTRACT-ACCEPTANCE-01", "ENGINE-WINDOWS-01", "ENGINE-PERF-LINUX-01", "RELEASE-01"],
     "optional_live_session": ["ENGINE-SESSION-NATIVE-01"],
     "downstream_products": ["PRODUCT-CONNECT4-01", "CHESS-0001 remains independently proposal-only"]
   },
   "current_cuda_js_dependency_state": {
     "public_capabilities": ["SPEC-0010 RDC", "SPEC-0011 scalar ABI", "SPEC-0012 Device LTO", "SPEC-0013 Device-JS", "SPEC-0014 publication mailboxes", "SPEC-0016 operation lifecycle", "SPEC-0018 bounded multi-operation scheduling", "SPEC-0019 asynchronous transfers", "SPEC-0022 scoped atomic observation"],
+    "resolved_dependencies": ["CUDA-JS issue #35 typed relocatable-device-code PTX compilation is closed; CUDA-MCGS still consumes only restricted Device-JS/public package contracts and opaque generated outputs"],
     "exact_pair_gate": ["CUDA-JS issue #32 remains open until one frozen CUDA-MCGS artifact and selected CUDA-JS revision/package complete compatible-pair qualification"],
     "not_default_blockers": ["RDC", "Device LTO", "multi-operation scheduling", "CUDA Graph/cooperative execution", "publication mailboxes unless the selected engine/session profile requires them"],
     "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
   "blockers": [
-    "SPEC-0000 and SPEC-0003 through SPEC-0006 remain proposals and require review/revision/acceptance before their owned production lowering",
+    "SPEC-0000 and SPEC-0003 through SPEC-0006 remain proposals and require decision-complete revision, bounded schema/reference evidence and integrated semantic acceptance before their owned production lowering",
     "explicit universal domain/policy/evaluator/output/resource/scheduler owners are incomplete",
     "complete Search IR/Composer representation for selected contract/capability/product inputs is incomplete",
     "CUDA-MCGS external deletion and exact compatible-pair evidence remain unfinished",
@@ -68,6 +71,8 @@
   ],
   "do_not": [
     "begin production implementation before owning specifications and dependencies are accepted",
+    "treat production native evidence as a circular prerequisite for accepting the backend-neutral contract that defines what the evidence must prove",
+    "treat semantic contract acceptance as native production-profile qualification",
     "make Search Stage mechanics a prerequisite for independently meaningful core domain/policy/evaluator/output/resource contracts",
     "materialize extension hooks/ports/context/channel/storage when no selected capability requires them",
     "make chess, Connect Four, games, boards, ranked moves, best-action/top-k, scalar value or one evaluator/search formula universal",

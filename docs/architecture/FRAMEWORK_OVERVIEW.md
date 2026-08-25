@@ -62,7 +62,7 @@ A concrete Search Image may select:
 - a minimal **universal base checkpoint context** for each surface;
 - namespaced/versioned selected **capabilities** that may contribute specialization-only context/state/resources;
 - bounded internal **Async Stage Channels**;
-- version-zero composed **Stage PTX** realization.
+- version-zero composed restricted Device-JS **stage capability program units**.
 
 The key boundary is:
 
@@ -150,7 +150,7 @@ normalized Search IR + namespaced selected specialization inputs
         ↓
 finite layouts/resources/stage-channel-session plan
         ↓
-generated core + selected Stage PTX/product behavior
+generated restricted Device-JS core + selected capability/product behavior
         ↓
 Search Image / execution package
 ```
@@ -169,15 +169,15 @@ The Composer must:
 
 CUDA-JS receives consumer-neutral artifacts/resources/launch/sideband requirements. It does not interpret Search IR, stages, capabilities, roots, chess or output meaning.
 
-## 5. Stage PTX realization and zero residue
+## 5. Restricted Device-JS realization and zero residue
 
-Version zero uses relocatable Stage PTX rather than depending on LTO.
+Version zero expresses CUDA-MCGS-owned device behavior in restricted Device-JS/Search Program source. CUDA-JS may use PTX, LTO, fusion or another qualified realization behind its public contracts.
 
-A stage with no selected capability contributes no solely extension-owned PTX, call, capability context/state/resource or synchronization residue. A stage with selected capabilities contributes exactly one composed Stage PTX input for the complete stage capability set.
+A stage with no selected capability contributes no solely extension-owned source, call, capability context/state/resource, synchronization, package input or generated-artifact residue. A stage with selected capabilities contributes exactly one semantic stage capability program unit for the complete selected set.
 
-Artifact granularity does not imply semantic ownership: one Stage PTX may contain reusable framework capability code and product-specific capability code because both bind to the same stable checkpoint.
+Artifact granularity does not imply semantic ownership: one semantic program unit may contain reusable framework capability behavior and product-specific capability behavior because both bind to the same stable checkpoint. CUDA-JS may realize that unit across one or more opaque generated artifacts.
 
-The final binary must charge code size, registers, local/shared memory, occupancy and latency to the realized engine. Representative Stage PTX is compared against an equivalent fused/generated control. Tiny fine-grained PTX hooks are not assumed cheap merely because linking succeeds.
+The final binary must charge code size, registers, local/shared memory, occupancy and latency to the realized engine. Representative selected capability behavior is compared against an equivalent fused/generated control using CUDA-JS-owned artifact/resource evidence. Tiny fine-grained hooks are not assumed cheap merely because compilation succeeds.
 
 A strong product-deletion check compares otherwise equivalent images with and without the product capability and proves product-only ABI/context/code/resource residue disappears.
 
@@ -252,7 +252,7 @@ CUDA-MCGS universal owners include:
 - universal Search IR/Search Composer;
 - domain/policy/evaluator/graph/resource/session/output semantics;
 - Search Stage/surface/capability/channel extension mechanics;
-- Stage PTX lowering/checkpoint ABI;
+- restricted Device-JS stage composition/checkpoint contract;
 - search-specific memory/resource/scheduler policy;
 - universal conformance and compatible-pair acceptance.
 

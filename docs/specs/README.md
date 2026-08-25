@@ -13,7 +13,7 @@ Accepted status governs only within declared scope. Proposal specifications supp
 [`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md) separates three semantic layers:
 
 1. **Universal MCGS semantic core** — domain/policy/evaluator/graph/resource/session/publication/search-lifecycle contracts and Search IR/Composer meaning that remain coherent across unrelated MCGS products.
-2. **Universal extension/composition substrate** — Search Stages, least-authority Stage Extension Surfaces, namespaced capability schemas, Async Stage Channels and Stage PTX/Search Image specialization.
+2. **Universal extension/composition substrate** — Search Stages, least-authority Stage Extension Surfaces, namespaced capability schemas, Async Stage Channels and restricted Device-JS/Search Image specialization.
 3. **Domain/search products** — downstream products such as chess that select universal contracts/capabilities and own product-specific state/action/history/evaluator/output semantics.
 
 The extension substrate is universal; a selected capability's payload is not automatically universal core meaning. Product-specific schemas must disappear with the product/capability rather than widening every Search Image.
@@ -53,7 +53,7 @@ Planned/partial families include:
 - universal base checkpoint contexts plus selected namespaced capability-context contributions;
 - capability schemas/permissions/semantic-owner binding;
 - bounded nonblocking Async Stage Channels;
-- Stage PTX/checkpoint ABI/Search Image composition;
+- restricted Device-JS/Search Program/checkpoint contract/Search Image composition;
 - zero-residue absent-capability specialization;
 - capability provenance/security/resource composition and representative cost evidence.
 
@@ -64,7 +64,7 @@ Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider 
 - [`SPEC-0000-framework-requirements.md`](SPEC-0000-framework-requirements.md) — framework map and cross-cutting three-layer conformance requirements.
 - [`SPEC-0003-search-stage-and-extension-surface.md`](SPEC-0003-search-stage-and-extension-surface.md) — universal Search Stage/surface/base-context/capability composition semantics and product-capability isolation.
 - [`SPEC-0004-async-stage-channels.md`](SPEC-0004-async-stage-channels.md) — bounded **internal** cross-stage/cross-surface dataflow, pending/ready progress, publication, pressure, cancellation and reclamation.
-- [`SPEC-0005-stage-ptx-and-search-image-composition.md`](SPEC-0005-stage-ptx-and-search-image-composition.md) — older zero-or-one Stage PTX artifact proposal; selected-only/zero-residue invariants remain relevant, but its CUDA-MCGS-authored PTX assumptions require revision to restricted Device-JS inputs and opaque CUDA-JS-generated outputs under ADR-0019 before acceptance.
+- [`SPEC-0005-stage-ptx-and-search-image-composition.md`](SPEC-0005-stage-ptx-and-search-image-composition.md) — revised restricted Device-JS/Search Program input and opaque CUDA-JS-generated artifact-output proposal, retaining selected-only/zero-residue invariants without CUDA-MCGS-owned PTX.
 - [`SPEC-0006-search-session-control-and-observation.md`](SPEC-0006-search-session-control-and-observation.md) — generic long-lived Search Session/root-update admission/root epochs/stale work/reuse/reclamation and read-only bounded observation semantics, without requiring ranked actions.
 
 These proposals do not authorize production lowering. The complete Search IR must represent selected universal semantics plus namespaced capability/product inputs without promoting first-product fields into universal core meaning.
@@ -84,6 +84,8 @@ Future Go/planning/optimization/text-search or other products should be able to 
 Use [`../../agent_files/templates/specification.template.md`](../../agent_files/templates/specification.template.md) with governing contract, compatibility, testing and documentation methods.
 
 An accepted CUDA-MCGS specification must define applicability, normative references, invariants, ranges, ownership, lifecycle, failure/exhaustion, compatibility, security, generated/cache identity, testing, cleanup, downstream invalidation and peer-runtime effects.
+
+Specification acceptance and production-profile qualification are distinct gates. Backend-neutral semantic acceptance requires decision-complete obligations plus decisive schema/reference evidence at the risk-appropriate boundary. Native publication/race behavior, final generated artifacts, performance, exact CUDA-JS compatible pairs and runtime teardown qualify a concrete production profile later unless that evidence is genuinely required to determine the contract's meaning. An acceptance clause must not require production implementation that is itself prohibited until the specification is accepted.
 
 For universal extension specifications, acceptance additionally requires first-consumer deletion and materially different second-capability/product tests. For product specifications, acceptance requires explicit proof that product deletion leaves universal architecture/conformance complete.
 

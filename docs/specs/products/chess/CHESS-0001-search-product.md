@@ -163,7 +163,7 @@ Its identity includes, when material:
 - selected chess extension capabilities and schemas;
 - model/tablebase/product artifact provenance;
 - resource profile and scheduler profile;
-- generated Stage PTX/context/layout identities;
+- generated restricted Device-JS stage capability/context/layout and public CUDA-JS output identities;
 - CUDA/toolchain/target and compatible CUDA-JS profile.
 
 CUDA-JS receives only consumer-neutral device artifact/resource/launch/sideband requirements. It MUST NOT interpret chess positions, moves, rankings, Search IR or extension semantics.

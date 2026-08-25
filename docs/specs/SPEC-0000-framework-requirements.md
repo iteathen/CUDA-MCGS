@@ -34,8 +34,8 @@ A concrete Search Image may additionally select a finite universal extension sub
 - namespaced/versioned capability contracts and schemas;
 - bounded Async Stage Channels for cross-stage/cross-surface dataflow;
 - deterministic pre-ignition capability composition;
-- generated checkpoint contexts/ABIs and finite capability resources;
-- zero-or-one optional composed Stage PTX input per stage in the version-zero artifact profile.
+- generated checkpoint contexts/contracts/layouts and finite capability resources;
+- zero-or-one optional semantic stage capability program unit per stage, expressed in restricted Device-JS/Search Program source, in the version-zero composition profile.
 
 The **substrate is universal; one capability's payload/behavior is not automatically universal core meaning**. A capability may influence search only through declared least-authority effects, and any semantic effect on domain/policy/evaluator/output/resource/session meaning must also be owned by the selected corresponding contract/profile.
 
@@ -59,7 +59,7 @@ The Search Composer lowers selected universal contracts, extension inputs and pr
 - selected product/capability schema identities without converting them into universal core fields;
 - a finite graph/search/model/session/capability/channel/output memory plan;
 - generated search layouts and checkpoint-specific glue;
-- specialized device code with at most one optional composed Stage PTX input per stage requiring capabilities;
+- specialized restricted Device-JS/Search Program source with at most one semantic stage capability program unit per stage requiring capabilities;
 - a versioned CUDA-MCGS-to-CUDA-JS execution package;
 - CUDA-MCGS host/product adapter metadata and bounded result/observation contracts;
 - deterministic specialization/cache/provenance identity.
@@ -92,7 +92,7 @@ Product/capability schemas are namespaced specialization inputs. Their presence 
 Every concrete engine specification MUST define, where applicable:
 
 - type widths, ranges, precision, alignment and observable endianness;
-- one source of truth for generated layouts/ABI;
+- one source of truth for CUDA-MCGS semantic layouts and public package types, while CUDA-JS owns native ABI realization;
 - state identity and collision verification;
 - transposition and cycle/history semantics;
 - parent-edge versus state-node ownership;
@@ -132,7 +132,7 @@ Each checkpoint contract defines:
 - finite state/scratch/workspace/queue contributions;
 - failure, cancellation, pressure and compatibility behavior.
 
-Several selected capabilities at one stage share that stage's surface, context, finite resource plan and composition unit. They do not multiply runtime extension objects or independently callable PTX fragments.
+Several selected capabilities at one stage share that stage's surface, context, finite resource plan and composition unit. They do not multiply runtime extension objects or independently callable native fragments.
 
 A product-specific capability uses this universal mechanism but keeps product semantics in a namespaced contract. For example, a future chess tablebase or move-ordering capability may consume a universal checkpoint only if the checkpoint is already semantically valid for non-chess consumers and the capability's chess meaning remains outside universal core state.
 
@@ -216,15 +216,15 @@ Production realizations MUST NOT use a universal runtime callback table, arbitra
 
 The version-zero target is:
 
-> **A stage with no selected optional capability retains no extension-abstraction residue. All capabilities selected for one stage share one composed Stage PTX input and no generic runtime dispatch.**
+> **A stage with no selected optional capability retains no extension-abstraction residue. All capabilities selected for one stage share one semantic stage capability program unit and no generic runtime dispatch.**
 
 For an empty capability set, the realized image omits solely extension-owned enable branches, lookup/dispatch, context packing, persistent state, workspace/channels/diagnostics and synchronization.
 
-For a non-empty capability set, version zero generates exactly one relocatable Stage PTX input containing the complete optional stage behavior. If both entry and exit checkpoints are selected, their symbols belong to that one Stage PTX input.
+For a non-empty capability set, version zero composes exactly one semantic stage capability program unit containing the complete optional stage behavior in restricted Device-JS/Search Program source. If both entry and exit checkpoints are selected, their behavior belongs to that one semantic unit. CUDA-JS owns whether realization uses PTX, LTO, fusion or another qualified native mechanism.
 
 Capability semantics may be universal reusable, product-specific, or project-specific. Artifact granularity does not promote semantic ownership.
 
-Evidence includes emitted/final artifact inspection where possible, empty-capability comparison, composed Stage PTX versus equivalent fused/generated control, and representative resource/performance measurements.
+Evidence includes semantic source/package comparison, CUDA-JS-owned emitted/final artifact inspection through public evidence where applicable, empty-capability comparison, selected capability behavior versus an equivalent fused/generated control, and representative resource/performance measurements.
 
 [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) contains the detailed proposal.
 
@@ -255,7 +255,7 @@ Detailed specifications are expected for:
 - operational Search Stage graph and useful boundary selection;
 - Stage Extension Surface/context/capability permissions;
 - Async Stage Channels/readiness/progress/reclamation;
-- Stage PTX composition/checkpoint ABI/Search Image identity;
+- restricted Device-JS stage capability composition/checkpoint contract/Search Image identity;
 - capability provenance/security/resource composition;
 - exact unused-capability disappearance and representative cost evidence.
 
@@ -277,9 +277,9 @@ Generic Driver entry-point schemas, CPU call ABI/JIT bindings, generic allocatio
 The version-zero interop specification MUST define:
 
 - required CUDA-JS public contract/capability/evidence profile;
-- relocatable PTX/source/binary forms and complete compilation/link/cache inputs;
-- PTX ISA/virtual target/address size/imports/exports/signatures/digests/provenance/options/final target;
-- finite stage graph, contexts, capability sets, Async Stage Channels and ordered Stage PTX inputs material to the device image;
+- restricted Device-JS/Search Program inputs, public CUDA-JS realization requirements and complete cross-boundary identity inputs;
+- public restricted Device-JS language/helper profile, typed imports/exports, input digests/provenance and requested target constraints;
+- finite stage graph, contexts, capability sets, Async Stage Channels and ordered semantic stage capability program units material to the Search Program;
 - opaque finite resource requirements without CUDA-JS private handles in persistent schemas;
 - function/argument/launch descriptions and allowed execution dependencies;
 - initial configuration/model/state upload;
@@ -388,7 +388,7 @@ A cross-repository compatibility capsule validates exact revision/artifact pairs
 Unresolved implementation choices use bounded experiments rather than silent architectural promotion:
 
 - **EXT-PTX-001 (completed bounded discovery)** — direct relocatable PTX composition, exact unused disappearance and negative/granularity evidence; useful mechanism evidence only.
-- **STAGE-PTX-001** — representative multi-capability Stage PTX versus equivalent fused control with final artifact/resource/performance evidence.
+- **STAGE-COMPOSE-001** — representative multi-capability restricted Device-JS composition versus equivalent fused control with CUDA-JS-owned final artifact/resource/performance evidence.
 - **STAGE-CONTRACT-001** — reject wrong stage/checkpoint/context/permission/resource/ordering and prove useful boundaries across materially different domains/products.
 - **CHANNEL-001** — required/optional internal async dataflow, release/acquire, pending/ready, saturation, cancellation, stale generations, deadlock outcome and cleanup.
 - **SCHED-001** — compare credible device-owned scheduler realizations under equivalent semantic/resource workloads.
@@ -398,6 +398,8 @@ Unresolved implementation choices use bounded experiments rather than silent arc
 - **PRODUCT-CHESS-001** — after universal contracts are stable enough, validate chess domain identity/history/transposition/reroot/output requirements against the universal framework without modifying universal meaning.
 
 Every experiment records exact environment/artifact/workload identity, semantic equivalence, resource accounting, promotion/rejection criteria and cleanup.
+
+Backend-neutral semantic acceptance and native production-profile qualification are separate gates. Bounded schema/normalizer/reference experiments may provide evidence needed to accept a contract before production lowering. Native publication/race behavior, final CUDA-JS-generated artifacts, performance, exact compatible pairs and teardown qualify a selected production profile later unless the evidence is genuinely required to determine semantic meaning. No acceptance clause may require production implementation that the same specification gate prohibits from beginning.
 
 ## 18. Open decisions
 
@@ -412,7 +414,7 @@ Before production implementation, accepted specs/evidence are still required for
 - first production root-update capacity/admission strategy;
 - reuse classification across graph/policy/evaluator/history/output/extension state;
 - CUDA-MCGS-to-CUDA-JS package and generic long-lived sideband compatibility contract;
-- Stage PTX ABI/generator/representative cost envelope;
+- restricted Device-JS stage composition/public package/representative cost envelope;
 - scheduler selection/profile rules;
 - node/edge identity/generation encoding and TT reuse decision;
 - variable-size arena model;

@@ -16,7 +16,7 @@ This proposal defines the **universal extension/composition substrate** through 
 - [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) owns publication channels, finite-resource behavior, stop and partial-result foundations.
 - [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) owns the accepted foundational Search IR representation and deterministic reference semantics.
 - [`SPEC-0004`](SPEC-0004-async-stage-channels.md) proposes internal cross-stage/cross-surface dataflow.
-- [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) proposes the version-zero Stage PTX realization.
+- [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) proposes version-zero restricted Device-JS/Search Program composition and opaque CUDA-JS-generated realization outputs.
 - [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) proposes external Search Session control/observation semantics and keeps them distinct from internal extension callbacks.
 
 Where this proposal conflicts with accepted authority, accepted authority governs and this proposal must be revised.
@@ -178,7 +178,7 @@ Every selected capability MUST declare:
 - failure/skip/fallback/cancellation behavior;
 - deletion behavior when absent.
 
-All capabilities required at the same stage share one stage-owned surface and one optional composition unit. They do not become independently discovered runtime extensions or one PTX input/call per feature.
+All capabilities required at the same stage share one stage-owned surface and one optional semantic composition unit. They do not become independently discovered runtime extensions or one native artifact/call per feature.
 
 Before ignition, the Search Composer MUST:
 
@@ -215,7 +215,7 @@ Product-specific output meaning is not implied by a generic output/publication o
 The semantic stage graph MUST NOT prescribe:
 
 - one CUDA kernel per stage;
-- one PTX module per stage;
+- one generated native artifact/module per stage;
 - global phase ordering;
 - a grid-wide barrier at transitions;
 - persistent-kernel execution;
@@ -270,10 +270,12 @@ Reference tests own semantic outcomes. Native CUDA tests additionally own public
 
 This proposal cannot become accepted until:
 
-- its stage/surface/capability representation is normalized in the complete Search IR;
+- its stage/surface/capability schema, canonical identity and normalization obligations are decision-complete and implemented by the bounded Search IR/reference evidence accepted atomically with this contract;
 - domain, policy, evaluator, graph/resource/session/output contracts define facts stages consume/publish;
 - SPEC-0004 readiness/deadlock/resource behavior is accepted;
 - capability-specific context contribution has a deterministic schema/identity/deletion model;
 - representative stage graphs prove universality beyond the original fixed-domain prototype and beyond chess;
-- producer/consumer/failure/pressure/security tests exist;
+- CUDA-free producer/consumer/failure/pressure/security reference tests exist;
 - first-consumer deletion proves the extension substrate remains coherent without the first product.
+
+Native publication scope/race evidence, CUDA-JS-generated artifact inspection, representative resource/performance evidence and exact compatible-pair teardown qualify concrete production profiles after semantic acceptance. They are not circular prerequisites for accepting this backend-neutral contract.

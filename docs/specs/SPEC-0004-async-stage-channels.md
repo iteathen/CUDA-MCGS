@@ -193,10 +193,11 @@ Reference tests assert ownership/state/progress/publication/conservation/termina
 
 This proposal cannot become accepted until:
 
-- at least one evaluator-like required-result flow and one optional secondary-work flow are represented in complete Search IR;
+- at least one evaluator-like required-result flow and one optional secondary-work flow are represented by the bounded Search IR/reference evidence accepted atomically with this contract;
 - at least one namespaced product/capability channel proves payload separation from universal channel meaning;
-- scheduler/resource specs realize pending/ready/progress without host progression;
+- scheduler/resource contracts define pending/ready/progress without host progression and the CUDA-free reference model falsifies blocking/orphaned progress;
 - SPEC-0006 root-epoch interaction is reconciled for root-relative internal work;
-- native CUDA publication/race evidence exists on the selected Windows profile;
 - cancellation/saturation/expiry/teardown cases have owned oracles;
-- Linux native evidence is completed or explicitly excluded from the accepted profile.
+- first-consumer deletion and a materially different second channel use preserve universal channel meaning.
+
+Native CUDA publication/race evidence, scheduler/resource behavior on the selected device, exact compatible-pair cancellation/teardown and any claimed Linux profile are production-profile qualification gates. They remain mandatory for the profiles that claim them, but are not prerequisites for accepting the backend-neutral channel semantics.
