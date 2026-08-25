@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 
 const VERSION = '0.1.0';
 const REVISION = '97bd9871938e7303389e9929a76d16c79c5745e9';
+const STAGE_REVISION = 'f48f20cbacea6404362b5186dd1fdd116f241a98';
 const NO_PROGRESS_OUTCOMES = [
   'terminal-quiescent', 'legitimate-external-wait', 'recoverable-resource-wait', 'producer-pending', 'deadlock',
   'livelock', 'starvation', 'orphaned-work', 'stale-only', 'counter-exhausted',
@@ -186,7 +187,7 @@ function addDependency(profile, dependencies, workByOwner, transitionsByOwner, c
   }
 }
 
-function buildProfile(profile, inspected, resourceResult) {
+function buildProfile(profile, inspected, resourceResult, options = {}) {
   const resourcePlan = resourceResult.normalized;
   const transitionsByOwner = new Map(resourcePlan.contributors.map(({ id, contract }) => [id, transitions(profile, id, contract.id === 'SPEC-0006')]));
   const contributors = resourcePlan.contributors.map((entry) => ({
@@ -281,7 +282,7 @@ function buildProfile(profile, inspected, resourceResult) {
     programContribution: {
       kind: 'device-program', language: 'restricted-device-js', sourceIdentity: contentIdentity(`${profile}:restricted-device-js-progress-source`),
       inputs: [...contributors.map(({ profile: reference }) => reference), profileReference(resourceResult)],
-      provenance: { origin: 'first-party', revision: REVISION, license: 'Apache-2.0', review: schemaReference(`cuda-mcgs.synthetic-${profile}-program-security-review`) },
+      provenance: { origin: 'first-party', revision: options.revision ?? REVISION, license: 'Apache-2.0', review: schemaReference(`cuda-mcgs.synthetic-${profile}-program-security-review`) },
     },
     productData: [],
   };
@@ -293,6 +294,10 @@ export function buildProgressProfiles(inspected, resourceResults) {
     buildProfile('synthetic-evaluator-workspace', inspected, resourceResults[1]),
     buildProfile('synthetic-live-session', inspected, resourceResults[2]),
   ];
+}
+
+export function buildStageProgressProfile(inspected, resourceResult) {
+  return buildProfile('synthetic-stage-capabilities', inspected, resourceResult, { revision: STAGE_REVISION });
 }
 
 export function progressSyntheticSchemaReference(id) {

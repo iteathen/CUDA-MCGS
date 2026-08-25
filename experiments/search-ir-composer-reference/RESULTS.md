@@ -254,3 +254,35 @@ The two normalized selected structural Session identities are:
 The second profile removes the optional external attention-control input, semantic control body, permission, statuses, `prepareControlChange` port and control-change lifecycle interaction while selecting a restart-required root-pressure outcome. Terminal-only resource/progress/output fixtures retain exact structural Session absence. The Session schema has checkout-neutral source digest `ae4fdb8be2e4fb393f0494ce886b41e388ff8c5bacba1fbab990fe64dbf0e5dc`. The framework envelope intentionally remains terminal-only and retains identity `2d5fd4eb17ac1f82a655175109d90e5f41f707d90c11d2667b44c41612e4ba3a` over 10,422 canonical bytes. Coverage identity is `a460f1adc809d65a269a6865197395d872927b333bb8f4b2ad6d847a6f2a01a3`; expanded requirement routing identity is `1806c74ab9f6c5932fab0f496a29807d043621b9b0e145020b77a9f531a31ed5`. Exactly 741 framework/domain/graph/policy/evaluator/resource/progress/output/session requirements now have final evidence lanes; all remain partial, pending or deferred. The other 248 extension/program-package requirements remain pending their semantic-owner leaves.
 
 This slice is structural/normalizer evidence only. It does not prove concurrent command/root races, behavioral reuse and stale-work invariants, actual GPU publication/reclamation ordering, CUDA-JS sideband realization, a compatible native pair or SESSION-002 native evidence. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added. No new CUDA-JS capability gap was found at this backend-neutral schema/reference layer.
+
+## IR-STAGE-01
+
+**Started:** 2026-08-25T05:55:03.2485595-07:00
+
+**Focused evidence assembled:** 2026-08-25T06:32:35.7030000-07:00
+
+**Full repository validation completed:** 2026-08-25T06:33:07.1653190-07:00
+
+The expanded capsule passes 701/701 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource/progress/output/session cases and adds strict normalized optional Search Stage/Extension Surface/capability evidence across:
+
+- complete extension-substrate absence when no capability is selected, two materially different selected profiles and one same-profile first-product deletion projection;
+- finite reachable per-work-item stage graphs with explicit entry stage, stable entry/exit checkpoints, terminal paths, finite generation/transition/invocation counters and no physical scheduler, global barrier, kernel-per-stage or persistent-execution selection;
+- exact resource/progress contributions, stage-owned state/context capacity, aligned bounded context/contribution layouts, typed pressure/pending/cancellation/failure outcomes and released workers/mutable leases while pending;
+- exact selected contributor/profile references, known domain/graph/policy public-port cross-checks, least-authority checkpoint permissions, source-owned immutable context, explicit effects and deterministic order for noncommuting capabilities;
+- selected-only surfaces, permissions, namespaced contributions, diagnostics, source identity and cleanup, including byte-identical remaining stage/base-context meaning after first-product deletion;
+- first-party-reviewed generator/capability/program provenance and restricted Device-JS program identity requiring only versioned consumer-neutral CUDA-JS contracts, with runtime discovery, native artifacts, direct FFI/Driver access and host progress excluded; and
+- closed canonical schema/normalization plus negative cases for graph, owner, permission, context, alignment, resource, ordering, counter, lifecycle, cleanup and public-contract drift.
+
+The selected stage-specific composed-plan identities are:
+
+- `resource.synthetic-stage-capabilities`: `df576010b4579329fc5bddacbd47d559f0395d0b10c40c3ed0e4ec9d98dfb7f2` over 193,597 canonical bytes; and
+- `progress.synthetic-stage-capabilities`: `86fede1a414dfcb459e4d08977b2a0a7e01a81e6aba8d2cf2782934f31f292a2` over 59,271 canonical bytes.
+
+The normalized selected structural Stage identities are:
+
+- `extension.synthetic-capability-pair`: `fa5c87af16eecf6cb9f94ffcdf68e5aa75b9df34aef53ba5f9c647c4a4582052` over 42,608 canonical bytes; and
+- `extension.synthetic-proof-stage`: `5482148a5f6a1681f76c80c3bca30508c2649399a45807e6cfda963d2e2131b9` over 27,332 canonical bytes.
+
+Deleting the first product capability yields `extension.synthetic-capability-pair` identity `f27c385b9167d58fe44cc65621fe334ceab18409934e5ff1f04a35fb928f7aa0` over 33,829 canonical bytes while preserving the remaining stage graph and shared exit base context byte-for-byte. The Stage schema has checkout-neutral source digest `b55ed8310db6170da37e233f791b606c57df51446f6bea8fc9f515620f2713c5`. The framework envelope intentionally retains complete stage-substrate absence and identity `2d5fd4eb17ac1f82a655175109d90e5f41f707d90c11d2667b44c41612e4ba3a` over 10,422 canonical bytes. Coverage identity is `9f0e87aed5067293bd1fe0ea34a32eaa1f2592c2ae771459362c5103ba199e8e`; expanded requirement routing identity is `4e349ba3c7fae54edee9486bfc064c30974e58a644e3ebfb4f5a1125d12e7e03`. Exactly 821 framework/domain/graph/policy/evaluator/resource/progress/output/session/stage requirements now have final evidence lanes; all remain partial, pending or deferred. The other 168 Async Stage Channel and program/package requirements remain pending their semantic-owner leaves.
+
+This slice is structural/normalizer evidence only. It does not prove several-schedule behavior, all failure/cancellation timing points, concurrent publication, SPEC-0004 channel semantics, generated Search Program/package composition, native execution or compatible-pair qualification. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added. The known generic device-scope release/acquire helper gap remains owned by CUDA-JS issue #123 and blocks later native internal-channel qualification, not this backend-neutral Stage evidence; no new CUDA-JS capability gap was found here.
