@@ -174,3 +174,29 @@ The three normalized structural resource-plan identities are:
 The resource schema has checkout-neutral source digest `54aaaaae27a945596d14f494e477473091e3e1ed0d019b51ea0661a8948d875b`. The framework envelope now binds the first resource plan together with the first domain, graph and policy profiles while retaining structural evaluator absence; its identity is `b22a3c2089a8a8adf60059a3c2f78d0c0aa6aa64ddc3b9d01ab103e483dbfa85` over 10,422 canonical bytes. Coverage identity is `da449206b27136c751d616369570008e06296a9d31884889cd07867cfd1ab511`; expanded requirement routing identity is `634d9c7c6cc7defcfb12724ac63db43c3a206997e008294cfaf1bfee38d5f1a3`. Exactly 543 framework/domain/graph/policy/evaluator/resource requirements now have final evidence lanes; all remain partial, pending or deferred. The other 446 requirements remain pending their semantic-owner leaves.
 
 This slice is structural/normalizer evidence only. It does not qualify concurrent resource accounting, semantic owner behavior under pressure, physical CUDA-JS allocation, device memory ordering, progress scheduling, CUDA-JS lowering or a compatible native pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
+
+## IR-PROGRESS-01
+
+**Started:** 2026-08-25T04:05:12-07:00
+
+**Evidence completed:** 2026-08-25T04:28:07-07:00
+
+The expanded capsule passes 469/469 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource cases and adds strict normalized device-progress evidence across:
+
+- exact selected resource-plan owner/contribution coverage, public-transition ownership and structural evaluator/session deletion;
+- finite work admission/production/step/continuation/retry/wait/cancellation bounds, owner resources, stale-safe retry and explicit terminal dispositions;
+- required/advisory producer edges with public publication/incarnation identity, failure/cancel/stop exits, bounded fallback, released worker/resource waits and mandatory-cycle rejection;
+- scheduler-neutral fairness, closure-priority service and device-visible partial-batch flushing without host timeouts;
+- ten typed device-visible no-progress outcomes, bounded wait-graph/potential evidence, session-only external wait, immutable first cause and no host-observation authority;
+- exact stop/drain/closure/lifecycle/status/port contracts, every selected work class in closure, no observation acknowledgement prerequisite and selected-only bounded postsemantic output borrowing; and
+- exact SPEC-0011 progress/terminal reserves plus restricted Device-JS contribution identity, with no physical queue/kernel/stream/worker mapping, host progress loop, CUDA mechanism, C/C++ or native implementation selection.
+
+The three normalized structural progress-profile identities are:
+
+- `progress.synthetic-evaluator-absent`: `470815ad49e8a064d066fea7220f20c54cc0422e843060f72bbed19b9bc1c727` over 51,883 canonical bytes;
+- `progress.synthetic-evaluator-workspace`: `30e350d7f5d87b98355cc9d47dea13cea08ccbd86c59f1636904bcf61907b1fb` over 60,685 canonical bytes; and
+- `progress.synthetic-live-session`: `bf8fba81765ccad68a9c7b100ba0e9c2abdeb236739169c81ef4a16965af3bc5` over 65,917 canonical bytes.
+
+The progress schema has checkout-neutral source digest `68a76619ceec2ac0a195536b88caf3e753a9086cd18c7b4344f39437ea4d503a`. The framework envelope now binds the first progress plan together with the first domain, graph, policy and resource profiles while retaining structural evaluator absence; its identity is `6d0c8c771812ab5b240712bf1d64e17a206752865af40bc822e1b65473e0c35e` over 10,422 canonical bytes. Coverage identity is `ef19d7060f46d7b42a48d2f9500aa97afe2ddc0fc1a661b09d3198849a9a85e8`; expanded requirement routing identity is `93c37ef96ef70992c3a9a029cdfb516bb3d32ba661e6446a7c4f94f356912395`. Exactly 594 framework/domain/graph/policy/evaluator/resource/progress requirements now have final evidence lanes; all remain partial, pending or deferred. The other 395 requirements remain pending their semantic-owner leaves.
+
+This slice is structural/normalizer evidence only. It does not qualify behavioral progress under multiple schedules, concurrent readiness/publication, physical scheduling, CUDA-JS execution/lowering, device memory ordering or a compatible native pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
