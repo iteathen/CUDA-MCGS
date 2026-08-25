@@ -174,7 +174,7 @@ Provisional specification paths become authoritative only if their proposal bran
 | `EC-PROGRESS-01` | `integrated proposal` | Device-owned readiness/progress/fairness/deadlock/stop semantics | Graph, policy, evaluator, output, resource contracts | [`SPEC-0012`](../specs/SPEC-0012-device-owned-search-progress.md) at `main@7c20146` | Semantics require a persistent queue, CUDA Graph, host relaunch, or exact schedule. |
 | `EC-SESSION-01` | `integrated proposal` | Reconciled optional Search Session/root/control/observation proposal | All prior owners | [`SPEC-0006`](../specs/SPEC-0006-search-session-control-and-observation.md) at `main@5fe5777` | A rejected update mutates state, stale work contaminates a new epoch, or live reads advance search. |
 | `EC-FRAMEWORK-01` | `integrated proposal` | Cross-cutting proposal map with no duplicate owner | All proposal outputs | [`SPEC-0000`](../specs/SPEC-0000-framework-requirements.md) at `main@1ef7324` | SPEC-0000 independently owns a fact already assigned to a leaf or extension/product contract. |
-| `EC-INTEGRATE-01` | `active` | One exact proposal packet, branch dispositions, downstream handoff | Every integrated or explicitly disposed leaf | Specs index, registry, plan/status/next-step/issues | Any planned branch is unaccounted, terms contradict, dependencies cycle, or later nodes must invent meaning. |
+| `EC-INTEGRATE-01` | `integrated proposal` | One exact proposal packet, branch dispositions, downstream handoff | Every integrated or explicitly disposed leaf | Routing/handoff through PR #79 at `main@22e3ea5` | Any planned branch is unaccounted, terms contradict, dependencies cycle, or later nodes must invent meaning. |
 
 ### Common branch contract
 
@@ -238,7 +238,9 @@ Task-created tracked documentation is retained as reviewable proposal output onl
 
 `EC-FRAMEWORK-01` ran from 2026-08-24T23:45:38-07:00 through exact-head author review at 2026-08-24T23:53:14-07:00 and merged through PR #78 as `main@1ef73244ecec507ae70b81ceaa29128621fbbe4a` at 2026-08-24T23:53:57-07:00. Its output is a decision-complete composition/ownership proposal, not accepted schema, package, production or CUDA-mechanism authority.
 
-`EC-INTEGRATE-01` is the single active semantic leaf on frozen packet input `main@1ef73244ecec507ae70b81ceaa29128621fbbe4a`. It reconciles proposal ownership, active routing, exact downstream schema/reference obligations, issue state and cleanup before handing control to the extension-substrate node.
+`EC-INTEGRATE-01` ran from 2026-08-24T23:54:29-07:00 through exact-head author review at 2026-08-25T00:11:08-07:00 and merged through PR #79 as `main@22e3ea52e22c0e1d2bc75e747aca8fa568583c79` at 2026-08-25T00:11:33-07:00. Its reviewed tree exactly matched the protected target tree, remote and local task branches were removed by 2026-08-25T00:11:57-07:00, and GitHub issue routing was read back. Its output reconciles proposal ownership, exact downstream schema/reference obligations, issue state and cleanup before handing control to the extension-substrate node.
+
+Every ENGINE-CONTRACT-01 leaf is now integrated as a decision-complete proposal output on one exact revision. This completes the node's proposal scope only; schema/reference evidence, semantic acceptance, native qualification and production implementation remain downstream.
 
 ## Frozen proposal-packet reconciliation
 
