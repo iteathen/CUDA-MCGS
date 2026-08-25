@@ -84,7 +84,7 @@ The active dependency graph and owner-level proposal outputs are governed beneat
 | Planned boundary ID | Intended responsibility | Governing work |
 |---|---|---|
 | `contract.domain` | Product-neutral state/action/transition/identity/history/node-role semantics | [`../docs/specs/SPEC-0007-domain-state-action-and-transition.md`](../docs/specs/SPEC-0007-domain-state-action-and-transition.md) proposal |
-| `contract.policy` | Product-neutral selection/reservation/widening/policy statistics/backup/stopping and reroot reuse classification | Universal search-policy contract v0 |
+| `contract.policy` | Product-neutral selection/reservation/widening/policy statistics/backup/stopping and reroot reuse classification | [`../docs/specs/SPEC-0008-search-policy-and-backup.md`](../docs/specs/SPEC-0008-search-policy-and-backup.md) proposal |
 | `contract.evaluator` | Resident evaluator semantics/capabilities/batching/workspace/publication and reroot cache validity | Universal evaluator contract v0 |
 | `contract.graph` | Graph/node/edge/path/transposition/generation/reclamation mechanics | [`../docs/specs/SPEC-0010-graph-storage-and-reclamation.md`](../docs/specs/SPEC-0010-graph-storage-and-reclamation.md) proposal |
 | `contract.session` | Search Session/root-update admission/root epochs/stale-work/reroot/reuse/reclamation interaction/generic observation semantics | [`../docs/specs/SPEC-0006-search-session-control-and-observation.md`](../docs/specs/SPEC-0006-search-session-control-and-observation.md) proposal |
