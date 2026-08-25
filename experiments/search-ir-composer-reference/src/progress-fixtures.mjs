@@ -52,8 +52,12 @@ function workId(profile, owner) {
   return `work.${profile}.${ownerToken(owner)}`;
 }
 
-function transition(profile, owner) {
-  return schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(owner)}-public-transition`);
+function transitions(profile, owner, session) {
+  return {
+    ready: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(owner)}-ready-transition`),
+    completion: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(owner)}-completion-transition`),
+    external: session ? schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(owner)}-external-input-transition`) : null,
+  };
 }
 
 function bounds(options = {}) {
@@ -105,7 +109,7 @@ function statuses() {
   return Object.entries(classes).map(([code, statusClass]) => ({ code, class: statusClass, diagnostic: true }));
 }
 
-function buildWorkClass(profile, contributor, resourcePlan, transitionByOwner) {
+function buildWorkClass(profile, contributor, resourcePlan, transitionsByOwner) {
   const kind = workKind(contributor.contract.id);
   const resources = resourcePlan.classes.filter(({ contributor: owner }) => owner === contributor.id).map(({ id }) => id);
   const progressReserve = resourcePlan.reserves.find(({ purpose }) => purpose === 'progress-cleanup')?.id ?? null;
@@ -125,7 +129,7 @@ function buildWorkClass(profile, contributor, resourcePlan, transitionByOwner) {
     readiness: {
       mode: 'any-with-independent',
       predicate: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(contributor.id)}-readiness`),
-      publication: transitionByOwner.get(contributor.id),
+      publication: transitionsByOwner.get(contributor.id).ready,
       independentReady: true,
       dependencies: [],
     },
@@ -140,7 +144,7 @@ function buildWorkClass(profile, contributor, resourcePlan, transitionByOwner) {
       contract: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(contributor.id)}-finite-step`),
       completion: continuing ? 'finite-continuation' : 'bounded',
       continuationIdentity: continuing ? schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(contributor.id)}-continuation-identity`) : null,
-      publication: transitionByOwner.get(contributor.id),
+      publication: transitionsByOwner.get(contributor.id).completion,
       failure: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(contributor.id)}-failure`),
     },
     retry: { staleSafe: true, idempotence: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(contributor.id)}-retry-idempotence`) },
@@ -153,7 +157,7 @@ function buildWorkClass(profile, contributor, resourcePlan, transitionByOwner) {
   };
 }
 
-function addDependency(profile, dependencies, workByOwner, transitionByOwner, consumerOwner, producerOwner, producerKind, requirement) {
+function addDependency(profile, dependencies, workByOwner, transitionsByOwner, consumerOwner, producerOwner, producerKind, requirement) {
   const consumer = workByOwner.get(consumerOwner);
   const producer = workByOwner.get(producerOwner);
   const id = `dependency.${profile}.${ownerToken(consumerOwner)}-on-${ownerToken(producerOwner)}`;
@@ -164,7 +168,7 @@ function addDependency(profile, dependencies, workByOwner, transitionByOwner, co
       kind: producerKind,
       owner: producerOwner,
       workClass: producerKind === 'work-class' ? producer.id : null,
-      fact: transitionByOwner.get(producerOwner),
+      fact: producerKind === 'external-control' ? transitionsByOwner.get(producerOwner).external : transitionsByOwner.get(producerOwner).completion,
     },
     requirement,
     publication: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(consumerOwner)}-${ownerToken(producerOwner)}-dependency-publication`),
@@ -184,30 +188,30 @@ function addDependency(profile, dependencies, workByOwner, transitionByOwner, co
 
 function buildProfile(profile, inspected, resourceResult) {
   const resourcePlan = resourceResult.normalized;
-  const transitionByOwner = new Map(resourcePlan.contributors.map(({ id }) => [id, transition(profile, id)]));
+  const transitionsByOwner = new Map(resourcePlan.contributors.map(({ id, contract }) => [id, transitions(profile, id, contract.id === 'SPEC-0006')]));
   const contributors = resourcePlan.contributors.map((entry) => ({
     id: entry.id,
     contract: entry.contract,
     profile: entry.profile,
     optional: entry.optional,
     workClasses: [workId(profile, entry.id)],
-    publicTransitions: [transitionByOwner.get(entry.id)],
+    publicTransitions: [transitionsByOwner.get(entry.id).ready, transitionsByOwner.get(entry.id).completion, ...(transitionsByOwner.get(entry.id).external ? [transitionsByOwner.get(entry.id).external] : [])],
     cleanup: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(entry.id)}-owner-cleanup`),
   }));
-  const workClasses = contributors.map((contributor) => buildWorkClass(profile, contributor, resourcePlan, transitionByOwner));
+  const workClasses = contributors.map((contributor) => buildWorkClass(profile, contributor, resourcePlan, transitionsByOwner));
   const workByOwner = new Map(workClasses.map((entry) => [entry.owner, entry]));
   const ownerFor = (contractId) => contributors.find(({ contract }) => contract.id === contractId)?.id ?? null;
   const dependencies = [];
 
-  addDependency(profile, dependencies, workByOwner, transitionByOwner, ownerFor('SPEC-0007'), ownerFor('SPEC-0011'), 'fact', 'advisory');
-  addDependency(profile, dependencies, workByOwner, transitionByOwner, ownerFor('SPEC-0010'), ownerFor('SPEC-0007'), 'work-class', 'required');
-  addDependency(profile, dependencies, workByOwner, transitionByOwner, ownerFor('SPEC-0008'), ownerFor('SPEC-0010'), 'work-class', 'required');
-  addDependency(profile, dependencies, workByOwner, transitionByOwner, ownerFor('SPEC-0013'), ownerFor('SPEC-0008'), 'work-class', 'required');
-  addDependency(profile, dependencies, workByOwner, transitionByOwner, ownerFor('SPEC-0012'), ownerFor('SPEC-0011'), 'resource-recovery', 'required');
+  addDependency(profile, dependencies, workByOwner, transitionsByOwner, ownerFor('SPEC-0007'), ownerFor('SPEC-0011'), 'fact', 'advisory');
+  addDependency(profile, dependencies, workByOwner, transitionsByOwner, ownerFor('SPEC-0010'), ownerFor('SPEC-0007'), 'work-class', 'required');
+  addDependency(profile, dependencies, workByOwner, transitionsByOwner, ownerFor('SPEC-0008'), ownerFor('SPEC-0010'), 'work-class', 'required');
+  addDependency(profile, dependencies, workByOwner, transitionsByOwner, ownerFor('SPEC-0013'), ownerFor('SPEC-0008'), 'work-class', 'required');
+  addDependency(profile, dependencies, workByOwner, transitionsByOwner, ownerFor('SPEC-0012'), ownerFor('SPEC-0011'), 'resource-recovery', 'required');
   const evaluatorOwner = ownerFor('SPEC-0009');
-  if (evaluatorOwner) addDependency(profile, dependencies, workByOwner, transitionByOwner, evaluatorOwner, ownerFor('SPEC-0010'), 'fact', 'required');
+  if (evaluatorOwner) addDependency(profile, dependencies, workByOwner, transitionsByOwner, evaluatorOwner, ownerFor('SPEC-0010'), 'fact', 'required');
   const sessionOwner = ownerFor('SPEC-0006');
-  if (sessionOwner) addDependency(profile, dependencies, workByOwner, transitionByOwner, sessionOwner, sessionOwner, 'external-control', 'required');
+  if (sessionOwner) addDependency(profile, dependencies, workByOwner, transitionsByOwner, sessionOwner, sessionOwner, 'external-control', 'required');
 
   const closureClasses = workClasses.filter(({ kind }) => ['producer-unblocking', 'must-drain', 'terminal-output', 'resource-recovery'].includes(kind)).map(({ id }) => id);
   const ordinaryClasses = workClasses.filter(({ kind }) => !['producer-unblocking', 'must-drain', 'terminal-output', 'resource-recovery'].includes(kind)).map(({ id }) => id);
@@ -239,7 +243,7 @@ function buildProfile(profile, inspected, resourceResult) {
       firstCause: 'immutable-first-fatal-cas', hostObservation: 'non-progressing',
       externalWait: sessionContributor ? {
         kind: 'session-only', owner: sessionContributor.id,
-        state: transitionByOwner.get(sessionContributor.id), maxPendingCommands: '64',
+        state: transitionsByOwner.get(sessionContributor.id).external, maxPendingCommands: '64',
       } : { kind: 'absent' },
     },
     stop: {

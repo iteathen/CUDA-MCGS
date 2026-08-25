@@ -86,7 +86,7 @@
         "sha256": "709912998eadbd8001e1bed7103610c4b034cf864d5f991786fa983bbc031058"
       },
       "schema": { "id": "cuda-mcgs.progress-profile/0.2.0", "version": "0.2.0", "sha256": "68a76619ceec2ac0a195536b88caf3e753a9086cd18c7b4344f39437ea4d503a" },
-      "identity": { "algorithm": "sha256", "sha256": "470815ad49e8a064d066fea7220f20c54cc0422e843060f72bbed19b9bc1c727" }
+      "identity": { "algorithm": "sha256", "sha256": "b3208aa17799c01680ce9c34fee958fa183db771f62bd09a853a1b0c30f1a109" }
     },
     {
       "id": "owner.resource",

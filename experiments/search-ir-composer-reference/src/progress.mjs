@@ -259,6 +259,7 @@ function normalizeDependency(input, index, contributorById, workById) {
   for (const requiredEscape of ['failure', 'cancel', 'stop']) if (!escapes.includes(requiredEscape)) fail('PROGRESS_DEPENDENCY_ESCAPE', `${input.id} omits ${requiredEscape} escape`);
   if (requirement === 'advisory' && !escapes.includes('fallback')) fail('PROGRESS_DEPENDENCY_FALLBACK', `${input.id} advisory dependency omits fallback escape`);
   if (producer.kind === 'work-class' && producer.workClass === input.consumer && requirement === 'required') fail('PROGRESS_DEPENDENCY_SELF', `${input.id} cannot require its own output`);
+  if (producer.kind === 'external-control' && schemaKey(producer.fact) === schemaKey(workById.get(input.consumer).step.publication)) fail('PROGRESS_DEPENDENCY_SELF', `${input.id} external input cannot alias its consumer output`);
   if (input.holdsWorker !== false || input.holdsProducerResource !== false) fail('PROGRESS_DEPENDENCY_HOLD', `${input.id} pending wait must release worker and producer resource`);
   return {
     id: input.id, consumer: input.consumer, producer, requirement,

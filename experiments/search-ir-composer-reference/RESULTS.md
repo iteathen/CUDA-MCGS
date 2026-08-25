@@ -181,7 +181,7 @@ This slice is structural/normalizer evidence only. It does not qualify concurren
 
 **Evidence completed:** 2026-08-25T04:28:07-07:00
 
-The expanded capsule passes 469/469 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource cases and adds strict normalized device-progress evidence across:
+The expanded capsule passes 470/470 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource cases and adds strict normalized device-progress evidence across:
 
 - exact selected resource-plan owner/contribution coverage, public-transition ownership and structural evaluator/session deletion;
 - finite work admission/production/step/continuation/retry/wait/cancellation bounds, owner resources, stale-safe retry and explicit terminal dispositions;
@@ -193,10 +193,10 @@ The expanded capsule passes 469/469 CUDA-free cases. It retains all catalog/foun
 
 The three normalized structural progress-profile identities are:
 
-- `progress.synthetic-evaluator-absent`: `470815ad49e8a064d066fea7220f20c54cc0422e843060f72bbed19b9bc1c727` over 51,883 canonical bytes;
-- `progress.synthetic-evaluator-workspace`: `30e350d7f5d87b98355cc9d47dea13cea08ccbd86c59f1636904bcf61907b1fb` over 60,685 canonical bytes; and
-- `progress.synthetic-live-session`: `bf8fba81765ccad68a9c7b100ba0e9c2abdeb236739169c81ef4a16965af3bc5` over 65,917 canonical bytes.
+- `progress.synthetic-evaluator-absent`: `b3208aa17799c01680ce9c34fee958fa183db771f62bd09a853a1b0c30f1a109` over 53,191 canonical bytes;
+- `progress.synthetic-evaluator-workspace`: `098260fadc403b778926eebb3beba47560eca30c944f12783833b7b12a95c966` over 62,254 canonical bytes; and
+- `progress.synthetic-live-session`: `27e577f8ce4f19127312ecbcacc6edd4a4a527a7385701969967a5da5b79e4c5` over 67,877 canonical bytes.
 
-The progress schema has checkout-neutral source digest `68a76619ceec2ac0a195536b88caf3e753a9086cd18c7b4344f39437ea4d503a`. The framework envelope now binds the first progress plan together with the first domain, graph, policy and resource profiles while retaining structural evaluator absence; its identity is `6d0c8c771812ab5b240712bf1d64e17a206752865af40bc822e1b65473e0c35e` over 10,422 canonical bytes. Coverage identity is `ef19d7060f46d7b42a48d2f9500aa97afe2ddc0fc1a661b09d3198849a9a85e8`; expanded requirement routing identity is `93c37ef96ef70992c3a9a029cdfb516bb3d32ba661e6446a7c4f94f356912395`. Exactly 594 framework/domain/graph/policy/evaluator/resource/progress requirements now have final evidence lanes; all remain partial, pending or deferred. The other 395 requirements remain pending their semantic-owner leaves.
+The progress schema has checkout-neutral source digest `68a76619ceec2ac0a195536b88caf3e753a9086cd18c7b4344f39437ea4d503a`. The framework envelope now binds the first progress plan together with the first domain, graph, policy and resource profiles while retaining structural evaluator absence; its identity is `609fb7e89f369e9362add2200aaea330119b098062db66ce2c83b3927b7bca35` over 10,422 canonical bytes. Coverage identity is `ef19d7060f46d7b42a48d2f9500aa97afe2ddc0fc1a661b09d3198849a9a85e8`; expanded requirement routing identity is `93c37ef96ef70992c3a9a029cdfb516bb3d32ba661e6446a7c4f94f356912395`. Exactly 594 framework/domain/graph/policy/evaluator/resource/progress requirements now have final evidence lanes; all remain partial, pending or deferred. The other 395 requirements remain pending their semantic-owner leaves.
 
 This slice is structural/normalizer evidence only. It does not qualify behavioral progress under multiple schedules, concurrent readiness/publication, physical scheduling, CUDA-JS execution/lowering, device memory ordering or a compatible native pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.

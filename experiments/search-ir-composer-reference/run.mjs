@@ -2738,7 +2738,9 @@ await runCase('progress-live-session-bounded-external-wait', () => {
   const session = normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0006');
   assert(session);
   assert.equal(normalized.noProgress.externalWait.owner, session.id);
-  assert.equal(normalized.workClasses.find(({ owner }) => owner === session.id).kind, 'external-control');
+  const sessionWork = normalized.workClasses.find(({ owner }) => owner === session.id);
+  assert.equal(sessionWork.kind, 'external-control');
+  assert.notEqual(normalized.noProgress.externalWait.state.sha256, sessionWork.step.publication.sha256);
   assert.equal(normalized.closure.outputBorrow.kind, 'bounded-postsemantic');
 });
 
@@ -2778,6 +2780,7 @@ await runCase('progress-work-graph-owner-and-resource-closure', () => {
     assert(normalized.contributors.every((owner) => owner.workClasses.every((id) => workById.get(id)?.owner === owner.id)));
     assert.deepEqual(normalized.closure.workClasses, normalized.workClasses.map(({ id }) => id));
     assert(normalized.dependencies.every(({ holdsWorker, holdsProducerResource }) => !holdsWorker && !holdsProducerResource));
+    assert(normalized.workClasses.every((workClass) => workClass.readiness.publication.sha256 !== workClass.step.publication.sha256));
   }
 });
 
@@ -3008,7 +3011,7 @@ await runCase('reject-progress-dependency-fact', () => {
 await runCase('reject-progress-required-self-dependency', () => {
   const mutated = clone(progressProfileInputs[0]); const dependency = mutated.dependencies.find(({ requirement }) => requirement === 'required');
   const work = mutated.workClasses.find(({ id }) => id === dependency.consumer); const owner = mutated.contributors.find(({ id }) => id === work.owner);
-  dependency.producer = { kind: 'work-class', owner: owner.id, workClass: work.id, fact: clone(owner.publicTransitions[0]) };
+  dependency.producer = { kind: 'work-class', owner: owner.id, workClass: work.id, fact: clone(work.step.publication) };
   assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_DEPENDENCY_SELF' });
 });
 
@@ -3037,10 +3040,9 @@ await runCase('reject-progress-mandatory-wait-cycle', () => {
   const mutated = clone(progressProfileInputs[0]);
   const graph = mutated.workClasses.find(({ kind }) => kind === 'producer-unblocking');
   const policy = mutated.workClasses.find(({ owner }) => mutated.contributors.find(({ id }) => id === owner).contract.id === 'SPEC-0008');
-  const policyOwner = mutated.contributors.find(({ id }) => id === policy.owner);
   const id = 'dependency.synthetic-mandatory-cycle';
   mutated.dependencies.push({
-    id, consumer: graph.id, producer: { kind: 'work-class', owner: policy.owner, workClass: policy.id, fact: clone(policyOwner.publicTransitions[0]) },
+    id, consumer: graph.id, producer: { kind: 'work-class', owner: policy.owner, workClass: policy.id, fact: clone(policy.step.publication) },
     requirement: 'required', publication: progressSyntheticSchemaReference('cuda-mcgs.synthetic-cycle-publication'), incarnation: progressSyntheticSchemaReference('cuda-mcgs.synthetic-cycle-incarnation'),
     escapes: ['failure', 'cancel', 'stop'], maxWaitTransitions: '16', fallback: null, holdsWorker: false, holdsProducerResource: false,
   });
@@ -3226,6 +3228,12 @@ await runCase('reject-progress-external-wait-private-state', () => {
   assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[2], knownResourceProfiles), { code: 'PROGRESS_EXTERNAL_WAIT_SESSION' });
 });
 
+await runCase('reject-progress-external-input-output-alias', () => {
+  const mutated = clone(progressProfileInputs[2]); const work = mutated.workClasses.find(({ kind }) => kind === 'external-control');
+  const dependency = mutated.dependencies.find(({ consumer }) => consumer === work.id); dependency.producer.fact = clone(work.step.publication);
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[2], knownResourceProfiles), { code: 'PROGRESS_DEPENDENCY_SELF' });
+});
+
 await runCase('reject-progress-unselected-output-borrow', () => {
   const mutated = clone(progressProfileInputs[0]); mutated.closure.outputBorrow = { kind: 'bounded-postsemantic', maximum: '1', teardown: progressSyntheticSchemaReference('cuda-mcgs.synthetic-unselected-output-borrow') };
   assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_OUTPUT_BORROW_KIND' });
@@ -3233,7 +3241,7 @@ await runCase('reject-progress-unselected-output-borrow', () => {
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 469,
+  expected: 470,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -3241,7 +3249,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 469 - cases.length,
+  notDiscovered: 470 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
