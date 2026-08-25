@@ -24,8 +24,8 @@
       "requirementPrefix": "EXT-",
       "primaryOwner": "CUDA-MCGS optional stage/surface/capability semantics",
       "plannedLeaf": "IR-STAGE-01",
-      "currentDisposition": "pending-owner-classification",
-      "completionStatus": "pending"
+      "currentDisposition": "section-classified",
+      "completionStatus": "in-progress"
     },
     {
       "contract": "SPEC-0004",
@@ -1417,12 +1417,166 @@
       "evidenceStatus": "partial",
       "evidenceRefs": ["schema:session-profile.schema.json", "normalizer:session-profile", "case:normalize-session-profiles", "case:session-owner-boundary-exact", "case:session-absence-zero-residue", "case:session-program-public-js-boundary", "case:reject-session-owner-gap", "case:reject-session-private-program-requirement"],
       "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-AUTH-",
+      "requirementCount": 3,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-STAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:stage-profile", "case:stage-zero-capability-complete-absence", "case:stage-owner-boundary-exact", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-SCOPE-",
+      "requirementCount": 3,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer"],
+      "plannedEvidenceOwner": "IR-STAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:stage-profile", "case:stage-owner-boundary-exact", "case:stage-per-item-scheduler-neutral-graph", "case:stage-materially-different-nongame-profile"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-LEGO-",
+      "requirementCount": 6,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:stage-first-product-deletion-base-context-stable", "case:stage-first-product-deletion-zero-owned-residue", "case:stage-materially-different-nongame-profile", "case:stage-source-owner-port-closure", "case:reject-stage-known-source-profile-port-crossing", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-TERM-",
+      "requirementCount": 2,
+      "primaryDisposition": "structural-schema",
+      "supportingDispositions": ["semantic-normalizer"],
+      "plannedEvidenceOwner": "IR-STAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-entry-exit-surface-matrix", "case:reject-stage-runtime-discovery"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-PROFILE-",
+      "requirementCount": 8,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["structural-schema", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-STAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-profile-order-independent", "case:stage-zero-capability-complete-absence", "case:stage-program-public-js-boundary", "case:reject-stage-unknown-field", "case:reject-stage-private-cuda-js-requirement"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-STAGE-",
+      "requirementCount": 11,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-STAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-per-item-scheduler-neutral-graph", "case:stage-resource-progress-binding", "case:reject-stage-unreachable-state", "case:reject-stage-unknown-target", "case:reject-stage-missing-terminal-disposition", "case:reject-stage-global-barrier-topology", "case:reject-stage-pending-worker-retention", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-SURFACE-",
+      "requirementCount": 10,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["ir-identity-deletion-rejection", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-STAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-entry-exit-surface-matrix", "case:stage-shared-surface-deterministic-order", "case:stage-least-authority-permission-closure", "case:reject-stage-mid-stage-surface", "case:reject-stage-context-overlap", "case:reject-stage-unused-context", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-CAP-",
+      "requirementCount": 11,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["ir-identity-deletion-rejection", "deterministic-composition"],
+      "plannedEvidenceOwner": "IR-STAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-first-product-deletion-zero-owned-residue", "case:stage-shared-surface-deterministic-order", "case:reject-stage-capability-owner-gap", "case:reject-stage-unordered-noncommuting-capabilities", "case:reject-stage-contribution-capacity", "case:reject-stage-effect-owner-port-crossing", "case:reject-stage-runtime-resource-activation"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-OUTCOME-",
+      "requirementCount": 5,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:stage-profile", "case:stage-pending-releases-worker-and-lease", "case:stage-resource-progress-binding", "case:reject-stage-pending-worker-retention", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-BOUNDARY-",
+      "requirementCount": 4,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-STAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:stage-upstream-optional-evaluator-session-absence", "case:stage-device-owned-lifecycle", "case:stage-program-public-js-boundary", "case:reject-stage-surface-host-progress", "case:reject-stage-lifecycle-host-progress", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-IDENTITY-",
+      "requirementCount": 4,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:stage-profile-second-instance-distinct", "case:stage-profile-order-independent", "case:stage-first-product-deletion-base-context-stable", "case:stage-first-product-deletion-zero-owned-residue", "case:reject-stage-plan-drift", "case:reject-stage-migration-without-contract", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-LIFE-",
+      "requirementCount": 6,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-STAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:stage-profile", "case:stage-finite-counter-closure", "case:stage-cleanup-selected-only-closure", "case:reject-stage-counter-wrap", "case:reject-stage-cleanup-gap", "case:reject-stage-diagnostic-native-state", "case:reject-stage-native-program-language", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-IR-",
+      "requirementCount": 4,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["structural-schema", "deterministic-composition", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-STAGE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:normalize-stage-profiles", "case:stage-zero-capability-complete-absence", "case:stage-owner-boundary-exact", "case:stage-program-public-js-boundary", "case:reject-stage-program-input-drift"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-CONFORMANCE-",
+      "requirementCount": 3,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["case:normalize-stage-profiles", "case:stage-materially-different-nongame-profile", "case:reject-stage-unordered-noncommuting-capabilities", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
     }
   ],
   "totals": {
     "contracts": 12,
     "requirements": 989,
-    "classified": 741,
-    "pending": 248
+    "classified": 821,
+    "pending": 168
   }
 }

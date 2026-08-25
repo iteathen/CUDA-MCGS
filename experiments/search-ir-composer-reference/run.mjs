@@ -40,12 +40,14 @@ import {
 import { normalizeResourceProfile } from './src/resource.mjs';
 import {
   buildResourceProfiles,
+  buildStageResourceProfile,
   resourceSyntheticContentIdentity,
   resourceSyntheticSchemaReference,
 } from './src/resource-fixtures.mjs';
 import { normalizeProgressProfile } from './src/progress.mjs';
 import {
   buildProgressProfiles,
+  buildStageProgressProfile,
   progressSyntheticContentIdentity,
   progressSyntheticSchemaReference,
 } from './src/progress-fixtures.mjs';
@@ -61,6 +63,13 @@ import {
   sessionSyntheticContentIdentity,
   sessionSyntheticSchemaReference,
 } from './src/session-fixtures.mjs';
+import { normalizeStageProfile } from './src/stage.mjs';
+import {
+  buildStageFirstProductDeletedProfile,
+  buildStageProfiles,
+  stageSyntheticContentIdentity,
+  stageSyntheticSchemaReference,
+} from './src/stage-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -90,6 +99,7 @@ const resourceProfileSchema = await readJson(path.join(schemaRoot, 'resource-pro
 const progressProfileSchema = await readJson(path.join(schemaRoot, 'progress-profile.schema.json'));
 const outputProfileSchema = await readJson(path.join(schemaRoot, 'output-profile.schema.json'));
 const sessionProfileSchema = await readJson(path.join(schemaRoot, 'session-profile.schema.json'));
+const stageProfileSchema = await readJson(path.join(schemaRoot, 'stage-profile.schema.json'));
 const frameworkSelectionInput = await readJson(path.join(experimentRoot, 'fixtures', 'minimal.framework-selection.json'));
 
 const cases = [];
@@ -114,7 +124,7 @@ await runCase('normalize-contract-set', () => {
 await runCase('normalize-requirement-coverage', () => {
   const normalized = normalizeRequirementCoverage(coverageInput);
   assert.equal(normalized.contracts.length, 12);
-  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 741, pending: 248 });
+  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 821, pending: 168 });
 });
 
 await runCase('canonical-order-independent', () => {
@@ -165,8 +175,8 @@ await runCase('coverage-owner-route-closure', () => {
 });
 
 await runCase('coverage-honest-classification-progress', () => {
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 741);
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 248);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 821);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 168);
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0000').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0007').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0008').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
@@ -1254,6 +1264,30 @@ await runCase('normalize-session-profiles', async () => {
     'session.synthetic-live-session',
     'session.synthetic-live-session-restart',
   ]);
+});
+
+let stageResourceInput;
+let stageResourceResult;
+let stageProgressInput;
+let stageProgressResult;
+let stageProfileInputs;
+let stageProfiles;
+let stageDeletedInput;
+let stageDeletedProfile;
+let stageSchemaSha;
+await runCase('normalize-stage-profiles', async () => {
+  stageSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'stage-profile.schema.json')));
+  stageResourceInput = buildStageResourceProfile(inspected, domainProfiles, graphProfiles, policyProfiles, {
+    domain: domainSchemaSha, graph: graphSchemaSha, policy: policySchemaSha, evaluator: evaluatorSchemaSha,
+  });
+  stageResourceResult = { ...normalizeResourceProfile(stageResourceInput, inspected, knownResourceProfiles), schemaSha: resourceSchemaSha };
+  stageProgressInput = buildStageProgressProfile(inspected, stageResourceResult);
+  stageProgressResult = { ...normalizeProgressProfile(stageProgressInput, inspected, stageResourceResult, knownResourceProfiles), schemaSha: progressSchemaSha };
+  stageProfileInputs = buildStageProfiles(inspected, stageResourceResult, stageProgressResult, knownResourceProfiles);
+  stageProfiles = stageProfileInputs.map((input) => normalizeStageProfile(input, inspected, stageResourceResult, stageProgressResult, knownResourceProfiles));
+  stageDeletedInput = buildStageFirstProductDeletedProfile(inspected, stageResourceResult, stageProgressResult, knownResourceProfiles);
+  stageDeletedProfile = normalizeStageProfile(stageDeletedInput, inspected, stageResourceResult, stageProgressResult, knownResourceProfiles);
+  assert.deepEqual(stageProfiles.map(({ normalized }) => normalized.id), ['extension.synthetic-capability-pair', 'extension.synthetic-proof-stage']);
 });
 
 await runCase('policy-evaluator-mode-matrix', () => {
@@ -4179,9 +4213,420 @@ await runCase('reject-session-product-owner', () => {
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_PRODUCT_OWNER' });
 });
 
+await runCase('stage-schema-closed', () => {
+  assert.equal(stageProfileSchema.properties.schema.const, 'cuda-mcgs.stage-profile/0.2.0');
+  assert.equal(stageProfileSchema.additionalProperties, false);
+  for (const name of ['owner', 'permission', 'counter', 'workItem', 'stageEntry', 'stageExecution', 'stageOutcome', 'stage', 'contextField', 'invocation', 'surface', 'contribution', 'effect', 'activation', 'provenance', 'capability', 'status', 'lifecycle', 'diagnostics', 'compatibility', 'cleanup', 'programContribution']) assert.equal(stageProfileSchema.$defs[name].additionalProperties, false);
+});
+
+await runCase('stage-profile-second-instance-distinct', () => {
+  assert.equal(new Set(stageProfiles.map(({ identity }) => identity.sha256)).size, 2);
+  assert.equal(new Set(stageProfiles.map(({ normalized }) => normalized.generatorIdentity.sha256)).size, 2);
+  assert.deepEqual(stageProfiles.map(({ normalized }) => normalized.stages.length), [2, 1]);
+  assert.deepEqual(stageProfiles.map(({ normalized }) => normalized.capabilities.length), [2, 1]);
+});
+
+await runCase('stage-profile-order-independent', () => {
+  const reordered = clone(stageProfileInputs[0]);
+  for (const key of ['owners', 'stages', 'surfaces', 'capabilities', 'permissions', 'counters', 'statuses', 'productData']) reordered[key].reverse();
+  for (const owner of reordered.owners) owner.ports.reverse();
+  for (const stageInput of reordered.stages) { stageInput.outcomes.reverse(); stageInput.checkpoints.reverse(); stageInput.resourceClasses.reverse(); }
+  for (const surfaceInput of reordered.surfaces) { surfaceInput.baseContext.reverse(); surfaceInput.permissions.reverse(); surfaceInput.outcomes.reverse(); }
+  for (const capabilityInput of reordered.capabilities) for (const key of ['bindings', 'requiredFacts', 'permissions', 'contributions', 'effects', 'before', 'after', 'channels', 'outcomes', 'requirements']) capabilityInput[key].reverse();
+  reordered.programContribution.inputs.reverse(); reordered.programContribution.requirements.reverse();
+  assert.deepEqual(normalizeStageProfile(reordered, inspected, stageResourceResult, stageProgressResult).identity, stageProfiles[0].identity);
+});
+
+await runCase('stage-zero-capability-complete-absence', () => {
+  assert.deepEqual(normalizeStageProfile(null, inspected, null, null), { normalized: null, identity: null });
+  assert(!frameworkSelection.normalized.profiles.some(({ role }) => role === 'stage-extension'));
+});
+
+await runCase('stage-upstream-optional-evaluator-session-absence', () => {
+  const contracts = new Set(stageProgressResult.normalized.contributors.map(({ contract }) => contract.id));
+  assert(!contracts.has('SPEC-0009')); assert(!contracts.has('SPEC-0006')); assert(contracts.has('SPEC-0003'));
+});
+
+await runCase('stage-owner-boundary-exact', () => {
+  const normalized = stageProfiles[0].normalized;
+  assert.equal(normalized.owners.length, stageProgressResult.normalized.contributors.length);
+  assert.equal(normalized.owners.filter(({ role }) => role === 'coordinator').length, 1);
+  assert.equal(normalized.owners.find(({ role }) => role === 'coordinator').contract.id, 'SPEC-0003');
+});
+
+await runCase('stage-per-item-scheduler-neutral-graph', () => {
+  const normalized = stageProfiles[0].normalized;
+  assert(normalized.stages.every(({ execution }) => execution.scope === 'per-work-item' && !execution.globalBarrier && !execution.kernelPerStage && execution.physicalTopology === 'unspecified'));
+  assert.equal(normalized.lifecycle.schedulerOwner, 'SPEC-0012');
+});
+
+await runCase('stage-entry-exit-surface-matrix', () => {
+  const pair = stageProfiles[0].normalized;
+  assert(pair.surfaces.some(({ checkpoint }) => checkpoint === 'entry'));
+  assert(pair.surfaces.some(({ checkpoint }) => checkpoint === 'exit'));
+  assert(pair.capabilities.some(({ bindings }) => bindings.length === 2));
+  assert.equal(stageProfiles[1].normalized.surfaces[0].checkpoint, 'entry');
+});
+
+await runCase('stage-shared-surface-deterministic-order', () => {
+  const normalized = stageProfiles[0].normalized; const shared = normalized.surfaces.find(({ checkpoint }) => checkpoint === 'exit');
+  const selected = normalized.capabilities.filter(({ bindings }) => bindings.includes(shared.id));
+  assert.equal(selected.length, 2); assert(selected.some(({ before }) => before.includes(selected.find(({ id }) => id.endsWith('audit-consistency')).id)));
+});
+
+await runCase('stage-first-product-deletion-base-context-stable', () => {
+  const selected = stageProfiles[0].normalized.surfaces.find(({ id }) => id.endsWith('candidate-exit'));
+  const deleted = stageDeletedProfile.normalized.surfaces.find(({ id }) => id.endsWith('candidate-exit'));
+  assert.deepEqual(deleted.baseContext, selected.baseContext);
+  assert.deepEqual(stageDeletedProfile.normalized.stages, stageProfiles[0].normalized.stages);
+});
+
+await runCase('stage-first-product-deletion-zero-owned-residue', () => {
+  const normalized = stageDeletedProfile.normalized; const serialized = JSON.stringify(normalized);
+  assert(!serialized.includes('product-priority')); assert(!serialized.includes('product-configuration')); assert(!normalized.surfaces.some(({ id }) => id.endsWith('candidate-entry')));
+  assert.equal(normalized.capabilities.length, 1); assert.equal(normalized.surfaces.length, 1);
+  assert.notDeepEqual(normalized.programContribution.sourceIdentity, stageProfiles[0].normalized.programContribution.sourceIdentity);
+});
+
+await runCase('stage-materially-different-nongame-profile', () => {
+  const normalized = stageProfiles[1].normalized;
+  assert(normalized.stages[0].purpose.includes('proof-search')); assert(!JSON.stringify(normalized).match(/chess|board|player|zero-sum|ranked-move|scalar-value/i));
+});
+
+await runCase('stage-resource-progress-binding', () => {
+  const normalized = stageProfiles[0].normalized; const stageOwner = stageProgressResult.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0003');
+  assert(normalized.stages.every(({ entry }) => stageProgressResult.normalized.workClasses.some(({ id, owner }) => id === entry.workClass && owner === stageOwner.id)));
+  assert(normalized.stages.every(({ resourceClasses }) => resourceClasses.every((id) => stageResourceResult.normalized.classes.some(({ id: classId, contributor }) => classId === id && contributor === stageOwner.id))));
+});
+
+await runCase('stage-pending-releases-worker-and-lease', () => {
+  for (const normalized of stageProfiles.map(({ normalized }) => normalized)) for (const stageInput of normalized.stages) {
+    const pending = stageInput.outcomes.find(({ kind }) => kind === 'pending'); assert(pending.workerReleased); assert(pending.mutableLeaseReleased);
+  }
+});
+
+await runCase('stage-least-authority-permission-closure', () => {
+  const normalized = stageProfiles[0].normalized;
+  assert(normalized.permissions.every(({ lifetime, maximumUses }) => lifetime === 'checkpoint' && BigInt(maximumUses) > 0n));
+  assert(normalized.surfaces.every(({ permissions }) => permissions.length > 0));
+});
+
+await runCase('stage-source-owner-port-closure', () => {
+  const normalized = stageProfiles[0].normalized; const serialized = JSON.stringify(normalized.owners);
+  assert(!serialized.match(/private|raw-pointer|cuda-handle/i)); assert(normalized.owners.some(({ ports }) => ports.length === 0));
+});
+
+await runCase('stage-finite-counter-closure', () => {
+  const normalized = stageProfiles[0].normalized;
+  assert.deepEqual(normalized.counters.map(({ kind }) => kind).sort(), ['capability-invocation', 'stage-transition', 'work-item-generation']);
+  assert(normalized.counters.every(({ rollover, staleAliasProhibited }) => rollover === 'prohibited' && staleAliasProhibited));
+});
+
+await runCase('stage-device-owned-lifecycle', () => {
+  const lifecycle = stageProfiles[0].normalized.lifecycle;
+  assert.equal(lifecycle.hostProgress, 'none'); assert.equal(lifecycle.runtimeDiscovery, false); assert.equal(lifecycle.pendingWorkerRetention, 'none');
+});
+
+await runCase('stage-program-public-js-boundary', () => {
+  const program = stageProfiles[0].normalized.programContribution;
+  assert.equal(program.language, 'restricted-device-js'); assert.equal(program.runtimeRegistry, false); assert.equal(program.nativeArtifacts, false);
+  assert.equal(program.provenance.trust, 'first-party-reviewed'); assert(stageProfiles[0].normalized.capabilities.every(({ provenance }) => provenance.trust === 'first-party-reviewed'));
+  assert(program.requirements.every(({ id }) => id.startsWith('cuda-js.'))); assert(!JSON.stringify(program).match(/cuda-cpp|\.cu\b|ptx|ffi|native-addon|private-handle/i));
+});
+
+await runCase('stage-cleanup-selected-only-closure', () => {
+  assert.equal(stageProfiles[0].normalized.cleanup.kinds.length, 8); assert(!stageProfiles[0].normalized.cleanup.kinds.includes('channel-binding'));
+  assert.equal(stageProfiles[0].normalized.lifecycle.persistence, 'none'); assert.equal(stageProfiles[0].normalized.compatibility.migration.kind, 'none');
+});
+
+await runCase('reject-stage-unknown-field', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.scheduler = 'persistent-kernel';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_ROOT_FIELDS' });
+});
+
+await runCase('reject-stage-plan-drift', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.progressPlan.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_PLAN' });
+});
+
+await runCase('reject-stage-contribution-drift', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.resourceContribution.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CONTRIBUTION' });
+});
+
+await runCase('reject-stage-owner-gap', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.owners.pop();
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_OWNER_COVERAGE' });
+});
+
+await runCase('reject-stage-owner-profile-drift', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.owners[0].profile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_OWNER_PROFILE' });
+});
+
+await runCase('reject-stage-coordinator-drift', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.owners.find(({ role }) => role === 'coordinator').role = 'source';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_OWNER_ROLE' });
+});
+
+await runCase('reject-stage-owner-port-residue', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.owners.find(({ role }) => role === 'source').ports.push(stageSyntheticSchemaReference('cuda-mcgs.synthetic-unused-owner-port'));
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_OWNER_PORT_RESIDUE' });
+});
+
+await runCase('reject-stage-known-source-profile-port-crossing', () => {
+  const mutated = clone(stageProfileInputs[0]); const domainOwner = mutated.owners.find(({ contract }) => contract.id === 'SPEC-0007'); const prior = domainOwner.ports[0]; const replacement = stageSyntheticSchemaReference('cuda-mcgs.synthetic-foreign-domain-port');
+  domainOwner.ports = domainOwner.ports.map((port) => port.sha256 === prior.sha256 ? replacement : port);
+  for (const permissionInput of mutated.permissions) if (permissionInput.sourceOwner === domainOwner.id && permissionInput.sourcePort.sha256 === prior.sha256) permissionInput.sourcePort = replacement;
+  for (const surfaceInput of mutated.surfaces) for (const field of surfaceInput.baseContext) if (field.sourceOwner === domainOwner.id && field.sourcePort.sha256 === prior.sha256) field.sourcePort = replacement;
+  for (const capabilityInput of mutated.capabilities) for (const selectedEffect of capabilityInput.effects) if (selectedEffect.owner === domainOwner.id && selectedEffect.port.sha256 === prior.sha256) selectedEffect.port = replacement;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult, knownResourceProfiles), { code: 'EXT_OWNER_PORT' });
+});
+
+await runCase('reject-stage-empty-selected-profile', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities = [];
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_COUNT' });
+});
+
+await runCase('reject-stage-unknown-entry', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.entryStage = 'extension-stage.unknown';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STAGE_ENTRY' });
+});
+
+await runCase('reject-stage-unreachable-state', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.entryStage = mutated.stages[1].id;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STAGE_GRAPH' });
+});
+
+await runCase('reject-stage-unknown-target', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.stages[0].outcomes.find(({ kind }) => kind === 'transition').target = 'extension-stage.unknown';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STAGE_TARGET' });
+});
+
+await runCase('reject-stage-missing-terminal-disposition', () => {
+  const mutated = clone(stageProfileInputs[1]); for (const outcome of mutated.stages[0].outcomes) if (['terminal', 'failure', 'cancellation'].includes(outcome.kind)) outcome.kind = 'pressure';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STAGE_TERMINAL' });
+});
+
+await runCase('reject-stage-global-barrier-topology', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.stages[0].execution.globalBarrier = true;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STAGE_EXECUTION' });
+});
+
+await runCase('reject-stage-kernel-per-stage-topology', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.stages[0].execution.kernelPerStage = true;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STAGE_EXECUTION' });
+});
+
+await runCase('reject-stage-work-counter-drift', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.stages[0].workItem.generationCounter = mutated.counters.find(({ kind }) => kind === 'stage-transition').id;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_WORK_ITEM_COUNTER' });
+});
+
+await runCase('reject-stage-transition-counter-drift', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.stages[0].transitionCounter = mutated.counters.find(({ kind }) => kind === 'work-item-generation').id;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STAGE_COUNTER' });
+});
+
+await runCase('reject-stage-resource-class-crossing', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.stages[0].resourceClasses[0] = stageResourceResult.normalized.classes.find(({ contributor }) => contributor !== stageResourceResult.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0003').id).id;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STAGE_RESOURCE' });
+});
+
+await runCase('reject-stage-item-capacity', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.stages[0].bounds.maxItems = '4097';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STAGE_RESOURCE' });
+});
+
+await runCase('reject-stage-pending-worker-retention', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.stages[0].outcomes.find(({ kind }) => kind === 'pending').workerReleased = false;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STAGE_OUTCOME_RELEASE' });
+});
+
+await runCase('reject-stage-mid-stage-surface', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.surfaces[0].checkpoint = 'middle';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_SURFACE_CHECKPOINT' });
+});
+
+await runCase('reject-stage-surface-host-progress', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.surfaces[0].hostProgress = 'callback';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_SURFACE_CONTRACT' });
+});
+
+await runCase('reject-stage-context-overlap', () => {
+  const mutated = clone(stageProfileInputs[0]); const field = clone(mutated.surfaces[1].baseContext[0]); field.id = 'extension-context.synthetic-capability-pair.overlap'; mutated.surfaces[1].baseContext.push(field); mutated.capabilities[0].requiredFacts.push(field.id);
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CONTEXT_OVERLAP' });
+});
+
+await runCase('reject-stage-context-alignment', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.surfaces[1].baseContext[0].offsetBytes = '1';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CONTEXT_RANGE' });
+});
+
+await runCase('reject-stage-context-permission-gap', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.surfaces[0].permissions = [];
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CONTEXT_PERMISSION' });
+});
+
+await runCase('reject-stage-unused-context', () => {
+  const mutated = clone(stageProfileInputs[0]); const field = clone(mutated.surfaces[1].baseContext[0]); field.id = 'extension-context.synthetic-capability-pair.unused'; field.offsetBytes = '64'; mutated.surfaces[1].baseContext.push(field);
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CONTEXT_RESIDUE' });
+});
+
+await runCase('reject-stage-required-fact-without-capability-permission', () => {
+  const mutated = clone(stageProfileInputs[0]); const permissionId = mutated.permissions.find(({ id }) => id.endsWith('product-graph-read')).id;
+  mutated.permissions = mutated.permissions.filter(({ id }) => id !== permissionId);
+  for (const surfaceInput of mutated.surfaces) surfaceInput.permissions = surfaceInput.permissions.filter((id) => id !== permissionId);
+  for (const capabilityInput of mutated.capabilities) capabilityInput.permissions = capabilityInput.permissions.filter((id) => id !== permissionId);
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_PERMISSION' });
+});
+
+await runCase('reject-stage-permission-owner-drift', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.permissions[0].sourceOwner = mutated.owners.find(({ contract }) => contract.id === 'SPEC-0013').id;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_PERMISSION_PORT' });
+});
+
+await runCase('reject-stage-permission-outside-binding', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].bindings = [mutated.capabilities[0].bindings[0]];
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_PERMISSION' });
+});
+
+await runCase('reject-stage-capability-unknown-surface', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].bindings[0] = 'extension-surface.unknown';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_BINDING' });
+});
+
+await runCase('reject-stage-capability-owner-gap', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].semanticOwner = 'owner.unknown';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_OWNER' });
+});
+
+await runCase('reject-stage-capability-catalog-owner', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].ownerContract = clone(mutated.contract);
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_OWNER' });
+});
+
+await runCase('reject-stage-unordered-noncommuting-capabilities', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].before = []; mutated.capabilities[1].after = [];
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_ORDER' });
+});
+
+await runCase('reject-stage-capability-order-cycle', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].after = [mutated.capabilities[1].id];
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_ORDER' });
+});
+
+await runCase('reject-stage-contribution-resource-crossing', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].contributions[0].resourceClass = stageResourceResult.normalized.classes.find(({ contributor }) => contributor !== stageResourceResult.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0003').id).id;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CONTRIBUTION_RESOURCE' });
+});
+
+await runCase('reject-stage-contribution-capacity', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].contributions[0].sizeBytes = '65537';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CONTRIBUTION_CAPACITY' });
+});
+
+await runCase('reject-stage-contribution-alignment', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].contributions[0].alignment = '8';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CONTRIBUTION_ALIGNMENT' });
+});
+
+await runCase('reject-stage-effect-owner-port-crossing', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].effects[0].port = stageSyntheticSchemaReference('cuda-mcgs.synthetic-private-owner-port');
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_EFFECT_OWNER' });
+});
+
+await runCase('reject-stage-effect-without-capability-permission', () => {
+  const mutated = clone(stageProfileInputs[0]); const permissionId = mutated.permissions.find(({ id }) => id.endsWith('product-policy-control')).id;
+  mutated.permissions = mutated.permissions.filter(({ id }) => id !== permissionId);
+  for (const surfaceInput of mutated.surfaces) surfaceInput.permissions = surfaceInput.permissions.filter((id) => id !== permissionId);
+  for (const capabilityInput of mutated.capabilities) capabilityInput.permissions = capabilityInput.permissions.filter((id) => id !== permissionId);
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_PERMISSION' });
+});
+
+await runCase('reject-stage-runtime-resource-activation', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].activation.newResources = true;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_ACTIVATION_CONTRACT' });
+});
+
+await runCase('reject-stage-private-cuda-js-requirement', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].requirements[0] = stageSyntheticSchemaReference('cuda-js.private-stage-hook');
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CAPABILITY_REQUIREMENT' });
+});
+
+await runCase('reject-stage-counter-wrap', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.counters[0].rollover = 'reuse';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_COUNTER_RANGE' });
+});
+
+await runCase('reject-stage-status-gap', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.statuses.pop();
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STATUS_COVERAGE' });
+});
+
+await runCase('reject-stage-status-class', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.statuses.find(({ code }) => code === 'extension-failed').class = 'normal';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_STATUS_CLASS' });
+});
+
+await runCase('reject-stage-lifecycle-host-progress', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.lifecycle.hostProgress = 'poll-relaunch';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_LIFECYCLE_CONTRACT' });
+});
+
+await runCase('reject-stage-runtime-discovery', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.lifecycle.runtimeDiscovery = true;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_LIFECYCLE_CONTRACT' });
+});
+
+await runCase('reject-stage-diagnostic-native-state', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.diagnostics.cudaHandles = true;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_DIAGNOSTIC_CONTRACT' });
+});
+
+await runCase('reject-stage-migration-without-contract', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.compatibility.migration.kind = 'runtime';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_COMPATIBILITY_CONTRACT' });
+});
+
+await runCase('reject-stage-cleanup-gap', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.cleanup.kinds.pop();
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CLEANUP_COVERAGE' });
+});
+
+await runCase('reject-stage-channel-cleanup-residue-gap', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].channels.push({ id: 'channel.synthetic.pending', schema: stageSyntheticSchemaReference('cuda-mcgs.channel-profile'), identity: stageSyntheticContentIdentity('pending-channel') });
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CLEANUP_COVERAGE' });
+});
+
+await runCase('reject-stage-native-program-language', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.programContribution.language = 'cuda-cpp';
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_PROGRAM_LANGUAGE' });
+});
+
+await runCase('reject-stage-runtime-registry', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.programContribution.runtimeRegistry = true;
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_PROGRAM_LANGUAGE' });
+});
+
+await runCase('reject-stage-program-input-drift', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.programContribution.inputs.pop();
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_PROGRAM_INPUTS' });
+});
+
+await runCase('reject-stage-program-requirement-drift', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.programContribution.requirements[0] = { ...mutated.programContribution.requirements[0], sha256: '0'.repeat(64) };
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_PROGRAM_REQUIREMENTS' });
+});
+
+await runCase('reject-stage-product-owner', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.productData.push({ ownerContract: clone(mutated.contract), schema: stageSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-stage-product'), identity: stageSyntheticContentIdentity('invalid-stage-product') });
+  assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_PRODUCT_OWNER' });
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 625,
+  expected: 701,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -4189,7 +4634,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 625 - cases.length,
+  notDiscovered: 701 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -4208,6 +4653,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/progress-profile.schema.json',
   'schemas/search-ir/0.2.0/output-profile.schema.json',
   'schemas/search-ir/0.2.0/session-profile.schema.json',
+  'schemas/search-ir/0.2.0/stage-profile.schema.json',
   'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
   'experiments/search-ir-composer-reference/src/catalog.mjs',
   'experiments/search-ir-composer-reference/src/validation.mjs',
@@ -4228,6 +4674,8 @@ const sourcePaths = [
   'experiments/search-ir-composer-reference/src/output-fixtures.mjs',
   'experiments/search-ir-composer-reference/src/session.mjs',
   'experiments/search-ir-composer-reference/src/session-fixtures.mjs',
+  'experiments/search-ir-composer-reference/src/stage.mjs',
+  'experiments/search-ir-composer-reference/src/stage-fixtures.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -4251,6 +4699,10 @@ const evidence = {
   progressProfileIdentities: progressProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   outputProfileIdentities: outputProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   sessionProfileIdentities: sessionProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
+  stageResourcePlanIdentity: stageResourceResult ? { id: stageResourceResult.normalized.id, ...stageResourceResult.identity } : null,
+  stageProgressPlanIdentity: stageProgressResult ? { id: stageProgressResult.normalized.id, ...stageProgressResult.identity } : null,
+  stageProfileIdentities: stageProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
+  stageFirstProductDeletedIdentity: stageDeletedProfile ? { id: stageDeletedProfile.normalized.id, ...stageDeletedProfile.identity } : null,
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
     classified: inspected?.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length ?? 0,
@@ -4260,8 +4712,8 @@ const evidence = {
   summary,
   cases,
   claimLimits: [
-    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy, evaluator, resource, progress, output and optional Search Session profile normalization only.',
-    'The framework, domain, graph, policy, evaluator, resource, progress, output and Search Session requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
+    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy, evaluator, resource, progress, output, optional Search Session and optional stage/surface/capability profile normalization only.',
+    'The framework, domain, graph, policy, evaluator, resource, progress, output, Search Session and Search Stage requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
     'Domain evidence covers strict normalized profile selection and three synthetic structural instances, not behavioral oracle, publication/concurrency, native or compatible-pair qualification.',
     'Graph evidence covers four strict structural instances, bounded ownership/layout/lifecycle/publication checks and zero-residue optional modes, not behavioral oracle, concurrent reclamation, native or compatible-pair qualification.',
     'Policy evidence covers four strict structural instances, role/record/admission/value/cycle/backup/stop/reuse checks and zero-residue optional modes, not behavioral oracle, concurrent backup, native or compatible-pair qualification.',
@@ -4271,7 +4723,8 @@ const evidence = {
     'Progress evidence covers three scheduler-neutral work/readiness/fairness/no-progress/stop/closure plans, including evaluator absence and selected live-session external wait, not behavioral oracle, schedule exploration, physical scheduler/CUDA-JS execution, native or compatible-pair qualification.',
     'Output evidence covers three strict terminal/live profile instances, exact source readiness, finite workspace/observation/terminal capacity, snapshot/publication/borrow/lifecycle/consumer/cleanup checks and terminal-only zero live residue, not behavioral oracle, concurrent publication, physical CUDA-JS transfer, native or compatible-pair qualification.',
     'Search Session evidence covers two strict selected instances plus terminal-only absence, bounded root/control/observation transactions, epoch/reuse/stale/reclamation/counter/lifecycle/cleanup checks and exact upstream owner bindings, not behavioral oracle, concurrent session execution, physical sideband realization, native or compatible-pair qualification.',
-    'No extension/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
+    'Search Stage evidence covers two materially different strict selected profiles, one same-profile first-product deletion projection, stable entry/exit surfaces, least-authority source-owner ports, deterministic capability order, finite resource/progress/counter/lifecycle closure and whole-substrate absence, not behavioral schedule exploration, Async Stage Channel semantics, native execution or compatible-pair qualification.',
+    'No Async Stage Channel or complete program/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');

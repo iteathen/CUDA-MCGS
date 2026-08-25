@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 
 const VERSION = '0.1.0';
 const REVISION = 'ed4baa234775ba5795482b562eef5d755e59da66';
+const STAGE_REVISION = 'f48f20cbacea6404362b5186dd1fdd116f241a98';
 const LEDGER_STATES = ['claimed', 'published', 'retired-unreclaimed', 'quarantined'];
 const PORTS = [
   'normalize-contribution', 'compose-resource-plan', 'admit-engine-resources', 'reserve-resource', 'reserve-compound',
@@ -230,6 +231,17 @@ function buildProfile(profile, inspected, selected, schemaShas, options = {}) {
     classes.push(rootClass);
   }
 
+  if (options.stage) {
+    const stageStateClassId = `resource.${profile}.class-stage-state`;
+    const stageContextClassId = `resource.${profile}.class-stage-context`;
+    const stageContributor = opaqueContributor(profile, inspected, `extension.${profile}`, 'SPEC-0003', [stageStateClassId, stageContextClassId], true);
+    contributors.push(stageContributor);
+    classes.push(
+      resourceClass(profile, stageContributor.id, { id: stageStateClassId, unit: 'records', minimum: '0', maximum: '4096', alignment: '16', scope: 'per-engine', pressureStatus: 'extension-stage-capacity' }, { id: stageStateClassId, sourceResource: stageStateClassId, basis: 'maximum-live', ownerPressureStatus: 'extension-stage-capacity' }),
+      resourceClass(profile, stageContributor.id, { id: stageContextClassId, unit: 'bytes', minimum: '0', maximum: '65536', alignment: '16', scope: 'per-engine', pressureStatus: 'extension-context-capacity' }, { id: stageContextClassId, sourceResource: stageContextClassId, basis: 'maximum-live', ownerPressureStatus: 'extension-context-capacity' }),
+    );
+  }
+
   const pools = [];
   const partitions = [];
   const corePool = pool(profile, `resource.${profile}.pool-terminal-progress`, 'bytes', '12288', '256', { memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'], largestGuaranteedRequest: '8192' });
@@ -278,7 +290,7 @@ function buildProfile(profile, inspected, selected, schemaShas, options = {}) {
     },
     programContribution: {
       kind: 'device-program', language: 'restricted-device-js', sourceIdentity: contentIdentity(`${profile}:restricted-device-js-source`), inputs: contributorProfiles,
-      provenance: { origin: 'first-party', revision: REVISION, license: 'Apache-2.0', review: schemaReference(`cuda-mcgs.synthetic-${profile}-program-security-review`) },
+      provenance: { origin: 'first-party', revision: options.revision ?? REVISION, license: 'Apache-2.0', review: schemaReference(`cuda-mcgs.synthetic-${profile}-program-security-review`) },
     },
     productData: [],
   };
@@ -290,6 +302,10 @@ export function buildResourceProfiles(inspected, domainResults, graphResults, po
     buildProfile('synthetic-evaluator-workspace', inspected, { domain: domainResults[1], graph: graphResults[1], policy: policyResults[1], evaluator: evaluatorResults[0] }, schemaShas),
     buildProfile('synthetic-live-session', inspected, { domain: domainResults[1], graph: graphResults[1], policy: policyResults[1], evaluator: evaluatorResults[4] }, schemaShas, { liveOutput: true, session: true }),
   ];
+}
+
+export function buildStageResourceProfile(inspected, domainResults, graphResults, policyResults, schemaShas) {
+  return buildProfile('synthetic-stage-capabilities', inspected, { domain: domainResults[0], graph: graphResults[0], policy: policyResults[0], evaluator: null }, schemaShas, { stage: true, revision: STAGE_REVISION });
 }
 
 export function resourceSyntheticSchemaReference(id) {
