@@ -2,202 +2,292 @@
 
 **Status:** Proposal
 
-**Draft version:** 0.2.0
+**Draft version:** 0.3.0
 
-**Owner:** CUDA-MCGS device-resident internal dataflow and readiness semantics
+**Owner:** CUDA-MCGS optional internal channel item/publication/ownership-transfer semantics
 
-**Consumers:** Search Stages, scheduler, evaluator, selected capabilities, secondary search tasks, resource planner, Search IR, conformance, and generated device programs
+**Product area / durable path:** universal extension/composition substrate / `docs/specs/`
 
-This proposal defines the **universal internal dataflow substrate** through which work/data may cross Search Stage and Stage Extension Surface boundaries without synchronous blocking. It does not define external Search Session control/observation, one product payload, one CUDA queue implementation, or one scheduler topology.
+**Consumers:** selected Search Stages/surfaces/capabilities, evaluator-like and secondary work adapters, finite-resource and device-progress composition, Search IR, Search Composer, restricted Device-JS programs, conformance and package identity
 
-## 1. Normative references
+This proposal defines an optional finite internal device-resident dataflow brick. It lets selected producers publish work/data for later selected consumers without keeping a worker blocked or exporting source-owner meaning into the channel. It is not the external Search Session sideband, a scheduler, an output transport, a CUDA queue implementation or a production runtime.
 
-- [`../decisions/ADR-0018-universal-core-extension-product-layering.md`](../decisions/ADR-0018-universal-core-extension-product-layering.md) owns core/extension/product separation.
-- [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) owns publication-channel and finite-resource foundations.
-- [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) owns foundational Search IR normalization/reference semantics.
-- [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) proposes stage/checkpoint/capability ownership.
-- [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) proposes **external** Search Session control/observation semantics and remains a separate boundary.
+## 1. Authority, identity and applicability
 
-## 2. Governing invariant
+Specification identity is `CUDA-MCGS-SPEC-0004@0.3.0-draft`.
 
-> **Internal cross-stage and cross-surface dataflow is allowed. Internal cross-stage and cross-surface blocking is forbidden.**
+Normative authority and dependencies are:
 
-Logical dependency is not prohibited. A consumer may require a future result, but no GPU worker may synchronously wait/spin, hold a stage mutation open, or require a CPU-produced intermediate decision while the result is unavailable.
+- [`ADR-0002`](../decisions/ADR-0002-universal-contracts-specialized-engines.md) for universal contracts and finite specialized engines;
+- [`ADR-0003`](../decisions/ADR-0003-device-resident-active-search.md) for device-resident active search;
+- [`ADR-0005`](../decisions/ADR-0005-lego-design-hierarchy.md) for LEGO ownership and deletion;
+- [`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md) for optional extension/product separation;
+- [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) for JavaScript/restricted Device-JS CUDA-MCGS source and CUDA-JS capability escalation;
+- accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) for publication and finite-resource foundations;
+- accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for normalized Search IR/reference foundations; and
+- decision-complete proposal [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) for optional stage/checkpoint/surface/capability permissions.
 
-This invariant applies equally to universal and product-specific selected capabilities when they use internal channels.
+Decision-complete core proposals [`SPEC-0000`](SPEC-0000-framework-requirements.md), [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md), [`SPEC-0011`](SPEC-0011-finite-search-resources.md), [`SPEC-0012`](SPEC-0012-device-owned-search-progress.md) and [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md) are coupled proposal inputs. They become normative dependencies through the later atomic semantic-acceptance gate. [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) is downstream composition adjacency. Accepted authority governs conflicts.
 
-## 3. Async Stage Channel
+CHANNEL-AUTH-001. This specification applies only to channels selected by an extension profile. No selected channel means no channel schema instance, slot/item state, work class, context reference, resource, synchronization, diagnostic, restricted Device-JS behavior or package residue.
 
-An **Async Stage Channel** is a finite pre-ignition-planned internal producer/consumer publication contract. It MUST define:
+CHANNEL-AUTH-002. A channel transports source-owner payloads and effects but does not own their domain/policy/evaluator/output/product meaning. Selection requires an explicit semantic owner for each payload/effect.
 
-- namespaced channel ID/version and semantic owner;
-- producer/consumer stages/checkpoints/capabilities;
-- item identity/generation/correlation;
-- request/result schemas, widths, ranges and memory spaces;
-- single/multiple producer/consumer rules;
-- reservation/ownership transfer/reclamation;
-- readiness/completion/failure/cancellation states;
-- required publication order/CUDA scope;
-- capacity/watermarks/backpressure/exhaustion;
-- duplicate/stale/late/out-of-order behavior;
-- freshness/expiry policy;
-- required/optional/best-effort/advisory consumption class;
-- fallback/skip/defer/terminal behavior;
-- diagnostics/bounded counters;
-- compatibility/Search Image identity contribution.
+CHANNEL-AUTH-003. This proposal does not authorize native implementation. Backend-neutral acceptance and concrete CUDA publication/operation qualification are separate gates.
 
-The channel is semantic. A scheduler may realize it with a ring, work list, indexed slots, frontier, mailbox, arena records or another accepted bounded structure.
+## 2. Governing invariant, purpose and exclusions
 
-A product-specific capability may define a product-namespaced channel schema, but the channel mechanism remains universal and the product payload does not become universal Search IR core meaning.
+> **Internal cross-stage/cross-surface dataflow is allowed. Internal cross-stage/cross-surface worker blocking is forbidden.**
 
-## 4. Layering rules
+An unavailable required result is a readiness dependency. The logical consumer becomes explicitly pending, releases its worker and mutable stage resources, and lets other ready device work—including a producer—receive service. No CPU-produced intermediate advances the dependency.
 
-CHANNEL-LAYER-001. An Async Stage Channel transports **internal search work/data** between declared device-resident producers/consumers. It is not automatically the external host↔Search Session sideband boundary.
+CHANNEL-SCOPE-001. This specification owns selected channel identity, finite item lifecycle, reservation/publication/claim/ownership-transfer/reclamation semantics, correlation/generation/freshness, consumption class, channel-local pressure/failure and exact deletion.
 
-CHANNEL-LAYER-002. External root updates, cancellation, live product observations and terminal result consumption are modeled under their Search Session/package contracts even if a lowering reuses mailbox/ring mechanics internally.
+CHANNEL-SCOPE-002. SPEC-0011 owns aggregate resource normalization/admission/accounting/pressure/exhaustion, and SPEC-0012 owns composed readiness/service/fairness/no-progress/stop/drain/closure. A channel contributes descriptors and local transitions only.
 
-CHANNEL-LAYER-003. A product/capability channel MUST declare its product/capability semantic owner. Its payload fields are not added to universal base channel payloads for engines that do not select it.
+CHANNEL-SCOPE-003. This specification does not own external root/control/cancellation/observation ports, terminal/live output publication, source payload meaning, stage permissions, CUDA atomics/queues/streams/events, one physical scheduler or host progress.
 
-CHANNEL-LAYER-004. Deleting the product/capability deletes solely product/capability-owned channel payload/state/resources. A universal scheduler/channel implementation must remain coherent.
+## 3. LEGO ownership and deletion
 
-CHANNEL-LAYER-005. A channel MUST NOT let a capability bypass SPEC-0003 least-authority surface rules or keep a mutable stage lease alive while asynchronous work is outstanding.
+CHANNEL-LEGO-001. A channel is justified by an asynchronous lifetime/ownership/readiness boundary between independently progressing selected producers and consumers. A synchronous function call, shared local variable or first-product convenience is not sufficient.
 
-## 5. Producer rules
+CHANNEL-LEGO-002. Producer and consumer identities are explicit public roles. The channel cannot discover callbacks/providers or infer an owner from a payload shape at runtime.
 
-A stage/surface MAY initiate future work by publishing a bounded task descriptor to a channel.
+CHANNEL-LEGO-003. A stage/surface uses a channel only when its SPEC-0003 profile grants the exact produce, claim, observe, complete, cancel or release permission. The channel does not widen surface authority or make one surface span stages.
 
-The producer MUST:
+CHANNEL-LEGO-004. Product/capability payload fields and resources remain namespaced. Shared channel metadata cannot accumulate evaluator, game, ranking, model, action or other first-consumer fields.
 
-- finish or explicitly roll back its current stage-owned mutation before publication makes dependent work eligible;
-- write request payload/ownership metadata before publishing readiness with the declared release operation;
-- publish only references whose lifetime/generation outlive the consumer contract;
-- transfer/retain ownership explicitly;
-- handle capacity failure under the declared pressure policy;
-- release every reservation on cancellation/failure/teardown.
+CHANNEL-LEGO-005. Deleting a product/capability removes its solely owned channel instances, payloads, roles, work descriptors, storage, counters, synchronization, diagnostics and package inputs. Shared mechanisms remain only when another selected owner independently requires them.
 
-The producer MUST NOT expose incomplete stage-owned mutable state. Output storage for asynchronous work is separately owned, preallocated or validly reserved under channel/resource plans.
+CHANNEL-LEGO-006. Deleting the first consumer leaves the channel invariant coherent for a materially different second use. If not, the channel contract remains product/capability-owned rather than universal extension machinery.
 
-Starting work is a semantic enqueue/publication operation. It does not imply Dynamic Parallelism, device graph launch or a new kernel.
+CHANNEL-LEGO-007. Deleting CUDA-MCGS leaves any public CUDA-JS publication/atomic/operation capability consumer-neutral. CUDA-JS never receives channel, stage, evaluator or search-policy meaning.
 
-## 6. Consumer rules
+## 4. Terms and selected channel profile
 
-A consumer may use a result only after:
+An **Async Stage Channel** is one immutable normalized selected producer/consumer contract plus a finite set of generation-protected item slots or an equivalent bounded semantic realization. A **channel item** is one finite identity/correlation/payload lifecycle within that contract. A **producer** prepares/publishes an item or result. A **consumer** claims/borrows/consumes it under one declared mode. A **pending work item** is a logical consumer with no worker or mutable stage lease while its dependency is unavailable.
 
-1. matching channel/item/generation identity;
-2. observing declared ready/completed state with matching acquire semantics/scope;
-3. validating freshness, success class/schema version;
-4. acquiring/borrowing payload ownership under declared lifetime.
+CHANNEL-PROFILE-001. A normalized selected channel declares, with no unknown fields:
 
-A consumer MUST NOT poll tightly, block a worker, hold stage mutation open, or retain lock/reservation while waiting.
+- namespaced channel ID/version, semantic owner and compatibility policy;
+- exact producer/consumer stage/checkpoint/capability roles and permissions;
+- item identity, generation, correlation and optional source-owner validity key;
+- request/result/payload schemas, ranges, alignment, memory-space class and immutability;
+- producer/consumer multiplicity, ordering and claim/borrow mode;
+- lifecycle states and legal transitions;
+- publication/visibility requirements;
+- capacity, watermarks, retry/fallback/expiry and finite contribution;
+- consumption class and typed outcomes;
+- cancellation, stale/late/duplicate/reclamation/teardown rules;
+- diagnostics/counters and their finite exhaustion behavior; and
+- required source-owner, progress/resource and public CUDA-JS capability identities.
 
-If a required result is not ready, the logical work item enters an explicit pending operational state and releases the worker/stage resources. It is re-enqueued/indexed for readiness-driven scheduling.
+CHANNEL-PROFILE-002. Unknown/missing fields, duplicate IDs/roles, incompatible schemas/versions, unowned payload/effects, ambiguous claim/ownership, insufficient bounds, impossible publication scope, resource overflow or progress dependency cycles reject before ignition.
 
-If an optional/advisory result is not ready, the contract selects one bounded behavior: skip, declared fallback, bounded defer/retry, or continue without it. Timing races MUST NOT silently select different search semantics unless explicitly part of the owning contract.
+CHANNEL-PROFILE-003. Unordered channel/role/schema selections normalize by raw JavaScript/Unicode code-unit order. Every semantically meaningful order is explicit. Defaults normalize to explicit canonical values.
 
-## 7. Required results and progress
+CHANNEL-PROFILE-004. Every dimension is finite and checked: capacity, payload bytes, producer/consumer multiplicity, reservations, pending items, retries, age/expiry, generation/correlation width, counters, work per operation and cancellation-observation bound.
 
-A required result creates a readiness dependency, not a synchronous call.
+CHANNEL-PROFILE-005. Host normalization/composition may use ordinary Node.js. Active channel behavior is restricted Device-JS through public CUDA-JS contracts. CUDA-MCGS owns no C/C++, CUDA C++, native addon, FFI/Driver call, hand-written PTX, embedded CUDA source or native subprocess path.
 
-Scheduler/resource plans MUST prove:
+CHANNEL-PROFILE-006. If a generic publication/synchronization/operation mechanism lacks a natural public CUDA-JS expression with explicit scope, resources, lifecycle and independent qualification, the affected native profile stops for CUDA-JS capability classification rather than using a local workaround.
 
-- at least one producer path can become runnable without consumer-held resources;
-- correctness-required producers cannot be permanently starved by pending consumers;
-- finite capacity cannot create an unhandled reservation cycle;
-- cancellation/stop can retire request and pending consumer;
-- deadlock/orphan/expiry/device-failure has a typed outcome.
+CHANNEL-PROFILE-007. A selected channel has exactly one consumption class: `required`, `optional`, `advisory` or a namespaced class with equally complete ready/unavailable/failure semantics. Timing cannot silently switch the class.
 
-When no ordinary work is ready but producers remain runnable, scheduler capacity is available to producer classes. When no producer can run and a required result cannot arrive, the engine produces typed failure/stop rather than waiting indefinitely.
+CHANNEL-PROFILE-008. Channel selection and every meaning-affecting profile field participate in Search IR/Search Program/package identity. An unselected channel is canonical absence rather than an empty dispatcher/queue.
 
-Idle hardware awaiting a legitimate device-side dependency is not itself a violation. A worker-side wait, host decision dependency or unbounded unresolved state is.
+## 5. Item lifecycle, identity and ownership
 
-## 8. Publication and memory ordering
+CHANNEL-ITEM-001. Every item has channel identity, non-ambiguous finite generation and correlation identity sufficient to reject foreign, stale, duplicated and wrapped references before payload use.
 
-Payload initialization/readiness publication follows SPEC-0001. Concrete lowering uses release after payload writes and matching acquire before payload reads at a scope covering all actual producers/consumers.
+CHANNEL-ITEM-002. Every channel state machine distinguishes at least `free`, `reserved-unpublished`, `ready`, `owned-or-borrowed`, `terminally-disposed` and `reclaimable`, even when a realization fuses states. Request/result profiles may add explicit `in-progress` and `result-ready` states.
 
-Relaxed atomics may reserve indices/update independent counters only when they do not substitute for payload publication. A readiness flag alone cannot validate non-atomic payload races.
+CHANNEL-ITEM-003. Item transitions are monotonic within one generation or follow one explicitly validated finite state graph. A state never moves backward to reinterpret already published bytes.
 
-Channel states are monotonic per generation or use an explicitly specified state machine. Reused storage changes generation before stale references could alias current work.
+CHANNEL-ITEM-004. Reservation grants one bounded initializer ownership and does not make the item visible. Failed reservation publishes no work and acquires no semantic count.
 
-## 9. Capacity, pressure and fairness
+CHANNEL-ITEM-005. Ready publication transfers or exposes exactly the declared payload/ownership rights. Initialization ownership ends or narrows at publication; no producer may mutate immutable ready payload afterward.
 
-Every channel has finite capacity in the Search Image plan. Failed reservations do not count as published work.
+CHANNEL-ITEM-006. A channel selects one claim mode: single-consumer transfer, finite multi-consumer immutable borrow with exact reference accounting, broadcast with predeclared recipients, or another completely specified bounded mode. Ambiguous mixed modes reject.
 
-At high/critical watermarks, the selected channel/capability/resource contract defines deterministic actions such as:
+CHANNEL-ITEM-007. Every claim/borrow validates item/channel/generation/correlation/version/freshness and obtains the declared lifetime before payload access. A failed validation has no payload or ownership effect.
 
-- stop admitting optional tasks;
-- reduce batch/proposal width;
-- prioritize draining producer/result classes;
-- use declared fallback;
-- produce typed pressure/exhaustion;
-- stop with valid partial/no-valid result.
+CHANNEL-ITEM-008. Completion records one typed success/failure/cancel/stale/expired disposition and assigns final payload/result release. Exactly one owner is responsible for every reservation, payload, result and borrow at each state.
 
-Backpressure propagates as data/state, not as a producer blocking while holding mutable stage resources.
+CHANNEL-ITEM-009. Reclamation occurs only after terminal disposition, all borrows/claims and source-owner leases end, and progress/resource owners confirm no live reference. Reuse advances generation before a stale reference can alias new work.
 
-Fairness is profile-specific but prevents starvation of correctness-required producer classes under declared finite assumptions.
+CHANNEL-ITEM-010. Generation/correlation/counter exhaustion cannot wrap into ambiguity. The selected profile rejects further admission, drains/restarts or terminates with a typed cause before alias.
 
-Product-specific channels consume product-budgeted resources; they may not silently cannibalize universal safety/root-admission capacity outside the resource plan.
+## 6. Producer contract
 
-## 10. Cancellation, expiry and reclamation
+CHANNEL-PRODUCER-001. A producer may reserve and initialize only through a selected granted role and only within compound admission/resource bounds. It cannot allocate hidden storage or exceed planned multiplicity.
 
-Each channel defines:
+CHANNEL-PRODUCER-002. Before ready publication, the producer completes or explicitly rolls back its current stage-owned mutation, establishes source-owner payload validity and releases any mutable lease not transferred by the channel contract.
 
-- queued work removal/tombstone/ignore-on-completion behavior;
-- in-flight cancellation observation;
-- late result classification/reclamation;
-- pending consumer termination/fallback;
-- owner of payload/task/result release;
-- generation advancement/stale-handle rejection;
-- teardown proof of no orphan reservation/slot/result.
+CHANNEL-PRODUCER-003. Payload, identity, ownership and source-validity metadata are completely initialized before the one declared ready publication transition.
 
-Expiry may use engine-owned monotonic epoch, work budget or stage generation. Wall-clock host service is not required for active-search correctness.
+CHANNEL-PRODUCER-004. Published references/handles remain valid through the maximum consumer/result lifetime or carry a source-owner lease/protection whose acquisition and release are explicit in the finite plan.
 
-A Search Session root epoch MAY be part of a channel item's validity key if the owning internal effect is root-relative. That does not convert the internal channel into the external root-update mechanism. Old-epoch channel work follows the owning stale disposition under SPEC-0006.
+CHANNEL-PRODUCER-005. Capacity failure returns the selected typed pressure outcome and releases partial reservation state. A producer cannot block/spin while retaining stage mutation, locks, reservations or unpublished source-owner effects.
 
-## 11. Cross-surface and capability use
+CHANNEL-PRODUCER-006. Duplicate production is either prevented by identity/claim state or classified under an explicit idempotent/coalesced/independent-duplicate rule owned by the payload semantic owner.
 
-An entry/exit surface MAY produce or consume a channel item when its SPEC-0003 capability grants that permission. The channel remains independently owned/versioned; it does not make the surface span stages.
+CHANNEL-PRODUCER-007. Starting channel work is semantic publication. It does not imply a kernel launch, dynamic parallelism, CUDA Graph node, host task or new operation.
 
-Capability composition rejects cycles where two surfaces each require the other's unpublished result before either can commit. Advisory cycles are permitted only with bounded skip/fallback progress.
+## 7. Consumer and unavailable-result contract
 
-Namespaced capability-specific channel fields/resources disappear when the capability is absent. Shared universal channel metadata must not accumulate first-product payloads.
+CHANNEL-CONSUMER-001. A consumer may access payload only after matching identity/generation/version/freshness, observing declared ready state through the publication contract and acquiring the declared ownership/borrow.
 
-## 12. Compatibility and identity
+CHANNEL-CONSUMER-002. If a required item/result is unavailable, the logical work item transitions to explicit pending state, records a bounded dependency descriptor, releases the worker/stage resources and becomes eligible again only through SPEC-0012-ready evidence or typed escape.
 
-Channel version/schemas/capacity/producer-consumer roles/publication scope/readiness/failure/freshness/retry/fallback rules and semantic owner are material Search Image identity.
+CHANNEL-CONSUMER-003. A pending item owns no spin loop, blocked worker, open stage mutation, lock, unpublished reservation or mutable source-owner lease merely to wait for future data.
 
-An incompatible product channel change invalidates product Search Image/package evidence without requiring a universal channel-version change when universal channel meaning is unchanged.
+CHANNEL-CONSUMER-004. An optional/advisory unavailable result follows exactly one selected bounded action: skip, owner-declared fallback, bounded defer/retry or typed terminal outcome. Observation timing cannot choose undeclared semantics.
 
-## 13. Conformance requirements
+CHANNEL-CONSUMER-005. Wrong-generation, stale, duplicate, late, expired, incompatible or failed results never publish source-owner success. They follow one selected reject/ignore/reclaim/fallback/terminal disposition with exact accounting.
 
-One consolidated channel capsule MUST cover:
+CHANNEL-CONSUMER-006. Consumption cannot directly invoke a later producer, recursively progress another stage, call the host or hold a worker until completion. It may publish new ready work only through another admitted selected transition/channel.
 
-- ordinary request/result publication with matching generation;
-- task initiated in one stage/consumed later;
-- cross-surface producer/consumer without shared surface ownership;
-- required-not-ready → pending with worker release;
-- optional skip/fallback/defer;
-- multiple ready work classes showing producer progress;
-- full queue/failed reservation/deterministic pressure;
-- stale/duplicate/late/wrong-generation/wrong-version results;
-- cancellation before enqueue/queued/in flight/late completion;
-- orphan/deadlock detection and typed terminal behavior;
-- release/acquire/scope-sensitive native evidence;
-- root-epoch-scoped internal work becoming stale after reroot without becoming an external session channel;
-- a product-specific channel deleted with zero product payload/resource residue;
-- a materially different non-product/universal capability using the same channel mechanics;
-- teardown with exact accounting.
+CHANNEL-CONSUMER-007. Required result failure is mapped by its semantic owner to retry/fallback/partial/terminal meaning. The channel reports typed transport/lifecycle facts and does not invent evaluator/policy/product semantics.
 
-Reference tests assert ownership/state/progress/publication/conservation/terminal disposition, not one schedule.
+## 8. Publication and synchronization semantics
 
-## 14. Acceptance blockers
+CHANNEL-PUBLISH-001. Ready publication is one logical release operation ordered after complete payload/metadata initialization. Payload consumption begins only after a matching logical acquire operation observes the same generation-ready state.
+
+CHANNEL-PUBLISH-002. The selected publication scope covers every actual device producer/consumer. Relaxed reservation/counter operations cannot substitute for the release/acquire edge protecting payload bytes.
+
+CHANNEL-PUBLISH-003. Multi-word payload coherence derives from immutable initialization plus one matching release/acquire publication word/version protocol. Independent per-field atomics do not create a snapshot and cannot replace that protocol.
+
+CHANNEL-PUBLISH-004. Concurrent non-atomic access to a location while another participant may mutate it is prohibited unless a separately accepted source-owner synchronization contract makes it safe.
+
+CHANNEL-PUBLISH-005. Backend-neutral reference semantics model happens-before and reject stale/uninitialized payload reads independently of one CUDA spelling or queue layout.
+
+CHANNEL-PUBLISH-006. Native restricted Device-JS qualification requires a public CUDA-JS capability that expresses the selected release/acquire order/scope naturally. [CUDA-JS #123](https://github.com/iteathen/CUDA-JS/issues/123) owns the currently identified device-scope helper gap; relaxed observation, fake RMW reads, undocumented fence recipes and CUDA-MCGS native code are non-conforming substitutes.
+
+CHANNEL-PUBLISH-007. A profile using another future qualified CUDA-JS publication mechanism must bind its exact public contract/evidence identity without changing channel semantics or exposing CUDA internals in Search IR.
+
+## 9. Readiness, dependency and progress composition
+
+CHANNEL-PROGRESS-001. Every channel publishes exact work descriptors for producer, consumer, completion/reclamation and pending dependency classes consumed by SPEC-0012. The channel does not choose their service mechanism.
+
+CHANNEL-PROGRESS-002. Every required pending dependency names at least one finite potential producer path or typed escape outcome. A dependency with no producer/escape rejects before ignition when statically knowable and becomes typed no-progress when dynamically established.
+
+CHANNEL-PROGRESS-003. The composed dependency graph rejects synchronous cycles and resource-holding cycles in which no participant can publish. Advisory cycles are legal only when every cycle has a bounded skip/fallback escape.
+
+CHANNEL-PROGRESS-004. Correctness-required producer and reclamation classes declare service/fairness obligations to SPEC-0012. Pending consumers cannot permanently starve their producers by consuming all worker/admission/resource capacity.
+
+CHANNEL-PROGRESS-005. When no ordinary work is ready but a producer/escape is runnable, SPEC-0012 must be able to service it under the selected finite assumptions. When none can run, the engine reports typed no-progress/stop rather than waiting indefinitely.
+
+CHANNEL-PROGRESS-006. Idle hardware while awaiting a legitimate device-side dependency is not itself failure. A worker-side wait, host decision dependency, unbounded unresolved item or unowned orphan is failure.
+
+CHANNEL-PROGRESS-007. Schedule permutations may change permitted timing but not source-owner semantics, channel ownership conservation or terminal disposition unless an explicit selected owner contract makes timing a semantic input.
+
+## 10. Capacity, pressure and resource accounting
+
+CHANNEL-RESOURCE-001. Every channel contributes exact finite persistent item storage, payload/result storage, pending descriptors, reservations, borrows, counters, diagnostics, scratch/alignment and concurrency multiplicity to SPEC-0011.
+
+CHANNEL-RESOURCE-002. Capacity and watermark selection is normalized before ignition and participates in identity. No hidden growth, heap allocation, spill, unplanned eviction or host-backed rescue is allowed.
+
+CHANNEL-RESOURCE-003. Failed reservation has zero published-work and resource-count effect after rollback. Successful reservation, claim, completion, release and reclamation conserve exact item/resource accounting.
+
+CHANNEL-RESOURCE-004. High/critical pressure uses explicit owner-selected actions such as stop optional admission, reduce bounded width, prioritize drain/reclamation, bounded fallback, typed exhaustion or valid partial/no-result stop. Pressure is data/state, never a blocking producer.
+
+CHANNEL-RESOURCE-005. Product/capability channels consume their declared partitions/contributions and cannot silently consume graph safety, root-update or terminal-publication reserve outside the compound plan.
+
+CHANNEL-RESOURCE-006. Cancellation/stop retains enough terminal reserve to classify every live item, release/retire it safely and publish allowed terminal output. Exhaustion cannot make cleanup unrepresentable.
+
+## 11. Cancellation, stale work, expiry and teardown
+
+CHANNEL-CANCEL-001. Each profile defines cancellation observation for reserved, ready, claimed/in-flight, result-ready, pending-consumer, terminal and late-completion states with one exact owner/disposition.
+
+CHANNEL-CANCEL-002. Cancellation is idempotent, does not erase an earlier authoritative failure/stop cause, and does not publish success from an incomplete or stale item.
+
+CHANNEL-CANCEL-003. Expiry uses a finite engine-owned epoch, work budget or generation rule unless an accepted owner explicitly supplies another device-resident time source. Host wall-clock polling is never required for active correctness.
+
+CHANNEL-CANCEL-004. A source-owner validity key may include graph generation, policy/evaluator incarnation, output cut or Search Session root epoch. The source owner defines stale meaning; channel identity detects/carries it and progress owns service/abandon/closure.
+
+CHANNEL-CANCEL-005. Optional SPEC-0006 coordinates root-transaction prepare/commit/abort and gathers owner stale dispositions. The channel does not become an external root-command transport or own reroot/reuse/reclamation policy.
+
+CHANNEL-CANCEL-006. Late completion after cancel/stale/expiry follows one ignore/quarantine/reclaim/terminal-failure rule and cannot resurrect pending work or overwrite a newer generation.
+
+CHANNEL-CANCEL-007. Teardown proves every reservation, item, payload/result, pending descriptor, borrow, source-owner lease and channel contribution is released, retired or explicitly quarantined under an owner before terminal zero residue is claimed.
+
+## 12. External session, output and host boundaries
+
+CHANNEL-BOUNDARY-001. External root/control commands, cancellation requests, observation requests/borrows and terminal result consumption are SPEC-0006/SPEC-0013/package operations, not Async Stage Channels, even if CUDA-JS realizes both with similar generic memory mechanisms.
+
+CHANNEL-BOUNDARY-002. Terminal/live output publication remains SPEC-0013-owned. An internal channel may carry output work or source facts but cannot define payload selection, snapshot/cut consistency, slot publication or external borrow semantics.
+
+CHANNEL-BOUNDARY-003. After ignition, no channel may depend on host micro-batching, callback progression, polling/relaunch, CPU-produced inference/selection or late allocation/compilation.
+
+CHANNEL-BOUNDARY-004. Host observation of diagnostics or terminal state cannot reserve, claim, complete or otherwise advance an internal channel item unless an explicit bounded external semantic command under another owner authorizes the mutation.
+
+## 13. Compatibility, failure and security
+
+CHANNEL-IDENTITY-001. Channel compatibility requires matching ID/version, producer/consumer roles, payload schemas/owners, item state graph, generation/correlation/freshness, claim mode, publication requirements, capacity, consumption/fallback, cancellation/reclamation and public CUDA-JS capability requirements.
+
+CHANNEL-IDENTITY-002. An incompatible change invalidates affected Search IR, generated source/package, reference and native evidence. Additive unselected channel definitions do not affect engines that do not select them.
+
+CHANNEL-IDENTITY-003. Live channel items are never migrated or reinterpreted implicitly. A separately versioned pre-ignition migration may transform only terminal durable state under explicit validation/rollback authority.
+
+CHANNEL-LIFE-001. Partial channel normalization/allocation/initialization publishes no valid channel and unwinds all task/runtime state under its owner. Previously valid immutable plans remain unchanged.
+
+CHANNEL-LIFE-002. Unknown roles, schemas, permissions, generations, states, capabilities, resource/progress bindings or executable provenance fail closed before payload access or native work.
+
+CHANNEL-LIFE-003. Public channel-facing records contain typed finite data and opaque owner handles only. They expose no raw CUDA pointer/handle, generated CUDA source/PTX/native artifact, unrestricted address authority or private source-owner representation.
+
+CHANNEL-LIFE-004. Diagnostics are bounded, generation-correlated and cannot become a hidden unbounded log/queue or progression dependency. Counter exhaustion follows CHANNEL-ITEM-010.
+
+## 14. Search IR, Composer and reference obligations
+
+CHANNEL-IR-001. Search IR must represent every CHANNEL-PROFILE field, optional absence, item-state/role/permission graph, source-owner payload identity, finite contributions, progress descriptors, publication semantics, stale/cancel/expiry/reclaim behavior, compatibility and deletion inputs.
+
+CHANNEL-IR-002. Normalization proves unique identities, role closure, legal state transitions, finite checked capacities, ownership conservation, matching publication scopes, required producer/escape paths, no resource-holding dependency cycle and exact absence when unselected.
+
+CHANNEL-IR-003. The Composer emits selected restricted Device-JS behavior and public CUDA-JS capability requirements only through SPEC-0005. CUDA-JS owns atomic/publication lowering, native queues/operations/artifacts and their lifecycle.
+
+CHANNEL-IR-004. Schema fields cannot replace missing owner semantics. An unowned payload, fallback, timing choice, stale rule or terminal disposition rejects rather than becoming implementation-defined.
+
+## 15. Conformance and falsification
+
+One consolidated CUDA-free channel capsule must cover at least:
+
+1. unselected channel exact schema/source/resource/package absence;
+2. ordinary single-producer/single-consumer publication with matching generation;
+3. finite multi-producer and immutable multi-borrow modes with exact ownership accounting;
+4. request/in-progress/result-ready correlation across stages/surfaces;
+5. required unavailable result to pending with worker/mutable lease release;
+6. optional skip, fallback and bounded defer/retry;
+7. full capacity, failed reservation rollback and deterministic pressure;
+8. producer progress while consumers are pending;
+9. static dependency-cycle rejection and dynamic typed no-progress;
+10. payload-before-ready/release and ready-before-payload-consume/acquire modeling;
+11. mutation removing either publication edge causing oracle failure;
+12. stale, duplicate, late, wrong-generation, wrong-version and expired result dispositions;
+13. cancellation before reservation, reserved, ready, in-flight, result-ready and late completion;
+14. root-epoch-scoped internal work becoming stale without becoming external session transport;
+15. result/output work remaining internally carried while SPEC-0013 owns external publication;
+16. product channel deletion with zero payload/resource residue;
+17. materially different evaluator-like required flow and optional non-product secondary-work flow;
+18. counter/generation exhaustion without alias;
+19. host-progression and worker-spin mutations rejected; and
+20. teardown with exact zero live channel/source-owner residue.
+
+CHANNEL-CONFORMANCE-001. Reference cases assert semantic state, happens-before, ownership, conservation, progress and terminal disposition, not one schedule, ring layout, queue algorithm or CUDA topology.
+
+CHANNEL-CONFORMANCE-002. Independent mutations must break generation checks, publication order, reservation rollback, claim accounting, pending-worker release, producer escape, stale rejection, cancellation and teardown and show the oracle fails.
+
+CHANNEL-CONFORMANCE-003. Native qualification separately proves public CUDA-JS release/acquire lowering, actual device publication/races, selected operation/resource coexistence, cancellation/teardown and exact compatible-pair behavior. Portable/reference evidence is not native support.
+
+## 16. Semantic acceptance blockers
 
 This proposal cannot become accepted until:
 
-- at least one evaluator-like required-result flow and one optional secondary-work flow are represented by the bounded Search IR/reference evidence accepted atomically with this contract;
-- at least one namespaced product/capability channel proves payload separation from universal channel meaning;
-- scheduler/resource contracts define pending/ready/progress without host progression and the CUDA-free reference model falsifies blocking/orphaned progress;
-- SPEC-0006 root-epoch interaction is reconciled for root-relative internal work;
-- cancellation/saturation/expiry/teardown cases have owned oracles;
-- first-consumer deletion and a materially different second channel use preserve universal channel meaning.
+- every normative requirement maps to strict normalized schema/validation and an independent CUDA-free reference case or explicit cross-specification proof;
+- SPEC-0005 is decision-complete and its composition/package requirements agree with selected channel identity/deletion;
+- SPEC-0011/0012/0006/0013 ownership boundaries are represented without duplicate channel authority;
+- evaluator-like required-result and materially different optional secondary-work profiles pass, including first-consumer deletion;
+- release/acquire, ownership, pressure, dependency/no-progress, stale, cancellation, counter exhaustion and teardown mutations fail independently; and
+- `ENGINE-CONTRACT-ACCEPTANCE-01` accepts this contract atomically with its schemas, reference evidence and coupled proposal dependencies on one exact revision.
 
-Native CUDA publication/race evidence, scheduler/resource behavior on the selected device, exact compatible-pair cancellation/teardown and any claimed Linux profile are production-profile qualification gates. They remain mandatory for the profiles that claim them, but are not prerequisites for accepting the backend-neutral channel semantics.
+CUDA-JS #123 and an exact compatible pair remain mandatory before claiming a native internal-channel profile. Native publication/race, device progress/resource/performance, cancellation and platform evidence qualify concrete production profiles after semantic acceptance; they are not circular prerequisites for accepting backend-neutral channel meaning.
