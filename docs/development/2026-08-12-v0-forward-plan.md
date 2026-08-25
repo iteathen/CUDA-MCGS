@@ -6,7 +6,7 @@
 
 **Parent plan version:** `CUDA-MCGS-V0/22`
 
-**CUDA-MCGS input baseline:** protected `main` `0ba119fbecaa116e29699a47fa867921fd08516d`.
+**CUDA-MCGS input baseline:** protected `main` `e6c4c9c6f7577fcec15cde0f9ed4cd64e72eb118`.
 
 **CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
 
@@ -89,7 +89,7 @@ The assessment classified device-scope release/acquire publication as a missing 
 
 ## ENGINE-IR-COMPOSER-01 — normalized Search IR and Search Composer
 
-**Current focus.** Begin with a critical assessment and focus-branch map over all 989 proposal requirements, existing accepted Search IR 0.1.0 evidence and strict component/package organization before changing schema/normalizer/Composer code.
+**Current focus.** The critical assessment and dependency-ordered semantic focus map are [`2026-08-25-engine-ir-composer-01-assessment-and-plan.md`](2026-08-25-engine-ir-composer-01-assessment-and-plan.md). It preserves accepted Search IR 0.1.0, assigns proposal Search IR 0.2.0 fragments to their semantic owners, keeps the reference Composer under bounded experiments rather than prematurely creating a production component, and makes `IR-CATALOG-01` the first implementation leaf.
 
 After the core and extension proposals are decision-complete, execute an explicitly bounded, non-production schema/normalizer/reference-composer evidence node:
 
