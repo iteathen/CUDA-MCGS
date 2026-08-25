@@ -336,7 +336,7 @@ The former CUDA-JS #123 capability dependency was subsequently resolved by the p
 
 **Focused evidence assembled:** 2026-08-25T15:27:46.8129338-07:00
 
-**Full repository validation completed:** 2026-08-25T15:40:38.1462567-07:00
+**Full repository validation completed:** 2026-08-25T15:42:07.5119387-07:00
 
 The expanded capsule passes 839/839 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource/progress/output/session/stage/channel cases and adds strict SPEC-0005-owned composition/package evidence across:
 
