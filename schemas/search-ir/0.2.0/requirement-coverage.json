@@ -1470,7 +1470,7 @@
       "supportingDispositions": ["structural-schema", "ir-identity-deletion-rejection"],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-profile-order-independent", "case:stage-zero-capability-complete-absence", "case:stage-program-public-js-boundary", "case:reject-stage-unknown-field", "case:reject-stage-private-cuda-js-requirement"],
+      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-profile-order-independent", "case:stage-zero-capability-complete-absence", "case:stage-channel-requirement-avoids-profile-identity-cycle", "case:stage-program-public-js-boundary", "case:reject-stage-unknown-field", "case:reject-stage-private-cuda-js-requirement"],
       "classificationStatus": "classified"
     },
     {

@@ -4339,6 +4339,13 @@ await runCase('stage-cleanup-selected-only-closure', () => {
   assert.equal(stageProfiles[0].normalized.lifecycle.persistence, 'none'); assert.equal(stageProfiles[0].normalized.compatibility.migration.kind, 'none');
 });
 
+await runCase('stage-channel-requirement-avoids-profile-identity-cycle', () => {
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].channels.push(stageSyntheticSchemaReference('cuda-mcgs.synthetic-required-channel'));
+  mutated.cleanup.kinds.push('channel-binding'); const normalized = normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult);
+  assert.equal(normalized.normalized.capabilities.filter(({ channels }) => channels.length === 1).length, 1);
+  assert.deepEqual(normalized.normalized.programContribution.inputs, stageProfiles[0].normalized.programContribution.inputs);
+});
+
 await runCase('reject-stage-unknown-field', () => {
   const mutated = clone(stageProfileInputs[0]); mutated.scheduler = 'persistent-kernel';
   assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_ROOT_FIELDS' });
@@ -4595,7 +4602,7 @@ await runCase('reject-stage-cleanup-gap', () => {
 });
 
 await runCase('reject-stage-channel-cleanup-residue-gap', () => {
-  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].channels.push({ id: 'channel.synthetic.pending', schema: stageSyntheticSchemaReference('cuda-mcgs.channel-profile'), identity: stageSyntheticContentIdentity('pending-channel') });
+  const mutated = clone(stageProfileInputs[0]); mutated.capabilities[0].channels.push(stageSyntheticSchemaReference('cuda-mcgs.synthetic-pending-channel'));
   assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_CLEANUP_COVERAGE' });
 });
 
@@ -4626,7 +4633,7 @@ await runCase('reject-stage-product-owner', () => {
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 701,
+  expected: 702,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -4634,7 +4641,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 701 - cases.length,
+  notDiscovered: 702 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
