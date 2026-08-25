@@ -24,7 +24,7 @@ The universal core is complete without chess and without any optional capability
 
 CUDA-MCGS is therefore a **search compiler/composer plus a finite specialized device program**, consuming the independent generic CUDA-JS runtime rather than owning Node/CUDA Driver plumbing.
 
-[`SPEC-0001`](../specs/SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](../specs/SPEC-0002-search-ir-and-reference-semantics.md) accept the foundational publication/graph/path/resource/Search IR slice. [`SPEC-0000`](../specs/SPEC-0000-framework-requirements.md), [`SPEC-0003`](../specs/SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](../specs/SPEC-0004-async-stage-channels.md), [`SPEC-0005`](../specs/SPEC-0005-stage-ptx-and-search-image-composition.md), and [`SPEC-0006`](../specs/SPEC-0006-search-session-control-and-observation.md) describe the proposal direction for the complete universal framework.
+[`SPEC-0001`](../specs/SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](../specs/SPEC-0002-search-ir-and-reference-semantics.md) accept the foundational publication/graph/path/resource/Search IR slice. [`SPEC-0000`](../specs/SPEC-0000-framework-requirements.md) and [`SPEC-0006`](../specs/SPEC-0006-search-session-control-and-observation.md) through [`SPEC-0013`](../specs/SPEC-0013-result-and-observation-publication.md) are the integrated decision-complete core proposal packet. [`SPEC-0003`](../specs/SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](../specs/SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](../specs/SPEC-0005-stage-ptx-and-search-image-composition.md) remain the optional extension-substrate proposal family to reconcile next. None authorizes production lowering before schema/reference acceptance.
 
 ## 1. Universal core inputs
 
@@ -33,20 +33,23 @@ The universal core contract families are conceptually independent:
 - **Domain contract** — state, action, transition, identity, node role, terminal, history, stochasticity/observation and cycle semantics.
 - **Search-policy contract** — selection, reservation, widening, policy-owned statistics, backup, stopping/budget semantics and reroot reuse classification. No ranked-action output is mandatory.
 - **Evaluator contract** — encoding, proposals/values/other outputs, perspective, batching, workspace, publication, resident execution and cache-validity semantics.
-- **Graph/execution contract** — state nodes, parent edges, paths, transpositions, publication, work ownership, lifecycle and device-owned progress.
-- **Resource contract/profile** — finite capacities, safety reserve, admission, pressure, exhaustion and cleanup.
-- **Search Session contract when selected** — root identity/updates, root epochs, stale-work disposition, reroot reuse/reclamation interaction, generic bounded observations, cancellation and restart.
-- **Generic output/observation contracts** — typed bounded publications without requiring one product payload such as ranked moves.
+- **Graph/storage contract** — graph objects, typed references, parent edges, paths, transpositions, structural publication, protection and reclamation.
+- **Generic output/observation contract** — mandatory bounded terminal publication and optional immutable live observations without requiring one product payload such as ranked moves.
+- **Resource contract/profile** — finite contributions, capacities, safety reserve, compound admission, pressure, exhaustion and cleanup accounting.
+- **Device-progress contract** — work readiness, finite service/fairness, typed no-progress, stop/drain and closure without selecting a scheduler topology.
+- **Search Session contract when selected** — external root/control transaction and root-epoch authority plus bounded observation-request/borrow lifecycle coordination; source owners retain stale-work, reuse, reclamation and publication meaning.
 
 These contracts must remain semantically meaningful if the extension substrate and chess product are removed.
 
 ```text
 Domain ────────────────┐
+Graph/storage ─────────┤
+Evaluator (optional) ──┤
 Policy ────────────────┤
-Evaluator ─────────────┤
-Graph/execution ───────┼────► universal Search IR semantic core
+Output ────────────────┼────► framework ownership map / universal Search IR
 Resources ─────────────┤
-Session/output ─────────┘
+Device progress ───────┤
+Session (optional) ─────┘
 ```
 
 A schema backs representation; it does not replace behavioral meaning. Contracts own invariants, permissions, lifecycle, failure, finite resources, ordering/publication and compatibility.
@@ -159,11 +162,11 @@ The Composer must:
 
 - normalize universal contracts without embedding first-product fields as core meaning;
 - validate namespaced selected capability/product schemas under their owners;
-- construct/validate the stage graph and stable base contexts;
+- construct/validate the stage graph and stable base contexts only when the selected extension profile requires them;
 - compose only selected capability context/state/resources;
 - validate internal Async Stage Channels and Search Session control/observation contracts;
 - resolve widths/layouts/ranges/finite capacities;
-- choose graph/reclamation/reduction/scheduler mechanisms behind accepted semantics;
+- select only profile-declared graph/reclamation/reduction/progress mechanism requirements behind accepted owner semantics;
 - generate deterministic code/artifact/package identity;
 - fail before ignition for incompatible semantics, resources, versions, permissions or provenance.
 
@@ -200,18 +203,16 @@ Already-composed capabilities may activate under device-resident rules. Activati
 
 A long-lived Search Session is a selected universal lifecycle capability, not a requirement for one persistent kernel or one ranked-move consumer.
 
-The generic session contract owns:
+The generic session contract owns only the optional external lifecycle boundary:
 
-- current root and finite root epoch;
-- root-update validation/admission before root-update-specific mutation;
-- typed full-capacity/root-admission pressure behavior;
-- one root-update commit point;
-- old-epoch work disposition and resource conservation;
-- owner-declared retain/retain-if-key-valid/transform/reset/invalidate reuse classifications;
-- separation of logical reroot from reclamation;
-- generation-safe storage reuse;
-- generic bounded **read-only** observations;
-- finite stale-safe generation/exhaustion/restart behavior.
+- session/current-root transaction authority and finite root epoch;
+- bounded root/control command identity, validation/admission coordination and one commit point;
+- concurrent/replayed command ordering and typed transaction outcomes;
+- collection of owner-declared prepare/reuse/stale/cleanup dispositions without reinterpreting them;
+- bounded observation request/acquire/release and teardown coordination against output-owned immutable publication; and
+- cancellation, completion, restart and exact terminal-only zero-residue semantics.
+
+Domain owns root validity; graph owns materialization, protection and reclamation; policy/evaluator/output own reuse meaning; resources own compound capacity admission; progress owns old-work service/stale/closure; output owns snapshot/publication/borrow meaning; CUDA-JS owns sideband/transfer/operation mechanisms.
 
 A rejected root update leaves accepted search-semantic state unchanged. A live observation must not expand/materialize/evaluate/reserve or otherwise advance search merely to satisfy observation.
 
@@ -228,7 +229,7 @@ The realized device program contains only what the selected Search Image require
 - selected evaluator execution/publication;
 - selected policy reservation/backup/stopping behavior;
 - selected stage transitions/surfaces/capabilities/internal channels;
-- selected Search Session root/observation/reclamation behavior;
+- selected Search Session root/control transaction and observation-request coordination;
 - selected product logic/output;
 - pressure/stop/diagnostics;
 - device-owned progress.
@@ -250,10 +251,10 @@ Bounded external environment/root updates and observation consumption are permit
 CUDA-MCGS universal owners include:
 
 - universal Search IR/Search Composer;
-- domain/policy/evaluator/graph/resource/session/output semantics;
+- framework composition plus domain/graph/policy/evaluator/output/resource/progress/session semantics;
 - Search Stage/surface/capability/channel extension mechanics;
 - restricted Device-JS stage composition/checkpoint contract;
-- search-specific memory/resource/scheduler policy;
+- finite search-resource composition and device-progress profiles;
 - universal conformance and compatible-pair acceptance.
 
 Downstream product owners include their domain/policy/evaluator/output/reuse/capability/support semantics.
@@ -290,7 +291,7 @@ Universal conformance must be independent of chess and cover materially differen
 6. stage surface/capability deletion and a materially different second capability;
 7. internal Async Channel pending/progress/pressure/cancellation/deadlock;
 8. finite resource pressure/exhaustion;
-9. Search Session root-update admission, stale work, reuse classification, reclamation, read-only observations and counter exhaustion;
+9. Search Session root/control transaction and observation-request coordination integrated with owner-defined stale work, reuse, reclamation, immutable publication and counter exhaustion;
 10. reference/native semantic parity for an exact compatible CUDA-JS pair.
 
 Chess adds its own legality/history/evaluator/output/search-quality conformance on top. Chess passing cannot substitute for universal second-instance evidence.

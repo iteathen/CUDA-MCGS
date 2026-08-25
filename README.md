@@ -83,13 +83,13 @@ Universal MCGS contracts
 When selected, it covers:
 
 - finite root epochs;
-- root-update validation/admission **before** root-update-specific mutation;
-- typed full-arena root admission/pressure behavior;
-- old-epoch work disposition;
-- explicit retain/retain-if-key-valid/transform/reset/invalidate reuse classification;
-- separation of logical reroot from generation-safe reclamation;
-- generic bounded **read-only** live observations;
-- stale-safe finite generation/counter exhaustion and restart behavior.
+- bounded root/control command identity, validation/admission **before** command-specific mutation, prepare/commit/abort and typed outcomes;
+- coordination of source-owner stale-work and retain/retain-if-key-valid/transform/reset/invalidate dispositions;
+- separation of the logical root transaction from graph-owned generation-safe reclamation;
+- bounded request/acquire/release coordination for output-owned immutable **read-only** live observations; and
+- cancellation, completion, stale-safe finite generation/counter exhaustion, restart and exact terminal-only zero-residue behavior.
+
+Session does not own domain root validity, graph reclamation, policy/evaluator reuse meaning, resource pressure policy, device progress, observation payload publication or CUDA sideband mechanisms.
 
 A ranked root-action list is one possible product/policy observation schema. It is not the universal observation contract.
 
@@ -112,11 +112,18 @@ Accepted foundational contracts:
 
 Current universal proposals:
 
-- [`SPEC-0000`](docs/specs/SPEC-0000-framework-requirements.md) — complete three-layer framework map.
+- [`SPEC-0000`](docs/specs/SPEC-0000-framework-requirements.md) — cross-owner LEGO composition, lifecycle, deletion, package and integrated conformance map.
 - [`SPEC-0003`](docs/specs/SPEC-0003-search-stage-and-extension-surface.md) — universal Search Stage/surface/base-context/capability semantics.
 - [`SPEC-0004`](docs/specs/SPEC-0004-async-stage-channels.md) — universal internal nonblocking channel/readiness semantics.
 - [`SPEC-0005`](docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) — restricted Device-JS/Search Image composition, opaque CUDA-JS-generated outputs and product/capability deletion.
-- [`SPEC-0006`](docs/specs/SPEC-0006-search-session-control-and-observation.md) — generic Search Session/root-update/reroot/reclamation/read-only observation semantics.
+- [`SPEC-0006`](docs/specs/SPEC-0006-search-session-control-and-observation.md) — optional external Search Session transaction/root-epoch and bounded control/observation-request lifecycle coordination.
+- [`SPEC-0007`](docs/specs/SPEC-0007-domain-state-action-and-transition.md) — domain state/action/transition/identity/history/role/terminal semantics.
+- [`SPEC-0008`](docs/specs/SPEC-0008-search-policy-and-backup.md) — search selection/reservation/widening/value/backup/stopping/reuse semantics.
+- [`SPEC-0009`](docs/specs/SPEC-0009-evaluator-contract.md) — optional evaluator capability/request/result/residency/batching/cache/reuse semantics.
+- [`SPEC-0010`](docs/specs/SPEC-0010-graph-storage-and-reclamation.md) — graph object/reference/path/transposition/publication/protection/reclamation semantics.
+- [`SPEC-0011`](docs/specs/SPEC-0011-finite-search-resources.md) — finite contribution/plan/admission/accounting/pressure/exhaustion semantics.
+- [`SPEC-0012`](docs/specs/SPEC-0012-device-owned-search-progress.md) — device-owned readiness/fairness/no-progress/stop/drain/closure semantics.
+- [`SPEC-0013`](docs/specs/SPEC-0013-result-and-observation-publication.md) — mandatory terminal and optional immutable live-observation publication semantics.
 
 Downstream product proposal:
 
@@ -128,7 +135,7 @@ None of the proposal documents authorize production implementation by themselves
 
 The repository is **public and pre-release**. CUDA-MCGS is still in framework definition, research, specification and bounded evidence gathering. No production search runtime, stable public API, released CUDA-MCGS/CUDA-JS compatible pair, native Linux support claim, or chess engine release is implied by repository visibility.
 
-The canonical plan is [`next_step.yaml`](next_step.yaml), plan 16. It has separate universal-core, universal-extension-substrate, universal-integration/native, and non-gating downstream chess product lanes.
+The canonical plan is [`next_step.yaml`](next_step.yaml) under parent `CUDA-MCGS-V0/22`. It has separate universal-core, universal-extension-substrate, universal-integration/native, and non-gating downstream product lanes.
 
 ## Engineering invariants
 

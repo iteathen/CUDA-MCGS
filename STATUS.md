@@ -2,14 +2,14 @@
 
 **Status:** Informational
 
-**Updated:** 2026-08-24
+**Updated:** 2026-08-25
 
 ## Current repository state
 
 The protected CUDA-MCGS `main` input baseline for the active contract packet is:
 
 ```text
-5fe57778723012c0a6c8bd5ef1501341962040f0
+1ef73244ecec507ae70b81ceaa29128621fbbe4a
 ```
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
@@ -32,7 +32,7 @@ ADR-0019 requires maintained CUDA-MCGS production source to be JavaScript only: 
 
 Extension-surface stability is schema/semantic stability, not unconditional runtime presence. Concrete ports/hooks/context/channels/storage are materialized only for selected capabilities; an absent capability contributes no solely extension-owned hot-path residue.
 
-SPEC-0001 and SPEC-0002 remain accepted foundational authority. SPEC-0000 and SPEC-0003 through SPEC-0013 remain proposals requiring review/revision and integrated evidence before their owned production implementation.
+SPEC-0001 and SPEC-0002 remain accepted foundational authority. SPEC-0000 and SPEC-0006 through SPEC-0013 are decision-complete core proposals awaiting extension/schema/reference integration and semantic acceptance. SPEC-0003 through SPEC-0005 remain proposals requiring decision-complete extension-substrate revision. None authorizes its owned production implementation yet.
 
 ## Bounded evidence already integrated
 
@@ -68,9 +68,9 @@ The owner-directed production boundary remains: CUDA-MCGS owns JavaScript-only s
 
 The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`](docs/development/2026-08-12-v0-forward-plan.md).
 
-Current focus is **ENGINE-CONTRACT-01** under parent plan `CUDA-MCGS-V0/22`. Its critical assessment and semantic focus-branch map are [`docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md`](docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md). The domain, graph, policy, evaluator, output, resource, device-progress and optional Search Session owners are integrated as decision-complete proposals SPEC-0006 through SPEC-0013. `EC-FRAMEWORK-01` is the single active leaf and reconciles the cross-cutting SPEC-0000 map without duplicating those owners. Device-owned progress remains intentionally separate from any later physical scheduler selection.
+Current focus is the final `EC-INTEGRATE-01` leaf of **ENGINE-CONTRACT-01** under parent plan `CUDA-MCGS-V0/22`. Its critical assessment and semantic focus-branch map are [`docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md`](docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md). SPEC-0000 and SPEC-0006 through SPEC-0013 form one frozen decision-complete proposal packet at `main@1ef7324`, containing 741 unique normative requirements across framework, domain, graph, policy, optional evaluator, output, resources, device progress and optional Search Session owners. Device-owned progress remains intentionally separate from any later physical scheduler selection.
 
-After framework-map and packet reconciliation, the owner proposals receive bounded normalized Search IR/Composer and universal reference evidence before one integrated semantic-acceptance gate. Production lowering remains blocked until that acceptance gate completes.
+This leaf is reconciling architecture/index/registry/plan/issue routing and the exact downstream schema/reference handoff. It makes no acceptance or implementation claim. After it closes, the optional extension-substrate proposals are revised, then the combined owner/extension proposals receive bounded normalized Search IR/Composer and universal reference evidence before one integrated semantic-acceptance gate. Production lowering remains blocked until that acceptance gate completes.
 
 After core semantics:
 
@@ -88,8 +88,8 @@ Chess remains a separately tracked downstream proposal and does not gate univers
 ## Claim limits / blockers
 
 - no production universal engine is accepted yet;
-- the cross-cutting framework map and integrated core proposal packet remain incomplete;
-- SPEC-0003/0004/0005/0006 are proposal-only;
+- final core proposal-packet routing/handoff reconciliation is still active;
+- SPEC-0003/0004/0005 remain unreconciled extension-substrate proposals;
 - complete Search IR/Composer specialization/resource identity is incomplete;
 - CUDA-MCGS external deletion/compatible-pair evidence is unfinished;
 - SESSION-002 native live-session evidence for the selected CUDA-JS mailbox profile is absent;
