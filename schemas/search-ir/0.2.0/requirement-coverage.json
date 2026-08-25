@@ -80,8 +80,8 @@
       "requirementPrefix": "GRAPH-",
       "primaryOwner": "CUDA-MCGS universal graph/storage semantics",
       "plannedLeaf": "IR-GRAPH-01",
-      "currentDisposition": "pending-owner-classification",
-      "completionStatus": "pending"
+      "currentDisposition": "section-classified",
+      "completionStatus": "in-progress"
     },
     {
       "contract": "SPEC-0011",
@@ -416,12 +416,155 @@
       "evidenceStatus": "partial",
       "evidenceRefs": ["normalizer:domain-profile", "case:domain-profile-second-instances-distinct", "case:reject-domain-cancellation-bound", "planned:ENGINE-REFERENCE-01"],
       "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-PROFILE-",
+      "requirementCount": 6,
+      "primaryDisposition": "structural-schema",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-GRAPH-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:graph-profile.schema.json", "normalizer:graph-profile", "case:normalize-graph-profiles", "case:reject-graph-native-program-language"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-REF-",
+      "requirementCount": 8,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-GRAPH-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:graph-profile", "case:graph-arbitrary-width-ranges", "case:reject-graph-arena-reference-range", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-NODE-",
+      "requirementCount": 11,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:graph-profile", "case:reject-graph-lifecycle-missing-release", "case:reject-graph-required-port", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-EDGE-",
+      "requirementCount": 10,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:graph-profile", "case:normalize-graph-profiles", "case:reject-graph-publication-host-wait", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-PATH-",
+      "requirementCount": 8,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:graph-profile", "case:reject-graph-path-domain-port", "case:reject-graph-path-capacity", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-ROOT-",
+      "requirementCount": 6,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:graph-profile", "case:reject-graph-root-reserve", "case:reject-graph-reclamation-protection-gap", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-RECLAIM-",
+      "requirementCount": 9,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:graph-profile", "case:graph-no-reclamation-zero-residue", "case:reject-graph-reclamation-generation-order", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-LIFE-",
+      "requirementCount": 7,
+      "primaryDisposition": "native-compatible-pair-qualification",
+      "supportingDispositions": ["engine-reference-oracle", "semantic-normalizer"],
+      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "evidenceStatus": "deferred",
+      "evidenceRefs": ["normalizer:graph-profile", "case:reject-graph-lifecycle-unreachable-terminal", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-RESOURCE-",
+      "requirementCount": 8,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-RESOURCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:graph-profile", "case:graph-arbitrary-width-ranges", "case:reject-graph-resource-range", "planned:IR-RESOURCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-CLEANUP-",
+      "requirementCount": 4,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["case:graph-no-reclamation-zero-residue", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-SEC-",
+      "requirementCount": 5,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-GRAPH-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:reject-graph-unknown-field", "case:reject-graph-owner-contract-crossing", "case:reject-graph-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-COMPAT-",
+      "requirementCount": 6,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:graph-identity-content-sensitive", "case:graph-owner-region-product-deletion", "case:reject-graph-persistence-scope", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-IR-",
+      "requirementCount": 5,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-GRAPH-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:graph-profile.schema.json", "normalizer:graph-profile", "case:graph-profile-order-independent", "case:graph-framework-selection-link"],
+      "classificationStatus": "classified"
     }
   ],
   "totals": {
     "contracts": 12,
     "requirements": 989,
-    "classified": 164,
-    "pending": 825
+    "classified": 257,
+    "pending": 732
   }
 }

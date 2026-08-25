@@ -18,6 +18,13 @@ import {
   syntheticContentIdentity,
   syntheticSchemaReference,
 } from './src/domain-fixtures.mjs';
+import { normalizeGraphProfile } from './src/graph.mjs';
+import {
+  buildGraphProfiles,
+  graphSyntheticContentIdentity,
+  graphSyntheticProfileReference,
+  graphSyntheticSchemaReference,
+} from './src/graph-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -40,6 +47,7 @@ const coverageSchema = await readJson(path.join(schemaRoot, 'requirement-coverag
 const primitivesSchema = await readJson(path.join(schemaRoot, 'primitives.schema.json'));
 const frameworkSelectionSchema = await readJson(path.join(schemaRoot, 'framework-selection.schema.json'));
 const domainProfileSchema = await readJson(path.join(schemaRoot, 'domain-profile.schema.json'));
+const graphProfileSchema = await readJson(path.join(schemaRoot, 'graph-profile.schema.json'));
 const frameworkSelectionInput = await readJson(path.join(experimentRoot, 'fixtures', 'minimal.framework-selection.json'));
 
 const cases = [];
@@ -64,7 +72,7 @@ await runCase('normalize-contract-set', () => {
 await runCase('normalize-requirement-coverage', () => {
   const normalized = normalizeRequirementCoverage(coverageInput);
   assert.equal(normalized.contracts.length, 12);
-  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 164, pending: 825 });
+  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 257, pending: 732 });
 });
 
 await runCase('canonical-order-independent', () => {
@@ -115,10 +123,11 @@ await runCase('coverage-owner-route-closure', () => {
 });
 
 await runCase('coverage-honest-classification-progress', () => {
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 164);
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 825);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 257);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 732);
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0000').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0007').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
+  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0010').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
 });
 
 await runCase('catalog-identity-content-sensitive', () => {
@@ -199,8 +208,8 @@ await runCase('reject-coverage-classification-count-drift', async () => {
 
 await runCase('reject-expanded-coverage-total-drift', async () => {
   const mutated = clone(coverageInput);
-  mutated.totals.classified = 165;
-  mutated.totals.pending = 824;
+  mutated.totals.classified = 258;
+  mutated.totals.pending = 731;
   await assert.rejects(() => inspectCatalog(repositoryRoot, contractSetInput, mutated), { code: 'COVERAGE_TOTALS' });
 });
 
@@ -703,9 +712,400 @@ await runCase('reject-domain-product-owner', () => {
   assert.throws(() => normalizeDomainProfile(mutated, inspected), { code: 'DOMAIN_PRODUCT_OWNER' });
 });
 
+let graphFixtures;
+let graphProfileInputs;
+let graphProfiles;
+let graphSchemaSha;
+await runCase('normalize-graph-profiles', async () => {
+  graphSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'graph-profile.schema.json')));
+  const domainSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'domain-profile.schema.json')));
+  graphFixtures = buildGraphProfiles(inspected, domainProfiles, domainSchemaSha);
+  graphProfileInputs = graphFixtures.map(({ input }) => input);
+  graphProfiles = graphFixtures.map(({ input, domain }) => normalizeGraphProfile(input, inspected, domain));
+  assert.deepEqual(graphProfiles.map(({ normalized }) => normalized.id), [
+    'graph.synthetic-transposing',
+    'graph.synthetic-reclaiming',
+    'graph.synthetic-isolated',
+    'graph.synthetic-stateless',
+  ]);
+});
+
+await runCase('graph-profile-second-instances-distinct', () => {
+  assert.equal(new Set(graphProfiles.map(({ identity }) => identity.sha256)).size, 4);
+  assert.deepEqual(graphProfiles.map(({ normalized }) => normalized.transposition.kind), ['verified-sharing', 'verified-sharing', 'isolated-nodes', 'none']);
+  assert.deepEqual(graphProfiles.map(({ normalized }) => normalized.reclamation.kind), ['none', 'enabled', 'none', 'none']);
+  assert(!graphProfiles[2].normalized.resources.some(({ pressureOutcome }) => pressureOutcome.startsWith('transposition-')));
+});
+
+await runCase('graph-profile-order-independent', () => {
+  const reordered = clone(graphProfileInputs[1]);
+  for (const key of ['objectKinds', 'layouts', 'ownerRegions', 'publications', 'ports', 'resources', 'failures']) reordered[key].reverse();
+  reordered.reclamation.protectionSources.reverse();
+  reordered.programContribution.inputs.reverse();
+  for (const object of reordered.objectKinds) {
+    object.lifecycle.states.reverse();
+    object.lifecycle.transitions.reverse();
+    object.lifecycle.readyStates.reverse();
+    object.lifecycle.terminalStates.reverse();
+  }
+  for (const region of reordered.ownerRegions) region.permissions.reverse();
+  for (const publication of reordered.publications) {
+    publication.consumers.reverse();
+    publication.terminalStates.reverse();
+  }
+  for (const portInput of reordered.ports) {
+    portInput.objectKinds.reverse();
+    portInput.failures.reverse();
+  }
+  assert.deepEqual(normalizeGraphProfile(reordered, inspected, graphFixtures[1].domain).identity, graphProfiles[1].identity);
+});
+
+await runCase('graph-arbitrary-width-ranges', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  const boundary = '340282366920938463463374607431768211455';
+  mutated.arena.maxIncarnations = boundary;
+  mutated.referenceEncoding.arenaRange = boundary;
+  mutated.referenceEncoding.slotRange = boundary;
+  const expansionObject = mutated.objectKinds.find(({ role }) => role === 'expansion').id;
+  const expansionLayout = mutated.layouts.find(({ objectKind }) => objectKind === expansionObject);
+  expansionLayout.capacity = boundary;
+  expansionLayout.identifierRange = boundary;
+  expansionLayout.bytePool = '21778071482940061661655974875633165533120';
+  expansionLayout.offsetRange = expansionLayout.bytePool;
+  mutated.resources[0].maximum = boundary;
+  const normalized = normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain).normalized;
+  assert.equal(normalized.referenceEncoding.slotRange, boundary);
+  assert.equal(normalized.layouts.find(({ objectKind }) => objectKind === expansionObject).capacity, boundary);
+  assert.equal(normalized.resources.find(({ id }) => id === mutated.resources[0].id).maximum, boundary);
+});
+
+await runCase('graph-stateless-zero-residue', () => {
+  const normalized = graphProfiles[3].normalized;
+  for (const field of ['objectKinds', 'layouts', 'ownerRegions', 'publications', 'ports', 'resources', 'failures']) assert.equal(normalized[field].length, 0);
+  assert.equal(normalized.programContribution.kind, 'none');
+  assert.deepEqual(normalized.diagnostics, { authority: 'non-authoritative', maxRecords: '0', maxBytes: '0', overflow: 'drop', rawAddresses: false });
+});
+
+await runCase('graph-no-reclamation-zero-residue', () => {
+  const normalized = graphProfiles[0].normalized;
+  assert.equal(normalized.reclamation.kind, 'none');
+  assert(!normalized.objectKinds.some(({ role }) => role === 'retirement-record'));
+  assert(!normalized.ports.some(({ id }) => ['retire', 'prove-quiescent', 'reclaim'].includes(id)));
+  assert(!normalized.resources.some(({ id }) => id.includes('reclaim')));
+  assert(!normalized.objectKinds.some(({ lifecycle }) => lifecycle.states.some((stateName) => /-(?:retiring|reclaimable)$/.test(stateName))));
+});
+
+await runCase('graph-owner-region-product-deletion', () => {
+  const selected = clone(graphProfileInputs[0]);
+  const product = clone(selected.ownerRegions.find(({ semanticRole }) => semanticRole === 'domain-state'));
+  product.id = 'graph.synthetic-transposing.region-product-option';
+  product.semanticRole = 'product-record';
+  product.ownerContract = {
+    kind: 'namespaced', id: 'product.synthetic-graph-option', version: '0.1.0',
+    schema: 'cuda-mcgs.synthetic-graph-option-contract/0.1.0', sha256: graphSyntheticContentIdentity('product-contract').sha256,
+  };
+  product.ownerProfile = graphSyntheticProfileReference('product.synthetic-graph-option');
+  product.layout = graphSyntheticSchemaReference('cuda-mcgs.synthetic-product-region-layout');
+  product.lifecycle = graphSyntheticSchemaReference('cuda-mcgs.synthetic-product-region-lifecycle');
+  product.offsetBytes = '288';
+  product.sizeBytes = '32';
+  product.permissions = ['read'];
+  selected.ownerRegions.push(product);
+  assert.notDeepEqual(normalizeGraphProfile(selected, inspected, graphFixtures[0].domain).identity, graphProfiles[0].identity);
+  selected.ownerRegions.pop();
+  product.id = 'graph.synthetic-transposing.region-capability-option';
+  product.semanticRole = 'capability-record';
+  product.ownerContract.id = 'capability.synthetic-graph-option';
+  selected.ownerRegions.push(product);
+  assert.notDeepEqual(normalizeGraphProfile(selected, inspected, graphFixtures[0].domain).identity, graphProfiles[0].identity);
+  selected.ownerRegions.pop();
+  assert.deepEqual(normalizeGraphProfile(selected, inspected, graphFixtures[0].domain).identity, graphProfiles[0].identity);
+});
+
+await runCase('graph-identity-content-sensitive', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.diagnostics.maxRecords = '257';
+  assert.notDeepEqual(normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain).identity, graphProfiles[0].identity);
+});
+
+await runCase('graph-schema-closed', () => {
+  assert.equal(graphProfileSchema.properties.schema.const, 'cuda-mcgs.graph-profile/0.2.0');
+  assert.equal(graphProfileSchema.additionalProperties, false);
+  assert.equal(graphProfileSchema.$defs.objectKind.additionalProperties, false);
+  assert.equal(graphProfileSchema.$defs.ownerRegion.additionalProperties, false);
+});
+
+await runCase('graph-framework-selection-link', () => {
+  const selected = frameworkSelection.normalized.profiles.find(({ role }) => role === 'graph');
+  assert.equal(selected.schema.id, graphProfileInputs[0].schema);
+  assert.equal(selected.schema.sha256, graphSchemaSha);
+  assert.equal(selected.identity.sha256, graphProfiles[0].identity.sha256);
+});
+
+await runCase('reject-graph-unknown-field', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.allocator = 'native';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_ROOT_FIELDS' });
+});
+
+await runCase('reject-graph-contract-drift', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.contract.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_CONTRACT_DRIFT' });
+});
+
+await runCase('reject-graph-domain-identity-drift', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.domainProfile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_DOMAIN_DRIFT' });
+});
+
+await runCase('reject-graph-arena-reference-range', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.arena.maxIncarnations = '18446744073709551616';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_ARENA_RANGE' });
+});
+
+await runCase('reject-graph-duplicate-object-role', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.objectKinds.find(({ role }) => role === 'expansion').role = 'state-node';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_OBJECT_ROLE_DUPLICATE' });
+});
+
+await runCase('reject-graph-lifecycle-unknown-state', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.objectKinds[0].lifecycle.transitions[0].to = 'graph.synthetic-transposing.state-ghost';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_LIFECYCLE_TRANSITION_STATE' });
+});
+
+await runCase('reject-graph-lifecycle-unreachable-terminal', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  const lifecycle = mutated.objectKinds.find(({ role }) => role === 'state-node').lifecycle;
+  const failed = lifecycle.terminalStates[0];
+  lifecycle.states.push('graph.synthetic-transposing.state-orphan');
+  lifecycle.transitions = lifecycle.transitions.filter(({ to }) => to !== failed);
+  lifecycle.transitions.push({ from: 'graph.synthetic-transposing.state-orphan', to: failed, visibility: 'terminal-publication' });
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_LIFECYCLE_UNREACHABLE' });
+});
+
+await runCase('reject-graph-lifecycle-missing-release', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  const lifecycle = mutated.objectKinds.find(({ role }) => role === 'state-node').lifecycle;
+  lifecycle.transitions.find(({ to }) => lifecycle.readyStates.includes(to)).visibility = 'private';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_LIFECYCLE_PUBLICATION' });
+});
+
+await runCase('reject-graph-layout-object', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.layouts[0].objectKind = 'graph.synthetic-transposing.object-ghost';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_LAYOUT_OBJECT' });
+});
+
+await runCase('reject-graph-layout-alignment', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.layouts[0].recordBytes = '353';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_LAYOUT_ALIGNMENT' });
+});
+
+await runCase('reject-graph-layout-range', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.layouts[0].capacity = '18446744073709551616';
+  mutated.layouts[0].bytePool = '340282366920938463463374607431768211455';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_LAYOUT_RANGE' });
+  const undersized = clone(graphProfileInputs[0]);
+  undersized.layouts[0].bytePool = '1';
+  assert.throws(() => normalizeGraphProfile(undersized, inspected, graphFixtures[0].domain), { code: 'GRAPH_LAYOUT_POOL' });
+});
+
+await runCase('reject-graph-owner-region-overlap', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.ownerRegions[0].offsetBytes = '0';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_OWNER_REGION_OVERLAP' });
+});
+
+await runCase('reject-graph-owner-profile-drift', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.ownerRegions[0].ownerProfile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_OWNER_REGION_DOMAIN' });
+});
+
+await runCase('reject-graph-missing-domain-region', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.ownerRegions = mutated.ownerRegions.filter(({ semanticRole }) => semanticRole !== 'domain-action');
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_OWNER_REGION_REQUIRED' });
+});
+
+await runCase('reject-graph-history-region-without-history', () => {
+  const mutated = clone(graphProfileInputs[2]);
+  const region = clone(mutated.ownerRegions.find(({ semanticRole }) => semanticRole === 'domain-action'));
+  region.id = 'graph.synthetic-isolated.region-domain-history';
+  region.semanticRole = 'domain-history';
+  region.objectKind = mutated.objectKinds.find(({ role }) => role === 'path-occurrence').id;
+  region.offsetBytes = '32';
+  region.sizeBytes = '16';
+  mutated.ownerRegions.push(region);
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[2].domain), { code: 'GRAPH_OWNER_REGION_DOMAIN' });
+});
+
+await runCase('reject-graph-transposition-object', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.transposition.entryObject = mutated.objectKinds.find(({ role }) => role === 'state-node').id;
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_TRANSPOSITION_OBJECT' });
+});
+
+await runCase('reject-graph-transposition-domain-port', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.transposition.equalStatePort = { ...mutated.transposition.equalStatePort, sha256: '0'.repeat(64) };
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_TRANSPOSITION_DOMAIN_PORT' });
+});
+
+await runCase('reject-graph-transposition-capacity', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.transposition.capacity = '8193';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_TRANSPOSITION_CAPACITY' });
+});
+
+await runCase('reject-graph-path-object', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.path.pathObject = mutated.objectKinds.find(({ role }) => role === 'state-node').id;
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_PATH_OBJECT' });
+});
+
+await runCase('reject-graph-path-domain-port', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.path.historyProjection = { ...mutated.path.historyProjection, sha256: '0'.repeat(64) };
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_PATH_DOMAIN_PORT' });
+});
+
+await runCase('reject-graph-path-capacity', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.path.maxDepth = '4097';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_PATH_CAPACITY' });
+});
+
+await runCase('reject-graph-root-reserve', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.rootProtection.admissionReserve = '9';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_ROOT_RESERVE' });
+});
+
+await runCase('reject-graph-reclamation-protection-gap', () => {
+  const mutated = clone(graphProfileInputs[1]);
+  mutated.reclamation.protectionSources = mutated.reclamation.protectionSources.filter((source) => source !== 'owner-lease');
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[1].domain), { code: 'GRAPH_RECLAIM_PROTECTION' });
+});
+
+await runCase('reject-graph-reclamation-generation-order', () => {
+  const mutated = clone(graphProfileInputs[1]);
+  mutated.reclamation.generationAdvance = 'after-slot-reuse';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[1].domain), { code: 'GRAPH_RECLAIM_KIND' });
+});
+
+await runCase('reject-graph-publication-ready-state', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  const publication = mutated.publications[0];
+  publication.readyState = mutated.objectKinds.find(({ id }) => id === publication.objectKind).lifecycle.initialState;
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_PUBLICATION_READY' });
+  const omitted = clone(graphProfileInputs[0]);
+  const edge = omitted.objectKinds.find(({ role }) => role === 'parent-edge');
+  const finalReady = edge.lifecycle.readyStates.at(-1);
+  omitted.publications = omitted.publications.filter((entry) => entry.objectKind !== edge.id || entry.readyState !== finalReady);
+  assert.throws(() => normalizeGraphProfile(omitted, inspected, graphFixtures[0].domain), { code: 'GRAPH_PUBLICATION_REQUIRED' });
+});
+
+await runCase('reject-graph-publication-host-wait', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.publications[0].wait = 'host-poll';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_PUBLICATION_ORDERING' });
+});
+
+await runCase('reject-graph-required-failure', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.failures = mutated.failures.filter(({ code }) => code !== 'invalid-graph-profile');
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_FAILURE_REQUIRED' });
+});
+
+await runCase('reject-graph-required-port', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.ports = mutated.ports.filter(({ id }) => id !== 'publish-node');
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_PORT_REQUIRED' });
+});
+
+await runCase('reject-graph-no-reclamation-residue', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  const extra = clone(mutated.ports.find(({ id }) => id === 'validate-reference'));
+  extra.id = 'retire';
+  mutated.ports.push(extra);
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_RECLAIM_RESIDUE' });
+  const transposition = clone(graphProfileInputs[0]);
+  transposition.transposition = { kind: 'none' };
+  assert.throws(() => normalizeGraphProfile(transposition, inspected, graphFixtures[0].domain), { code: 'GRAPH_TRANSPOSITION_RESIDUE' });
+  const pathless = clone(graphProfileInputs[0]);
+  pathless.path = { kind: 'none' };
+  assert.throws(() => normalizeGraphProfile(pathless, inspected, graphFixtures[0].domain), { code: 'GRAPH_PATH_RESIDUE' });
+  const rootless = clone(graphProfileInputs[0]);
+  rootless.rootProtection = { kind: 'none' };
+  assert.throws(() => normalizeGraphProfile(rootless, inspected, graphFixtures[0].domain), { code: 'GRAPH_ROOT_RESIDUE' });
+});
+
+await runCase('reject-graph-port-object', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.ports[0].objectKinds[0] = 'graph.synthetic-transposing.object-ghost';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_PORT_OBJECT' });
+});
+
+await runCase('reject-graph-port-failure', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.ports[0].failures[0] = 'graph.unknown-failure';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_PORT_FAILURE' });
+});
+
+await runCase('reject-graph-cancellation-bound', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.ports[0].bounds.maxWorkUnits = '1';
+  mutated.ports[0].bounds.cancellationObservationWorkUnits = '2';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_BOUNDS_CANCELLATION' });
+});
+
+await runCase('reject-graph-resource-range', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.resources[0].minimum = '4097';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_RANGE' });
+  const missing = clone(graphProfileInputs[0]);
+  missing.resources = missing.resources.filter(({ pressureOutcome }) => pressureOutcome !== 'action-byte-capacity');
+  assert.throws(() => normalizeGraphProfile(missing, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_REQUIRED' });
+});
+
+await runCase('reject-graph-persistence-scope', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.arena.incarnationScope = 'persistence-namespace';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_PERSISTENCE_SCOPE' });
+});
+
+await runCase('reject-graph-native-program-language', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.programContribution.language = 'cuda-cpp';
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_PROGRAM_LANGUAGE' });
+});
+
+await runCase('reject-graph-stateless-residue', () => {
+  const mutated = clone(graphProfileInputs[3]);
+  mutated.failures.push({ code: 'graph-internal-failure', kind: 'internal', diagnostic: true });
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[3].domain), { code: 'GRAPH_STATELESS_RESIDUE' });
+});
+
+await runCase('reject-graph-owner-contract-crossing', () => {
+  const mutated = clone(graphProfileInputs[0]);
+  mutated.ownerRegions[0].ownerContract = {
+    kind: 'namespaced', id: 'product.invalid-owner', version: '0.1.0',
+    schema: 'cuda-mcgs.invalid-owner/0.1.0', sha256: '0'.repeat(64),
+  };
+  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_REGION_CONTRACT_KIND' });
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 88,
+  expected: 135,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -713,7 +1113,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 88 - cases.length,
+  notDiscovered: 135 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -725,12 +1125,15 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/primitives.schema.json',
   'schemas/search-ir/0.2.0/framework-selection.schema.json',
   'schemas/search-ir/0.2.0/domain-profile.schema.json',
+  'schemas/search-ir/0.2.0/graph-profile.schema.json',
   'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
   'experiments/search-ir-composer-reference/src/catalog.mjs',
   'experiments/search-ir-composer-reference/src/validation.mjs',
   'experiments/search-ir-composer-reference/src/foundation.mjs',
   'experiments/search-ir-composer-reference/src/domain.mjs',
   'experiments/search-ir-composer-reference/src/domain-fixtures.mjs',
+  'experiments/search-ir-composer-reference/src/graph.mjs',
+  'experiments/search-ir-composer-reference/src/graph-fixtures.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -747,6 +1150,7 @@ const evidence = {
   identities: inspected?.identities ?? null,
   frameworkSelectionIdentity: frameworkSelection?.identity ?? null,
   domainProfileIdentities: domainProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
+  graphProfileIdentities: graphProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
     classified: inspected?.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length ?? 0,
@@ -756,10 +1160,11 @@ const evidence = {
   summary,
   cases,
   claimLimits: [
-    'Proposal contract catalog plus shared representation primitives and framework selection/binding normalization only.',
-    'The framework and domain requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
+    'Proposal contract catalog plus shared representation primitives and framework, domain and graph profile normalization only.',
+    'The framework, domain and graph requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
     'Domain evidence covers strict normalized profile selection and three synthetic structural instances, not behavioral oracle, publication/concurrency, native or compatible-pair qualification.',
-    'No graph/policy/evaluator/resource/progress/output/session/extension/package profile body, derived plan, cross-owner Composer, generated Search Program or production lowering claim.',
+    'Graph evidence covers four strict structural instances, bounded ownership/layout/lifecycle/publication checks and zero-residue optional modes, not behavioral oracle, concurrent reclamation, native or compatible-pair qualification.',
+    'No policy/evaluator/resource/progress/output/session/extension/package profile body, derived plan, cross-owner Composer, generated Search Program or production lowering claim.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');

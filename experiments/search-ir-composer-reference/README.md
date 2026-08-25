@@ -19,13 +19,21 @@ The integrated `IR-FOUNDATION-01` slice adds only representation-owned foundatio
 - canonical set ordering, acyclic semantic dependencies and selected-owner public binding closure; and
 - section-level evidence classification for the 80 framework requirements, all still marked partial, pending or deferred as appropriate.
 
-The current `IR-DOMAIN-01` slice adds only SPEC-0007-owned normalized domain selection:
+The integrated `IR-DOMAIN-01` slice adds only SPEC-0007-owned normalized domain selection:
 
 - exact schemas for domain values, state/action identity and action scope, relevant history, root forms, roles, action sources, transition modes and semantic ports;
 - arbitrary-width finite work/resource bounds, typed failure/diagnostic classifications, compatibility/persistence selection and restricted Device-JS program-contribution identity;
 - three unrelated synthetic structural instances: variable-record transposing/cyclic, stochastic history-sensitive observation-bearing, and lazy continuous/no-player;
 - explicit admitted-producer references without absorbing producer readiness/resources, plus namespaced product-data identity with exact deletion; and
 - section-level evidence classification for all 84 domain requirements, with behavioral, composition and native obligations left partial, pending or deferred.
+
+The current `IR-GRAPH-01` slice adds only SPEC-0010-owned normalized graph/storage selection:
+
+- finite typed index/generation references, closed graph-owned record regions and opaque owner regions whose contents/lifecycles remain with domain or namespaced product owners;
+- verified transposition sharing through exact domain identity/equality ports, isolated-node mode, bounded path/occurrence state and protected root anchors;
+- explicit lifecycle/publication contracts, optional bounded reclamation with all protection sources and generation-before-reuse, and exact product/capability/no-reclamation/stateless residue deletion;
+- four synthetic structural instances spanning sharing, isolated nodes, reclamation and stateless search without selecting an allocator, scheduler, GPU topology or CUDA mechanism; and
+- section-level evidence classification for all 93 graph requirements, with behavioral, concurrent reclamation and native obligations left partial, pending or deferred.
 
 Normative sentences remain solely in [`docs/specs/`](../../docs/specs/). The checked-in catalog records identities, owners, counts, paths and `sha256-utf8-lf-v1` digests; the explicit LF-normalized UTF-8 digest contract is checkout-platform independent. The capsule expands the IDs directly from the frozen sources and fails on source, metadata, count, prefix, uniqueness or coverage-route drift.
 
@@ -35,4 +43,4 @@ Run with Node.js 26 or newer:
 node experiments/search-ir-composer-reference/run.mjs
 ```
 
-Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic selection fixture now binds the exact schema digest and normalized identity of the transposing domain profile; the other owner identities remain opaque structural placeholders. Synthetic schema/program digests prove representation closure only and are not executable domain implementations or behavioral/native evidence. Later focus leaves supply the remaining owned bodies, then deterministic restricted Device-JS/Search Program composition and cross-owner deletion/identity oracles. Native CUDA-JS qualification remains separate.
+Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic selection fixture now binds the exact schema digests and normalized identities of the transposing domain and graph profiles; the other owner identities remain opaque structural placeholders. Synthetic schema/program digests prove representation closure only and are not executable domain/graph implementations or behavioral/native evidence. Later focus leaves supply the remaining owned bodies, then deterministic restricted Device-JS/Search Program composition and cross-owner deletion/identity oracles. Native CUDA-JS qualification remains separate.
