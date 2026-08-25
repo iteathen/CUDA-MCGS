@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 const VERSION = '0.1.0';
 const REVISION = '97bd9871938e7303389e9929a76d16c79c5745e9';
 const STAGE_REVISION = 'f48f20cbacea6404362b5186dd1fdd116f241a98';
+const CHANNEL_REVISION = 'b7d3141738f5586efb1e86014925ee849251e673';
 const NO_PROGRESS_OUTCOMES = [
   'terminal-quiescent', 'legitimate-external-wait', 'recoverable-resource-wait', 'producer-pending', 'deadlock',
   'livelock', 'starvation', 'orphaned-work', 'stale-only', 'counter-exhausted',
@@ -76,6 +77,7 @@ function bounds(options = {}) {
 
 function workKind(contractId) {
   const kinds = {
+    'SPEC-0004': 'producer-unblocking',
     'SPEC-0010': 'producer-unblocking',
     'SPEC-0011': 'resource-recovery',
     'SPEC-0012': 'must-drain',
@@ -298,6 +300,10 @@ export function buildProgressProfiles(inspected, resourceResults) {
 
 export function buildStageProgressProfile(inspected, resourceResult) {
   return buildProfile('synthetic-stage-capabilities', inspected, resourceResult, { revision: STAGE_REVISION });
+}
+
+export function buildChannelProgressProfile(inspected, resourceResult) {
+  return buildProfile('synthetic-stage-channels', inspected, resourceResult, { revision: CHANNEL_REVISION });
 }
 
 export function progressSyntheticSchemaReference(id) {
