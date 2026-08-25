@@ -1,11 +1,11 @@
 {
-  "schema_version": 44,
+  "schema_version": 45,
   "updated": "2026-08-25",
-  "status": "ready_for_ir_resource",
+  "status": "ready_for_ir_progress",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then proceed to pure Node.js/restricted Device-JS native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "125ac4de64d8db2c0027ff4e0e434f9c0a8dcb4d",
+    "cuda_mcgs_authority_input_baseline": "ed4baa234775ba5795482b562eef5d755e59da66",
     "cuda_js_authority_baseline": "2135216b1a9fd88066a1c82b61ae533645eac9c2",
     "cuda_js_implementation_baseline": "b6062f691a27093df0e5d55e482e69ebbd39a9eb",
     "cuda_js_package": "cuda-js@0.1.0-alpha.6"
@@ -26,9 +26,9 @@
     "parent_plan_version": "CUDA-MCGS-V0/22",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": "docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md",
-    "active_leaf": "IR-RESOURCE-01",
+    "active_leaf": "IR-PROGRESS-01",
     "ready_queued_leaves": [],
-    "next_action": "After IR-EVALUATOR-01 integrates, implement only the SPEC-0011-owned finite logical-resource Search IR 0.2.0 profile schema, semantic normalizer, canonical/boundary/invalid fixtures, composed contribution plan and exact 74-requirement evidence classification. Preserve arbitrary-width quantities, exact units/scopes/owners, finite maxima and pressure responses; prove every optional owner contribution deletes without residue and keep allocator strategy, scheduler topology and CUDA realization out of universal resource semantics.",
+    "next_action": "After IR-RESOURCE-01 integrates, implement only the SPEC-0012-owned scheduler-neutral device-progress Search IR 0.2.0 profile schema, semantic normalizer, canonical/boundary/invalid fixtures, readiness/fairness/no-progress/stop/closure plan and exact 51-requirement evidence classification. Preserve device-owned progress after ignition, finite work and wait bounds, owner-published readiness, typed no-progress causes and terminal closure; keep physical CUDA topology, stream/kernel strategy, host polling/relaunch and CUDA-JS mechanisms out of universal progress semantics.",
     "exit": "Strict schemas/metaschemas, canonical normalization, deterministic reference Composer/Search Program/package generation and structural deletion evidence represent every selected requirement needed by the 989-requirement proposal packet without inventing semantics or CUDA-specific implementation."
   },
   "deliverables": [

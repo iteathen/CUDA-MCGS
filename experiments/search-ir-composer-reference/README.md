@@ -43,13 +43,22 @@ The integrated `IR-POLICY-01` slice adds only SPEC-0008-owned normalized search-
 - materialized and stateless graph bindings, with exact removal of path/edge/backup/reservation/value/evaluator residue when inapplicable; and
 - section-level evidence classification for all 91 policy requirements, with behavioral, concurrent backup, composition and native obligations left partial, pending or deferred.
 
-The current `IR-EVALUATOR-01` slice adds only the optional SPEC-0009-owned evaluator selection:
+The integrated `IR-EVALUATOR-01` slice adds only the optional SPEC-0009-owned evaluator selection:
 
 - proposal-only, evaluation-only and combined capabilities with complete exact input/output ownership, arbitrary-width shapes, numeric/validity/uncertainty metadata and result-affecting identity keys;
 - finite request fallback, batch-one progress, batch-sensitive identity, resumable workspace, one terminal publication per capability and optional collision-verified cache semantics;
 - pre-ignition resident artifact provenance, optional mutable state, explicit resources/statuses/ports/reuse/lifecycle and device-owned progress with no host progress loop;
 - five materially different vector-combined, stateless proposal-only, proof, artifact-free analytic and batch-sensitive resumable structural instances; and
 - section-level evidence classification for all 121 evaluator requirements, with evaluator absence represented by structural omission and behavioral, concurrent execution, composition and native obligations left partial, pending or deferred.
+
+The current `IR-RESOURCE-01` slice adds only the SPEC-0011-owned finite logical-resource plan:
+
+- exact selected-owner contributions, arbitrary-width checked formulas, classes, pools, partitions, alignment, safe alias proofs and consumer-neutral CUDA-JS provider projections;
+- all-or-none compound admission groups, immutable global order, exact conservation ledgers and terminal/progress/root-update reserves where selected;
+- monotone device-visible pressure facts whose declared responses remain owned by their contributing graph, policy, evaluator, output, progress or session bricks;
+- exact exhaustion causes, no-wrap identity/counter ranges, lifecycle/status/port closure and full cleanup disposition without host-driven growth or a host progress loop;
+- three finite structural instances spanning evaluator absence, evaluator workspace/cache participation and a live-session root-update reserve; and
+- section-level evidence classification for all 74 resource requirements, with behavioral concurrent accounting, physical allocation and native qualification left partial, pending or deferred.
 
 Normative sentences remain solely in [`docs/specs/`](../../docs/specs/). The checked-in catalog records identities, owners, counts, paths and `sha256-utf8-lf-v1` digests; the explicit LF-normalized UTF-8 digest contract is checkout-platform independent. The capsule expands the IDs directly from the frozen sources and fails on source, metadata, count, prefix, uniqueness or coverage-route drift.
 
@@ -59,4 +68,4 @@ Run with Node.js 26 or newer:
 node experiments/search-ir-composer-reference/run.mjs
 ```
 
-Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic framework selection fixture binds the exact schema digests and normalized identities of the first domain, graph and policy profiles while leaving the optional evaluator structurally absent; selected policy fixtures bind exact normalized evaluator profiles through public identities and ports. The other owner identities remain opaque structural placeholders. Synthetic schema/program digests prove representation closure only and are not executable domain/graph/policy/evaluator implementations or behavioral/native evidence. Later focus leaves supply the remaining owned bodies, then deterministic restricted Device-JS/Search Program composition and cross-owner deletion/identity oracles. Native CUDA-JS qualification remains separate.
+Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic framework selection fixture binds the exact schema digests and normalized identities of the first domain, graph, policy and resource profiles while leaving the optional evaluator structurally absent; selected policy and resource fixtures bind exact normalized upstream profiles through public identities and ports. The remaining owner identities are opaque structural placeholders. Synthetic schema/program digests prove representation closure only and are not executable domain/graph/policy/evaluator/resource implementations or behavioral/native evidence. Later focus leaves supply the remaining owned bodies, then deterministic restricted Device-JS/Search Program composition and cross-owner deletion/identity oracles. Native CUDA-JS qualification remains separate.

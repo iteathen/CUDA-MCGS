@@ -88,8 +88,8 @@
       "requirementPrefix": "RESOURCE-",
       "primaryOwner": "CUDA-MCGS universal finite search-resource semantics",
       "plannedLeaf": "IR-RESOURCE-01",
-      "currentDisposition": "pending-owner-classification",
-      "completionStatus": "pending"
+      "currentDisposition": "section-classified",
+      "completionStatus": "in-progress"
     },
     {
       "contract": "SPEC-0012",
@@ -911,12 +911,144 @@
       "evidenceStatus": "partial",
       "evidenceRefs": ["schema:graph-profile.schema.json", "normalizer:graph-profile", "case:graph-profile-order-independent", "case:graph-framework-selection-link"],
       "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-PROFILE-",
+      "requirementCount": 7,
+      "primaryDisposition": "structural-schema",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-RESOURCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:resource-profile.schema.json", "normalizer:resource-profile", "case:resource-profile-matrix", "case:resource-arbitrary-width-checked-formula", "case:reject-resource-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-COMPOSE-",
+      "requirementCount": 8,
+      "primaryDisposition": "deterministic-composition",
+      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-RESOURCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:resource-profile", "case:resource-evaluator-absent-zero-residue", "case:resource-upstream-exact-coverage", "case:resource-safe-alias-proof", "case:reject-resource-partition-overlap", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-PLAN-",
+      "requirementCount": 6,
+      "primaryDisposition": "native-compatible-pair-qualification",
+      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "evidenceStatus": "deferred",
+      "evidenceRefs": ["normalizer:resource-profile", "case:resource-provider-projection-neutral", "case:reject-resource-host-growth", "case:reject-resource-provider-coverage", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-ADMIT-",
+      "requirementCount": 11,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:resource-profile", "case:resource-meaningful-admission-order-sensitive", "case:resource-core-compound-and-reserves", "case:reject-resource-admission-order", "case:reject-resource-ledger-states", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-RESERVE-",
+      "requirementCount": 6,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["engine-reference-oracle", "cross-specification-proof"],
+      "plannedEvidenceOwner": "IR-RESOURCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:resource-profile", "case:resource-core-compound-and-reserves", "case:resource-live-session-root-reserve", "case:reject-resource-terminal-reserve-missing", "case:reject-resource-root-reserve-missing", "case:reject-resource-borrow-incomplete", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-PRESSURE-",
+      "requirementCount": 7,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:resource-profile", "case:resource-pressure-owner-separation", "case:reject-resource-response-owner", "case:reject-resource-response-reserve", "case:reject-resource-watermark-range", "planned:IR-PROGRESS-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-EXHAUST-",
+      "requirementCount": 8,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:resource-profile", "case:reject-resource-exhaustion-cause-gap", "case:reject-resource-first-cause-mutable", "case:reject-resource-counter-wrap", "case:reject-resource-host-growth", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-LIFE-",
+      "requirementCount": 6,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:resource-profile", "case:resource-lifecycle-cleanup-closure", "case:reject-resource-lifecycle-state-gap", "case:reject-resource-required-status", "case:reject-resource-required-port", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-SEC-",
+      "requirementCount": 5,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-RESOURCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:reject-resource-unknown-field", "case:reject-resource-class-range", "case:reject-resource-identity-range", "case:reject-resource-diagnostic-authority", "case:reject-resource-incomplete-persistence", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-CLEANUP-",
+      "requirementCount": 2,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "pending",
+      "evidenceRefs": ["case:resource-evaluator-absent-zero-residue", "case:resource-zero-source-elimination", "case:reject-resource-cleanup-coverage", "planned:IR-DELETION-ID-01", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-COMPAT-",
+      "requirementCount": 3,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:resource-identity-content-sensitive", "case:resource-profile-order-independent", "case:reject-resource-provider-drift", "case:reject-resource-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-IR-",
+      "requirementCount": 5,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-RESOURCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:resource-profile.schema.json", "normalizer:resource-profile", "case:resource-profile-order-independent", "case:resource-provider-projection-neutral", "case:resource-program-input-closure", "case:resource-evaluator-absent-zero-residue"],
+      "classificationStatus": "classified"
     }
   ],
   "totals": {
     "contracts": 12,
     "requirements": 989,
-    "classified": 469,
-    "pending": 520
+    "classified": 543,
+    "pending": 446
   }
 }
