@@ -9,7 +9,7 @@
 The protected CUDA-MCGS `main` input baseline for the active contract packet is:
 
 ```text
-7c20146fed5f459b9857f65647d2be311b201987
+5fe57778723012c0a6c8bd5ef1501341962040f0
 ```
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
@@ -68,9 +68,9 @@ The owner-directed production boundary remains: CUDA-MCGS owns JavaScript-only s
 
 The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`](docs/development/2026-08-12-v0-forward-plan.md).
 
-Current focus is **ENGINE-CONTRACT-01** under parent plan `CUDA-MCGS-V0/22`. Its critical assessment and semantic focus-branch map are [`docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md`](docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md). The domain, graph, policy, evaluator, output, resource and device-progress owners are integrated as proposals SPEC-0007 through SPEC-0013. `EC-SESSION-01` is the single active leaf and reconciles optional external root/control/observation lifecycle against those owners. Device-owned progress remains intentionally separate from any later physical scheduler selection.
+Current focus is **ENGINE-CONTRACT-01** under parent plan `CUDA-MCGS-V0/22`. Its critical assessment and semantic focus-branch map are [`docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md`](docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md). The domain, graph, policy, evaluator, output, resource, device-progress and optional Search Session owners are integrated as decision-complete proposals SPEC-0006 through SPEC-0013. `EC-FRAMEWORK-01` is the single active leaf and reconciles the cross-cutting SPEC-0000 map without duplicating those owners. Device-owned progress remains intentionally separate from any later physical scheduler selection.
 
-The remaining Search Session proposal then receives bounded normalized Search IR/Composer and universal reference evidence with the other owner proposals before one integrated semantic-acceptance gate. Production lowering remains blocked until that acceptance gate completes.
+After framework-map and packet reconciliation, the owner proposals receive bounded normalized Search IR/Composer and universal reference evidence before one integrated semantic-acceptance gate. Production lowering remains blocked until that acceptance gate completes.
 
 After core semantics:
 
@@ -88,7 +88,7 @@ Chess remains a separately tracked downstream proposal and does not gate univers
 ## Claim limits / blockers
 
 - no production universal engine is accepted yet;
-- core semantic contract families remain incomplete;
+- the cross-cutting framework map and integrated core proposal packet remain incomplete;
 - SPEC-0003/0004/0005/0006 are proposal-only;
 - complete Search IR/Composer specialization/resource identity is incomplete;
 - CUDA-MCGS external deletion/compatible-pair evidence is unfinished;
