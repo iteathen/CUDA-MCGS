@@ -2,280 +2,287 @@
 
 **Status:** Proposal
 
-**Draft version:** 0.2.0
+**Draft version:** 0.3.0
 
-**Owner:** CUDA-MCGS search execution semantics
+**Owner:** CUDA-MCGS optional stage/surface/capability semantics
 
-**Consumers:** Search IR, Search Composer, scheduler, domain/policy/evaluator/product adapters, conformance, capability providers, and generated device programs
+**Product area / durable path:** universal extension/composition substrate / `docs/specs/`
 
-This proposal defines the **universal extension/composition substrate** through which CUDA-MCGS may be extended without exposing incomplete search mutation or promoting first-product semantics into the universal core. It does not authorize production lowering until accepted with its normative dependencies.
+**Consumers:** Search IR, Search Composer, optional Async Stage Channels, capability/product providers, finite-resource and device-progress composition, restricted Device-JS Search Program generation, conformance and package identity
 
-## 1. Normative references
+This proposal defines the optional LEGO brick through which selected behavior may attach at stable operational checkpoints without exposing partial mutation, taking ownership from universal core contracts or promoting the first product into the framework. It defines semantic composition boundaries, not a workflow engine, fixed search pipeline, scheduler, CUDA ABI or production implementation.
 
-- [`../decisions/ADR-0018-universal-core-extension-product-layering.md`](../decisions/ADR-0018-universal-core-extension-product-layering.md) owns universal-core / extension-substrate / product separation.
-- [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) owns publication channels, finite-resource behavior, stop and partial-result foundations.
-- [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) owns the accepted foundational Search IR representation and deterministic reference semantics.
-- [`SPEC-0004`](SPEC-0004-async-stage-channels.md) proposes internal cross-stage/cross-surface dataflow.
-- [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) proposes version-zero restricted Device-JS/Search Program composition and opaque CUDA-JS-generated realization outputs.
-- [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) proposes external Search Session control/observation semantics and keeps them distinct from internal extension callbacks.
+## 1. Authority, identity and applicability
 
-Where this proposal conflicts with accepted authority, accepted authority governs and this proposal must be revised.
+Specification identity is `CUDA-MCGS-SPEC-0003@0.3.0-draft`.
 
-## 2. Scope
+Normative authority and dependencies are:
 
-This specification family owns:
+- [`ADR-0002`](../decisions/ADR-0002-universal-contracts-specialized-engines.md) for universal contracts and finite specialized engines;
+- [`ADR-0003`](../decisions/ADR-0003-device-resident-active-search.md) for device-resident active search;
+- [`ADR-0005`](../decisions/ADR-0005-lego-design-hierarchy.md) for LEGO ownership and deletion tests;
+- [`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md) for optional extension-substrate and product separation;
+- [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) for ordinary Node.js/restricted Device-JS CUDA-MCGS source and CUDA-JS capability escalation;
+- accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) for publication, finite-resource, stop and partial-result foundations; and
+- accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for normalized Search IR and deterministic reference foundations.
 
-- operational Search Stage identity and transition semantics;
-- finite stage graph definition and validation;
-- stable entry/exit checkpoint rules;
-- the universal Stage Extension Surface mechanism;
-- universal base checkpoint context and least-authority permissions;
-- namespaced capability attachment/composition rules;
-- capability-specific specialization-only context/resource contribution;
-- stage outcome, failure, cancellation and resource obligations;
-- separation between semantic stages and physical CUDA topology;
-- separation between universal extension mechanics and product/capability semantics.
+Decision-complete proposals [`SPEC-0000`](SPEC-0000-framework-requirements.md) and [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) through [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md) are coupled proposal inputs. They become normative dependencies only through the later atomic semantic-acceptance gate. [`SPEC-0004`](SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) are downstream proposal siblings. Accepted authority governs every conflict.
 
-It does not define one universal stage list, scheduler mechanism, CUDA ABI, domain state representation, graph layout, evaluator format, host runtime, chess concept, ranked-move output, or fixed capability catalogue.
+EXT-AUTH-001. This specification applies only when a finite engine profile selects the extension substrate. An engine with no selected extension capability has no extension profile, stage graph, checkpoint surface, extension base context, capability contribution or solely extension-owned source/state/resource/package residue.
 
-## 3. Terms
+EXT-AUTH-002. Selecting the extension substrate does not amend or supersede a source-owner contract. Domain, graph, policy, evaluator, output, resource, progress and optional Search Session meaning remains authoritative under its owning selected profile.
 
-### 3.1 Operational search state
+EXT-AUTH-003. This proposal is not production implementation authority. Its acceptance requires the schema/reference evidence in Section 15; native profile qualification remains separately gated.
 
-The state of one logical search work item in the engine's execution protocol. It is not the searched domain state, a graph node, a CUDA thread state, a host lifecycle state, or a product UI state.
+## 2. Purpose, required outcome and exclusions
 
-### 3.2 Search Stage
+The required outcome is one bounded optional composition boundary through which unrelated capabilities can reuse stable operational checkpoints while receiving only declared facts and permissions. The boundary succeeds only if deleting the first product, every optional capability or the complete substrate leaves the universal core coherent, and a materially different non-game capability can use the same checkpoint semantics without changing their meaning.
 
-A namespaced, versioned handler for exactly one operational search state. It accepts a work item satisfying its entry predicate and produces one declared outcome after completing its owned mutation.
+EXT-SCOPE-001. This specification owns operational stage identity, stable checkpoint meaning, stage-local surface permissions, capability attachment requirements, selected-only context contribution, semantic outcome/transition declarations and extension-profile identity.
 
-### 3.3 Stage transition
+EXT-SCOPE-002. This specification does not own domain state/action/transition meaning, graph objects/reclamation, policy statistics/backup, evaluator results, output payload/publication, finite-resource policy, global readiness/progress/fairness/closure, external session transactions, CUDA-JS syntax/lowering/runtime mechanisms or product meaning.
 
-The committed change from one operational search state to another for one logical work item. A transition is semantic and does not imply a kernel launch, module boundary, global phase or grid barrier.
+EXT-SCOPE-003. This specification defines no universal stage catalogue, evaluator requirement, action/value shape, ranked output, persistent kernel, CUDA Graph, module boundary, kernel-per-stage topology, global phase or runtime callback registry.
 
-### 3.4 Stable checkpoint
+## 3. LEGO invariant and ownership boundary
 
-An optional stage `entry` or `exit` boundary at which exposed facts satisfy their declared invariants. A checkpoint is the only place a Stage Extension Surface may be invoked.
+The owned invariant is:
 
-### 3.5 Stage Extension Surface
+> For one immutable selected extension-profile identity, every materialized stage surface invokes only at a declared stable entry/exit checkpoint, grants only declared least authority, composes a finite deterministic selected capability set, and leaves no solely extension- or capability-owned residue when absent.
 
-The universal least-authority extension mechanism owned by one Search Stage. A surface may expose entry, exit, both, or neither. It never spans two stages and has no mid-stage checkpoint.
+EXT-LEGO-001. A Search Stage owns only the operational work-item state, its entry/exit invariants and commitment of one operational transition. It may coordinate source-owner semantic ports, but it does not acquire ownership of the facts or mutations those ports define.
 
-A surface is universal because its **checkpoint semantics and permission model** are reusable. It does not make every capability bound to it universal core meaning.
+EXT-LEGO-002. If a behavior participates inside formation of a domain, graph, policy, evaluator, output, resource, progress or session invariant, it belongs to that selected owner's implementation or a newly declared stable operational stage; it cannot be injected as a mid-mutation extension hook.
 
-### 3.6 Stage capability
+EXT-LEGO-003. A stage/checkpoint is reusable only when its semantic purpose remains coherent after deleting the first capability/product. A boundary created solely to expose one product detail belongs to that product capability, not the universal stage catalogue.
 
-A namespaced/versioned contract/schema-selected behavior allowed at a particular stage checkpoint. Several selected capabilities at the same stage form one capability set and share that stage's surface/composition unit.
+EXT-LEGO-004. Reuse by several products does not promote their facts, permissions or resource state into universal base context. Promotion requires a separate authority change under ADR-0018.
 
-Capabilities may be reusable framework capabilities or domain/search-product capabilities. Semantic ownership remains with the capability and its selected domain/policy/evaluator/output/product contract.
+EXT-LEGO-005. The extension substrate depends on public source-owner contracts. Core owners never depend on a stage/surface/capability definition for their own semantic completeness.
 
-### 3.7 Base checkpoint context
+EXT-LEGO-006. Deleting CUDA-MCGS must leave every CUDA-JS capability selected by a concrete realization consumer-neutral. No stage, surface, capability or product term may enter CUDA-JS public meaning.
 
-The **base checkpoint context** is the minimal universally meaningful set of stable facts the stage surface can expose independent of any first consumer.
+## 4. Terms and semantic model
 
-### 3.8 Capability context contribution
+### 4.1 Extension profile
 
-A selected capability MAY add namespaced context fields, configuration, state, workspace or channel references required only by that capability. Those contributions exist only in specialized Search Images that select the capability. They are not automatically fields of the universal base context or mandatory Search IR core.
+An **extension profile** is an immutable normalized selection of a finite operational stage graph, stable checkpoint schemas, capability bindings, permissions, contribution schemas, finite bounds and version identities. It exists only when at least one capability is selected.
 
-## 4. Layering and ownership invariants
+### 4.2 Operational work item and state
 
-EXT-LAYER-001. A Search Stage is justified by a universal operational invariant/readiness transition, not by a desire to create an attachment point for one product.
+An **operational work item** is one finite unit of engine progress with explicit identity/generation and one declared operational state. Operational state is not domain state, graph node identity, CUDA thread state, host session state or product UI state.
 
-EXT-LAYER-002. Deleting the first product/capability that uses a stage or surface MUST leave the stage's semantic purpose coherent. Otherwise the stage belongs to that product/capability rather than the universal stage graph.
+### 4.3 Search Stage and transition
 
-EXT-LAYER-003. A capability MUST NOT redefine state identity, graph ownership, resource conservation, publication correctness, Search Session lifecycle or another core invariant through its extension code.
+A **Search Stage** is a namespaced/versioned handler for one operational state. A **stage transition** is the committed per-work-item change from one declared operational state/outcome to another after the stage's source-owner operations and owned bookkeeping satisfy their exit predicates. Neither implies a physical launch, module, grid barrier or global phase.
 
-EXT-LAYER-004. When a capability changes selected domain/policy/evaluator/output/session meaning, that semantic change MUST be represented by the owning selected contract/profile and included in Search IR/Search Image identity. The Stage Extension Surface only supplies the safe execution/composition boundary.
+### 4.4 Stable checkpoint and surface
 
-EXT-LAYER-005. A capability-specific context contribution MUST be absent when the capability is absent. The universal base context MUST NOT accumulate chess fields, model-specific fields, ranking fields, tablebase fields, optimization-specific fields, or other first-consumer baggage.
+A **stable checkpoint** is a selected stage `entry` or `exit` boundary at which every exposed fact satisfies its source-owner publication/validity contract. A **Stage Extension Surface** is the stage-owned least-authority invocation boundary at one such checkpoint. A surface never spans stages and has no mid-stage checkpoint.
 
-EXT-LAYER-006. Reuse by multiple products does not automatically promote a capability field/effect into base context. Promotion follows ADR-0018's explicit universal-core promotion rule.
+### 4.5 Capability and context
 
-EXT-LAYER-007. Product capability IDs/schemas are namespaced independently from universal stage/checkpoint IDs. A product may depend on a universal checkpoint; the checkpoint does not depend on the product.
+A **stage capability** is a namespaced/versioned, profile-selected behavior bound to one compatible surface. A **base checkpoint context** is the minimum extension-only view of already-owned stable facts required by every selected capability at that surface. A **capability contribution** is namespaced configuration/context/state/workspace/channel/resource data required only by that selected capability.
 
-## 5. Finite stage graph
+EXT-TERM-001. Context representation does not transfer semantic ownership. Every base or contributed fact names its source owner, validity/generation, access permission, representation, lifetime and publication requirement.
 
-Before ignition, every concrete Search Image using the stage substrate MUST contain a finite validated stage graph. Each stage definition MUST declare:
+EXT-TERM-002. A schema describes a pre-ignition selected representation. Device code cannot interpret schemas or discover attachment points at runtime.
 
-- namespaced stage ID/version;
-- semantic purpose and owned invariant;
-- work-item kind, identity and generation requirements;
-- entry predicate and base facts consumed;
-- mutation owned by the stage core;
-- legal outcomes and target operational states;
-- entry/exit publication dependencies;
-- cancellation, pressure, exhaustion and error outcomes;
-- bounded work/storage/scratch/queue contribution;
-- whether entry and/or exit surfaces exist;
-- compatibility/migration policy where identity persists.
+## 5. Normalized extension profile
 
-Stage IDs describe semantic operational states rather than scheduler mechanisms or one product. A concrete engine MAY use reusable roles such as candidate production, selection, transition, identity/transposition resolution, evaluation, propagation or generic output publication, but CUDA-MCGS MUST NOT impose one AlphaZero/game/chess/tree/bulk-synchronous pipeline.
+EXT-PROFILE-001. A normalized extension profile declares, with no unknown fields:
 
-A contract that introduces a new stable operational invariant or materially different readiness/lifecycle state MUST introduce or replace a stage rather than hide the state inside a mid-stage extension hook.
+- extension-profile ID/version and compatibility policy;
+- finite stage and transition definitions;
+- selected checkpoints/surfaces and base-context schemas;
+- selected capability IDs/versions/semantic owners/bindings;
+- capability configuration/context/state/workspace/channel/resource contributions;
+- deterministic capability ordering constraints;
+- all widths, ranges, capacities, alignments, generations and exhaustion behavior;
+- required source-owner profile versions and public CUDA-JS capability profile; and
+- provenance, trust, diagnostics, schema and generator identities.
 
-The Composer rejects unreachable stages, illegal transitions, missing terminal/stop paths, unowned cycles, undeclared publication dependencies, and graphs whose finite resource plan cannot be established.
+EXT-PROFILE-002. Unknown/missing fields, duplicate IDs, incompatible versions, unowned semantics, impossible transitions, unrepresentable bounds, permission escalation, resource-plan overflow or dependency cycles reject before ignition.
 
-### 5.1 Semantic categories and boundary usefulness
+EXT-PROFILE-003. Unordered selections normalize by raw JavaScript/Unicode code-unit string order. Semantically ordered fields preserve declared order. Defaults become explicit canonical values; ambient locale, object insertion order, filesystem order and provider discovery are not semantic authority.
 
-A stage boundary is defined first by a coherent semantic category, owned invariant and validity transition. Usefulness is a granularity check/tie-breaker among semantically valid placements; it is not authority to invent a product-shaped stage.
+EXT-PROFILE-004. Every profile ID changes when an input capable of changing stage/checkpoint/capability meaning, permissions, context layout, ordering, resources, failure, lifecycle or emitted restricted Device-JS behavior changes.
 
-Candidate boundaries are compared by:
+EXT-PROFILE-005. Every selected stage/surface/capability invocation has finite declared work, read/write, scratch, publication and cancellation-observation bounds. Larger work uses an explicit finite resumable protocol under progress/resource owners; unbounded loops or waits are prohibited.
 
-- stable facts several credible **materially different** capabilities/policies/schedulers could reuse;
-- data already materialized without duplicate packing/traversal/synchronization;
-- clearer ownership/publication/cancellation/resource lifetimes;
-- useful ready/pending work for device scheduling;
-- avoidance of extra transitions/queue traffic/calls/code growth;
-- meaning across materially different domains/products;
-- ability for a second consumer to use the checkpoint without gaining arbitrary authority.
+EXT-PROFILE-006. Host-side profile validation/normalization/composition may use ordinary Node.js. Maintained active-search behavior is restricted Device-JS submitted only through versioned public CUDA-JS contracts. This specification authorizes no C/C++, CUDA C++, native addon, direct FFI/Driver access, hand-written PTX or embedded CUDA source in CUDA-MCGS.
 
-The engine MUST NOT create a stage for every variable change, source block, optimization or possible hook. Conversely, usefulness MUST NOT merge states when doing so hides a materially different invariant, readiness condition, owner, failure mode or resource lifetime.
+EXT-PROFILE-007. If a required generic GPU mechanism cannot be expressed naturally through a public CUDA-JS contract with clear ownership, finite resources, synchronization, lifecycle and independent qualification, implementation stops for CUDA-JS capability classification. A private import, native escape or distorted Device-JS encoding is non-conforming.
 
-## 6. Stage mutation interval
+EXT-PROFILE-008. A profile selecting zero capabilities normalizes to absence of the complete extension substrate rather than an empty runtime framework. No enable flag, stage dispatch, context, channel, storage, synchronization, diagnostic or package dependency remains solely to represent emptiness.
 
-The interval after entry commitment and before exit commitment is owned exclusively by the mandatory stage implementation.
+## 6. Finite stage graph and transitions
 
-- Extension code MUST NOT be invoked inside that interval.
-- Other stages/surfaces MUST NOT observe partially established invariants through public capabilities.
-- A stage MUST NOT lend a mutable reference whose valid use outlives the checkpoint contract.
-- Failure/cancellation inside the interval MUST produce a declared rollback, tombstone, retryable state or terminal outcome; it MUST NOT publish success over incomplete mutation.
+EXT-STAGE-001. Every materialized stage declares a namespaced ID/version, semantic purpose, owned operational invariant, work-item kind/identity/generation, entry predicate, legal outcomes/transitions, cancellation/error behavior, finite contribution and selected entry/exit checkpoints.
 
-Opaque/atomic from the extension perspective does not require one hardware atomic instruction or global transaction. It requires only declared stable public states with correct publication.
+EXT-STAGE-002. A stage exists because a distinct stable operational validity, readiness, ownership or lifecycle state is needed by selected behavior. Source layout, a variable change, optimization boundary, possible hook, CUDA function or first-product pipeline step is not sufficient.
 
-## 7. Stage Extension Surface contract
+EXT-STAGE-003. Candidate boundaries use cross-consumer usefulness only as a granularity test among semantically valid states: reusable stable facts, already-materialized data, clearer lifecycle/publication ownership, useful ready/pending work and avoided duplicate packing/synchronization. Usefulness cannot invent a product-shaped stage.
 
-A stage surface MUST define for each exposed checkpoint:
+EXT-STAGE-004. The finite graph may use roles such as candidate production, selection, transition, identity resolution, evaluation, propagation or output publication only when the selected contracts require those states. No AlphaZero/game/tree/BSP list is universal.
 
-- checkpoint ID: `entry` or `exit`;
-- semantic purpose and invocation cardinality;
-- work-item/node/edge/path/batch or other explicit scope;
-- universal base readable facts and freshness/generation;
-- universal base writable facts/result signals/bounded control effects;
-- facts/invariants that remain core-owned and immutable;
-- memory space/layout/aliasing/lifetime;
-- ordering/synchronization/publication;
-- base scratch/state/queue/workspace limits;
-- failure/skip/fallback/cancellation;
-- composition order requirements.
+EXT-STAGE-005. The graph rejects unreachable stages, undeclared targets, missing reachable stop/terminal paths, cycles without a finite progress/resource invariant, transitions without source-owner publication dependencies, and states whose resource contribution cannot be composed under SPEC-0011.
 
-The surface additionally defines **how selected capabilities declare specialization-only context contributions** without widening the base context for absent capabilities.
+EXT-STAGE-006. A transition is per operational work item. Different items may inhabit different stages concurrently, and conforming executions may choose different legal schedules while preserving source-owner outcomes, publication, resources and SPEC-0012 progress.
 
-A context schema describes representation at an already-defined checkpoint. It MUST NOT be interpreted at runtime to discover where code attaches.
+EXT-STAGE-007. A stage transition does not require one kernel per stage, one artifact/module per stage, global phase ordering, grid-wide barriers, persistent execution, CUDA Graphs, cooperative execution or device dynamic parallelism.
 
-Base capabilities are least-authority. Arbitrary address access, arbitrary search-state mutation, runtime reflection and unrestricted control transfer are non-conforming.
+EXT-STAGE-008. The mandatory selected stage implementation exclusively owns the interval after entry commitment and before exit commitment. No extension surface invokes in that interval and no public capability observes an incompletely established invariant.
 
-## 8. Capability contract and composition
+EXT-STAGE-009. Failure/cancellation during that interval returns one declared rollback, tombstone, retryable/pending or terminal outcome without publishing success over incomplete mutation. Source-owner contracts govern rollback/publication of their facts; the stage owns only operational disposition.
 
-Every selected capability MUST declare:
+EXT-STAGE-010. A stage cannot lend a mutable reference or permission whose valid use outlives the checkpoint contract. Immutable handles/views remain generation- and lifetime-bounded by their source owner.
 
-- namespaced capability ID/version and semantic owner;
-- required stage/checkpoint/version;
-- required base facts/permissions;
-- capability-specific context/configuration schemas;
-- semantic effects and the owning selected contract/profile that authorizes those effects;
-- persistent/scratch/workspace/channel resource contribution;
-- compatibility/provenance/security identity;
-- deterministic effect ordering when effects do not commute;
-- failure/skip/fallback/cancellation behavior;
-- deletion behavior when absent.
+EXT-STAGE-011. Adding, splitting or merging a stage is identity-affecting and requires proof that source-owner semantics, selected capability permissions, progress, resource conservation, failure and deletion behavior remain coherent.
 
-All capabilities required at the same stage share one stage-owned surface and one optional semantic composition unit. They do not become independently discovered runtime extensions or one native artifact/call per feature.
+## 7. Stable checkpoint and surface contract
 
-Before ignition, the Search Composer MUST:
+EXT-SURFACE-001. A surface materializes only when at least one selected capability binds to it. A potential checkpoint with no selected binding contributes no surface invocation, base-context packing, permission record, synchronization, code or resource residue.
 
-1. normalize the requested capability set;
-2. validate checkpoint/version/permission/resource/semantic-owner requirements;
-3. prove writes commute or impose deterministic declared order;
-4. generate the minimum universal base context plus only the selected namespaced capability contributions;
-5. account for combined finite resources;
-6. validate selected Async Stage Channels;
-7. reject cycles requiring synchronous cross-stage/cross-surface waiting;
-8. reject a capability whose semantic effect has no owning selected contract/profile;
-9. omit complete capability-specific context/state/code/resources when absent.
+EXT-SURFACE-002. Each materialized surface declares stage/checkpoint ID/version, semantic purpose, invocation scope/cardinality, base readable facts, base writable result/control ports, immutable facts, context layout/aliasing/lifetime, ordering/publication, finite bounds and failure/skip/cancellation behavior.
 
-An already-composed capability MAY be active/inactive according to device-resident rules. Activation is not late binding and MUST NOT create unplanned state/code/resources/host dependencies.
+EXT-SURFACE-003. Every exposed fact is already stable under its source owner at invocation. Entry exposure occurs only after entry commitment; exit exposure occurs only after the stage's source-owner operations have reached their declared stable result and before operational transition publication as specified by the surface.
 
-## 9. Stage outcomes and readiness
+EXT-SURFACE-004. Base context is the least common authority required by the selected set at that checkpoint, not a catalogue of all potentially useful engine state. A capability receives no undeclared read, write, control, allocation, synchronization or traversal authority.
 
-Every invocation ends in one declared outcome, such as:
+EXT-SURFACE-005. Writable access is through typed bounded source-owner ports or capability-owned storage. Arbitrary address access, raw pointers, runtime reflection, deep imports, unrestricted graph traversal and direct mutation of another owner's representation are prohibited.
 
-- transition committed to a named next stage;
-- generic result/publication work;
-- typed finite-resource pressure/exhaustion;
-- cancellation acknowledged;
-- retryable work republished under a bounded retry policy;
-- consumer moved to an explicit pending state governed by SPEC-0004;
-- typed failure.
+EXT-SURFACE-006. Surface invocation cannot allocate unplanned memory, discover providers, compile/link/load code, call the host, wait for another stage, advance a session transaction or publish an output payload outside the owning selected contract.
 
-A stage MUST NOT synchronously wait for a later stage/surface. It MUST NOT retain a worker, lock, reservation, unpublished mutation or stage-owned mutable lease while awaiting future data.
+EXT-SURFACE-007. Several capabilities at one checkpoint share one stage-owned invocation/composition boundary. The semantic surface is not one runtime call, callback or native artifact per capability.
 
-Product-specific output meaning is not implied by a generic output/publication outcome.
+EXT-SURFACE-008. Entry-only, exit-only and entry-plus-exit profiles are allowed when their stable predicates and permissions are explicit. A mid-stage surface is never allowed.
 
-## 10. Scheduler neutrality
+EXT-SURFACE-009. Capability effects that do not commute use one declared deterministic order. Effects that claim commutativity must be falsified under permitted schedules and representative values before acceptance.
 
-The semantic stage graph MUST NOT prescribe:
+EXT-SURFACE-010. Surface failure maps to a declared stage outcome and exact capability-owned cleanup. Silent skip, host fallback, partial success publication or mutation outside the authorized source owner is prohibited.
 
-- one CUDA kernel per stage;
-- one generated native artifact/module per stage;
-- global phase ordering;
-- a grid-wide barrier at transitions;
-- persistent-kernel execution;
-- CUDA Graph execution;
-- device dynamic parallelism.
+## 8. Capability contract and selected-only composition
 
-Different work items may occupy different stages concurrently. Scheduler conformance is measured by semantic outcomes, publication, bounded progress and resources rather than reproducing one schedule.
+EXT-CAP-001. Every selected capability declares a namespaced ID/version, semantic owner, required stage/checkpoint/version, required base facts/permissions, namespaced contribution schemas, finite resource contribution, semantic effects, ordering, failure/cancellation and deletion behavior.
 
-## 11. Search Session boundary
+EXT-CAP-002. Every semantic effect names the selected domain/policy/evaluator/output/session/product or other accepted owner that authorizes it. A capability with unowned meaning rejects before ignition.
 
-External Search Session root-update/control/observation ports are not Stage Extension Surfaces merely because a physical implementation may use similar memory/mailbox mechanisms.
+EXT-CAP-003. A capability cannot redefine state identity, graph ownership/reclamation, policy value/backup, evaluator publication, output semantics, resource accounting, device progress, Search Session transactions or another capability's private state through extension code.
 
-- A root update is external session/domain input governed by SPEC-0006.
-- A live product observation is governed by SPEC-0006 plus its selected output/product schema.
-- Internal extension callbacks MUST NOT be used to smuggle host-owned search progression into the engine.
-- Session observation MUST remain read-only with respect to search-semantic state unless another selected contract truthfully classifies the operation as a semantic input/mutation instead.
+EXT-CAP-004. Capability context/configuration/state/workspace/channel/diagnostic fields are namespaced and exist only when selected. Their types, alignment, width, range, lifetime, generation, aliasing and cleanup are explicit.
 
-## 12. Compatibility and identity
+EXT-CAP-005. Several selected capabilities may share a source-owner fact or universal channel mechanism only through separately declared compatible permissions. Sharing storage does not merge semantic ownership or resource accounting.
 
-Stage ID/version, checkpoint set, **base** context schema, selected capability IDs/schemas/context contributions, permissions, legal outcomes and publication contract are Search IR/Search Image identity as applicable.
+EXT-CAP-006. Before ignition, selection validates versions, checkpoint compatibility, permissions, source owners, finite resources, channel contracts, effect ordering, provenance/trust and complete deletion behavior.
 
-An incompatible change invalidates generated artifacts/cached conformance evidence. Product capability schema evolution occurs under the product/capability owner and cannot silently reinterpret universal base context.
+EXT-CAP-007. There is no active-search capability discovery, registry, schema interpreter, callback table, function-pointer lookup, fragment loop, dynamic code generation, late binding or host callback progression.
 
-## 13. Failure and security
+EXT-CAP-008. A composed capability may be device-resident active/inactive only under a finite preplanned selected rule. Inactivation does not remove its preplanned resource/code footprint, and activation cannot acquire new code/state/resources or change semantic identity.
 
-The Composer fails closed before ignition for unknown stages, checkpoints, capabilities, types, versions, permissions, semantic owners, resource requirements, transition targets or executable provenance.
+EXT-CAP-009. Deleting a capability removes its solely owned context, configuration, state, workspace, channels, diagnostics, code behavior, synchronization, resources and package inputs. Shared artifacts remain only when another selected owner independently requires them.
 
-Stage extension code is executable content. Production profiles use trusted package sources, bounded capabilities, complete artifact identity and no ordinary raw-pointer authority. Capability failure maps to a declared stage outcome; it MUST NOT silently corrupt core state or fall back to host decision service.
+EXT-CAP-010. Deleting the first product/capability leaves the checkpoint purpose, source-owner contracts and extension mechanism coherent. A materially different second capability must bind without adding first-consumer facts to base context.
 
-A product capability receives no authority merely because product code generated it.
+EXT-CAP-011. Capability source/provenance is trusted according to the selected profile, but product ownership grants no extra permissions, native authority or access to CUDA-JS-private artifacts/handles.
 
-## 14. Conformance requirements
+## 9. Outcomes, readiness and progress delegation
 
-One consolidated stage-contract capsule MUST cover:
+EXT-OUTCOME-001. Every selected stage/surface invocation ends in one declared operational outcome: named transition, pending, bounded retry publication, typed pressure/exhaustion, cancellation acknowledged, generic source-owner publication work, terminal stop or typed failure.
 
-- zero, entry-only, exit-only and entry-plus-exit surfaces;
-- multiple compatible capabilities sharing one surface;
-- universal base context unchanged when a product capability is deleted;
-- namespaced capability-specific context appears only when selected;
-- incompatible writes/versions/resources/semantic-owner declarations rejected before ignition;
-- exact disappearance of an unused capability/surface contribution from generated context/state/calls/resources;
-- attempted mid-stage observation/mutation rejected structurally;
-- per-work-item transitions without implied global barrier;
-- cancellation/failure before/after commitment;
-- required async result represented as pending rather than worker wait;
-- second-instance domains/products falsifying fixed games/actions/scalar values/ranked outputs/one stage list;
-- a chess/product capability and a materially different non-chess capability using the same universal surface without changing base stage meaning.
+EXT-OUTCOME-002. A stage/surface never synchronously waits or spins for later data and never retains a worker, lock, unpublished mutation, reservation or mutable lease while pending. Required future data uses SPEC-0004 pending/readiness semantics when that optional channel profile is selected.
 
-Reference tests own semantic outcomes. Native CUDA tests additionally own publication scope/races/exact artifact/final-binary/resource/performance evidence.
+EXT-OUTCOME-003. SPEC-0012 owns composed-engine readiness, finite service/fairness, no-progress/deadlock, stopping, drain and closure. This specification declares stage-local ready/pending transitions and contributions only; it does not select or own a scheduler.
 
-## 15. Acceptance blockers
+EXT-OUTCOME-004. SPEC-0011 owns aggregate planning/admission/accounting/pressure/exhaustion. Stages and capabilities contribute exact finite requirements and typed local pressure outcomes but cannot allocate outside or reinterpret the composed plan.
+
+EXT-OUTCOME-005. Timing or schedule races cannot silently change selected domain/policy/evaluator/output semantics. Any timing-dependent choice must be an explicit owner-defined bounded semantic option included in identity.
+
+## 10. External session, output and internal-channel boundaries
+
+EXT-BOUNDARY-001. External root/control commands, cancellation requests, observation requests/borrows and terminal result consumption are not Stage Extension Surfaces. Optional SPEC-0006 coordinates their transaction/lifecycle; SPEC-0013 owns result/observation payload publication.
+
+EXT-BOUNDARY-002. A capability may consume root-epoch or immutable observation facts only when its selected source-owner contract and surface grant them. It cannot turn an internal checkpoint into host-driven search progression or an output read into search mutation.
+
+EXT-BOUNDARY-003. Internal cross-stage/cross-surface work/data uses selected SPEC-0004 channels. A channel does not make one surface span stages and does not transfer global progress/resource/output/session ownership to this specification.
+
+EXT-BOUNDARY-004. After ignition, no stage, surface or capability may require a CPU-produced intermediate, host polling/relaunch decision, callback progression, late compilation or native code outside CUDA-JS public operations.
+
+## 11. Identity, compatibility and migration
+
+EXT-IDENTITY-001. Material extension identity includes profile/schema version, stage graph/transitions, checkpoint/base-context schemas, selected capabilities and owners, contribution schemas, permissions, ordering, finite resources, outcomes, required channels, restricted Device-JS semantic source identity, diagnostics and required public CUDA-JS capability profile.
+
+EXT-IDENTITY-002. Stage/checkpoint/base-context or capability changes are compatible only when every existing selected input retains identical normalized meaning, permission, layout, outcome, lifecycle and deletion behavior. Additive optional definitions do not affect an engine that does not select them.
+
+EXT-IDENTITY-003. An incompatible change invalidates affected Search IR, generated source/package, reference and native evidence. It cannot silently migrate live operational items, capability state or persisted identity.
+
+EXT-IDENTITY-004. If migration is supported, a separately versioned pre-ignition migration contract names source/target identities, finite transformation, validation, failure and rollback. Active-search reinterpretation is prohibited.
+
+## 12. Failure, security, lifecycle and cleanup
+
+EXT-LIFE-001. Unknown/incompatible stages, transitions, checkpoints, capabilities, schemas, permissions, semantic owners, contributions, resources, public dependencies or provenance fail closed before ignition and before valid package publication.
+
+EXT-LIFE-002. Partial profile normalization/composition publishes no valid extension profile or package and leaves no task-created generated artifact/resource. A previously valid immutable profile remains unchanged.
+
+EXT-LIFE-003. Capability execution failure cannot silently corrupt core state, widen authority, call a host decision service or switch to undeclared semantics. The declared outcome owns cleanup/diagnostics and source-owner invalidation.
+
+EXT-LIFE-004. Cancellation, stop and teardown identify every in-flight stage item, pending channel item, capability-owned reservation/state and source-owner lease. Each reaches one exact terminal disposition under its owner; zero live residue is required before terminal cleanup is claimed.
+
+EXT-LIFE-005. Counters, generations, IDs and cursors are finite. Exhaustion/wrap cannot alias live or stale state; the profile declares reject, drain/restart or terminal failure before ambiguity.
+
+EXT-LIFE-006. Executable capability input is schema-, permission-, digest-, provenance-, trust- and resource-validated before native work. Public results expose no raw pointer, CUDA handle, generated CUDA source/PTX/native bytes or another owner's private representation.
+
+## 13. Search IR and Composer obligations
+
+EXT-IR-001. Search IR must represent optional whole-substrate presence, every normalized EXT-PROFILE field, stage/transition/checkpoint/surface identity, base-context source-owner mapping, selected capability binding/contribution, finite resources, outcomes, permissions, ordering, deletion and compatibility inputs.
+
+EXT-IR-002. Normalization must prove zero-capability equivalence to absent substrate, canonical ordering, unique IDs, complete source-owner references, legal graph reachability/closure, permission/resource composition and no unknown residue before source generation.
+
+EXT-IR-003. The Composer emits only selected restricted Device-JS behavior and declared public CUDA-JS dependencies. SPEC-0005 owns deterministic program/package composition; CUDA-JS owns Device-JS validation/lowering and all CUDA-specific artifacts.
+
+EXT-IR-004. A schema cannot supply missing semantics. Any field whose lifecycle, owner, failure or deletion meaning is absent from this contract or another selected owner causes rejection rather than implementation-defined interpretation.
+
+## 14. Conformance and falsification
+
+One consolidated CUDA-free stage-contract capsule must cover at least:
+
+1. no selected capability normalizes to complete substrate absence and byte-identical core semantic/package input;
+2. entry-only, exit-only and entry-plus-exit surfaces;
+3. multiple compatible capabilities sharing one surface and deterministic effect order;
+4. incompatible writes, permissions, versions, owners, channels and resources rejected before ignition;
+5. base context unchanged after first-product capability deletion;
+6. namespaced contribution present only when selected and exact full deletion when absent;
+7. whole-substrate deletion leaving core semantics/execution coherent;
+8. attempted mid-stage observation/mutation rejected structurally;
+9. source-owner invariant mutation without an authorized port rejected;
+10. per-item transitions under several legal schedules with no implied global barrier;
+11. unreachable stage, undeclared target, unowned cycle and missing stop path rejection;
+12. failure/cancellation before entry, during owned mutation, at checkpoint and after transition publication;
+13. required unavailable result becoming pending with worker/resources released;
+14. pressure/exhaustion routed through exact stage contribution and SPEC-0011 outcome;
+15. root/session/output operations remaining outside surfaces;
+16. unknown or unqualified CUDA-JS capability requirement failing before ignition;
+17. product capability and materially different non-game/universal capability using one checkpoint without changing base meaning;
+18. fixed game/action/scalar value/ranking/evaluator/stage-list assumptions rejected;
+19. stale generation/counter exhaustion without alias; and
+20. teardown with exact work/contribution/channel/source-owner disposition.
+
+EXT-CONFORMANCE-001. Reference cases assert semantic state/outcomes, owner boundaries, permissions, conservation, progress and deletion rather than one schedule or native topology.
+
+EXT-CONFORMANCE-002. Mutation tests must independently break checkpoint stability, permission checks, source-owner identity, ordering, deletion, pending-worker release, cycle closure and capability provenance and show the oracle fails.
+
+EXT-CONFORMANCE-003. Native qualification later owns actual CUDA publication scope/races, generated artifact inspection, device resource/occupancy/performance effects, cancellation/teardown and exact compatible-pair evidence. Portable/reference success is not a native support claim.
+
+## 15. Semantic acceptance blockers
 
 This proposal cannot become accepted until:
 
-- its stage/surface/capability schema, canonical identity and normalization obligations are decision-complete and implemented by the bounded Search IR/reference evidence accepted atomically with this contract;
-- domain, policy, evaluator, graph/resource/session/output contracts define facts stages consume/publish;
-- SPEC-0004 readiness/deadlock/resource behavior is accepted;
-- capability-specific context contribution has a deterministic schema/identity/deletion model;
-- representative stage graphs prove universality beyond the original fixed-domain prototype and beyond chess;
-- CUDA-free producer/consumer/failure/pressure/security reference tests exist;
-- first-consumer deletion proves the extension substrate remains coherent without the first product.
+- every normative requirement above maps to a strict normalized schema/validator and independent CUDA-free reference case or explicit cross-specification proof;
+- SPEC-0004 and SPEC-0005 are decision-complete and their requirement IDs/dependencies agree with this contract;
+- the source-owner proposal packet is represented without stage-owned semantic duplication;
+- whole-substrate, zero-capability and first-consumer deletion pass exactly;
+- at least two materially different non-product-shaped stage graphs/capabilities falsify one fixed pipeline/context/output/value assumption;
+- permission, ordering, failure, pressure, pending, cancellation, counter exhaustion and cleanup mutations fail under independent oracles; and
+- `ENGINE-CONTRACT-ACCEPTANCE-01` accepts this specification atomically with its schemas, reference evidence and coupled proposal dependencies on one exact revision.
 
-Native publication scope/race evidence, CUDA-JS-generated artifact inspection, representative resource/performance evidence and exact compatible-pair teardown qualify concrete production profiles after semantic acceptance. They are not circular prerequisites for accepting this backend-neutral contract.
+Native CUDA-JS-generated artifact disappearance, publication/race behavior, representative cost/occupancy/performance and exact compatible-pair teardown remain mandatory only for production profiles that claim them. They are not circular prerequisites for backend-neutral semantic acceptance.
