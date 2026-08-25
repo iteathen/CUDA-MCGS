@@ -24,6 +24,7 @@ const COUNTER_KINDS = ['work-item-generation', 'stage-transition', 'capability-i
 const LIFECYCLE_STATES = ['profile-normalized', 'resources-admitted', 'composed', 'active', 'draining', 'terminal', 'released'];
 const BASE_CLEANUP_KINDS = ['stage-item', 'surface-context', 'capability-contribution', 'permission', 'counter', 'source-owner-lease', 'diagnostic', 'program-artifact'];
 const CHANNEL_CLEANUP_KIND = 'channel-binding';
+const CHANNEL_ACTIONS = ['produce', 'claim', 'observe', 'complete', 'cancel', 'release'];
 const BASE_PUBLIC_REQUIREMENTS = ['cuda-js.device-js/0.1.0', 'cuda-js.operation-lifecycle/0.1.0'];
 const STATUS_CLASSES = new Map([
   ['extension-work-complete', 'normal'], ['extension-pending', 'pending'], ['extension-pressure', 'pressure'],
@@ -232,6 +233,21 @@ function normalizeEffect(input, index, ownerById, ownerContract, contributions, 
   return { id: input.id, owner: input.owner, port, kind, order: normalizeDecimalUint(input.order, `${input.id} order`), commutes: input.commutes };
 }
 
+function normalizeChannelRequirement(input, index, capabilityId, capabilityBindings) {
+  exactKeys(input, ['requirement', 'bindings'], 'EXT_CHANNEL_REQUIREMENT_FIELDS', `${capabilityId} channel requirement ${index}`);
+  const requirement = normalizeSchemaReference(input.requirement, `${capabilityId} channel requirement ${index}`);
+  if (!Array.isArray(input.bindings) || input.bindings.length === 0) fail('EXT_CAPABILITY_CHANNEL', `${capabilityId} channel requirement has no binding`);
+  const bindings = input.bindings.map((binding, bindingIndex) => {
+    exactKeys(binding, ['surface', 'actions'], 'EXT_CHANNEL_BINDING_FIELDS', `${capabilityId} channel binding ${bindingIndex}`);
+    if (!capabilityBindings.includes(binding.surface)) fail('EXT_CAPABILITY_CHANNEL', `${capabilityId} channel binding names a surface outside the capability`);
+    const actions = [...binding.actions].sort(compareRaw);
+    if (actions.length === 0 || new Set(actions).size !== actions.length || actions.some((action) => !CHANNEL_ACTIONS.includes(action))) fail('EXT_CAPABILITY_CHANNEL', `${capabilityId} channel binding actions are invalid`);
+    return { surface: binding.surface, actions };
+  }).sort((left, right) => compareRaw(left.surface, right.surface));
+  uniqueBy(bindings, 'surface', 'EXT_CAPABILITY_CHANNEL', `${capabilityId} channel binding`);
+  return { requirement, bindings };
+}
+
 function normalizeCapability(input, index, catalogById, ownerById, surfaceIds, permissionById, stageClassIds) {
   exactKeys(input, ['id', 'version', 'ownerContract', 'semanticOwner', 'invocationCounter', 'bindings', 'requiredFacts', 'permissions', 'contributions', 'effects', 'before', 'after', 'channels', 'activation', 'bounds', 'outcomes', 'cancellation', 'failure', 'deletion', 'sourceIdentity', 'requirements', 'provenance'], 'EXT_CAPABILITY_FIELDS', `capability ${index}`);
   assertNamespacedId(input.id, 'EXT_CAPABILITY_ID', `capability ${index} id`); assertVersion(input.version, 'EXT_CAPABILITY_VERSION', `${input.id} version`);
@@ -252,8 +268,8 @@ function normalizeCapability(input, index, catalogById, ownerById, surfaceIds, p
     if (new Set(values).size !== values.length) fail(code, `${input.id} ${label} contains a duplicate`);
     values.forEach((value) => assertNamespacedId(value, code, `${input.id} ${label}`));
   }
-  const channels = input.channels.map((entry, channelIndex) => normalizeSchemaReference(entry, `${input.id} channel requirement ${channelIndex}`)).sort((left, right) => compareRaw(schemaKey(left), schemaKey(right)));
-  uniqueBy(channels, 'id', 'EXT_CAPABILITY_CHANNEL', `${input.id} channel requirement`);
+  const channels = input.channels.map((entry, channelIndex) => normalizeChannelRequirement(entry, channelIndex, input.id, bindings)).sort((left, right) => compareRaw(schemaKey(left.requirement), schemaKey(right.requirement)));
+  uniqueBy(channels.map(({ requirement }) => requirement), 'id', 'EXT_CAPABILITY_CHANNEL', `${input.id} channel requirement`);
   exactKeys(input.activation, ['kind', 'rule', 'newResources'], 'EXT_ACTIVATION_FIELDS', `${input.id} activation`);
   const activationKind = assertEnum(input.activation.kind, ['always', 'preplanned-rule'], 'EXT_ACTIVATION_KIND', `${input.id} activation kind`);
   const activationRule = input.activation.rule === null ? null : normalizeSchemaReference(input.activation.rule, `${input.id} activation rule`);

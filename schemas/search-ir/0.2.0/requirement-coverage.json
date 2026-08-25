@@ -1448,7 +1448,7 @@
       "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:stage-first-product-deletion-base-context-stable", "case:stage-first-product-deletion-zero-owned-residue", "case:stage-materially-different-nongame-profile", "case:stage-source-owner-port-closure", "case:reject-stage-known-source-profile-port-crossing", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": ["case:stage-first-product-deletion-base-context-stable", "case:stage-first-product-deletion-zero-owned-residue", "case:stage-materially-different-nongame-profile", "case:stage-source-owner-port-closure", "case:reject-stage-known-source-profile-port-crossing", "case:reject-stage-channel-permission-outside-capability-surface", "planned:IR-DELETION-ID-01"],
       "classificationStatus": "classified"
     },
     {
