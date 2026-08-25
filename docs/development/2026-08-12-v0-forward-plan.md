@@ -6,7 +6,7 @@
 
 **Parent plan version:** `CUDA-MCGS-V0/22`
 
-**CUDA-MCGS input baseline:** protected `main` `7c20146fed5f459b9857f65647d2be311b201987`.
+**CUDA-MCGS input baseline:** protected `main` `5fe57778723012c0a6c8bd5ef1501341962040f0`.
 
 **CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
 
@@ -54,14 +54,14 @@ The current CUDA-JS surface is not assumed complete. If a naturally generic GPU 
 
 **Current focus.** Production universal lowering remains blocked. This node makes the owning semantics decision-complete proposals; it does not claim acceptance before their schema/reference obligations have decisive evidence.
 
-The canonical execution record beneath accepted authority for this plan node—critical assessment, exact semantic focus-branch map, dependency graph, branch contracts, falsifiers, token posture, cleanup obligations and current leaf—is [`2026-08-24-engine-contract-01-assessment-and-plan.md`](2026-08-24-engine-contract-01-assessment-and-plan.md). The domain, graph, policy, evaluator, output, resource and device-progress proposals SPEC-0007 through SPEC-0013 are integrated. `EC-SESSION-01` is the single active leaf. The universal semantic owner is **device-owned search progress**; physical scheduler mechanisms remain later profile selections.
+The canonical execution record beneath accepted authority for this plan node—critical assessment, exact semantic focus-branch map, dependency graph, branch contracts, falsifiers, token posture, cleanup obligations and current leaf—is [`2026-08-24-engine-contract-01-assessment-and-plan.md`](2026-08-24-engine-contract-01-assessment-and-plan.md). The domain, graph, policy, evaluator, output, resource, device-progress and optional Search Session proposals SPEC-0006 through SPEC-0013 are integrated. `EC-FRAMEWORK-01` is the single active leaf. The universal semantic owner is **device-owned search progress**; physical scheduler mechanisms remain later profile selections.
 
 Remaining work:
 
-- review/revise proposal SPEC-0000 against ADR-0018;
-- review/revise SPEC-0006 Search Session/control/observation against those owners, including admission-before-mutation, root epochs, stale-work disposition, reroot/reclamation separation, reuse classifications, read-only observations and stale-safe finite counters;
-- ensure generic result/observation payloads do not imply ranking, scalar value, legal moves, games, or one evaluator shape;
-- keep Search Stage vocabulary out of core semantics unless a core contract actually requires it.
+- review/revise proposal SPEC-0000 against ADR-0018 and every integrated owner proposal;
+- remove duplicate framework authority while preserving cross-contract composition, first-consumer deletion and materially different second instances;
+- ensure the framework map cannot imply ranking, scalar value, legal moves, games, one evaluator shape or mandatory live sessions;
+- keep Search Stage vocabulary out of core semantics unless a core contract actually requires it, then reconcile the complete proposal packet and downstream evidence handoff.
 
 **Exit:** each semantic fact/lifecycle has one proposed owner; first-consumer deletion and materially different second-instance tests pass conceptually; finite resource/failure behavior and schema/reference obligations are explicit; no product/CUDA implementation fact leaks into universal meaning. Final semantic acceptance occurs at `ENGINE-CONTRACT-ACCEPTANCE-01`.
 

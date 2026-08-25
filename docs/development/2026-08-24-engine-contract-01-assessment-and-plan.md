@@ -172,8 +172,8 @@ Provisional specification paths become authoritative only if their proposal bran
 | `EC-OUTPUT-01` | `integrated proposal` | Generic bounded terminal result/live observation payload publication contract | SPEC-0001, domain/policy/evaluator outputs | [`SPEC-0013`](../specs/SPEC-0013-result-and-observation-publication.md) at `main@8fab142` | Deleting ranked actions leaves the contract incoherent, or observation changes search semantics. |
 | `EC-RESOURCE-01` | `integrated proposal` | Finite search-resource composition/admission/pressure/exhaustion contract | Graph, policy, evaluator, output contributions | [`SPEC-0011`](../specs/SPEC-0011-finite-search-resources.md) at `main@98caeb5` | A selected owner can acquire unplanned memory or has no typed saturation behavior. |
 | `EC-PROGRESS-01` | `integrated proposal` | Device-owned readiness/progress/fairness/deadlock/stop semantics | Graph, policy, evaluator, output, resource contracts | [`SPEC-0012`](../specs/SPEC-0012-device-owned-search-progress.md) at `main@7c20146` | Semantics require a persistent queue, CUDA Graph, host relaunch, or exact schedule. |
-| `EC-SESSION-01` | `active` | Reconciled optional Search Session/root/control/observation proposal | All prior owners | Revised `SPEC-0006` | A rejected update mutates state, stale work contaminates a new epoch, or live reads advance search. |
-| `EC-FRAMEWORK-01` | `planned` | Cross-cutting proposal map with no duplicate owner | All proposal outputs | Revised `SPEC-0000` | SPEC-0000 independently owns a fact already assigned to a leaf or extension/product contract. |
+| `EC-SESSION-01` | `integrated proposal` | Reconciled optional Search Session/root/control/observation proposal | All prior owners | [`SPEC-0006`](../specs/SPEC-0006-search-session-control-and-observation.md) at `main@5fe5777` | A rejected update mutates state, stale work contaminates a new epoch, or live reads advance search. |
+| `EC-FRAMEWORK-01` | `active` | Cross-cutting proposal map with no duplicate owner | All proposal outputs | Revised `SPEC-0000` | SPEC-0000 independently owns a fact already assigned to a leaf or extension/product contract. |
 | `EC-INTEGRATE-01` | `planned` | One exact proposal packet, branch dispositions, downstream handoff | Every integrated or explicitly disposed leaf | Specs index, registry, plan/status/next-step/issues | Any planned branch is unaccounted, terms contradict, dependencies cycle, or later nodes must invent meaning. |
 
 ### Common branch contract
@@ -199,7 +199,7 @@ Each leaf:
 - `EC-OUTPUT-01` owns bounded publication selection and immutable payload validity for terminal results and optional observations. Session owns live lifetime/epoch coordination; policy/product contracts own ranking or payload meaning.
 - `EC-RESOURCE-01` owns finite search-resource contribution normalization, partition/admission, watermarks, pressure/exhaustion and semantic accounting. It does not allocate CUDA resources or silently choose eviction/search policy.
 - `EC-PROGRESS-01` owns device-side readiness and guaranteed progress/typed no-progress outcomes. Physical scheduler mechanisms remain later evidence-selected profiles.
-- `EC-SESSION-01` owns external session input/observation lifecycle, root epochs, commit, stale disposition and coordinated reuse classifications; it does not redefine the contributing contracts.
+- `EC-SESSION-01` owns the optional external transaction/root-epoch boundary plus control and observation request/borrow lifecycle coordination; contributing owners retain validation, reuse, stale-work, publication, resource, progress and cleanup meaning.
 - `EC-FRAMEWORK-01` and `EC-INTEGRATE-01` reconcile rather than aggregate unrelated implementation ownership.
 
 ## Execution, validation, cleanup, and handoff
@@ -234,4 +234,6 @@ Task-created tracked documentation is retained as reviewable proposal output onl
 
 `EC-PROGRESS-01` ran from 2026-08-24T23:28:49-07:00 through exact-head author review at 2026-08-24T23:31:17-07:00 and merged through PR #74 as `main@7c20146fed5f459b9857f65647d2be311b201987` at 2026-08-24T23:31:58-07:00. Its output is a decision-complete proposal, not accepted production or scheduler-mechanism authority.
 
-`EC-SESSION-01` is the single active semantic leaf. It revises optional Search Session/root/control/observation semantics against all integrated owners while preserving device-owned progress and a terminal-only engine with exact zero live-session residue. No production implementation or schema mutation is ready.
+`EC-SESSION-01` ran from 2026-08-24T23:35:01-07:00 through exact-head author review at 2026-08-24T23:41:47-07:00 and merged through PR #76 as `main@5fe57778723012c0a6c8bd5ef1501341962040f0` at 2026-08-24T23:42:43-07:00. Its output is a decision-complete optional proposal with exact terminal-only zero live-session residue, not accepted production or sideband-mechanism authority.
+
+`EC-FRAMEWORK-01` is the single active semantic leaf. It reconciles SPEC-0000 against all integrated owner proposals without acquiring their semantics, making extension mechanics foundational or importing product/CUDA implementation facts. No production implementation or schema mutation is ready.
