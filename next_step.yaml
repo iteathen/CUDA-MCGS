@@ -1,11 +1,11 @@
 {
-  "schema_version": 36,
+  "schema_version": 37,
   "updated": "2026-08-25",
   "status": "ready_for_contract_review",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then proceed to pure Node.js/restricted Device-JS native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "098a8ce3e6c5abfcccc0209efe8d4564ad75d13f",
+    "cuda_mcgs_authority_input_baseline": "0ba119fbecaa116e29699a47fa867921fd08516d",
     "cuda_js_authority_baseline": "2135216b1a9fd88066a1c82b61ae533645eac9c2",
     "cuda_js_implementation_baseline": "b6062f691a27093df0e5d55e482e69ebbd39a9eb",
     "cuda_js_package": "cuda-js@0.1.0-alpha.6"
@@ -22,14 +22,14 @@
     "docs/specs/SPEC-0002-search-ir-and-reference-semantics.md"
   ],
   "current_focus": {
-    "id": "ENGINE-EXTENSION-01",
+    "id": "ENGINE-IR-COMPOSER-01",
     "parent_plan_version": "CUDA-MCGS-V0/22",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
-    "focus_branch_map": "docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md",
-    "active_leaf": "EXT-INTEGRATE-01",
+    "focus_branch_map": "not created; IR-ASSESS-01 owns the critical assessment and map before schema/normalizer/Composer mutation",
+    "active_leaf": "IR-ASSESS-01",
     "ready_queued_leaves": [],
-    "next_action": "Reconcile the exact 248-requirement SPEC-0003/0004/0005 optional extension packet with the 741-requirement core packet, architecture/index/registry/plan/issue state, branch/cleanup dispositions and exact schema/reference handoff on frozen main@098a8ce. Preserve proposal-only status, whole-substrate deletion, source-owner separation, CUDA-JS #123 native routing and no production implementation.",
-    "exit": "SPEC-0003 through SPEC-0005 are decision-complete optional extension-substrate proposals with exact owner dependencies, selected-only materialization, zero absent-capability residue, bounded channels/resources/lifecycle, deterministic JavaScript/restricted Device-JS composition identity and explicit schema/reference obligations."
+    "next_action": "Critically assess all 989 proposal requirements against accepted Search IR 0.1.0, the current schema/reference experiment, component/package organization and downstream reference/acceptance gates; create a bounded dependency-ordered focus map before changing strict schemas, normalization or Composer code. Preserve proposal-only authority, structural deletion, deterministic identity and no production lowering.",
+    "exit": "Strict schemas/metaschemas, canonical normalization, deterministic reference Composer/Search Program/package generation and structural deletion evidence represent every selected requirement needed by the 989-requirement proposal packet without inventing semantics or CUDA-specific implementation."
   },
   "deliverables": [
     "decision-complete product-neutral domain, policy, evaluator, generic output, graph/storage, finite-resource, device-owned progress and Search Session proposals",
@@ -59,7 +59,7 @@
     "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
   "blockers": [
-    "the decision-complete 248-requirement extension packet requires final routing/handoff reconciliation; all 989 proposal requirements require bounded schema/reference evidence and integrated semantic acceptance before their owned production lowering",
+    "all 989 proposal requirements require complete strict schema/normalizer/Composer and CUDA-free reference evidence plus integrated semantic acceptance before their owned production lowering",
     "CUDA-JS issue #123 release/acquire Device-JS publication support is absent and blocks native internal-channel qualification, not backend-neutral contract/schema/reference work",
     "complete Search IR/Composer representation for selected contract/capability/product inputs is incomplete",
     "CUDA-MCGS external deletion and exact compatible-pair evidence remain unfinished",

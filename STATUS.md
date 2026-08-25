@@ -9,7 +9,7 @@
 The protected CUDA-MCGS `main` input baseline for the active contract packet is:
 
 ```text
-098a8ce3e6c5abfcccc0209efe8d4564ad75d13f
+0ba119fbecaa116e29699a47fa867921fd08516d
 ```
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
@@ -70,7 +70,9 @@ The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`]
 
 **ENGINE-CONTRACT-01** completed its proposal-packet scope through PR #79 at `main@22e3ea5`. Its critical assessment and execution record is [`docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md`](docs/development/2026-08-24-engine-contract-01-assessment-and-plan.md). SPEC-0000 and SPEC-0006 through SPEC-0013 form one decision-complete proposal packet containing 741 unique normative requirements across framework, domain, graph, policy, optional evaluator, output, resources, device progress and optional Search Session owners. Device-owned progress remains intentionally separate from any later physical scheduler selection.
 
-Current focus is `EXT-INTEGRATE-01` under **ENGINE-EXTENSION-01**. Its critical assessment and dependency-ordered semantic map are [`docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md`](docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md). SPEC-0003/0004/0005 are decision-complete 80/90/78-requirement optional stage/channel/restricted Device-JS composition proposals on frozen input `main@098a8ce`. The integration leaf reconciles their architecture/index/registry/plan/issue routing and exact schema/reference handoff. Production lowering remains blocked until the later integrated semantic-acceptance gate completes.
+**ENGINE-EXTENSION-01** completed its proposal-packet scope through PR #87 at `main@0ba119f`. Its critical assessment/execution record is [`docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md`](docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md). SPEC-0003/0004/0005 are decision-complete 80/90/78-requirement optional stage/channel/restricted Device-JS composition proposals. Together with the core packet, they hand 989 unique proposal requirements to schema/reference work.
+
+Current focus transfers to **ENGINE-IR-COMPOSER-01**. Its first leaf is a critical assessment and bounded focus map before any strict schema, normalizer or Composer implementation changes. Production lowering remains blocked until schema/reference evidence and the later integrated semantic-acceptance gate complete.
 
 The assessment found one consumer-neutral CUDA-JS gap: current accepted Device-JS cannot truthfully express device-scope release/acquire publication for a multi-word internal channel payload. [CUDA-JS #123](https://github.com/iteathen/CUDA-JS/issues/123) owns the bounded generic helper assessment. Backend-neutral proposal/schema/reference work continues; native internal-channel qualification depends on that public capability rather than a CUDA-MCGS workaround.
 
@@ -90,7 +92,7 @@ Chess remains a separately tracked downstream proposal and does not gate univers
 ## Claim limits / blockers
 
 - no production universal engine is accepted yet;
-- final extension proposal-packet routing/handoff reconciliation is active;
+- complete strict schema/normalizer/Composer representation and deletion evidence are not implemented;
 - device-scope release/acquire Device-JS publication helpers remain unimplemented/unqualified in CUDA-JS #123;
 - complete Search IR/Composer specialization/resource identity is incomplete;
 - CUDA-MCGS external deletion/compatible-pair evidence is unfinished;
