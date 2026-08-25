@@ -22,6 +22,8 @@ The north star remains:
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS framework with a universal schema-backed least-authority extension/composition substrate and finite statically specialized engines.**
 
+ADR-0020 establishes how that framework is delivered: CUDA-MCGS is one complete library with progressive disclosure. A convenience facade and documented presets resolve into the same authoritative composable contracts, normalized profile, validation and specialization path as explicit advanced use. Defaults are bounded, documented, inspectable, overridable and versioned when material; no convenience path may guess required domain meaning or adapt hidden search semantics after ignition.
+
 ADR-0018 separates:
 
 1. universal product-neutral MCGS semantic core;
@@ -73,6 +75,8 @@ The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`]
 **ENGINE-EXTENSION-01** completed its proposal-packet scope through PR #87 at `main@0ba119f`. Its critical assessment/execution record is [`docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md`](docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md). SPEC-0003/0004/0005 are decision-complete 80/90/78-requirement optional stage/channel/restricted Device-JS composition proposals. Together with the core packet, they hand 989 unique proposal requirements to schema/reference work.
 
 Current focus is **ENGINE-IR-COMPOSER-01**. Its [critical assessment and focus map](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and sequences owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. `IR-CATALOG-01` through `IR-CHANNEL-01` are integrated through PR #103 at `main@1baadc5`; the strict Channel profile and logical ordering/reference traces pass within the 781/781 CUDA-free Composer capsule with 911 classified / 78 pending requirements. `IR-PROGRAM-PACKAGE-01` is now the dependency-ready leaf under SPEC-0005 ownership. Production lowering remains blocked until every schema/reference leaf and the later integrated semantic-acceptance gate complete.
+
+The 989-requirement proposal packet and its exact source digests remain frozen while that leaf is active. ADR-0020 therefore shapes the canonical normalization boundary now without silently changing the packet. [Issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) queues resolved-input/default provenance and convenience-to-explicit equivalence for the next dependency-safe Composer reconciliation before integrated semantic acceptance; exact public API spellings and SDK implementation remain later work.
 
 Project-owner direction plus CUDA-JS ADR-0006 require OS-neutral CUDA-MCGS contracts and engine architecture while making native Linux x86-64 the reference implementation and primary qualification platform for the first exact compatible pair. Ubuntu 24.04 LTS is the first exact CUDA-JS qualification cell. Existing Windows CUDA-JS evidence remains valid as a peer profile; it no longer determines CUDA-MCGS forward sequencing. This is a downstream realization/qualification choice only and does not alter or shortcut the active backend-neutral Search IR/semantic gates.
 

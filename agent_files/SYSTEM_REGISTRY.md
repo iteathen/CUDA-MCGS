@@ -84,6 +84,7 @@ The active dependency graph and owner-level proposal outputs are governed beneat
 
 | Planned boundary ID | Intended responsibility | Governing work |
 |---|---|---|
+| `interface.library` | Progressive public access from convenience facade/presets through the complete composable surface to low-level integration tools; one canonical resolved-profile path with inspectable default provenance | [`../docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md`](../docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md); exact API remains future specification work |
 | `contract.framework` | Cross-owner LEGO composition/dependency map, normalized engine identity, lifecycle/deletion/package and integrated conformance obligations | [`../docs/specs/SPEC-0000-framework-requirements.md`](../docs/specs/SPEC-0000-framework-requirements.md) proposal |
 | `contract.domain` | Product-neutral state/action/transition/identity/history/node-role semantics | [`../docs/specs/SPEC-0007-domain-state-action-and-transition.md`](../docs/specs/SPEC-0007-domain-state-action-and-transition.md) proposal |
 | `contract.policy` | Product-neutral selection/reservation/widening/policy statistics/backup/stopping and reroot reuse classification | [`../docs/specs/SPEC-0008-search-policy-and-backup.md`](../docs/specs/SPEC-0008-search-policy-and-backup.md) proposal |

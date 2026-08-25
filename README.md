@@ -2,11 +2,25 @@
 
 **Universal Monte Carlo Graph Search**
 
-CUDA-MCGS is a public pre-release framework for specifying, specializing, and executing finite GPU-resident Monte Carlo Graph Search systems across unrelated domains and evaluator types.
+CUDA-MCGS is a public pre-release library intended to make finite GPU-resident Monte Carlo Graph Search easy to use while remaining complete enough for unrelated domains, evaluator types and search needs.
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS framework with a universal least-authority extension/composition substrate and finite specialized Search Images.**
 
 The core must not inherit the shape of the first product. Chess, Go, planning, optimization, text search, evaluation-only search, partially observable search, and future MCGS-style workloads are consumers/specializations rather than definitions of universal CUDA-MCGS.
+
+## Complete library, easy entry
+
+[`ADR-0020`](docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md) makes completeness and ease one design:
+
+1. a concise facade and documented presets for common use;
+2. complete composable contracts/components for explicit control; and
+3. low-level Search IR, schema and extension tools for new integrations.
+
+These are levels of access to one library, not separate runtimes. A minimal call and its fully explicit equivalent must resolve to the same canonical framework profile, validation, specialization and execution package.
+
+Defaults are local, bounded, deterministic, documented, inspectable and overridable. CUDA-MCGS may adapt from declared capabilities, stable input contracts and unambiguous call shape before ignition. It does not guess domain semantics from sample values or runtime coincidences, and it does not invent a domain, evaluator, state identity or other required fact merely to make every construction parameter-free.
+
+Resolved configuration and default provenance are part of the planned public experience. Semantically material defaults are versioned and identity-bearing so convenience remains reproducible rather than magical. Exact public class and function names remain future specification work; the repository does not yet publish a stable API.
 
 ## Architecture: three semantic layers
 
