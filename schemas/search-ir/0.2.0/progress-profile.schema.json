@@ -1,0 +1,358 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/progress-profile.schema.json",
+  "title": "CUDA-MCGS Search IR 0.2.0 device-owned progress profile",
+  "description": "Closed scheduler-neutral work, readiness, fairness, no-progress, stop, drain and closure plan composed from an exact finite resource plan.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "representation", "status", "contract", "id", "version", "resourcePlan", "resourceContribution", "contributors", "workClasses", "dependencies", "fairnessClasses", "noProgress", "stop", "closure", "lifecycle", "ports", "statuses", "diagnostics", "compatibility", "cleanup", "programContribution", "productData"],
+  "properties": {
+    "schema": { "const": "cuda-mcgs.progress-profile/0.2.0" },
+    "representation": { "const": "cuda-mcgs.search-ir/0.2.0" },
+    "status": { "const": "proposal-evidence" },
+    "contract": { "$ref": "primitives.schema.json#/$defs/catalogContractReference" },
+    "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+    "version": { "$ref": "primitives.schema.json#/$defs/version" },
+    "resourcePlan": { "$ref": "#/$defs/profileReference" },
+    "resourceContribution": { "$ref": "#/$defs/profileReference" },
+    "contributors": { "type": "array", "minItems": 6, "items": { "$ref": "#/$defs/contributor" } },
+    "workClasses": { "type": "array", "minItems": 6, "items": { "$ref": "#/$defs/workClass" } },
+    "dependencies": { "type": "array", "items": { "$ref": "#/$defs/dependency" } },
+    "fairnessClasses": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/fairnessClass" } },
+    "noProgress": { "$ref": "#/$defs/noProgress" },
+    "stop": { "$ref": "#/$defs/stop" },
+    "closure": { "$ref": "#/$defs/closure" },
+    "lifecycle": { "$ref": "#/$defs/lifecycle" },
+    "ports": { "type": "array", "minItems": 11, "items": { "$ref": "#/$defs/port" } },
+    "statuses": { "type": "array", "minItems": 11, "items": { "$ref": "#/$defs/status" } },
+    "diagnostics": { "$ref": "#/$defs/diagnostics" },
+    "compatibility": { "$ref": "#/$defs/compatibility" },
+    "cleanup": { "$ref": "#/$defs/cleanup" },
+    "programContribution": { "$ref": "#/$defs/programContribution" },
+    "productData": { "type": "array", "items": { "$ref": "#/$defs/productData" } }
+  },
+  "$defs": {
+    "decimalUint": { "$ref": "primitives.schema.json#/$defs/decimalUint" },
+    "schemaReference": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+    "profileReference": {
+      "type": "object", "additionalProperties": false, "required": ["id", "schema", "identity"],
+      "properties": {
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "schema": { "$ref": "#/$defs/schemaReference" },
+        "identity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }
+      }
+    },
+    "contractReference": { "oneOf": [{ "$ref": "primitives.schema.json#/$defs/catalogContractReference" }, { "$ref": "primitives.schema.json#/$defs/namespacedContractReference" }] },
+    "contributor": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "contract", "profile", "optional", "workClasses", "publicTransitions", "cleanup"],
+      "properties": {
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "contract": { "$ref": "#/$defs/contractReference" },
+        "profile": { "$ref": "#/$defs/profileReference" },
+        "optional": { "type": "boolean" },
+        "workClasses": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+        "publicTransitions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/schemaReference" } },
+        "cleanup": { "$ref": "#/$defs/schemaReference" }
+      }
+    },
+    "bounds": {
+      "type": "object", "additionalProperties": false,
+      "required": ["maxAdmitted", "maxProducedPerStep", "maxStepsPerAttempt", "maxRetries", "maxContinuationDepth", "maxWaitTransitions", "counterMaximum", "cancellationObservationWorkUnits"],
+      "properties": {
+        "maxAdmitted": { "$ref": "#/$defs/decimalUint" },
+        "maxProducedPerStep": { "$ref": "#/$defs/decimalUint" },
+        "maxStepsPerAttempt": { "$ref": "#/$defs/decimalUint" },
+        "maxRetries": { "$ref": "#/$defs/decimalUint" },
+        "maxContinuationDepth": { "$ref": "#/$defs/decimalUint" },
+        "maxWaitTransitions": { "$ref": "#/$defs/decimalUint" },
+        "counterMaximum": { "$ref": "#/$defs/decimalUint" },
+        "cancellationObservationWorkUnits": { "$ref": "#/$defs/decimalUint" }
+      }
+    },
+    "batch": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "none" } } },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "minimumItems", "maximumItems", "flushAfterOpportunities", "readiness", "hostTimeout"],
+          "properties": {
+            "kind": { "const": "device-flush" },
+            "minimumItems": { "$ref": "#/$defs/decimalUint" },
+            "maximumItems": { "$ref": "#/$defs/decimalUint" },
+            "flushAfterOpportunities": { "$ref": "#/$defs/decimalUint" },
+            "readiness": { "$ref": "#/$defs/schemaReference" },
+            "hostTimeout": { "const": "none" }
+          }
+        }
+      ]
+    },
+    "step": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contract", "completion", "continuationIdentity", "publication", "failure"],
+      "properties": {
+        "contract": { "$ref": "#/$defs/schemaReference" },
+        "completion": { "enum": ["bounded", "finite-continuation"] },
+        "continuationIdentity": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/schemaReference" }] },
+        "publication": { "$ref": "#/$defs/schemaReference" },
+        "failure": { "$ref": "#/$defs/schemaReference" }
+      }
+    },
+    "readiness": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "predicate", "publication", "independentReady", "dependencies"],
+      "properties": {
+        "mode": { "enum": ["all", "any-with-independent"] },
+        "predicate": { "$ref": "#/$defs/schemaReference" },
+        "publication": { "$ref": "#/$defs/schemaReference" },
+        "independentReady": { "type": "boolean" },
+        "dependencies": { "type": "array", "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } }
+      }
+    },
+    "retry": {
+      "type": "object", "additionalProperties": false, "required": ["staleSafe", "idempotence"],
+      "properties": { "staleSafe": { "const": true }, "idempotence": { "$ref": "#/$defs/schemaReference" } }
+    },
+    "workClass": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "version", "owner", "kind", "payload", "inputStates", "outputStates", "readiness", "resources", "reserve", "bounds", "fairness", "batch", "claim", "step", "retry", "cancellation", "stale", "stopDisposition", "terminalStates", "status", "cleanup"],
+      "properties": {
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "version": { "$ref": "primitives.schema.json#/$defs/version" },
+        "owner": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "kind": { "enum": ["ordinary", "producer-unblocking", "must-drain", "terminal-output", "external-control", "resource-recovery"] },
+        "payload": { "$ref": "#/$defs/schemaReference" },
+        "inputStates": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+        "outputStates": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+        "readiness": { "$ref": "#/$defs/readiness" },
+        "resources": { "type": "array", "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+        "reserve": { "oneOf": [{ "type": "null" }, { "$ref": "primitives.schema.json#/$defs/namespacedId" }] },
+        "bounds": { "$ref": "#/$defs/bounds" },
+        "fairness": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "batch": { "$ref": "#/$defs/batch" },
+        "claim": { "enum": ["exclusive", "idempotent-cooperative"] },
+        "step": { "$ref": "#/$defs/step" },
+        "retry": { "$ref": "#/$defs/retry" },
+        "cancellation": { "$ref": "#/$defs/schemaReference" },
+        "stale": { "$ref": "#/$defs/schemaReference" },
+        "stopDisposition": { "enum": ["service", "drain", "abandon", "cancel", "stale-dispose"] },
+        "terminalStates": { "type": "array", "minItems": 3, "uniqueItems": true, "items": { "enum": ["completed", "failed", "cancelled", "abandoned", "stale-disposed", "quarantined"] } },
+        "status": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)*$" },
+        "cleanup": { "$ref": "#/$defs/schemaReference" }
+      }
+    },
+    "producer": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "owner", "workClass", "fact"],
+      "properties": {
+        "kind": { "enum": ["work-class", "fact", "external-control", "resource-recovery"] },
+        "owner": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "workClass": { "oneOf": [{ "type": "null" }, { "$ref": "primitives.schema.json#/$defs/namespacedId" }] },
+        "fact": { "$ref": "#/$defs/schemaReference" }
+      }
+    },
+    "dependency": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "consumer", "producer", "requirement", "publication", "incarnation", "escapes", "maxWaitTransitions", "fallback", "holdsWorker", "holdsProducerResource"],
+      "properties": {
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "consumer": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "producer": { "$ref": "#/$defs/producer" },
+        "requirement": { "enum": ["required", "advisory"] },
+        "publication": { "$ref": "#/$defs/schemaReference" },
+        "incarnation": { "$ref": "#/$defs/schemaReference" },
+        "escapes": { "type": "array", "minItems": 3, "uniqueItems": true, "items": { "enum": ["failure", "cancel", "stop", "fallback", "stale"] } },
+        "maxWaitTransitions": { "$ref": "#/$defs/decimalUint" },
+        "fallback": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/schemaReference" }] },
+        "holdsWorker": { "const": false },
+        "holdsProducerResource": { "const": false }
+      }
+    },
+    "fairnessClass": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "mode", "classes", "maxServiceOpportunities", "priority", "serviceOpportunity", "starvationEscape", "closurePriority"],
+      "properties": {
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "mode": { "enum": ["bounded-service-gap", "weak", "strong", "priority-with-starvation-escape", "custom-finite"] },
+        "classes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+        "maxServiceOpportunities": { "$ref": "#/$defs/decimalUint" },
+        "priority": { "$ref": "#/$defs/decimalUint" },
+        "serviceOpportunity": { "$ref": "#/$defs/schemaReference" },
+        "starvationEscape": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/schemaReference" }] },
+        "closurePriority": { "type": "boolean" }
+      }
+    },
+    "externalWait": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "absent" } } },
+        {
+          "type": "object", "additionalProperties": false, "required": ["kind", "owner", "state", "maxPendingCommands"],
+          "properties": {
+            "kind": { "const": "session-only" },
+            "owner": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "state": { "$ref": "#/$defs/schemaReference" },
+            "maxPendingCommands": { "$ref": "#/$defs/decimalUint" }
+          }
+        }
+      ]
+    },
+    "noProgress": {
+      "type": "object", "additionalProperties": false,
+      "required": ["outcomes", "classifier", "waitGraph", "potential", "maxRepeatedTransitions", "maxEvidenceRecords", "source", "firstCause", "hostObservation", "externalWait"],
+      "properties": {
+        "outcomes": { "type": "array", "minItems": 10, "maxItems": 10, "uniqueItems": true, "items": { "enum": ["terminal-quiescent", "legitimate-external-wait", "recoverable-resource-wait", "producer-pending", "deadlock", "livelock", "starvation", "orphaned-work", "stale-only", "counter-exhausted"] } },
+        "classifier": { "$ref": "#/$defs/schemaReference" },
+        "waitGraph": { "$ref": "#/$defs/schemaReference" },
+        "potential": { "$ref": "#/$defs/schemaReference" },
+        "maxRepeatedTransitions": { "$ref": "#/$defs/decimalUint" },
+        "maxEvidenceRecords": { "$ref": "#/$defs/decimalUint" },
+        "source": { "const": "device-visible-ready-facts" },
+        "firstCause": { "const": "immutable-first-fatal-cas" },
+        "hostObservation": { "const": "non-progressing" },
+        "externalWait": { "$ref": "#/$defs/externalWait" }
+      }
+    },
+    "stop": {
+      "type": "object", "additionalProperties": false,
+      "required": ["states", "firstCause", "ordinaryAdmissionClosedAt", "mustDrainKinds", "epochChange", "observationDependency", "counterWrap"],
+      "properties": {
+        "states": { "type": "array", "minItems": 4, "maxItems": 4, "prefixItems": [{ "const": "running" }, { "const": "stop-requested" }, { "const": "draining" }, { "const": "terminal" }], "items": false },
+        "firstCause": { "const": "immutable-first-cas" },
+        "ordinaryAdmissionClosedAt": { "const": "stop-requested" },
+        "mustDrainKinds": { "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": { "enum": ["must-drain", "terminal-output", "producer-unblocking", "resource-recovery"] } },
+        "epochChange": { "$ref": "#/$defs/schemaReference" },
+        "observationDependency": { "const": "none" },
+        "counterWrap": { "const": "prohibited" }
+      }
+    },
+    "outputBorrow": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "none" } } },
+        {
+          "type": "object", "additionalProperties": false, "required": ["kind", "maximum", "teardown"],
+          "properties": { "kind": { "const": "bounded-postsemantic" }, "maximum": { "$ref": "#/$defs/decimalUint" }, "teardown": { "$ref": "#/$defs/schemaReference" } }
+        }
+      ]
+    },
+    "closure": {
+      "type": "object", "additionalProperties": false,
+      "required": ["workClasses", "workAccounting", "channels", "ownerTransitions", "resources", "terminalOutput", "publication", "observationAckRequired", "outputBorrow", "conflict"],
+      "properties": {
+        "workClasses": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+        "workAccounting": { "const": "all-admitted-terminal" },
+        "channels": { "const": "all-required-terminal" },
+        "ownerTransitions": { "const": "ready-or-quarantined" },
+        "resources": { "const": "conservation-reconciled" },
+        "terminalOutput": { "const": "publishable-from-reserve" },
+        "publication": { "$ref": "#/$defs/schemaReference" },
+        "observationAckRequired": { "const": false },
+        "outputBorrow": { "$ref": "#/$defs/outputBorrow" },
+        "conflict": { "$ref": "#/$defs/schemaReference" }
+      }
+    },
+    "lifecycle": {
+      "type": "object", "additionalProperties": false,
+      "required": ["states", "failure", "quarantine", "teardown", "release"],
+      "properties": {
+        "states": { "type": "array", "minItems": 7, "maxItems": 7, "prefixItems": [{ "const": "profile-normalized" }, { "const": "resources-admitted" }, { "const": "initialized" }, { "const": "running" }, { "const": "draining" }, { "const": "terminal" }, { "const": "released" }], "items": false },
+        "failure": { "$ref": "#/$defs/schemaReference" },
+        "quarantine": { "$ref": "#/$defs/schemaReference" },
+        "teardown": { "$ref": "#/$defs/schemaReference" },
+        "release": { "$ref": "#/$defs/schemaReference" }
+      }
+    },
+    "status": {
+      "type": "object", "additionalProperties": false, "required": ["code", "class", "diagnostic"],
+      "properties": {
+        "code": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)*$" },
+        "class": { "enum": ["normal", "pending", "stop", "fatal", "cancellation"] },
+        "diagnostic": { "type": "boolean" }
+      }
+    },
+    "port": {
+      "type": "object", "additionalProperties": false, "required": ["id", "phase", "contract", "bounds", "completion", "statuses"],
+      "properties": {
+        "id": { "enum": ["admit-work", "publish-ready", "claim-ready", "yield-pending", "complete-work", "fail-work", "cancel-work", "observe-progress", "request-stop", "classify-no-progress", "publish-closure"] },
+        "phase": { "const": "device-active" },
+        "contract": { "$ref": "#/$defs/schemaReference" },
+        "bounds": { "$ref": "#/$defs/bounds" },
+        "completion": { "enum": ["bounded", "finite-continuation", "must-drain"] },
+        "statuses": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)*$" } }
+      }
+    },
+    "diagnostics": {
+      "type": "object", "additionalProperties": false,
+      "required": ["authority", "maxRecords", "maxBytes", "overflow", "rawAddresses", "privatePayloads", "wallClock"],
+      "properties": {
+        "authority": { "const": "non-authoritative" },
+        "maxRecords": { "$ref": "#/$defs/decimalUint" },
+        "maxBytes": { "$ref": "#/$defs/decimalUint" },
+        "overflow": { "enum": ["drop", "count", "terminal"] },
+        "rawAddresses": { "const": false },
+        "privatePayloads": { "const": false },
+        "wallClock": { "const": false }
+      }
+    },
+    "persistence": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "none" } } },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "encoding", "namespace", "integrity", "recovery", "retention", "cleanup"],
+          "properties": {
+            "kind": { "const": "versioned" },
+            "encoding": { "$ref": "#/$defs/schemaReference" },
+            "namespace": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+            "integrity": { "$ref": "#/$defs/schemaReference" },
+            "recovery": { "$ref": "#/$defs/schemaReference" },
+            "retention": { "$ref": "#/$defs/schemaReference" },
+            "cleanup": { "$ref": "#/$defs/schemaReference" }
+          }
+        }
+      ]
+    },
+    "compatibility": {
+      "type": "object", "additionalProperties": false,
+      "required": ["packageIdentityRequired", "schedulerIdentityExcluded", "persistence"],
+      "properties": { "packageIdentityRequired": { "const": true }, "schedulerIdentityExcluded": { "const": true }, "persistence": { "$ref": "#/$defs/persistence" } }
+    },
+    "cleanup": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kinds", "disposition", "quarantine", "releaseOrder", "retainedEvidence"],
+      "properties": {
+        "kinds": { "type": "array", "minItems": 13, "maxItems": 13, "uniqueItems": true, "items": { "enum": ["descriptor", "work-record", "dependency", "ready-record", "claim", "continuation", "fairness-counter", "wait-graph", "no-progress-evidence", "stop-record", "closure-record", "diagnostic", "program-artifact"] } },
+        "disposition": { "$ref": "#/$defs/schemaReference" },
+        "quarantine": { "$ref": "#/$defs/schemaReference" },
+        "releaseOrder": { "$ref": "#/$defs/schemaReference" },
+        "retainedEvidence": { "$ref": "#/$defs/schemaReference" }
+      }
+    },
+    "programContribution": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "language", "sourceIdentity", "inputs", "provenance"],
+      "properties": {
+        "kind": { "const": "device-program" },
+        "language": { "const": "restricted-device-js" },
+        "sourceIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
+        "inputs": { "type": "array", "minItems": 7, "items": { "$ref": "#/$defs/profileReference" } },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false, "required": ["origin", "revision", "license", "review"],
+      "properties": {
+        "origin": { "const": "first-party" },
+        "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "license": { "type": "string", "minLength": 1 },
+        "review": { "$ref": "#/$defs/schemaReference" }
+      }
+    },
+    "productData": {
+      "type": "object", "additionalProperties": false, "required": ["ownerContract", "schema", "identity"],
+      "properties": {
+        "ownerContract": { "$ref": "primitives.schema.json#/$defs/namespacedContractReference" },
+        "schema": { "$ref": "#/$defs/schemaReference" },
+        "identity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }
+      }
+    }
+  }
+}

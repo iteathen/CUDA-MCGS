@@ -43,6 +43,12 @@ import {
   resourceSyntheticContentIdentity,
   resourceSyntheticSchemaReference,
 } from './src/resource-fixtures.mjs';
+import { normalizeProgressProfile } from './src/progress.mjs';
+import {
+  buildProgressProfiles,
+  progressSyntheticContentIdentity,
+  progressSyntheticSchemaReference,
+} from './src/progress-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -69,6 +75,7 @@ const graphProfileSchema = await readJson(path.join(schemaRoot, 'graph-profile.s
 const policyProfileSchema = await readJson(path.join(schemaRoot, 'policy-profile.schema.json'));
 const evaluatorProfileSchema = await readJson(path.join(schemaRoot, 'evaluator-profile.schema.json'));
 const resourceProfileSchema = await readJson(path.join(schemaRoot, 'resource-profile.schema.json'));
+const progressProfileSchema = await readJson(path.join(schemaRoot, 'progress-profile.schema.json'));
 const frameworkSelectionInput = await readJson(path.join(experimentRoot, 'fixtures', 'minimal.framework-selection.json'));
 
 const cases = [];
@@ -93,7 +100,7 @@ await runCase('normalize-contract-set', () => {
 await runCase('normalize-requirement-coverage', () => {
   const normalized = normalizeRequirementCoverage(coverageInput);
   assert.equal(normalized.contracts.length, 12);
-  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 543, pending: 446 });
+  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 594, pending: 395 });
 });
 
 await runCase('canonical-order-independent', () => {
@@ -144,14 +151,15 @@ await runCase('coverage-owner-route-closure', () => {
 });
 
 await runCase('coverage-honest-classification-progress', () => {
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 543);
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 446);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 594);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 395);
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0000').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0007').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0008').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0009').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0010').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0011').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
+  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0012').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
 });
 
 await runCase('catalog-identity-content-sensitive', () => {
@@ -232,8 +240,8 @@ await runCase('reject-coverage-classification-count-drift', async () => {
 
 await runCase('reject-expanded-coverage-total-drift', async () => {
   const mutated = clone(coverageInput);
-  mutated.totals.classified = 544;
-  mutated.totals.pending = 445;
+  mutated.totals.classified = 595;
+  mutated.totals.pending = 394;
   await assert.rejects(() => inspectCatalog(repositoryRoot, contractSetInput, mutated), { code: 'COVERAGE_TOTALS' });
 });
 
@@ -1185,6 +1193,22 @@ await runCase('normalize-resource-profiles', async () => {
     'resource.synthetic-evaluator-absent',
     'resource.synthetic-evaluator-workspace',
     'resource.synthetic-live-session',
+  ]);
+});
+
+let progressProfileInputs;
+let progressProfiles;
+let progressSchemaSha;
+let progressResourceResults;
+await runCase('normalize-progress-profiles', async () => {
+  progressSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'progress-profile.schema.json')));
+  progressResourceResults = resourceProfiles.map((result) => ({ ...result, schemaSha: resourceSchemaSha }));
+  progressProfileInputs = buildProgressProfiles(inspected, progressResourceResults);
+  progressProfiles = progressProfileInputs.map((input, index) => normalizeProgressProfile(input, inspected, progressResourceResults[index], knownResourceProfiles));
+  assert.deepEqual(progressProfiles.map(({ normalized }) => normalized.id), [
+    'progress.synthetic-evaluator-absent',
+    'progress.synthetic-evaluator-workspace',
+    'progress.synthetic-live-session',
   ]);
 });
 
@@ -2688,9 +2712,536 @@ await runCase('reject-resource-product-owner', () => {
   assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PRODUCT_OWNER' });
 });
 
+await runCase('progress-profile-second-instances-distinct', () => {
+  assert.equal(new Set(progressProfiles.map(({ identity }) => identity.sha256)).size, 3);
+  assert.deepEqual(progressProfiles.map(({ normalized }) => normalized.noProgress.externalWait.kind), ['absent', 'absent', 'session-only']);
+});
+
+await runCase('progress-evaluator-absence-zero-residue', () => {
+  const normalized = progressProfiles[0].normalized;
+  assert(!normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0009'));
+  assert(!normalized.workClasses.some(({ batch }) => batch.kind === 'device-flush'));
+  assert(!JSON.stringify(normalized).includes('evaluator.synthetic'));
+});
+
+await runCase('progress-session-absence-zero-residue', () => {
+  for (const { normalized } of progressProfiles.slice(0, 2)) {
+    assert(!normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0006'));
+    assert(!normalized.workClasses.some(({ kind }) => kind === 'external-control'));
+    assert.equal(normalized.noProgress.externalWait.kind, 'absent');
+    assert.equal(normalized.closure.outputBorrow.kind, 'none');
+  }
+});
+
+await runCase('progress-live-session-bounded-external-wait', () => {
+  const normalized = progressProfiles[2].normalized;
+  const session = normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0006');
+  assert(session);
+  assert.equal(normalized.noProgress.externalWait.owner, session.id);
+  const sessionWork = normalized.workClasses.find(({ owner }) => owner === session.id);
+  assert.equal(sessionWork.kind, 'external-control');
+  assert.notEqual(normalized.noProgress.externalWait.state.sha256, sessionWork.step.publication.sha256);
+  assert.equal(normalized.closure.outputBorrow.kind, 'bounded-postsemantic');
+});
+
+await runCase('progress-profile-order-independent', () => {
+  const reordered = clone(progressProfileInputs[2]);
+  for (const key of ['contributors', 'workClasses', 'dependencies', 'fairnessClasses', 'ports', 'statuses', 'productData']) reordered[key].reverse();
+  reordered.noProgress.outcomes.reverse();
+  reordered.stop.mustDrainKinds.reverse();
+  reordered.closure.workClasses.reverse();
+  reordered.cleanup.kinds.reverse();
+  reordered.programContribution.inputs.reverse();
+  for (const contributor of reordered.contributors) { contributor.workClasses.reverse(); contributor.publicTransitions.reverse(); }
+  for (const workClass of reordered.workClasses) {
+    workClass.inputStates.reverse(); workClass.outputStates.reverse(); workClass.resources.reverse();
+    workClass.terminalStates.reverse(); workClass.readiness.dependencies.reverse();
+  }
+  for (const dependency of reordered.dependencies) dependency.escapes.reverse();
+  for (const fairness of reordered.fairnessClasses) fairness.classes.reverse();
+  for (const portInput of reordered.ports) portInput.statuses.reverse();
+  assert.deepEqual(normalizeProgressProfile(reordered, inspected, progressResourceResults[2], knownResourceProfiles).identity, progressProfiles[2].identity);
+});
+
+await runCase('progress-arbitrary-width-bounds', () => {
+  const mutated = clone(progressProfileInputs[0]);
+  const boundary = '340282366920938463463374607431768211455';
+  mutated.workClasses[0].bounds.maxAdmitted = boundary;
+  mutated.workClasses[0].bounds.counterMaximum = boundary;
+  mutated.ports[0].bounds.maxAdmitted = boundary;
+  mutated.ports[0].bounds.counterMaximum = boundary;
+  const normalized = normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles).normalized;
+  assert.equal(normalized.workClasses.find(({ id }) => id === mutated.workClasses[0].id).bounds.maxAdmitted, boundary);
+});
+
+await runCase('progress-work-graph-owner-and-resource-closure', () => {
+  for (const { normalized } of progressProfiles) {
+    const workById = new Map(normalized.workClasses.map((entry) => [entry.id, entry]));
+    assert(normalized.contributors.every((owner) => owner.workClasses.every((id) => workById.get(id)?.owner === owner.id)));
+    assert.deepEqual(normalized.closure.workClasses, normalized.workClasses.map(({ id }) => id));
+    assert(normalized.dependencies.every(({ holdsWorker, holdsProducerResource }) => !holdsWorker && !holdsProducerResource));
+    assert(normalized.workClasses.every((workClass) => workClass.readiness.publication.sha256 !== workClass.step.publication.sha256));
+  }
+});
+
+await runCase('progress-reserved-closure-paths', () => {
+  for (let index = 0; index < progressProfiles.length; index += 1) {
+    const normalized = progressProfiles[index].normalized;
+    const reserves = new Map(progressResourceResults[index].normalized.reserves.map((entry) => [entry.id, entry]));
+    for (const workClass of normalized.workClasses.filter(({ kind }) => ['producer-unblocking', 'must-drain', 'terminal-output', 'resource-recovery'].includes(kind))) {
+      assert.equal(reserves.get(workClass.reserve).purpose, workClass.kind === 'terminal-output' ? 'terminal-result' : 'progress-cleanup');
+    }
+  }
+});
+
+await runCase('progress-batch-device-visible-flush', () => {
+  for (const { normalized } of progressProfiles.slice(1)) {
+    const batch = normalized.workClasses.find(({ batch: selected }) => selected.kind === 'device-flush').batch;
+    assert.equal(batch.minimumItems, '1');
+    assert.equal(batch.hostTimeout, 'none');
+  }
+});
+
+await runCase('progress-no-progress-outcome-closure', () => {
+  assert(progressProfiles.every(({ normalized }) => normalized.noProgress.outcomes.length === 10));
+  assert(progressProfiles.every(({ normalized }) => normalized.noProgress.source === 'device-visible-ready-facts' && normalized.noProgress.hostObservation === 'non-progressing'));
+});
+
+await runCase('progress-stop-drain-closure-contract', () => {
+  for (const { normalized } of progressProfiles) {
+    assert.deepEqual(normalized.stop.states, ['running', 'stop-requested', 'draining', 'terminal']);
+    assert.equal(normalized.stop.observationDependency, 'none');
+    assert.equal(normalized.closure.observationAckRequired, false);
+    assert.equal(normalized.closure.terminalOutput, 'publishable-from-reserve');
+  }
+});
+
+await runCase('progress-device-active-public-ports', () => {
+  assert(progressProfiles.every(({ normalized }) => normalized.ports.length === 11 && normalized.ports.every(({ phase }) => phase === 'device-active')));
+});
+
+await runCase('progress-schema-closed', () => {
+  assert.equal(progressProfileSchema.properties.schema.const, 'cuda-mcgs.progress-profile/0.2.0');
+  assert.equal(progressProfileSchema.additionalProperties, false);
+  for (const name of ['contributor', 'workClass', 'dependency', 'fairnessClass', 'noProgress', 'stop', 'closure', 'lifecycle', 'port', 'status', 'programContribution']) assert.equal(progressProfileSchema.$defs[name].additionalProperties, false);
+});
+
+await runCase('progress-framework-selection-link', () => {
+  const selected = frameworkSelection.normalized.profiles.find(({ role }) => role === 'progress');
+  assert.equal(selected.schema.id, progressProfileInputs[0].schema);
+  assert.equal(selected.schema.sha256, progressSchemaSha);
+  assert.equal(selected.identity.sha256, progressProfiles[0].identity.sha256);
+});
+
+await runCase('progress-program-input-exactness', () => {
+  for (const { normalized } of progressProfiles) {
+    assert(normalized.programContribution.inputs.some(({ id }) => id === normalized.resourcePlan.id));
+    assert(normalized.contributors.every(({ profile }) => normalized.programContribution.inputs.some(({ id }) => id === profile.id)));
+    assert.equal(normalized.programContribution.language, 'restricted-device-js');
+  }
+});
+
+await runCase('progress-product-data-deletion', () => {
+  const selected = clone(progressProfileInputs[0]);
+  selected.productData.push({
+    ownerContract: { kind: 'namespaced', id: 'product.synthetic-progress-option', version: '0.1.0', schema: 'cuda-mcgs.synthetic-progress-product-contract/0.1.0', sha256: progressSyntheticContentIdentity('product-contract').sha256 },
+    schema: progressSyntheticSchemaReference('cuda-mcgs.synthetic-progress-product'), identity: progressSyntheticContentIdentity('progress-product'),
+  });
+  const withProduct = normalizeProgressProfile(selected, inspected, progressResourceResults[0], knownResourceProfiles);
+  assert.notDeepEqual(withProduct.identity, progressProfiles[0].identity);
+  selected.productData = [];
+  assert.deepEqual(normalizeProgressProfile(selected, inspected, progressResourceResults[0], knownResourceProfiles).identity, progressProfiles[0].identity);
+});
+
+await runCase('progress-identity-content-sensitive', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.noProgress.potential.sha256 = '0'.repeat(64);
+  assert.notDeepEqual(normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles).identity, progressProfiles[0].identity);
+});
+
+await runCase('reject-progress-unknown-field', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.cudaScheduler = 'persistent-kernel';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_ROOT_FIELDS' });
+});
+
+await runCase('reject-progress-contract-drift', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.contract.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_CONTRACT_DRIFT' });
+});
+
+await runCase('reject-progress-resource-plan-drift', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.resourcePlan.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_RESOURCE_PLAN' });
+});
+
+await runCase('reject-progress-resource-contribution-drift', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.resourceContribution.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_RESOURCE_CONTRIBUTION' });
+});
+
+await runCase('reject-progress-contributor-omission', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.contributors.pop();
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_CONTRIBUTOR_COUNT' });
+});
+
+await runCase('reject-progress-contributor-relabel', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.contributors[0].id = 'owner.relabelled';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_CONTRIBUTOR_PROFILE' });
+});
+
+await runCase('reject-progress-contributor-optionality-drift', () => {
+  const mutated = clone(progressProfileInputs[1]); mutated.contributors.find(({ optional }) => optional).optional = false;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[1], knownResourceProfiles), { code: 'PROGRESS_CONTRIBUTOR_PROFILE' });
+});
+
+await runCase('reject-progress-contributor-profile-drift', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.contributors[0].profile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_CONTRIBUTOR_PROFILE' });
+});
+
+await runCase('reject-progress-duplicate-contributor', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.contributors[1] = clone(mutated.contributors[0]);
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_CONTRIBUTOR_DUPLICATE' });
+});
+
+await runCase('reject-progress-contributor-work-coverage', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.contributors[0].workClasses[0] = mutated.contributors[1].workClasses[0];
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_WORK_OWNER' });
+});
+
+await runCase('reject-progress-duplicate-work-class', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses.push(clone(mutated.workClasses[0]));
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_WORK_DUPLICATE' });
+});
+
+await runCase('reject-progress-work-owner', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses[0].owner = 'owner.unknown';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_WORK_OWNER' });
+});
+
+await runCase('reject-progress-cross-owner-resource', () => {
+  const mutated = clone(progressProfileInputs[0]);
+  const target = mutated.workClasses.find(({ resources }) => resources.length > 0);
+  target.resources[0] = progressResourceResults[0].normalized.classes.find(({ contributor }) => contributor !== target.owner).id;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_WORK_RESOURCE' });
+});
+
+await runCase('reject-progress-missing-closure-reserve', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses.find(({ kind }) => kind === 'producer-unblocking').reserve = null;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_WORK_RESERVE' });
+});
+
+await runCase('reject-progress-terminal-reserve-kind', () => {
+  const mutated = clone(progressProfileInputs[0]);
+  mutated.workClasses.find(({ kind }) => kind === 'terminal-output').reserve = progressResourceResults[0].normalized.reserves.find(({ purpose }) => purpose === 'progress-cleanup').id;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_WORK_RESERVE' });
+});
+
+await runCase('reject-progress-resource-less-recovery', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses.find(({ kind }) => kind === 'resource-recovery').resources = [];
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_WORK_RESOURCE' });
+});
+
+await runCase('reject-progress-work-bound-zero', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses[0].bounds.maxProducedPerStep = '0';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_BOUNDS_RANGE' });
+});
+
+await runCase('reject-progress-counter-insufficient', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses[0].bounds.counterMaximum = '1';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_BOUNDS_RANGE' });
+});
+
+await runCase('reject-progress-cancellation-bound', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses[0].bounds.cancellationObservationWorkUnits = '257';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_BOUNDS_CANCELLATION' });
+});
+
+await runCase('reject-progress-retry-not-stale-safe', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses[0].retry.staleSafe = false;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_RETRY_STALE' });
+});
+
+await runCase('reject-progress-batch-host-timeout', () => {
+  const mutated = clone(progressProfileInputs[1]); mutated.workClasses.find(({ batch }) => batch.kind === 'device-flush').batch.hostTimeout = 'wall-clock';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[1], knownResourceProfiles), { code: 'PROGRESS_BATCH_KIND' });
+});
+
+await runCase('reject-progress-batch-range', () => {
+  const mutated = clone(progressProfileInputs[1]); mutated.workClasses.find(({ batch }) => batch.kind === 'device-flush').batch.minimumItems = '65';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[1], knownResourceProfiles), { code: 'PROGRESS_BATCH_RANGE' });
+});
+
+await runCase('reject-progress-batch-owner', () => {
+  const mutated = clone(progressProfileInputs[1]);
+  const batch = clone(mutated.workClasses.find(({ batch: selected }) => selected.kind === 'device-flush').batch);
+  mutated.workClasses.find(({ owner }) => mutated.contributors.find(({ id }) => id === owner).contract.id === 'SPEC-0007').batch = batch;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[1], knownResourceProfiles), { code: 'PROGRESS_BATCH_OWNER' });
+});
+
+await runCase('reject-progress-continuation-identity', () => {
+  const mutated = clone(progressProfileInputs[0]); const selected = mutated.workClasses.find(({ kind }) => kind === 'must-drain'); selected.step.continuationIdentity = null;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_STEP_CONTINUATION' });
+});
+
+await runCase('reject-progress-readiness-contradiction', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses.find(({ readiness }) => readiness.mode === 'all').readiness.independentReady = true;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_READINESS_MODE' });
+});
+
+await runCase('reject-progress-readiness-source', () => {
+  const mutated = clone(progressProfileInputs[0]); const selected = mutated.workClasses.find(({ kind }) => kind === 'resource-recovery'); selected.readiness.mode = 'all'; selected.readiness.independentReady = false;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_READINESS_SOURCE' });
+});
+
+await runCase('reject-progress-readiness-dependency-omission', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses.find(({ readiness }) => readiness.dependencies.length > 0).readiness.dependencies.pop();
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_READINESS_DEPENDENCY' });
+});
+
+await runCase('reject-progress-dependency-consumer', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.dependencies[0].consumer = 'work.unknown';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_DEPENDENCY_CONSUMER' });
+});
+
+await runCase('reject-progress-dependency-fact', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.dependencies[0].producer.fact = progressSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-producer-fact');
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_PRODUCER_FACT' });
+});
+
+await runCase('reject-progress-required-self-dependency', () => {
+  const mutated = clone(progressProfileInputs[0]); const dependency = mutated.dependencies.find(({ requirement }) => requirement === 'required');
+  const work = mutated.workClasses.find(({ id }) => id === dependency.consumer); const owner = mutated.contributors.find(({ id }) => id === work.owner);
+  dependency.producer = { kind: 'work-class', owner: owner.id, workClass: work.id, fact: clone(work.step.publication) };
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_DEPENDENCY_SELF' });
+});
+
+await runCase('reject-progress-dependency-escape', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.dependencies[0].escapes = ['failure', 'cancel', 'stale'];
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_DEPENDENCY_ESCAPE' });
+});
+
+await runCase('reject-progress-advisory-fallback', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.dependencies.find(({ requirement }) => requirement === 'advisory').fallback = null;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_DEPENDENCY_FALLBACK' });
+});
+
+await runCase('reject-progress-held-worker-wait', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.dependencies[0].holdsWorker = true;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_DEPENDENCY_HOLD' });
+});
+
+await runCase('reject-progress-resource-recovery-owner', () => {
+  const mutated = clone(progressProfileInputs[0]); const dependency = mutated.dependencies.find(({ producer }) => producer.kind === 'resource-recovery');
+  const graph = mutated.contributors.find(({ contract }) => contract.id === 'SPEC-0010'); dependency.producer.owner = graph.id; dependency.producer.fact = clone(graph.publicTransitions[0]);
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_PRODUCER_OWNER' });
+});
+
+await runCase('reject-progress-mandatory-wait-cycle', () => {
+  const mutated = clone(progressProfileInputs[0]);
+  const graph = mutated.workClasses.find(({ kind }) => kind === 'producer-unblocking');
+  const policy = mutated.workClasses.find(({ owner }) => mutated.contributors.find(({ id }) => id === owner).contract.id === 'SPEC-0008');
+  const id = 'dependency.synthetic-mandatory-cycle';
+  mutated.dependencies.push({
+    id, consumer: graph.id, producer: { kind: 'work-class', owner: policy.owner, workClass: policy.id, fact: clone(policy.step.publication) },
+    requirement: 'required', publication: progressSyntheticSchemaReference('cuda-mcgs.synthetic-cycle-publication'), incarnation: progressSyntheticSchemaReference('cuda-mcgs.synthetic-cycle-incarnation'),
+    escapes: ['failure', 'cancel', 'stop'], maxWaitTransitions: '16', fallback: null, holdsWorker: false, holdsProducerResource: false,
+  });
+  graph.readiness.dependencies.push(id);
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_DEPENDENCY_CYCLE' });
+});
+
+await runCase('reject-progress-host-control-gates-internal-work', () => {
+  const mutated = clone(progressProfileInputs[2]); const dependency = mutated.dependencies.find(({ requirement }) => requirement === 'advisory');
+  const session = mutated.contributors.find(({ contract }) => contract.id === 'SPEC-0006');
+  dependency.producer = { kind: 'external-control', owner: session.id, workClass: null, fact: clone(session.publicTransitions[0]) };
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[2], knownResourceProfiles), { code: 'PROGRESS_EXTERNAL_WORK' });
+});
+
+await runCase('reject-progress-external-work-internal-producer', () => {
+  const mutated = clone(progressProfileInputs[2]); const sessionWork = mutated.workClasses.find(({ kind }) => kind === 'external-control');
+  const dependency = mutated.dependencies.find(({ consumer }) => consumer === sessionWork.id); dependency.producer.kind = 'fact';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[2], knownResourceProfiles), { code: 'PROGRESS_EXTERNAL_WORK' });
+});
+
+await runCase('reject-progress-fairness-coverage', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.fairnessClasses.find(({ id }) => id.endsWith('.ordinary')).classes.pop();
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_FAIRNESS_COVERAGE' });
+});
+
+await runCase('reject-progress-fairness-priority-escape', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.fairnessClasses.find(({ mode }) => mode === 'priority-with-starvation-escape').starvationEscape = null;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_FAIRNESS_ESCAPE' });
+});
+
+await runCase('reject-progress-fairness-closure-priority', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.fairnessClasses.find(({ closurePriority }) => closurePriority).closurePriority = false;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_FAIRNESS_CLOSURE' });
+});
+
+await runCase('reject-progress-no-progress-outcome-gap', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.noProgress.outcomes.pop();
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_NOPROGRESS_OUTCOME' });
+});
+
+await runCase('reject-progress-host-no-progress-source', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.noProgress.source = 'host-poll';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_NOPROGRESS_CONTRACT' });
+});
+
+await runCase('reject-progress-session-external-wait-omission', () => {
+  const mutated = clone(progressProfileInputs[2]); mutated.noProgress.externalWait = { kind: 'absent' };
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[2], knownResourceProfiles), { code: 'PROGRESS_EXTERNAL_WAIT_SESSION' });
+});
+
+await runCase('reject-progress-unselected-external-wait', () => {
+  const mutated = clone(progressProfileInputs[0]);
+  mutated.noProgress.externalWait = { kind: 'session-only', owner: mutated.contributors[0].id, state: progressSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-wait'), maxPendingCommands: '1' };
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_EXTERNAL_WAIT_SESSION' });
+});
+
+await runCase('reject-progress-no-progress-bound', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.noProgress.maxRepeatedTransitions = '0';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_NOPROGRESS_RANGE' });
+});
+
+await runCase('reject-progress-stop-state-gap', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.stop.states.splice(2, 1);
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_STOP_CONTRACT' });
+});
+
+await runCase('reject-progress-stop-drain-kind-gap', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses.find(({ kind }) => kind === 'producer-unblocking').kind = 'ordinary';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_STOP_DRAIN' });
+});
+
+await runCase('reject-progress-closure-class-gap', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.closure.workClasses.pop();
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_CLOSURE_COVERAGE' });
+});
+
+await runCase('reject-progress-observation-dependent-closure', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.closure.observationAckRequired = true;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_CLOSURE_CONTRACT' });
+});
+
+await runCase('reject-progress-output-borrow-unbounded', () => {
+  const mutated = clone(progressProfileInputs[2]); mutated.closure.outputBorrow.maximum = '0';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[2], knownResourceProfiles), { code: 'PROGRESS_OUTPUT_BORROW_RANGE' });
+});
+
+await runCase('reject-progress-lifecycle-state-gap', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.lifecycle.states.pop();
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_LIFECYCLE_STATES' });
+});
+
+await runCase('reject-progress-required-status', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.statuses = mutated.statuses.filter(({ code }) => code !== 'progress-deadlock');
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_STATUS_REQUIRED' });
+});
+
+await runCase('reject-progress-status-class', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.statuses.find(({ code }) => code === 'progress-deadlock').class = 'pending';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_STATUS_CLASS' });
+});
+
+await runCase('reject-progress-required-port', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.ports.pop();
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_PORT_REQUIRED' });
+});
+
+await runCase('reject-progress-host-active-port', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.ports[0].phase = 'host-active';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_PORT_PHASE' });
+});
+
+await runCase('reject-progress-port-status', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.ports[0].statuses[0] = 'progress.unknown-status';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_PORT_STATUS' });
+});
+
+await runCase('reject-progress-diagnostic-authority', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.diagnostics.wallClock = true;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_DIAGNOSTIC_AUTHORITY' });
+});
+
+await runCase('reject-progress-scheduler-compatibility', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.compatibility.schedulerIdentityExcluded = false;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_COMPAT_IDENTITY' });
+});
+
+await runCase('reject-progress-incomplete-persistence', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.compatibility.persistence = { kind: 'versioned' };
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_PERSISTENCE_FIELDS' });
+});
+
+await runCase('reject-progress-cleanup-coverage', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.cleanup.kinds.pop();
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_CLEANUP_KIND' });
+});
+
+await runCase('reject-progress-native-program-language', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.programContribution.language = 'cuda-cpp';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_PROGRAM_LANGUAGE' });
+});
+
+await runCase('reject-progress-program-input-drift', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.programContribution.inputs.pop();
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_PROGRAM_INPUTS' });
+});
+
+await runCase('reject-progress-product-owner', () => {
+  const mutated = clone(progressProfileInputs[0]);
+  mutated.productData.push({ ownerContract: clone(mutated.contract), schema: progressSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-progress-product'), identity: progressSyntheticContentIdentity('invalid-progress-product') });
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_PRODUCT_OWNER' });
+});
+
+await runCase('reject-progress-work-publication-not-owned', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses[0].step.publication = progressSyntheticSchemaReference('cuda-mcgs.synthetic-foreign-work-publication');
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_WORK_PUBLICATION' });
+});
+
+await runCase('reject-progress-terminal-disposition-gap', () => {
+  const mutated = clone(progressProfileInputs[0]); const selected = mutated.workClasses[0]; selected.terminalStates = selected.terminalStates.filter((state) => state !== 'failed');
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_WORK_TERMINAL' });
+});
+
+await runCase('reject-progress-special-stop-disposition', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.workClasses.find(({ kind }) => kind === 'terminal-output').stopDisposition = 'abandon';
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_WORK_STOP' });
+});
+
+await runCase('reject-progress-work-producer-publication-mismatch', () => {
+  const mutated = clone(progressProfileInputs[0]); const dependency = mutated.dependencies.find(({ producer }) => producer.kind === 'work-class');
+  const owner = mutated.contributors.find(({ id }) => id === dependency.producer.owner);
+  const alternative = progressSyntheticSchemaReference('cuda-mcgs.synthetic-alternative-owner-transition');
+  owner.publicTransitions.push(alternative); dependency.producer.fact = alternative;
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_PRODUCER_FACT' });
+});
+
+await runCase('reject-progress-required-dependency-fallback', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.dependencies.find(({ requirement }) => requirement === 'required').fallback = progressSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-required-fallback');
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_DEPENDENCY_FALLBACK' });
+});
+
+await runCase('reject-progress-external-wait-private-state', () => {
+  const mutated = clone(progressProfileInputs[2]); mutated.noProgress.externalWait.state = progressSyntheticSchemaReference('cuda-mcgs.synthetic-private-session-wait');
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[2], knownResourceProfiles), { code: 'PROGRESS_EXTERNAL_WAIT_SESSION' });
+});
+
+await runCase('reject-progress-external-input-output-alias', () => {
+  const mutated = clone(progressProfileInputs[2]); const work = mutated.workClasses.find(({ kind }) => kind === 'external-control');
+  const dependency = mutated.dependencies.find(({ consumer }) => consumer === work.id); dependency.producer.fact = clone(work.step.publication);
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[2], knownResourceProfiles), { code: 'PROGRESS_DEPENDENCY_SELF' });
+});
+
+await runCase('reject-progress-unselected-output-borrow', () => {
+  const mutated = clone(progressProfileInputs[0]); mutated.closure.outputBorrow = { kind: 'bounded-postsemantic', maximum: '1', teardown: progressSyntheticSchemaReference('cuda-mcgs.synthetic-unselected-output-borrow') };
+  assert.throws(() => normalizeProgressProfile(mutated, inspected, progressResourceResults[0], knownResourceProfiles), { code: 'PROGRESS_OUTPUT_BORROW_KIND' });
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 381,
+  expected: 470,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -2698,7 +3249,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 381 - cases.length,
+  notDiscovered: 470 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -2714,6 +3265,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/policy-profile.schema.json',
   'schemas/search-ir/0.2.0/evaluator-profile.schema.json',
   'schemas/search-ir/0.2.0/resource-profile.schema.json',
+  'schemas/search-ir/0.2.0/progress-profile.schema.json',
   'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
   'experiments/search-ir-composer-reference/src/catalog.mjs',
   'experiments/search-ir-composer-reference/src/validation.mjs',
@@ -2728,6 +3280,8 @@ const sourcePaths = [
   'experiments/search-ir-composer-reference/src/evaluator-fixtures.mjs',
   'experiments/search-ir-composer-reference/src/resource.mjs',
   'experiments/search-ir-composer-reference/src/resource-fixtures.mjs',
+  'experiments/search-ir-composer-reference/src/progress.mjs',
+  'experiments/search-ir-composer-reference/src/progress-fixtures.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -2748,6 +3302,7 @@ const evidence = {
   policyProfileIdentities: policyProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   evaluatorProfileIdentities: evaluatorProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   resourceProfileIdentities: resourceProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
+  progressProfileIdentities: progressProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
     classified: inspected?.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length ?? 0,
@@ -2757,15 +3312,16 @@ const evidence = {
   summary,
   cases,
   claimLimits: [
-    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy, evaluator and resource profile normalization only.',
-    'The framework, domain, graph, policy, evaluator and resource requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
+    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy, evaluator, resource and progress profile normalization only.',
+    'The framework, domain, graph, policy, evaluator, resource and progress requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
     'Domain evidence covers strict normalized profile selection and three synthetic structural instances, not behavioral oracle, publication/concurrency, native or compatible-pair qualification.',
     'Graph evidence covers four strict structural instances, bounded ownership/layout/lifecycle/publication checks and zero-residue optional modes, not behavioral oracle, concurrent reclamation, native or compatible-pair qualification.',
     'Policy evidence covers four strict structural instances, role/record/admission/value/cycle/backup/stop/reuse checks and zero-residue optional modes, not behavioral oracle, concurrent backup, native or compatible-pair qualification.',
     'Evaluator evidence covers five strict structural instances, proposal/evaluation/combined modes, typed inputs/outputs, request/batch/publication/cache/resident-artifact/progress/reuse/lifecycle checks and zero-residue optional modes, not behavioral oracle, concurrent evaluator execution, native or compatible-pair qualification.',
     'Evaluator absence is represented by structural omission from framework selection; this capsule does not create or validate a synthetic disabled evaluator profile.',
     'Resource evidence covers three strict finite-plan instances, contribution composition, exact arithmetic, partitions/reserves/admission/ledgers/pressure/exhaustion/lifecycle/provider projections and evaluator-absence zero residue, not behavioral oracle, concurrent accounting, physical CUDA-JS allocation, native or compatible-pair qualification.',
-    'No progress/output/session/extension/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
+    'Progress evidence covers three scheduler-neutral work/readiness/fairness/no-progress/stop/closure plans, including evaluator absence and selected live-session external wait, not behavioral oracle, schedule exploration, physical scheduler/CUDA-JS execution, native or compatible-pair qualification.',
+    'No output/session/extension/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');

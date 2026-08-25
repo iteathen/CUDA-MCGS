@@ -156,6 +156,7 @@ required=(
   schemas/search-ir/0.2.0/policy-profile.schema.json
   schemas/search-ir/0.2.0/evaluator-profile.schema.json
   schemas/search-ir/0.2.0/resource-profile.schema.json
+  schemas/search-ir/0.2.0/progress-profile.schema.json
   experiments/search-ir-reference/README.md
   experiments/search-ir-reference/RESULTS.md
   experiments/search-ir-reference/fixtures/baseline.search-ir.json
@@ -181,6 +182,8 @@ required=(
   experiments/search-ir-composer-reference/src/evaluator-fixtures.mjs
   experiments/search-ir-composer-reference/src/resource.mjs
   experiments/search-ir-composer-reference/src/resource-fixtures.mjs
+  experiments/search-ir-composer-reference/src/progress.mjs
+  experiments/search-ir-composer-reference/src/progress-fixtures.mjs
   experiments/search-ir-composer-reference/run.mjs
   experiments/ptx-extension-composition-prototype/README.md
   experiments/ptx-extension-composition-prototype/RESULTS.md

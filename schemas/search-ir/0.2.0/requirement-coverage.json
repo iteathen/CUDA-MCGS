@@ -96,8 +96,8 @@
       "requirementPrefix": "PROGRESS-",
       "primaryOwner": "CUDA-MCGS universal device-owned progress semantics",
       "plannedLeaf": "IR-PROGRESS-01",
-      "currentDisposition": "pending-owner-classification",
-      "completionStatus": "pending"
+      "currentDisposition": "section-classified",
+      "completionStatus": "in-progress"
     },
     {
       "contract": "SPEC-0013",
@@ -1043,12 +1043,133 @@
       "evidenceStatus": "partial",
       "evidenceRefs": ["schema:resource-profile.schema.json", "normalizer:resource-profile", "case:resource-profile-order-independent", "case:resource-provider-projection-neutral", "case:resource-program-input-closure", "case:resource-evaluator-absent-zero-residue"],
       "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-PROFILE-",
+      "requirementCount": 5,
+      "primaryDisposition": "structural-schema",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-PROGRESS-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:progress-profile.schema.json", "normalizer:progress-profile", "case:normalize-progress-profiles", "case:progress-profile-order-independent", "case:reject-progress-unknown-field", "case:reject-progress-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-GRAPH-",
+      "requirementCount": 5,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["engine-reference-oracle", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-PROGRESS-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-work-graph-owner-and-resource-closure", "case:progress-reserved-closure-paths", "case:reject-progress-required-self-dependency", "case:reject-progress-mandatory-wait-cycle", "case:reject-progress-dependency-escape", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-WORK-",
+      "requirementCount": 7,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-work-graph-owner-and-resource-closure", "case:reject-progress-work-owner", "case:reject-progress-cross-owner-resource", "case:reject-progress-readiness-source", "case:reject-progress-held-worker-wait", "case:reject-progress-retry-not-stale-safe", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-FAIR-",
+      "requirementCount": 6,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-batch-device-visible-flush", "case:reject-progress-batch-host-timeout", "case:reject-progress-fairness-coverage", "case:reject-progress-fairness-priority-escape", "case:reject-progress-fairness-closure-priority", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-NOPROGRESS-",
+      "requirementCount": 7,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-no-progress-outcome-closure", "case:progress-live-session-bounded-external-wait", "case:reject-progress-no-progress-outcome-gap", "case:reject-progress-host-no-progress-source", "case:reject-progress-session-external-wait-omission", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-STOP-",
+      "requirementCount": 7,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-stop-drain-closure-contract", "case:progress-reserved-closure-paths", "case:reject-progress-stop-state-gap", "case:reject-progress-stop-drain-kind-gap", "case:reject-progress-observation-dependent-closure", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-RESOURCE-",
+      "requirementCount": 2,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-PROGRESS-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-reserved-closure-paths", "case:reject-progress-resource-plan-drift", "case:reject-progress-cross-owner-resource", "case:reject-progress-missing-closure-reserve", "case:reject-progress-resource-less-recovery", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-LIFE-",
+      "requirementCount": 4,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-arbitrary-width-bounds", "case:progress-device-active-public-ports", "case:reject-progress-lifecycle-state-gap", "case:reject-progress-required-status", "case:reject-progress-required-port", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-SEC-",
+      "requirementCount": 2,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-PROGRESS-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:reject-progress-unknown-field", "case:reject-progress-contributor-relabel", "case:reject-progress-cross-owner-resource", "case:reject-progress-diagnostic-authority", "case:reject-progress-incomplete-persistence", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-COMPAT-",
+      "requirementCount": 2,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:progress-profile-order-independent", "case:progress-identity-content-sensitive", "case:progress-program-input-exactness", "case:reject-progress-scheduler-compatibility", "case:reject-progress-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-IR-",
+      "requirementCount": 4,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-PROGRESS-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:progress-profile.schema.json", "normalizer:progress-profile", "case:progress-evaluator-absence-zero-residue", "case:progress-session-absence-zero-residue", "case:progress-work-graph-owner-and-resource-closure", "case:progress-program-input-exactness", "case:reject-progress-host-control-gates-internal-work", "case:reject-progress-native-program-language"],
+      "classificationStatus": "classified"
     }
   ],
   "totals": {
     "contracts": 12,
     "requirements": 989,
-    "classified": 543,
-    "pending": 446
+    "classified": 594,
+    "pending": 395
   }
 }
