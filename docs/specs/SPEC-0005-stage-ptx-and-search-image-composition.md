@@ -214,7 +214,7 @@ COMPOSE-COST-001. Stable semantic checkpoints and selected capability behavior a
 
 COMPOSE-COST-002. Representative qualification compares selected composition against semantically equivalent fused/generated controls under identical workload, resource limits, outputs and quality obligations. Synthetic PTX call evidence cannot establish production cost.
 
-COMPOSE-COST-003. Historical Stage-PTX experiments remain bounded deletion/determinism/cost evidence only. They do not authorize CUDA-MCGS PTX, one call per hook, one artifact per stage, RDC/LTO requirements or production thresholds.
+COMPOSE-COST-003. The deleted historical Stage-PTX experiment is retained only as a non-executable conclusion/provenance record. Its findings do not authorize CUDA-MCGS PTX, one call per hook, one artifact per stage, RDC/LTO requirements or production thresholds; current evidence comes from CUDA-free Composer semantics and public CUDA-JS contracts.
 
 COMPOSE-COST-004. A selected realization may fuse, inline, split or link through CUDA-JS only when semantic identity, public package contract, deletion, diagnostics and exact native evidence remain truthful.
 
@@ -250,7 +250,7 @@ One consolidated CUDA-free composition capsule must cover at least:
 16. partial composition/CUDA-JS failure rollback with no falsely valid package;
 17. active-search discovery/late-binding/host-progression mutations rejected;
 18. exact compatible-pair record completeness and mismatch rejection;
-19. historical Stage-PTX/native-field inputs rejected as production source; and
+19. synthetic Stage-PTX/native-field mutations rejected as production source without retaining native artifacts; and
 20. teardown/disposition of every package/public CUDA-JS resource/operation/evidence reference.
 
 COMPOSE-CONFORMANCE-001. Reference cases assert semantic/source/package determinism, owner separation, public projection, deletion, failure and lifecycle—not CUDA output bytes, artifact count or scheduler topology.

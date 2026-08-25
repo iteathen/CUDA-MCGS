@@ -11,7 +11,7 @@
       {
         "role": "governing-specification",
         "sourcePath": "docs/specs/SPEC-0002-search-ir-and-reference-semantics.md",
-        "sha256": "30255d1ac1d23d9c270c5fb7736aaf4ea53c561b86a1c559d9dc6415d64d4e88"
+        "sha256": "d302fd2eb5910d27e63a372f414a88ebfa6a875fbd9ae2aa6cc4f9b98613f578"
       },
       {
         "role": "structural-schema",
@@ -74,7 +74,7 @@
       "status": "Proposal",
       "semanticOwner": "CUDA-MCGS deterministic restricted Device-JS Search Program composition and CUDA-MCGS/CUDA-JS execution-package boundary",
       "sourcePath": "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
-      "sha256": "278a6df65efcc27269d621775369d8a356c91d85498daac25b720ac3fd5c85e7",
+      "sha256": "38f4377121634a992c43d54c3901752fd929ca6f0187bef76aef35ebb0cc3324",
       "requirementPrefix": "COMPOSE-",
       "requirementCount": 78,
       "plannedLeaf": "IR-PROGRAM-PACKAGE-01"
