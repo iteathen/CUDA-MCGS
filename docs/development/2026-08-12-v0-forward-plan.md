@@ -6,7 +6,7 @@
 
 **Parent plan version:** `CUDA-MCGS-V0/22`
 
-**CUDA-MCGS input baseline:** protected `main` `1ef73244ecec507ae70b81ceaa29128621fbbe4a`.
+**CUDA-MCGS input baseline:** protected `main` `22e3ea52e22c0e1d2bc75e747aca8fa568583c79`.
 
 **CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
 
@@ -52,21 +52,23 @@ The current CUDA-JS surface is not assumed complete. If a naturally generic GPU 
 
 ## ENGINE-CONTRACT-01 — universal semantic contract proposal packet
 
-**Current focus.** Production universal lowering remains blocked. This node makes the owning semantics decision-complete proposals; it does not claim acceptance before their schema/reference obligations have decisive evidence.
+**Completed proposal node.** Production universal lowering remains blocked. This node made the owning semantics decision-complete proposals; it did not accept them before their schema/reference obligations have decisive evidence.
 
-The canonical execution record beneath accepted authority for this plan node—critical assessment, exact semantic focus-branch map, dependency graph, branch contracts, falsifiers, token posture, cleanup obligations and current leaf—is [`2026-08-24-engine-contract-01-assessment-and-plan.md`](2026-08-24-engine-contract-01-assessment-and-plan.md). SPEC-0000 and the domain, graph, policy, evaluator, output, resource, device-progress and optional Search Session proposals SPEC-0006 through SPEC-0013 are integrated at frozen packet input `main@1ef7324`. `EC-INTEGRATE-01` is the single active leaf and owns final routing, issue/cleanup reconciliation and the exact extension/schema/reference handoff. The universal semantic owner is **device-owned search progress**; physical scheduler mechanisms remain later profile selections.
+The canonical execution record beneath accepted authority for this plan node—critical assessment, exact semantic focus-branch map, dependency graph, branch contracts, falsifiers, token posture, cleanup obligations and branch dispositions—is [`2026-08-24-engine-contract-01-assessment-and-plan.md`](2026-08-24-engine-contract-01-assessment-and-plan.md). SPEC-0000 and the domain, graph, policy, evaluator, output, resource, device-progress and optional Search Session proposals SPEC-0006 through SPEC-0013 were reconciled through PR #79 at `main@22e3ea5`. The universal semantic owner is **device-owned search progress**; physical scheduler mechanisms remain later profile selections.
 
-Remaining work:
+Completed output:
 
-- reconcile the exact proposal packet, architecture/index/registry/plan/issue state and cleanup on one revision;
-- publish the exact downstream extension, schema/normalizer/Composer, reference/oracle and integrated-acceptance obligations;
-- preserve proposal-only status, owner separation, first-consumer deletion and the production-lowering gate during handoff.
+- exact 741-requirement proposal packet reconciled with one semantic owner per material fact/lifecycle;
+- architecture/index/registry/plan/issue routing and cleanup reconciled on one exact revision;
+- downstream extension, schema/normalizer/Composer, reference/oracle and integrated-acceptance obligations published without changing proposal-only status.
 
 **Exit:** each semantic fact/lifecycle has one proposed owner; first-consumer deletion and materially different second-instance tests pass conceptually; finite resource/failure behavior and schema/reference obligations are explicit; no product/CUDA implementation fact leaks into universal meaning. Final semantic acceptance occurs at `ENGINE-CONTRACT-ACCEPTANCE-01`.
 
 **Falsifier:** a core contract becomes incoherent when all extension capabilities or chess/Connect Four are deleted.
 
 ## ENGINE-EXTENSION-01 — schema-backed extension substrate
+
+**Current focus.** Begin with a critical assessment and semantic focus-branch map; no specification mutation is dependency-ready before that record exists.
 
 Review/revise SPEC-0003 through SPEC-0005 into decision-complete proposals only after their relationship to the core owners is explicit. Final semantic acceptance follows normalized schema/reference evidence rather than preceding it.
 
