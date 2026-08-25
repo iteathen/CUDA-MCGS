@@ -39,6 +39,8 @@ import {
 } from './src/evaluator-fixtures.mjs';
 import { normalizeResourceProfile } from './src/resource.mjs';
 import {
+  buildChannelFirstProductDeletedResourceProfile,
+  buildChannelResourceProfile,
   buildResourceProfiles,
   buildStageResourceProfile,
   resourceSyntheticContentIdentity,
@@ -46,6 +48,8 @@ import {
 } from './src/resource-fixtures.mjs';
 import { normalizeProgressProfile } from './src/progress.mjs';
 import {
+  buildChannelFirstProductDeletedProgressProfile,
+  buildChannelProgressProfile,
   buildProgressProfiles,
   buildStageProgressProfile,
   progressSyntheticContentIdentity,
@@ -65,11 +69,19 @@ import {
 } from './src/session-fixtures.mjs';
 import { normalizeStageProfile } from './src/stage.mjs';
 import {
+  buildChannelStageFirstProductDeletedProfile,
+  buildChannelStageProfile,
   buildStageFirstProductDeletedProfile,
   buildStageProfiles,
   stageSyntheticContentIdentity,
   stageSyntheticSchemaReference,
 } from './src/stage-fixtures.mjs';
+import { classifyChannelProgress, normalizeChannelProfile, simulateChannelTrace } from './src/channel.mjs';
+import {
+  buildChannelFirstProductDeletedProfile,
+  buildChannelProfiles,
+  channelSyntheticSchemaReference,
+} from './src/channel-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -100,6 +112,7 @@ const progressProfileSchema = await readJson(path.join(schemaRoot, 'progress-pro
 const outputProfileSchema = await readJson(path.join(schemaRoot, 'output-profile.schema.json'));
 const sessionProfileSchema = await readJson(path.join(schemaRoot, 'session-profile.schema.json'));
 const stageProfileSchema = await readJson(path.join(schemaRoot, 'stage-profile.schema.json'));
+const channelProfileSchema = await readJson(path.join(schemaRoot, 'channel-profile.schema.json'));
 const frameworkSelectionInput = await readJson(path.join(experimentRoot, 'fixtures', 'minimal.framework-selection.json'));
 
 const cases = [];
@@ -124,7 +137,7 @@ await runCase('normalize-contract-set', () => {
 await runCase('normalize-requirement-coverage', () => {
   const normalized = normalizeRequirementCoverage(coverageInput);
   assert.equal(normalized.contracts.length, 12);
-  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 821, pending: 168 });
+  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 911, pending: 78 });
 });
 
 await runCase('canonical-order-independent', () => {
@@ -175,8 +188,8 @@ await runCase('coverage-owner-route-closure', () => {
 });
 
 await runCase('coverage-honest-classification-progress', () => {
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 821);
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 168);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 911);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 78);
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0000').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0007').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0008').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
@@ -1288,6 +1301,51 @@ await runCase('normalize-stage-profiles', async () => {
   stageDeletedInput = buildStageFirstProductDeletedProfile(inspected, stageResourceResult, stageProgressResult, knownResourceProfiles);
   stageDeletedProfile = normalizeStageProfile(stageDeletedInput, inspected, stageResourceResult, stageProgressResult, knownResourceProfiles);
   assert.deepEqual(stageProfiles.map(({ normalized }) => normalized.id), ['extension.synthetic-capability-pair', 'extension.synthetic-proof-stage']);
+});
+
+let channelResourceInput;
+let channelResourceResult;
+let channelDeletedResourceInput;
+let channelDeletedResourceResult;
+let channelProgressInput;
+let channelProgressResult;
+let channelDeletedProgressInput;
+let channelDeletedProgressResult;
+let channelStageInput;
+let channelStageResult;
+let channelDeletedStageInput;
+let channelDeletedStageResult;
+let channelProfileInputs;
+let channelProfiles;
+let channelDeletedInput;
+let channelDeletedProfile;
+let channelSchemaSha;
+await runCase('normalize-channel-profiles', async () => {
+  channelSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'channel-profile.schema.json')));
+  channelResourceInput = buildChannelResourceProfile(inspected, domainProfiles, graphProfiles, policyProfiles, evaluatorProfiles, {
+    domain: domainSchemaSha, graph: graphSchemaSha, policy: policySchemaSha, evaluator: evaluatorSchemaSha,
+  });
+  channelResourceResult = { ...normalizeResourceProfile(channelResourceInput, inspected, knownResourceProfiles), schemaSha: resourceSchemaSha };
+  channelDeletedResourceInput = buildChannelFirstProductDeletedResourceProfile(inspected, domainProfiles, graphProfiles, policyProfiles, evaluatorProfiles, {
+    domain: domainSchemaSha, graph: graphSchemaSha, policy: policySchemaSha, evaluator: evaluatorSchemaSha,
+  });
+  channelDeletedResourceResult = { ...normalizeResourceProfile(channelDeletedResourceInput, inspected, knownResourceProfiles), schemaSha: resourceSchemaSha };
+  channelProgressInput = buildChannelProgressProfile(inspected, channelResourceResult);
+  channelProgressResult = { ...normalizeProgressProfile(channelProgressInput, inspected, channelResourceResult, knownResourceProfiles), schemaSha: progressSchemaSha };
+  channelDeletedProgressInput = buildChannelFirstProductDeletedProgressProfile(inspected, channelDeletedResourceResult);
+  channelDeletedProgressResult = { ...normalizeProgressProfile(channelDeletedProgressInput, inspected, channelDeletedResourceResult, knownResourceProfiles), schemaSha: progressSchemaSha };
+  channelStageInput = buildChannelStageProfile(inspected, channelResourceResult, channelProgressResult, knownResourceProfiles);
+  channelStageResult = { ...normalizeStageProfile(channelStageInput, inspected, channelResourceResult, channelProgressResult, knownResourceProfiles), schemaSha: stageSchemaSha };
+  channelDeletedStageInput = buildChannelStageFirstProductDeletedProfile(inspected, channelDeletedResourceResult, channelDeletedProgressResult, knownResourceProfiles);
+  channelDeletedStageResult = { ...normalizeStageProfile(channelDeletedStageInput, inspected, channelDeletedResourceResult, channelDeletedProgressResult, knownResourceProfiles), schemaSha: stageSchemaSha };
+  channelProfileInputs = buildChannelProfiles(inspected, channelResourceResult, channelProgressResult, channelStageResult, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult);
+  channelProfiles = [
+    normalizeChannelProfile(channelProfileInputs[0], inspected, channelResourceResult, channelProgressResult, channelStageResult),
+    normalizeChannelProfile(channelProfileInputs[1], inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult),
+  ];
+  channelDeletedInput = buildChannelFirstProductDeletedProfile(inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult);
+  channelDeletedProfile = normalizeChannelProfile(channelDeletedInput, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult);
+  assert.deepEqual(channelProfiles.map(({ normalized }) => normalized.id), ['channel.synthetic-evaluator-and-audit', 'channel.synthetic-secondary-work']);
 });
 
 await runCase('policy-evaluator-mode-matrix', () => {
@@ -4641,9 +4699,476 @@ await runCase('reject-stage-product-owner', () => {
   assert.throws(() => normalizeStageProfile(mutated, inspected, stageResourceResult, stageProgressResult), { code: 'EXT_PRODUCT_OWNER' });
 });
 
+await runCase('channel-schema-closed', () => {
+  assert.equal(channelProfileSchema.properties.schema.const, 'cuda-mcgs.channel-profile/0.2.0');
+  assert.equal(channelProfileSchema.additionalProperties, false);
+  for (const name of ['catalogContract', 'profileReference', 'owner', 'role', 'finiteIdentity', 'itemIdentity', 'payload', 'transition', 'stateGraph', 'claim', 'ordering', 'publication', 'capacity', 'allocation', 'resources', 'descriptor', 'dependency', 'noProgress', 'progress', 'consumption', 'counter', 'cancellation', 'expiry', 'reclamation', 'channelLifecycle', 'channelCompatibility', 'channelCleanup', 'provenance', 'channel', 'status', 'rootLifecycle', 'diagnostics', 'noPersistence', 'rootCompatibility', 'rootCleanup', 'programContribution', 'productData', 'productOwner']) assert.equal(channelProfileSchema.$defs[name].additionalProperties, false);
+});
+
+await runCase('channel-absence-zero-residue', () => {
+  assert.deepEqual(normalizeChannelProfile(null, inspected, channelResourceResult, channelProgressResult, channelStageResult), { normalized: null, identity: null });
+});
+
+await runCase('channel-profile-second-instance-distinct', () => {
+  assert.equal(new Set(channelProfiles.map(({ identity }) => identity.sha256)).size, 2);
+  assert.deepEqual(channelProfiles.map(({ normalized }) => normalized.channels.length), [2, 1]);
+  assert.deepEqual(channelProfiles.map(({ normalized }) => normalized.channels[0].consumption.class), ['advisory', 'advisory']);
+  assert(channelProfiles[0].normalized.channels.some(({ consumption }) => consumption.class === 'required'));
+});
+
+await runCase('channel-profile-order-independent', () => {
+  const reordered = clone(channelProfileInputs[0]);
+  for (const key of ['owners', 'channels', 'statuses', 'productData']) reordered[key].reverse();
+  reordered.programContribution.inputs.reverse(); reordered.programContribution.requirements.reverse(); reordered.cleanup.kinds.reverse();
+  for (const channel of reordered.channels) {
+    for (const key of ['roles', 'payloads', 'counters', 'outcomes', 'requirements']) channel[key].reverse();
+    channel.stateGraph.states.reverse(); channel.stateGraph.transitions.reverse(); channel.resources.allocations.reverse();
+    channel.progress.descriptors.reverse(); channel.progress.dependencies.reverse(); channel.lifecycle.cancellation.reverse();
+    channel.lifecycle.reclamation.preconditions.reverse(); channel.cleanup.kinds.reverse();
+  }
+  assert.deepEqual(normalizeChannelProfile(reordered, inspected, channelResourceResult, channelProgressResult, channelStageResult).identity, channelProfiles[0].identity);
+});
+
+await runCase('channel-evaluator-request-result-required', () => {
+  const channel = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'required');
+  assert.deepEqual(channel.payloads.map(({ kind }) => kind).sort(), ['request', 'result']);
+  assert.equal(channel.claim.mode, 'single-consumer-transfer');
+  assert(channel.stateGraph.states.includes('in-progress') && channel.stateGraph.states.includes('result-ready'));
+  assert.equal(channel.consumption.unavailable, 'pending-release-worker');
+});
+
+await runCase('channel-secondary-work-advisory-multiborrow', () => {
+  const channel = channelProfiles[1].normalized.channels[0];
+  assert.equal(channel.consumption.class, 'advisory');
+  assert.equal(channel.consumption.unavailable, 'owner-fallback');
+  assert.equal(channel.claim.mode, 'finite-multi-consumer-immutable-borrow');
+  assert.equal(channel.claim.referenceAccounting, 'exact');
+});
+
+await runCase('channel-first-product-deletion-zero-owned-residue', () => {
+  const serialized = JSON.stringify(channelDeletedProfile.normalized);
+  assert.equal(channelDeletedProfile.normalized.id, channelProfiles[0].normalized.id);
+  assert.equal(channelDeletedProfile.normalized.channels.length, 1);
+  assert(!serialized.includes('evaluator-request'));
+  assert(!serialized.includes('product-priority'));
+  assert.notDeepEqual(channelDeletedProfile.identity, channelProfiles[0].identity);
+  assert.notDeepEqual(channelDeletedResourceResult.identity, channelResourceResult.identity);
+  assert.notDeepEqual(channelDeletedProgressResult.identity, channelProgressResult.identity);
+  const deletedOwner = channelDeletedResourceResult.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0004');
+  const maxima = Object.fromEntries(channelDeletedResourceResult.normalized.classes.filter(({ contributor }) => contributor === deletedOwner.id).map(({ id, formula }) => [id.split('class-channel-').at(-1), formula.maximumUnits]));
+  assert.deepEqual(maxima, { borrow: '256', diagnostic: '8192', item: '64', payload: '16384', pending: '64', result: '8192' });
+});
+
+await runCase('channel-ordering-explicit-and-owner-complete', () => {
+  const required = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'required');
+  const advisory = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'advisory');
+  assert.equal(required.ordering.kind, 'owner-defined'); assert(required.ordering.rule);
+  assert.deepEqual(advisory.ordering, { kind: 'unordered', rule: null });
+});
+
+await runCase('channel-resource-progress-stage-binding', () => {
+  const resourceOwner = channelResourceResult.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0004');
+  const progressOwner = channelProgressResult.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0004');
+  const work = channelProgressResult.normalized.workClasses.find(({ owner }) => owner === progressOwner.id);
+  assert.equal(work.kind, 'producer-unblocking');
+  assert(channelResourceResult.normalized.classes.filter(({ contributor }) => contributor === resourceOwner.id).length >= 6);
+  assert(channelProfiles[0].normalized.channels.every(({ progress }) => progress.workClass === work.id));
+});
+
+await runCase('channel-stage-grants-consumed-exactly', () => {
+  const used = channelProfiles[0].normalized.channels.flatMap(({ roles }) => roles.flatMap(({ actions }) => actions)).length;
+  const granted = channelStageResult.normalized.capabilities.flatMap(({ channels }) => channels.flatMap(({ bindings }) => bindings.flatMap(({ actions }) => actions))).length;
+  assert.equal(used, granted);
+  assert.equal(granted, 12);
+});
+
+await runCase('channel-logical-release-acquire-publication', () => {
+  for (const channel of channelProfiles[0].normalized.channels) {
+    assert.equal(channel.publication.release, 'logical-release'); assert.equal(channel.publication.acquire, 'logical-acquire');
+    assert.equal(channel.publication.scope, 'device'); assert.equal(channel.publication.nativeSpelling, 'none');
+    assert.equal(channel.publication.nativeQualification, 'blocked-cuda-js-123');
+  }
+});
+
+await runCase('channel-finite-capacity-watermark-closure', () => {
+  for (const channel of channelProfiles[0].normalized.channels) {
+    assert(BigInt(channel.capacity.highAt) < BigInt(channel.capacity.criticalAt));
+    assert(BigInt(channel.capacity.criticalAt) < BigInt(channel.capacity.exhaustedAt));
+    assert.equal(channel.capacity.exhaustedAt, channel.capacity.slots);
+  }
+});
+
+await runCase('channel-state-graph-terminal-and-reuse-closure', () => {
+  for (const channel of channelProfiles[0].normalized.channels) {
+    assert(channel.stateGraph.states.includes('reserved-unpublished'));
+    assert(channel.stateGraph.transitions.some(({ from, to }) => from === 'terminally-disposed' && to === 'reclaimable'));
+    assert(channel.stateGraph.transitions.some(({ from, to, operation }) => from === 'reclaimable' && to === 'free' && operation === 'advance-generation'));
+  }
+});
+
+await runCase('channel-finite-counter-no-wrap-closure', () => {
+  for (const channel of channelProfiles[0].normalized.channels) {
+    assert.equal(channel.counters.length, 9);
+    assert(channel.counters.every(({ rollover, exhaustionOutcome }) => rollover === 'prohibited' && exhaustionOutcome === 'channel-counter-exhausted'));
+  }
+});
+
+await runCase('channel-device-owned-boundary', () => {
+  const serialized = JSON.stringify(channelProfiles[0].normalized);
+  assert(channelProfiles[0].normalized.channels.every(({ lifecycle }) => lifecycle.hostProgress === 'none' && lifecycle.workerWait === 'none'));
+  assert(!serialized.includes('persistent-kernel') && !serialized.includes('host-callback') && !serialized.includes('micro-batch'));
+});
+
+await runCase('channel-program-public-js-boundary', () => {
+  const program = channelProfiles[0].normalized.programContribution;
+  assert.equal(program.language, 'restricted-device-js'); assert.equal(program.runtimeRegistry, false); assert.equal(program.nativeArtifacts, false);
+  assert.deepEqual(program.requirements.map(({ id }) => id), ['cuda-js.device-js/0.1.0', 'cuda-js.device-publication-release-acquire/0.1.0', 'cuda-js.operation-lifecycle/0.1.0']);
+  assert.equal(channelProfiles[0].normalized.compatibility.nativeQualification, 'blocked-cuda-js-123');
+});
+
+await runCase('channel-cleanup-lifecycle-closure', () => {
+  assert.equal(channelProfiles[0].normalized.cleanup.kinds.length, 11);
+  for (const channel of channelProfiles[0].normalized.channels) {
+    assert.equal(channel.lifecycle.cancellation.length, channel.stateGraph.states.length);
+    assert.equal(channel.lifecycle.reclamation.generationAdvanceBeforeReuse, true);
+  }
+});
+
+await runCase('channel-reference-serial-publication', () => {
+  const channel = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'required');
+  const result = simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0 }, { kind: 'publish', slot: 0, generation: 0, release: true },
+    { kind: 'claim', slot: 0, generation: 0, acquire: true }, { kind: 'consume', slot: 0, generation: 0 }, { kind: 'complete', slot: 0, generation: 0 }, { kind: 'reclaim', slot: 0, generation: 0 },
+  ]);
+  assert.equal(result.slots[0].state, 'free'); assert.equal(result.conservation, channel.capacity.slots);
+});
+
+await runCase('channel-reference-required-pending-releases-worker', () => {
+  const channel = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'required');
+  const result = simulateChannelTrace(channelProfiles[0].normalized, channel.id, [{ kind: 'await-unavailable' }]);
+  assert.deepEqual(result.events[0], { kind: 'pending', workerReleased: true, mutableLeaseReleased: true });
+});
+
+await runCase('channel-reference-capacity-pressure-zero-publication', () => {
+  const channel = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'required');
+  const operations = Array.from({ length: Number(channel.capacity.slots) }, (_, slot) => ({ kind: 'reserve', slot })); operations.push({ kind: 'reserve', slot: 0 });
+  const result = simulateChannelTrace(channelProfiles[0].normalized, channel.id, operations);
+  assert.deepEqual(result.events.at(-1), { kind: 'pressure', published: false });
+});
+
+await runCase('channel-reference-multiborrow-accounting', () => {
+  const channel = channelProfiles[1].normalized.channels[0];
+  const result = simulateChannelTrace(channelProfiles[1].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0 }, { kind: 'publish', slot: 0, generation: 0, release: true },
+    { kind: 'claim', slot: 0, generation: 0, acquire: true }, { kind: 'claim', slot: 0, generation: 0, acquire: true }, { kind: 'consume', slot: 0, generation: 0 },
+    { kind: 'release', slot: 0, generation: 0 }, { kind: 'release', slot: 0, generation: 0 }, { kind: 'complete', slot: 0, generation: 0 }, { kind: 'reclaim', slot: 0, generation: 0 },
+  ]);
+  assert.equal(result.slots[0].claims, '0'); assert.equal(result.slots[0].state, 'free');
+});
+
+await runCase('channel-reference-stale-generation-rejected', () => {
+  const channel = channelProfiles[1].normalized.channels[0];
+  assert.throws(() => simulateChannelTrace(channelProfiles[1].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0 }, { kind: 'publish', slot: 0, generation: 0, release: true },
+    { kind: 'claim', slot: 0, generation: 0, acquire: true }, { kind: 'complete', slot: 0, generation: 0 }, { kind: 'reclaim', slot: 0, generation: 0 },
+    { kind: 'reserve', slot: 0 }, { kind: 'claim', slot: 0, generation: 0, acquire: true },
+  ]), { code: 'CHANNEL_REFERENCE_STALE' });
+});
+
+await runCase('channel-reference-cancel-late-completion-no-resurrection', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  const result = simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'cancel', slot: 0, generation: 0 }, { kind: 'late-complete', slot: 0, generation: 0 }, { kind: 'reclaim', slot: 0, generation: 0 },
+  ]);
+  assert(result.events.some(({ kind }) => kind === 'late-ignored')); assert.equal(result.slots[0].state, 'free');
+});
+
+await runCase('channel-reference-expiry-terminal', () => {
+  const channel = channelProfiles[1].normalized.channels[0];
+  const result = simulateChannelTrace(channelProfiles[1].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0 }, { kind: 'publish', slot: 0, generation: 0, release: true }, { kind: 'expire', slot: 0, generation: 0 },
+  ]);
+  assert.equal(result.slots[0].state, 'terminally-disposed'); assert.equal(result.slots[0].disposition, 'expired');
+});
+
+await runCase('channel-reference-producer-service-while-pending', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.equal(classifyChannelProgress(channelProfiles[0].normalized, channel.id, { pendingConsumers: true, producerRunnable: true, escapeRunnable: false }), 'service-producer');
+});
+
+await runCase('channel-reference-typed-no-progress', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.equal(classifyChannelProgress(channelProfiles[0].normalized, channel.id, { pendingConsumers: true, producerRunnable: false, escapeRunnable: false }), 'channel-no-progress');
+});
+
+await runCase('channel-identity-content-sensitive', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].capacity.maxRetries = '7';
+  assert.notDeepEqual(normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult).identity, channelProfiles[0].identity);
+});
+
+await runCase('reject-channel-unknown-field', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.queueLayout = 'ring';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_ROOT_FIELDS' });
+});
+
+await runCase('reject-channel-plan-drift', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.stageProfile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PLAN' });
+});
+
+await runCase('reject-channel-contribution-drift', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.resourceContribution.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_CONTRIBUTION' });
+});
+
+await runCase('reject-channel-owner-profile-drift', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.owners[0].profile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_OWNER_PROFILE' });
+});
+
+await runCase('reject-channel-owner-residue', () => {
+  const mutated = clone(channelProfileInputs[1]); mutated.owners.push(clone(channelProfileInputs[0].owners.find(({ id }) => !mutated.owners.some(({ id: selected }) => selected === id))));
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult), { code: 'CHANNEL_OWNER_RESIDUE' });
+});
+
+await runCase('reject-channel-empty-selected-profile', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels = []; mutated.owners = [];
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_COUNT' });
+});
+
+await runCase('reject-channel-stage-requirement-drift', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].requirement = channelSyntheticSchemaReference('cuda-mcgs.channel-requirement.unknown');
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_STAGE_PERMISSION' });
+});
+
+await runCase('reject-channel-stage-capability-drift', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].roles[0].capability = 'extension-capability.unknown';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_STAGE_BINDING' });
+});
+
+await runCase('reject-channel-stage-permission-widening', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].roles[0].actions.push('claim');
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_STAGE_PERMISSION' });
+});
+
+await runCase('reject-channel-stage-permission-omission', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].roles[0].actions = mutated.channels[0].roles[0].actions.filter((action) => action !== 'release');
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_STAGE_PERMISSION' });
+});
+
+await runCase('reject-channel-payload-owner', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].payloads[0].owner = 'owner.unknown';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PAYLOAD_OWNER' });
+});
+
+await runCase('reject-channel-mutable-ready-payload', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].payloads[0].immutableAtReady = false;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PAYLOAD_BOUNDARY' });
+});
+
+await runCase('reject-channel-state-gap', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].stateGraph.states = mutated.channels[0].stateGraph.states.filter((state) => state !== 'reclaimable'); mutated.channels[0].stateGraph.transitions = mutated.channels[0].stateGraph.transitions.filter(({ from, to }) => from !== 'reclaimable' && to !== 'reclaimable'); mutated.channels[0].lifecycle.cancellation = mutated.channels[0].lifecycle.cancellation.filter(({ state }) => state !== 'reclaimable');
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_STATE_GRAPH' });
+});
+
+await runCase('reject-channel-state-unreachable', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].stateGraph.transitions = mutated.channels[0].stateGraph.transitions.filter(({ to }) => to !== 'result-ready');
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_STATE_GRAPH' });
+});
+
+await runCase('reject-channel-claim-mode-mismatch', () => {
+  const mutated = clone(channelProfileInputs[1]); mutated.channels[0].claim.ownership = 'transfer';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult), { code: 'CHANNEL_CLAIM_MODE' });
+});
+
+await runCase('reject-channel-publication-release-gap', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].publication.release = 'relaxed';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PUBLICATION' });
+});
+
+await runCase('reject-channel-publication-scope-gap', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].publication.scope = 'block';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PUBLICATION' });
+});
+
+await runCase('reject-channel-publication-private-recipe', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].publication.nativeSpelling = 'fence-plus-relaxed-rmw';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PUBLICATION' });
+});
+
+await runCase('reject-channel-capacity-watermark-order', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].capacity.highAt = mutated.channels[0].capacity.criticalAt;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_CAPACITY_RANGE' });
+});
+
+await runCase('reject-channel-resource-class-crossing', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].resources.allocations[0].class = channelResourceResult.normalized.classes.find(({ contributor }) => contributor !== channelResourceResult.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0004').id).id;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_RESOURCE_ALLOCATION' });
+});
+
+await runCase('reject-channel-resource-overcommit', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].resources.allocations.find(({ class: id }) => id.endsWith('class-channel-payload')).units = '65536';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_RESOURCE_ALLOCATION' });
+});
+
+await runCase('reject-channel-resource-underallocation', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].resources.allocations.find(({ kind }) => kind === 'payload').units = '32752';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_RESOURCE_ALLOCATION' });
+});
+
+await runCase('reject-channel-ordering-rule-gap', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].ordering.rule = null;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_ORDERING' });
+});
+
+await runCase('reject-channel-hidden-growth', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].resources.hiddenGrowth = true;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_RESOURCE_CONTRACT' });
+});
+
+await runCase('reject-channel-progress-work-drift', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].progress.workClass = channelProgressResult.normalized.workClasses.find(({ kind }) => kind === 'ordinary').id;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRESS_WORK' });
+});
+
+await runCase('reject-channel-progress-descriptor-gap', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].progress.descriptors.pop();
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRESS_DESCRIPTOR' });
+});
+
+await runCase('reject-channel-pending-holds-worker', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].progress.dependencies[0].holdsWorker = true;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRESS_DEPENDENCY' });
+});
+
+await runCase('reject-channel-required-escape-gap', () => {
+  const mutated = clone(channelProfileInputs[0]); const required = mutated.channels.find(({ consumption }) => consumption.class === 'required'); required.progress.dependencies[0].escapes = ['cancel'];
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRESS_DEPENDENCY' });
+});
+
+await runCase('reject-channel-advisory-fallback-gap', () => {
+  const mutated = clone(channelProfileInputs[1]); mutated.channels[0].progress.dependencies[0].fallback = null;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult), { code: 'CHANNEL_PROGRESS_DEPENDENCY' });
+});
+
+await runCase('reject-channel-dependency-unknown-producer', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].progress.dependencies[0].producerRoles = ['channel-role.unknown'];
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRESS_DEPENDENCY' });
+});
+
+await runCase('reject-channel-required-dependency-cycle', () => {
+  const mutated = clone(channelProfileInputs[0]); const [left, right] = mutated.channels;
+  left.progress.dependencies[0].producerChannel = right.id;
+  right.progress.dependencies[0].producerChannel = left.id; right.progress.dependencies[0].requirement = 'required'; right.progress.dependencies[0].fallback = null; right.progress.dependencies[0].escapes = ['failure', 'cancel', 'stop', 'stale'];
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRESS_CYCLE' });
+});
+
+await runCase('reject-channel-consumption-timeout-switching', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].consumption.timeoutSwitching = true;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_CONSUMPTION_CLASS' });
+});
+
+await runCase('reject-channel-counter-wrap', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].counters[0].rollover = 'wrap';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_COUNTER_RANGE' });
+});
+
+await runCase('reject-channel-cancellation-state-gap', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].lifecycle.cancellation.pop();
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_CANCELLATION' });
+});
+
+await runCase('reject-channel-reclamation-reference-gap', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].lifecycle.reclamation.preconditions = mutated.channels[0].lifecycle.reclamation.preconditions.filter((entry) => entry !== 'borrows-zero');
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_RECLAMATION' });
+});
+
+await runCase('reject-channel-host-progress-loop', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].lifecycle.hostProgress = 'poll-relaunch';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_LIFECYCLE' });
+});
+
+await runCase('reject-channel-status-gap', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.statuses.pop();
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_STATUS_COVERAGE' });
+});
+
+await runCase('reject-channel-cleanup-gap', () => {
+  const mutated = clone(channelProfileInputs[1]); mutated.channels[0].cleanup.kinds = mutated.channels[0].cleanup.kinds.filter((kind) => kind !== 'borrow');
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult), { code: 'CHANNEL_ITEM_CLEANUP' });
+});
+
+await runCase('reject-channel-native-program-language', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.programContribution.language = 'cuda-c++';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRAM_BOUNDARY' });
+});
+
+await runCase('reject-channel-private-program-requirement', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].requirements[0] = channelSyntheticSchemaReference('cuda-js.private-driver-helper');
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_REQUIREMENT' });
+});
+
+await runCase('reject-channel-runtime-registry', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.programContribution.runtimeRegistry = true;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRAM_BOUNDARY' });
+});
+
+await runCase('reject-channel-reference-missing-release', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.throws(() => simulateChannelTrace(channelProfiles[0].normalized, channel.id, [{ kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0 }, { kind: 'publish', slot: 0, generation: 0, release: false }]), { code: 'CHANNEL_REFERENCE_RELEASE' });
+});
+
+await runCase('reject-channel-reference-missing-acquire', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.throws(() => simulateChannelTrace(channelProfiles[0].normalized, channel.id, [{ kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0 }, { kind: 'publish', slot: 0, generation: 0, release: true }, { kind: 'claim', slot: 0, generation: 0, acquire: false }]), { code: 'CHANNEL_REFERENCE_ACQUIRE' });
+});
+
+await runCase('reject-channel-reference-uninitialized-publication', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.throws(() => simulateChannelTrace(channelProfiles[0].normalized, channel.id, [{ kind: 'reserve', slot: 0 }, { kind: 'publish', slot: 0, generation: 0, release: true }]), { code: 'CHANNEL_REFERENCE_UNINITIALIZED' });
+});
+
+await runCase('reject-channel-reference-live-reclaim', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.throws(() => simulateChannelTrace(channelProfiles[0].normalized, channel.id, [{ kind: 'reserve', slot: 0 }, { kind: 'reclaim', slot: 0, generation: 0 }]), { code: 'CHANNEL_REFERENCE_RECLAIM' });
+});
+
+await runCase('reject-channel-reference-borrow-bound', () => {
+  const channel = channelProfiles[1].normalized.channels[0];
+  const operations = [{ kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0 }, { kind: 'publish', slot: 0, generation: 0, release: true }, ...Array.from({ length: 5 }, () => ({ kind: 'claim', slot: 0, generation: 0, acquire: true }))];
+  assert.throws(() => simulateChannelTrace(channelProfiles[1].normalized, channel.id, operations), { code: 'CHANNEL_REFERENCE_CLAIM' });
+});
+
+await runCase('reject-channel-reference-generation-exhaustion-before-alias', () => {
+  const profile = clone(channelProfiles[1].normalized); const channel = profile.channels[0];
+  channel.itemIdentity.generation.maximum = '1'; channel.counters.find(({ kind }) => kind === 'generation').maximum = '1';
+  assert.throws(() => simulateChannelTrace(profile, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0 }, { kind: 'publish', slot: 0, generation: 0, release: true }, { kind: 'complete', slot: 0, generation: 0 }, { kind: 'reclaim', slot: 0, generation: 0 },
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 1 }, { kind: 'publish', slot: 0, generation: 1, release: true }, { kind: 'complete', slot: 0, generation: 1 }, { kind: 'reclaim', slot: 0, generation: 1 },
+    { kind: 'reserve', slot: 0 },
+  ]), { code: 'CHANNEL_REFERENCE_COUNTER_EXHAUSTED' });
+});
+
+await runCase('reject-channel-reference-pending-capacity', () => {
+  const profile = clone(channelProfiles[0].normalized); const channel = profile.channels.find(({ consumption }) => consumption.class === 'required');
+  channel.capacity.maxPending = '1';
+  assert.throws(() => simulateChannelTrace(profile, channel.id, [{ kind: 'await-unavailable' }, { kind: 'await-unavailable' }]), { code: 'CHANNEL_REFERENCE_PENDING' });
+});
+
+await runCase('channel-reference-cancellation-preserves-borrow-accounting', () => {
+  const channel = channelProfiles[1].normalized.channels[0];
+  const prefix = [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0 }, { kind: 'publish', slot: 0, generation: 0, release: true },
+    { kind: 'claim', slot: 0, generation: 0, acquire: true }, { kind: 'cancel', slot: 0, generation: 0 },
+  ];
+  assert.throws(() => simulateChannelTrace(channelProfiles[1].normalized, channel.id, [...prefix, { kind: 'reclaim', slot: 0, generation: 0 }]), { code: 'CHANNEL_REFERENCE_RECLAIM' });
+  const result = simulateChannelTrace(channelProfiles[1].normalized, channel.id, [...prefix, { kind: 'release', slot: 0, generation: 0 }, { kind: 'reclaim', slot: 0, generation: 0 }]);
+  assert.equal(result.slots[0].state, 'free');
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 704,
+  expected: 781,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -4651,7 +5176,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 704 - cases.length,
+  notDiscovered: 781 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -4671,6 +5196,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/output-profile.schema.json',
   'schemas/search-ir/0.2.0/session-profile.schema.json',
   'schemas/search-ir/0.2.0/stage-profile.schema.json',
+  'schemas/search-ir/0.2.0/channel-profile.schema.json',
   'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
   'experiments/search-ir-composer-reference/src/catalog.mjs',
   'experiments/search-ir-composer-reference/src/validation.mjs',
@@ -4693,6 +5219,8 @@ const sourcePaths = [
   'experiments/search-ir-composer-reference/src/session-fixtures.mjs',
   'experiments/search-ir-composer-reference/src/stage.mjs',
   'experiments/search-ir-composer-reference/src/stage-fixtures.mjs',
+  'experiments/search-ir-composer-reference/src/channel.mjs',
+  'experiments/search-ir-composer-reference/src/channel-fixtures.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -4720,6 +5248,14 @@ const evidence = {
   stageProgressPlanIdentity: stageProgressResult ? { id: stageProgressResult.normalized.id, ...stageProgressResult.identity } : null,
   stageProfileIdentities: stageProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   stageFirstProductDeletedIdentity: stageDeletedProfile ? { id: stageDeletedProfile.normalized.id, ...stageDeletedProfile.identity } : null,
+  channelResourcePlanIdentity: channelResourceResult ? { id: channelResourceResult.normalized.id, ...channelResourceResult.identity } : null,
+  channelFirstProductDeletedResourcePlanIdentity: channelDeletedResourceResult ? { id: channelDeletedResourceResult.normalized.id, ...channelDeletedResourceResult.identity } : null,
+  channelProgressPlanIdentity: channelProgressResult ? { id: channelProgressResult.normalized.id, ...channelProgressResult.identity } : null,
+  channelFirstProductDeletedProgressPlanIdentity: channelDeletedProgressResult ? { id: channelDeletedProgressResult.normalized.id, ...channelDeletedProgressResult.identity } : null,
+  channelStageProfileIdentity: channelStageResult ? { id: channelStageResult.normalized.id, ...channelStageResult.identity } : null,
+  channelDeletedStageProfileIdentity: channelDeletedStageResult ? { id: channelDeletedStageResult.normalized.id, ...channelDeletedStageResult.identity } : null,
+  channelProfileIdentities: channelProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
+  channelFirstProductDeletedIdentity: channelDeletedProfile ? { id: channelDeletedProfile.normalized.id, ...channelDeletedProfile.identity } : null,
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
     classified: inspected?.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length ?? 0,
@@ -4740,8 +5276,9 @@ const evidence = {
     'Progress evidence covers three scheduler-neutral work/readiness/fairness/no-progress/stop/closure plans, including evaluator absence and selected live-session external wait, not behavioral oracle, schedule exploration, physical scheduler/CUDA-JS execution, native or compatible-pair qualification.',
     'Output evidence covers three strict terminal/live profile instances, exact source readiness, finite workspace/observation/terminal capacity, snapshot/publication/borrow/lifecycle/consumer/cleanup checks and terminal-only zero live residue, not behavioral oracle, concurrent publication, physical CUDA-JS transfer, native or compatible-pair qualification.',
     'Search Session evidence covers two strict selected instances plus terminal-only absence, bounded root/control/observation transactions, epoch/reuse/stale/reclamation/counter/lifecycle/cleanup checks and exact upstream owner bindings, not behavioral oracle, concurrent session execution, physical sideband realization, native or compatible-pair qualification.',
-    'Search Stage evidence covers two materially different strict selected profiles, one same-profile first-product deletion projection, stable entry/exit surfaces, least-authority source-owner ports, deterministic capability order, finite resource/progress/counter/lifecycle closure and whole-substrate absence, not behavioral schedule exploration, Async Stage Channel semantics, native execution or compatible-pair qualification.',
-    'No Async Stage Channel or complete program/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
+    'Search Stage evidence covers two materially different strict selected profiles, one same-profile first-product deletion projection, stable entry/exit surfaces, least-authority source-owner ports, deterministic capability order, finite resource/progress/counter/lifecycle closure and whole-substrate absence, not native execution or compatible-pair qualification.',
+    'Async Stage Channel evidence covers strict optional selected/absent profiles, exact Stage action grants, finite resource/progress/item/claim/publication/cancellation/reclamation semantics, evaluator-like required request/result and advisory multi-borrow secondary work, first-product deletion and a bounded logical happens-before/ownership reference oracle. It does not select a CUDA queue/layout/topology or claim native publication; CUDA-JS #123 and exact compatible-pair qualification remain mandatory.',
+    'No complete program/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');

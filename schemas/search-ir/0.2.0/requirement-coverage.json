@@ -32,8 +32,8 @@
       "requirementPrefix": "CHANNEL-",
       "primaryOwner": "CUDA-MCGS optional internal channel item/publication/ownership-transfer semantics",
       "plannedLeaf": "IR-CHANNEL-01",
-      "currentDisposition": "pending-owner-classification",
-      "completionStatus": "pending"
+      "currentDisposition": "section-classified",
+      "completionStatus": "in-progress"
     },
     {
       "contract": "SPEC-0005",
@@ -1571,12 +1571,188 @@
       "evidenceStatus": "pending",
       "evidenceRefs": ["case:normalize-stage-profiles", "case:stage-materially-different-nongame-profile", "case:reject-stage-unordered-noncommuting-capabilities", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
       "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-AUTH-",
+      "requirementCount": 3,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:channel-profile", "case:channel-absence-zero-residue", "case:channel-first-product-deletion-zero-owned-residue", "case:channel-program-public-js-boundary", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-SCOPE-",
+      "requirementCount": 3,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:channel-profile", "case:channel-resource-progress-stage-binding", "case:channel-device-owned-boundary", "case:reject-channel-progress-work-drift", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-LEGO-",
+      "requirementCount": 7,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:channel-stage-grants-consumed-exactly", "case:channel-profile-second-instance-distinct", "case:channel-first-product-deletion-zero-owned-residue", "case:reject-channel-stage-permission-widening", "case:reject-channel-stage-permission-omission", "case:reject-channel-owner-residue", "planned:IR-DELETION-ID-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-PROFILE-",
+      "requirementCount": 8,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["structural-schema", "ir-identity-deletion-rejection", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:channel-profile.schema.json", "normalizer:channel-profile", "case:normalize-channel-profiles", "case:channel-profile-order-independent", "case:channel-program-public-js-boundary", "case:reject-channel-unknown-field", "case:reject-channel-private-program-requirement", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-ITEM-",
+      "requirementCount": 10,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:channel-profile", "case:channel-state-graph-terminal-and-reuse-closure", "case:channel-reference-serial-publication", "case:channel-reference-multiborrow-accounting", "case:channel-reference-stale-generation-rejected", "case:reject-channel-claim-mode-mismatch", "case:reject-channel-reference-borrow-bound", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-PRODUCER-",
+      "requirementCount": 7,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:channel-reference-serial-publication", "case:channel-reference-capacity-pressure-zero-publication", "case:channel-reference-producer-service-while-pending", "case:reject-channel-hidden-growth", "case:reject-channel-reference-uninitialized-publication", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-CONSUMER-",
+      "requirementCount": 7,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:channel-evaluator-request-result-required", "case:channel-secondary-work-advisory-multiborrow", "case:channel-reference-required-pending-releases-worker", "case:channel-reference-stale-generation-rejected", "case:reject-channel-consumption-timeout-switching", "case:reject-channel-pending-holds-worker", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-PUBLISH-",
+      "requirementCount": 7,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:channel-logical-release-acquire-publication", "case:channel-reference-serial-publication", "case:reject-channel-publication-release-gap", "case:reject-channel-publication-scope-gap", "case:reject-channel-publication-private-recipe", "case:reject-channel-reference-missing-release", "case:reject-channel-reference-missing-acquire", "case:reject-channel-reference-uninitialized-publication", "proof:cuda-js-123-capability-gap", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-PROGRESS-",
+      "requirementCount": 7,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:channel-resource-progress-stage-binding", "case:channel-reference-producer-service-while-pending", "case:channel-reference-typed-no-progress", "case:reject-channel-progress-descriptor-gap", "case:reject-channel-required-escape-gap", "case:reject-channel-required-dependency-cycle", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-RESOURCE-",
+      "requirementCount": 6,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:channel-resource-progress-stage-binding", "case:channel-finite-capacity-watermark-closure", "case:channel-reference-capacity-pressure-zero-publication", "case:reject-channel-resource-class-crossing", "case:reject-channel-resource-overcommit", "case:reject-channel-hidden-growth", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-CANCEL-",
+      "requirementCount": 7,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:channel-cleanup-lifecycle-closure", "case:channel-reference-cancel-late-completion-no-resurrection", "case:channel-reference-expiry-terminal", "case:channel-reference-stale-generation-rejected", "case:reject-channel-cancellation-state-gap", "case:reject-channel-reclamation-reference-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-BOUNDARY-",
+      "requirementCount": 4,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:channel-device-owned-boundary", "case:channel-program-public-js-boundary", "case:reject-channel-host-progress-loop", "case:reject-channel-native-program-language", "case:reject-channel-runtime-registry", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-IDENTITY-",
+      "requirementCount": 3,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:channel-profile-second-instance-distinct", "case:channel-profile-order-independent", "case:channel-first-product-deletion-zero-owned-residue", "case:channel-identity-content-sensitive", "case:reject-channel-plan-drift", "case:reject-channel-counter-wrap", "planned:IR-DELETION-ID-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-LIFE-",
+      "requirementCount": 4,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:channel-profile", "case:channel-cleanup-lifecycle-closure", "case:reject-channel-owner-profile-drift", "case:reject-channel-status-gap", "case:reject-channel-cleanup-gap", "case:reject-channel-native-program-language", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-IR-",
+      "requirementCount": 4,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["structural-schema", "deterministic-composition", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:channel-profile.schema.json", "normalizer:channel-profile", "case:normalize-channel-profiles", "case:channel-absence-zero-residue", "case:channel-stage-grants-consumed-exactly", "case:channel-program-public-js-boundary", "case:reject-channel-stage-requirement-drift", "case:reject-channel-required-dependency-cycle"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-CONFORMANCE-",
+      "requirementCount": 3,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-CHANNEL-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:channel-reference-serial-publication", "case:channel-reference-multiborrow-accounting", "case:channel-reference-producer-service-while-pending", "case:channel-reference-typed-no-progress", "case:reject-channel-reference-missing-release", "case:reject-channel-reference-missing-acquire", "case:reject-channel-reference-borrow-bound", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
     }
   ],
   "totals": {
     "contracts": 12,
     "requirements": 989,
-    "classified": 821,
-    "pending": 168
+    "classified": 911,
+    "pending": 78
   }
 }

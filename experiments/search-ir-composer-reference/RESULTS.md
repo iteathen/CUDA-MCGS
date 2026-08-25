@@ -292,3 +292,40 @@ The normalized selected structural Stage identities are:
 Deleting the first product capability yields `extension.synthetic-capability-pair` identity `f27c385b9167d58fe44cc65621fe334ceab18409934e5ff1f04a35fb928f7aa0` over 33,829 canonical bytes while preserving the remaining stage graph and shared exit base context byte-for-byte. The Stage schema has checkout-neutral source digest `52ad6bca5b110440f78f066d21fa59e8c36780a1b0af5ac754572a975f1ae5b9`. The framework envelope intentionally retains complete stage-substrate absence and identity `2d5fd4eb17ac1f82a655175109d90e5f41f707d90c11d2667b44c41612e4ba3a` over 10,422 canonical bytes. Coverage identity is `924f5cbdbd67feeb8e2716b543847ee144b2a747c233b7be6ee86ec08fd4cd49`; expanded requirement routing identity is `c9a3fae6a0e06fb8b7002b131a933e86d9b2d85e289cc16e91424ecb252c19cf`. Exactly 821 framework/domain/graph/policy/evaluator/resource/progress/output/session/stage requirements now have final evidence lanes; all remain partial, pending or deferred. The other 168 Async Stage Channel and program/package requirements remain pending their semantic-owner leaves.
 
 This slice is structural/normalizer evidence only. It does not prove several-schedule behavior, all failure/cancellation timing points, concurrent publication, SPEC-0004 channel semantics, generated Search Program/package composition, native execution or compatible-pair qualification. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added. The known generic device-scope release/acquire helper gap remains owned by CUDA-JS issue #123 and blocks later native internal-channel qualification, not this backend-neutral Stage evidence; no new CUDA-JS capability gap was found here.
+
+## IR-CHANNEL-01
+
+**Started:** 2026-08-25T06:51:13.7661185-07:00
+
+**Focused evidence assembled:** 2026-08-25T07:15:27.6860000-07:00
+
+**Full repository gate started:** 2026-08-25T07:23:19.3387851-07:00
+
+The expanded capsule passes 781/781 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource/progress/output/session/stage cases and adds strict normalized optional Async Stage Channel evidence across:
+
+- canonical complete absence, two materially different selected profiles and one same-profile first-consumer deletion projection whose resource, progress, Stage, Channel and semantic-owner inputs all recompose without deleted evaluator request/result residue;
+- exact final binding of each versioned Stage requirement to granted Stage/capability/surface produce/claim/observe/complete/cancel/release actions, with both widening and omission rejected;
+- finite item/generation/correlation/freshness, request/result payload, monotonic state, explicit cross-item ordering, single-transfer and immutable multi-borrow claim semantics with dynamically checked typed no-wrap exhaustion;
+- exact per-kind and plan-total resource allocation/admission/rollback/conservation/watermark bounds plus producer/consumer/completion-reclamation/pending descriptors through one SPEC-0012-owned producer-unblocking work class;
+- required pending work releasing its worker and mutable lease, advisory owner fallback, producer/escape service, static required-cycle rejection and typed dynamic no-progress;
+- logical payload-before-ready release and matching ready-before-consume acquire semantics independent of CUDA spelling or queue layout, with mutations removing either edge failing the reference oracle;
+- stale and exhausted generation, pending/capacity pressure, multi-borrow accounting, cancellation that preserves outstanding claims, expiry, late completion, reclamation and generation-before-reuse reference traces; and
+- first-party-reviewed restricted Device-JS contribution identity through versioned consumer-neutral public CUDA-JS contracts only, with native publication explicitly blocked on CUDA-JS #123 rather than a local native workaround.
+
+The Channel-specific upstream identities are:
+
+- resource plan `resource.synthetic-stage-channels`: `48ce6727e285dd6020a792c8773fcaba5550bb187be82f52234b6e8b397798e3` over 367,328 canonical bytes;
+- first-product-deleted resource plan `resource.synthetic-stage-channels`: `b354689a475a98e56a151cbcfbc1fa08108abb39601fcdd4ad1567b0129dc08c` over 367,285 canonical bytes;
+- progress plan `progress.synthetic-stage-channels`: `5297ce2aa386865afe28a06841dbae373aa4acf34900c74682b5b274a96a6f0a` over 71,623 canonical bytes;
+- first-product-deleted progress plan `progress.synthetic-stage-channels`: `c77dc20f65973fb5fc6e42c77764d70c83fac4bda75f4caa1514414c5cb93bb7` over 71,623 canonical bytes;
+- two-channel Stage profile `extension.synthetic-channel-stage`: `dd993be81dc5f494e9dda16d996d9b204035c1ffd099037411196b8613e67dfc` over 45,202 canonical bytes; and
+- first-product-deleted Stage profile `extension.synthetic-channel-stage`: `ba27c60ae1c8f5fd99bdf56a3eccf8ec42d60772d9adbc952171088409fc75ea` over 36,039 canonical bytes.
+
+The normalized selected Channel identities are:
+
+- `channel.synthetic-evaluator-and-audit`: `be666ea5bc72258529d4a0b5847d3aac64b33f9e1fe6ca0e1422b4260b0ddb60` over 38,001 canonical bytes; and
+- `channel.synthetic-secondary-work`: `217eea539d036fc391b354473f4105a8d277de8f7b5cef7b3be96861cd34ba2f` over 22,609 canonical bytes.
+
+Deleting the evaluator-like first product yields `channel.synthetic-evaluator-and-audit` identity `7e4129312a1aeeb58529e117c648aacf86d26522e88e723b23dbfa3bb3d17721` over 22,514 canonical bytes. The Channel schema has checkout-neutral source digest `55e790c24c87aa1324a0f2920971b53b07bf15935d7dd5f2ba03683287bcec68`. The framework envelope intentionally retains complete channel absence and identity `2d5fd4eb17ac1f82a655175109d90e5f41f707d90c11d2667b44c41612e4ba3a` over 10,422 canonical bytes. Coverage identity is `b4319fb2310e87902e588cb437cb329d56ef1fcb2381e3fe0be89f69a18c0df3`; expanded requirement routing identity is `dfe691fe623ff37239a5b847e861f483a658318f02948a8c83e14b167acb324a`. Exactly 911 framework/domain/graph/policy/evaluator/resource/progress/output/session/stage/channel requirements now have final evidence lanes; all remain partial, pending or deferred. The remaining 78 program/package requirements stay pending their SPEC-0005 owner leaf.
+
+This slice supplies structural normalization plus a bounded logical publication/ownership/progress reference oracle. It does not select or qualify a physical queue, memory layout, CUDA atomic spelling, scheduler topology, device race behavior or exact CUDA-MCGS/CUDA-JS pair. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added to CUDA-MCGS. CUDA-JS issue #123 remains the sole identified generic capability dependency for later native Channel qualification.

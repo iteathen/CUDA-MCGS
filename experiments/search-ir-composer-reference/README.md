@@ -87,7 +87,7 @@ The integrated `IR-SESSION-01` slice adds only the optional SPEC-0006-owned exte
 - two selected structural instances spanning reject-on-pressure with external attention control and restart-required with that control's input, permission, statuses, port and lifecycle interaction deleted, plus terminal-only Session absence; and
 - section-level evidence classification for all 59 Session requirements, with behavioral concurrency, native sideband/publication and compatible-pair qualification left partial, pending or deferred.
 
-The current `IR-STAGE-01` slice adds only the optional SPEC-0003-owned stage/surface/capability selection:
+The integrated `IR-STAGE-01` slice adds only the optional SPEC-0003-owned stage/surface/capability selection:
 
 - complete substrate absence when no capability is selected, plus two unrelated selected profiles and an exact same-profile first-product deletion projection;
 - finite per-work-item stage graphs whose entry/exit checkpoints do not select a kernel, barrier, persistent scheduler, runtime registry or fixed universal pipeline;
@@ -97,6 +97,16 @@ The current `IR-STAGE-01` slice adds only the optional SPEC-0003-owned stage/sur
 - deterministic generator/program identities and first-party-reviewed restricted Device-JS provenance through consumer-neutral public CUDA-JS requirements only; and
 - section-level evidence classification for all 80 Search Stage requirements, with behavioral schedule/failure exploration, Async Stage Channel semantics, native execution and compatible-pair qualification left partial, pending or deferred.
 
+The current `IR-CHANNEL-01` slice adds only the optional SPEC-0004-owned internal asynchronous dataflow selection:
+
+- canonical null absence, a required evaluator-like request/result channel, a materially different advisory secondary-work channel and an exact same-profile first-consumer deletion projection;
+- final binding of versioned Stage requirements to exact Stage/capability/surface action grants, with no Channel-side authority widening and no cyclic Stage/Channel content identity;
+- finite item/generation/correlation/payload/state/claim/counter contracts, explicit unordered or owner-defined cross-item ordering, single-transfer and immutable multi-borrow ownership, exact admission/resource conservation and typed pressure/rollback;
+- scheduler-neutral producer/consumer/completion/reclamation/pending descriptors, released workers and mutable leases, finite producer/escape paths, required-cycle rejection and typed no-progress;
+- logical device-scope release/acquire happens-before semantics plus a CUDA-free reference model that rejects missing release/acquire, uninitialized publication, stale or exhausted generations, pending-capacity overflow, over-borrow, ownership-erasing cancellation, unsafe reclaim and late-result resurrection;
+- cancellation/expiry/stale/reclamation/teardown closure, restricted Device-JS/public CUDA-JS requirements only and an explicit native-qualification block on CUDA-JS issue #123; and
+- section-level evidence classification for all 90 Async Stage Channel requirements, with physical CUDA realization and compatible-pair qualification left partial or deferred.
+
 Normative sentences remain solely in [`docs/specs/`](../../docs/specs/). The checked-in catalog records identities, owners, counts, paths and `sha256-utf8-lf-v1` digests; the explicit LF-normalized UTF-8 digest contract is checkout-platform independent. The capsule expands the IDs directly from the frozen sources and fails on source, metadata, count, prefix, uniqueness or coverage-route drift. Hierarchical requirement families use their one most-specific matching classification prefix, allowing bare `SESSION-###` requirements to retain the contract prefix while nested `SESSION-ROOT-###` and similar families keep independent owners/evidence.
 
 Run with Node.js 26 or newer:
@@ -105,4 +115,4 @@ Run with Node.js 26 or newer:
 node experiments/search-ir-composer-reference/run.mjs
 ```
 
-Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic framework selection fixture binds the exact schema digests and normalized identities of the first domain, graph, policy, resource, progress and output profiles while leaving the optional evaluator, Search Session, stage extension and live output structurally absent; selected policy/resource/progress/output/session/stage fixtures bind exact normalized upstream profiles through public identities and ports. The remaining owner identities are opaque structural placeholders. Synthetic schema/program digests prove representation closure only and are not executable domain/graph/policy/evaluator/resource/progress/output/session/stage implementations or behavioral/native evidence. Later focus leaves supply the remaining owned bodies, then deterministic restricted Device-JS/Search Program composition and cross-owner deletion/identity oracles. Native CUDA-JS qualification remains separate.
+Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic framework selection fixture binds the exact schema digests and normalized identities of the first domain, graph, policy, resource, progress and output profiles while leaving the optional evaluator, Search Session, stage extension, Async Stage Channel and live output structurally absent; selected policy/resource/progress/output/session/stage/channel fixtures bind exact normalized upstream profiles through public identities and ports. The remaining owner identities are opaque structural placeholders. Synthetic schema/program digests prove representation closure only and are not executable domain/graph/policy/evaluator/resource/progress/output/session/stage/channel production implementations or native evidence. Later focus leaves supply deterministic restricted Device-JS/Search Program composition and cross-owner deletion/identity oracles. Native CUDA-JS qualification remains separate.

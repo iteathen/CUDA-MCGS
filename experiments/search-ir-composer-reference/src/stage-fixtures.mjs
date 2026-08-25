@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 
 const VERSION = '0.1.0';
 const REVISION = 'f48f20cbacea6404362b5186dd1fdd116f241a98';
+const CHANNEL_REVISION = 'b7d3141738f5586efb1e86014925ee849251e673';
 const LIFECYCLE_STATES = ['profile-normalized', 'resources-admitted', 'composed', 'active', 'draining', 'terminal', 'released'];
 const BASE_CLEANUP_KINDS = ['stage-item', 'surface-context', 'capability-contribution', 'permission', 'counter', 'source-owner-lease', 'diagnostic', 'program-artifact'];
 
@@ -169,6 +170,22 @@ function buildProfile(profile, inspected, resourceResult, progressResult, knownP
     }
   }
 
+  if (options.channel) {
+    const product = capabilities.find(({ id }) => id.endsWith('product-priority'));
+    const audit = capabilities.find(({ id }) => id.endsWith('audit-consistency'));
+    if (product) product.channels.push({
+      requirement: schemaReference('cuda-mcgs.channel-requirement.evaluator-request'),
+      bindings: [
+        { surface: product.bindings.find((id) => id.endsWith('candidate-entry')), actions: ['produce', 'cancel', 'release'] },
+        { surface: product.bindings.find((id) => id.endsWith('candidate-exit')), actions: ['claim', 'observe', 'complete', 'cancel', 'release'] },
+      ],
+    });
+    audit.channels.push({
+      requirement: schemaReference('cuda-mcgs.channel-requirement.audit-feed'),
+      bindings: [{ surface: audit.bindings[0], actions: ['produce', 'observe', 'cancel', 'release'] }],
+    });
+  }
+
   const ownerPorts = new Map(progress.contributors.map(({ id }) => [id, new Map()]));
   const addPort = (owner, port) => ownerPorts.get(owner).set(schemaKey(port), port);
   for (const selectedPermission of permissions) addPort(selectedPermission.sourceOwner, selectedPermission.sourcePort);
@@ -186,8 +203,8 @@ function buildProfile(profile, inspected, resourceResult, progressResult, knownP
     lifecycle: { states: LIFECYCLE_STATES, schedulerOwner: 'SPEC-0012', runtimeDiscovery: false, hostProgress: 'none', pendingWorkerRetention: 'none', persistence: 'none', cancellation: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-lifecycle-cancellation`), stop: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-lifecycle-stop`), teardown: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-lifecycle-teardown`), release: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-lifecycle-release`) },
     diagnostics: { authority: 'non-authoritative', maxRecords: '128', maxBytes: '16384', overflow: 'count', rawPointers: false, cudaHandles: false, nativeArtifacts: false, privateOwnerState: false },
     compatibility: { ownerSemanticsRequired: true, packageIdentityRequired: true, schedulerIdentityExcluded: true, nativeQualification: 'separate-selected-profile', migration: { kind: 'none' } },
-    cleanup: { kinds: BASE_CLEANUP_KINDS, disposition: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-cleanup-disposition`), quarantine: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-cleanup-quarantine`), releaseOrder: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-cleanup-release-order`), ownerOrder: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-cleanup-owner-order`), retainedEvidence: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-cleanup-retained-evidence`) },
-    programContribution: { kind: 'device-program', language: 'restricted-device-js', sourceIdentity: contentIdentity(`${profile}:${capabilities.map(({ id }) => id).sort().join(',')}:restricted-device-js-extension-source`), inputs: [...requiredProfiles.values()], requirements: [...requirements.values()], runtimeRegistry: false, nativeArtifacts: false, provenance: { origin: 'first-party', trust: 'first-party-reviewed', revision: REVISION, license: 'Apache-2.0', review: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-program-security-review`) } },
+    cleanup: { kinds: [...BASE_CLEANUP_KINDS, ...(options.channel ? ['channel-binding'] : [])], disposition: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-cleanup-disposition`), quarantine: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-cleanup-quarantine`), releaseOrder: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-cleanup-release-order`), ownerOrder: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-cleanup-owner-order`), retainedEvidence: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-cleanup-retained-evidence`) },
+    programContribution: { kind: 'device-program', language: 'restricted-device-js', sourceIdentity: contentIdentity(`${profile}:${capabilities.map(({ id }) => id).sort().join(',')}:restricted-device-js-extension-source`), inputs: [...requiredProfiles.values()], requirements: [...requirements.values()], runtimeRegistry: false, nativeArtifacts: false, provenance: { origin: 'first-party', trust: 'first-party-reviewed', revision: options.revision ?? REVISION, license: 'Apache-2.0', review: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-program-security-review`) } },
     productData: [],
   };
 }
@@ -201,6 +218,14 @@ export function buildStageProfiles(inspected, resourceResult, progressResult, kn
 
 export function buildStageFirstProductDeletedProfile(inspected, resourceResult, progressResult, knownProfiles) {
   return buildProfile('synthetic-capability-pair', inspected, resourceResult, progressResult, knownProfiles, { product: false });
+}
+
+export function buildChannelStageProfile(inspected, resourceResult, progressResult, knownProfiles) {
+  return buildProfile('synthetic-channel-stage', inspected, resourceResult, progressResult, knownProfiles, { channel: true, revision: CHANNEL_REVISION });
+}
+
+export function buildChannelStageFirstProductDeletedProfile(inspected, resourceResult, progressResult, knownProfiles) {
+  return buildProfile('synthetic-channel-stage', inspected, resourceResult, progressResult, knownProfiles, { channel: true, product: false, revision: CHANNEL_REVISION });
 }
 
 export function stageSyntheticSchemaReference(id) { return schemaReference(id); }

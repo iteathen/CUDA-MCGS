@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 const VERSION = '0.1.0';
 const REVISION = 'ed4baa234775ba5795482b562eef5d755e59da66';
 const STAGE_REVISION = 'f48f20cbacea6404362b5186dd1fdd116f241a98';
+const CHANNEL_REVISION = 'b7d3141738f5586efb1e86014925ee849251e673';
 const LEDGER_STATES = ['claimed', 'published', 'retired-unreclaimed', 'quarantined'];
 const PORTS = [
   'normalize-contribution', 'compose-resource-plan', 'admit-engine-resources', 'reserve-resource', 'reserve-compound',
@@ -242,6 +243,33 @@ function buildProfile(profile, inspected, selected, schemaShas, options = {}) {
     );
   }
 
+  if (options.channel) {
+    const definitions = options.channelFirstProductDeleted === true ? [
+      ['item', 'records', '64', '16'],
+      ['payload', 'bytes', '16384', '16'],
+      ['result', 'bytes', '8192', '16'],
+      ['pending', 'records', '64', '16'],
+      ['borrow', 'records', '256', '16'],
+      ['diagnostic', 'bytes', '8192', '16'],
+    ] : [
+      ['item', 'records', '192', '16'],
+      ['payload', 'bytes', '49152', '16'],
+      ['result', 'bytes', '24576', '16'],
+      ['pending', 'records', '192', '16'],
+      ['borrow', 'records', '256', '16'],
+      ['diagnostic', 'bytes', '16384', '16'],
+    ];
+    const channelClassIds = definitions.map(([token]) => `resource.${profile}.class-channel-${token}`);
+    const channelContributor = opaqueContributor(profile, inspected, `channel.${profile}`, 'SPEC-0004', channelClassIds, true);
+    contributors.push(channelContributor);
+    classes.push(...definitions.map(([token, unit, maximum, alignment], index) => resourceClass(profile, channelContributor.id, {
+      id: channelClassIds[index], unit, minimum: '0', maximum, alignment, scope: 'per-engine', pressureStatus: 'channel-capacity',
+    }, {
+      id: channelClassIds[index], sourceResource: channelClassIds[index], basis: 'maximum-live', ownerPressureStatus: 'channel-capacity',
+      memorySpaces: ['device-search'], access: ['read', 'write', 'atomic', 'publish'],
+    })));
+  }
+
   const pools = [];
   const partitions = [];
   const corePool = pool(profile, `resource.${profile}.pool-terminal-progress`, 'bytes', '12288', '256', { memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'], largestGuaranteedRequest: '8192' });
@@ -306,6 +334,14 @@ export function buildResourceProfiles(inspected, domainResults, graphResults, po
 
 export function buildStageResourceProfile(inspected, domainResults, graphResults, policyResults, schemaShas) {
   return buildProfile('synthetic-stage-capabilities', inspected, { domain: domainResults[0], graph: graphResults[0], policy: policyResults[0], evaluator: null }, schemaShas, { stage: true, revision: STAGE_REVISION });
+}
+
+export function buildChannelResourceProfile(inspected, domainResults, graphResults, policyResults, evaluatorResults, schemaShas) {
+  return buildProfile('synthetic-stage-channels', inspected, { domain: domainResults[1], graph: graphResults[1], policy: policyResults[1], evaluator: evaluatorResults[0] }, schemaShas, { stage: true, channel: true, revision: CHANNEL_REVISION });
+}
+
+export function buildChannelFirstProductDeletedResourceProfile(inspected, domainResults, graphResults, policyResults, evaluatorResults, schemaShas) {
+  return buildProfile('synthetic-stage-channels', inspected, { domain: domainResults[1], graph: graphResults[1], policy: policyResults[1], evaluator: evaluatorResults[0] }, schemaShas, { stage: true, channel: true, channelFirstProductDeleted: true, revision: CHANNEL_REVISION });
 }
 
 export function resourceSyntheticSchemaReference(id) {
