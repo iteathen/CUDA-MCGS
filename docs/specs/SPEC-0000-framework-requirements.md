@@ -1,427 +1,346 @@
-# CUDA-MCGS Framework Specification Map
+# CUDA-MCGS Framework Composition and Ownership Map
 
 **Status:** Proposal
 
-This document defines the scope and common invariants that detailed versioned CUDA-MCGS specifications must cover. Existing accepted UMCGS/CUDA-MCGS ADR/specification identifiers remain authoritative within their scopes. This file is not yet a complete implementable specification.
+**Draft version:** 0.1.0
 
-> **CUDA-MCGS is a contract-defined universal GPU-resident MCGS framework with a universal least-authority extension/composition substrate and finite specialized Search Images.**
+**Owner:** CUDA-MCGS universal framework composition, ownership and conformance map
 
-The framework architecture follows [`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md): universal MCGS semantics, universal extension/composition mechanics, and downstream domain/search products are separate semantic layers.
+**Consumers:** Search IR; Search Composer; CUDA-MCGS-to-CUDA-JS packaging; extension and product specifications; deterministic reference, native and compatible-pair conformance
 
-Production source and execution-boundary conformance follow [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md): maintained implementation is ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts, post-ignition host interaction is narrow and asynchronous, and an unnaturally expressed generic GPU mechanism is escalated as a potential CUDA-JS capability rather than implemented through a local native escape path.
+This proposal defines how independently owned CUDA-MCGS semantic contracts compose into finite specialized GPU-resident engines. It owns the cross-contract map, dependency law, engine identity, top-level lifecycle coordination, deletion requirements and integrated conformance obligations. It does **not** redefine domain, graph, policy, evaluator, output, resource, progress, Search Session, extension, product or CUDA-JS meaning.
 
-## 1. Three-layer conformance model
+> **For one normalized engine identity, every material fact, mutation and lifecycle has one visible semantic owner; composition connects only versioned public ports, rejects missing/ambiguous/cyclic authority, specializes away unselected owners and capabilities, and leaves active search device-owned after ignition.**
 
-### 1.1 Universal MCGS semantic core
+## 1. Authority, identity and applicability
 
-A concrete CUDA-MCGS engine is produced from universal search contract families plus a finite resource/session profile. Applicable selected contracts include:
+Specification identity is `CUDA-MCGS-SPEC-0000@0.1.0-draft`.
 
-1. **Domain contract** — state, action, transition, identity, node roles, terminal, history, stochasticity/observation, and cycles.
-2. **Search-policy contract** — selection, reservation, widening, policy-owned statistics, backup, stopping/budget semantics, and policy-specific persistence/reuse rules.
-3. **Evaluator contract** — encoding, resident execution behavior, proposals/evaluation outputs, batching, workspace, perspective, publication, and reuse validity.
-4. **Search execution/storage contract** — graph arenas, transposition lookup/publication, path records, work queues, device-owned scheduling, lifecycle, pressure, and generic bounded result publication.
-5. **Resource profile** — concrete finite capacities, watermarks, admission, pressure, exhaustion and safety reserve.
-6. **Search Session profile when selected** — session/root identity, root updates/reroot, root epochs, stale-work disposition, reuse classification, reclamation, generic bounded observations, cancellation and restart semantics.
+Accepted [`ADR-0002`](../decisions/ADR-0002-universal-contracts-specialized-engines.md), [`ADR-0003`](../decisions/ADR-0003-device-resident-active-search.md), [`ADR-0005`](../decisions/ADR-0005-lego-design-hierarchy.md), [`ADR-0014`](../decisions/ADR-0014-extract-cuda-js-runtime.md), [`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md), [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md), [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) govern this proposal.
 
-These contracts define MCGS meaning without assuming chess, games, a board, players, ranked moves, best-action output, top-k output, one evaluator shape, one policy formula, or one scheduler topology.
+The integrated semantic owner proposals consumed by this map are:
 
-### 1.2 Universal extension and composition substrate
+- optional Search Session [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md);
+- domain [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md);
+- search policy [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md);
+- optional evaluator [`SPEC-0009`](SPEC-0009-evaluator-contract.md);
+- graph/storage [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md);
+- finite search resources [`SPEC-0011`](SPEC-0011-finite-search-resources.md);
+- device-owned progress [`SPEC-0012`](SPEC-0012-device-owned-search-progress.md); and
+- result/observation output [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md).
 
-A concrete Search Image may additionally select a finite universal extension substrate:
+Extension-substrate proposals [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) are optional downstream composition adjacency. The chess proposal is one downstream product, not framework authority.
 
-- a finite operational Search Stage graph;
-- stage-owned stable entry/exit Stage Extension Surfaces;
-- namespaced/versioned capability contracts and schemas;
-- bounded Async Stage Channels for cross-stage/cross-surface dataflow;
-- deterministic pre-ignition capability composition;
-- generated checkpoint contexts/contracts/layouts and finite capability resources;
-- zero-or-one optional semantic stage capability program unit per stage, expressed in restricted Device-JS/Search Program source, in the version-zero composition profile.
+Accepted authority governs conflicts. This proposal neither accepts the listed proposals nor authorizes production implementation.
 
-The **substrate is universal; one capability's payload/behavior is not automatically universal core meaning**. A capability may influence search only through declared least-authority effects, and any semantic effect on domain/policy/evaluator/output/resource/session meaning must also be owned by the selected corresponding contract/profile.
+FRAMEWORK-AUTH-001. A concrete engine selects one normalized framework profile and exact compatible versions/digests of every selected owner contract. A proposal label, matching filename or matching JavaScript object shape is not compatibility.
 
-The extension substrate MUST NOT be a runtime callback registry, schema-interpreted service locator, raw-pointer capability escape, or mechanism for product semantics to bypass universal contracts.
+FRAMEWORK-AUTH-002. Framework composition cannot weaken an owner invariant, infer an omitted owner disposition or convert an informative example/experiment/product into normative meaning.
 
-### 1.3 Domain/search products
+FRAMEWORK-AUTH-003. Semantic acceptance, native profile qualification, exact CUDA-JS compatible-pair qualification, performance support and product conformance are distinct gates and claims.
 
-A domain/search product selects the universal core contracts and extension capabilities and then defines product-specific semantics and output.
+FRAMEWORK-AUTH-004. Production lowering remains prohibited until the integrated contract/schema/reference acceptance gate authorizes it for the selected boundary.
 
-Chess search is a separately proposed product in [`products/chess/CHESS-0001-search-product.md`](products/chess/CHESS-0001-search-product.md). Chess legal-move ranking, board/history identity, evaluator semantics, MultiPV/best-move output, and chess-specific capabilities remain downstream and MUST NOT be required by universal CUDA-MCGS conformance.
+## 2. Three-layer conformance model
 
-The first-consumer deletion test is normative for layering: removing the chess product must leave a coherent universal framework, Search IR, composer, runtime contracts and conformance suite.
+### 2.1 Universal MCGS semantic core
 
-## 2. Compiler/composer outputs
+The universal core consists of independently meaningful semantic owner bricks. A finite engine selects one conforming domain, graph, policy, output, resource and progress profile; it selects evaluator present/absent and Search Session present/absent explicitly.
 
-The Search Composer lowers selected universal contracts, extension inputs and product profiles into:
+The core assumes no game, board, player count, turn structure, zero-sum value, scalar value, deterministic transition, fixed state/action size, exhaustive action count, tree, DAG, rollout, neural evaluator, ranked result, live observation, rerooting or physical scheduler.
 
-- a versioned normalized Search IR;
-- a finite validated Search Stage graph when the selected profile uses stages;
-- resolved stage-owned entry/exit surfaces and Async Stage Channels;
-- selected product/capability schema identities without converting them into universal core fields;
-- a finite graph/search/model/session/capability/channel/output memory plan;
-- generated search layouts and checkpoint-specific glue;
-- specialized restricted Device-JS/Search Program source with at most one semantic stage capability program unit per stage requiring capabilities;
-- a versioned CUDA-MCGS-to-CUDA-JS execution package;
-- CUDA-MCGS host/product adapter metadata and bounded result/observation contracts;
-- deterministic specialization/cache/provenance identity.
+### 2.2 Universal extension/composition substrate
 
-The independent CUDA-JS repository owns generic Node/CUDA Driver execution, compilation/linking, device-artifact handling, generic memory/launch/completion/resource lifetime and generic long-lived sideband mechanisms. CUDA-MCGS owns the semantic content and stronger search/device-closure requirements of its package. CUDA-JS MUST NOT interpret MCGS, Search IR, Search Stage, capability, product, chess, root-update or output meaning.
+The optional extension substrate composes selected namespaced capabilities through accepted stable attachment/dataflow contracts. It may contribute owner-declared semantic adapters, work classes, resources and restricted Device-JS programs; it cannot create a second authority for a core fact.
 
-## 3. Contract and schema relationship
+An engine with no selected extension capability contains exact zero extension-only field, port, branch, context, channel, resource, diagnostic, program or synchronization residue.
 
-CUDA-MCGS specifications MUST treat schemas as machine-verifiable representation inside broader behavioral contracts.
+### 2.3 Downstream domain/search products
 
-A behavioral contract MUST define every material property not safely expressible as data shape alone, including:
+A product selects core profiles and optional capabilities, then owns product semantics, adapters, outputs, quality/support targets and compatibility. Chess legal-move ranking, MultiPV, board/history encoding and evaluator choices remain in [`CHESS-0001`](products/chess/CHESS-0001-search-product.md).
 
-- semantic meaning and perspective;
-- ownership and lifetime;
-- allowed reads/writes/effects;
-- invariants and pre/postconditions;
-- concurrency, ordering, synchronization and publication;
-- bounded resources, pressure and saturation behavior;
-- cancellation, failure, recovery and compatibility;
-- persistence/reuse/invalidation where state crosses root/session/product lifetimes.
+FRAMEWORK-LAYER-001. Universal core contracts remain coherent when every extension capability and product is deleted.
 
-A referenced schema MUST define representation facts required for machine verification, including namespaced identity/version, fields, widths, ranges, precision, alignment, normalization, unknown-field/enum policy, and compatibility/migration rules where applicable.
+FRAMEWORK-LAYER-002. Extension contracts remain product-neutral at their public attachment/composition boundary even when their first consumer is product-specific.
 
-A schema-valid implementation that violates the behavioral contract is non-conforming.
+FRAMEWORK-LAYER-003. Product schema fields remain namespaced specialization inputs and never become mandatory universal Search IR fields by use or popularity.
 
-Product/capability schemas are namespaced specialization inputs. Their presence does not promote their fields into universal Search IR meaning.
+FRAMEWORK-LAYER-004. Deleting the first product removes its adapters, schemas, resources, programs, outputs, diagnostics and tests without changing universal owner contracts.
 
-## 4. Common mandatory engine properties
+## 3. LEGO owner and dependency map
 
-Every concrete engine specification MUST define, where applicable:
+Each row is an independently meaningful owner with one invariant and public semantic ports. Physical fusion, shared storage or one generated Device-JS program does not merge authority.
 
-- type widths, ranges, precision, alignment and observable endianness;
-- one source of truth for CUDA-MCGS semantic layouts and public package types, while CUDA-JS owns native ABI realization;
-- state identity and collision verification;
-- transposition and cycle/history semantics;
-- parent-edge versus state-node ownership;
-- action enumeration/proposal continuation behavior;
-- evaluator capabilities and absent-output behavior;
-- path and backup perspective/transform semantics;
-- concurrency and publication state machines;
-- finite capacities, watermarks, overflow and exhaustion;
-- cancellation, completion, error and generic result publication;
-- compatibility and version negotiation;
-- deterministic semantic conformance tests;
-- required CUDA-JS contract version/capabilities and exact execution-package identity;
-- boundary between CUDA-MCGS semantic failures and CUDA-JS generic runtime/context failures;
-- finite operational Search Stage graph when selected;
-- exposed extension surfaces/capabilities/channels when selected;
-- Search Session/root-update/observation semantics when selected;
-- exact production evidence required for zero-residue specialization claims.
+| Owner brick | Owns | Consumes through public contracts | Explicitly does not own |
+|---|---|---|---|
+| Domain | State/action/transition/identity/history/role/terminal meaning | Selected product-domain profile | Graph objects, policy, evaluator, output or CUDA representation |
+| Graph/storage | Object/reference/path/transposition/publication/reclamation validity | Domain identity/equality; opaque selected owner-region layouts | Domain equality meaning, policy statistics, evaluator meaning, root epoch or resource policy |
+| Evaluator, optional | Capability/request/input/artifact/workspace/batch/cache/result meaning | Domain views and selected requester-purpose/input adapters | Policy choice, graph storage, public output, progress or CUDA compilation/allocation |
+| Search policy | Selection/reservation/widening/records/value algebra/backup/stopping/reuse meaning | Domain/graph facts and selected evaluator or other value-source adapters | Graph storage, evaluator execution, external publication, resources, progress or session commit |
+| Result/observation output | Bounded payload/source/cut/slot/sequence/borrow/publication meaning | Ready facts from selected owners | Source semantics, policy ranking meaning, session control or CUDA transfer |
+| Finite search resources | Contribution normalization, partitions/reserves, compound admission, accounting, pressure/exhaustion | Finite contribution descriptors from every selected owner/capability/product | Semantic victim/policy choice or CUDA allocation mechanism |
+| Device-owned progress | Work readiness/dependency/service/fairness/no-progress/stop/drain/closure | Owner work descriptors and admitted resource transitions | Work payload meaning, one scheduler topology, session control or CUDA execution mechanism |
+| Search Session, optional | External transaction/root-epoch boundary and bounded control/observation-request lifecycle coordination | All selected owner prepare/reuse/stale/cleanup/publication ports | Source-owner semantics, output payload publication, resource/progress policy or CUDA sideband mechanism |
 
-No concrete engine is required to expose a ranked action list unless its selected policy/output/product contract requires one.
+FRAMEWORK-OWNER-001. Every material fact/state/mutation/lifecycle/publication/resource/work/failure/cleanup item declares exactly one semantic owner and any storage/mechanism owner separately.
 
-## 5. Universal Search Stage and Stage Extension Surface family
+FRAMEWORK-OWNER-002. Cross-owner access names versioned public semantic ports and permissions. Deep imports, private state mutation, raw pointer sharing and inferred neighboring layout are non-conforming.
 
-CUDA-MCGS MUST define a finite operational Search Stage graph for profiles using the extension/scheduler substrate rather than a fixed game-shaped phase pipeline or framework-wide callback ABI.
+FRAMEWORK-OWNER-003. Dependency direction is acyclic at semantic authority. Neutral composition may bind mutually relevant profile identities without permitting either owner to reinterpret the other.
 
-A **Search Stage** owns one stable operational search state and one complete mutation interval for one logical work item. A stage transition is semantic and per work item; it MUST NOT imply a global barrier, kernel boundary, CUDA Graph node, or host transition.
+FRAMEWORK-OWNER-004. Search Composer may fuse, split, inline or eliminate physical operations only while owner-visible meaning, ordering, accounting, diagnostics and cleanup remain independently testable.
 
-A stage MAY expose a stage-owned **Stage Extension Surface** at stable `entry`, stable `exit`, both, or neither. A surface MUST NOT cross a stage boundary or exist inside incomplete stage mutation.
+FRAMEWORK-OWNER-005. A shared representation has one layout/storage owner and distinct non-overlapping semantic owner regions or field ownership. Byte adjacency does not authorize cross-owner mutation.
 
-Each checkpoint contract defines:
+FRAMEWORK-OWNER-006. Optional evaluator, live output, Search Session, extension and product selections each pass a zero-residue deletion test in normalized schema, layout, generated source/package, resource plan, progress plan, runtime state and diagnostics.
 
-- stable namespaced stage/checkpoint identity/version;
-- semantic purpose and invocation scope;
-- checkpoint-specific Context Schema;
-- least-authority readable/writable facts and bounded control signals;
-- core-owned invariants and mutation exclusions;
-- memory space, aliasing, lifetime, ordering and publication;
-- finite state/scratch/workspace/queue contributions;
-- failure, cancellation, pressure and compatibility behavior.
+FRAMEWORK-OWNER-007. Removing one optional owner/capability cannot leave a dangling dependency, empty runtime dispatcher, hidden reserve or compatibility requirement.
 
-Several selected capabilities at one stage share that stage's surface, context, finite resource plan and composition unit. They do not multiply runtime extension objects or independently callable native fragments.
+FRAMEWORK-OWNER-008. A capability needed by only one current consumer is reusable only when its invariant, owner, bounded lifecycle and plausible second consumer remain meaningful after deleting that consumer; otherwise it remains product-owned.
 
-A product-specific capability uses this universal mechanism but keeps product semantics in a namespaced contract. For example, a future chess tablebase or move-ordering capability may consume a universal checkpoint only if the checkpoint is already semantically valid for non-chess consumers and the capability's chess meaning remains outside universal core state.
+FRAMEWORK-OWNER-009. This is the simplest sufficient total ownership system: merging rows would create competing semantic/storage/lifecycle authority, while splitting a row requires a new independently meaningful invariant, lifecycle and replacement boundary rather than a file-size or first-implementation preference.
 
-If optional behavior must participate inside an invariant-forming operation, it belongs in the selected mandatory stage lowering. If it creates a new stable operational invariant, it becomes a stage. A context schema describes representation at an already-defined checkpoint; it MUST NOT discover attachment location at runtime.
+## 4. Normalized framework profile
 
-[`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) contains the detailed proposal.
+A **framework profile** is the strict canonical pre-ignition selection of owner profiles, product/capability inputs, cross-owner bindings, finite plans, public CUDA-JS requirements and compatibility identity for one engine equivalence class.
 
-## 6. Async Stage Channel family
+The top-level semantic ports are `normalizeFrameworkProfile`, `composeSearchIR`, `admitEngineResources`, `createExecutionPackage`, `initializeEngine`, `igniteSearch`, `requestCancellation`, `awaitCompletion`, `acquireTerminalResult`, `releaseTerminalResult` and `teardownEngine`. They are not mandatory functions, modules, kernels, callbacks or ABI symbols.
 
-Cross-stage/cross-surface internal dataflow MAY use finite **Async Stage Channels**. Cross-stage/cross-surface blocking is prohibited.
+FRAMEWORK-PROFILE-001. The profile declares, with no unknown fields:
 
-Each channel defines at least:
+- framework ID/version and accepted-authority baseline;
+- exact selected contract/profile/schema identities and compatibility relations;
+- evaluator present/absent, live-output present/absent, Search Session present/absent, extension capability set and product identity;
+- every public producer/consumer port binding, owner permission and semantic dependency;
+- all widths/ranges/precision/alignment/arithmetic/randomness/determinism selections;
+- composed resource, progress, output, cancellation, completion, failure, diagnostics and cleanup plans;
+- required public CUDA-JS capability/version/evidence profile without private mechanism fields;
+- package/cache/provenance identity inputs; and
+- deletion manifests for every optional selection.
 
-- namespaced identity/version and producer/consumer roles;
-- item/correlation identity and generation;
-- request/result schema, ownership and lifetime;
-- release/acquire publication ordering and CUDA scope;
-- readiness, completion, failure and cancellation states;
-- capacity, backpressure, expiry, reclamation and stale-result behavior;
-- required/optional/advisory consumption and fallback/skip/defer behavior;
-- progress, starvation and deadlock outcomes.
+FRAMEWORK-PROFILE-002. Normalization rejects unknown/duplicate owner/profile/schema/capability/product identities, competing fact owners, missing producer/consumer ports, permission escalation, semantic dependency cycles, ambiguous order/units/perspective, insufficient ranges, unbounded work/resources/queues/borrows, host-progress dependencies, missing cleanup or incompatible CUDA-JS requirements.
 
-A stage MAY publish bounded work for a later stage using separately owned storage. When a required result is unavailable, the logical consumer enters an explicit pending state and releases its worker/stage resources. The scheduler runs other ready work, including the producer. No worker spins or synchronously waits for the result.
+FRAMEWORK-PROFILE-003. Meaning-insensitive maps/sets normalize canonically. Every order that affects semantics is represented explicitly. Equivalent inputs yield byte-identical normalized profiles and identity; any semantic change changes identity.
 
-Internal Async Stage Channels are distinct from external Search Session control/observation ports. A domain/product root update is not an arbitrary internal extension callback, and a user-facing observation is not an internal readiness dependency merely because both may use a mailbox-like physical mechanism.
+FRAMEWORK-PROFILE-004. Every concrete range and capacity is derived from declared finite maxima/formulas with checked arithmetic. The first domain, product, GPU or experiment cannot establish a foundational limit.
 
-[`SPEC-0004`](SPEC-0004-async-stage-channels.md) contains the detailed proposal.
+FRAMEWORK-PROFILE-005. An optional absent profile is represented by canonical absence and generates no placeholder object, default buffer, no-op work class or dormant branch.
 
-## 7. Search Session, reroot and generic observation family
+FRAMEWORK-PROFILE-006. A profile may support a bounded subset of valid contract families, but unsupported cases fail before ignition with a typed reason and do not narrow universal meaning.
 
-A long-lived Search Session is a universal framework capability, not a requirement that every profile use dynamic reroot or one persistent kernel.
+FRAMEWORK-PROFILE-007. Validation errors identify owner, field/port, expected contract identity and bounded cause without exposing arbitrary domain/model bytes, executable source or private CUDA-JS data.
 
-When selected, the session contract MUST define:
+FRAMEWORK-PROFILE-008. Profile normalization is ordinary Node.js work. Device programs are restricted Device-JS inputs; neither layer may rely on CUDA-MCGS-maintained C/C++ or a private CUDA escape path.
 
-- session identity/incarnation and current root;
-- finite monotonic root epochs;
-- namespaced external root-update schema(s);
-- validation/admission **before root-update-specific graph/search mutation**;
-- finite pressure outcome when a valid new root cannot be established;
-- one authoritative root-update commit point;
-- root-relative old-work capture/disposition and accounting conservation;
-- contract-selected reuse/reset/transform/invalidation across graph, policy, evaluator, history, output and extension state;
-- separation of logical reroot from reclamation;
-- generation-safe reclamation/storage reuse;
-- zero or more generic bounded read-only observation schemas;
-- finite observation/session generation/exhaustion behavior;
-- cancellation, health, completion and restart semantics.
+## 5. Search IR and Search Composer
 
-A rejected root update leaves accepted search-semantic state unchanged. A live observation MUST NOT expand/materialize search state or otherwise advance search merely to satisfy observation. Observation cadence must not affect search semantics unless the selected contract says it is actually a semantic input rather than observation.
+Search IR is the normalized semantic representation; Search Composer validates and specializes it. They integrate owner meaning but do not create it.
 
-Ranked actions/moves are one possible product/policy observation schema; they are not required by the universal session contract.
+FRAMEWORK-IR-001. Complete Search IR contains or references every selected owner profile required by SPEC-0006 through SPEC-0013 and every selected namespaced extension/product input.
 
-[`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) contains the detailed proposal.
+FRAMEWORK-IR-002. Cross-owner bindings name semantic port IDs/versions, producer/consumer roles, permission, representation/layout ownership, lifecycle/epoch, resource contribution and progress dependency without deep source paths or runtime object references.
 
-## 8. Search Composer requirements
+FRAMEWORK-IR-003. Search IR represents optional absence explicitly and supports structural deletion inspection for evaluator, live output, Search Session, capability and product residue.
 
-CUDA-MCGS owns the semantic **Search Composer** that transforms contracts and product/capability selections into one finite specialized engine.
+FRAMEWORK-IR-004. Search IR contains no mandatory chess/Connect Four/game/ranking/scalar/evaluator/live-session field and no CUDA pointer, handle, stream, event, atomic spelling, PTX, ABI layout or scheduler topology.
 
-The Composer MUST:
+FRAMEWORK-IR-005. Search Composer produces:
 
-- validate/normalize universal contracts and schemas;
-- validate product/capability inputs against their namespaced owning schemas;
-- produce canonical Search IR without embedding first-product fields as universal meaning;
-- construct/validate the finite operational Search Stage graph;
-- resolve stable stage boundaries and normalized capability sets;
-- validate all selected capabilities and Async Stage Channels against checkpoint contracts/context schemas;
-- resolve Search Session control/observation schemas and finite capacities when selected;
-- resolve concrete layouts, widths, ranges and alignment;
-- compute finite graph/search/evaluator/session/capability/channel/output/workspace capacities;
-- select graph/transposition/cycle/reclamation/reduction/scheduling strategies from accepted capabilities;
-- compose mandatory and optional device behavior deterministically;
-- generate complete compilation/link/load inputs without requiring CUDA-JS to interpret Search IR;
-- produce complete deterministic artifact/cache identity;
-- emit the CUDA-MCGS-to-CUDA-JS execution package and typed result/observation manifest.
+- canonical normalized Search IR and complete semantic identity;
+- selected owner-region and public package layout descriptions;
+- composed finite resource/admission/pressure plan;
+- composed work/readiness/progress/stop/closure plan;
+- terminal and selected live-output/session manifests;
+- selected extension/product composition plan when present;
+- restricted Device-JS/Search Program inputs;
+- a versioned CUDA-MCGS-to-CUDA-JS execution package containing only public mechanism requirements;
+- compatibility/provenance/deletion manifests; and
+- bounded diagnostics and teardown/rollback plan.
 
-CUDA-JS MAY supply generic NVRTC/nvJitLink/runtime/sideband mechanisms. CUDA-JS MUST NOT own or infer stage/checkpoint/capability/product meaning, Search IR, search scheduling policy, root updates, output semantics, or search-resource policy.
+FRAMEWORK-IR-006. Search Composer cannot discover semantic owners, attachment points, capability code, schemas or product behavior after ignition. No runtime service locator, callback registry or schema interpreter substitutes for specialization.
 
-## 9. Specialization and extension-cost requirements
+FRAMEWORK-IR-007. Generated source may specialize/fuse owners but its trace/provenance maps every material generated region and package requirement back to normalized owner/profile/port identity.
 
-Production realizations MUST NOT use a universal runtime callback table, arbitrary function-pointer registry, service locator, schema interpreter, per-capability fragment loop, or equivalent hot-path mechanism as the default universality strategy.
+FRAMEWORK-IR-008. CUDA-JS receives restricted Device-JS and consumer-neutral compile/link/resource/operation/sideband requirements. It never receives authority to interpret MCGS, domain, graph, policy, evaluator, output, resource, progress, session, extension or product meaning.
 
-The version-zero target is:
+## 6. Engine lifecycle and transaction coordination
 
-> **A stage with no selected optional capability retains no extension-abstraction residue. All capabilities selected for one stage share one semantic stage capability program unit and no generic runtime dispatch.**
+The composed engine lifecycle is `unnormalized → normalized → plans-admitted → packaged → instantiated → initialized → ignited/running → stop-requested/draining → terminal → released`, with typed pre-ignition failure, runtime failure and quarantine. `plans-admitted` means the semantic/resource/progress/output/lifecycle plans and public mechanism requirements fit the declared target bounds; actual CUDA-JS resources are created during instantiation. Owner lifecycles refine these states without creating competing top-level authority.
 
-For an empty capability set, the realized image omits solely extension-owned enable branches, lookup/dispatch, context packing, persistent state, workspace/channels/diagnostics and synchronization.
+FRAMEWORK-LIFE-001. Admission succeeds only after all selected owner profiles, compound resources, progress graph, terminal-output reserve, package compatibility and cleanup/rollback paths validate for one exact engine identity.
 
-For a non-empty capability set, version zero composes exactly one semantic stage capability program unit containing the complete optional stage behavior in restricted Device-JS/Search Program source. If both entry and exit checkpoints are selected, their behavior belongs to that one semantic unit. CUDA-JS owns whether realization uses PTX, LTO, fusion or another qualified native mechanism.
+FRAMEWORK-LIFE-002. Initialization publishes each owner state in dependency order and records exact created resources. Failure rolls back partial creation in reverse dependency order without presenting the engine as ignitable.
 
-Capability semantics may be universal reusable, product-specific, or project-specific. Artifact granularity does not promote semantic ownership.
+FRAMEWORK-LIFE-003. Ignition has one logical boundary after which no active search decision requires a CPU-produced intermediate, host callback, polling/relaunch loop, filesystem/network service, late schema/code discovery or CUDA-MCGS-native helper.
 
-Evidence includes semantic source/package comparison, CUDA-JS-owned emitted/final artifact inspection through public evidence where applicable, empty-capability comparison, selected capability behavior versus an equivalent fused/generated control, and representative resource/performance measurements.
+FRAMEWORK-LIFE-004. The first authoritative stop cause is preserved. Selected policy stop, resource exhaustion, external cancellation/session control, semantic failure and CUDA-JS failure remain distinct typed causes coordinated through progress drain/closure.
 
-[`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) contains the detailed proposal.
+FRAMEWORK-LIFE-005. Completion is published only after progress closure and every result-visible owner reaches ready, terminally absent or typed failed/quarantined disposition; output owns the immutable terminal envelope/payload.
 
-## 10. Required CUDA-MCGS specification families
+FRAMEWORK-LIFE-006. Cancellation is idempotent, cannot erase an earlier cause, and follows owner-declared abandon/must-drain/release rules. It does not authorize partial backup, lost reservation/resource accounting or premature teardown.
 
-### Universal core families
+FRAMEWORK-LIFE-007. Terminal-result borrow may outlive semantic search completion. Teardown preserves it until output/CUDA-JS owners prove dependent reads/transfers released or terminal.
 
-Detailed specifications are expected for:
+FRAMEWORK-LIFE-008. Teardown closes inputs, drains/abandons/quarantines work, releases borrows/protections and owner resources in dependency order, tears down opaque CUDA-JS operations/resources, and leaves no live task-created device/host/external state.
 
-- Search IR and versioning;
-- domain contract/device realization;
-- search-policy contract/device realization;
-- evaluator/model contract/resident realization;
-- state/action variable-storage model;
-- graph node/edge/path/identity/transposition semantics;
-- cycle/history handling;
-- generated search-layout description;
-- finite memory planner and pressure state machine;
-- Search Session/root-update/reroot/reclamation/control/observation semantics;
-- device-owned scheduler/work queues;
-- generic bounded result/observation publication;
-- CUDA-MCGS-to-CUDA-JS package and adapter;
-- specialization/cache identity;
-- deterministic reference/conformance and diagnostics/reproducibility.
+FRAMEWORK-LIFE-009. Applicable statuses include `invalid-framework-profile`, `framework-owner-conflict`, `framework-dependency-cycle`, `framework-profile-incompatible`, `framework-plan-admission`, `framework-package-incompatible`, `framework-initialization-failed`, `framework-device-closure`, `framework-cancelling`, `framework-terminal` and `framework-internal-failure`, with exact pre-ignition reject, recoverable pending/pressure, stop, fatal/quarantine and terminal meaning.
 
-### Universal extension-substrate families
+## 7. Device closure and CUDA-JS boundary
 
-- operational Search Stage graph and useful boundary selection;
-- Stage Extension Surface/context/capability permissions;
-- Async Stage Channels/readiness/progress/reclamation;
-- restricted Device-JS stage capability composition/checkpoint contract/Search Image identity;
-- capability provenance/security/resource composition;
-- exact unused-capability disappearance and representative cost evidence.
+FRAMEWORK-DEVICE-001. The selected domain, graph, policy, evaluator, output, resource, progress, session and capability/product device behavior and mutable active-search state are resident or device-accessible according to the finite plan before ignition.
 
-### Product families
+FRAMEWORK-DEVICE-002. Device-owned progress, not a named scheduler mechanism, owns active readiness/service/fairness/no-progress/stop semantics. Persistent kernels, device-owned multi-kernel execution, CUDA Graphs, cooperative launch or later mechanisms qualify only selected profiles.
 
-Products such as chess define separate downstream specs for:
+FRAMEWORK-DEVICE-003. Bounded asynchronous observation reads, externally supplied root/attention/control changes, cancellation, completion and teardown are the only post-ignition host interactions. They cannot supply internal work selection/evaluation/backup decisions or acknowledge internal progress.
 
-- product domain/policy/evaluator/output contracts;
-- product-specific extension capabilities;
-- product-specific reroot/reuse rules;
-- product package/support/benchmark/quality requirements.
+FRAMEWORK-DEVICE-004. Maintained CUDA-MCGS production source is ordinary Node.js plus restricted Device-JS submitted through versioned public CUDA-JS contracts. C/C++, CUDA C++, `.cu`/`.cuh`, hand PTX, embedded CUDA source, native addons, direct FFI/Driver access, raw CUDA handles and subprocess native search are non-conforming.
 
-These lists are semantic specification families, not a requirement to create one runtime interface or source component per bullet.
+FRAMEWORK-DEVICE-005. CUDA-JS may use JIT, native code and CUDA-specific implementation wherever needed or desired behind its consumer-neutral public contracts. Its generated CUDA/PTX/cubin/LTO/native artifacts are opaque dependency outputs, not CUDA-MCGS source or semantic authority.
 
-Generic Driver entry-point schemas, CPU call ABI/JIT bindings, generic allocation APIs, NVRTC/nvJitLink plumbing, stream/event wrappers, Node delivery and generic context teardown belong to CUDA-JS.
+FRAMEWORK-DEVICE-006. An inclination to add a native CUDA-MCGS solution triggers immediate capability classification. If a generic need lacks a natural public CUDA-JS expression with clear owner, bounded resources, synchronization, lifecycle, cleanup and independent qualification, the affected profile stops for a CUDA-JS capability proposal; CUDA-MCGS semantics are not distorted to avoid that stop.
 
-## 11. CUDA-MCGS-to-CUDA-JS execution package
+## 8. Finite resources, progress and output closure
 
-The version-zero interop specification MUST define:
+FRAMEWORK-RESOURCE-001. Every selected semantic/capability/product owner contributes exact finite classes/formulas/maxima/lifetimes to SPEC-0011; absent selections contribute zero. CUDA-JS mechanism overhead is separately declared and included before admission.
 
-- required CUDA-JS public contract/capability/evidence profile;
-- restricted Device-JS/Search Program inputs, public CUDA-JS realization requirements and complete cross-boundary identity inputs;
-- public restricted Device-JS language/helper profile, typed imports/exports, input digests/provenance and requested target constraints;
-- finite stage graph, contexts, capability sets, Async Stage Channels and ordered semantic stage capability program units material to the Search Program;
-- opaque finite resource requirements without CUDA-JS private handles in persistent schemas;
-- function/argument/launch descriptions and allowed execution dependencies;
-- initial configuration/model/state upload;
-- selected long-lived generic control/observation mechanism requirements without MCGS/product payload interpretation;
-- one-way cancellation, completion, diagnostics and typed result publication;
-- generic runtime versus semantic failure classification;
-- teardown/partial-creation rollback;
-- package manifest/checksums/provenance/compatibility negotiation;
-- exact compatible-pair conformance ownership.
+FRAMEWORK-RESOURCE-002. The composed plan covers graph/path/policy/evaluator/work/output/session/extension/product/diagnostic state, recovery and terminal reserve, concurrent multiplicity, alignment/fragmentation and checked arithmetic within an exact device/runtime budget.
 
-The package contains or references every device behavior needed for active search. CUDA-JS MUST NOT call back into CUDA-MCGS/JavaScript for intermediate search decisions.
+FRAMEWORK-RESOURCE-003. Every compound operation admits all required classes atomically before semantic mutation. No owner may allocate hidden overflow, host spill, emergency buffer or unplanned retry state.
 
-## 12. Universality constraints
+FRAMEWORK-RESOURCE-004. Pressure/exhaustion preserves semantic owner choice: resource composition reports admissibility and cause; the owning policy/profile selects bounded retry/degrade/reclaim/reject/stop behavior and cannot silently change search meaning.
 
-The complete framework contract must be capable of representing materially different selected profiles, including combinations such as:
+FRAMEWORK-RESOURCE-005. Progress accounts for every admitted work/resource/result-visible obligation. `pending` has a possible producer/escape; ready work receives declared service; terminal closure cannot strand leases, reservations, publications or required cleanup.
 
-- fixed, variable-blob, delta and custom state storage;
-- exhaustive, paged, sparse, sampled and custom action production;
-- deterministic/stochastic transitions;
-- decision, chance, terminal, observation and custom node roles;
-- scalar, categorical, vector, distributional or absent evaluator outputs;
-- tree, DAG and cyclic graph semantics;
-- atomic-commutative, segmented-associative and ordered-owner backup modes;
-- complete, partial, evaluation, proof, sequence, diagnostic, custom bounded or absent live observation/output profiles;
-- zero, one or multiple stage surfaces/capabilities/channels;
-- session profiles with no reroot, existing-state reroot or externally supplied replacement roots;
-- products with and without ranked candidate outputs.
+## 9. Optional extension substrate
 
-Examples such as best action, top-k or chess move ranking are product/policy choices and not universal Search IR mandatory fields.
+FRAMEWORK-EXT-001. Core owner profiles and reference semantics are complete without Search Stages, extension surfaces, Async Stage Channels or optional capability programs.
 
-A concrete engine MAY support a subset, but its capability/product profile states that subset before composition/compilation.
+FRAMEWORK-EXT-002. When selected, extension attachment points, permissions, contexts, channels, programs, resources and compatibility are normalized before ignition through the accepted SPEC-0003/0004/0005 family or successor.
 
-## 13. Device closure
+FRAMEWORK-EXT-003. A capability that affects domain/policy/evaluator/output/resource/progress/session meaning selects a namespaced adapter/profile governed by that owner. An extension surface cannot redefine the fact.
 
-The production execution plan is closed over all behavior/data needed for internal active search.
+FRAMEWORK-EXT-004. Extension dataflow cannot synchronously block a device worker on unavailable work, create host progress, bypass compound admission or weaken cancellation/cleanup.
 
-Before ignition, CUDA-MCGS/CUDA-JS may configure, validate schemas, compose, compile/link, allocate, load, upload and prepare launch/session resources.
+FRAMEWORK-EXT-005. An unselected capability contributes exact zero extension-only runtime and package residue. Selected capabilities use the accepted statically specialized composition profile without a universal hot-path callback/dispatch registry.
 
-After ignition, host callbacks, host-controlled internal phase progression, extension discovery/binding, late code loading, polling that supplies an internal search decision, filesystem/network service, or CPU-computed intermediate results are non-conforming unless the engine is explicitly diagnostic/reference.
+FRAMEWORK-EXT-006. Extension mechanism and representative cost evidence qualify the selected substrate but cannot prove core semantics or promote one capability/product payload into the framework.
 
-An accepted Search Session profile may receive bounded external environment/domain root updates or other externally supplied attention/control changes and expose bounded coherent observations through a generic sideband mechanism. Each selected input has a finite, versioned, generation-scoped admission/publication/application contract. Those operations do not authorize host-owned internal search progression, and delayed or absent observation consumption cannot block search.
+## 10. Product boundary and universality
 
-An observation-to-host-decision-to-control-write, polling/relaunch, or callback loop required to choose the next internal search step is non-conforming. The external input must represent outside intent or environment state rather than a CPU-computed search intermediate.
+FRAMEWORK-PRODUCT-001. Product profiles declare exact domain/policy/evaluator/output/session/capability adapters, support/quality targets and namespaced identity; the framework validates their owner bindings without interpreting product bytes.
 
-Production CUDA-MCGS device behavior is authored as restricted Device-JS. C/C++, CUDA C++, native addons, direct FFI/Driver access, hand-written PTX, embedded CUDA source and subprocess native search implementations are non-conforming production paths. CUDA-JS-generated device artifacts remain opaque versioned dependency outputs.
+FRAMEWORK-PRODUCT-002. The framework supports materially different profiles including fixed/variable states, exhaustive/lazy/sampled actions, deterministic/stochastic transitions, custom roles, tree/DAG/cyclic graphs, evaluator absent/present with scalar/vector/distribution/proof/custom output, commutative/ordered backup, terminal/live/no observation and session absent/present.
 
-When an existing CUDA-JS public contract cannot express a naturally generic GPU mechanism directly, safely and with bounded resource/synchronization/lifecycle semantics, the design pauses for capability classification under ADR-0019. A consumer-neutral mechanism is specified and independently qualified in CUDA-JS; MCGS/domain/product policy remains here. A private import, local native implementation or semantically distorted workaround is not an alternative conformance path.
+FRAMEWORK-PRODUCT-003. A concrete engine may reject unsupported combinations before ignition, but a product limitation cannot narrow a universal range, identity, owner or conformance class.
 
-Device closure does not imply one physical topology. Persistent-kernel, cooperative, device-owned multi-kernel, graph-based or future mechanisms may conform when they preserve device-owned progress and resource/performance contracts.
+FRAMEWORK-PRODUCT-004. Ranked candidates, best action, top-k, legal moves, WDL, principal variation and similar outputs exist only when selected policy/product/output contracts define them.
 
-## 14. Finite memory
+## 11. Compatibility, persistence, security and diagnostics
 
-The memory plan accounts for:
+FRAMEWORK-COMPAT-001. Framework semantic compatibility requires compatible identities for every selected owner profile/schema/port binding, resource/progress/output/session plan, extension/product input, arithmetic/determinism choice and cleanup disposition. Matching package version or byte layout alone is insufficient.
 
-```text
-available device memory reported/validated through CUDA-JS
-- safety reserve
-- resident evaluator/model and workspace
-- universal graph/path/work storage
-- Search Session control/observation/root-admission reserve when selected
-- extension capability state/workspace/Async Stage Channels
-- generic CUDA-JS/runtime/code requirements
-- product-specific selected state/output/workspace
-- diagnostics
-```
+FRAMEWORK-COMPAT-002. The execution-package identity additionally binds restricted Device-JS sources/imports, target constraints, selected public CUDA-JS capability requirements, layout/resource/launch manifests and provenance digests. CUDA-JS artifact/runtime identity remains opaque and separately bound.
 
-CUDA-MCGS derives capacities rather than assuming allocation success. High/critical pressure behavior is deterministic and testable. A valid external root update under full memory has an explicit admission/reclaim/reject/restart policy; surprise allocation is non-conforming.
+FRAMEWORK-COMPAT-003. A compatible pair records exact CUDA-MCGS revision/package identity, CUDA-JS revision/package/native artifact identity, platform/device/toolchain/runtime profile and passed evidence capsule. Portable behavior alone is not native qualification.
 
-Managed memory cannot be assumed as the universal arena. Memory kind/addressability/mapping/coherence/synchronization/migration/lifetime/transfer are explicit package/runtime capabilities.
+FRAMEWORK-COMPAT-004. Changing an owner invariant/profile/schema, cross-owner binding, resource/progress/output/session semantics, extension/product selection, generated input or CUDA-JS requirement invalidates every affected normalized IR, package/cache, persisted state, reference/native evidence and review approval unless explicit compatibility/migration proves otherwise.
 
-## 15. Ownership and third-party reuse
+FRAMEWORK-COMPAT-005. Version negotiation occurs before allocation/ignition and fails closed. Runtime fallback cannot silently select a weaker semantic, synchronization, range, resource or evidence profile.
 
-CUDA-MCGS owns search-semantic/search-critical execution contracts. Higher-level external libraries MUST NOT become mandatory active-search dependencies without an explicit dependency decision covering API/ABI/lifecycle, transitive build/runtime/memory cost, update risk, failure, security, performance, replacement and local control.
+FRAMEWORK-PERSIST-001. Persistence is absent by default. A selected persistence owner defines canonical encoding, compatibility/migration, authorization, recovery/rollback, retention and cleanup; raw pointers, CUDA handles, in-flight work/transactions and active borrows are never durable authority.
 
-Preferred reuse order remains:
+FRAMEWORK-PERSIST-002. Restored state revalidates every semantic/profile/package identity, finite resource plan, incarnation/generation and stale-reference protection before becoming authoritative. Failure leaves a typed non-ignited or quarantined state.
 
-1. methodology/design/test reuse;
-2. independent implementation of CUDA-MCGS-owned semantics;
-3. selective permissively licensed source adaptation after exact revision/license/provenance review;
-4. vendored/pinned source with owned patch/update path;
-5. higher-level runtime dependency only when measured benefit outweighs ownership cost.
+FRAMEWORK-SEC-001. Profiles, schemas, product inputs, restricted Device-JS, packages and restored state are untrusted until strict field/range/permission/digest/provenance/resource validation. They cannot inject callbacks, filesystem/network access, raw pointers/handles or private provider paths.
 
-Product-specific reuse belongs to the product owner and does not automatically become a universal dependency.
+FRAMEWORK-SEC-002. Least authority applies to every port and generated program. A consumer receives only required public facts/effects; physical addressability or shared layout never expands semantic permission.
 
-## 16. Test and compatibility ownership
+FRAMEWORK-SEC-003. Diagnostics are finite, namespaced and provenance-linked. They distinguish semantic owner failure, composition error, pressure/stop/cancellation and opaque CUDA-JS failure without leaking arbitrary domain/model/device memory or fabricating recovery.
 
-CUDA-MCGS universal conformance owns:
+## 12. Cleanup and disposition
 
-- semantic reference interpretation;
-- synthetic second-instance search domains;
-- Search IR/core contract conformance;
-- stage/surface/channel/capability substrate conformance;
-- Search Session/root-update/observation/reclamation conformance;
-- finite memory/pressure/device-closure semantics;
-- search package/manifest identity;
-- exact empty-capability disappearance and representative extension cost.
+FRAMEWORK-CLEANUP-001. Every normalized profile, generated source/package/cache, allocation, operation, work item, reservation, transaction, borrow, diagnostic, persisted artifact and coordination record has an owner and release/retain/archive/quarantine/transfer disposition.
 
-A product owns additional product-specific conformance. Chess tests cannot substitute for universal second-instance tests, and universal tests do not prove chess legality/search quality.
+FRAMEWORK-CLEANUP-002. Partial composition/initialization failure removes or quarantines task-created state in reverse dependency order while preserving decisive evidence and protected pre-existing/user/shared state.
 
-CUDA-JS owns generic runtime/resource/compile/link/load/launch/completion/sideband/error/teardown conformance.
+FRAMEWORK-CLEANUP-003. Normal completion does not imply resource cleanup; owning-system read-back must prove local files/Git state, processes/device resources, CUDA-JS operations, transfers/borrows, caches/artifacts, credentials and external coordination are intentionally disposed.
 
-A cross-repository compatibility capsule validates exact revision/artifact pairs without making either repository's mock the other's semantic oracle.
+FRAMEWORK-CLEANUP-004. Retained state records authority, owner, recovery/evidence purpose, sensitivity, compatibility key, location and objective removal/review trigger. Clean appearance is not authority for deletion.
 
-## 17. Required experiment gates before production commitment
+## 13. CUDA-MCGS-to-CUDA-JS execution package
 
-Unresolved implementation choices use bounded experiments rather than silent architectural promotion:
+The versioned package contains or references:
 
-- **EXT-PTX-001 (completed bounded discovery)** — direct relocatable PTX composition, exact unused disappearance and negative/granularity evidence; useful mechanism evidence only.
-- **STAGE-COMPOSE-001** — representative multi-capability restricted Device-JS composition versus equivalent fused control with CUDA-JS-owned final artifact/resource/performance evidence.
-- **STAGE-CONTRACT-001** — reject wrong stage/checkpoint/context/permission/resource/ordering and prove useful boundaries across materially different domains/products.
-- **CHANNEL-001** — required/optional internal async dataflow, release/acquire, pending/ready, saturation, cancellation, stale generations, deadlock outcome and cleanup.
-- **SCHED-001** — compare credible device-owned scheduler realizations under equivalent semantic/resource workloads.
-- **TT-001** — compare transposition-table methodology/implementation choices for collision/publication/generation/reclamation/finite capacity/performance.
-- **SESSION-001 (completed bounded semantic learning)** — CUDA-free deterministic experiment supporting root-epoch stale-work isolation, reroot/reclamation separation, read-only observation, admission-before-mutation, generation safety, counter exhaustion and the full-arena root-update pressure question. It does not prove native concurrency or universal statistics reuse.
-- **SESSION-002** — native concurrent root-update + old-work drain/abandonment + generic read-only observation + generation-safe reclamation + full-arena root admission/pressure under the selected CUDA scheduler and consumer-neutral CUDA-JS sideband mechanism.
-- **PRODUCT-CHESS-001** — after universal contracts are stable enough, validate chess domain identity/history/transposition/reroot/output requirements against the universal framework without modifying universal meaning.
+- normalized framework/Search IR identity and selected owner/profile digests;
+- restricted Device-JS/Search Program inputs and typed public imports/exports;
+- finite layout/resource/launch/operation requirements;
+- initialization uploads and immutable resident asset identities;
+- selected consumer-neutral sideband/transfer/atomic-observation requirements;
+- cancellation/completion/diagnostic/terminal-output requirements;
+- failure and partial-creation rollback classification;
+- teardown order and retained terminal-result transfer/borrow obligations;
+- package checksums/provenance/compatibility negotiation; and
+- exact compatible-pair evidence requirements.
 
-Every experiment records exact environment/artifact/workload identity, semantic equivalence, resource accounting, promotion/rejection criteria and cleanup.
+FRAMEWORK-PACKAGE-001. The package is finite, canonical, self-identifying and sufficient for CUDA-JS to realize the selected execution without interpreting Search IR or calling JavaScript for active-search decisions.
 
-Backend-neutral semantic acceptance and native production-profile qualification are separate gates. Bounded schema/normalizer/reference experiments may provide evidence needed to accept a contract before production lowering. Native publication/race behavior, final CUDA-JS-generated artifacts, performance, exact compatible pairs and teardown qualify a selected production profile later unless the evidence is genuinely required to determine semantic meaning. No acceptance clause may require production implementation that the same specification gate prohibits from beginning.
+FRAMEWORK-PACKAGE-002. Private CUDA-JS handles, ABI structs, compiler flags, CUDA source/PTX and mechanism-specific synchronization do not enter persistent CUDA-MCGS semantic schemas. Public capability parameters may enter only through their versioned consumer-neutral contracts.
 
-## 18. Open decisions
+FRAMEWORK-PACKAGE-003. Missing/incompatible public CUDA-JS capability rejects the affected package/profile before ignition with a typed requirement. Optional profiles that do not select it remain independently composable.
 
-Before production implementation, accepted specs/evidence are still required for:
+## 14. Integrated conformance requirements
 
-- the complete Search IR representation beyond accepted 0.1.0;
-- explicit representation of core versus namespaced capability/product inputs;
-- complete Search Stage graph/useful-boundary representation;
-- Stage Extension Surface/capability/context representation;
-- Async Stage Channel/readiness/progress representation;
-- Search Session/root-update/observation representation;
-- first production root-update capacity/admission strategy;
-- reuse classification across graph/policy/evaluator/history/output/extension state;
-- CUDA-MCGS-to-CUDA-JS package and generic long-lived sideband compatibility contract;
-- restricted Device-JS stage composition/public package/representative cost envelope;
-- scheduler selection/profile rules;
-- node/edge identity/generation encoding and TT reuse decision;
-- variable-size arena model;
-- evaluator resident execution/task contract;
-- reference backend/synthetic conformance suite;
-- generic bounded result/observation contract family;
-- chess domain/policy/evaluator/output product specification and evidence, separately from universal engine acceptance;
-- diagnostics ownership between CUDA-MCGS and CUDA-JS.
+One consolidated CUDA-free framework capsule MUST include stable cases for:
 
-No open chess decision blocks stating the universal architecture unless the universal contract itself is incomplete.
+1. canonical normalization of a minimal terminal-only evaluator-absent session-absent engine;
+2. order-independent input normalization producing byte-identical identity;
+3. unknown/duplicate owner or schema rejection;
+4. competing fact owners and semantic dependency cycle rejection;
+5. missing producer/consumer port or permission escalation rejection;
+6. insufficient range/capacity and arithmetic overflow rejection;
+7. fixed-state exhaustive deterministic tree profile;
+8. variable-state lazy/sampled stochastic DAG profile;
+9. history-sensitive cyclic profile with identity-before-cycle semantics;
+10. scalar, vector/distribution/proof/custom and ordered-backup policy/value profiles;
+11. evaluator absent, proposal-only, evaluation-only and combined profiles;
+12. terminal envelope-only, structured result, live observation and no-live-observation profiles;
+13. evaluator/live-output/Search-Session/extension/product deletion with exact zero residue;
+14. bounded live-session root/control/observation coordination without host progress;
+15. finite ordinary, high, critical, recoverable-pressure and terminal-exhaustion behavior;
+16. compound admission failure at each owner leaving no partial semantic mutation;
+17. serial and parallel schedule models preserving stable semantics/accounting/closure;
+18. cancellation during selection/evaluation/backup/output/session transaction with exact dispositions;
+19. first authoritative stop cause and valid-partial/no-valid-result classification;
+20. partial package/engine initialization rollback and cleanup;
+21. terminal borrow/transfer quiescence before backing-state release;
+22. extension-absent zero residue and selected extension unable to override an owner;
+23. first-product deletion plus a materially different product/profile composition;
+24. no required host callback/poll/relaunch/internal decision after ignition;
+25. maintained-source rejection for C/C++, CUDA C++, PTX, FFI, native addon or subprocess search;
+26. missing generic CUDA-JS mechanism producing capability-classification stop, not semantic workaround;
+27. persistence absent with zero residue and selected restore rejecting stale/incompatible authority;
+28. semantic/package/compatible-pair identity changing for every material input class;
+29. unknown/incompatible CUDA-JS capability failing before ignition without blocking unselected profiles;
+30. complete owner/resource/work/result/transaction/borrow cleanup and residue inventory; and
+31. oracle sensitivity for ownership, deletion, identity, admission, device closure, stale isolation, publication and teardown guards.
+
+Each detailed owner capsule remains authoritative for its own semantic cases. The framework capsule proves composition, boundary and end-to-end coherence; it cannot replace leaf evidence by merely invoking it.
+
+Native qualification additionally proves actual publication/memory ordering, concurrent progress/fairness, device closure, resource conservation, cancellation/error/teardown, final generated artifacts and cleanup for one exact CUDA-MCGS/CUDA-JS/platform pair. Performance/search-quality claims freeze complete semantic/resource/workload/toolchain identity and remain separate.
+
+## 15. Acceptance blockers and downstream handoff
+
+This proposal cannot become accepted until:
+
+- SPEC-0006 through SPEC-0013 have no unresolved ownership contradiction with this map;
+- the extension-substrate proposals are reconciled as optional downstream composition without making core meaning depend on them;
+- complete schema/metaschema and normalization implement every selected owner identity, binding, range, deletion, resource, progress, output, session, package and cleanup obligation;
+- the consolidated CUDA-free owner and framework reference capsules pass atomically on one exact revision with oracle sensitivity;
+- the CUDA-MCGS-to-CUDA-JS package contract names only public consumer-neutral requirements and preserves the JavaScript/restricted Device-JS source boundary; and
+- every proposal branch, issue, invalidation, generated artifact and cleanup disposition is reconciled on the integration spine.
+
+Production framework lowering remains prohibited until that integrated acceptance. Native execution, compatible-pair, performance, optional live-session and product qualification follow as separately declared gates unless required to decide semantic meaning.
+
+A change to this framework's owner map, dependency law, normalized profile, lifecycle coordination, deletion rule, device boundary, package identity, compatibility or cleanup semantics invalidates affected owner/extension/product proposals, Search IR/schema/normalizers, generated packages, persisted state, reference/native evidence and approvals. The `ENGINE-CONTRACT-01` integration spine records and reconciles the change before dependents continue.
+
+Implementation, testing, review, persistence, security, generated/JIT/ABI, performance/search-quality and cleanup work triggers the specialist doctrine routed from root `AGENTS.md` and `agent_files/AGENTS.md`.
