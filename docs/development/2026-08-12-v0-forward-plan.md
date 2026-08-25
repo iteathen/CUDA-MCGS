@@ -6,7 +6,7 @@
 
 **Parent plan version:** `CUDA-MCGS-V0/22`
 
-**CUDA-MCGS input baseline:** protected `main` `22e3ea52e22c0e1d2bc75e747aca8fa568583c79`.
+**CUDA-MCGS input baseline:** protected `main` `1aa8b8d145553fe6415787d30226a03d4e01822f`.
 
 **CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
 
@@ -68,7 +68,7 @@ Completed output:
 
 ## ENGINE-EXTENSION-01 — schema-backed extension substrate
 
-**Current focus.** Begin with a critical assessment and semantic focus-branch map; no specification mutation is dependency-ready before that record exists.
+**Current focus.** The critical assessment and dependency-ordered semantic focus-branch map are [`2026-08-25-engine-extension-01-assessment-and-plan.md`](2026-08-25-engine-extension-01-assessment-and-plan.md). `EXT-STAGE-01` revises SPEC-0003 first; channel and composition leaves consume its exact integrated output.
 
 Review/revise SPEC-0003 through SPEC-0005 into decision-complete proposals only after their relationship to the core owners is explicit. Final semantic acceptance follows normalized schema/reference evidence rather than preceding it.
 
@@ -84,6 +84,8 @@ Required shape:
 - capability semantics that alter domain/policy/evaluator/output/session/resource meaning name the accepted owning contract rather than redefining it through the surface.
 
 The revised SPEC-0005 replaces the older Stage-PTX-input model with a restricted Device-JS/Search Program input and opaque CUDA-JS-generated artifact-output contract. Its remaining review must preserve CUDA-MCGS semantic composition identity and CUDA-JS ownership of lowering and CUDA/PTX/cubin/LTO realization. RDC/LTO are optional generic realization mechanisms, not universal semantic requirements.
+
+The assessment classified device-scope release/acquire publication as a missing consumer-neutral Device-JS capability in [CUDA-JS #123](https://github.com/iteathen/CUDA-JS/issues/123). Native Async Stage Channel qualification depends on that public capability; backend-neutral specification/schema/reference work does not. CUDA-MCGS must not substitute relaxed observation, fake RMW reads, undocumented fence recipes or native code.
 
 ## ENGINE-IR-COMPOSER-01 — normalized Search IR and Search Composer
 
