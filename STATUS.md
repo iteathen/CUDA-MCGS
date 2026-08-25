@@ -9,7 +9,7 @@
 The protected CUDA-MCGS `main` input baseline for the active contract packet is:
 
 ```text
-97bd9871938e7303389e9929a76d16c79c5745e9
+650b8a098b58b498396a653dc83d616f1d79581a
 ```
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
@@ -72,7 +72,7 @@ The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`]
 
 **ENGINE-EXTENSION-01** completed its proposal-packet scope through PR #87 at `main@0ba119f`. Its critical assessment/execution record is [`docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md`](docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md). SPEC-0003/0004/0005 are decision-complete 80/90/78-requirement optional stage/channel/restricted Device-JS composition proposals. Together with the core packet, they hand 989 unique proposal requirements to schema/reference work.
 
-Current focus is **ENGINE-IR-COMPOSER-01**. Its [critical assessment and focus map](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and sequences owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. `IR-CATALOG-01` through `IR-PROGRESS-01` are integrated through PRs #90–#97 at `main@35c4b97`. `IR-OUTPUT-01` is active with focused evidence assembled and final validation/review pending. Its preflight corrected one upstream synthetic-plan omission: output working capacity and selected live-observation capacity now have finite classes/pools separate from the protected terminal-result class/reserve, invalidating and regenerating the affected resource/progress/output identities. The expanded CUDA-free capsule passes 567/567 cases. The coverage index has final evidence lanes for 682 framework/domain/graph/policy/evaluator/resource/progress/output requirements, all still partial, pending or deferred rather than complete; 307 requirements remain for later owners. Production lowering remains blocked until schema/reference evidence and the later integrated semantic-acceptance gate complete.
+Current focus is **ENGINE-IR-COMPOSER-01**. Its [critical assessment and focus map](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and sequences owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. `IR-CATALOG-01` through `IR-OUTPUT-01` are integrated through PRs #90–#98 at `main@650b8a0`. `IR-SESSION-01` is active with focused evidence and the full repository gate passing; exact-head review remains. It binds bounded root/control/cancellation/observation transactions to the already-owned domain/graph/policy/evaluator/resource/progress/output profiles, preserves admission-before-mutation and device-owned progress, separates reroot from reclamation, and proves selected-only attention-control plus terminal-only Session deletion. The expanded CUDA-free capsule passes 625/625 cases. The coverage index has final evidence lanes for all 741 core framework/domain/graph/policy/evaluator/resource/progress/output/session requirements, all still partial, pending or deferred rather than complete; the 248 extension/program-package requirements remain for later owner leaves. Production lowering remains blocked until schema/reference evidence and the later integrated semantic-acceptance gate complete.
 
 The assessment found one consumer-neutral CUDA-JS gap: current accepted Device-JS cannot truthfully express device-scope release/acquire publication for a multi-word internal channel payload. [CUDA-JS #123](https://github.com/iteathen/CUDA-JS/issues/123) owns the bounded generic helper assessment. Backend-neutral proposal/schema/reference work continues; native internal-channel qualification depends on that public capability rather than a CUDA-MCGS workaround.
 
@@ -92,7 +92,7 @@ Chess remains a separately tracked downstream proposal and does not gate univers
 ## Claim limits / blockers
 
 - no production universal engine is accepted yet;
-- semantic-owner schema/normalizer/Composer representation beyond the active output fragment and cross-owner deletion evidence are not implemented;
+- semantic-owner schema/normalizer/Composer representation beyond the active Search Session fragment and cross-owner deletion evidence are not implemented;
 - device-scope release/acquire Device-JS publication helpers remain unimplemented/unqualified in CUDA-JS #123;
 - complete Search IR/Composer specialization identity is incomplete;
 - CUDA-MCGS external deletion/compatible-pair evidence is unfinished;

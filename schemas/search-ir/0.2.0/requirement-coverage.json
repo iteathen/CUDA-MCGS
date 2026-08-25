@@ -48,8 +48,8 @@
       "requirementPrefix": "SESSION-",
       "primaryOwner": "CUDA-MCGS optional Search Session external lifecycle semantics",
       "plannedLeaf": "IR-SESSION-01",
-      "currentDisposition": "pending-owner-classification",
-      "completionStatus": "pending"
+      "currentDisposition": "section-classified",
+      "completionStatus": "in-progress"
     },
     {
       "contract": "SPEC-0007",
@@ -1296,12 +1296,133 @@
       "evidenceStatus": "partial",
       "evidenceRefs": ["schema:output-profile.schema.json", "normalizer:output-profile", "case:normalize-output-profiles", "case:output-envelope-only-terminal-valid", "case:output-terminal-only-zero-live-residue", "case:output-framework-selection-link", "case:output-program-input-exactness", "case:reject-output-native-program-language"],
       "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-PROFILE-",
+      "requirementCount": 5,
+      "primaryDisposition": "structural-schema",
+      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-SESSION-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:session-profile.schema.json", "normalizer:session-profile", "case:normalize-session-profiles", "case:session-profile-second-instances-distinct", "case:session-profile-order-independent", "case:session-absence-zero-residue", "case:reject-session-unknown-field", "case:reject-session-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-",
+      "requirementCount": 7,
+      "primaryDisposition": "cross-specification-proof",
+      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-SESSION-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:session-profile", "case:session-device-owned-progress-boundary", "case:session-observation-output-binding", "case:session-selected-control-deletion", "case:reject-session-host-progress-loop", "case:reject-session-control-host-progress", "case:reject-session-lifecycle-host-progress", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-ROOT-",
+      "requirementCount": 9,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:session-profile", "case:session-transaction-admission-before-mutation", "case:session-root-work-epoch-closure", "case:reject-session-root-input-gap", "case:reject-session-root-application-gap", "case:reject-session-transaction-mutation-before-admission", "case:reject-session-transaction-owner-gap", "case:reject-session-transaction-abort-order", "case:reject-session-compound-admission-drift", "case:reject-session-root-authority-gap", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-CONTROL-",
+      "requirementCount": 5,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:session-profile", "case:session-selected-control-deletion", "case:session-device-owned-progress-boundary", "case:reject-session-control-host-progress", "case:reject-session-control-application-drift", "case:reject-session-unselected-control-port", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-EPOCH-",
+      "requirementCount": 5,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:session-profile", "case:session-root-work-epoch-closure", "case:session-finite-counter-closure", "case:reject-session-work-scope-gap", "case:reject-session-old-epoch-disposition-gap", "case:reject-session-root-counter-width", "planned:ENGINE-REFERENCE-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-RECLAIM-",
+      "requirementCount": 5,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:session-profile", "case:session-cleanup-lifecycle-closure", "case:session-finite-counter-closure", "case:reject-session-synchronous-full-reclamation", "case:reject-session-counter-rollover", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-OBS-",
+      "requirementCount": 8,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:session-profile", "case:session-observation-output-binding", "case:session-device-owned-progress-boundary", "case:reject-session-observation-read-authority", "case:reject-session-observation-capacity", "case:reject-session-observation-request-permission", "case:reject-session-observation-epoch-relabel", "case:reject-session-observation-residue-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-LIFE-",
+      "requirementCount": 6,
+      "primaryDisposition": "engine-reference-oracle",
+      "supportingDispositions": ["semantic-normalizer", "deterministic-composition", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["normalizer:session-profile", "case:session-cleanup-lifecycle-closure", "case:session-transaction-admission-before-mutation", "case:reject-session-completion-binding", "case:reject-session-port-host-progress", "case:reject-session-status-gap", "case:reject-session-cleanup-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-SEC-",
+      "requirementCount": 3,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-SESSION-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:session-profile.schema.json", "normalizer:session-profile", "case:session-program-public-js-boundary", "case:reject-session-runtime-code-input", "case:reject-session-security-native-handle", "case:reject-session-private-program-requirement", "case:reject-session-product-owner", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-COMPAT-",
+      "requirementCount": 2,
+      "primaryDisposition": "ir-identity-deletion-rejection",
+      "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
+      "plannedEvidenceOwner": "IR-DELETION-ID-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:session-profile-second-instances-distinct", "case:session-profile-order-independent", "case:session-selected-control-deletion", "case:session-absence-zero-residue", "case:reject-session-plan-drift", "case:reject-session-contribution-drift", "case:reject-session-persistence-without-owner", "case:reject-session-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-WINDOWS-01"],
+      "classificationStatus": "classified"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-IR-",
+      "requirementCount": 4,
+      "primaryDisposition": "semantic-normalizer",
+      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "plannedEvidenceOwner": "IR-SESSION-01",
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:session-profile.schema.json", "normalizer:session-profile", "case:normalize-session-profiles", "case:session-owner-boundary-exact", "case:session-absence-zero-residue", "case:session-program-public-js-boundary", "case:reject-session-owner-gap", "case:reject-session-private-program-requirement"],
+      "classificationStatus": "classified"
     }
   ],
   "totals": {
     "contracts": 12,
     "requirements": 989,
-    "classified": 682,
-    "pending": 307
+    "classified": 741,
+    "pending": 248
   }
 }

@@ -55,6 +55,12 @@ import {
   outputSyntheticContentIdentity,
   outputSyntheticSchemaReference,
 } from './src/output-fixtures.mjs';
+import { normalizeSessionProfile } from './src/session.mjs';
+import {
+  buildSessionProfiles,
+  sessionSyntheticContentIdentity,
+  sessionSyntheticSchemaReference,
+} from './src/session-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -83,6 +89,7 @@ const evaluatorProfileSchema = await readJson(path.join(schemaRoot, 'evaluator-p
 const resourceProfileSchema = await readJson(path.join(schemaRoot, 'resource-profile.schema.json'));
 const progressProfileSchema = await readJson(path.join(schemaRoot, 'progress-profile.schema.json'));
 const outputProfileSchema = await readJson(path.join(schemaRoot, 'output-profile.schema.json'));
+const sessionProfileSchema = await readJson(path.join(schemaRoot, 'session-profile.schema.json'));
 const frameworkSelectionInput = await readJson(path.join(experimentRoot, 'fixtures', 'minimal.framework-selection.json'));
 
 const cases = [];
@@ -107,7 +114,7 @@ await runCase('normalize-contract-set', () => {
 await runCase('normalize-requirement-coverage', () => {
   const normalized = normalizeRequirementCoverage(coverageInput);
   assert.equal(normalized.contracts.length, 12);
-  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 682, pending: 307 });
+  assert.deepEqual(normalized.totals, { contracts: 12, requirements: 989, classified: 741, pending: 248 });
 });
 
 await runCase('canonical-order-independent', () => {
@@ -158,8 +165,8 @@ await runCase('coverage-owner-route-closure', () => {
 });
 
 await runCase('coverage-honest-classification-progress', () => {
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 682);
-  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 307);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 741);
+  assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 248);
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0000').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0007').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0008').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
@@ -167,6 +174,8 @@ await runCase('coverage-honest-classification-progress', () => {
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0010').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0011').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
   assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0012').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
+  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0013').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
+  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0006').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
 });
 
 await runCase('catalog-identity-content-sensitive', () => {
@@ -230,13 +239,10 @@ await runCase('reject-invalid-source-utf8', () => {
   assert.throws(() => sourceTextSha256(Buffer.from([0xff])), { code: 'SOURCE_UTF8' });
 });
 
-await runCase('reject-coverage-classification-overlap', async () => {
-  const mutated = clone(coverageInput);
-  const overlap = clone(mutated.classifications[0]);
-  overlap.requirementPrefix = 'FRAMEWORK-';
-  overlap.requirementCount = 80;
-  mutated.classifications.push(overlap);
-  await assert.rejects(() => inspectCatalog(repositoryRoot, contractSetInput, mutated), { code: 'COVERAGE_CLASSIFICATION_OVERLAP' });
+await runCase('coverage-most-specific-prefix', async () => {
+  const expanded = await inspectCatalog(repositoryRoot, contractSetInput, coverageInput);
+  assert.equal(expanded.requirements.find(({ id }) => id === 'SESSION-001').currentDisposition, 'cross-specification-proof');
+  assert.equal(expanded.requirements.find(({ id }) => id === 'SESSION-PROFILE-001').currentDisposition, 'structural-schema');
 });
 
 await runCase('reject-coverage-classification-count-drift', async () => {
@@ -1232,6 +1238,21 @@ await runCase('normalize-output-profiles', async () => {
     'output.synthetic-evaluator-absent',
     'output.synthetic-evaluator-workspace',
     'output.synthetic-live-session',
+  ]);
+});
+
+let sessionProfileInputs;
+let sessionProfiles;
+let sessionSchemaSha;
+let sessionOutputResult;
+await runCase('normalize-session-profiles', async () => {
+  sessionSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'session-profile.schema.json')));
+  sessionOutputResult = { ...outputProfiles[2], schemaSha: outputSchemaSha };
+  sessionProfileInputs = buildSessionProfiles(inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult);
+  sessionProfiles = sessionProfileInputs.map((input) => normalizeSessionProfile(input, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult));
+  assert.deepEqual(sessionProfiles.map(({ normalized }) => normalized.id), [
+    'session.synthetic-live-session',
+    'session.synthetic-live-session-restart',
   ]);
 });
 
@@ -3829,9 +3850,338 @@ await runCase('reject-output-product-owner', () => {
   assert.throws(() => normalizeOutputProfile(mutated, inspected, progressResourceResults[0], outputProgressResults[0]), { code: 'OUTPUT_PRODUCT_OWNER' });
 });
 
+await runCase('session-schema-closed', () => {
+  assert.equal(sessionProfileSchema.properties.schema.const, 'cuda-mcgs.session-profile/0.2.0');
+  assert.equal(sessionProfileSchema.additionalProperties, false);
+  for (const name of ['inputSchema', 'commands', 'transaction', 'root', 'owner', 'stateFamily', 'control', 'observation', 'reclamation', 'counter', 'lifecycle', 'port', 'status', 'security', 'cleanup', 'programContribution']) assert.equal(sessionProfileSchema.$defs[name].additionalProperties, false);
+});
+
+await runCase('session-profile-second-instances-distinct', () => {
+  assert.equal(new Set(sessionProfiles.map(({ identity }) => identity.sha256)).size, 2);
+  assert.deepEqual(sessionProfiles.map(({ normalized }) => normalized.root.pressureOutcome), ['reject-keep-session', 'restart-required']);
+  assert.deepEqual(sessionProfiles.map(({ normalized }) => normalized.controls.length), [1, 0]);
+});
+
+await runCase('session-profile-order-independent', () => {
+  const reordered = clone(sessionProfileInputs[0]);
+  for (const key of ['owners', 'controls', 'counters', 'statuses', 'permissions', 'productData']) reordered[key].reverse();
+  reordered.root.workScopes.reverse();
+  reordered.observations.profiles.reverse();
+  reordered.programContribution.inputs.reverse();
+  reordered.programContribution.requirements.reverse();
+  assert.deepEqual(normalizeSessionProfile(reordered, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult).identity, sessionProfiles[0].identity);
+});
+
+await runCase('session-absence-zero-residue', () => {
+  for (const index of [0, 1]) {
+    assert(!progressResourceResults[index].normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0006'));
+    assert(!outputProgressResults[index].normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0006'));
+    assert(!outputProgressResults[index].normalized.workClasses.some(({ kind }) => kind === 'external-control'));
+    assert.equal(outputProfiles[index].normalized.observations.kind, 'absent');
+  }
+  assert(!frameworkSelection.normalized.profiles.some(({ role }) => role === 'session'));
+});
+
+await runCase('session-owner-boundary-exact', () => {
+  const normalized = sessionProfiles[0].normalized;
+  assert.equal(normalized.owners.length, progressResourceResults[2].normalized.contributors.length);
+  assert.equal(normalized.owners.filter(({ role }) => role === 'coordinator').length, 1);
+  assert.equal(normalized.owners.find(({ role }) => role === 'coordinator').contract.id, 'SPEC-0006');
+  assert(normalized.owners.filter(({ role }) => role === 'participant').every(({ state }) => state.length > 0));
+});
+
+await runCase('session-transaction-admission-before-mutation', () => {
+  const normalized = sessionProfiles[0].normalized;
+  assert.equal(normalized.commands.admissionBeforeMutation, true);
+  assert.equal(normalized.transaction.preMutationAdmission, true);
+  assert.equal(normalized.transaction.rejectedEffect, 'none');
+  assert.equal(normalized.transaction.duplicateEffect, 'none');
+  assert.equal(normalized.transaction.partialCommit, 'fatal-quarantine');
+  assert.deepEqual(normalized.transaction.abortOrder, [...normalized.transaction.prepareOrder].reverse());
+});
+
+await runCase('session-selected-control-deletion', () => {
+  assert(sessionProfiles[0].normalized.ports.some(({ id }) => id === 'prepareControlChange'));
+  assert(!sessionProfiles[1].normalized.ports.some(({ id }) => id === 'prepareControlChange'));
+  assert(!sessionProfiles[1].normalized.commands.inputs.some(({ kind }) => kind === 'control'));
+  assert.equal(sessionProfiles[1].normalized.controls.length, 0);
+  assert(!sessionProfiles[1].normalized.lifecycle.postIgnitionInteractions.includes('control-change'));
+  assert(!sessionProfiles[1].normalized.permissions.some(({ id }) => id.includes('permission-control')));
+  assert(!sessionProfiles[1].normalized.statuses.some(({ code }) => code.startsWith('session-control-')));
+});
+
+await runCase('session-observation-output-binding', () => {
+  const observation = sessionProfiles[0].normalized.observations.profiles[0];
+  const outputObservation = outputProfiles[2].normalized.observations.profiles[0];
+  assert.equal(observation.outputProfile, outputObservation.id);
+  assert.equal(observation.readOnly, true);
+  assert.equal(observation.hostProgress, 'none');
+  assert.deepEqual(observation.rootEpochBinding, outputProfiles[2].normalized.snapshot.rootEpoch);
+  assert.deepEqual(observation.acquisition, outputProfiles[2].normalized.publication.acquireRead);
+});
+
+await runCase('session-root-work-epoch-closure', () => {
+  const normalized = sessionProfiles[0].normalized;
+  assert.equal(normalized.root.workScopes.length, outputProgressResults[2].normalized.workClasses.length);
+  assert(normalized.root.workScopes.filter(({ scope }) => scope === 'root-epoch').every(({ staleDisposition }) => staleDisposition !== 'not-applicable'));
+  assert(normalized.root.workScopes.filter(({ scope }) => scope !== 'root-epoch').every(({ staleDisposition }) => staleDisposition === 'not-applicable'));
+});
+
+await runCase('session-finite-counter-closure', () => {
+  const normalized = sessionProfiles[0].normalized;
+  assert.deepEqual(normalized.counters.map(({ kind }) => kind).sort(), ['command', 'observation-generation', 'reclamation-generation', 'root-epoch', 'session-incarnation']);
+  assert(normalized.counters.every(({ staleAliasProhibited }) => staleAliasProhibited));
+  assert.equal(normalized.counters.find(({ kind }) => kind === 'session-incarnation').rollover, 'prohibited');
+});
+
+await runCase('session-device-owned-progress-boundary', () => {
+  const normalized = sessionProfiles[0].normalized;
+  assert.equal(normalized.commands.hostProgress, 'none');
+  assert.equal(normalized.lifecycle.hostProgress, 'none');
+  assert(normalized.controls.every(({ hostProgress }) => hostProgress === 'none'));
+  assert(normalized.ports.every(({ hostProgress, mechanism }) => hostProgress === 'none' && mechanism === 'public-cuda-js-contract'));
+});
+
+await runCase('session-program-public-js-boundary', () => {
+  const program = sessionProfiles[0].normalized.programContribution;
+  assert.equal(program.language, 'restricted-device-js');
+  assert(program.requirements.every(({ id }) => id.startsWith('cuda-js.')));
+  assert(!JSON.stringify(program).match(/cuda-cpp|\.cu\b|ptx|ffi|native-addon|private-handle/i));
+});
+
+await runCase('session-cleanup-lifecycle-closure', () => {
+  const normalized = sessionProfiles[0].normalized;
+  assert.equal(normalized.cleanup.kinds.length, 11);
+  assert.equal(normalized.cleanup.terminalBorrowPreservedUntilRelease, true);
+  assert.equal(normalized.lifecycle.persistence, 'none');
+  assert.equal(normalized.compatibility.persistence.kind, 'none');
+  assert.equal(normalized.reclamation.rootCommitSeparate, true);
+});
+
+await runCase('reject-session-unknown-field', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.scheduler = 'host-loop';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_FIELDS' });
+});
+
+await runCase('reject-session-plan-drift', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.resourcePlan.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_PLAN' });
+});
+
+await runCase('reject-session-contribution-drift', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.progressContribution.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_CONTRIBUTION' });
+});
+
+await runCase('reject-session-owner-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.owners.pop();
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_OWNER_COVERAGE' });
+});
+
+await runCase('reject-session-owner-profile-drift', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.owners[0].profile.identity.sha256 = '0'.repeat(64);
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_OWNER_PROFILE' });
+});
+
+await runCase('reject-session-coordinator-drift', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.owners.find(({ role }) => role === 'coordinator').role = 'participant';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_OWNER_ROLE' });
+});
+
+await runCase('reject-session-command-capacity', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.commands.capacity = '65';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_COMMAND_CAPACITY' });
+});
+
+await runCase('reject-session-host-progress-loop', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.commands.hostProgress = 'poll-relaunch';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_COMMAND_CONTRACT' });
+});
+
+await runCase('reject-session-root-input-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.commands.inputs = mutated.commands.inputs.filter(({ kind }) => kind !== 'root-update');
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_INPUT_REQUIRED' });
+});
+
+await runCase('reject-session-runtime-code-input', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.commands.inputs[0].runtimeCode = true;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_INPUT_RUNTIME_CODE' });
+});
+
+await runCase('reject-session-root-application-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.commands.inputs.find(({ kind }) => kind === 'root-update').deviceApplicationPoint = null;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_INPUT_APPLICATION' });
+});
+
+await runCase('reject-session-transaction-mutation-before-admission', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.transaction.preMutationAdmission = false;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_TRANSACTION_CONTRACT' });
+});
+
+await runCase('reject-session-transaction-owner-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.transaction.prepareOrder.pop();
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_TRANSACTION_ORDER' });
+});
+
+await runCase('reject-session-transaction-abort-order', () => {
+  const mutated = clone(sessionProfileInputs[0]); [mutated.transaction.abortOrder[0], mutated.transaction.abortOrder[1]] = [mutated.transaction.abortOrder[1], mutated.transaction.abortOrder[0]];
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_TRANSACTION_ORDER' });
+});
+
+await runCase('reject-session-compound-admission-drift', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.transaction.compoundAdmission.rootReserve = progressResourceResults[2].normalized.reserves.find(({ purpose }) => purpose === 'terminal-result').id;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ADMISSION_BINDING' });
+});
+
+await runCase('reject-session-root-owner-drift', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.root.validationOwner = mutated.owners.find(({ contract }) => contract.id === 'SPEC-0008').id;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_OWNER' });
+});
+
+await runCase('reject-session-root-authority-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.root.oldRoot = 'destroy-before-prepare';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_CONTRACT' });
+});
+
+await runCase('reject-session-work-scope-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.root.workScopes.pop();
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_WORK_SCOPE_COVERAGE' });
+});
+
+await runCase('reject-session-old-epoch-disposition-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.root.workScopes.find(({ scope }) => scope === 'root-epoch').staleDisposition = 'not-applicable';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_WORK_STALE' });
+});
+
+await runCase('reject-session-reuse-validity-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.owners.flatMap(({ state }) => state).find(({ classification }) => classification === 'retain-if-key-valid').validity = null;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_STATE_CLASSIFICATION' });
+});
+
+await runCase('reject-session-control-host-progress', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.controls[0].hostProgress = 'host-callback';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_CONTROL_CONTRACT' });
+});
+
+await runCase('reject-session-control-application-drift', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.controls[0].applicationPoint = sessionSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-application-point');
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_CONTROL_CONTRACT' });
+});
+
+await runCase('reject-session-observation-read-authority', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.observations.profiles[0].readOnly = false;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_OBSERVATION_CONTRACT' });
+});
+
+await runCase('reject-session-observation-capacity', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.observations.profiles[0].maxBorrows = '9';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_OBSERVATION_RANGE' });
+});
+
+await runCase('reject-session-observation-request-permission', () => {
+  const mutated = clone(sessionProfileInputs[0]); const observationInput = mutated.commands.inputs.find(({ kind }) => kind === 'observation-request'); observationInput.permission = clone(mutated.permissions[0]);
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_OBSERVATION_REQUEST' });
+});
+
+await runCase('reject-session-observation-epoch-relabel', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.observations.profiles[0].rootEpochBinding = sessionSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-root-epoch-binding');
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_OBSERVATION_CONTRACT' });
+});
+
+await runCase('reject-session-observation-residue-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.observations = { kind: 'absent' };
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_OBSERVATIONS_FIELDS' });
+});
+
+await runCase('reject-session-synchronous-full-reclamation', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.reclamation.fullGraphSynchronous = true;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_RECLAMATION_AUTHORITY' });
+});
+
+await runCase('reject-session-counter-range', () => {
+  const mutated = clone(sessionProfileInputs[0]); const counter = mutated.counters.find(({ kind }) => kind === 'command'); counter.exhaustionThreshold = `${counter.maximum}0`;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_COUNTER_RANGE' });
+});
+
+await runCase('reject-session-counter-rollover', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.counters.find(({ kind }) => kind === 'root-epoch').rollover = 'prohibited';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_COUNTER_ROLLOVER' });
+});
+
+await runCase('reject-session-root-counter-width', () => {
+  const mutated = clone(sessionProfileInputs[0]); const counter = mutated.counters.find(({ kind }) => kind === 'root-epoch'); counter.maximum = '18446744073709551616'; counter.exhaustionThreshold = counter.maximum;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_COUNTER' });
+});
+
+await runCase('reject-session-lifecycle-host-progress', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.lifecycle.hostProgress = 'observation-decide-write';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_LIFECYCLE_CONTRACT' });
+});
+
+await runCase('reject-session-completion-binding', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.lifecycle.completion.progressClosure = sessionSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-progress-closure');
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_COMPLETION_BINDING' });
+});
+
+await runCase('reject-session-unselected-control-port', () => {
+  const mutated = clone(sessionProfileInputs[1]); const extra = clone(mutated.ports[0]); extra.id = 'prepareControlChange'; extra.phase = 'device-active'; mutated.ports.push(extra);
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_PORT_COVERAGE' });
+});
+
+await runCase('reject-session-port-host-progress', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.ports[0].hostProgress = 'callback';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_PORT_CONTRACT' });
+});
+
+await runCase('reject-session-status-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.statuses = mutated.statuses.filter(({ code }) => code !== 'session-internal-failure');
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_STATUS_REQUIRED' });
+});
+
+await runCase('reject-session-input-status-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.commands.inputs[0].pressureStatus = 'unselected-status';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_INPUT_STATUS' });
+});
+
+await runCase('reject-session-security-native-handle', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.security.cudaHandles = true;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_SECURITY_CONTRACT' });
+});
+
+await runCase('reject-session-persistence-without-owner', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.compatibility.persistence.kind = 'versioned';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_COMPATIBILITY_CONTRACT' });
+});
+
+await runCase('reject-session-cleanup-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.cleanup.kinds.pop();
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_CLEANUP_COVERAGE' });
+});
+
+await runCase('reject-session-native-program-language', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.programContribution.language = 'cuda-cpp';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_PROGRAM_LANGUAGE' });
+});
+
+await runCase('reject-session-program-input-drift', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.programContribution.inputs.pop();
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_PROGRAM_INPUTS' });
+});
+
+await runCase('reject-session-private-program-requirement', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.programContribution.requirements[0] = sessionSyntheticSchemaReference('cuda-js.private-mailbox');
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_PROGRAM_REQUIREMENTS' });
+});
+
+await runCase('reject-session-product-owner', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  mutated.productData.push({ ownerContract: clone(mutated.contract), schema: sessionSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-session-product'), identity: sessionSyntheticContentIdentity('invalid-session-product') });
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_PRODUCT_OWNER' });
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 567,
+  expected: 625,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -3839,7 +4189,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 567 - cases.length,
+  notDiscovered: 625 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -3857,6 +4207,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/resource-profile.schema.json',
   'schemas/search-ir/0.2.0/progress-profile.schema.json',
   'schemas/search-ir/0.2.0/output-profile.schema.json',
+  'schemas/search-ir/0.2.0/session-profile.schema.json',
   'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
   'experiments/search-ir-composer-reference/src/catalog.mjs',
   'experiments/search-ir-composer-reference/src/validation.mjs',
@@ -3875,6 +4226,8 @@ const sourcePaths = [
   'experiments/search-ir-composer-reference/src/progress-fixtures.mjs',
   'experiments/search-ir-composer-reference/src/output.mjs',
   'experiments/search-ir-composer-reference/src/output-fixtures.mjs',
+  'experiments/search-ir-composer-reference/src/session.mjs',
+  'experiments/search-ir-composer-reference/src/session-fixtures.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -3897,6 +4250,7 @@ const evidence = {
   resourceProfileIdentities: resourceProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   progressProfileIdentities: progressProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   outputProfileIdentities: outputProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
+  sessionProfileIdentities: sessionProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
     classified: inspected?.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length ?? 0,
@@ -3906,8 +4260,8 @@ const evidence = {
   summary,
   cases,
   claimLimits: [
-    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy, evaluator, resource, progress and output profile normalization only.',
-    'The framework, domain, graph, policy, evaluator, resource, progress and output requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
+    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy, evaluator, resource, progress, output and optional Search Session profile normalization only.',
+    'The framework, domain, graph, policy, evaluator, resource, progress, output and Search Session requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
     'Domain evidence covers strict normalized profile selection and three synthetic structural instances, not behavioral oracle, publication/concurrency, native or compatible-pair qualification.',
     'Graph evidence covers four strict structural instances, bounded ownership/layout/lifecycle/publication checks and zero-residue optional modes, not behavioral oracle, concurrent reclamation, native or compatible-pair qualification.',
     'Policy evidence covers four strict structural instances, role/record/admission/value/cycle/backup/stop/reuse checks and zero-residue optional modes, not behavioral oracle, concurrent backup, native or compatible-pair qualification.',
@@ -3916,7 +4270,8 @@ const evidence = {
     'Resource evidence covers three strict finite-plan instances, contribution composition, exact arithmetic, partitions/reserves/admission/ledgers/pressure/exhaustion/lifecycle/provider projections and evaluator-absence zero residue, not behavioral oracle, concurrent accounting, physical CUDA-JS allocation, native or compatible-pair qualification.',
     'Progress evidence covers three scheduler-neutral work/readiness/fairness/no-progress/stop/closure plans, including evaluator absence and selected live-session external wait, not behavioral oracle, schedule exploration, physical scheduler/CUDA-JS execution, native or compatible-pair qualification.',
     'Output evidence covers three strict terminal/live profile instances, exact source readiness, finite workspace/observation/terminal capacity, snapshot/publication/borrow/lifecycle/consumer/cleanup checks and terminal-only zero live residue, not behavioral oracle, concurrent publication, physical CUDA-JS transfer, native or compatible-pair qualification.',
-    'No session/extension/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
+    'Search Session evidence covers two strict selected instances plus terminal-only absence, bounded root/control/observation transactions, epoch/reuse/stale/reclamation/counter/lifecycle/cleanup checks and exact upstream owner bindings, not behavioral oracle, concurrent session execution, physical sideband realization, native or compatible-pair qualification.',
+    'No extension/package profile body, complete cross-owner Composer, generated Search Program or production lowering claim.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');

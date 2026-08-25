@@ -200,6 +200,16 @@ function requirementIds(text) {
   return [...text.matchAll(/^([A-Z][A-Z0-9-]*-[0-9]{3})\./gm)].map((match) => match[1]);
 }
 
+function selectClassification(id, contract, classifications) {
+  const matching = classifications
+    .filter((classification) => classification.contract === contract && id.startsWith(classification.requirementPrefix))
+    .sort((left, right) => right.requirementPrefix.length - left.requirementPrefix.length);
+  if (matching.length > 1 && matching[0].requirementPrefix.length === matching[1].requirementPrefix.length) {
+    fail('COVERAGE_CLASSIFICATION_OVERLAP', `${id} matches ambiguous classifications`);
+  }
+  return matching[0] ?? null;
+}
+
 export async function inspectCatalog(repositoryRoot, contractSetInput, coverageInput) {
   const contractSet = normalizeContractSet(contractSetInput);
   const coverage = normalizeRequirementCoverage(coverageInput);
@@ -247,9 +257,7 @@ export async function inspectCatalog(repositoryRoot, contractSetInput, coverageI
     for (const id of ids) {
       if (globalIds.has(id)) fail('CATALOG_REQUIREMENT_DUPLICATE', `requirement ID ${id} is defined by multiple contracts`);
       globalIds.add(id);
-      const matchingClassifications = coverage.classifications.filter((classification) => classification.contract === contract.id && id.startsWith(classification.requirementPrefix));
-      if (matchingClassifications.length > 1) fail('COVERAGE_CLASSIFICATION_OVERLAP', `${id} matches multiple classifications`);
-      const classification = matchingClassifications[0] ?? null;
+      const classification = selectClassification(id, contract.id, coverage.classifications);
       requirements.push({
         id,
         contract: contract.id,
@@ -274,7 +282,7 @@ export async function inspectCatalog(repositoryRoot, contractSetInput, coverageI
     fail('CATALOG_REQUIREMENT_TOTAL', `expected 989 unique requirements, found ${globalIds.size}`);
   }
   for (const classification of coverage.classifications) {
-    const matched = requirements.filter((requirement) => requirement.contract === classification.contract && requirement.id.startsWith(classification.requirementPrefix));
+    const matched = requirements.filter((requirement) => selectClassification(requirement.id, requirement.contract, coverage.classifications) === classification);
     if (matched.length !== classification.requirementCount) {
       fail('COVERAGE_CLASSIFICATION_COUNT', `${classification.requirementPrefix} expected ${classification.requirementCount}, found ${matched.length}`);
     }

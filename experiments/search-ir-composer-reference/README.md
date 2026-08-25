@@ -69,7 +69,7 @@ The integrated `IR-PROGRESS-01` slice adds only the SPEC-0012-owned device-progr
 - structural evaluator/session absence and a bounded selected-session external wait/output-borrow form that cannot advance internal search from the host; and
 - section-level evidence classification for all 51 progress requirements, with behavioral schedule exploration, native execution and compatible-pair qualification left partial, pending or deferred.
 
-The current `IR-OUTPUT-01` slice adds only the SPEC-0013-owned result and observation plan:
+The integrated `IR-OUTPUT-01` slice adds only the SPEC-0013-owned result and observation plan:
 
 - a mandatory terminal envelope and exact terminal-result reserve binding even when the semantic payload is empty;
 - schema-ordered read-only source projections with explicit ownership, validity, presence, failure, units and perspective instead of framework-owned ranking or evaluator/game assumptions;
@@ -78,7 +78,16 @@ The current `IR-OUTPUT-01` slice adds only the SPEC-0013-owned result and observ
 - three structural instances spanning evaluator absence, structured evaluator output and selected live session output, with terminal-only live-state deletion; and
 - section-level evidence classification for all 88 output requirements, with behavioral publication/snapshot consistency, native execution and compatible-pair qualification left partial, pending or deferred.
 
-Normative sentences remain solely in [`docs/specs/`](../../docs/specs/). The checked-in catalog records identities, owners, counts, paths and `sha256-utf8-lf-v1` digests; the explicit LF-normalized UTF-8 digest contract is checkout-platform independent. The capsule expands the IDs directly from the frozen sources and fails on source, metadata, count, prefix, uniqueness or coverage-route drift.
+The current `IR-SESSION-01` slice adds only the optional SPEC-0006-owned external lifecycle coordination:
+
+- exact binding to the selected domain, graph, policy, evaluator, resource, progress and output owner profiles without taking over their validity, reuse, pressure, progress or publication meaning;
+- bounded least-authority root, control, cancellation and observation inputs with admission before mutation, explicit prepare/commit/abort ordering and fatal quarantine for partial post-commit failure;
+- finite session/root/command/observation/reclamation generations, exact root-relative work scopes and stale dispositions, owner-specific reuse classification and reclamation separated from reroot commit;
+- read-only observation request/acquire/release coordination bound to the selected output profile, with no observation acknowledgement, callback, poll/relaunch or host read-decide-write search progression;
+- two selected structural instances spanning reject-on-pressure with external attention control and restart-required with that control's input, permission, statuses, port and lifecycle interaction deleted, plus terminal-only Session absence; and
+- section-level evidence classification for all 59 Session requirements, with behavioral concurrency, native sideband/publication and compatible-pair qualification left partial, pending or deferred.
+
+Normative sentences remain solely in [`docs/specs/`](../../docs/specs/). The checked-in catalog records identities, owners, counts, paths and `sha256-utf8-lf-v1` digests; the explicit LF-normalized UTF-8 digest contract is checkout-platform independent. The capsule expands the IDs directly from the frozen sources and fails on source, metadata, count, prefix, uniqueness or coverage-route drift. Hierarchical requirement families use their one most-specific matching classification prefix, allowing bare `SESSION-###` requirements to retain the contract prefix while nested `SESSION-ROOT-###` and similar families keep independent owners/evidence.
 
 Run with Node.js 26 or newer:
 
@@ -86,4 +95,4 @@ Run with Node.js 26 or newer:
 node experiments/search-ir-composer-reference/run.mjs
 ```
 
-Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic framework selection fixture binds the exact schema digests and normalized identities of the first domain, graph, policy, resource, progress and output profiles while leaving the optional evaluator, Search Session and live output structurally absent; selected policy/resource/progress/output fixtures bind exact normalized upstream profiles through public identities and ports. The remaining owner identities are opaque structural placeholders. Synthetic schema/program digests prove representation closure only and are not executable domain/graph/policy/evaluator/resource/progress/output implementations or behavioral/native evidence. Later focus leaves supply the remaining owned bodies, then deterministic restricted Device-JS/Search Program composition and cross-owner deletion/identity oracles. Native CUDA-JS qualification remains separate.
+Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic framework selection fixture binds the exact schema digests and normalized identities of the first domain, graph, policy, resource, progress and output profiles while leaving the optional evaluator, Search Session and live output structurally absent; selected policy/resource/progress/output/session fixtures bind exact normalized upstream profiles through public identities and ports. The remaining owner identities are opaque structural placeholders. Synthetic schema/program digests prove representation closure only and are not executable domain/graph/policy/evaluator/resource/progress/output/session implementations or behavioral/native evidence. Later focus leaves supply the remaining owned bodies, then deterministic restricted Device-JS/Search Program composition and cross-owner deletion/identity oracles. Native CUDA-JS qualification remains separate.
