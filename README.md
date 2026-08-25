@@ -34,7 +34,7 @@ CUDA-MCGS provides a universal way to extend a specialized engine without turnin
 
 - semantic per-work-item **Search Stages**;
 - stable least-authority entry/exit **Stage Extension Surfaces**;
-- a minimal universal base checkpoint context;
+- a minimal extension-only view of source-owner stable checkpoint facts;
 - namespaced/versioned selected capability contracts and specialization-only context/state/resources;
 - bounded nonblocking internal **Async Stage Channels**;
 - deterministic pre-ignition composition;
@@ -42,7 +42,7 @@ CUDA-MCGS provides a universal way to extend a specialized engine without turnin
 
 The **substrate is universal; an individual capability's semantics are not automatically universal**. Product-specific capability fields exist only in Search Images selecting them. If a capability changes domain/policy/evaluator/output/session meaning, that effect must also be owned by the selected corresponding contract/profile.
 
-Absent capabilities should leave no solely extension-owned code/context/state/resource/synchronization residue in a conforming specialized image.
+No selected capability means the complete extension substrate is absent. Deleting any one capability removes its solely owned code/context/state/channel/resource/synchronization/package residue.
 
 ### 3. Downstream domain/search products
 

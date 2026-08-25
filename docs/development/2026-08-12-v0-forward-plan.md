@@ -6,7 +6,7 @@
 
 **Parent plan version:** `CUDA-MCGS-V0/22`
 
-**CUDA-MCGS input baseline:** protected `main` `f382805c01e52388330cb078752c2c1dbb26c43a`.
+**CUDA-MCGS input baseline:** protected `main` `098a8ce3e6c5abfcccc0209efe8d4564ad75d13f`.
 
 **CUDA-JS authority baseline:** protected `main` `2135216b1a9fd88066a1c82b61ae533645eac9c2`.
 
@@ -68,7 +68,7 @@ Completed output:
 
 ## ENGINE-EXTENSION-01 — schema-backed extension substrate
 
-**Current focus.** The critical assessment and dependency-ordered semantic focus-branch map are [`2026-08-25-engine-extension-01-assessment-and-plan.md`](2026-08-25-engine-extension-01-assessment-and-plan.md). `EXT-STAGE-01` and `EXT-CHANNEL-01` integrated decision-complete SPEC-0003/0004 proposals through PRs #82/#84. `EXT-COMPOSE-01` is active on exact input `main@f382805`.
+**Current focus.** The critical assessment and dependency-ordered semantic focus-branch map are [`2026-08-25-engine-extension-01-assessment-and-plan.md`](2026-08-25-engine-extension-01-assessment-and-plan.md). `EXT-STAGE-01`, `EXT-CHANNEL-01` and `EXT-COMPOSE-01` integrated decision-complete SPEC-0003/0004/0005 proposals through PRs #82/#84/#86. `EXT-INTEGRATE-01` is reconciling the exact 248-requirement packet on frozen input `main@098a8ce` before schema/reference handoff.
 
 Review/revise SPEC-0003 through SPEC-0005 into decision-complete proposals only after their relationship to the core owners is explicit. Final semantic acceptance follows normalized schema/reference evidence rather than preceding it.
 
@@ -76,7 +76,7 @@ Required shape:
 
 - Search Stages are semantic per-work-item validity/state transitions, not global phases/kernels/modules/graphs;
 - stable Stage Extension Surface **schemas/semantics**, with concrete ports/hooks materialized only for selected capabilities;
-- minimal universal base checkpoint context;
+- minimal extension-only base checkpoint views of source-owner stable facts;
 - namespaced/versioned selected capability context/state/resource contributions;
 - bounded nonblocking Async Stage Channels;
 - no runtime callback registry, fragment loop, schema interpreter, host resolution or late binding after ignition;

@@ -50,7 +50,7 @@ Universal proposal and evidence families include:
 
 - operational Search Stage graph/useful semantic boundaries;
 - stable least-authority Stage Extension Surfaces;
-- universal base checkpoint contexts plus selected namespaced capability-context contributions;
+- least-authority extension views of source-owner stable facts plus selected namespaced capability-context contributions;
 - capability schemas/permissions/semantic-owner binding;
 - bounded nonblocking Async Stage Channels;
 - restricted Device-JS/Search Program/checkpoint contract/Search Image composition;
@@ -76,7 +76,7 @@ Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider 
 
 These proposals do not authorize production lowering. The complete Search IR must represent selected universal semantics plus namespaced capability/product inputs without promoting first-product fields into universal core meaning.
 
-SPEC-0000 and SPEC-0006 through SPEC-0013 form the decision-complete core proposal packet. SPEC-0003 and SPEC-0004 are the decision-complete optional stage/surface/capability and internal-channel proposals; SPEC-0005 remains their restricted Device-JS composition reconciliation input. Neither packet is accepted until strict schema/normalizer/Composer and consolidated CUDA-free reference evidence pass atomically at the integrated acceptance gate.
+SPEC-0000 and SPEC-0006 through SPEC-0013 form the decision-complete 741-requirement core proposal packet. SPEC-0003 through SPEC-0005 form the decision-complete 248-requirement optional extension packet. The combined 989 proposal requirements remain unaccepted until strict schema/normalizer/Composer and consolidated CUDA-free reference evidence pass atomically at the integrated acceptance gate.
 
 ## Domain/search product specifications
 
