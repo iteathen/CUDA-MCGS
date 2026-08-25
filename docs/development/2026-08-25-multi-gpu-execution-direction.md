@@ -60,7 +60,7 @@ The compatible-pair identity must bind the CUDA-MCGS semantic/package identity, 
 
 1. Complete the current Search IR/Search Program/package/reference/semantic-acceptance sequence and one exact single-device CUDA-MCGS/CUDA-JS compatible pair.
 2. Integrate CUDA-JS SPEC-0017 explicit device selection and selected-device target resolution.
-3. Obtain a controlled host with at least two independently visible physical CUDA GPUs and an independent native oracle per device.
+3. Complete the CUDA-JS ADR-0006 Linux reference adapter/package chain and obtain a controlled native Linux host with at least two independently visible physical CUDA GPUs and an independent native oracle per device.
 4. Accept and implement only the needed CUDA-JS SPEC-0024 coordinator subset: finite selected runtimes, device-scoped ownership, cross-device misuse rejection, aggregate status and terminal cleanup. Independent replicas do not initially require peer transfer.
 5. Add a CUDA-MCGS multi-device execution-package/profile schema that composes existing semantic owners without changing their one-device meaning.
 6. Qualify per-device correctness, concurrent execution, aggregate results, one-device failure, cancellation and cleanup before making a multi-GPU claim.
@@ -85,4 +85,4 @@ Stop or narrow the profile if distinct device selection is unavailable, partitio
 
 ## Current disposition
 
-The current GTX 1660 Ti host exposes one GPU and cannot qualify distinct-device behavior. CUDA-MCGS continues the dependency-ready `IR-PROGRAM-PACKAGE-01` path toward its first exact single-device pair. Multi-GPU implementation begins only after the selected CUDA-JS foundation and a suitable controlled host exist; the direction is retained now so single-device packaging, resource and result identities do not foreclose later finite device sets.
+The current Windows GTX 1660 Ti host exposes one GPU and cannot qualify distinct-device behavior. Under CUDA-JS ADR-0006, the first native selection/multi-GPU promotion target is Linux. CUDA-MCGS continues the dependency-ready `IR-PROGRAM-PACKAGE-01` path toward its first exact single-device Linux pair. Multi-GPU implementation begins only after the selected CUDA-JS foundation and a suitable controlled 2+ GPU Linux host exist; the direction is retained now so single-device packaging, resource and result identities do not foreclose later finite device sets.

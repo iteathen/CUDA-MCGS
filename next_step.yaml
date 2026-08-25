@@ -1,14 +1,14 @@
 {
-  "schema_version": 51,
+  "schema_version": 52,
   "updated": "2026-08-25",
-  "status": "ready_for_ir_channel_integration",
+  "status": "ir_program_package_ready_linux_first_native_direction",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then proceed to pure Node.js/restricted Device-JS native/product realization without importing CUDA-specific implementation or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "b7d3141738f5586efb1e86014925ee849251e673",
-    "cuda_js_authority_baseline": "2135216b1a9fd88066a1c82b61ae533645eac9c2",
-    "cuda_js_implementation_baseline": "b6062f691a27093df0e5d55e482e69ebbd39a9eb",
-    "cuda_js_package": "cuda-js@0.1.0-alpha.6"
+    "cuda_mcgs_authority_input_baseline": "711a0570115ecf08d005a07408ee77f3c6671cba",
+    "cuda_js_authority_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
+    "cuda_js_implementation_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
+    "cuda_js_package": "cuda-js@0.1.0-alpha.7"
   },
   "authority": [
     "AGENTS.md",
@@ -18,6 +18,8 @@
     "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
     "docs/decisions/ADR-0018-universal-core-extension-product-layering.md",
     "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
+    "docs/development/2026-08-25-linux-first-native-execution-direction.md",
+    "docs/development/2026-08-25-multi-gpu-execution-direction.md",
     "docs/specs/SPEC-0001-device-search-publication-and-resources.md",
     "docs/specs/SPEC-0002-search-ir-and-reference-semantics.md"
   ],
@@ -26,9 +28,9 @@
     "parent_plan_version": "CUDA-MCGS-V0/22",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": "docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md",
-    "active_leaf": "IR-CHANNEL-01",
+    "active_leaf": "IR-PROGRAM-PACKAGE-01",
     "ready_queued_leaves": [],
-    "next_action": "Integrate IR-CHANNEL-01 only after exact-head review confirms strict optional Channel schema/normalization, exact Stage action-grant consumption, finite resource/progress/item/lifecycle closure, required evaluator-like and advisory secondary profiles, first-product deletion and logical happens-before/ownership reference evidence. Preserve the native qualification block on CUDA-JS issue #123 and do not add physical queue/layout/CUDA spelling, product policy, host progress loops or CUDA-JS-private mechanisms. Then begin dependency-ready IR-PROGRAM-PACKAGE-01 under SPEC-0005 ownership.",
+    "next_action": "Execute dependency-ready IR-PROGRAM-PACKAGE-01 under SPEC-0005 ownership: strict composition profile, Search Program and public execution-package schemas, source mapping, deterministic identities, public CUDA-JS projection and absence/deletion evidence. Keep platform facts out of semantic IR; the first native pair later targets Linux under the owner direction and CUDA-JS ADR-0006.",
     "exit": "Strict schemas/metaschemas, canonical normalization, deterministic reference Composer/Search Program/package generation and structural deletion evidence represent every selected requirement needed by the 989-requirement proposal packet without inventing semantics or CUDA-specific implementation."
   },
   "deliverables": [
@@ -38,29 +40,29 @@
     "consolidated CUDA-free universal reference/conformance across materially different domains/evaluator/output shapes",
     "integrated acceptance of the semantic contracts, normalized schemas and reference oracles on one exact revision before production lowering",
     "formal downstream Connect Four product specification and Device-JS external deletion proof",
-    "first finite Windows universal CUDA-MCGS engine in pure Node.js/restricted Device-JS through one exact public CUDA-JS compatible pair",
+    "first finite native Linux universal CUDA-MCGS engine in pure Node.js/restricted Device-JS through one exact public CUDA-JS compatible pair",
     "optional live-session native profile only after accepted session semantics plus generic CUDA-JS sideband capability",
-    "representative scheduler/resource/performance evidence and native Linux continuation",
+    "representative Linux scheduler/resource/performance evidence and separately qualified secondary platform profiles",
     "public SDK/package/release only after exact-head and compatibility stabilization"
   ],
   "forward_lanes": {
     "universal_core": ["ENGINE-CONTRACT-01", "ENGINE-REFERENCE-01"],
     "universal_extension_substrate": ["ENGINE-EXTENSION-01"],
-    "universal_integration": ["ENGINE-IR-COMPOSER-01", "ENGINE-CONTRACT-ACCEPTANCE-01", "ENGINE-WINDOWS-01", "ENGINE-PERF-LINUX-01", "RELEASE-01"],
+    "universal_integration": ["ENGINE-IR-COMPOSER-01", "ENGINE-CONTRACT-ACCEPTANCE-01", "ENGINE-LINUX-01", "ENGINE-PERF-01", "RELEASE-01"],
     "optional_live_session": ["ENGINE-SESSION-NATIVE-01"],
     "downstream_products": ["PRODUCT-CONNECT4-01", "CHESS-0001 remains independently proposal-only"]
   },
   "current_cuda_js_dependency_state": {
-    "public_capabilities": ["SPEC-0010 RDC", "SPEC-0011 scalar ABI", "SPEC-0012 Device LTO", "SPEC-0013 Device-JS", "SPEC-0014 publication mailboxes", "SPEC-0016 operation lifecycle", "SPEC-0018 bounded multi-operation scheduling", "SPEC-0019 asynchronous transfers", "SPEC-0022 scoped atomic observation"],
-    "resolved_dependencies": ["CUDA-JS issue #35 typed relocatable-device-code PTX compilation is closed; CUDA-MCGS still consumes only restricted Device-JS/public package contracts and opaque generated outputs"],
-    "new_dependency_classifications": ["CUDA-JS issue #123 owns consumer-neutral device-scope release/acquire Device-JS publication helpers required before native internal Async Stage Channel qualification; backend-neutral proposal/schema/reference work remains dependency-ready"],
+    "public_capabilities": ["SPEC-0010 RDC", "SPEC-0011 scalar ABI", "SPEC-0012 Device LTO", "SPEC-0013 Device-JS", "SPEC-0014 publication mailboxes", "SPEC-0016 operation lifecycle", "SPEC-0018 bounded multi-operation scheduling", "SPEC-0019 asynchronous transfers", "SPEC-0022 scoped atomic observation", "SPEC-0022 device-scope release/acquire publication"],
+    "resolved_dependencies": ["CUDA-JS issue #35 typed relocatable-device-code PTX compilation is closed", "CUDA-JS issue #123 device-scope release/acquire Device-JS publication is integrated in cuda-js@0.1.0-alpha.7; CUDA-MCGS still consumes only restricted Device-JS/public package contracts and opaque generated outputs"],
+    "new_dependency_classifications": ["CUDA-JS issue #4 owns the Linux-first Driver/compiler/installed-package reference chain", "CUDA-JS issue #20 owns explicit selection and later generic multi-device mechanisms; CUDA-MCGS issue #105 owns independent-replica search/package/result meaning"],
     "exact_pair_gate": ["CUDA-JS issue #32 remains open until one frozen CUDA-MCGS artifact and selected CUDA-JS revision/package complete compatible-pair qualification"],
     "not_default_blockers": ["RDC", "Device LTO", "multi-operation scheduling", "CUDA Graph/cooperative execution", "publication mailboxes unless the selected engine/session profile requires them"],
     "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
   "blockers": [
     "all 989 proposal requirements require complete strict schema/normalizer/Composer and CUDA-free reference evidence plus integrated semantic acceptance before their owned production lowering",
-    "CUDA-JS issue #123 release/acquire Device-JS publication support is absent and blocks native internal-channel qualification, not backend-neutral contract/schema/reference work",
+    "CUDA-JS native Linux Driver/compiler/installed-package qualification under issue #4 is incomplete and blocks the first native Linux compatible pair, not backend-neutral contract/schema/reference work",
     "complete Search IR/Composer representation for selected contract/capability/product inputs is incomplete",
     "CUDA-MCGS external deletion and exact compatible-pair evidence remain unfinished",
     "SESSION-002 native live-session concurrency evidence for the selected CUDA-JS mailbox profile is absent",
