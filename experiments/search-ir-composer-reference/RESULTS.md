@@ -227,3 +227,30 @@ The three normalized structural output-profile identities are:
 The output schema has checkout-neutral source digest `b6e0d0723152d3d41b4bb7f636fbc4cf0a292a673858fc07f30aa83a83e58c07`. The framework envelope now binds the first output profile with the first domain, graph, policy, resource and progress profiles while retaining structural evaluator/session/live-output absence; its identity is `2d5fd4eb17ac1f82a655175109d90e5f41f707d90c11d2667b44c41612e4ba3a` over 10,422 canonical bytes. Coverage identity is `c932e68605a788658fe8e3ab9f4ff4d8cdc25722a3bacddf438609ecf14ca761`; expanded requirement routing identity is `a381251cf334171ac1218a3ba8686b59942c8653c81e908c467f0200a051a4e0`. Exactly 682 framework/domain/graph/policy/evaluator/resource/progress/output requirements now have final evidence lanes; all remain partial, pending or deferred. The other 307 requirements remain pending their semantic-owner leaves.
 
 This slice is structural/normalizer evidence only. It does not qualify concurrent publication/borrowing, behavioral snapshot consistency, physical CUDA-JS transfer, GPU memory ordering, compatible-pair execution or native live observation. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added.
+
+## IR-SESSION-01
+
+**Started:** 2026-08-25T05:22:15.7011061-07:00
+
+**Focused evidence assembled:** 2026-08-25T05:41:17.2898630-07:00
+
+**Full repository validation completed:** 2026-08-25T05:44:39.9145464-07:00
+
+The expanded capsule passes 625/625 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource/progress/output cases and adds strict normalized optional Search Session evidence across:
+
+- exact selected-owner profile/contribution closure, with Session coordinating rather than absorbing domain root validity, graph materialization/reclamation, policy/evaluator reuse, resource admission, progress closure or output publication meaning;
+- bounded versioned root/control/cancellation/observation inputs, total command ordering, replay/idempotence, compound root-reserve admission before mutation and explicit owner prepare/commit/reverse-abort order;
+- one authoritative root-epoch publication point, old-root authority through prepare, root-relative work scopes, stale isolation/release, owner-specific reuse classification and reroot/reclamation separation;
+- finite session/root/command/observation/reclamation counters with typed exhaustion and no stale alias through silent wrap;
+- selected-only external attention control plus read-only output-owned observation coordination, both independently progress-safe with no callback, polling/relaunch or observation-to-control host loop;
+- lifecycle/cancellation/completion/teardown ordering, bounded diagnostics, least-authority permissions and complete transaction/lease/work/borrow/transfer/counter/root-protection cleanup; and
+- restricted Device-JS program-contribution identity with only versioned consumer-neutral CUDA-JS operation, mailbox, transfer and observation requirements—no CUDA-JS-private handle, direct FFI/Driver access, C/C++, CUDA-specific implementation or native subprocess.
+
+The two normalized selected structural Session identities are:
+
+- `session.synthetic-live-session`: `dba242859ec9b831ab874acf9bcf30439ce607a143b288e4cfb031163967b160` over 53,020 canonical bytes; and
+- `session.synthetic-live-session-restart`: `0a9f318d377798b5576b141e51b009fab558e041ef02f0a641aceedcaa28beb8` over 50,119 canonical bytes.
+
+The second profile removes the optional external attention-control input, semantic control body, permission, statuses, `prepareControlChange` port and control-change lifecycle interaction while selecting a restart-required root-pressure outcome. Terminal-only resource/progress/output fixtures retain exact structural Session absence. The Session schema has checkout-neutral source digest `ae4fdb8be2e4fb393f0494ce886b41e388ff8c5bacba1fbab990fe64dbf0e5dc`. The framework envelope intentionally remains terminal-only and retains identity `2d5fd4eb17ac1f82a655175109d90e5f41f707d90c11d2667b44c41612e4ba3a` over 10,422 canonical bytes. Coverage identity is `a460f1adc809d65a269a6865197395d872927b333bb8f4b2ad6d847a6f2a01a3`; expanded requirement routing identity is `1806c74ab9f6c5932fab0f496a29807d043621b9b0e145020b77a9f531a31ed5`. Exactly 741 framework/domain/graph/policy/evaluator/resource/progress/output/session requirements now have final evidence lanes; all remain partial, pending or deferred. The other 248 extension/program-package requirements remain pending their semantic-owner leaves.
+
+This slice is structural/normalizer evidence only. It does not prove concurrent command/root races, behavioral reuse and stale-work invariants, actual GPU publication/reclamation ordering, CUDA-JS sideband realization, a compatible native pair or SESSION-002 native evidence. No proposal contract is accepted, no production component is authorized and no C/C++/CUDA-specific mechanism is added. No new CUDA-JS capability gap was found at this backend-neutral schema/reference layer.
