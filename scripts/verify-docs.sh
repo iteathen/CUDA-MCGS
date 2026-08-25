@@ -142,8 +142,13 @@ required=(
   scripts/check-project-organization.mjs
   scripts/check-structured-data.mjs
   scripts/run-search-ir-reference.mjs
+  scripts/run-search-ir-composer-reference.mjs
   scripts/run-ptx-extension-prototype.mjs
   schemas/search-ir/0.1.0/search-ir.schema.json
+  schemas/search-ir/0.2.0/contract-set.schema.json
+  schemas/search-ir/0.2.0/contract-set.json
+  schemas/search-ir/0.2.0/requirement-coverage.schema.json
+  schemas/search-ir/0.2.0/requirement-coverage.json
   experiments/search-ir-reference/README.md
   experiments/search-ir-reference/RESULTS.md
   experiments/search-ir-reference/fixtures/baseline.search-ir.json
@@ -153,6 +158,10 @@ required=(
   experiments/search-ir-reference/src/normalize.mjs
   experiments/search-ir-reference/src/reference.mjs
   experiments/search-ir-reference/run.mjs
+  experiments/search-ir-composer-reference/README.md
+  experiments/search-ir-composer-reference/RESULTS.md
+  experiments/search-ir-composer-reference/src/catalog.mjs
+  experiments/search-ir-composer-reference/run.mjs
   experiments/ptx-extension-composition-prototype/README.md
   experiments/ptx-extension-composition-prototype/RESULTS.md
   experiments/ptx-extension-composition-prototype/FINDINGS.md
@@ -226,6 +235,7 @@ fi
 "$node_bin" scripts/check-doc-links.mjs
 "$node_bin" scripts/check-structured-data.mjs
 "$node_bin" scripts/run-search-ir-reference.mjs
+"$node_bin" scripts/run-search-ir-composer-reference.mjs
 "$node_bin" scripts/run-ptx-extension-prototype.mjs portable-check
 
 for form in .github/ISSUE_TEMPLATE/*.yml; do

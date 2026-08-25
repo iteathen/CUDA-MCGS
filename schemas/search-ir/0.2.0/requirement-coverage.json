@@ -1,0 +1,117 @@
+{
+  "schema": "cuda-mcgs.search-ir.requirement-coverage/0.2.0",
+  "contractSet": "cuda-mcgs.search-ir.contract-set/0.2.0",
+  "allowedFinalDispositions": [
+    "structural-schema",
+    "semantic-normalizer",
+    "deterministic-composition",
+    "ir-identity-deletion-rejection",
+    "engine-reference-oracle",
+    "cross-specification-proof",
+    "native-compatible-pair-qualification"
+  ],
+  "contracts": [
+    {
+      "contract": "SPEC-0000",
+      "requirementPrefix": "FRAMEWORK-",
+      "primaryOwner": "CUDA-MCGS universal framework composition, ownership and conformance map",
+      "plannedLeaf": "IR-FOUNDATION-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    },
+    {
+      "contract": "SPEC-0003",
+      "requirementPrefix": "EXT-",
+      "primaryOwner": "CUDA-MCGS optional stage/surface/capability semantics",
+      "plannedLeaf": "IR-STAGE-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    },
+    {
+      "contract": "SPEC-0004",
+      "requirementPrefix": "CHANNEL-",
+      "primaryOwner": "CUDA-MCGS optional internal channel item/publication/ownership-transfer semantics",
+      "plannedLeaf": "IR-CHANNEL-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    },
+    {
+      "contract": "SPEC-0005",
+      "requirementPrefix": "COMPOSE-",
+      "primaryOwner": "CUDA-MCGS deterministic restricted Device-JS Search Program composition and CUDA-MCGS/CUDA-JS execution-package boundary",
+      "plannedLeaf": "IR-PROGRAM-PACKAGE-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    },
+    {
+      "contract": "SPEC-0006",
+      "requirementPrefix": "SESSION-",
+      "primaryOwner": "CUDA-MCGS optional Search Session external lifecycle semantics",
+      "plannedLeaf": "IR-SESSION-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    },
+    {
+      "contract": "SPEC-0007",
+      "requirementPrefix": "DOMAIN-",
+      "primaryOwner": "CUDA-MCGS universal domain semantics",
+      "plannedLeaf": "IR-DOMAIN-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    },
+    {
+      "contract": "SPEC-0008",
+      "requirementPrefix": "POLICY-",
+      "primaryOwner": "CUDA-MCGS universal search-policy semantics",
+      "plannedLeaf": "IR-POLICY-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    },
+    {
+      "contract": "SPEC-0009",
+      "requirementPrefix": "EVAL-",
+      "primaryOwner": "CUDA-MCGS universal evaluator semantics",
+      "plannedLeaf": "IR-EVALUATOR-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    },
+    {
+      "contract": "SPEC-0010",
+      "requirementPrefix": "GRAPH-",
+      "primaryOwner": "CUDA-MCGS universal graph/storage semantics",
+      "plannedLeaf": "IR-GRAPH-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    },
+    {
+      "contract": "SPEC-0011",
+      "requirementPrefix": "RESOURCE-",
+      "primaryOwner": "CUDA-MCGS universal finite search-resource semantics",
+      "plannedLeaf": "IR-RESOURCE-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    },
+    {
+      "contract": "SPEC-0012",
+      "requirementPrefix": "PROGRESS-",
+      "primaryOwner": "CUDA-MCGS universal device-owned progress semantics",
+      "plannedLeaf": "IR-PROGRESS-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    },
+    {
+      "contract": "SPEC-0013",
+      "requirementPrefix": "OUTPUT-",
+      "primaryOwner": "CUDA-MCGS universal external result/observation publication semantics",
+      "plannedLeaf": "IR-OUTPUT-01",
+      "currentDisposition": "pending-owner-classification",
+      "completionStatus": "pending"
+    }
+  ],
+  "totals": {
+    "contracts": 12,
+    "requirements": 989,
+    "classified": 0,
+    "pending": 989
+  }
+}
