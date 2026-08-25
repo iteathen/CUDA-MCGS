@@ -408,6 +408,10 @@ export function buildOutputProfiles(inspected, resourceResults, progressResults)
   ];
 }
 
+export function buildOutputProfile(profile, inspected, resourceResult, progressResult, options = {}) {
+  return buildProfile(profile, inspected, resourceResult, progressResult, options);
+}
+
 export function outputSyntheticSchemaReference(id) {
   return schemaReference(id);
 }

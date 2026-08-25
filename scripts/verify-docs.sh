@@ -156,6 +156,14 @@ required=(
   schemas/search-ir/0.2.0/evaluator-profile.schema.json
   schemas/search-ir/0.2.0/resource-profile.schema.json
   schemas/search-ir/0.2.0/progress-profile.schema.json
+  schemas/search-ir/0.2.0/output-profile.schema.json
+  schemas/search-ir/0.2.0/session-profile.schema.json
+  schemas/search-ir/0.2.0/stage-profile.schema.json
+  schemas/search-ir/0.2.0/channel-profile.schema.json
+  schemas/search-ir/0.2.0/program-package-profile.schema.json
+  schemas/search-ir/0.2.0/search-program.schema.json
+  schemas/search-ir/0.2.0/execution-package.schema.json
+  schemas/search-ir/0.2.0/compatible-pair-record.schema.json
   experiments/search-ir-reference/README.md
   experiments/search-ir-reference/RESULTS.md
   experiments/search-ir-reference/fixtures/baseline.search-ir.json
@@ -183,6 +191,16 @@ required=(
   experiments/search-ir-composer-reference/src/resource-fixtures.mjs
   experiments/search-ir-composer-reference/src/progress.mjs
   experiments/search-ir-composer-reference/src/progress-fixtures.mjs
+  experiments/search-ir-composer-reference/src/output.mjs
+  experiments/search-ir-composer-reference/src/output-fixtures.mjs
+  experiments/search-ir-composer-reference/src/session.mjs
+  experiments/search-ir-composer-reference/src/session-fixtures.mjs
+  experiments/search-ir-composer-reference/src/stage.mjs
+  experiments/search-ir-composer-reference/src/stage-fixtures.mjs
+  experiments/search-ir-composer-reference/src/channel.mjs
+  experiments/search-ir-composer-reference/src/channel-fixtures.mjs
+  experiments/search-ir-composer-reference/src/program-package.mjs
+  experiments/search-ir-composer-reference/src/program-package-fixtures.mjs
   experiments/search-ir-composer-reference/run.mjs
 )
 
