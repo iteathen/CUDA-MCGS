@@ -14,6 +14,7 @@ const CHANNEL_CONTRACT = 'SPEC-0004';
 const ACTIONS = ['produce', 'claim', 'observe', 'complete', 'cancel', 'release'];
 const REQUIRED_STATES = ['free', 'reserved-unpublished', 'ready', 'owned-or-borrowed', 'terminally-disposed', 'reclaimable'];
 const WORK_KINDS = ['producer', 'consumer', 'completion-reclamation', 'pending-dependency'];
+const ALLOCATION_KINDS = ['item', 'payload', 'result', 'pending', 'borrow', 'diagnostic'];
 const COUNTER_KINDS = ['generation', 'correlation', 'reservation', 'claim', 'borrow', 'completion', 'cancellation', 'expiry', 'reclamation'];
 const STATUS_CLASSES = new Map([
   ['channel-work-complete', 'normal'], ['channel-unavailable', 'pending'], ['channel-capacity', 'pressure'],
@@ -187,6 +188,14 @@ function normalizeClaim(input, channelId, payloads) {
   return { mode, maxClaims, ownership: input.ownership, referenceAccounting: input.referenceAccounting };
 }
 
+function normalizeOrdering(input, channelId) {
+  exactKeys(input, ['kind', 'rule'], 'CHANNEL_ORDERING_FIELDS', `${channelId} ordering`);
+  const kind = assertEnum(input.kind, ['unordered', 'owner-defined'], 'CHANNEL_ORDERING', `${channelId} ordering kind`);
+  const rule = input.rule === null ? null : normalizeSchemaReference(input.rule, `${channelId} ordering rule`);
+  if ((kind === 'owner-defined') !== (rule !== null)) fail('CHANNEL_ORDERING', `${channelId} ordering rule differs from its kind`);
+  return { kind, rule };
+}
+
 function normalizePublication(input, channelId) {
   exactKeys(input, ['readyState', 'release', 'acquire', 'scope', 'publicationWord', 'payloadBeforeReady', 'consumeAfterAcquire', 'nativeSpelling', 'publicRequirement', 'nativeQualification'], 'CHANNEL_PUBLICATION_FIELDS', `${channelId} publication`);
   if (input.readyState !== 'ready' || input.release !== 'logical-release' || input.acquire !== 'logical-acquire' || input.scope !== 'device' || input.payloadBeforeReady !== true || input.consumeAfterAcquire !== true || input.nativeSpelling !== 'none' || input.nativeQualification !== 'blocked-cuda-js-123') fail('CHANNEL_PUBLICATION', `${channelId} publication contract is invalid`);
@@ -206,11 +215,12 @@ function normalizeResources(input, channelId, classById) {
   exactKeys(input, ['allocations', 'admissionGroup', 'rollback', 'conservation', 'hiddenGrowth', 'hostRescue', 'terminalReserve'], 'CHANNEL_RESOURCES_FIELDS', `${channelId} resources`);
   if (!Array.isArray(input.allocations) || input.allocations.length === 0) fail('CHANNEL_RESOURCE_ALLOCATION', `${channelId} allocations are empty`);
   const allocations = input.allocations.map((entry, index) => {
-    exactKeys(entry, ['class', 'units'], 'CHANNEL_ALLOCATION_FIELDS', `${channelId} allocation ${index}`);
+    exactKeys(entry, ['kind', 'class', 'units'], 'CHANNEL_ALLOCATION_FIELDS', `${channelId} allocation ${index}`);
     if (!classById.has(entry.class)) fail('CHANNEL_RESOURCE_ALLOCATION', `${channelId} allocation names a foreign class`);
-    return { class: entry.class, units: positiveDecimal(entry.units, 'CHANNEL_RESOURCE_ALLOCATION', `${channelId} allocation ${index} units`) };
-  }).sort((left, right) => compareRaw(left.class, right.class));
+    return { kind: assertEnum(entry.kind, ALLOCATION_KINDS, 'CHANNEL_RESOURCE_ALLOCATION', `${channelId} allocation ${index} kind`), class: entry.class, units: positiveDecimal(entry.units, 'CHANNEL_RESOURCE_ALLOCATION', `${channelId} allocation ${index} units`) };
+  }).sort((left, right) => compareRaw(left.kind, right.kind));
   uniqueBy(allocations, 'class', 'CHANNEL_RESOURCE_ALLOCATION', `${channelId} allocation`);
+  uniqueBy(allocations, 'kind', 'CHANNEL_RESOURCE_ALLOCATION', `${channelId} allocation kind`);
   assertNamespacedId(input.admissionGroup, 'CHANNEL_RESOURCE_ADMISSION', `${channelId} admissionGroup`);
   if (input.rollback !== 'zero-published-effect' || input.conservation !== 'exact' || input.hiddenGrowth !== false || input.hostRescue !== 'none' || input.terminalReserve !== true) fail('CHANNEL_RESOURCE_CONTRACT', `${channelId} resource contract is invalid`);
   return { allocations, admissionGroup: input.admissionGroup, rollback: input.rollback, conservation: input.conservation, hiddenGrowth: false, hostRescue: input.hostRescue, terminalReserve: true };
@@ -302,7 +312,7 @@ function normalizeChannelCleanup(input, channelId, multiBorrow) {
 }
 
 function normalizeChannel(input, index, context) {
-  exactKeys(input, ['id', 'version', 'requirement', 'semanticOwner', 'roles', 'itemIdentity', 'payloads', 'stateGraph', 'claim', 'publication', 'capacity', 'resources', 'progress', 'consumption', 'counters', 'outcomes', 'lifecycle', 'compatibility', 'cleanup', 'sourceIdentity', 'requirements', 'provenance'], 'CHANNEL_FIELDS', `channel ${index}`);
+  exactKeys(input, ['id', 'version', 'requirement', 'semanticOwner', 'roles', 'itemIdentity', 'payloads', 'stateGraph', 'claim', 'ordering', 'publication', 'capacity', 'resources', 'progress', 'consumption', 'counters', 'outcomes', 'lifecycle', 'compatibility', 'cleanup', 'sourceIdentity', 'requirements', 'provenance'], 'CHANNEL_FIELDS', `channel ${index}`);
   const id = assertNamespacedId(input.id, 'CHANNEL_ID', `channel ${index} id`);
   assertVersion(input.version, 'CHANNEL_VERSION', `${id} version`);
   const requirement = normalizeSchemaReference(input.requirement, `${id} requirement`);
@@ -315,10 +325,25 @@ function normalizeChannel(input, index, context) {
   if (payloads.length === 0 || new Set(payloads.map(({ kind }) => kind)).size !== payloads.length) fail('CHANNEL_PAYLOAD_KIND', `${id} payload kinds are incomplete or ambiguous`);
   const stateGraph = normalizeStateGraph(input.stateGraph, id);
   const claim = normalizeClaim(input.claim, id, payloads);
+  const ordering = normalizeOrdering(input.ordering, id);
   const publication = normalizePublication(input.publication, id);
   const capacity = normalizeCapacity(input.capacity, id);
   if (compareDecimalUint(claim.maxClaims, capacity.slots) > 0) fail('CHANNEL_CLAIM_RANGE', `${id} claim count exceeds capacity`);
   const resources = normalizeResources(input.resources, id, context.classById);
+  const allocationByKind = new Map(resources.allocations.map((entry) => [entry.kind, entry]));
+  const slots = BigInt(capacity.slots);
+  const expectedAllocations = new Map([
+    ['item', slots],
+    ['payload', payloads.filter(({ kind }) => kind !== 'result').reduce((sum, entry) => sum + (BigInt(entry.sizeBytes) * slots), 0n)],
+    ['result', payloads.filter(({ kind }) => kind === 'result').reduce((sum, entry) => sum + (BigInt(entry.sizeBytes) * slots), 0n)],
+    ['pending', BigInt(capacity.maxPending)],
+    ['borrow', claim.mode === 'finite-multi-consumer-immutable-borrow' ? slots * BigInt(claim.maxClaims) : 0n],
+  ]);
+  for (const [kind, expected] of expectedAllocations) {
+    const selected = allocationByKind.get(kind);
+    if ((expected === 0n) !== (selected === undefined) || (selected && BigInt(selected.units) !== expected)) fail('CHANNEL_RESOURCE_ALLOCATION', `${id} ${kind} allocation is not exact`);
+  }
+  if (!allocationByKind.has('diagnostic')) fail('CHANNEL_RESOURCE_ALLOCATION', `${id} diagnostic allocation is absent`);
   const progress = normalizeProgress(input.progress, id, context.workClass.id, roleById);
   const consumption = normalizeConsumption(input.consumption, id);
   const counters = input.counters.map(normalizeCounter).sort((left, right) => compareRaw(left.kind, right.kind)); uniqueBy(counters, 'id', 'CHANNEL_COUNTER_DUPLICATE', `${id} counter`); uniqueBy(counters, 'kind', 'CHANNEL_COUNTER_DUPLICATE', `${id} counter kind`);
@@ -336,7 +361,7 @@ function normalizeChannel(input, index, context) {
   exactKeys(input.provenance, ['origin', 'trust', 'revision', 'license', 'review'], 'CHANNEL_PROVENANCE_FIELDS', `${id} provenance`);
   if (input.provenance.origin !== 'first-party' || input.provenance.trust !== 'first-party-reviewed' || input.provenance.license !== 'Apache-2.0') fail('CHANNEL_PROVENANCE', `${id} provenance is invalid`);
   const provenance = { origin: input.provenance.origin, trust: input.provenance.trust, revision: assertString(input.provenance.revision, /^[0-9a-f]{40}$/, 'CHANNEL_PROVENANCE', `${id} revision`), license: input.provenance.license, review: normalizeSchemaReference(input.provenance.review, `${id} review`) };
-  return { id, version: input.version, requirement, semanticOwner: input.semanticOwner, roles, itemIdentity, payloads, stateGraph, claim, publication, capacity, resources, progress, consumption, counters, outcomes, lifecycle, compatibility, cleanup, sourceIdentity, requirements, provenance };
+  return { id, version: input.version, requirement, semanticOwner: input.semanticOwner, roles, itemIdentity, payloads, stateGraph, claim, ordering, publication, capacity, resources, progress, consumption, counters, outcomes, lifecycle, compatibility, cleanup, sourceIdentity, requirements, provenance };
 }
 
 function validateStageGrants(channels, stageProfile) {
@@ -467,7 +492,7 @@ export function normalizeChannelProfile(input, inspectedCatalog, resourceResult,
   validateStageGrants(channels, stageResult.normalized); validateDependencyGraph(channels);
   const allocationTotals = new Map(channelClasses.map(({ id: classId }) => [classId, 0n]));
   for (const channel of channels) for (const allocation of channel.resources.allocations) allocationTotals.set(allocation.class, allocationTotals.get(allocation.class) + BigInt(allocation.units));
-  for (const resourceClass of channelClasses) if (allocationTotals.get(resourceClass.id) === 0n || allocationTotals.get(resourceClass.id) > BigInt(resourceClass.formula.maximumUnits)) fail('CHANNEL_RESOURCE_ALLOCATION', `${resourceClass.id} is unused or overcommitted`);
+  for (const resourceClass of channelClasses) if (allocationTotals.get(resourceClass.id) !== BigInt(resourceClass.formula.maximumUnits)) fail('CHANNEL_RESOURCE_ALLOCATION', `${resourceClass.id} does not exactly match the selected Channel allocation`);
   const statuses = input.statuses.map(normalizeStatus).sort((left, right) => compareRaw(left.code, right.code)); uniqueBy(statuses, 'code', 'CHANNEL_STATUS_DUPLICATE', 'channel status');
   if (statuses.length !== STATUS_CLASSES.size || [...STATUS_CLASSES.keys()].some((code) => !statuses.some((entry) => entry.code === code))) fail('CHANNEL_STATUS_COVERAGE', 'channel status vocabulary is incomplete');
   const statusSet = new Set(statuses.map(({ code }) => code)); for (const channel of channels) if (channel.outcomes.some((outcome) => !statusSet.has(outcome))) fail('CHANNEL_OUTCOME', `${channel.id} names undeclared outcome`);
@@ -484,6 +509,8 @@ export function simulateChannelTrace(profile, channelId, operations) {
   const channel = profile.channels.find(({ id }) => id === channelId);
   if (!channel) fail('CHANNEL_REFERENCE_PROFILE', `unknown channel ${channelId}`);
   const capacity = BigInt(channel.capacity.slots); const slots = new Map();
+  const generationMaximum = [BigInt(channel.itemIdentity.generation.maximum), BigInt(channel.counters.find(({ kind }) => kind === 'generation').maximum)].reduce((left, right) => left < right ? left : right);
+  const pendingMaximum = BigInt(channel.capacity.maxPending);
   const freeSlot = (index) => ({ index, state: 'free', generation: 0n, initialized: false, released: false, acquired: false, claims: 0n, disposition: null, used: false });
   const events = []; let pending = 0n;
   const slotFor = (operation) => {
@@ -493,23 +520,24 @@ export function simulateChannelTrace(profile, channelId, operations) {
     return slot;
   };
   const conserve = () => {
-    if (BigInt(slots.size) > capacity || [...slots.values()].some(({ claims }) => claims < 0n || claims > BigInt(channel.claim.maxClaims))) fail('CHANNEL_REFERENCE_CONSERVATION', 'channel accounting is not conserved');
+    if (BigInt(slots.size) > capacity || pending > pendingMaximum || [...slots.values()].some(({ claims }) => claims < 0n || claims > BigInt(channel.claim.maxClaims))) fail('CHANNEL_REFERENCE_CONSERVATION', 'channel accounting is not conserved');
   };
   for (const operation of operations) {
-    if (operation.kind === 'await-unavailable') { pending += 1n; events.push({ kind: 'pending', workerReleased: true, mutableLeaseReleased: true }); conserve(); continue; }
+    if (operation.kind === 'await-unavailable') { if (pending === pendingMaximum) fail('CHANNEL_REFERENCE_PENDING', 'pending descriptor capacity is exhausted'); pending += 1n; events.push({ kind: 'pending', workerReleased: true, mutableLeaseReleased: true }); conserve(); continue; }
     if (operation.kind === 'reserve') {
       const slot = slotFor(operation); if (slot.state !== 'free') { events.push({ kind: 'pressure', published: false }); conserve(); continue; }
-      if (slot.used) slot.generation += 1n; slot.used = true; slot.state = 'reserved-unpublished'; slot.initialized = false; slot.released = false; slot.acquired = false; slot.claims = 0n; slot.disposition = null; events.push({ kind: 'reserved', slot: slot.index, generation: slot.generation.toString() }); conserve(); continue;
+      if (slot.used) { if (slot.generation >= generationMaximum) fail('CHANNEL_REFERENCE_COUNTER_EXHAUSTED', 'generation space is exhausted before reuse'); slot.generation += 1n; }
+      slot.used = true; slot.state = 'reserved-unpublished'; slot.initialized = false; slot.released = false; slot.acquired = false; slot.claims = 0n; slot.disposition = null; events.push({ kind: 'reserved', slot: slot.index, generation: slot.generation.toString() }); conserve(); continue;
     }
     const slot = slotFor(operation);
     if (operation.kind === 'initialize') { if (slot.state !== 'reserved-unpublished') fail('CHANNEL_REFERENCE_STATE', 'initialize requires reserved-unpublished'); slot.initialized = true; events.push({ kind: 'initialized' }); }
     else if (operation.kind === 'publish') { if (slot.state !== 'reserved-unpublished' || !slot.initialized) fail('CHANNEL_REFERENCE_UNINITIALIZED', 'ready publication precedes complete initialization'); if (operation.release !== true) fail('CHANNEL_REFERENCE_RELEASE', 'ready publication lacks logical release'); slot.released = true; slot.state = 'ready'; events.push({ kind: 'ready' }); }
     else if (operation.kind === 'claim') { const additionalBorrow = channel.claim.mode === 'finite-multi-consumer-immutable-borrow' && slot.state === 'owned-or-borrowed'; if ((!['ready', 'result-ready'].includes(slot.state) && !additionalBorrow) || !slot.released) fail('CHANNEL_REFERENCE_STATE', 'claim requires released ready state'); if (operation.acquire !== true) fail('CHANNEL_REFERENCE_ACQUIRE', 'claim lacks matching logical acquire'); if (channel.claim.mode === 'single-consumer-transfer' && slot.claims !== 0n) fail('CHANNEL_REFERENCE_CLAIM', 'single-consumer item already claimed'); if (slot.claims >= BigInt(channel.claim.maxClaims)) fail('CHANNEL_REFERENCE_CLAIM', 'claim/borrow bound is exhausted'); slot.claims += 1n; slot.acquired = true; slot.state = 'owned-or-borrowed'; events.push({ kind: 'claimed', claims: slot.claims.toString() }); }
     else if (operation.kind === 'consume') { if (slot.state !== 'owned-or-borrowed' || !slot.acquired || !slot.initialized) fail('CHANNEL_REFERENCE_ACQUIRE', 'payload consumption lacks initialized acquired ownership'); events.push({ kind: 'consumed' }); }
-    else if (operation.kind === 'release') { if (slot.state !== 'owned-or-borrowed' || slot.claims === 0n) fail('CHANNEL_REFERENCE_STATE', 'release lacks a live claim/borrow'); slot.claims -= 1n; slot.acquired = slot.claims > 0n; slot.state = slot.claims === 0n ? 'ready' : 'owned-or-borrowed'; events.push({ kind: 'released', claims: slot.claims.toString() }); }
+    else if (operation.kind === 'release') { if (!['owned-or-borrowed', 'terminally-disposed'].includes(slot.state) || slot.claims === 0n) fail('CHANNEL_REFERENCE_STATE', 'release lacks a live claim/borrow'); const terminal = slot.state === 'terminally-disposed'; slot.claims -= 1n; slot.acquired = slot.claims > 0n; if (!terminal) slot.state = slot.claims === 0n ? 'ready' : 'owned-or-borrowed'; events.push({ kind: 'released', claims: slot.claims.toString() }); }
     else if (operation.kind === 'complete') { if (!['owned-or-borrowed', 'ready', 'result-ready'].includes(slot.state) || slot.claims > 1n) fail('CHANNEL_REFERENCE_STATE', 'completion has ambiguous ownership'); slot.claims = 0n; slot.state = 'terminally-disposed'; slot.disposition = operation.disposition ?? 'success'; events.push({ kind: 'completed', disposition: slot.disposition }); }
-    else if (operation.kind === 'cancel') { if (['free', 'reclaimable'].includes(slot.state)) events.push({ kind: 'cancel-no-effect' }); else { slot.claims = 0n; slot.state = 'terminally-disposed'; slot.disposition = 'cancelled'; events.push({ kind: 'cancelled' }); } }
-    else if (operation.kind === 'expire') { if (['free', 'terminally-disposed', 'reclaimable'].includes(slot.state)) fail('CHANNEL_REFERENCE_STATE', 'expiry requires live work'); slot.claims = 0n; slot.state = 'terminally-disposed'; slot.disposition = 'expired'; events.push({ kind: 'expired' }); }
+    else if (operation.kind === 'cancel') { if (['free', 'reclaimable'].includes(slot.state)) events.push({ kind: 'cancel-no-effect' }); else { slot.state = 'terminally-disposed'; slot.disposition = 'cancelled'; events.push({ kind: 'cancelled', claims: slot.claims.toString() }); } }
+    else if (operation.kind === 'expire') { if (['free', 'terminally-disposed', 'reclaimable'].includes(slot.state)) fail('CHANNEL_REFERENCE_STATE', 'expiry requires live work'); slot.state = 'terminally-disposed'; slot.disposition = 'expired'; events.push({ kind: 'expired', claims: slot.claims.toString() }); }
     else if (operation.kind === 'late-complete') { if (slot.state !== 'terminally-disposed') fail('CHANNEL_REFERENCE_STATE', 'late completion is not late'); events.push({ kind: 'late-ignored', disposition: slot.disposition }); }
     else if (operation.kind === 'reclaim') { if (slot.state !== 'terminally-disposed' || slot.claims !== 0n) fail('CHANNEL_REFERENCE_RECLAIM', 'reclaim requires terminal zero-reference state'); slot.state = 'reclaimable'; slot.initialized = false; slot.released = false; slot.acquired = false; events.push({ kind: 'reclaimable' }); slot.state = 'free'; events.push({ kind: 'free' }); }
     else fail('CHANNEL_REFERENCE_OPERATION', `unknown reference operation ${operation.kind}`);

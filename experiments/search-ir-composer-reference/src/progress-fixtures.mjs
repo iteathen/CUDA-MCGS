@@ -306,6 +306,10 @@ export function buildChannelProgressProfile(inspected, resourceResult) {
   return buildProfile('synthetic-stage-channels', inspected, resourceResult, { revision: CHANNEL_REVISION });
 }
 
+export function buildChannelFirstProductDeletedProgressProfile(inspected, resourceResult) {
+  return buildProfile('synthetic-stage-channels', inspected, resourceResult, { revision: CHANNEL_REVISION });
+}
+
 export function progressSyntheticSchemaReference(id) {
   return schemaReference(id);
 }

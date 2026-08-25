@@ -79,7 +79,7 @@ function classMap(resourceResult) {
 }
 
 function allocations(classes, values) {
-  return Object.entries(values).map(([token, units]) => ({ class: classes[token], units }));
+  return Object.entries(values).map(([kind, units]) => ({ kind, class: classes[kind], units }));
 }
 
 function requirements() {
@@ -99,6 +99,7 @@ function baseChannel(profile, channelToken, requirement, semanticOwner, roles, s
     payloads: options.payloads,
     stateGraph: { states, initial: 'free', transitions: transitions(requestResult) },
     claim: options.claim,
+    ordering: options.ordering,
     publication: {
       readyState: 'ready', release: 'logical-release', acquire: 'logical-acquire', scope: 'device',
       publicationWord: schemaReference(`cuda-mcgs.synthetic-${profile}-${channelToken}-generation-ready-word`), payloadBeforeReady: true, consumeAfterAcquire: true,
@@ -154,8 +155,9 @@ function buildRequired(profile, stageResult, resourceResult, progressResult) {
   return baseChannel(profile, 'synthetic-evaluator-request', schemaReference('cuda-mcgs.channel-requirement.evaluator-request'), evaluator.id, roles, { workClass }, {
     requestResult: true, consumption: 'required', payloads: [payload(profile, 'evaluator-request', 'request', 'request', evaluator.id, '256'), payload(profile, 'evaluator-request', 'result', 'result', evaluator.id, '128')],
     claim: { mode: 'single-consumer-transfer', maxClaims: '1', ownership: 'transfer', referenceAccounting: 'none' },
+    ordering: { kind: 'owner-defined', rule: schemaReference(`cuda-mcgs.synthetic-${profile}-evaluator-request-ordering`) },
     capacity: { slots: '128', highAt: '64', criticalAt: '96', exhaustedAt: '128', maxReservations: '128', maxPending: '128', maxRetries: '8', maxAgeEpochs: '4096', cancellationObservationWorkUnits: '16' },
-    allocations: allocations(classes, { item: '128', payload: '49152', result: '24576', pending: '192', diagnostic: '8192' }), workUnits: '256',
+    allocations: allocations(classes, { item: '128', payload: '32768', result: '16384', pending: '128', diagnostic: '8192' }), workUnits: '256',
   });
 }
 
@@ -170,8 +172,9 @@ function buildSecondary(profile, channelToken, stageResult, resourceResult, prog
   return baseChannel(profile, channelToken, schemaReference('cuda-mcgs.channel-requirement.audit-feed'), graph.id, roles, { workClass }, {
     requestResult: true, consumption: 'advisory', payloads: [payload(profile, channelToken, 'request', 'request', graph.id, '256'), payload(profile, channelToken, 'result', 'result', graph.id, '128')],
     claim: { mode: 'finite-multi-consumer-immutable-borrow', maxClaims: '4', ownership: 'immutable-borrow', referenceAccounting: 'exact' },
+    ordering: { kind: 'unordered', rule: null },
     capacity: { slots: '64', highAt: '32', criticalAt: '48', exhaustedAt: '64', maxReservations: '64', maxPending: '64', maxRetries: '4', maxAgeEpochs: '1024', cancellationObservationWorkUnits: '8' },
-    allocations: allocations(classes, { item: '64', payload: '16384', result: '8192', pending: '64', borrow: '512', diagnostic: '8192' }), workUnits: '64',
+    allocations: allocations(classes, { item: '64', payload: '16384', result: '8192', pending: '64', borrow: '256', diagnostic: '8192' }), workUnits: '64',
   });
 }
 
@@ -204,10 +207,10 @@ function buildProfile(profile, inspected, resourceResult, progressResult, stageR
   };
 }
 
-export function buildChannelProfiles(inspected, resourceResult, progressResult, selectedStageResult, secondaryStageResult) {
+export function buildChannelProfiles(inspected, resourceResult, progressResult, selectedStageResult, secondaryResourceResult, secondaryProgressResult, secondaryStageResult) {
   return [
     buildProfile('synthetic-evaluator-and-audit', inspected, resourceResult, progressResult, selectedStageResult, { required: true }),
-    buildProfile('synthetic-secondary-work', inspected, resourceResult, progressResult, secondaryStageResult, { secondaryToken: 'synthetic-secondary-broadcast' }),
+    buildProfile('synthetic-secondary-work', inspected, secondaryResourceResult, secondaryProgressResult, secondaryStageResult, { secondaryToken: 'synthetic-secondary-broadcast' }),
   ];
 }
 

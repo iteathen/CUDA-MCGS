@@ -90,6 +90,13 @@
         "ownership": { "enum": ["transfer", "immutable-borrow"] }, "referenceAccounting": { "enum": ["none", "exact"] }
       }
     },
+    "ordering": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "rule"],
+      "properties": {
+        "kind": { "enum": ["unordered", "owner-defined"] },
+        "rule": { "oneOf": [{ "$ref": "primitives.schema.json#/$defs/schemaReference" }, { "type": "null" }] }
+      }
+    },
     "publication": {
       "type": "object", "additionalProperties": false,
       "required": ["readyState", "release", "acquire", "scope", "publicationWord", "payloadBeforeReady", "consumeAfterAcquire", "nativeSpelling", "publicRequirement", "nativeQualification"],
@@ -109,8 +116,8 @@
       }
     },
     "allocation": {
-      "type": "object", "additionalProperties": false, "required": ["class", "units"],
-      "properties": { "class": { "$ref": "#/$defs/namespacedId" }, "units": { "$ref": "#/$defs/decimalUint" } }
+      "type": "object", "additionalProperties": false, "required": ["kind", "class", "units"],
+      "properties": { "kind": { "enum": ["item", "payload", "result", "pending", "borrow", "diagnostic"] }, "class": { "$ref": "#/$defs/namespacedId" }, "units": { "$ref": "#/$defs/decimalUint" } }
     },
     "resources": {
       "type": "object", "additionalProperties": false, "required": ["allocations", "admissionGroup", "rollback", "conservation", "hiddenGrowth", "hostRescue", "terminalReserve"],
@@ -184,12 +191,12 @@
     },
     "channel": {
       "type": "object", "additionalProperties": false,
-      "required": ["id", "version", "requirement", "semanticOwner", "roles", "itemIdentity", "payloads", "stateGraph", "claim", "publication", "capacity", "resources", "progress", "consumption", "counters", "outcomes", "lifecycle", "compatibility", "cleanup", "sourceIdentity", "requirements", "provenance"],
+      "required": ["id", "version", "requirement", "semanticOwner", "roles", "itemIdentity", "payloads", "stateGraph", "claim", "ordering", "publication", "capacity", "resources", "progress", "consumption", "counters", "outcomes", "lifecycle", "compatibility", "cleanup", "sourceIdentity", "requirements", "provenance"],
       "properties": {
         "id": { "$ref": "#/$defs/namespacedId" }, "version": { "$ref": "primitives.schema.json#/$defs/semanticVersion" }, "requirement": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "semanticOwner": { "$ref": "#/$defs/namespacedId" }, "roles": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/role" } },
         "itemIdentity": { "$ref": "#/$defs/itemIdentity" }, "payloads": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/payload" } },
-        "stateGraph": { "$ref": "#/$defs/stateGraph" }, "claim": { "$ref": "#/$defs/claim" }, "publication": { "$ref": "#/$defs/publication" }, "capacity": { "$ref": "#/$defs/capacity" },
+        "stateGraph": { "$ref": "#/$defs/stateGraph" }, "claim": { "$ref": "#/$defs/claim" }, "ordering": { "$ref": "#/$defs/ordering" }, "publication": { "$ref": "#/$defs/publication" }, "capacity": { "$ref": "#/$defs/capacity" },
         "resources": { "$ref": "#/$defs/resources" }, "progress": { "$ref": "#/$defs/progress" }, "consumption": { "$ref": "#/$defs/consumption" },
         "counters": { "type": "array", "minItems": 9, "maxItems": 9, "uniqueItems": true, "items": { "$ref": "#/$defs/counter" } },
         "outcomes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" } },

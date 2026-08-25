@@ -39,6 +39,7 @@ import {
 } from './src/evaluator-fixtures.mjs';
 import { normalizeResourceProfile } from './src/resource.mjs';
 import {
+  buildChannelFirstProductDeletedResourceProfile,
   buildChannelResourceProfile,
   buildResourceProfiles,
   buildStageResourceProfile,
@@ -47,6 +48,7 @@ import {
 } from './src/resource-fixtures.mjs';
 import { normalizeProgressProfile } from './src/progress.mjs';
 import {
+  buildChannelFirstProductDeletedProgressProfile,
   buildChannelProgressProfile,
   buildProgressProfiles,
   buildStageProgressProfile,
@@ -1303,8 +1305,12 @@ await runCase('normalize-stage-profiles', async () => {
 
 let channelResourceInput;
 let channelResourceResult;
+let channelDeletedResourceInput;
+let channelDeletedResourceResult;
 let channelProgressInput;
 let channelProgressResult;
+let channelDeletedProgressInput;
+let channelDeletedProgressResult;
 let channelStageInput;
 let channelStageResult;
 let channelDeletedStageInput;
@@ -1320,19 +1326,25 @@ await runCase('normalize-channel-profiles', async () => {
     domain: domainSchemaSha, graph: graphSchemaSha, policy: policySchemaSha, evaluator: evaluatorSchemaSha,
   });
   channelResourceResult = { ...normalizeResourceProfile(channelResourceInput, inspected, knownResourceProfiles), schemaSha: resourceSchemaSha };
+  channelDeletedResourceInput = buildChannelFirstProductDeletedResourceProfile(inspected, domainProfiles, graphProfiles, policyProfiles, evaluatorProfiles, {
+    domain: domainSchemaSha, graph: graphSchemaSha, policy: policySchemaSha, evaluator: evaluatorSchemaSha,
+  });
+  channelDeletedResourceResult = { ...normalizeResourceProfile(channelDeletedResourceInput, inspected, knownResourceProfiles), schemaSha: resourceSchemaSha };
   channelProgressInput = buildChannelProgressProfile(inspected, channelResourceResult);
   channelProgressResult = { ...normalizeProgressProfile(channelProgressInput, inspected, channelResourceResult, knownResourceProfiles), schemaSha: progressSchemaSha };
+  channelDeletedProgressInput = buildChannelFirstProductDeletedProgressProfile(inspected, channelDeletedResourceResult);
+  channelDeletedProgressResult = { ...normalizeProgressProfile(channelDeletedProgressInput, inspected, channelDeletedResourceResult, knownResourceProfiles), schemaSha: progressSchemaSha };
   channelStageInput = buildChannelStageProfile(inspected, channelResourceResult, channelProgressResult, knownResourceProfiles);
   channelStageResult = { ...normalizeStageProfile(channelStageInput, inspected, channelResourceResult, channelProgressResult, knownResourceProfiles), schemaSha: stageSchemaSha };
-  channelDeletedStageInput = buildChannelStageFirstProductDeletedProfile(inspected, channelResourceResult, channelProgressResult, knownResourceProfiles);
-  channelDeletedStageResult = { ...normalizeStageProfile(channelDeletedStageInput, inspected, channelResourceResult, channelProgressResult, knownResourceProfiles), schemaSha: stageSchemaSha };
-  channelProfileInputs = buildChannelProfiles(inspected, channelResourceResult, channelProgressResult, channelStageResult, channelDeletedStageResult);
+  channelDeletedStageInput = buildChannelStageFirstProductDeletedProfile(inspected, channelDeletedResourceResult, channelDeletedProgressResult, knownResourceProfiles);
+  channelDeletedStageResult = { ...normalizeStageProfile(channelDeletedStageInput, inspected, channelDeletedResourceResult, channelDeletedProgressResult, knownResourceProfiles), schemaSha: stageSchemaSha };
+  channelProfileInputs = buildChannelProfiles(inspected, channelResourceResult, channelProgressResult, channelStageResult, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult);
   channelProfiles = [
     normalizeChannelProfile(channelProfileInputs[0], inspected, channelResourceResult, channelProgressResult, channelStageResult),
-    normalizeChannelProfile(channelProfileInputs[1], inspected, channelResourceResult, channelProgressResult, channelDeletedStageResult),
+    normalizeChannelProfile(channelProfileInputs[1], inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult),
   ];
-  channelDeletedInput = buildChannelFirstProductDeletedProfile(inspected, channelResourceResult, channelProgressResult, channelDeletedStageResult);
-  channelDeletedProfile = normalizeChannelProfile(channelDeletedInput, inspected, channelResourceResult, channelProgressResult, channelDeletedStageResult);
+  channelDeletedInput = buildChannelFirstProductDeletedProfile(inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult);
+  channelDeletedProfile = normalizeChannelProfile(channelDeletedInput, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult);
   assert.deepEqual(channelProfiles.map(({ normalized }) => normalized.id), ['channel.synthetic-evaluator-and-audit', 'channel.synthetic-secondary-work']);
 });
 
@@ -4690,7 +4702,7 @@ await runCase('reject-stage-product-owner', () => {
 await runCase('channel-schema-closed', () => {
   assert.equal(channelProfileSchema.properties.schema.const, 'cuda-mcgs.channel-profile/0.2.0');
   assert.equal(channelProfileSchema.additionalProperties, false);
-  for (const name of ['catalogContract', 'profileReference', 'owner', 'role', 'finiteIdentity', 'itemIdentity', 'payload', 'transition', 'stateGraph', 'claim', 'publication', 'capacity', 'allocation', 'resources', 'descriptor', 'dependency', 'noProgress', 'progress', 'consumption', 'counter', 'cancellation', 'expiry', 'reclamation', 'channelLifecycle', 'channelCompatibility', 'channelCleanup', 'provenance', 'channel', 'status', 'rootLifecycle', 'diagnostics', 'noPersistence', 'rootCompatibility', 'rootCleanup', 'programContribution', 'productData', 'productOwner']) assert.equal(channelProfileSchema.$defs[name].additionalProperties, false);
+  for (const name of ['catalogContract', 'profileReference', 'owner', 'role', 'finiteIdentity', 'itemIdentity', 'payload', 'transition', 'stateGraph', 'claim', 'ordering', 'publication', 'capacity', 'allocation', 'resources', 'descriptor', 'dependency', 'noProgress', 'progress', 'consumption', 'counter', 'cancellation', 'expiry', 'reclamation', 'channelLifecycle', 'channelCompatibility', 'channelCleanup', 'provenance', 'channel', 'status', 'rootLifecycle', 'diagnostics', 'noPersistence', 'rootCompatibility', 'rootCleanup', 'programContribution', 'productData', 'productOwner']) assert.equal(channelProfileSchema.$defs[name].additionalProperties, false);
 });
 
 await runCase('channel-absence-zero-residue', () => {
@@ -4740,6 +4752,18 @@ await runCase('channel-first-product-deletion-zero-owned-residue', () => {
   assert(!serialized.includes('evaluator-request'));
   assert(!serialized.includes('product-priority'));
   assert.notDeepEqual(channelDeletedProfile.identity, channelProfiles[0].identity);
+  assert.notDeepEqual(channelDeletedResourceResult.identity, channelResourceResult.identity);
+  assert.notDeepEqual(channelDeletedProgressResult.identity, channelProgressResult.identity);
+  const deletedOwner = channelDeletedResourceResult.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0004');
+  const maxima = Object.fromEntries(channelDeletedResourceResult.normalized.classes.filter(({ contributor }) => contributor === deletedOwner.id).map(({ id, formula }) => [id.split('class-channel-').at(-1), formula.maximumUnits]));
+  assert.deepEqual(maxima, { borrow: '256', diagnostic: '8192', item: '64', payload: '16384', pending: '64', result: '8192' });
+});
+
+await runCase('channel-ordering-explicit-and-owner-complete', () => {
+  const required = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'required');
+  const advisory = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'advisory');
+  assert.equal(required.ordering.kind, 'owner-defined'); assert(required.ordering.rule);
+  assert.deepEqual(advisory.ordering, { kind: 'unordered', rule: null });
 });
 
 await runCase('channel-resource-progress-stage-binding', () => {
@@ -4904,7 +4928,7 @@ await runCase('reject-channel-owner-profile-drift', () => {
 
 await runCase('reject-channel-owner-residue', () => {
   const mutated = clone(channelProfileInputs[1]); mutated.owners.push(clone(channelProfileInputs[0].owners.find(({ id }) => !mutated.owners.some(({ id: selected }) => selected === id))));
-  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelDeletedStageResult), { code: 'CHANNEL_OWNER_RESIDUE' });
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult), { code: 'CHANNEL_OWNER_RESIDUE' });
 });
 
 await runCase('reject-channel-empty-selected-profile', () => {
@@ -4954,7 +4978,7 @@ await runCase('reject-channel-state-unreachable', () => {
 
 await runCase('reject-channel-claim-mode-mismatch', () => {
   const mutated = clone(channelProfileInputs[1]); mutated.channels[0].claim.ownership = 'transfer';
-  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelDeletedStageResult), { code: 'CHANNEL_CLAIM_MODE' });
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult), { code: 'CHANNEL_CLAIM_MODE' });
 });
 
 await runCase('reject-channel-publication-release-gap', () => {
@@ -4987,6 +5011,16 @@ await runCase('reject-channel-resource-overcommit', () => {
   assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_RESOURCE_ALLOCATION' });
 });
 
+await runCase('reject-channel-resource-underallocation', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].resources.allocations.find(({ kind }) => kind === 'payload').units = '32752';
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_RESOURCE_ALLOCATION' });
+});
+
+await runCase('reject-channel-ordering-rule-gap', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].ordering.rule = null;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_ORDERING' });
+});
+
 await runCase('reject-channel-hidden-growth', () => {
   const mutated = clone(channelProfileInputs[0]); mutated.channels[0].resources.hiddenGrowth = true;
   assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_RESOURCE_CONTRACT' });
@@ -5014,7 +5048,7 @@ await runCase('reject-channel-required-escape-gap', () => {
 
 await runCase('reject-channel-advisory-fallback-gap', () => {
   const mutated = clone(channelProfileInputs[1]); mutated.channels[0].progress.dependencies[0].fallback = null;
-  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelDeletedStageResult), { code: 'CHANNEL_PROGRESS_DEPENDENCY' });
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult), { code: 'CHANNEL_PROGRESS_DEPENDENCY' });
 });
 
 await runCase('reject-channel-dependency-unknown-producer', () => {
@@ -5061,7 +5095,7 @@ await runCase('reject-channel-status-gap', () => {
 
 await runCase('reject-channel-cleanup-gap', () => {
   const mutated = clone(channelProfileInputs[1]); mutated.channels[0].cleanup.kinds = mutated.channels[0].cleanup.kinds.filter((kind) => kind !== 'borrow');
-  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelDeletedStageResult), { code: 'CHANNEL_ITEM_CLEANUP' });
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult), { code: 'CHANNEL_ITEM_CLEANUP' });
 });
 
 await runCase('reject-channel-native-program-language', () => {
@@ -5105,9 +5139,36 @@ await runCase('reject-channel-reference-borrow-bound', () => {
   assert.throws(() => simulateChannelTrace(channelProfiles[1].normalized, channel.id, operations), { code: 'CHANNEL_REFERENCE_CLAIM' });
 });
 
+await runCase('reject-channel-reference-generation-exhaustion-before-alias', () => {
+  const profile = clone(channelProfiles[1].normalized); const channel = profile.channels[0];
+  channel.itemIdentity.generation.maximum = '1'; channel.counters.find(({ kind }) => kind === 'generation').maximum = '1';
+  assert.throws(() => simulateChannelTrace(profile, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0 }, { kind: 'publish', slot: 0, generation: 0, release: true }, { kind: 'complete', slot: 0, generation: 0 }, { kind: 'reclaim', slot: 0, generation: 0 },
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 1 }, { kind: 'publish', slot: 0, generation: 1, release: true }, { kind: 'complete', slot: 0, generation: 1 }, { kind: 'reclaim', slot: 0, generation: 1 },
+    { kind: 'reserve', slot: 0 },
+  ]), { code: 'CHANNEL_REFERENCE_COUNTER_EXHAUSTED' });
+});
+
+await runCase('reject-channel-reference-pending-capacity', () => {
+  const profile = clone(channelProfiles[0].normalized); const channel = profile.channels.find(({ consumption }) => consumption.class === 'required');
+  channel.capacity.maxPending = '1';
+  assert.throws(() => simulateChannelTrace(profile, channel.id, [{ kind: 'await-unavailable' }, { kind: 'await-unavailable' }]), { code: 'CHANNEL_REFERENCE_PENDING' });
+});
+
+await runCase('channel-reference-cancellation-preserves-borrow-accounting', () => {
+  const channel = channelProfiles[1].normalized.channels[0];
+  const prefix = [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0 }, { kind: 'publish', slot: 0, generation: 0, release: true },
+    { kind: 'claim', slot: 0, generation: 0, acquire: true }, { kind: 'cancel', slot: 0, generation: 0 },
+  ];
+  assert.throws(() => simulateChannelTrace(channelProfiles[1].normalized, channel.id, [...prefix, { kind: 'reclaim', slot: 0, generation: 0 }]), { code: 'CHANNEL_REFERENCE_RECLAIM' });
+  const result = simulateChannelTrace(channelProfiles[1].normalized, channel.id, [...prefix, { kind: 'release', slot: 0, generation: 0 }, { kind: 'reclaim', slot: 0, generation: 0 }]);
+  assert.equal(result.slots[0].state, 'free');
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 775,
+  expected: 781,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -5115,7 +5176,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 775 - cases.length,
+  notDiscovered: 781 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -5188,7 +5249,9 @@ const evidence = {
   stageProfileIdentities: stageProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],
   stageFirstProductDeletedIdentity: stageDeletedProfile ? { id: stageDeletedProfile.normalized.id, ...stageDeletedProfile.identity } : null,
   channelResourcePlanIdentity: channelResourceResult ? { id: channelResourceResult.normalized.id, ...channelResourceResult.identity } : null,
+  channelFirstProductDeletedResourcePlanIdentity: channelDeletedResourceResult ? { id: channelDeletedResourceResult.normalized.id, ...channelDeletedResourceResult.identity } : null,
   channelProgressPlanIdentity: channelProgressResult ? { id: channelProgressResult.normalized.id, ...channelProgressResult.identity } : null,
+  channelFirstProductDeletedProgressPlanIdentity: channelDeletedProgressResult ? { id: channelDeletedProgressResult.normalized.id, ...channelDeletedProgressResult.identity } : null,
   channelStageProfileIdentity: channelStageResult ? { id: channelStageResult.normalized.id, ...channelStageResult.identity } : null,
   channelDeletedStageProfileIdentity: channelDeletedStageResult ? { id: channelDeletedStageResult.normalized.id, ...channelDeletedStageResult.identity } : null,
   channelProfileIdentities: channelProfiles?.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })) ?? [],

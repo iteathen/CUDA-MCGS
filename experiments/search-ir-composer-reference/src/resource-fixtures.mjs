@@ -244,12 +244,19 @@ function buildProfile(profile, inspected, selected, schemaShas, options = {}) {
   }
 
   if (options.channel) {
-    const definitions = [
-      ['item', 'records', '256', '16'],
-      ['payload', 'bytes', '65536', '16'],
-      ['result', 'bytes', '32768', '16'],
-      ['pending', 'records', '256', '16'],
-      ['borrow', 'records', '512', '16'],
+    const definitions = options.channelFirstProductDeleted === true ? [
+      ['item', 'records', '64', '16'],
+      ['payload', 'bytes', '16384', '16'],
+      ['result', 'bytes', '8192', '16'],
+      ['pending', 'records', '64', '16'],
+      ['borrow', 'records', '256', '16'],
+      ['diagnostic', 'bytes', '8192', '16'],
+    ] : [
+      ['item', 'records', '192', '16'],
+      ['payload', 'bytes', '49152', '16'],
+      ['result', 'bytes', '24576', '16'],
+      ['pending', 'records', '192', '16'],
+      ['borrow', 'records', '256', '16'],
       ['diagnostic', 'bytes', '16384', '16'],
     ];
     const channelClassIds = definitions.map(([token]) => `resource.${profile}.class-channel-${token}`);
@@ -331,6 +338,10 @@ export function buildStageResourceProfile(inspected, domainResults, graphResults
 
 export function buildChannelResourceProfile(inspected, domainResults, graphResults, policyResults, evaluatorResults, schemaShas) {
   return buildProfile('synthetic-stage-channels', inspected, { domain: domainResults[1], graph: graphResults[1], policy: policyResults[1], evaluator: evaluatorResults[0] }, schemaShas, { stage: true, channel: true, revision: CHANNEL_REVISION });
+}
+
+export function buildChannelFirstProductDeletedResourceProfile(inspected, domainResults, graphResults, policyResults, evaluatorResults, schemaShas) {
+  return buildProfile('synthetic-stage-channels', inspected, { domain: domainResults[1], graph: graphResults[1], policy: policyResults[1], evaluator: evaluatorResults[0] }, schemaShas, { stage: true, channel: true, channelFirstProductDeleted: true, revision: CHANNEL_REVISION });
 }
 
 export function resourceSyntheticSchemaReference(id) {

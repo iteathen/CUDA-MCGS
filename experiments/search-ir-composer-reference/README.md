@@ -101,9 +101,9 @@ The current `IR-CHANNEL-01` slice adds only the optional SPEC-0004-owned interna
 
 - canonical null absence, a required evaluator-like request/result channel, a materially different advisory secondary-work channel and an exact same-profile first-consumer deletion projection;
 - final binding of versioned Stage requirements to exact Stage/capability/surface action grants, with no Channel-side authority widening and no cyclic Stage/Channel content identity;
-- finite item/generation/correlation/payload/state/claim/counter contracts, single-transfer and immutable multi-borrow ownership, exact admission/resource conservation and typed pressure/rollback;
+- finite item/generation/correlation/payload/state/claim/counter contracts, explicit unordered or owner-defined cross-item ordering, single-transfer and immutable multi-borrow ownership, exact admission/resource conservation and typed pressure/rollback;
 - scheduler-neutral producer/consumer/completion/reclamation/pending descriptors, released workers and mutable leases, finite producer/escape paths, required-cycle rejection and typed no-progress;
-- logical device-scope release/acquire happens-before semantics plus a CUDA-free reference model that rejects missing release/acquire, uninitialized publication, stale generation, over-borrow, unsafe reclaim and late-result resurrection;
+- logical device-scope release/acquire happens-before semantics plus a CUDA-free reference model that rejects missing release/acquire, uninitialized publication, stale or exhausted generations, pending-capacity overflow, over-borrow, ownership-erasing cancellation, unsafe reclaim and late-result resurrection;
 - cancellation/expiry/stale/reclamation/teardown closure, restricted Device-JS/public CUDA-JS requirements only and an explicit native-qualification block on CUDA-JS issue #123; and
 - section-level evidence classification for all 90 Async Stage Channel requirements, with physical CUDA realization and compatible-pair qualification left partial or deferred.
 
