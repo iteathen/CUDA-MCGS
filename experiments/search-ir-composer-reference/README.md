@@ -4,6 +4,8 @@
 
 This bounded CUDA-free capsule implements proposal Search IR 0.2.0 catalog, normalization and reference-Composer evidence in dependency order. It is not a production component, public API, accepted semantic contract or native-support claim.
 
+ADR-0022 supersedes this capsule's broad `rootTransaction`/root-advance terminology. Its current outputs remain exact historical evidence for their frozen proposal input and must not be described as four-operation root-control conformance. `REF-ROOT-CONTROL-01` owns the coherent SPEC-0006/schema/composition/evidence revision.
+
 `IR-CATALOG-01` freezes:
 
 - the accepted Search IR 0.1.0 governing specification, schema, normalizer and identity fixture by SHA-256;
@@ -126,7 +128,7 @@ The integrated `IR-COMPOSER-01` slice adds only deterministic cross-owner resolu
 - one pure publication transaction that exposes no valid partial result when downstream profile validation fails; and
 - source-level deletion evidence that the authoritative Composer does not import the facade, runtime interpretation/registry machinery, native FFI or CUDA/PTX source.
 
-The `SESSION-ATTENTION-01` correction adds only the revised SPEC-0006 representation and bounded falsifiers required by ADR-0021:
+The historical `SESSION-ATTENTION-01` correction added only the revised SPEC-0006 representation and bounded falsifiers then required by ADR-0021:
 
 - a structural `rootTransaction` whose participant set contains exactly the selected root-affected owners and omits root-independent owners;
 - selected-or-absent attention with its own monotone version, coalescible publication and observation at an existing device safe point;

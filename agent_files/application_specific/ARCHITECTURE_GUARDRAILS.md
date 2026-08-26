@@ -91,7 +91,7 @@ Specifications must separate state-node-shared data from parent-edge-specific se
 - Define publication states and visibility ordering.
 - Use stable index/generation references unless another representation is accepted.
 - Treat queue/table/arena saturation as specified behavior.
-- Define reroot, reclamation, stale references, cancellation, and teardown before relying on persistent state.
+- Define initial root, advance, reroot, attention, reclamation, stale references, cancellation, and teardown before relying on persistent state. Advance is only the bounded publication/adoption of an already ready realized successor: it preserves compatible descendant work, lazily supersedes occurrence-scoped sibling work, and performs no graph traversal, transformation, reset, resize, retained-state reclassification, reclamation, or eager cleanup. General root replacement/reconciliation belongs to reroot; directional weighting without authority change belongs to attention.
 
 ## Evaluator boundary
 

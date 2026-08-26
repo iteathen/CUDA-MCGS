@@ -12,6 +12,8 @@
 
 **Canonical issue adjacency:** [#113](https://github.com/iteathen/CUDA-MCGS/issues/113)
 
+> **Later authority note:** ADR-0022 supersedes the terminology conclusion recorded by this frozen audit. The audit remains evidence for its exact input and product-assumption claim; it is not evidence that the current four-operation root-control model is represented.
+
 ## Claim and boundary
 
 This is a bounded complete-inventory review of whether chess or Connect Four meaning currently shapes CUDA-MCGS universal authority, accepted/proposal Search IR schemas, CUDA-free normalizers/reference composition, generated semantic inputs or dependency direction. It is implementation self-sanity rather than independent review because the repository currently has one maintainer and the project owner explicitly waived an impossible independent-maintainer rule.
@@ -40,7 +42,7 @@ The cheapest decisive counterexamples are already materialized in the proposal c
 
 The accepted Search IR 0.1.0 reference remains deliberately smaller: its in-memory synthetic schedule uses numeric `valueSum`. That is an instance-local oracle for graph/publication/resource invariants, not a field or default in the accepted Search IR schema and not evidence for universal value semantics. Replacing it is unnecessary and would reopen accepted evidence; claiming it as the universal behavioral reference would be invalid.
 
-The audit also found current proposal terminology still using `reroot` for genuine structural root changes. This was not a chess/Connect Four leak and did not represent attention as a root operation, but it conflicted with ADR-0021's public naming boundary. The same correction replaces current universal proposal/schema/reference vocabulary with `root advance`; historical/product-prototype evidence retains its original language where provenance matters.
+At the frozen input, the audit also found proposal terminology using `reroot` for genuine structural root changes. This was not a chess/Connect Four leak and did not represent attention as a root operation, but it conflicted with then-current ADR-0021 naming. That correction replaced proposal/schema/reference vocabulary with broad `root advance`; historical/product-prototype evidence retained its original language where provenance mattered. ADR-0022 later superseded that naming conclusion.
 
 ## Findings and disposition
 
@@ -48,7 +50,7 @@ No confirmed chess or Connect Four assumption leakage was found in the declared 
 
 The original frozen audit left one evidence gap: the integrated full cross-profile/first-product deletion matrix had not run. The subsequent `IR-DELETION-ID-01` candidate closes that bounded structural gap across eight matched canonical-Composer deletion paths and four materially different engine identities. It does not turn this bounded self-sanity record into behavioral, native or independent-review evidence.
 
-The terminology observation is remediated by ADR-0021, revised current proposal documents, the domain `root-advance` reuse boundary and the Session attention/root split in this correction. All affected proposal source and composed identities are invalidated and must be regenerated. Accepted Search IR 0.1.0, historical archive bytes and isolated prototype implementations remain unchanged.
+The frozen terminology observation was remediated at that revision by ADR-0021, revised proposal documents, the domain `root-advance` reuse boundary and the Session attention/root split. ADR-0022 now identifies that broad root-advance model as incomplete; `REF-ROOT-CONTROL-01` owns the next deliberate source/identity regeneration. Accepted Search IR 0.1.0, historical archive bytes and isolated prototype implementations remain unchanged.
 
 ## Validation and limits
 

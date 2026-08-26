@@ -96,10 +96,12 @@ Universal MCGS contracts
 
 When selected, it covers:
 
-- finite root epochs;
-- bounded structural root-advance transactions plus independently versioned lazy attention publication, validation/admission **before** root-specific mutation, root prepare/commit/abort and typed outcomes;
+- finite root incarnations and ordered advance provenance;
+- initial root establishment, minimum-work advance to an already ready realized successor, general reroot and independently versioned lazy attention publication;
+- bounded validation/admission **before** root-specific mutation, reroot prepare/commit/abort and typed outcomes;
+- preservation of compatible selected-descendant work and lazy `superseded-by-advance` disposition for sibling-occurrence work, without advance-time traversal, transformation, reset, resize, reclassification, reclamation or eager cleanup;
 - coordination of source-owner stale-work and retain/retain-if-key-valid/transform/reset/invalidate dispositions;
-- separation of the logical root transaction from graph-owned generation-safe reclamation;
+- separation of the logical reroot transaction and advance publication from graph-owned generation-safe reclamation;
 - bounded request/acquire/release coordination for output-owned immutable **read-only** live observations; and
 - cancellation, completion, stale-safe finite generation/counter exhaustion, restart and exact terminal-only zero-residue behavior.
 
@@ -107,7 +109,7 @@ Session does not own domain root validity, graph reclamation, policy/evaluator r
 
 A ranked root-action list is one possible product/policy observation schema. It is not the universal observation contract.
 
-The bounded SESSION-001 prototype found several important semantic failure modes: rejected root updates mutating state before failure, observation publishing materializing search state, stale old-root work contaminating later epochs without an epoch guard, generation ABA on reclaimed-slot reuse, and finite full-arena new-root pressure. Those lessons are folded into the proposal specs; the prototype itself is not production authority.
+The bounded SESSION-001 prototype found several important semantic failure modes: rejected root changes mutating state before failure, observation publishing materializing search state, stale old-root work contaminating later epochs without an epoch guard, generation ABA on reclaimed-slot reuse, and finite full-arena new-root pressure. Its historical `reroot` operation predates the current four-operation vocabulary and is retained as provenance, not authority for advance semantics.
 
 ## CUDA-JS boundary
 
@@ -130,7 +132,7 @@ Current universal proposals:
 - [`SPEC-0003`](docs/specs/SPEC-0003-search-stage-and-extension-surface.md) — universal Search Stage/surface/base-context/capability semantics.
 - [`SPEC-0004`](docs/specs/SPEC-0004-async-stage-channels.md) — universal internal nonblocking channel/readiness semantics.
 - [`SPEC-0005`](docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) — restricted Device-JS/Search Image composition, opaque CUDA-JS-generated outputs and product/capability deletion.
-- [`SPEC-0006`](docs/specs/SPEC-0006-search-session-control-and-observation.md) — optional external Search Session transaction/root-epoch and bounded control/observation-request lifecycle coordination.
+- [`SPEC-0006`](docs/specs/SPEC-0006-search-session-control-and-observation.md) — optional external Search Session root-control and bounded control/observation-request lifecycle coordination; its current root-advance representation is pending ADR-0022 reconciliation under `REF-ROOT-CONTROL-01`.
 - [`SPEC-0007`](docs/specs/SPEC-0007-domain-state-action-and-transition.md) — domain state/action/transition/identity/history/role/terminal semantics.
 - [`SPEC-0008`](docs/specs/SPEC-0008-search-policy-and-backup.md) — search selection/reservation/widening/value/backup/stopping/reuse semantics.
 - [`SPEC-0009`](docs/specs/SPEC-0009-evaluator-contract.md) — optional evaluator capability/request/result/residency/batching/cache/reuse semantics.
@@ -149,14 +151,14 @@ None of the proposal documents authorize production implementation by themselves
 
 The repository is **public and pre-release**. CUDA-MCGS is still in framework definition, research, specification and bounded evidence gathering. No production search runtime, stable public API, released CUDA-MCGS/CUDA-JS compatible pair, native Linux support claim, or chess engine release is implied by repository visibility.
 
-The canonical plan is [`next_step.yaml`](next_step.yaml) under parent `CUDA-MCGS-V0/23`. It has separate universal-core, universal-extension-substrate, universal-integration/native, and non-gating downstream product lanes.
+The canonical plan is [`next_step.yaml`](next_step.yaml) under parent `CUDA-MCGS-V0/26`. It has separate universal-core, universal-extension-substrate, universal-integration/native, and non-gating downstream product lanes.
 
 ## Engineering invariants
 
 - Universal contracts compile into finite specialized hot paths; unused capabilities do not pay permanent runtime cost.
 - Active internal search remains device-closed after ignition; no CPU-produced intermediate internal decision is permitted.
-- External environment/root updates may enter only through accepted bounded Search Session contracts and do not make the host a search-progress coordinator.
-- Every concrete engine has a finite explicit resource plan; exhaustion and root-update pressure are specified behavior.
+- External root, advance, reroot and attention commands may enter only through accepted bounded Search Session contracts and do not make the host a search-progress coordinator.
+- Every concrete engine has a finite explicit resource plan; exhaustion and reroot pressure are specified behavior, while advance may not allocate or resize.
 - Extensions are least-authority, statically composed before ignition, product-neutral at the substrate boundary, and unable to redefine core invariants through a callback back door.
 - Product needs may motivate universal proposals but cannot silently rewrite the framework from a product branch.
 - Universal conformance uses materially different synthetic domains/products; chess cannot become the universal oracle.

@@ -1,5 +1,7 @@
 # Specifications
 
+> **Current proposal correction:** [ADR-0022](../decisions/ADR-0022-distinguish-root-advance-reroot-and-attention.md) supersedes the broad root-advance terminology currently present in proposal SPEC-0006 and proposal Search IR 0.2.0. Initial root, minimum-work advance, general reroot and non-structural attention must be represented separately. `REF-ROOT-CONTROL-01` and [issue #113](https://github.com/iteathen/CUDA-MCGS/issues/113) own the coherent spec/schema/reference reconciliation before Graph work. Existing proposal identities remain exact historical evidence and are not relabeled as ADR-0022-conforming.
+
 **Status:** Informational
 
 This directory contains versioned CUDA-MCGS search contracts and downstream product specifications. No interface is accepted merely because it appears in architecture discussion, research, implementation, tests, a plan, product example, or proposal.

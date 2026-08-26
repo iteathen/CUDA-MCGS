@@ -103,7 +103,7 @@ After the core and extension proposals are decision-complete, execute an explici
 
 The Composer may select a CUDA-JS capability such as RDC/LTO only when a later concrete realization needs it and its claimed profile is qualified; availability alone does not make it a framework dependency. This node authorizes representation and CUDA-free reference evidence only, not production CUDA lowering.
 
-ADR-0020 and [issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) govern the public-library input boundary; `IR-COMPOSER-01` has integrated its resolved-input/default provenance and convenient/explicit canonical-equivalence evidence. ADR-0021 deliberately revises proposal SPEC-0006 and its catalog source identity before deletion reconciliation; this is an explicit invalidation, not silent drift of a frozen input. The 989 requirement IDs and owners remain fixed, while their revised proposal source/evidence identities must be regenerated. Exact SDK class/function names and production facade implementation remain downstream of accepted semantics.
+ADR-0020 and [issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) govern the public-library input boundary; `IR-COMPOSER-01` integrated its resolved-input/default provenance and convenient/explicit canonical-equivalence evidence. ADR-0022 now supersedes ADR-0021's broad root-advance model: the integrated proposal evidence remains truthful for its exact input but does not represent initial root, minimum-work advance, general reroot and non-structural attention as four distinct operations. `REF-ROOT-CONTROL-01` deliberately reconciles SPEC-0006, schema/composition and affected identities before Graph. Exact SDK class/function names and production facade implementation remain downstream of accepted semantics.
 
 ## ENGINE-REFERENCE-01 — universal reference/conformance
 
@@ -112,6 +112,7 @@ ADR-0020 and [issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) gove
 - retain existing Search IR reference evidence;
 - add materially different synthetic domains/evaluator/output shapes so Connect Four cannot become the hidden template;
 - exercise graph/transposition/path/cycle/resource/output/session rules at boundaries;
+- reconcile initial root, minimum-work advance, general reroot and non-structural attention representation before extending Graph, preserving compatible descendant work and shared transposed nodes while superseding sibling occurrences lazily;
 - keep the declared-schedule/event/mutation harness semantically neutral and keep each owner oracle independently replaceable;
 - reuse the current SPEC-0004 Channel logical oracle under its owning experiment rather than copying it;
 - deliver a complete finite `session-absent`, extension-absent terminal reference slice before optional live Session/Stage/Channel integration; and
@@ -119,7 +120,7 @@ ADR-0020 and [issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) gove
 
 The terminal slice is the first executable CUDA-free developer-preview milestone. It does not authorize a production component, public SDK, native support or performance claim.
 
-`REF-HARNESS-01` supplies the protected-integrated semantic-neutral experiment skeleton. `REF-DOMAIN-01` extends it to 49/49 passing cases against the live 878/878 Composer output and exact three-profile normalized Domain projection. The 27 Domain cases map and exercise all 47 direct SPEC-0007 reference-oracle requirements while preserving deterministic/stochastic/history/observation/lazy-action diversity and strict Domain ownership. This remains bounded behavioral evidence, not proposal acceptance. After protected Domain integration and cleanup, `REF-GRAPH-01` is next; no Graph behavior is included in the Domain leaf.
+`REF-HARNESS-01` supplies the protected-integrated semantic-neutral experiment skeleton. `REF-DOMAIN-01` extends it to 49/49 passing cases against the live 878/878 Composer output and exact three-profile normalized Domain projection. The 27 Domain cases map and exercise all 47 direct SPEC-0007 reference-oracle requirements while preserving deterministic/stochastic/history/observation/lazy-action diversity and strict Domain ownership. This remains bounded behavioral evidence for its exact proposal input, not proposal acceptance or ADR-0022 conformance. `REF-ROOT-CONTROL-01`, tracked by [issue #113](https://github.com/iteathen/CUDA-MCGS/issues/113), is next and must regenerate affected proposal-derived evidence coherently; `REF-GRAPH-01` is blocked until it integrates.
 
 ## ENGINE-CONTRACT-ACCEPTANCE-01 — integrated semantic acceptance
 

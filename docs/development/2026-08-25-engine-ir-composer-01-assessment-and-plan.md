@@ -8,6 +8,8 @@
 
 **Priority:** P0 prerequisite to semantic acceptance and production implementation
 
+> **Later authority note:** ADR-0022 supersedes ADR-0021's broad root-advance terminology. This record remains exact provenance for the integrated proposal evidence, but `REF-ROOT-CONTROL-01` must reconcile initial root, minimum-work advance, general reroot and attention before Graph work consumes that representation.
+
 **Parent plan:** `CUDA-MCGS-V0/23`
 
 **Integration owner:** CUDA-MCGS Search IR/Composer integration spine

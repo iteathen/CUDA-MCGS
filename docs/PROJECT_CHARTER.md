@@ -20,7 +20,7 @@ The universal core owns reusable search contracts and search-specific runtime be
 
 - Search IR and versioning;
 - state, action, transition, identity, node-role, terminal, history, and cycle semantics;
-- graph storage, transpositions, paths, and selected Search Session/reroot/reclamation semantics;
+- graph storage, transpositions, paths, and selected Search Session root/advance/reroot/attention/reclamation semantics;
 - selection, reservation, expansion, widening, evaluation batching, backup, stopping, and generic bounded result/observation semantics;
 - resident evaluator/model composition and search-specific generated device programs;
 - finite GPU-memory planning, capacities, pressure, exhaustion, cancellation, and result behavior;
@@ -88,7 +88,7 @@ Universality does not imply unbounded resources. Every concrete engine declares 
 
 CUDA-MCGS owns the search-resource partition and pressure policy. CUDA-JS owns generic resource creation/lifetime behavior and reports capability/allocation outcomes through its versioned contract.
 
-Resource exhaustion is specified behavior, not an undefined failure discovered mid-search. A product or external root update may not escape finite planning through surprise allocation.
+Resource exhaustion is specified behavior, not an undefined failure discovered mid-search. Initial root and reroot admission may not escape finite planning through surprise allocation. Advance is valid only for an already ready realized successor and may not allocate, resize or transform state.
 
 ## Initial exclusions
 

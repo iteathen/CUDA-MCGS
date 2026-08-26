@@ -196,6 +196,7 @@ Consolidation merges execution overhead, not semantic accountability.
 
 - A concrete engine is finite and memory-planned.
 - Active production search remains device-closed after ignition.
+- Root-control vocabulary is semantic and cost-bearing: root establishes initial authority; advance selects an already ready realized successor without graph-size work or eager cleanup; reroot owns general authority replacement/reconciliation; attention changes direction without changing root or invalidating work.
 - Universal contracts do not embed chess, games, one evaluator/action/graph shape, or one GPU.
 - Generated hot paths may specialize and eliminate unused abstractions.
 - No optimization is accepted without mechanism evidence and semantic/search-quality guardrails.
