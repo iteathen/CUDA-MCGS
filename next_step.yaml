@@ -83,6 +83,15 @@
     "not_default_blockers": ["RDC", "Device LTO", "multi-operation scheduling", "CUDA Graph/cooperative execution", "advanced warp/shared-memory primitives", "tensor-shaped execution", "publication mailboxes unless the selected engine/session profile requires them"],
     "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
+  "current_cuda_js_tensor_dependency_state": {
+    "package": "cuda-js-tensor@0.1.0-alpha.6",
+    "protected_main_revision": "9ecc1d78bca989ec456c897dec215e82ce4cd311",
+    "exact_cuda_js_pair": "cuda-js@0.1.0-alpha.16 at protected main 4971302cfb48431c0843126a59d5884d84a81641",
+    "available_public_mechanism": "SPEC-0009 item-parallel device-callable Tensor program through compileTensorDeviceProgram and one typed tensorRunItem leaf function per statically independent item",
+    "consumer_ownership": "CUDA-MCGS retains evaluator/model meaning, resident bindings, queueing, batching compatibility, participant scheduling, incarnation/scatter/publication/cancellation, root/cache validity and multi-GPU coordination.",
+    "integration_gate": "Do not begin CUDA-MCGS Tensor lowering before the current semantic/reference dependency order reaches a selected native evaluator leaf with accepted resource/progress contracts.",
+    "claim_limits": "The recorded Tensor evidence is one Windows compute-75 correctness/lifecycle cell plus portable selected-target separation; it is not CUDA-MCGS, Linux, performance, Tensor Core or simultaneous multi-GPU qualification."
+  },
   "blockers": [
     "ADR-0022 supersedes the current proposal SPEC-0006/Search IR 0.2.0 broad root-advance representation; REF-ROOT-CONTROL-01 must reconcile and regenerate affected representation/reference evidence before Graph implementation",
     "the semantic-neutral harness and bounded Domain oracle do not form a complete engine; Graph through integrated lifecycle oracles and atomic semantic acceptance remain required before any owned production lowering",

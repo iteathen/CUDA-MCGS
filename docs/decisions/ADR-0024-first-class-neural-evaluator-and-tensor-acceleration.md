@@ -80,6 +80,12 @@ Initial multi-GPU execution replicates the immutable model package per participa
 
 These bounds select a first implementation, not a permanent neural-network architecture, model format, fixed action width or value shape.
 
+## Dependency availability update
+
+As of 2026-08-26, public `cuda-js-tensor@0.1.0-alpha.6` at protected `main@9ecc1d78bca989ec456c897dec215e82ce4cd311` provides the consumer-neutral item-parallel device-callable Tensor mechanism needed by this direction. One caller-owned Device-JS participant evaluates one statically independent item through a typed leaf library; independent selected-device sessions compile for their own CUDA-JS targets. The exact disposition and claim limits are recorded in [`2026-08-26-cuda-js-tensor-device-callable-readiness.md`](../development/2026-08-26-cuda-js-tensor-device-callable-readiness.md).
+
+This closes external mechanism availability only. It does not implement the CUDA-MCGS neural connector, choose evaluator batching/search policy, qualify a performance recommendation, or bypass the current semantic/reference dependency order.
+
 ## Consequences
 
 - Neural evaluators are easy to configure without becoming the universal evaluator assumption.
