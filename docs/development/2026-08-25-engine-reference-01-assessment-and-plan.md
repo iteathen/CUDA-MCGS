@@ -176,7 +176,7 @@ The arrows are evidence/integration order, not reverse semantic ownership. `REF-
 | Focus branch | Initial status | Owned outcome | Write surface/output | Falsifier |
 |---|---|---|---|---|
 | `REF-ASSESS-01` | completed assessment | Frozen behavioral accounting, oracle boundary, fixture matrix and dependency-sized map | This plan, status/forward routing and issue handoff | Reference implementation begins before the map, accepted evidence is reinterpreted or a missing semantic owner is hidden in the harness. |
-| `REF-HARNESS-01` | ready after assessment integration | Semantic-neutral bounded schedule/event/mutation/evidence harness and experiment skeleton | New `experiments/search-semantics-reference/` harness, manifest documentation, registry/index and focused cases | Harness owns search meaning, imports owner internals, becomes an unbounded scheduler/model checker or cannot reject a mismatched Composer key. |
+| `REF-HARNESS-01` | completed implementation; protected integration pending | Semantic-neutral bounded schedule/event/mutation/evidence harness and experiment skeleton | New `experiments/search-semantics-reference/` harness, manifest documentation, registry/index and focused cases | Harness owns search meaning, imports owner internals, becomes an unbounded scheduler/model checker or cannot reject a mismatched Composer key. |
 | `REF-DOMAIN-01` | queued | Domain transition oracle across deterministic, stochastic, history-sensitive, observation-bearing and lazy action families | Domain module/fixtures/cases and exact coverage references | Hidden host randomness, game/player/fixed-action assumptions, identity/history collision, partial publication or cancellation residue survives. |
 | `REF-GRAPH-01` | blocked on Domain | Graph/storage oracle for claims, transpositions, paths/cycles, protection, retirement and generation-safe reuse | Graph module/fixtures/cases and coverage references | Layout bytes become semantic authority, equal/unequal claims mismerge, path meaning truncates or stale/protected storage is reused. |
 | `REF-POLICY-01` | blocked on Graph | Policy oracle for local records, reservation, cycle response, ordered/idempotent backup, stop and reuse | Policy module/fixtures/cases and coverage references | Scalar/zero-sum/ranking leaks in, reservations count as completion, occurrence/order semantics collapse or stale backup publishes. |
@@ -206,6 +206,14 @@ Before each material leaf, freeze the expected base/head and representation/comp
 - retain no generated `build/`, package cache, process, device resource, worktree or untracked scratch.
 
 Before publication, rollback is exact branch/worktree deletion after confirming no dependent state. After integration, correction uses a new explicit revision and invalidates dependent evidence; accepted evidence is not rewritten.
+
+## REF-HARNESS-01 implementation result
+
+The first dependency-ready leaf implements the bounded experiment skeleton and no owner-specific search semantics. The source is ordinary JavaScript and splits strict errors, canonical evidence, finite declared-schedule execution and mutation sensitivity into separate harness responsibilities. Owner transition functions receive frozen clones of only their own state, explicit input and explicitly depended-on immutable public facts. Owner namespaces cannot overlap; events cannot read unpublished or undeclared dependencies; facts cannot be foreign-owned, republished or mutated through the harness.
+
+The full harness capsule passes 22/22 checked-in expected cases with no skips against the live 878/878 Composer evidence output. It binds representation/composition key `70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9` and produces the source-keyed harness evidence recorded in `RESULTS.md`. One mutation case also passes independently through the focused execution path; that focused result is not used for the full claim.
+
+This leaf changes no proposal requirement disposition: a neutral harness is infrastructure for later falsifiers, not Domain/Graph/Policy or integrated semantic evidence. Generated Composer/Search IR/harness `build/` evidence remains ignored and is removed after reconciliation. `REF-DOMAIN-01` becomes dependency-ready only after protected integration and cleanup of this leaf.
 
 ## Acceptance, claim limits and handoff
 

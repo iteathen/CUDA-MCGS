@@ -119,6 +119,8 @@ ADR-0020 and [issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) gove
 
 The terminal slice is the first executable CUDA-free developer-preview milestone. It does not authorize a production component, public SDK, native support or performance claim.
 
+`REF-HARNESS-01` now supplies the semantic-neutral experiment skeleton and passes 22/22 cases against the live 878/878 Composer output under the recorded harness evidence key. It owns exact case discovery, schedule/event/owner isolation, immutable public-fact routing, owner-code-preserving mutation sensitivity and evidence identity only. `REF-DOMAIN-01` is next; no owner-specific behavioral requirement is promoted by the harness alone.
+
 ## ENGINE-CONTRACT-ACCEPTANCE-01 — integrated semantic acceptance
 
 After the proposal, Search IR/Composer and universal reference nodes agree on one exact revision:
