@@ -90,7 +90,7 @@ The assessment classified device-scope release/acquire publication as a missing 
 
 ## ENGINE-IR-COMPOSER-01 — normalized Search IR and Search Composer
 
-**Current focus.** The critical assessment and dependency-ordered semantic focus map are [`2026-08-25-engine-ir-composer-01-assessment-and-plan.md`](2026-08-25-engine-ir-composer-01-assessment-and-plan.md). It preserves accepted Search IR 0.1.0, assigns proposal Search IR 0.2.0 fragments to their semantic owners and keeps the reference Composer under bounded experiments rather than prematurely creating a production component. `IR-CATALOG-01` through `IR-COMPOSER-01` and `SESSION-ATTENTION-01` are integrated through PR #114; `IR-DELETION-ID-01` integrates through PR #115 with 877/877 CUDA-free cases across eight canonical deletion paths and four materially different noncolliding engines. `IR-INTEGRATE-01` next reconciles the complete evidence packet while retaining separated attention/root meaning, exact public CUDA-JS-only projection and product-assumption absence.
+**Completed bounded representation/composition evidence node through PR #116.** The critical assessment, dependency-ordered semantic focus map and exact handoff are [`2026-08-25-engine-ir-composer-01-assessment-and-plan.md`](2026-08-25-engine-ir-composer-01-assessment-and-plan.md). It preserves accepted Search IR 0.1.0, assigns proposal Search IR 0.2.0 fragments to their semantic owners and keeps the reference Composer under bounded experiments rather than prematurely creating a production component. `IR-INTEGRATE-01` reconciles 878/878 CUDA-free cases, all 989 evidence dispositions and exact separated attention/root, public CUDA-JS-only projection and product-assumption-absence evidence under canonical key `34c85d459ba1f8b62e32cf4b4aefbeadf0ab4d953f3d4a9657ad9ddd768c33f2`. The final partition is 904 partial, 33 pending behavioral-oracle and 52 deferred native-compatible-pair requirements; no proposal is accepted by this node.
 
 After the core and extension proposals are decision-complete, execute an explicitly bounded, non-production schema/normalizer/reference-composer evidence node:
 
@@ -107,7 +107,7 @@ ADR-0020 and [issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) gove
 
 ## ENGINE-REFERENCE-01 — universal reference/conformance
 
-Build a consolidated deterministic CUDA-free universal reference/conformance layer after the owning semantic contracts stabilize.
+**Current focus after PR #116 protected-target verification.** Build a consolidated deterministic CUDA-free universal reference/conformance layer from the frozen Composer evidence key after the owning semantic contracts stabilize. Begin with a critical assessment and dependency-sized focus map; downstream reference code may exercise proposal meaning but may not invent, repair or bypass missing schema meaning.
 
 - retain existing Search IR reference evidence;
 - add materially different synthetic domains/evaluator/output shapes so Connect Four cannot become the hidden template;

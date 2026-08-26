@@ -6166,9 +6166,30 @@ await runCase('universal-normalized-product-assumption-absence', () => {
   assert(outputProfiles.some(({ normalized }) => normalized.fields.every(({ semanticRole }) => semanticRole !== 'ranking')));
 });
 
+await runCase('integration-requirement-disposition-handoff', () => {
+  const countByStatus = Object.fromEntries(['deferred', 'partial', 'pending'].map((status) => [
+    status,
+    inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === status).length,
+  ]));
+  assert.deepEqual(countByStatus, { deferred: 52, partial: 904, pending: 33 });
+
+  const pending = inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === 'pending');
+  assert(pending.every(({ currentDisposition, plannedEvidenceOwner }) => (
+    currentDisposition === 'engine-reference-oracle' && plannedEvidenceOwner === 'ENGINE-REFERENCE-01'
+  )));
+
+  const deferred = inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === 'deferred');
+  assert(deferred.every(({ currentDisposition, plannedEvidenceOwner }) => (
+    currentDisposition === 'native-compatible-pair-qualification' && plannedEvidenceOwner === 'ENGINE-NATIVE-01'
+  )));
+
+  const partial = inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === 'partial');
+  assert(partial.every(({ evidenceRefs }) => evidenceRefs.some((reference) => !reference.startsWith('planned:'))));
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 877,
+  expected: 878,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -6176,7 +6197,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 877 - cases.length,
+  notDiscovered: 878 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -6237,6 +6258,38 @@ const sources = {};
 for (const relative of sourcePaths) {
   sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
 }
+const representationCompositionEvidenceKey = canonicalIdentity({
+  schema: 'cuda-mcgs.search-ir-composer-evidence-key/0.2.0',
+  authorityBaseline: contractSetInput.authorityBaseline,
+  sources,
+  catalog: inspected.identities,
+  requirementDispositions: inspected.requirements,
+  representation: {
+    frameworkSelection: frameworkSelection.identity,
+    domains: domainProfiles.map(({ normalized, identity }) => ({ id: normalized.id, identity })),
+    graphs: graphProfiles.map(({ normalized, identity }) => ({ id: normalized.id, identity })),
+    policies: policyProfiles.map(({ normalized, identity }) => ({ id: normalized.id, identity })),
+    evaluators: evaluatorProfiles.map(({ normalized, identity }) => ({ id: normalized.id, identity })),
+    resources: resourceProfiles.map(({ normalized, identity }) => ({ id: normalized.id, identity })),
+    progress: progressProfiles.map(({ normalized, identity }) => ({ id: normalized.id, identity })),
+    outputs: outputProfiles.map(({ normalized, identity }) => ({ id: normalized.id, identity })),
+    sessions: sessionProfiles.map(({ normalized, identity }) => ({ id: normalized.id, identity })),
+    stages: stageProfiles.map(({ normalized, identity }) => ({ id: normalized.id, identity })),
+    channels: channelProfiles.map(({ normalized, identity }) => ({ id: normalized.id, identity })),
+  },
+  composition: {
+    programPackages: programPackageProfiles.map(({ normalized, identity, semanticEngineIdentity }) => ({ id: normalized.id, identity, semanticEngineIdentity })),
+    searchPrograms: searchPrograms.map(({ normalized, identity }) => ({ compositionProfileIdentity: normalized.compositionProfileIdentity, sourceIdentity: normalized.sourceIdentity, identity })),
+    executionPackages: executionPackages.map(({ normalized, identity }) => ({ programIdentity: normalized.program.identity, identity })),
+    resolvedComposerInput: explicitResolvedComposerInput.identity,
+    composerPublication: explicitComposition.publication.identity,
+    deletionMatrix: canonicalIdentity(deletionMatrix.map(({ summary: matrixSummary }) => matrixSummary)),
+    materiallyDifferentSemanticEngines: materiallyDifferentCompositions.map(({ compositionProfile }) => compositionProfile.semanticEngineIdentity),
+    compatiblePair: compatiblePair.identity,
+  },
+  cases: cases.map(({ id, status }) => ({ id, status })),
+  summary,
+});
 const evidence = {
   schemaVersion: 1,
   capsule: 'cuda-mcgs-search-ir-composer-reference-v0.2.0',
@@ -6271,6 +6324,7 @@ const evidence = {
   executionPackageIdentities: executionPackages?.map(({ normalized, identity }) => ({ id: normalized.program.identity.sha256, ...identity })) ?? [],
   resolvedComposerInputIdentity: explicitResolvedComposerInput ? { ...explicitResolvedComposerInput.identity } : null,
   composerPublicationIdentity: explicitComposition ? { ...explicitComposition.publication.identity } : null,
+  representationCompositionEvidenceKey,
   deletionIdentityMatrixIdentity: deletionMatrix ? canonicalIdentity(deletionMatrix.map(({ summary: matrixSummary }) => matrixSummary)) : null,
   deletionIdentityMatrix: deletionMatrix?.map(({ summary: matrixSummary }) => matrixSummary) ?? [],
   materiallyDifferentComposerIdentities: materiallyDifferentCompositions?.map(({ compositionProfile, searchProgram, executionPackage }) => ({
@@ -6316,4 +6370,5 @@ console.log(`capsule=${evidence.capsule} expected=${summary.expected} discovered
 console.log(`contracts=${inspected?.contractSummaries.length ?? 0} requirements=${inspected?.requirements.length ?? 0} classified=${evidence.coverage.classified} pending=${evidence.coverage.pending}`);
 console.log(`contract_set_sha256=${inspected?.identities.contractSet.sha256 ?? 'unavailable'} coverage_sha256=${inspected?.identities.coverage.sha256 ?? 'unavailable'} expanded_requirements_sha256=${inspected?.identities.expandedRequirements.sha256 ?? 'unavailable'}`);
 console.log(`framework_selection_sha256=${frameworkSelection?.identity.sha256 ?? 'unavailable'} canonical_bytes=${frameworkSelection?.identity.byteLength ?? 0}`);
+console.log(`representation_composition_evidence_sha256=${representationCompositionEvidenceKey.sha256} canonical_bytes=${representationCompositionEvidenceKey.byteLength}`);
 if (failed.length > 0) process.exit(1);

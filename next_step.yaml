@@ -1,14 +1,22 @@
 {
-  "schema_version": 59,
+  "schema_version": 60,
   "updated": "2026-08-25",
-  "status": "ir_integration_ready_after_deletion_identity_merge",
+  "status": "engine_reference_assessment_ready_after_ir_composer_integration",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "0f652a392c0f3a7765287190adfb225a8add9caa",
+    "cuda_mcgs_authority_input_baseline": "f273c79a345f8e8b389d79bed21b5af1ff1bb0f6",
     "cuda_js_authority_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
     "cuda_js_implementation_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
     "cuda_js_package": "cuda-js@0.1.0-alpha.7"
+  },
+  "exact_evidence_inputs": {
+    "representation_composition_evidence_key": "34c85d459ba1f8b62e32cf4b4aefbeadf0ab4d953f3d4a9657ad9ddd768c33f2",
+    "contract_set_identity": "54f5e7ce38423042ae95098fe38e0cf5bd33acdca8cd1fecf0f1c939ef945177",
+    "requirement_coverage_identity": "fe510fb69890b070ae6e7dfc60bd3e113a3f7e6354fa6bfcd8e48a6336c6c07a",
+    "expanded_requirement_identity": "32fc66ca775046121146f3afc621e3407bab69711355e283b769d947fd185e0a",
+    "deletion_matrix_identity": "a50be5769e92ce07b9ae1de920c376e18b1c1a3e63f7069a49609ba8a8faaefc",
+    "requirement_evidence_partition": { "partial": 904, "pending_behavioral": 33, "deferred_native": 52 }
   },
   "authority": [
     "AGENTS.md",
@@ -27,14 +35,14 @@
     "docs/specs/SPEC-0002-search-ir-and-reference-semantics.md"
   ],
   "current_focus": {
-    "id": "ENGINE-IR-COMPOSER-01",
-    "parent_plan_version": "CUDA-MCGS-V0/23",
+    "id": "ENGINE-REFERENCE-01",
+    "parent_plan_version": "CUDA-MCGS-V0/24",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
-    "focus_branch_map": "docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md",
-    "active_leaf": "IR-INTEGRATE-01",
+    "focus_branch_map": null,
+    "active_leaf": "REF-ASSESS-01",
     "ready_queued_leaves": [],
-    "next_action": "After PR #115 protected-target verification and source-branch/worktree cleanup, execute IR-INTEGRATE-01: reconcile one exact representation/composition evidence key, all 989 evidence dispositions, results/status/plan/issue routing and claim limits before handing behavioral work to ENGINE-REFERENCE-01. Preserve the corrected attention/root boundary, canonical resolved-input rules and public CUDA-JS-only projection; do not infer native, performance or contract-acceptance evidence from the structural matrix.",
-    "exit": "Materially different engines cannot collide; removing every optional capability/product owner leaves no solely owned source, function, resource, requirement, operation, manifest or identity residue; and every surviving byte change is explained by a truthfully changed selected-owner or composed identity."
+    "next_action": "After PR #116 protected-target verification and source-branch/worktree cleanup, execute REF-ASSESS-01: critically assess and dependency-size the universal CUDA-free behavioral reference/conformance layer against the frozen representation/composition evidence key. Map materially different domain/action/evaluator/output shapes; DAG/transposition/path/cycle/history behavior; stochastic, observed and lazy production; finite pressure; cancellation/publication/cleanup; selected Stage/Channel behavior; and optional Session/root/attention behavior. Do not implement a monolithic reference engine or invent schema meaning before the map is accepted.",
+    "exit": "Independent deterministic or schedule-invariant oracles falsify every owned semantic behavior across materially different product-neutral instances, all pending behavioral lanes have exact evidence, and the resulting packet is ready for atomic ENGINE-CONTRACT-ACCEPTANCE-01 without production or native claims."
   },
   "deliverables": [
     "decision-complete product-neutral domain, policy, evaluator, generic output, graph/storage, finite-resource, device-owned progress and Search Session proposals",
@@ -65,7 +73,7 @@
     "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
   "blockers": [
-    "all 989 proposal requirements require integrated CUDA-free behavioral reference evidence and semantic acceptance before their owned production lowering; PR #115 supplies bounded structural deletion/identity evidence only",
+    "the integrated 989-requirement structural packet still requires independent CUDA-free behavioral reference evidence and atomic semantic acceptance before any owned production lowering; PR #116 closes representation/composition evidence only",
     "CUDA-JS native Linux Driver/compiler/installed-package qualification under issue #4 is incomplete and blocks the first native Linux compatible pair, not backend-neutral contract/schema/reference work",
     "exact native compatible-pair evidence remains unfinished",
     "SESSION-002 native live-session concurrency evidence for the selected CUDA-JS mailbox profile is absent",
