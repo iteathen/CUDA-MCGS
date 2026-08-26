@@ -1,11 +1,11 @@
 {
-  "schema_version": 61,
+  "schema_version": 62,
   "updated": "2026-08-25",
-  "status": "engine_reference_harness_ready_after_critical_assessment",
+  "status": "engine_reference_domain_ready_after_semantic_neutral_harness",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "b578de197cf92d8ba06ff236e3c2d1ca05278423",
+    "cuda_mcgs_authority_input_baseline": "c69643b6157cbffdbdcc29b5b27613c781283cff",
     "cuda_js_authority_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
     "cuda_js_implementation_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
     "cuda_js_package": "cuda-js@0.1.0-alpha.7"
@@ -16,6 +16,8 @@
     "requirement_coverage_identity": "fe510fb69890b070ae6e7dfc60bd3e113a3f7e6354fa6bfcd8e48a6336c6c07a",
     "expanded_requirement_identity": "32fc66ca775046121146f3afc621e3407bab69711355e283b769d947fd185e0a",
     "deletion_matrix_identity": "a50be5769e92ce07b9ae1de920c376e18b1c1a3e63f7069a49609ba8a8faaefc",
+    "semantic_harness_evidence_key": "126c654ccf4ccf3fbadc35cd00c628c8e4f9dedd28fdcd5a712973e8cdb0fd1f",
+    "semantic_harness_cases": { "expected": 22, "executed": 22, "passed": 22, "failed": 0 },
     "requirement_evidence_partition": { "partial": 904, "pending_behavioral": 33, "deferred_native": 52 }
   },
   "authority": [
@@ -41,9 +43,9 @@
     "parent_plan_version": "CUDA-MCGS-V0/25",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
-    "active_leaf": "REF-HARNESS-01",
-    "ready_queued_leaves": ["REF-HARNESS-01"],
-    "next_action": "After REF-ASSESS-01 protected integration and cleanup, execute REF-HARNESS-01 from main: create the bounded experiments/search-semantics-reference skeleton and semantic-neutral declared-schedule/event/mutation/evidence harness. Bind the exact representation/composition evidence key, own no search semantics, import no owner internals, add focused mismatch/determinism/mutation cases, update the experiment index/system registry, and stop before Domain behavior begins.",
+    "active_leaf": "REF-DOMAIN-01",
+    "ready_queued_leaves": ["REF-DOMAIN-01"],
+    "next_action": "After REF-HARNESS-01 protected integration and cleanup, execute REF-DOMAIN-01 from the exact merged main revision. Consume the frozen Composer and semantic-harness evidence keys; establish the exact normalized Domain-profile input projection through its current public owner rather than importing or copying the Composer normalizer; implement only the Domain-owned deterministic/stochastic/history/observation/lazy-action transition oracle, fixtures and mutations; publish only immutable Domain facts through the harness; and stop before Graph behavior begins.",
     "exit": "Independent deterministic or schedule-invariant oracles falsify every owned semantic behavior across materially different product-neutral instances, all pending behavioral lanes have exact evidence, and the resulting packet is ready for atomic ENGINE-CONTRACT-ACCEPTANCE-01 without production or native claims."
   },
   "deliverables": [
@@ -75,7 +77,7 @@
     "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
   "blockers": [
-    "the integrated 989-requirement structural packet still requires independent CUDA-free behavioral reference evidence and atomic semantic acceptance before any owned production lowering; PR #116 closes representation/composition evidence only",
+    "the semantic-neutral reference harness closes no owner-specific behavioral requirement by itself; Domain through integrated lifecycle oracles and atomic semantic acceptance remain required before any owned production lowering",
     "CUDA-JS native Linux Driver/compiler/installed-package qualification under issue #4 is incomplete and blocks the first native Linux compatible pair, not backend-neutral contract/schema/reference work",
     "exact native compatible-pair evidence remains unfinished",
     "SESSION-002 native live-session concurrency evidence for the selected CUDA-JS mailbox profile is absent",
@@ -84,6 +86,7 @@
   "validation": [
     "./scripts/verify-docs.sh",
     "node experiments/search-ir-reference/run.mjs",
+    "node scripts/run-search-semantics-reference.mjs after the exact Composer capsule",
     "bounded native-experiment disposition audit and zero tracked .cu/.cuh/.ptx files",
     "contract-specific reference/conformance capsules before production acceptance",
     "exact CUDA-JS/CUDA-MCGS native/compatible-pair evidence before support/release claims",

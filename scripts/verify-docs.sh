@@ -143,6 +143,7 @@ required=(
   scripts/check-structured-data.mjs
   scripts/run-search-ir-reference.mjs
   scripts/run-search-ir-composer-reference.mjs
+  scripts/run-search-semantics-reference.mjs
   schemas/search-ir/0.1.0/search-ir.schema.json
   schemas/search-ir/0.2.0/contract-set.schema.json
   schemas/search-ir/0.2.0/contract-set.json
@@ -205,6 +206,14 @@ required=(
   experiments/search-ir-composer-reference/src/composer.mjs
   experiments/search-ir-composer-reference/src/composer-presets.mjs
   experiments/search-ir-composer-reference/run.mjs
+  experiments/search-semantics-reference/README.md
+  experiments/search-semantics-reference/RESULTS.md
+  experiments/search-semantics-reference/fixtures/neutral-schedules.json
+  experiments/search-semantics-reference/src/errors.mjs
+  experiments/search-semantics-reference/src/canonical.mjs
+  experiments/search-semantics-reference/src/schedule.mjs
+  experiments/search-semantics-reference/src/mutation.mjs
+  experiments/search-semantics-reference/run.mjs
 )
 
 for path in "${required[@]}"; do
@@ -267,6 +276,7 @@ fi
 "$node_bin" scripts/check-structured-data.mjs
 "$node_bin" scripts/run-search-ir-reference.mjs
 "$node_bin" scripts/run-search-ir-composer-reference.mjs
+"$node_bin" scripts/run-search-semantics-reference.mjs
 
 native_source_files="$(find . -path './.git' -prune -o -type f \( -name '*.cu' -o -name '*.cuh' -o -name '*.ptx' \) -print)"
 if [[ -n "$native_source_files" ]]; then
