@@ -104,7 +104,7 @@ function canonicalCapabilityOrder(stageProfile, capabilities) {
 function sourceAndFunctions(context, profileId, label) {
   const sourceUnits = []; const functions = []; const ordinaryFunctions = [];
   for (const result of context.profileResults) {
-    if (!result.normalized.programContribution) continue;
+    if (!result.normalized.programContribution?.sourceIdentity) continue;
     if (context.stageResult && result.normalized.id === context.stageResult.normalized.id) continue;
     if (context.channelResult && result.normalized.id === context.channelResult.normalized.id) continue;
     const entry = ownerSource(result, result.normalized.id, 'source-owner');

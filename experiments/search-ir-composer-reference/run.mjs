@@ -27,6 +27,7 @@ import {
 } from './src/graph-fixtures.mjs';
 import { normalizePolicyProfile } from './src/policy.mjs';
 import {
+  buildPolicyProfile,
   buildPolicyProfiles,
   policySyntheticContentIdentity,
   policySyntheticSchemaReference,
@@ -41,6 +42,7 @@ import { normalizeResourceProfile } from './src/resource.mjs';
 import {
   buildChannelFirstProductDeletedResourceProfile,
   buildChannelResourceProfile,
+  buildResourceProfile,
   buildResourceProfiles,
   buildStageResourceProfile,
   resourceSyntheticContentIdentity,
@@ -50,6 +52,7 @@ import { normalizeProgressProfile } from './src/progress.mjs';
 import {
   buildChannelFirstProductDeletedProgressProfile,
   buildChannelProgressProfile,
+  buildProgressProfile,
   buildProgressProfiles,
   buildStageProgressProfile,
   progressSyntheticContentIdentity,
@@ -64,6 +67,7 @@ import {
 } from './src/output-fixtures.mjs';
 import { normalizeSessionProfile } from './src/session.mjs';
 import {
+  buildSessionProfile,
   buildSessionProfiles,
   sessionSyntheticContentIdentity,
   sessionSyntheticSchemaReference,
@@ -73,12 +77,14 @@ import {
   buildChannelStageFirstProductDeletedProfile,
   buildChannelStageProfile,
   buildStageFirstProductDeletedProfile,
+  buildStageProfile,
   buildStageProfiles,
   stageSyntheticContentIdentity,
   stageSyntheticSchemaReference,
 } from './src/stage-fixtures.mjs';
 import { classifyChannelProgress, normalizeChannelProfile, simulateChannelTrace } from './src/channel.mjs';
 import {
+  buildChannelProfile,
   buildChannelFirstProductDeletedProfile,
   buildChannelProfiles,
   channelSyntheticSchemaReference,
@@ -107,6 +113,7 @@ import {
   referenceComposerPreset,
   resolveReferenceConvenienceCall,
 } from './src/composer-presets.mjs';
+import { assertComposedDeletion } from './src/deletion-identity.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -1606,6 +1613,302 @@ await runCase('composer-partial-failure-publishes-nothing', () => {
   assert.equal(result.status, 'failure');
   assert.equal(result.publication, null);
   assert.equal(result.diagnostic.code, 'COMPOSE_SOURCE_IDENTITY');
+});
+
+function evaluatorProfileReference(result) {
+  return {
+    id: result.normalized.id,
+    schema: { id: result.normalized.schema, version: '0.2.0', sha256: evaluatorSchemaSha },
+    identity: { algorithm: result.identity.algorithm, sha256: result.identity.sha256 },
+  };
+}
+
+function knownProfilesFor(...results) {
+  const byId = new Map(knownResourceProfiles.map((result) => [result.normalized.id, result]));
+  for (const result of results.filter(Boolean)) byId.set(result.normalized.id, result);
+  return [...byId.values()];
+}
+
+function buildOwnerChain({
+  label,
+  domain,
+  graph,
+  policy,
+  evaluator = null,
+  resourceOptions = {},
+  outputOptions = {},
+  sessionOptions = null,
+  stageOptions = null,
+  stageLabel = label,
+  channelOptions = null,
+  channelLabel = label,
+}) {
+  const selected = { domain, graph, policy, evaluator };
+  const schemaShas = { domain: domainSchemaSha, graph: graphSchemaSha, policy: policySchemaSha, evaluator: evaluatorSchemaSha };
+  const knownProfiles = knownProfilesFor(
+    withSchema(domain, domainSchemaSha),
+    withSchema(graph, graphSchemaSha),
+    withSchema(policy, policySchemaSha),
+    evaluator ? withSchema(evaluator, evaluatorSchemaSha) : null,
+  );
+  const resource = withSchema(normalizeResourceProfile(
+    buildResourceProfile(label, inspected, selected, schemaShas, resourceOptions),
+    inspected,
+    knownProfiles,
+  ), resourceSchemaSha);
+  const progress = withSchema(normalizeProgressProfile(
+    buildProgressProfile(label, inspected, resource),
+    inspected,
+    resource,
+    knownProfiles,
+  ), progressSchemaSha);
+  const output = withSchema(normalizeOutputProfile(
+    buildOutputProfile(label, inspected, resource, progress, outputOptions),
+    inspected,
+    resource,
+    progress,
+  ), outputSchemaSha);
+  const session = sessionOptions === null ? null : withSchema(normalizeSessionProfile(
+    buildSessionProfile(label, inspected, resource, progress, output, sessionOptions),
+    inspected,
+    resource,
+    progress,
+    output,
+  ), sessionSchemaSha);
+  const stage = stageOptions === null ? null : withSchema(normalizeStageProfile(
+    buildStageProfile(stageLabel, inspected, resource, progress, knownProfiles, stageOptions),
+    inspected,
+    resource,
+    progress,
+    knownProfiles,
+  ), stageSchemaSha);
+  const channel = channelOptions === null ? null : withSchema(normalizeChannelProfile(
+    buildChannelProfile(channelLabel, inspected, resource, progress, stage, channelOptions),
+    inspected,
+    resource,
+    progress,
+    stage,
+  ), channelSchemaSha);
+  const profileResults = [
+    withSchema(domain, domainSchemaSha),
+    withSchema(graph, graphSchemaSha),
+    withSchema(policy, policySchemaSha),
+    ...(evaluator ? [withSchema(evaluator, evaluatorSchemaSha)] : []),
+    resource,
+    progress,
+    output,
+    ...(session ? [session] : []),
+    ...(stage ? [stage] : []),
+    ...(channel ? [channel] : []),
+  ];
+  return {
+    resource,
+    progress,
+    output,
+    session,
+    stage,
+    channel,
+    context: { profileResults, resourceResult: resource, progressResult: progress, outputResult: output, sessionResult: session, stageResult: stage, channelResult: channel },
+  };
+}
+
+function composeProgramPackageFixture(fixture) {
+  const resolvedInput = createResolvedComposerInput(withoutGenerator(fixture.input), clone(referenceComposerPreset));
+  return { fixture, composition: composeResolvedEngine(resolvedInput.normalized, inspected, fixture.context) };
+}
+
+function composeOwnerChain(chain, label) {
+  return composeProgramPackageFixture(buildProgramPackageProfile(inspected, chain.context, label));
+}
+
+function dispositionRecords(context) {
+  const records = new Map(context.profileResults.map((result) => [result.normalized.id, result.identity.sha256]));
+  for (const capability of context.stageResult?.normalized.capabilities ?? []) {
+    records.set(capability.id, canonicalIdentity(capability).sha256);
+  }
+  for (const channel of context.channelResult?.normalized.channels ?? []) {
+    records.set(channel.id, canonicalIdentity(channel).sha256);
+  }
+  return records;
+}
+
+function deriveOwnerDisposition(beforeContext, afterContext) {
+  const before = dispositionRecords(beforeContext);
+  const after = dispositionRecords(afterContext);
+  return {
+    removedOwners: [...before.keys()].filter((owner) => !after.has(owner)).sort(),
+    changedOwners: [...before.keys()].filter((owner) => after.has(owner) && before.get(owner) !== after.get(owner)).sort(),
+  };
+}
+
+function syntheticProductResult() {
+  const normalized = {
+    schema: 'product.synthetic-profile/0.2.0',
+    id: 'product.synthetic-deletion',
+    programContribution: {
+      kind: 'device-program',
+      language: 'restricted-device-js',
+      sourceIdentity: syntheticContentIdentity('product.synthetic-deletion:restricted-device-js-source'),
+    },
+  };
+  return {
+    normalized,
+    identity: syntheticContentIdentity('product.synthetic-deletion:profile'),
+    schemaSha: syntheticContentIdentity('product.synthetic-profile/0.2.0:schema').sha256,
+  };
+}
+
+let deletionMatrix;
+let materiallyDifferentCompositions;
+await runCase('compose-cross-profile-deletion-matrix', () => {
+  const selectedPolicyInput = buildPolicyProfile(
+    'deletion-model', inspected, domainProfiles[1], graphProfiles[1], domainSchemaSha, graphSchemaSha,
+    { evaluatorMode: 'combined', evaluatorProfile: evaluatorProfileReference(evaluatorProfiles[0]), value: 'vector', reservation: true, admissionMode: 'sampled', stochastic: true },
+  );
+  const absentPolicyInput = buildPolicyProfile(
+    'deletion-model', inspected, domainProfiles[1], graphProfiles[1], domainSchemaSha, graphSchemaSha,
+    { evaluatorMode: 'absent', value: 'vector', reservation: true, admissionMode: 'sampled', stochastic: true },
+  );
+  const selectedPolicy = normalizePolicyProfile(selectedPolicyInput, inspected, domainProfiles[1], graphProfiles[1]);
+  const absentPolicy = normalizePolicyProfile(absentPolicyInput, inspected, domainProfiles[1], graphProfiles[1]);
+
+  const evaluatorBefore = buildOwnerChain({ label: 'deletion-model', domain: domainProfiles[1], graph: graphProfiles[1], policy: selectedPolicy, evaluator: evaluatorProfiles[0], outputOptions: { structured: true } });
+  const evaluatorAfter = buildOwnerChain({ label: 'deletion-model', domain: domainProfiles[1], graph: graphProfiles[1], policy: absentPolicy, outputOptions: { structured: true } });
+  assert.equal(evaluatorAfter.context.profileResults.some(({ normalized }) => normalized.id.startsWith('evaluator.')), false);
+  assert.equal(evaluatorAfter.resource.normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0009'), false);
+
+  const liveBefore = buildOwnerChain({ label: 'deletion-live', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { liveOutput: true, session: true }, outputOptions: { structured: true, live: true }, sessionOptions: { attention: false } });
+  const liveAfter = buildOwnerChain({ label: 'deletion-live', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { session: true }, outputOptions: { structured: true }, sessionOptions: { attention: false } });
+  assert.equal(liveBefore.output.normalized.observations.kind, 'selected');
+  assert.equal(liveAfter.output.normalized.observations.kind, 'absent');
+  assert.equal(liveAfter.resource.normalized.classes.some(({ id }) => id.endsWith('class-live-observation')), false);
+  assert.deepEqual(liveAfter.progress.normalized.closure.outputBorrow, { kind: 'none' });
+
+  const sessionBefore = buildOwnerChain({ label: 'deletion-session', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { session: true }, outputOptions: { structured: true }, sessionOptions: {} });
+  const sessionAfter = buildOwnerChain({ label: 'deletion-session', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], outputOptions: { structured: true } });
+  assert.equal(sessionAfter.session, null);
+  assert.equal(sessionAfter.resource.normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0006'), false);
+  assert.deepEqual(sessionAfter.progress.normalized.noProgress.externalWait, { kind: 'absent' });
+
+  const attentionBefore = buildOwnerChain({ label: 'deletion-attention', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { liveOutput: true, session: true }, outputOptions: { structured: true, live: true }, sessionOptions: {} });
+  const attentionAfter = buildOwnerChain({ label: 'deletion-attention', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { liveOutput: true, session: true }, outputOptions: { structured: true, live: true }, sessionOptions: { attention: false } });
+  assert.equal(attentionBefore.session.normalized.attention.kind, 'selected');
+  assert.equal(attentionAfter.session.normalized.attention.kind, 'absent');
+  assert.equal(attentionAfter.session.normalized.commands.inputs.some(({ kind }) => kind === 'attention'), false);
+  assert.equal(attentionAfter.session.normalized.ports.some(({ id }) => id === 'applyAttentionChange'), false);
+  assert.deepEqual(attentionBefore.resource.identity, attentionAfter.resource.identity);
+  assert.deepEqual(attentionBefore.progress.identity, attentionAfter.progress.identity);
+  assert.deepEqual(attentionBefore.output.identity, attentionAfter.output.identity);
+
+  const stageBefore = buildOwnerChain({ label: 'deletion-stage', domain: domainProfiles[0], graph: graphProfiles[0], policy: policyProfiles[0], resourceOptions: { stage: true }, outputOptions: { structured: true }, stageOptions: {} });
+  const stageAfter = buildOwnerChain({ label: 'deletion-stage', domain: domainProfiles[0], graph: graphProfiles[0], policy: policyProfiles[0], outputOptions: { structured: true } });
+  assert.equal(stageAfter.stage, null);
+  assert.equal(stageAfter.resource.normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0003'), false);
+  assert.equal(stageAfter.progress.normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0003'), false);
+
+  const channelBefore = buildOwnerChain({ label: 'deletion-channel', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { stage: true, channel: true }, outputOptions: { structured: true }, stageOptions: { channel: true }, stageLabel: 'synthetic-channel-stage', channelOptions: { required: true } });
+  const channelAfter = buildOwnerChain({ label: 'deletion-channel', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { stage: true }, outputOptions: { structured: true }, stageOptions: {}, stageLabel: 'synthetic-channel-stage' });
+  assert.equal(channelBefore.channel.normalized.channels.length, 2);
+  assert.equal(channelAfter.channel, null);
+  assert.equal(channelAfter.stage.normalized.capabilities.some(({ channels }) => channels.length > 0), false);
+  assert.equal(channelAfter.resource.normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0004'), false);
+  assert.equal(channelAfter.progress.normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0004'), false);
+
+  const productBase = buildOwnerChain({ label: 'deletion-product', domain: domainProfiles[0], graph: graphProfiles[0], policy: policyProfiles[0], outputOptions: { structured: true } });
+  const productBefore = { ...productBase, context: { ...productBase.context, profileResults: [...productBase.context.profileResults, syntheticProductResult()] } };
+  const productAfter = productBase;
+  const capabilityProductBefore = composeProgramPackageFixture(programPackageFixtures[1]);
+  const capabilityProductAfter = composeProgramPackageFixture(programPackageFixtures[3]);
+
+  const rows = [
+    { id: 'evaluator', before: evaluatorBefore, after: evaluatorAfter, sourceChanged: true },
+    { id: 'live-output', before: liveBefore, after: liveAfter, sourceChanged: false },
+    { id: 'search-session', before: sessionBefore, after: sessionAfter, sourceChanged: true },
+    { id: 'attention', before: attentionBefore, after: attentionAfter, sourceChanged: false },
+    { id: 'stage-substrate', before: stageBefore, after: stageAfter, sourceChanged: true },
+    { id: 'async-channel', before: channelBefore, after: channelAfter, sourceChanged: true },
+    {
+      id: 'capability-product',
+      before: { context: programPackageFixtures[1].context },
+      after: { context: programPackageFixtures[3].context },
+      sourceChanged: true,
+      composedBefore: capabilityProductBefore,
+      composedAfter: capabilityProductAfter,
+    },
+    { id: 'namespaced-product', before: productBefore, after: productAfter, sourceChanged: true },
+  ];
+  deletionMatrix = rows.map((row) => {
+    const before = row.composedBefore ?? composeOwnerChain(row.before, `matrix-${row.id}`);
+    const after = row.composedAfter ?? composeOwnerChain(row.after, `matrix-${row.id}`);
+    const disposition = deriveOwnerDisposition(row.before.context, row.after.context);
+    return {
+      ...row,
+      ...disposition,
+      beforeComposition: before.composition,
+      afterComposition: after.composition,
+    };
+  });
+
+  assert.deepEqual(deletionMatrix.find(({ id }) => id === 'evaluator').removedOwners, ['evaluator.synthetic-vector-combined']);
+  assert.deepEqual(deletionMatrix.find(({ id }) => id === 'search-session').removedOwners, ['session.deletion-session']);
+  assert(deletionMatrix.find(({ id }) => id === 'stage-substrate').removedOwners.includes('extension.deletion-stage'));
+  assert(deletionMatrix.find(({ id }) => id === 'async-channel').removedOwners.includes('channel.deletion-channel'));
+  assert.deepEqual(deletionMatrix.find(({ id }) => id === 'namespaced-product').removedOwners, ['product.synthetic-deletion']);
+
+  const stateless = buildOwnerChain({ label: 'identity-stateless', domain: domainProfiles[2], graph: graphProfiles[3], policy: policyProfiles[2], evaluator: evaluatorProfiles[1] });
+  const proof = buildOwnerChain({ label: 'identity-proof', domain: domainProfiles[2], graph: graphProfiles[2], policy: policyProfiles[3], evaluator: evaluatorProfiles[2], outputOptions: { structured: true } });
+  materiallyDifferentCompositions = [
+    explicitComposition,
+    deletionMatrix.find(({ id }) => id === 'evaluator').beforeComposition,
+    composeOwnerChain(stateless, 'identity-stateless').composition,
+    composeOwnerChain(proof, 'identity-proof').composition,
+  ];
+});
+
+await runCase('materially-different-composer-engines-cannot-collide', () => {
+  assert.equal(new Set(materiallyDifferentCompositions.map(({ compositionProfile }) => compositionProfile.semanticEngineIdentity.sha256)).size, materiallyDifferentCompositions.length);
+  assert.equal(new Set(materiallyDifferentCompositions.map(({ searchProgram }) => searchProgram.identity.sha256)).size, materiallyDifferentCompositions.length);
+  assert.equal(new Set(materiallyDifferentCompositions.map(({ executionPackage }) => executionPackage.identity.sha256)).size, materiallyDifferentCompositions.length);
+});
+
+for (const matrixId of ['evaluator', 'live-output', 'search-session', 'attention', 'stage-substrate', 'async-channel', 'capability-product', 'namespaced-product']) {
+  await runCase(`canonical-composer-${matrixId}-deletion`, () => {
+    const row = deletionMatrix.find(({ id }) => id === matrixId);
+    row.summary = assertComposedDeletion(row.beforeComposition, row.afterComposition, {
+      id: row.id,
+      removedOwners: row.removedOwners,
+      changedOwners: row.changedOwners,
+      sourceChanged: row.sourceChanged,
+    });
+  });
+}
+
+await runCase('deletion-matrix-public-cuda-js-contract-only', () => {
+  for (const row of deletionMatrix) {
+    for (const composition of [row.beforeComposition, row.afterComposition]) {
+      const projection = composition.executionPackage.normalized.cudaJs;
+      assert.equal(projection.schema, 'cuda-mcgs.cuda-js-request-projection/0.2.0');
+      assert.deepEqual(projection.requirements, composition.searchProgram.normalized.publicRequirements.map(({ contract }) => contract));
+      assert.equal(JSON.stringify(projection).includes('semanticOwner'), false);
+      assert.equal(JSON.stringify(projection).includes('ownerProfile'), false);
+    }
+  }
+});
+
+await runCase('deletion-matrix-rejects-undeclared-owner-change', () => {
+  const row = deletionMatrix.find(({ id }) => id === 'live-output');
+  assert(row.changedOwners.length > 1);
+  assert.throws(() => assertComposedDeletion(row.beforeComposition, row.afterComposition, {
+    id: row.id,
+    removedOwners: row.removedOwners,
+    changedOwners: row.changedOwners.slice(1),
+    sourceChanged: row.sourceChanged,
+  }), { code: 'COMPOSE_DELETION_UNEXPLAINED_CHANGE' });
+});
+
+await runCase('deletion-matrix-product-assumption-absence', () => {
+  const serialized = JSON.stringify(deletionMatrix.flatMap((row) => [row.beforeComposition.executionPackage.normalized, row.afterComposition.executionPackage.normalized]));
+  assert(!/(?:chess|connect(?:-?4|[- ]four)|board|player|zero-sum|alternating-turn|best-move|multipv)/i.test(serialized));
 });
 
 await runCase('program-package-schemas-closed', () => {
@@ -5865,7 +6168,7 @@ await runCase('universal-normalized-product-assumption-absence', () => {
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 864,
+  expected: 877,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -5873,7 +6176,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 864 - cases.length,
+  notDiscovered: 877 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -5927,6 +6230,7 @@ const sourcePaths = [
   'experiments/search-ir-composer-reference/src/program-package-fixtures.mjs',
   'experiments/search-ir-composer-reference/src/composer.mjs',
   'experiments/search-ir-composer-reference/src/composer-presets.mjs',
+  'experiments/search-ir-composer-reference/src/deletion-identity.mjs',
   'experiments/search-ir-composer-reference/run.mjs',
 ];
 const sources = {};
@@ -5967,6 +6271,13 @@ const evidence = {
   executionPackageIdentities: executionPackages?.map(({ normalized, identity }) => ({ id: normalized.program.identity.sha256, ...identity })) ?? [],
   resolvedComposerInputIdentity: explicitResolvedComposerInput ? { ...explicitResolvedComposerInput.identity } : null,
   composerPublicationIdentity: explicitComposition ? { ...explicitComposition.publication.identity } : null,
+  deletionIdentityMatrixIdentity: deletionMatrix ? canonicalIdentity(deletionMatrix.map(({ summary: matrixSummary }) => matrixSummary)) : null,
+  deletionIdentityMatrix: deletionMatrix?.map(({ summary: matrixSummary }) => matrixSummary) ?? [],
+  materiallyDifferentComposerIdentities: materiallyDifferentCompositions?.map(({ compositionProfile, searchProgram, executionPackage }) => ({
+    semanticEngineSha256: compositionProfile.semanticEngineIdentity.sha256,
+    searchProgramSha256: searchProgram.identity.sha256,
+    executionPackageSha256: executionPackage.identity.sha256,
+  })) ?? [],
   compatiblePairIdentity: compatiblePair ? { ...compatiblePair.identity } : null,
   contractSummaries: inspected?.contractSummaries ?? [],
   coverage: {
@@ -5993,6 +6304,8 @@ const evidence = {
     'Program/package evidence covers four strict composition profiles, canonical restricted Device-JS Search Programs, consumer-neutral CUDA-JS request projections, opaque success/failure realization fixtures, exact first-consumer deletion and a complete reference-only compatible-pair record. It remains proposal evidence and does not claim CUDA-JS compilation, native artifacts, installed-package support or a qualified pair.',
     'Composer evidence covers a strict resolved-input envelope, material owner/reason/version provenance, convenient/explicit canonical equivalence, removable-facade deletion and failure-atomic publication. It does not declare a public SDK API, runtime registry, adaptive post-ignition behavior or production implementation.',
     'The reference Composer statically assembles exact owner-provided source snapshots and metadata through the existing Program Package path; CUDA-JS still exclusively validates/lowers Device-JS syntax and owns all generated CUDA/native artifacts and runtime resources.',
+    'Deletion/identity evidence covers eight matched canonical-Composer comparisons for evaluator, live output, Search Session, attention, Stage substrate, Async Stage Channel, selected capability/product and opaque namespaced-product removal, plus four materially different product-neutral engine identities. It is bounded structural/reference evidence, not behavioral equivalence, native realization, performance or contract acceptance.',
+    'A stateless Graph contribution with kind none is structurally omitted from composed Device-JS source; this proves absence handling for the fixture path, not a production stateless engine.',
   ],
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');

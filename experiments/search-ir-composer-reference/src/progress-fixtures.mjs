@@ -298,6 +298,10 @@ export function buildProgressProfiles(inspected, resourceResults) {
   ];
 }
 
+export function buildProgressProfile(profile, inspected, resourceResult, options = {}) {
+  return buildProfile(profile, inspected, resourceResult, options);
+}
+
 export function buildStageProgressProfile(inspected, resourceResult) {
   return buildProfile('synthetic-stage-capabilities', inspected, resourceResult, { revision: STAGE_REVISION });
 }

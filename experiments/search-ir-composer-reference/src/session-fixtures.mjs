@@ -406,6 +406,10 @@ export function buildSessionProfiles(inspected, resourceResult, progressResult, 
   ];
 }
 
+export function buildSessionProfile(profile, inspected, resourceResult, progressResult, outputResult, options = {}) {
+  return buildProfile(profile, inspected, resourceResult, progressResult, outputResult, options);
+}
+
 export function sessionSyntheticSchemaReference(id) {
   return schemaReference(id);
 }

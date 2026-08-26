@@ -214,6 +214,10 @@ export function buildChannelProfiles(inspected, resourceResult, progressResult, 
   ];
 }
 
+export function buildChannelProfile(profile, inspected, resourceResult, progressResult, stageResult, options = {}) {
+  return buildProfile(profile, inspected, resourceResult, progressResult, stageResult, options);
+}
+
 export function buildChannelFirstProductDeletedProfile(inspected, resourceResult, progressResult, stageResult) {
   return buildProfile('synthetic-evaluator-and-audit', inspected, resourceResult, progressResult, stageResult);
 }

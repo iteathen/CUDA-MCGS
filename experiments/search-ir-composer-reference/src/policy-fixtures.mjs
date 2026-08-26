@@ -337,6 +337,10 @@ export function buildPolicyProfiles(inspected, domainResults, graphResults, doma
   ];
 }
 
+export function buildPolicyProfile(profile, inspected, domainResult, graphResult, domainSchemaSha, graphSchemaSha, options) {
+  return buildProfile(profile, inspected, domainResult, graphResult, domainSchemaSha, graphSchemaSha, options);
+}
+
 export function policySyntheticSchemaReference(id) {
   return schemaReference(id);
 }

@@ -1,11 +1,11 @@
 {
-  "schema_version": 57,
+  "schema_version": 58,
   "updated": "2026-08-25",
-  "status": "ir_deletion_identity_ready_after_session_attention_correction",
+  "status": "ir_deletion_identity_local_complete_pending_protected_integration",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "e1ca19132d79f3c2a15fd0f7fe5b78a190c0371b",
+    "cuda_mcgs_authority_input_baseline": "0f652a392c0f3a7765287190adfb225a8add9caa",
     "cuda_js_authority_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
     "cuda_js_implementation_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
     "cuda_js_package": "cuda-js@0.1.0-alpha.7"
@@ -32,8 +32,8 @@
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": "docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md",
     "active_leaf": "IR-DELETION-ID-01",
-    "ready_queued_leaves": [],
-    "next_action": "After PR #114 protected-target verification, execute IR-DELETION-ID-01: reconcile cross-profile semantic sensitivity, materially different second instances and exact evaluator/live/session/attention/extension/channel/capability/product structural deletion through the one canonical Composer path. Preserve the 989-requirement count, corrected attention/root boundary, revised contract/source identities, resolved-input identity rules and public CUDA-JS-only projection. Keep platform facts and product meaning out of semantic IR and engine contracts; the first exact native realization later qualifies on Linux under the owner direction and CUDA-JS ADR-0006.",
+    "ready_queued_leaves": ["IR-INTEGRATE-01 after protected IR-DELETION-ID-01 integration"],
+    "next_action": "Publish, author-review and protected-integrate the exact 877/877 IR-DELETION-ID-01 candidate, verify the target tree and clean task state, then execute IR-INTEGRATE-01: reconcile one exact representation/composition evidence key, all 989 evidence dispositions, results/status/plan/issue routing and claim limits before handing behavioral work to ENGINE-REFERENCE-01. Preserve the corrected attention/root boundary, canonical resolved-input rules and public CUDA-JS-only projection; do not infer native, performance or contract-acceptance evidence from the structural matrix.",
     "exit": "Materially different engines cannot collide; removing every optional capability/product owner leaves no solely owned source, function, resource, requirement, operation, manifest or identity residue; and every surviving byte change is explained by a truthfully changed selected-owner or composed identity."
   },
   "deliverables": [
@@ -65,9 +65,8 @@
     "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
   "blockers": [
-    "all 989 proposal requirements require complete cross-profile deletion/identity reconciliation, CUDA-free reference evidence and integrated semantic acceptance before their owned production lowering",
+    "all 989 proposal requirements require integrated CUDA-free behavioral reference evidence and semantic acceptance before their owned production lowering; the bounded structural deletion/identity matrix is locally complete but not yet integrated",
     "CUDA-JS native Linux Driver/compiler/installed-package qualification under issue #4 is incomplete and blocks the first native Linux compatible pair, not backend-neutral contract/schema/reference work",
-    "the complete cross-profile external deletion/identity matrix remains unfinished after deterministic Composer and resolved-input/default equivalence evidence",
     "exact native compatible-pair evidence remains unfinished",
     "SESSION-002 native live-session concurrency evidence for the selected CUDA-JS mailbox profile is absent",
     "native Linux compatible-pair evidence is absent"

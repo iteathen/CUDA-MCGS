@@ -9,7 +9,7 @@
 The protected CUDA-MCGS `main` input baseline for the active contract packet is:
 
 ```text
-e1ca19132d79f3c2a15fd0f7fe5b78a190c0371b
+0f652a392c0f3a7765287190adfb225a8add9caa
 ```
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
@@ -45,7 +45,7 @@ SPEC-0001 and SPEC-0002 remain accepted foundational authority. SPEC-0000 and SP
 - bounded PTX extension-composition mechanism/cost evidence, not production CUDA ownership;
 - integrated SESSION-001-class CUDA-free learning evidence for admission-before-mutation, stale epochs, root-advance/reclamation separation, generation-safe reuse and read-only observations;
 - integrated CUDA-free Connect Four MCGS reference/product experiment at the current evidence baseline, retained as a downstream semantic oracle rather than a universal template; and
-- proposal Search IR 0.2.0 owner schemas plus deterministic static Composer evidence through `SESSION-ATTENTION-01`, including resolved material-default provenance, convenient/explicit canonical equivalence, removable-facade deletion, failure-atomic publication, selected-owner-flexible separated attention/root semantics and product-assumption absence across 864/864 CUDA-free cases.
+- proposal Search IR 0.2.0 owner schemas plus deterministic static Composer evidence through the local `IR-DELETION-ID-01` candidate, including resolved material-default provenance, convenient/explicit canonical equivalence, removable-facade deletion, failure-atomic publication, selected-owner-flexible separated attention/root semantics, eight matched cross-profile deletion paths and four materially different engine identities across 877/877 CUDA-free cases.
 
 Completed evidence is not reopened by the forward plan.
 
@@ -77,7 +77,7 @@ The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`]
 
 **ENGINE-EXTENSION-01** completed its proposal-packet scope through PR #87 at `main@0ba119f`. Its critical assessment/execution record is [`docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md`](docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md). SPEC-0003/0004/0005 are decision-complete 80/90/78-requirement optional stage/channel/restricted Device-JS composition proposals. Together with the core packet, they hand 989 unique proposal requirements to schema/reference work.
 
-Current focus is **ENGINE-IR-COMPOSER-01**. Its [critical assessment and focus map](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and sequences owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. `IR-CATALOG-01` through `IR-COMPOSER-01` are integrated. `SESSION-ATTENTION-01` integrates through PR #114 and corrects the proposal-only Session boundary under ADR-0021: lazy directional attention is independently versioned, owned by any selected participant rather than a hard-coded policy brick, and separate from structural root advance; root transactions contain only affected owners; and one whole-profile assertion rejects chess/Connect Four/product vocabulary from normalized universal artifacts. The expanded CUDA-free capsule passes 864/864 with all 989 requirements still classified partial or deferred. `IR-DELETION-ID-01` is the next dependency-ready leaf after protected-target verification. Production lowering remains blocked on complete deletion/identity reconciliation, integrated reference evidence and the later semantic-acceptance/native gates.
+Current focus is **ENGINE-IR-COMPOSER-01**. Its [critical assessment and focus map](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and sequences owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. `IR-CATALOG-01` through `IR-COMPOSER-01` and `SESSION-ATTENTION-01` are integrated. The local `IR-DELETION-ID-01` candidate passes 877/877 CUDA-free cases: evaluator, live-output, Search Session, attention, Stage, Channel, capability/product and opaque namespaced-product deletion all recompose through the canonical path; four materially different engines do not collide; and the public CUDA-JS projection remains consumer-neutral. All 989 requirements remain classified partial or deferred. After protected integration, `IR-INTEGRATE-01` is the next leaf. Production lowering remains blocked on integrated reference evidence and the later semantic-acceptance/native gates.
 
 The 989-requirement proposal packet and its exact source digests remain frozen while this evidence node is active. ADR-0020 shapes the canonical normalization boundary without silently changing the packet. [Issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) retains future public API/SDK work; overload-like JavaScript invocation forms and later TypeScript overload signatures are suitable progressive-disclosure tools only when their shapes are unambiguous and every form resolves through the same canonical profile/package path. Exact class/function names and signatures remain later specification work.
 
@@ -101,10 +101,9 @@ Chess remains a separately tracked downstream proposal and does not gate univers
 ## Claim limits / blockers
 
 - no production universal engine is accepted yet;
-- the [bounded product-assumption leakage audit](docs/development/2026-08-25-product-assumption-leakage-audit.md) found no chess or Connect Four semantic assumption in current universal authority, schemas, executable proposal capsules or package projections; complete first-product deletion remains owned by `IR-DELETION-ID-01`;
-- complete cross-profile deletion/identity reconciliation and behavioral reference evidence are not implemented;
+- the [bounded product-assumption leakage audit](docs/development/2026-08-25-product-assumption-leakage-audit.md) found no chess or Connect Four semantic assumption in current universal authority, schemas, executable proposal capsules or package projections; the local `IR-DELETION-ID-01` candidate adds the complete bounded cross-profile structural deletion matrix;
+- materially different behavioral reference evidence is not implemented;
 - CUDA-JS #123 release/acquire Device-JS publication helpers are integrated in `cuda-js@0.1.0-alpha.7`; their exact CUDA-MCGS channel-pair qualification remains downstream;
-- complete cross-profile deletion/specialization identity evidence is unfinished;
 - CUDA-MCGS external deletion/compatible-pair evidence is unfinished;
 - SESSION-002 native live-session evidence for the selected CUDA-JS mailbox profile is absent;
 - native Linux compatible-pair evidence is absent.
