@@ -11,7 +11,7 @@
     "cuda_js_package": "cuda-js@0.1.0-alpha.7"
   },
   "exact_evidence_inputs": {
-    "representation_composition_evidence_key": "34c85d459ba1f8b62e32cf4b4aefbeadf0ab4d953f3d4a9657ad9ddd768c33f2",
+    "representation_composition_evidence_key": "70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9",
     "contract_set_identity": "54f5e7ce38423042ae95098fe38e0cf5bd33acdca8cd1fecf0f1c939ef945177",
     "requirement_coverage_identity": "fe510fb69890b070ae6e7dfc60bd3e113a3f7e6354fa6bfcd8e48a6336c6c07a",
     "expanded_requirement_identity": "32fc66ca775046121146f3afc621e3407bab69711355e283b769d947fd185e0a",
