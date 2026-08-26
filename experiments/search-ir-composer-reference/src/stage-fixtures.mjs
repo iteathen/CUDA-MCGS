@@ -216,6 +216,10 @@ export function buildStageProfiles(inspected, resourceResult, progressResult, kn
   ];
 }
 
+export function buildStageProfile(profile, inspected, resourceResult, progressResult, knownProfiles, options = {}) {
+  return buildProfile(profile, inspected, resourceResult, progressResult, knownProfiles, options);
+}
+
 export function buildStageFirstProductDeletedProfile(inspected, resourceResult, progressResult, knownProfiles) {
   return buildProfile('synthetic-capability-pair', inspected, resourceResult, progressResult, knownProfiles, { product: false });
 }

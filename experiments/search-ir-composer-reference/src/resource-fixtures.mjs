@@ -332,6 +332,10 @@ export function buildResourceProfiles(inspected, domainResults, graphResults, po
   ];
 }
 
+export function buildResourceProfile(profile, inspected, selected, schemaShas, options = {}) {
+  return buildProfile(profile, inspected, selected, schemaShas, options);
+}
+
 export function buildStageResourceProfile(inspected, domainResults, graphResults, policyResults, schemaShas) {
   return buildProfile('synthetic-stage-capabilities', inspected, { domain: domainResults[0], graph: graphResults[0], policy: policyResults[0], evaluator: null }, schemaShas, { stage: true, revision: STAGE_REVISION });
 }

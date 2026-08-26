@@ -402,4 +402,27 @@ The revised upstream contract identities deliberately change the same canonical 
 
 The same reconciliation replaces the stale Channel `blocked-cuda-js-123` label with `pending-exact-compatible-pair` and routes former `ENGINE-WINDOWS-01` evidence lanes to OS-neutral `ENGINE-NATIVE-01`. The Channel schema digest is now `845f7d45c6d9a1ce3ad41526f1838b9c2679c2db5185080d4b83e1c1c9a61767`; the reference-only compatible-pair identity is `8f6871dbe4863751ce129839f89c4c80d32e1436e4a92b38349da438f9eb3444`. This records public-contract availability without claiming native qualification.
 
-This correction is bounded structural/reference evidence, not measured hot-path timing, native multi-GPU qualification or a complete first-product deletion proof. The [product-assumption leakage audit](../../docs/development/2026-08-25-product-assumption-leakage-audit.md) found no chess or Connect Four semantic assumption in current universal authority, schemas, executable proposal capsules or package projections; `IR-DELETION-ID-01` still owns the complete cross-profile product/capability deletion and identity matrix. Accepted Search IR 0.1.0 remains unchanged, and no production or native-support claim is made.
+At that correction revision, the result was bounded structural/reference evidence rather than measured hot-path timing, native multi-GPU qualification or a complete first-product deletion proof. The [product-assumption leakage audit](../../docs/development/2026-08-25-product-assumption-leakage-audit.md) found no chess or Connect Four semantic assumption in current universal authority, schemas, executable proposal capsules or package projections and handed the then-unfinished complete matrix to `IR-DELETION-ID-01`. Accepted Search IR 0.1.0 remained unchanged, and no production or native-support claim was made.
+
+## IR-DELETION-ID-01
+
+**Focused evidence assembled:** 2026-08-25T17:52:40-07:00
+
+**Full repository validation completed:** 2026-08-25T18:00:06-07:00
+
+The expanded capsule passes 877/877 CUDA-free cases. It retains all 864 prior catalog/owner/composition/package/Composer/attention cases and adds thirteen bounded deletion/identity cases across:
+
+- eight matched canonical-Composer comparisons for evaluator, live-output, Search Session, attention, whole Stage substrate, whole Async Stage Channel, first selected capability/product and opaque namespaced-product deletion;
+- exact separation of removed owners from surviving owners whose normalized identities truthfully change because an upstream selection changed;
+- owner-aware source-unit, function, program-unit, requirement-consumer, resource and deletion-manifest comparison, with package operations/manifests/provenance/compatibility held exact for each same-call pair;
+- exact identity sensitivity at resolved input, semantic engine, composition profile, Search Program, execution package and atomic publication;
+- unchanged Device-JS source identity for live-output and attention deletion, versus changed source identity when evaluator, Session, Stage, Channel, capability or product program owners are actually removed;
+- exact consumer-neutral CUDA-JS projection after each deletion, without `semanticOwner` or `ownerProfile` leakage;
+- four noncolliding product-neutral engines spanning core transposing, vector/evaluator, lazy stateless proposal and proof profiles; and
+- a negative oracle case that rejects an undeclared surviving-owner change plus whole-matrix rejection of chess/Connect Four/product vocabulary.
+
+The matrix identity is `a50be5769e92ce07b9ae1de920c376e18b1c1a3e63f7069a49609ba8a8faaefc` over 7,477 canonical bytes. Its four materially different semantic-engine identities are `4982c1ff6b7285dbbaaf654de5a712fca08a683d33613b3c0199f7e4a648edfb`, `992541190c6946db28ed9df8a1b14e9acceeca605e7d00c6633ea77afb279afa`, `aaa11bb7c9da2009b050083f14d0cf8e13dd57a5b5913f148379a6ea7e0c0913` and `409c7f44b7bf5c20a716f2d5e0fcf5fe250f8749c25f00ccd24d64bb669c457b`. Contract-set, coverage and expanded-requirement identities remain `54f5e7ce38423042ae95098fe38e0cf5bd33acdca8cd1fecf0f1c939ef945177`, `4f03a710a881097b27a4c1fbea55854b7bfc845be1bd0d672a9daa1714e1451e` and `b148bac6b06af985b172d65d5465b09456ef402c289ba4f54fe6a565b4c7f01d`; all 989 proposal requirements remain classified partial or deferred.
+
+The stateless second instance exposed a real fixture defect: Program Package source assembly treated the truthy `{ kind: 'none' }` stateless Graph contribution as if it contained a Device-JS source identity. The corrected fixture includes a profile source unit only when `programContribution.sourceIdentity` exists, preserving structural absence without changing any normative specification or accepted Search IR 0.1.0 artifact.
+
+This slice is bounded structural/reference evidence. It does not prove behavioral search equivalence, GPU memory ordering, Device-JS compilation, native CUDA-JS realization, multi-GPU behavior, performance, a stable public SDK, an exact compatible pair or proposal-contract acceptance. `IR-INTEGRATE-01` next reconciles the complete evidence packet and its claim limits on one exact revision before `ENGINE-REFERENCE-01` or semantic acceptance proceeds.

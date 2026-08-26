@@ -622,8 +622,9 @@ export function normalizeCompatiblePair(input, packageResult, programResult, rea
   return { normalized, identity: canonicalIdentity(normalized) };
 }
 
-export function assertOwnerDeletion(beforeProgram, afterProgram, removedOwnerInput) {
+export function assertOwnerDeletion(beforeProgram, afterProgram, removedOwnerInput, changedOwnerInput = []) {
   const removedOwners = [...new Set(Array.isArray(removedOwnerInput) ? removedOwnerInput : [removedOwnerInput])].sort(compareRaw);
+  const changedOwners = new Set(Array.isArray(changedOwnerInput) ? changedOwnerInput : [changedOwnerInput]);
   if (removedOwners.length === 0) fail('COMPOSE_DELETION_OWNER', 'at least one removed owner is required');
   const removedOwnerSet = new Set(removedOwners);
   const beforeRecords = removedOwners.map((removedOwner) => {
@@ -633,19 +634,21 @@ export function assertOwnerDeletion(beforeProgram, afterProgram, removedOwnerInp
     return record;
   });
   const removedSourceUnits = new Set(beforeRecords.flatMap(({ sourceUnits }) => sourceUnits));
-  const remainingUnits = beforeProgram.sourceMap.filter(({ id }) => !removedSourceUnits.has(id)).map(({ sourceIdentity }) => sourceIdentity.sha256).sort(compareRaw);
-  const afterUnits = afterProgram.sourceMap.map(({ sourceIdentity }) => sourceIdentity.sha256).sort(compareRaw);
+  const remainingUnits = beforeProgram.sourceMap.filter(({ id, semanticOwner }) => !removedSourceUnits.has(id) && !changedOwners.has(semanticOwner)).map(({ sourceIdentity }) => sourceIdentity.sha256).sort(compareRaw);
+  const afterUnits = afterProgram.sourceMap.filter(({ semanticOwner }) => !changedOwners.has(semanticOwner)).map(({ sourceIdentity }) => sourceIdentity.sha256).sort(compareRaw);
   if (remainingUnits.length !== afterUnits.length || remainingUnits.some((value, index) => value !== afterUnits[index])) {
     const describe = (entries) => entries.map(({ id, semanticOwner, sourceIdentity }) => `${id}:${semanticOwner}:${sourceIdentity.sha256}`).sort(compareRaw).join(',');
-    const beforeDescription = describe(beforeProgram.sourceMap.filter(({ id }) => !removedSourceUnits.has(id)));
-    const afterDescription = describe(afterProgram.sourceMap);
+    const beforeDescription = describe(beforeProgram.sourceMap.filter(({ id, semanticOwner }) => !removedSourceUnits.has(id) && !changedOwners.has(semanticOwner)));
+    const afterDescription = describe(afterProgram.sourceMap.filter(({ semanticOwner }) => !changedOwners.has(semanticOwner)));
     fail('COMPOSE_DELETION_SOURCE', `unowned source units changed during deletion: before=${beforeDescription} after=${afterDescription}`);
   }
   const removedRequirements = new Set(beforeRecords.flatMap(({ publicRequirements }) => publicRequirements));
   for (const requirement of removedRequirements) {
-    const stillOwned = beforeProgram.deletion.records.some((record) => !removedOwnerSet.has(record.owner) && record.publicRequirements.includes(requirement));
+    const stillOwned = beforeProgram.deletion.records.some((record) => !removedOwnerSet.has(record.owner) && !changedOwners.has(record.owner) && record.publicRequirements.includes(requirement));
     const remains = afterProgram.publicRequirements.some(({ contract }) => contract.id === requirement);
-    if (stillOwned !== remains) fail('COMPOSE_DELETION_REQUIREMENT', `${requirement} shared ownership is wrong after deletion`);
+    if ((changedOwners.size === 0 && stillOwned !== remains) || (changedOwners.size > 0 && stillOwned && !remains)) {
+      fail('COMPOSE_DELETION_REQUIREMENT', `${requirement} shared ownership is wrong after deletion`);
+    }
   }
   return true;
 }
