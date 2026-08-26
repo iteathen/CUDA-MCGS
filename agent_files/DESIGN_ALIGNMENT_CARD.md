@@ -196,6 +196,7 @@ Consolidation merges execution overhead, not semantic accountability.
 
 - A concrete engine is finite and memory-planned.
 - Active production search remains device-closed after ignition.
+- The first usable native engine performs bounded useful GPU work concurrently; serial native execution is diagnostic only. Universal semantics remain scheduler-neutral, physical topology is profile-owned, and advanced/tensor mechanisms require concrete measured evidence.
 - Root-control vocabulary is semantic and cost-bearing: root establishes initial authority; advance selects an already ready realized successor without graph-size work or eager cleanup; reroot owns general authority replacement/reconciliation; attention changes direction without changing root or invalidating work.
 - Universal contracts do not embed chess, games, one evaluator/action/graph shape, or one GPU.
 - Generated hot paths may specialize and eliminate unused abstractions.

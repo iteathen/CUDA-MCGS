@@ -1,5 +1,5 @@
 {
-  "schema_version": 64,
+  "schema_version": 65,
   "updated": "2026-08-25",
   "status": "engine_reference_root_control_reconciliation_ready",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
@@ -33,6 +33,7 @@
     "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
     "docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md",
     "docs/decisions/ADR-0022-distinguish-root-advance-reroot-and-attention.md",
+    "docs/decisions/ADR-0023-parallel-first-native-execution.md",
     "docs/development/2026-08-25-product-assumption-leakage-audit.md",
     "docs/development/2026-08-25-os-neutral-native-execution-direction.md",
     "docs/development/2026-08-25-multi-gpu-execution-direction.md",
@@ -43,7 +44,7 @@
   "current_focus": {
     "id": "ENGINE-REFERENCE-01",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36",
-    "parent_plan_version": "CUDA-MCGS-V0/26",
+    "parent_plan_version": "CUDA-MCGS-V0/27",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
     "active_leaf": "REF-ROOT-CONTROL-01",
@@ -58,7 +59,7 @@
     "consolidated CUDA-free universal reference/conformance across materially different domains/evaluator/output shapes",
     "integrated acceptance of the semantic contracts, normalized schemas and reference oracles on one exact revision before production lowering",
     "formal downstream Connect Four product specification and Device-JS external deletion proof",
-    "first finite OS-neutral native CUDA-MCGS engine in pure Node.js/restricted Device-JS through one exact public CUDA-JS compatible pair, initially qualified on Linux",
+    "first finite parallel OS-neutral native CUDA-MCGS engine in pure Node.js/restricted Device-JS through one exact public CUDA-JS compatible pair, initially qualified on Linux",
     "optional live-session native profile only after accepted session semantics plus generic CUDA-JS sideband capability",
     "representative Linux scheduler/resource/performance evidence and separately qualified secondary platform profiles",
     "public SDK/package/release only after exact-head and compatibility stabilization",
@@ -76,7 +77,7 @@
     "resolved_dependencies": ["CUDA-JS issue #35 typed relocatable-device-code PTX compilation is closed", "CUDA-JS issue #123 device-scope release/acquire Device-JS publication is integrated in cuda-js@0.1.0-alpha.7; CUDA-MCGS still consumes only restricted Device-JS/public package contracts and opaque generated outputs"],
     "new_dependency_classifications": ["CUDA-JS issue #4 owns the OS-neutral platform-adapter chain and first Linux Driver/compiler/installed-package reference qualification", "CUDA-JS issue #20 owns explicit selection and later generic multi-device mechanisms; CUDA-MCGS issue #105 owns independent-replica search/package/result meaning"],
     "exact_pair_gate": ["CUDA-JS issue #32 remains open until one frozen CUDA-MCGS artifact and selected CUDA-JS revision/package complete compatible-pair qualification"],
-    "not_default_blockers": ["RDC", "Device LTO", "multi-operation scheduling", "CUDA Graph/cooperative execution", "publication mailboxes unless the selected engine/session profile requires them"],
+    "not_default_blockers": ["RDC", "Device LTO", "multi-operation scheduling", "CUDA Graph/cooperative execution", "advanced warp/shared-memory primitives", "tensor-shaped execution", "publication mailboxes unless the selected engine/session profile requires them"],
     "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
   "blockers": [
@@ -116,7 +117,9 @@
     "treat CUDA-JS portable implementation as native qualification",
     "make sideband, multi-stream, graph/cooperative, RDC or LTO universal or pair prerequisites without a selected-profile need",
     "reopen completed Connect Four reference, Search IR foundation or CUDA-JS portable capability implementation as current tasks",
-    "begin REF-GRAPH-01 while proposal root/advance/reroot/attention representation and dependent evidence still conflict with ADR-0022"
+    "begin REF-GRAPH-01 while proposal root/advance/reroot/attention representation and dependent evidence still conflict with ADR-0022",
+    "present a serial-only native search loop as ENGINE-NATIVE-01 or the first usable GPU engine",
+    "make one persistent-kernel, warp, queue, CUDA Graph, multi-kernel or tensor execution topology universal before a selected profile and representative evidence justify it"
   ],
   "archived_plan_provenance": [
     "docs/archive/plans/2026-08-12-next-step-plan16.json",

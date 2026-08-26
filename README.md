@@ -42,6 +42,8 @@ The universal core owns product-neutral search contracts and lifecycle:
 
 The universal core does **not** require a board, players, legal moves, ranked moves, best-action/top-k output, scalar value, policy prior, one evaluator architecture, or one scheduler topology.
 
+The first usable native engine is nevertheless parallel: it must run bounded useful Domain, Graph, Policy, selected Evaluator and device-progress work concurrently on the GPU. Scheduler neutrality means that grids, blocks, warps, queues, kernels and advanced CUDA-JS mechanisms remain selected implementation profiles; it does not permit a serial search loop to be presented as the GPU product. Tensor-shaped execution remains a measured exploratory profile rather than a current prerequisite.
+
 ### 2. Universal extension/composition substrate
 
 CUDA-MCGS provides a universal way to extend a specialized engine without turning the core into a callback framework:

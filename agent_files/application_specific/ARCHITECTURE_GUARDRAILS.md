@@ -101,6 +101,8 @@ The evaluator contract must allow none, proposal-only, evaluation-only, combined
 
 Do not hard-wire conditional graphs, device graph launch, persistent kernels, CDP, or another scheduler into universal contracts before capability restrictions and benchmark evidence are known. Search IR expresses logical phases and dependencies; the compiler selects an accepted backend.
 
+Scheduler neutrality does not permit a serial-only production milestone. The first usable native engine must expose bounded useful GPU concurrency across selected Domain, Graph, Policy, Evaluator and device-progress work. Physical grid/block/warp/queue/kernel mapping remains profile-owned and independently qualified. Advanced CUDA-JS mechanisms and tensor-shaped execution require a concrete selected profile plus representative evidence; neither is assumed by the universal contracts.
+
 ## Performance changes
 
 A hot-path optimization must demonstrate:
