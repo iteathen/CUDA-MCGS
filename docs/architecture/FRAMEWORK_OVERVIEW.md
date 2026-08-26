@@ -266,6 +266,8 @@ Device closure is an execution contract, not a synonym for a persistent kernel.
 
 Evidence may eventually select persistent queues/kernels, cooperative execution, device-owned multi-kernel workflows, CUDA Graph profiles or another mechanism. The scheduler is chosen from representative workloads and resource/quality evidence.
 
+Device closure is also not permission to serialize the product. The first usable native engine must expose multiple useful concurrent GPU work items across the selected semantic owners. The semantic/reference layer defines legal dependencies, schedules and outcomes; each native profile owns and qualifies its physical grid/block/warp/queue/kernel mapping. Advanced primitives or tensor-shaped execution enter only through a concrete measured profile.
+
 A host micro-batch relaunch loop is non-conforming whenever the host must choose/advance the next internal search step.
 
 Bounded external root establishment, advance, reroot, attention and observation consumption are permitted Search Session I/O only when internal device-owned progress remains independent of their servicing.

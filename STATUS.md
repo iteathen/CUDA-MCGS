@@ -69,6 +69,8 @@ Those capabilities retain exact native qualification and compatible-pair gates w
 
 The owner-directed production boundary remains: CUDA-MCGS owns JavaScript-only search/domain/product semantics and restricted Device-JS/Search Program source; CUDA-JS owns and may implement CUDA-specific lowering/artifacts/compiler/ABI/runtime mechanics and generic GPU primitives with JIT/native code. CUDA-MCGS must not require a local native/CUDA-specific escape path. A mechanism that cannot be expressed naturally through the current public contract is classified for consumer-neutral CUDA-JS ownership rather than forced into CUDA-MCGS.
 
+ADR-0023 now makes bounded useful GPU concurrency a requirement of the first usable native engine. This does not select one scheduler: semantic owners define legal dependencies, schedules and outcomes, while native profiles own grid/block/warp/queue/kernel mapping and qualification. The correctness-first profile should begin with the smallest sufficient public CUDA-JS mechanisms; advanced primitives are demand-driven and tensor-shaped execution remains a separate measured research lane.
+
 ## Current unfinished work
 
 The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`](docs/development/2026-08-12-v0-forward-plan.md).
@@ -85,7 +87,7 @@ Current focus is **ENGINE-REFERENCE-01**, tracked in [issue #36](https://github.
 
 `REF-DOMAIN-01` extends the same capsule to 49/49 passing cases with no skips. A Composer-owned exporter publishes three exact normalized Domain profiles under projection identity `612c72274be7986bcae53237be97b34e64d97a781eeb55e61964d11b942b9f47`; the Domain oracle consumes that artifact without deep-importing or duplicating Composer normalization. Twenty-seven Domain cases cover all 47 direct SPEC-0007 reference-oracle requirements across deterministic transpositions/collisions, stochastic carried history and observations, bounded lazy continuous actions, no-player/custom roles, structured terminal outcomes, immutable publication, capacity/cancellation and targeted mutations. The full semantic evidence key is `70f5c454b7d31cd18374350fd75ebd52b961c828e515b0e6eabeefb8499b6402`. This remains valid bounded evidence for its exact historical proposal input, not ADR-0022 conformance. `REF-ROOT-CONTROL-01` is next; Graph is blocked until the deliberate proposal/evidence reconciliation integrates.
 
-The terminal reference slice is the nearest concrete developer-preview milestone, but it is not yet the GPU library. Production lowering remains blocked on the complete behavioral packet and atomic `ENGINE-CONTRACT-ACCEPTANCE-01`; a first GPU developer preview additionally needs a production JavaScript/restricted Device-JS engine/package and later exact native qualification in [issue #37](https://github.com/iteathen/CUDA-MCGS/issues/37).
+The terminal reference slice is the nearest concrete developer-preview milestone, but it is not yet the GPU library. Production lowering remains blocked on the complete behavioral packet and atomic `ENGINE-CONTRACT-ACCEPTANCE-01`; a first GPU developer preview additionally needs a bounded parallel production JavaScript/restricted Device-JS engine/package and later exact native qualification in [issue #37](https://github.com/iteathen/CUDA-MCGS/issues/37). A serial native diagnostic control does not satisfy that milestone.
 
 The 989-requirement proposal packet, its exact source digests and the integrated representation/composition evidence key remain frozen inputs to behavioral reference work. ADR-0020 shapes the canonical normalization boundary without silently changing the packet. [Issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) retains future public API/SDK work; overload-like JavaScript invocation forms and later TypeScript overload signatures are suitable progressive-disclosure tools only when their shapes are unambiguous and every form resolves through the same canonical profile/package path. Exact class/function names and signatures remain later specification work.
 
@@ -100,7 +102,7 @@ After core semantics:
 - build consolidated materially different CUDA-free reference/conformance domains;
 - accept the integrated semantic contract/schema packet after that reference evidence agrees on one exact revision;
 - formalize Connect Four downstream product semantics and run the Device-JS external deletion test after neutral native Device-JS evidence;
-- build one finite OS-neutral native universal engine through an exact public CUDA-JS pair and qualify its first realization on Linux;
+- build one finite parallel OS-neutral native universal engine through an exact public CUDA-JS pair and qualify its first realization on Linux;
 - treat live Search Session native sideband/concurrency as an optional profile, not a finite-engine release blocker;
 - continue representative Linux scheduler/resource/performance evidence and secondary platform qualification, then package/release stabilization.
 

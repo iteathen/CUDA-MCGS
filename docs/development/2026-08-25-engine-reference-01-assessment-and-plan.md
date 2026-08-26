@@ -8,7 +8,7 @@
 
 **Priority:** P0 prerequisite to integrated semantic acceptance and any production implementation
 
-**Parent plan:** `CUDA-MCGS-V0/25`
+**Parent plan:** `CUDA-MCGS-V0/27`
 
 **Integration owner:** CUDA-MCGS universal reference/conformance integration spine
 
@@ -28,7 +28,7 @@ Create the independent CUDA-free behavioral evidence required to decide the prop
 
 Here, **independent oracle** means implementation-independent from future production lowering and CUDA mechanisms. It does not imply a second maintainer. Review remains author-side because the repository has one maintainer and the project owner explicitly waived an impossible independent-maintainer requirement.
 
-The governing authority is the project-owner instruction, root and canonical agent rules, the accepted charter, ADR-0002, ADR-0003, ADR-0005, ADR-0018 through ADR-0020, ADR-0022, accepted SPEC-0001 and SPEC-0002, decision-complete proposal SPEC-0000 plus SPEC-0003 through SPEC-0013, the integrated `ENGINE-IR-COMPOSER-01` packet and the multi-GPU execution direction. ADR-0021 and the current proposal SPEC-0006/Search IR 0.2.0 root-control wording remain provenance but are superseded where they conflict with ADR-0022. CUDA-JS public contracts remain mechanism constraints only; this node uses no CUDA-JS runtime or native implementation.
+The governing authority is the project-owner instruction, root and canonical agent rules, the accepted charter, ADR-0002, ADR-0003, ADR-0005, ADR-0018 through ADR-0020, ADR-0022, ADR-0023, accepted SPEC-0001 and SPEC-0002, decision-complete proposal SPEC-0000 plus SPEC-0003 through SPEC-0013, the integrated `ENGINE-IR-COMPOSER-01` packet and the multi-GPU execution direction. ADR-0021 and the current proposal SPEC-0006/Search IR 0.2.0 root-control wording remain provenance but are superseded where they conflict with ADR-0022. CUDA-JS public contracts remain mechanism constraints only; this node uses no CUDA-JS runtime or native implementation.
 
 The minimum practice floor is:
 
@@ -90,6 +90,24 @@ Each case supplies a normalized owner profile, finite initial state, explicit in
 Determinism means the same normalized profile, explicit random input and declared schedule produce the same reference outcome and evidence identity. Schedule-invariant contracts assert stable invariants or an allowed result set across materially different bounded schedules. The reference does not attempt unbounded state-space exploration, formal verification of all interleavings or native memory-model proof.
 
 Every material invariant needs an oracle-sensitivity mutation. Removing generation checks, admission rollback, reservation distinction, readiness, first-cause, owner permission, backup order, snapshot consistency or terminal cleanup must fail at least one named case. A plausible output alone is not evidence.
+
+### Parallel-first evidence boundary
+
+ADR-0023 makes parallel native execution mandatory without turning this CUDA-free reference into a CUDA scheduler. Each remaining owner leaf must therefore state which operations may overlap, which facts order them, which outputs must be disjoint or atomically owned, and which outcomes remain legal across materially different bounded schedules. The final integration gap audit must also account for already completed Domain evidence and add a bounded schedule case if its concurrency obligations are not yet discriminated.
+
+The reference responsibility by owner is:
+
+| Owner | Parallel semantic evidence | Later native obligation |
+|---|---|---|
+| Domain | Immutable shared inputs, disjoint admitted outputs and order-independent bounded action/transition batches | Demonstrate concurrent action/transition work without hidden host production |
+| Graph | Competing claimers, one initializer, waiter/pending outcomes, initializer failure and ready-only publication | Exercise actual collision/publication races and bounded materialization |
+| Policy | Competing reservations, widening/selection ownership and valid ordered/idempotent backup outcomes | Exercise concurrent reservation/backup contention without double credit |
+| Evaluator | Request accumulation, finite batch/workspace ownership, partial batch progress and scatter | Run selected batches concurrently with other ready work where the profile permits |
+| Resources | Atomic admission-before-mutation, rollback and conservation across interleavings | Prove capacity/pressure accounting under concurrent demand |
+| Progress/Channel | Multiple ready work classes, producer progress, fairness and no blocking/spin ownership | Demonstrate useful concurrent device progress without a host loop |
+| Output/lifecycle | Coherent cuts and terminal accounting after concurrent owner histories | Publish only semantically valid coherent results and release every resource |
+
+These are correctness obligations, not performance claims. Warp collectives, shared memory, sharded queues, work stealing, multi-kernel/DAG submission and tensor-shaped execution remain later selected-profile mechanisms. A missing generic mechanism is escalated to CUDA-JS only from a concrete profile; MCGS semantics stay here.
 
 ### Fixture families and product neutrality
 
@@ -184,14 +202,14 @@ The arrows are evidence/integration order, not reverse semantic ownership. `REF-
 | `REF-HARNESS-01` | completed and protected-integrated | Semantic-neutral bounded schedule/event/mutation/evidence harness and experiment skeleton | New `experiments/search-semantics-reference/` harness, manifest documentation, registry/index and focused cases | Harness owns search meaning, imports owner internals, becomes an unbounded scheduler/model checker or cannot reject a mismatched Composer key. |
 | `REF-DOMAIN-01` | completed implementation | Domain transition oracle across deterministic, stochastic, history-sensitive, observation-bearing and lazy action families | Domain module/fixtures/cases and exact coverage references | Hidden host randomness, game/player/fixed-action assumptions, identity/history collision, partial publication or cancellation residue survives. |
 | `REF-ROOT-CONTROL-01` | next; issue #113 | Reconcile SPEC-0006 and proposal Search IR so root, advance, reroot and attention have distinct owner effects, provenance, deletion and evidence identities before Graph meaning is extended | SPEC-0006; Session schema/normalizer/composition fixtures and cases; affected Composer/projection/reference evidence; current routing docs | Advance retains reroot-only machinery or graph-size work, transposed nodes are invalidated by occurrence supersession, attention changes authority, absent operations leave residue, or affected evidence remains keyed to superseded meaning. |
-| `REF-GRAPH-01` | blocked on root-control reconciliation | Graph/storage oracle for claims, transpositions, occurrences, paths/cycles, protection, retirement and generation-safe reuse | Graph module/fixtures/cases and coverage references | Layout bytes become semantic authority, node and occurrence identity collapse, equal/unequal claims mismerge, path meaning truncates or stale/protected storage is reused. |
-| `REF-POLICY-01` | blocked on Graph | Policy oracle for local records, reservation, cycle response, ordered/idempotent backup, stop and reuse | Policy module/fixtures/cases and coverage references | Scalar/zero-sum/ranking leaks in, reservations count as completion, occurrence/order semantics collapse or stale backup publishes. |
-| `REF-EVALUATOR-01` | blocked on Domain/Graph/Policy | Optional evaluator oracle for mode matrix, requests, batches, cache, workspace, publication and reuse | Evaluator module/fixtures/cases and evaluator-absent deletion evidence | Evaluator absence leaves residue, proposals bypass Domain, batching needs host progress, cache keys alias or partial/stale results publish. |
+| `REF-GRAPH-01` | blocked on root-control reconciliation | Graph/storage oracle for competing claims, transpositions, occurrences, paths/cycles, protection, retirement and generation-safe reuse under bounded legal schedules | Graph module/fixtures/cases and coverage references | Layout bytes become semantic authority, node and occurrence identity collapse, equal/unequal claimers mismerge, two initializers publish, initializer failure strands waiters, path meaning truncates or stale/protected storage is reused. |
+| `REF-POLICY-01` | blocked on Graph | Policy oracle for concurrent local records, reservation, cycle response, ordered/idempotent backup, stop and reuse | Policy module/fixtures/cases and coverage references | Scalar/zero-sum/ranking leaks in, reservations count as completion or double-credit work, occurrence/order semantics collapse or stale backup publishes. |
+| `REF-EVALUATOR-01` | blocked on Domain/Graph/Policy | Optional evaluator oracle for request accumulation, finite batches, cache, workspace, partial progress, scatter, publication and reuse | Evaluator module/fixtures/cases and evaluator-absent deletion evidence | Evaluator absence leaves residue, proposals bypass Domain, batching needs host progress, workspace ownership collides, cache keys alias or partial/stale results publish. |
 | `REF-RESOURCE-01` | blocked on owner contributions | Finite logical ledger oracle for checked plan arithmetic, atomic admission, pressure facts, reserves, exhaustion and teardown | Resource module/fixtures/cases and coverage references | Resource chooses semantic victims, partial claims survive, retired/quarantined units disappear, terminal/cleanup reserve is consumed or growth/spill occurs. |
 | `REF-PROGRESS-01` | blocked on work/resource owners | Scheduler-neutral readiness/fairness/no-progress/stop/closure oracle under multiple bounded schedules | Progress module/fixtures/cases and coverage references | Pending work blocks its producer, host action is needed, deadlock/quiescence/livelock conflate, must-drain starves or terminal publishes with live work. |
 | `REF-OUTPUT-01` | blocked on ready source owners | Terminal/live output oracle for envelope, snapshots, publication/borrow, pressure, reuse and exact live absence | Output module/fixtures/cases and coverage references | Ranking/evaluator is mandatory, observation advances search, mixed/stale cuts claim coherence, borrowed slots reuse or partial work enters a valid result. |
 | `REF-FRAMEWORK-LIFE-01` | blocked on core owner events | Cross-owner normalized-to-released lifecycle, first-failure unwind, cleanup and persistence absence/selection oracle | Framework lifecycle module/fixtures/cases and the 15 SPEC-0000 routes | Framework mutates owner facts, cleanup order cycles, partial publication survives failure, absence retains residue or final disposition is missing. |
-| `REF-TERMINAL-SLICE-01` | blocked on core oracles | Complete finite `session-absent`, extension-absent CUDA-free engine slices across multiple fixture families and schedules | Integration fixtures/cases/results in the semantic reference experiment | Only one product/schedule works, an owner is bypassed, device progress needs the host, optional residue remains or terminal accounting/cleanup is incomplete. |
+| `REF-TERMINAL-SLICE-01` | blocked on core oracles | Complete finite `session-absent`, extension-absent CUDA-free engine slices across multiple fixture families and materially different legal schedules | Integration fixtures/cases/results in the semantic reference experiment | Only one product/schedule works, parallel legal histories change schedule-invariant meaning, an owner is bypassed, device progress needs the host, optional residue remains or terminal accounting/cleanup is incomplete. |
 | `REF-SESSION-01` | blocked on terminal slice and reconciled root control | Optional Session oracle for initial root, advance, reroot, lazy attention, provenance, observations, cancellation and reclamation coordination | Session module/fixtures/cases and coverage references | Advance performs reroot/cleanup work, attention changes root or invalidates work, graph-size work/polling/global barrier is required, superseded work contaminates current authority or observation mutates search. |
 | `REF-STAGE-01` | blocked on owner transitions | Optional Stage checkpoint/outcome oracle using owner-public facts only | Stage module/fixtures/cases and eight direct requirement routes | Stage owns core meaning, exposes partial mutation, retains workers/leases while pending or leaves residue when absent. |
 | `REF-CHANNEL-EVIDENCE-01` | blocked on Stage | Gap-audit and complete the existing 41-requirement Channel logical oracle without duplicating it | Channel-owned Composer experiment cases/results plus exact evidence manifest consumed by integration | Channel evidence is copied, a worker blocks/spins, ownership/accounting is lost, release/acquire semantics are misstated or teardown leaks. |
@@ -205,6 +223,7 @@ Before each material leaf, freeze the expected base/head and representation/comp
 - add positive, boundary, invalid/stale, pressure/cancellation and oracle-sensitivity cases proportional to its contract;
 - consume normalized public profiles rather than reconstructing or repairing schema meaning;
 - keep explicit random inputs and schedule choices in fixtures and evidence identity;
+- discriminate concurrency-sensitive ownership/publication/resource failures without treating serial reference execution as native qualification;
 - avoid deep imports, duplicate normalizers, product-first defaults and production-shaped APIs;
 - inspect exact effects, run the focused capsule, `git diff --check` and `./scripts/verify-docs.sh`;
 - record exact evidence identity and update requirement routes without changing normative text or native dispositions;

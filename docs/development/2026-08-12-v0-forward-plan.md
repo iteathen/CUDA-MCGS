@@ -4,7 +4,7 @@
 
 **Last reconciled:** 2026-08-25
 
-**Parent plan version:** `CUDA-MCGS-V0/25`
+**Parent plan version:** `CUDA-MCGS-V0/27`
 
 **CUDA-MCGS input baseline:** protected `main` `b578de197cf92d8ba06ff236e3c2d1ca05278423`.
 
@@ -151,15 +151,18 @@ A missing generic GPU primitive is routed to CUDA-JS when it has a natural consu
 
 A finite terminal native engine may proceed only after `ENGINE-CONTRACT-ACCEPTANCE-01`, the relevant semantic/IR/Search Program/adapter contracts are accepted, and the selected CUDA-JS capabilities have exact Ubuntu 24.04 reference-profile evidence. Engine contracts and universal inputs remain OS- and distribution-neutral; Linux/Ubuntu identify the first native realization and exact qualification cell rather than the engine architecture.
 
+Under ADR-0023, this is a bounded parallel engine rather than a serial semantic loop moved onto a GPU. The correctness-first profile must permit multiple useful GPU work items to progress across selected Domain, Graph, Policy, Evaluator and device-progress owners. Search meaning remains scheduler-neutral; the selected profile owns its physical mapping and qualification. A serialized native form may exist only as a diagnostic control.
+
 Required:
 
 - one exact public CUDA-JS compatible pair;
 - pre-ignition deterministic specialization and finite resource plan;
 - device-owned active search progress with no CPU-produced intermediate search decisions;
+- concurrent graph claims/publication, policy reservations/backups and selected Domain/evaluator batches with semantics matching the reference allowed-outcome sets;
 - pure Node.js/restricted Device-JS maintained production source through public CUDA-JS contracts;
 - exact independent reference/oracle comparison;
 - typed pressure/failure behavior and terminal resource/lifecycle evidence;
-- no claim that optional long-lived sideband, multi-stream, graph/cooperative, RDC or LTO mechanisms are required unless the selected engine profile actually uses them.
+- no claim that optional long-lived sideband, multi-stream, graph/cooperative, RDC, LTO, advanced warp/shared-memory primitives or tensor execution are required unless the selected engine profile actually uses and qualifies them.
 
 ## ENGINE-SESSION-NATIVE-01 — optional live-session profile
 
@@ -178,7 +181,9 @@ Host control publishes bounded externally supplied attention/root/budget/priorit
 After correctness/lifecycle are established:
 
 - select scheduler topology from evidence while preserving device closure;
+- compare the parallel baseline against credible profile alternatives using occupancy, divergence, contention, batching, memory and synchronization evidence;
 - characterize representative resource/performance/search-quality behavior without elevating one domain metric to universal semantics;
+- keep tensor-shaped execution in a separate experimental lane until an owner-local candidate beats an equivalent non-tensor parallel baseline after packing, transformation and synchronization costs;
 - characterize the exact Linux CUDA-JS/CUDA-MCGS pair on qualified hardware before any representative performance claim;
 - keep Linux support and performance claims exact and independent from portable/reference or retained Windows evidence;
 - add Windows performance/qualification as a separate peer profile, never as a substitute for the first Linux reference cell or as a reason to shape shared engine contracts.
