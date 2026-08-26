@@ -4,7 +4,7 @@
 
 **Last reconciled:** 2026-08-25
 
-**Parent plan version:** `CUDA-MCGS-V0/25`
+**Parent plan version:** `CUDA-MCGS-V0/27`
 
 **CUDA-MCGS input baseline:** protected `main` `b578de197cf92d8ba06ff236e3c2d1ca05278423`.
 
