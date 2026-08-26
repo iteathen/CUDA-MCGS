@@ -9,7 +9,7 @@
 The protected CUDA-MCGS `main` input baseline for the active contract packet is:
 
 ```text
-0f652a392c0f3a7765287190adfb225a8add9caa
+b578de197cf92d8ba06ff236e3c2d1ca05278423
 ```
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
@@ -79,7 +79,9 @@ The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`]
 
 **ENGINE-IR-COMPOSER-01** completes its bounded representation/composition evidence scope through PR #116. Its [critical assessment, focus map and handoff](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and reconciles owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. The 878/878 CUDA-free capsule binds one `70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9` representation/composition evidence key. Its 989 requirements partition truthfully into 904 partial, 33 pending behavioral-oracle and 52 deferred native-compatible-pair lanes; none is accepted.
 
-Current focus is **ENGINE-REFERENCE-01**, tracked in [issue #36](https://github.com/iteathen/CUDA-MCGS/issues/36). Its first action is a critical assessment and dependency-sized focus map for independent CUDA-free behavioral oracles across materially different domain/action/evaluator/output shapes, graph/path cycles, transpositions/history, stochastic and lazy production, finite pressure, cancellation, publication, selected extension/channel behavior and optional Session/root/attention behavior. It must consume the frozen Composer evidence key without inventing schema meaning or treating one product/schedule as universal. Production lowering remains blocked on that behavioral packet, atomic `ENGINE-CONTRACT-ACCEPTANCE-01`, and later exact native qualification in [issue #37](https://github.com/iteathen/CUDA-MCGS/issues/37).
+Current focus is **ENGINE-REFERENCE-01**, tracked in [issue #36](https://github.com/iteathen/CUDA-MCGS/issues/36). Its [critical assessment and focus map](docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md) divides 352 directly routed behavioral requirements into owner-local CUDA-free oracles and retains 41 existing Channel-oracle requirements with their current owner. A semantic-neutral harness comes first, followed by Domain, Graph, Policy, optional Evaluator, Resources, Progress, Output and framework lifecycle. That sequence deliberately produces one complete terminal CUDA-free reference slice before optional live Session/Stage/Channel integration. It consumes the frozen Composer evidence key without inventing schema meaning or treating one product/schedule as universal.
+
+The terminal reference slice is the nearest concrete developer-preview milestone, but it is not yet the GPU library. Production lowering remains blocked on the complete behavioral packet and atomic `ENGINE-CONTRACT-ACCEPTANCE-01`; a first GPU developer preview additionally needs a production JavaScript/restricted Device-JS engine/package and later exact native qualification in [issue #37](https://github.com/iteathen/CUDA-MCGS/issues/37).
 
 The 989-requirement proposal packet, its exact source digests and the integrated representation/composition evidence key remain frozen inputs to behavioral reference work. ADR-0020 shapes the canonical normalization boundary without silently changing the packet. [Issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) retains future public API/SDK work; overload-like JavaScript invocation forms and later TypeScript overload signatures are suitable progressive-disclosure tools only when their shapes are unambiguous and every form resolves through the same canonical profile/package path. Exact class/function names and signatures remain later specification work.
 
@@ -104,7 +106,7 @@ Chess remains a separately tracked downstream proposal and does not gate univers
 
 - no production universal engine is accepted yet;
 - the [bounded product-assumption leakage audit](docs/development/2026-08-25-product-assumption-leakage-audit.md) found no chess or Connect Four semantic assumption in current universal authority, schemas, executable proposal capsules or package projections; PR #115 adds the complete bounded cross-profile structural deletion matrix;
-- materially different behavioral reference evidence is not implemented;
+- the behavioral reference assessment is complete, but the owner-local oracles and first terminal reference slice are not implemented;
 - CUDA-JS #123 release/acquire Device-JS publication helpers are integrated in `cuda-js@0.1.0-alpha.7`; their exact CUDA-MCGS channel-pair qualification remains downstream;
 - CUDA-MCGS external deletion/compatible-pair evidence is unfinished;
 - SESSION-002 native live-session evidence for the selected CUDA-JS mailbox profile is absent;

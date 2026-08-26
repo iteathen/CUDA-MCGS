@@ -4,9 +4,9 @@
 
 **Last reconciled:** 2026-08-25
 
-**Parent plan version:** `CUDA-MCGS-V0/23`
+**Parent plan version:** `CUDA-MCGS-V0/25`
 
-**CUDA-MCGS input baseline:** protected `main` `e1ca19132d79f3c2a15fd0f7fe5b78a190c0371b`.
+**CUDA-MCGS input baseline:** protected `main` `b578de197cf92d8ba06ff236e3c2d1ca05278423`.
 
 **CUDA-JS authority baseline:** protected `main` `05008fb988558e909cb3802fa12a73d612e70bf0`.
 
@@ -107,12 +107,17 @@ ADR-0020 and [issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) gove
 
 ## ENGINE-REFERENCE-01 — universal reference/conformance
 
-**Current focus after PR #116 protected-target verification, tracked in [issue #36](https://github.com/iteathen/CUDA-MCGS/issues/36).** Build a consolidated deterministic CUDA-free universal reference/conformance layer from the frozen Composer evidence key after the owning semantic contracts stabilize. Begin with a critical assessment and dependency-sized focus map; downstream reference code may exercise proposal meaning but may not invent, repair or bypass missing schema meaning.
+**Current focus after PR #116 protected-target verification, tracked in [issue #36](https://github.com/iteathen/CUDA-MCGS/issues/36).** The [critical assessment and dependency-sized focus map](2026-08-25-engine-reference-01-assessment-and-plan.md) is complete. Build owner-local deterministic or schedule-invariant CUDA-free oracles from the frozen Composer evidence key; reference code may exercise proposal meaning but may not invent, repair or bypass missing schema meaning.
 
 - retain existing Search IR reference evidence;
 - add materially different synthetic domains/evaluator/output shapes so Connect Four cannot become the hidden template;
 - exercise graph/transposition/path/cycle/resource/output/session rules at boundaries;
+- keep the declared-schedule/event/mutation harness semantically neutral and keep each owner oracle independently replaceable;
+- reuse the current SPEC-0004 Channel logical oracle under its owning experiment rather than copying it;
+- deliver a complete finite `session-absent`, extension-absent terminal reference slice before optional live Session/Stage/Channel integration; and
 - use the integrated Connect Four experiment as a downstream product oracle, never as universal implementation authority.
+
+The terminal slice is the first executable CUDA-free developer-preview milestone. It does not authorize a production component, public SDK, native support or performance claim.
 
 ## ENGINE-CONTRACT-ACCEPTANCE-01 — integrated semantic acceptance
 
