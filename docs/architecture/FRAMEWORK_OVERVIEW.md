@@ -226,8 +226,11 @@ A long-lived Search Session is a selected universal lifecycle capability, not a 
 
 The generic session contract owns only the optional external lifecycle boundary:
 
-- session/current-root transaction authority and finite root epoch;
-- bounded root/attention command identity, distinct validation/admission coordination and declared publication/commit order;
+- initial-root authority and finite root incarnation;
+- minimum-work advance to an already ready realized successor, with compatible descendant work preserved and sibling-occurrence work superseded lazily;
+- general reroot authority for admitted root replacement/reconciliation that cannot satisfy the advance contract;
+- independently versioned attention publication that changes direction without changing root authority or admitted-work validity;
+- distinct bounded command identity, validation/admission coordination and declared publication/adoption order;
 - concurrent/replayed command ordering and typed transaction outcomes;
 - collection of owner-declared prepare/reuse/stale/cleanup dispositions without reinterpreting them;
 - bounded observation request/acquire/release and teardown coordination against output-owned immutable publication; and
@@ -235,7 +238,7 @@ The generic session contract owns only the optional external lifecycle boundary:
 
 Domain owns root validity; graph owns materialization, protection and reclamation; policy/evaluator/output own reuse meaning; resources own compound capacity admission; progress owns old-work service/stale/closure; output owns snapshot/publication/borrow meaning; CUDA-JS owns sideband/transfer/operation mechanisms.
 
-A rejected root update leaves accepted search-semantic state unchanged. A live observation must not expand/materialize/evaluate/reserve or otherwise advance search merely to satisfy observation.
+A rejected root, advance or reroot command leaves accepted search-semantic state unchanged. Advance performs no traversal, state copy/transformation, reset, resize, retained-state reclassification, reclamation or eager cleanup. A live observation must not expand/materialize/evaluate/reserve or otherwise advance search merely to satisfy observation.
 
 SESSION-001 provided bounded CUDA-free semantic learning for these rules. It did not establish CUDA concurrency, sideband transport, production reuse policy or performance. A SESSION-002-class native experiment should exercise the same semantics under actual concurrent GPU work.
 
@@ -250,7 +253,7 @@ The realized device program contains only what the selected Search Image require
 - selected evaluator execution/publication;
 - selected policy reservation/backup/stopping behavior;
 - selected stage transitions/surfaces/capabilities/internal channels;
-- selected Search Session root transaction, attention publication and observation-request coordination;
+- selected Search Session initial-root, advance, reroot, attention-publication and observation-request coordination;
 - selected product logic/output;
 - pressure/stop/diagnostics;
 - device-owned progress.
@@ -265,7 +268,7 @@ Evidence may eventually select persistent queues/kernels, cooperative execution,
 
 A host micro-batch relaunch loop is non-conforming whenever the host must choose/advance the next internal search step.
 
-Bounded external environment/root updates and observation consumption are permitted Search Session I/O only when internal device-owned progress remains independent of their servicing.
+Bounded external root establishment, advance, reroot, attention and observation consumption are permitted Search Session I/O only when internal device-owned progress remains independent of their servicing.
 
 ## 10. Ownership and dependency policy
 

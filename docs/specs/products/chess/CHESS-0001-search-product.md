@@ -100,17 +100,17 @@ The observation consumes the generic read-only publication mechanism from SPEC-0
 
 Terminal chess results and live analysis observations remain separate contracts.
 
-## 4. Chess root advance and persistent search
+## 4. Chess advance, reroot, and persistent search
 
-The chess product intends to use the generic Search Session profile for continuous search/pondering and structural root advance.
+The chess product intends to use the generic Search Session profile for continuous search/pondering. A played legal move may use **advance** only when its successor is already ready under the universal advance contract. An externally supplied position or any change requiring admission, reconstruction, transformation, reset or reuse classification uses **reroot**. Directional search preference without authority change uses **attention**.
 
-A chess root update may be derived from:
+A chess authority change may be derived from:
 
 - a played legal move from the current accepted root;
 - an authoritative chess position/state supplied by the product boundary;
 - a future namespaced chess observation/variant update if specified.
 
-Before commit, the chess product MUST validate the update under the chess domain/session contract and satisfy the universal admission-before-mutation and finite-capacity rules.
+Before publication, the chess product MUST validate the command under the chess domain/session contract and satisfy its operation-specific admission-before-mutation and finite-capacity rules. Advance MUST NOT allocate, copy/transform state, reset, reclassify retained state, reclaim or eagerly clean up.
 
 After commit, every persistent state family receives an explicit chess validity disposition. Examples that require decisions rather than assumptions include:
 
@@ -182,9 +182,9 @@ Planned chess-specific cases include:
 - evaluator perspective/output correctness;
 - product policy/backup invariants;
 - live root-move observation correctness and read-only behavior;
-- root advance after a played move with explicit retained/reset/invalidated facts;
-- replacement-position root update;
-- finite-memory root-update pressure;
+- advance after an already ready played-move successor, preserving compatible descendant work and superseding sibling occurrences lazily;
+- replacement-position reroot with explicit admitted retained/reset/invalidated facts;
+- finite-memory reroot pressure and advance rejection when the successor is not ready;
 - deterministic package identity and compatible-pair rejection;
 - search-quality/benchmark suites appropriate to the selected chess product profile.
 

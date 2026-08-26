@@ -1,6 +1,6 @@
 # ADR-0021: Separate Attention from Root Advance
 
-**Status:** Accepted
+**Status:** Superseded
 
 **Date:** 2026-08-25
 
@@ -94,4 +94,6 @@ Revisit if measured implementation evidence shows that the selected safe point c
 
 ## Supersedes / superseded by
 
-This decision narrows the Search Session portion of ADR-0018 and corrects the combined-control assumptions in proposal SPEC-0006 draft 0.1.0. It does not supersede either record in full.
+This decision narrowed the Search Session portion of ADR-0018 and corrected the combined-control assumptions in proposal SPEC-0006 draft 0.1.0. It did not supersede either record in full.
+
+[ADR-0022](ADR-0022-distinguish-root-advance-reroot-and-attention.md) supersedes this decision. The attention/root separation remains useful rationale, but this ADR's use of `root advance` for the heavier general root transaction and its rejection of public `reroot` terminology are no longer current authority.
