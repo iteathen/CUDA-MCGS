@@ -47,7 +47,7 @@ FRAMEWORK-AUTH-004. Production lowering remains prohibited until the integrated 
 
 The universal core consists of independently meaningful semantic owner bricks. A finite engine selects one conforming domain, graph, policy, output, resource and progress profile; it selects evaluator present/absent and Search Session present/absent explicitly.
 
-The core assumes no game, board, player count, turn structure, zero-sum value, scalar value, deterministic transition, fixed state/action size, exhaustive action count, tree, DAG, rollout, neural evaluator, ranked result, live observation, rerooting or physical scheduler.
+The core assumes no game, board, player count, turn structure, zero-sum value, scalar value, deterministic transition, fixed state/action size, exhaustive action count, tree, DAG, rollout, neural evaluator, ranked result, live observation, root advance or physical scheduler.
 
 ### 2.2 Universal extension/composition substrate
 
@@ -305,7 +305,7 @@ One consolidated CUDA-free framework capsule MUST include stable cases for:
 11. evaluator absent, proposal-only, evaluation-only and combined profiles;
 12. terminal envelope-only, structured result, live observation and no-live-observation profiles;
 13. evaluator/live-output/Search-Session/extension/product deletion with exact zero residue;
-14. bounded live-session root/control/observation coordination without host progress;
+14. bounded live-session root/attention/observation coordination without host progress;
 15. finite ordinary, high, critical, recoverable-pressure and terminal-exhaustion behavior;
 16. compound admission failure at each owner leaving no partial semantic mutation;
 17. serial and parallel schedule models preserving stable semantics/accounting/closure;

@@ -128,7 +128,7 @@
       "supportingDispositions": ["native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -148,9 +148,9 @@
       "requirementCount": 6,
       "primaryDisposition": "native-compatible-pair-qualification",
       "supportingDispositions": ["cross-specification-proof"],
-      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["proof:adr-0019-source-boundary", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["proof:adr-0019-source-boundary", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -194,7 +194,7 @@
       "supportingDispositions": ["native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -216,7 +216,7 @@
       "supportingDispositions": ["native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:IR-PROGRAM-PACKAGE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["planned:IR-PROGRAM-PACKAGE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -293,7 +293,7 @@
       "supportingDispositions": ["native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -335,9 +335,9 @@
       "requirementCount": 7,
       "primaryDisposition": "native-compatible-pair-qualification",
       "supportingDispositions": ["engine-reference-oracle", "cross-specification-proof"],
-      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["proof:adr-0019-source-boundary", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["proof:adr-0019-source-boundary", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -392,7 +392,7 @@
       "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-DOMAIN-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-domain-unknown-field", "case:reject-domain-contract-drift", "case:reject-domain-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:reject-domain-unknown-field", "case:reject-domain-contract-drift", "case:reject-domain-native-program-language", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -458,7 +458,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-reservation-port-residue", "case:reject-policy-reservation-without-record", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-reservation-port-residue", "case:reject-policy-reservation-without-record", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -502,7 +502,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:policy-profile-second-instances-distinct", "case:reject-policy-backup-order", "case:reject-policy-backup-idempotence", "case:reject-policy-backup-without-visible-record", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:policy-profile-second-instances-distinct", "case:reject-policy-backup-order", "case:reject-policy-backup-idempotence", "case:reject-policy-backup-without-visible-record", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -535,7 +535,7 @@
       "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-required-status", "case:reject-policy-required-resource-pressure", "planned:IR-RESOURCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-required-status", "case:reject-policy-required-resource-pressure", "planned:IR-RESOURCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -546,7 +546,7 @@
       "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-POLICY-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-policy-unknown-field", "case:reject-policy-program-input-identity-drift", "case:reject-policy-incomplete-persistence", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:reject-policy-unknown-field", "case:reject-policy-program-input-identity-drift", "case:reject-policy-incomplete-persistence", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -557,7 +557,7 @@
       "supportingDispositions": ["native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["case:reject-policy-backup-without-visible-record", "case:reject-policy-reservation-without-record", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:reject-policy-backup-without-visible-record", "case:reject-policy-reservation-without-record", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -623,7 +623,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:evaluator-profile", "case:reject-evaluator-request-capability-coverage", "case:reject-evaluator-required-capability-fallback", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:evaluator-profile", "case:reject-evaluator-request-capability-coverage", "case:reject-evaluator-required-capability-fallback", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -656,7 +656,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:evaluator-batch-one-progress", "case:evaluator-batch-semantics-matrix", "case:evaluator-resumable-workspace-closure", "case:reject-evaluator-batch-sensitive-order-identity", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:evaluator-batch-one-progress", "case:evaluator-batch-semantics-matrix", "case:evaluator-resumable-workspace-closure", "case:reject-evaluator-batch-sensitive-order-identity", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -665,9 +665,9 @@
       "requirementCount": 8,
       "primaryDisposition": "native-compatible-pair-qualification",
       "supportingDispositions": ["engine-reference-oracle", "semantic-normalizer"],
-      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["normalizer:evaluator-profile", "case:reject-evaluator-publication-terminal-state", "case:reject-evaluator-publication-authority", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:evaluator-profile", "case:reject-evaluator-publication-terminal-state", "case:reject-evaluator-publication-authority", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -678,7 +678,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:evaluator-history-cache-full-key", "case:reject-evaluator-cache-incomplete-key", "case:reject-evaluator-cache-hash-only", "case:reject-evaluator-cache-resource-residue", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:evaluator-history-cache-full-key", "case:reject-evaluator-cache-incomplete-key", "case:reject-evaluator-cache-hash-only", "case:reject-evaluator-cache-resource-residue", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -687,9 +687,9 @@
       "requirementCount": 8,
       "primaryDisposition": "native-compatible-pair-qualification",
       "supportingDispositions": ["semantic-normalizer", "deterministic-composition"],
-      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["case:evaluator-resident-artifact-boundary", "case:reject-evaluator-artifact-post-ignition-residence", "case:reject-evaluator-host-progress-loop", "case:reject-evaluator-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:evaluator-resident-artifact-boundary", "case:reject-evaluator-artifact-post-ignition-residence", "case:reject-evaluator-host-progress-loop", "case:reject-evaluator-native-program-language", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -733,7 +733,7 @@
       "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-EVALUATOR-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-evaluator-artifact-provenance", "case:reject-evaluator-program-input-drift", "case:reject-evaluator-diagnostic-payload-authority", "case:reject-evaluator-incomplete-persistence", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:reject-evaluator-artifact-provenance", "case:reject-evaluator-program-input-drift", "case:reject-evaluator-diagnostic-payload-authority", "case:reject-evaluator-incomplete-persistence", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -744,7 +744,7 @@
       "supportingDispositions": ["native-compatible-pair-qualification", "ir-identity-deletion-rejection"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["case:evaluator-absent-zero-residue", "case:evaluator-capability-deletion", "case:reject-evaluator-cleanup-coverage", "case:reject-evaluator-reuse-coverage", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:evaluator-absent-zero-residue", "case:evaluator-capability-deletion", "case:reject-evaluator-cleanup-coverage", "case:reject-evaluator-reuse-coverage", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -843,7 +843,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:graph-profile", "case:graph-no-reclamation-zero-residue", "case:reject-graph-reclamation-generation-order", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:graph-profile", "case:graph-no-reclamation-zero-residue", "case:reject-graph-reclamation-generation-order", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -852,9 +852,9 @@
       "requirementCount": 7,
       "primaryDisposition": "native-compatible-pair-qualification",
       "supportingDispositions": ["engine-reference-oracle", "semantic-normalizer"],
-      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["normalizer:graph-profile", "case:reject-graph-lifecycle-unreachable-terminal", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:graph-profile", "case:reject-graph-lifecycle-unreachable-terminal", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -876,7 +876,7 @@
       "supportingDispositions": ["native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["case:graph-no-reclamation-zero-residue", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:graph-no-reclamation-zero-residue", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -887,7 +887,7 @@
       "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-GRAPH-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-graph-unknown-field", "case:reject-graph-owner-contract-crossing", "case:reject-graph-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:reject-graph-unknown-field", "case:reject-graph-owner-contract-crossing", "case:reject-graph-native-program-language", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -920,7 +920,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:resource-profile.schema.json", "normalizer:resource-profile", "case:resource-profile-matrix", "case:resource-arbitrary-width-checked-formula", "case:reject-resource-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["schema:resource-profile.schema.json", "normalizer:resource-profile", "case:resource-profile-matrix", "case:resource-arbitrary-width-checked-formula", "case:reject-resource-native-program-language", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -940,9 +940,9 @@
       "requirementCount": 6,
       "primaryDisposition": "native-compatible-pair-qualification",
       "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
-      "plannedEvidenceOwner": "ENGINE-WINDOWS-01",
+      "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["normalizer:resource-profile", "case:resource-provider-projection-neutral", "case:reject-resource-host-growth", "case:reject-resource-provider-coverage", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:resource-profile", "case:resource-provider-projection-neutral", "case:reject-resource-host-growth", "case:reject-resource-provider-coverage", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -953,7 +953,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:resource-profile", "case:resource-meaningful-admission-order-sensitive", "case:resource-core-compound-and-reserves", "case:reject-resource-admission-order", "case:reject-resource-ledger-states", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:resource-profile", "case:resource-meaningful-admission-order-sensitive", "case:resource-core-compound-and-reserves", "case:reject-resource-admission-order", "case:reject-resource-ledger-states", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -975,7 +975,7 @@
       "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:resource-profile", "case:resource-pressure-owner-separation", "case:reject-resource-response-owner", "case:reject-resource-response-reserve", "case:reject-resource-watermark-range", "planned:IR-PROGRESS-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:resource-profile", "case:resource-pressure-owner-separation", "case:reject-resource-response-owner", "case:reject-resource-response-reserve", "case:reject-resource-watermark-range", "planned:IR-PROGRESS-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -986,7 +986,7 @@
       "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:resource-profile", "case:reject-resource-exhaustion-cause-gap", "case:reject-resource-first-cause-mutable", "case:reject-resource-counter-wrap", "case:reject-resource-host-growth", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:resource-profile", "case:reject-resource-exhaustion-cause-gap", "case:reject-resource-first-cause-mutable", "case:reject-resource-counter-wrap", "case:reject-resource-host-growth", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -997,7 +997,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:resource-profile", "case:resource-lifecycle-cleanup-closure", "case:reject-resource-lifecycle-state-gap", "case:reject-resource-required-status", "case:reject-resource-required-port", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:resource-profile", "case:resource-lifecycle-cleanup-closure", "case:reject-resource-lifecycle-state-gap", "case:reject-resource-required-status", "case:reject-resource-required-port", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1008,7 +1008,7 @@
       "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-resource-unknown-field", "case:reject-resource-class-range", "case:reject-resource-identity-range", "case:reject-resource-diagnostic-authority", "case:reject-resource-incomplete-persistence", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:reject-resource-unknown-field", "case:reject-resource-class-range", "case:reject-resource-identity-range", "case:reject-resource-diagnostic-authority", "case:reject-resource-incomplete-persistence", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1019,7 +1019,7 @@
       "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["case:resource-evaluator-absent-zero-residue", "case:resource-zero-source-elimination", "case:reject-resource-cleanup-coverage", "planned:IR-DELETION-ID-01", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:resource-evaluator-absent-zero-residue", "case:resource-zero-source-elimination", "case:reject-resource-cleanup-coverage", "planned:IR-DELETION-ID-01", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1030,7 +1030,7 @@
       "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:resource-identity-content-sensitive", "case:resource-profile-order-independent", "case:reject-resource-provider-drift", "case:reject-resource-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:resource-identity-content-sensitive", "case:resource-profile-order-independent", "case:reject-resource-provider-drift", "case:reject-resource-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1052,7 +1052,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-PROGRESS-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:progress-profile.schema.json", "normalizer:progress-profile", "case:normalize-progress-profiles", "case:progress-profile-order-independent", "case:reject-progress-unknown-field", "case:reject-progress-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["schema:progress-profile.schema.json", "normalizer:progress-profile", "case:normalize-progress-profiles", "case:progress-profile-order-independent", "case:reject-progress-unknown-field", "case:reject-progress-native-program-language", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1074,7 +1074,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-work-graph-owner-and-resource-closure", "case:reject-progress-work-owner", "case:reject-progress-cross-owner-resource", "case:reject-progress-readiness-source", "case:reject-progress-held-worker-wait", "case:reject-progress-retry-not-stale-safe", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-work-graph-owner-and-resource-closure", "case:reject-progress-work-owner", "case:reject-progress-cross-owner-resource", "case:reject-progress-readiness-source", "case:reject-progress-held-worker-wait", "case:reject-progress-retry-not-stale-safe", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1085,7 +1085,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-batch-device-visible-flush", "case:reject-progress-batch-host-timeout", "case:reject-progress-fairness-coverage", "case:reject-progress-fairness-priority-escape", "case:reject-progress-fairness-closure-priority", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-batch-device-visible-flush", "case:reject-progress-batch-host-timeout", "case:reject-progress-fairness-coverage", "case:reject-progress-fairness-priority-escape", "case:reject-progress-fairness-closure-priority", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1096,7 +1096,7 @@
       "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-no-progress-outcome-closure", "case:progress-live-session-bounded-external-wait", "case:reject-progress-no-progress-outcome-gap", "case:reject-progress-host-no-progress-source", "case:reject-progress-session-external-wait-omission", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-no-progress-outcome-closure", "case:progress-live-session-bounded-external-wait", "case:reject-progress-no-progress-outcome-gap", "case:reject-progress-host-no-progress-source", "case:reject-progress-session-external-wait-omission", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1107,7 +1107,7 @@
       "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-stop-drain-closure-contract", "case:progress-reserved-closure-paths", "case:reject-progress-stop-state-gap", "case:reject-progress-stop-drain-kind-gap", "case:reject-progress-observation-dependent-closure", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-stop-drain-closure-contract", "case:progress-reserved-closure-paths", "case:reject-progress-stop-state-gap", "case:reject-progress-stop-drain-kind-gap", "case:reject-progress-observation-dependent-closure", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1129,7 +1129,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-arbitrary-width-bounds", "case:progress-device-active-public-ports", "case:reject-progress-lifecycle-state-gap", "case:reject-progress-required-status", "case:reject-progress-required-port", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:progress-profile", "case:progress-arbitrary-width-bounds", "case:progress-device-active-public-ports", "case:reject-progress-lifecycle-state-gap", "case:reject-progress-required-status", "case:reject-progress-required-port", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1140,7 +1140,7 @@
       "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-PROGRESS-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-progress-unknown-field", "case:reject-progress-contributor-relabel", "case:reject-progress-cross-owner-resource", "case:reject-progress-diagnostic-authority", "case:reject-progress-incomplete-persistence", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:reject-progress-unknown-field", "case:reject-progress-contributor-relabel", "case:reject-progress-cross-owner-resource", "case:reject-progress-diagnostic-authority", "case:reject-progress-incomplete-persistence", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1151,7 +1151,7 @@
       "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:progress-profile-order-independent", "case:progress-identity-content-sensitive", "case:progress-program-input-exactness", "case:reject-progress-scheduler-compatibility", "case:reject-progress-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:progress-profile-order-independent", "case:progress-identity-content-sensitive", "case:progress-program-input-exactness", "case:reject-progress-scheduler-compatibility", "case:reject-progress-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1173,7 +1173,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-OUTPUT-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:output-profile.schema.json", "normalizer:output-profile", "case:normalize-output-profiles", "case:output-profile-order-independent", "case:reject-output-unknown-field", "case:reject-output-workspace-host-spill", "case:reject-output-private-native-mechanism", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["schema:output-profile.schema.json", "normalizer:output-profile", "case:normalize-output-profiles", "case:output-profile-order-independent", "case:reject-output-unknown-field", "case:reject-output-workspace-host-spill", "case:reject-output-private-native-mechanism", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1195,7 +1195,7 @@
       "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:output-profile", "case:output-envelope-only-terminal-valid", "case:output-terminal-reserve-exactness", "case:output-publication-release-acquire-contract", "case:reject-output-terminal-completion-class-gap", "case:reject-output-terminal-capacity-overflow", "case:reject-output-terminal-cut", "case:reject-output-terminal-session-required", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:output-profile", "case:output-envelope-only-terminal-valid", "case:output-terminal-reserve-exactness", "case:output-publication-release-acquire-contract", "case:reject-output-terminal-completion-class-gap", "case:reject-output-terminal-capacity-overflow", "case:reject-output-terminal-cut", "case:reject-output-terminal-session-required", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1206,7 +1206,7 @@
       "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:output-profile", "case:output-live-observation-isolated-bounded-read", "case:output-terminal-only-zero-live-residue", "case:reject-output-observation-residue-when-absent", "case:reject-output-observation-duplicate-schema-assignment", "case:reject-output-observation-host-progress", "case:reject-output-observation-pressure-affects-search", "case:reject-output-observation-freshness-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:output-profile", "case:output-live-observation-isolated-bounded-read", "case:output-terminal-only-zero-live-residue", "case:reject-output-observation-residue-when-absent", "case:reject-output-observation-duplicate-schema-assignment", "case:reject-output-observation-host-progress", "case:reject-output-observation-pressure-affects-search", "case:reject-output-observation-freshness-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1217,7 +1217,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:output-profile", "case:output-live-observation-isolated-bounded-read", "case:output-publication-release-acquire-contract", "case:reject-output-snapshot-version-proof-gap", "case:reject-output-observation-capacity", "case:reject-output-observation-counter-range", "case:reject-output-observation-runtime-schema", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:output-profile", "case:output-live-observation-isolated-bounded-read", "case:output-publication-release-acquire-contract", "case:reject-output-snapshot-version-proof-gap", "case:reject-output-observation-capacity", "case:reject-output-observation-counter-range", "case:reject-output-observation-runtime-schema", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1228,7 +1228,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:output-profile", "case:output-publication-release-acquire-contract", "case:reject-output-publication-state-order", "case:reject-output-publication-before-full", "case:reject-output-zero-borrow-capacity", "case:reject-output-publication-workspace-overflow", "case:reject-output-host-read-advances-search", "case:reject-output-host-terminal-capture", "case:reject-output-device-host-acquire", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:output-profile", "case:output-publication-release-acquire-contract", "case:reject-output-publication-state-order", "case:reject-output-publication-before-full", "case:reject-output-zero-borrow-capacity", "case:reject-output-publication-workspace-overflow", "case:reject-output-host-read-advances-search", "case:reject-output-host-terminal-capture", "case:reject-output-device-host-acquire", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1250,7 +1250,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:output-profile", "case:output-terminal-only-zero-live-residue", "case:output-publication-release-acquire-contract", "case:reject-output-lifecycle-state-gap", "case:reject-output-lifecycle-disposition-gap", "case:reject-output-terminal-only-live-disposition-residue", "case:reject-output-terminal-only-live-elision-drift", "case:reject-output-cleanup-coverage", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:output-profile", "case:output-terminal-only-zero-live-residue", "case:output-publication-release-acquire-contract", "case:reject-output-lifecycle-state-gap", "case:reject-output-lifecycle-disposition-gap", "case:reject-output-terminal-only-live-disposition-residue", "case:reject-output-terminal-only-live-elision-drift", "case:reject-output-cleanup-coverage", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1261,7 +1261,7 @@
       "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-OUTPUT-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-output-contributor-private-fact", "case:reject-output-private-field-port", "case:reject-output-source-mutating-projection", "case:reject-output-observation-write-authority", "case:reject-output-port-source-mutation", "case:reject-output-consumer-permission-drift", "case:reject-output-diagnostic-memory-dump", "case:reject-output-private-native-mechanism", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:reject-output-contributor-private-fact", "case:reject-output-private-field-port", "case:reject-output-source-mutating-projection", "case:reject-output-observation-write-authority", "case:reject-output-port-source-mutation", "case:reject-output-consumer-permission-drift", "case:reject-output-diagnostic-memory-dump", "case:reject-output-private-native-mechanism", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1283,7 +1283,7 @@
       "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:output-profile-order-independent", "case:output-identity-content-sensitive", "case:output-product-data-deletion", "case:output-persistence-cleanup-selection", "case:reject-output-native-transfer-identity-semantics", "case:reject-output-incomplete-persistence", "case:reject-output-persistence-cleanup-gap", "case:reject-output-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:output-profile-order-independent", "case:output-identity-content-sensitive", "case:output-product-data-deletion", "case:output-persistence-cleanup-selection", "case:reject-output-native-transfer-identity-semantics", "case:reject-output-incomplete-persistence", "case:reject-output-persistence-cleanup-gap", "case:reject-output-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1305,7 +1305,7 @@
       "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-SESSION-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:session-profile.schema.json", "normalizer:session-profile", "case:normalize-session-profiles", "case:session-profile-second-instances-distinct", "case:session-profile-order-independent", "case:session-absence-zero-residue", "case:reject-session-unknown-field", "case:reject-session-native-program-language", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["schema:session-profile.schema.json", "normalizer:session-profile", "case:normalize-session-profiles", "case:session-profile-second-instances-distinct", "case:session-profile-order-independent", "case:session-absence-zero-residue", "case:reject-session-unknown-field", "case:reject-session-native-program-language", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1316,7 +1316,7 @@
       "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-SESSION-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-device-owned-progress-boundary", "case:session-observation-output-binding", "case:session-selected-control-deletion", "case:reject-session-host-progress-loop", "case:reject-session-control-host-progress", "case:reject-session-lifecycle-host-progress", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:session-profile", "case:session-device-owned-progress-boundary", "case:session-observation-output-binding", "case:session-selected-attention-deletion", "case:reject-session-host-progress-loop", "case:reject-session-attention-host-progress", "case:reject-session-lifecycle-host-progress", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1327,7 +1327,7 @@
       "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-transaction-admission-before-mutation", "case:session-root-work-epoch-closure", "case:reject-session-root-input-gap", "case:reject-session-root-application-gap", "case:reject-session-transaction-mutation-before-admission", "case:reject-session-transaction-owner-gap", "case:reject-session-transaction-abort-order", "case:reject-session-compound-admission-drift", "case:reject-session-root-authority-gap", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": ["normalizer:session-profile", "case:session-root-transaction-admission-before-mutation", "case:session-root-work-epoch-closure", "case:reject-session-root-input-gap", "case:reject-session-root-application-gap", "case:reject-session-root-transaction-mutation-before-admission", "case:reject-session-root-transaction-owner-gap", "case:reject-session-root-transaction-abort-order", "case:reject-session-root-compound-admission-drift", "case:reject-session-root-authority-gap", "planned:ENGINE-REFERENCE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1338,7 +1338,7 @@
       "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-selected-control-deletion", "case:session-device-owned-progress-boundary", "case:reject-session-control-host-progress", "case:reject-session-control-application-drift", "case:reject-session-unselected-control-port", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": ["normalizer:session-profile", "case:session-selected-attention-deletion", "case:session-attention-root-and-reclamation-separation", "case:session-attention-lazy-multidevice-safe-point", "case:session-attention-selected-owner-flexibility", "case:session-device-owned-progress-boundary", "case:reject-session-attention-host-progress", "case:reject-session-attention-application-drift", "case:reject-session-unselected-attention-port", "planned:ENGINE-REFERENCE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1360,7 +1360,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-cleanup-lifecycle-closure", "case:session-finite-counter-closure", "case:reject-session-synchronous-full-reclamation", "case:reject-session-counter-rollover", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:session-profile", "case:session-cleanup-lifecycle-closure", "case:session-finite-counter-closure", "case:reject-session-synchronous-full-reclamation", "case:reject-session-counter-rollover", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1371,7 +1371,7 @@
       "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-observation-output-binding", "case:session-device-owned-progress-boundary", "case:reject-session-observation-read-authority", "case:reject-session-observation-capacity", "case:reject-session-observation-request-permission", "case:reject-session-observation-epoch-relabel", "case:reject-session-observation-residue-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:session-profile", "case:session-observation-output-binding", "case:session-device-owned-progress-boundary", "case:reject-session-observation-read-authority", "case:reject-session-observation-capacity", "case:reject-session-observation-request-permission", "case:reject-session-observation-epoch-relabel", "case:reject-session-observation-residue-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1382,7 +1382,7 @@
       "supportingDispositions": ["semantic-normalizer", "deterministic-composition", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-cleanup-lifecycle-closure", "case:session-transaction-admission-before-mutation", "case:reject-session-completion-binding", "case:reject-session-port-host-progress", "case:reject-session-status-gap", "case:reject-session-cleanup-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:session-profile", "case:session-cleanup-lifecycle-closure", "case:session-root-transaction-admission-before-mutation", "case:reject-session-completion-binding", "case:reject-session-port-host-progress", "case:reject-session-status-gap", "case:reject-session-cleanup-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1393,7 +1393,7 @@
       "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-SESSION-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:session-profile.schema.json", "normalizer:session-profile", "case:session-program-public-js-boundary", "case:reject-session-runtime-code-input", "case:reject-session-security-native-handle", "case:reject-session-private-program-requirement", "case:reject-session-product-owner", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["schema:session-profile.schema.json", "normalizer:session-profile", "case:session-program-public-js-boundary", "case:reject-session-runtime-code-input", "case:reject-session-security-native-handle", "case:reject-session-private-program-requirement", "case:reject-session-product-owner", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1404,7 +1404,7 @@
       "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:session-profile-second-instances-distinct", "case:session-profile-order-independent", "case:session-selected-control-deletion", "case:session-absence-zero-residue", "case:reject-session-plan-drift", "case:reject-session-contribution-drift", "case:reject-session-persistence-without-owner", "case:reject-session-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:session-profile-second-instances-distinct", "case:session-profile-order-independent", "case:session-selected-attention-deletion", "case:session-absence-zero-residue", "case:reject-session-plan-drift", "case:reject-session-contribution-drift", "case:reject-session-persistence-without-owner", "case:reject-session-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1525,7 +1525,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:stage-upstream-optional-evaluator-session-absence", "case:stage-device-owned-lifecycle", "case:stage-program-public-js-boundary", "case:reject-stage-surface-host-progress", "case:reject-stage-lifecycle-host-progress", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:stage-upstream-optional-evaluator-session-absence", "case:stage-device-owned-lifecycle", "case:stage-program-public-js-boundary", "case:reject-stage-surface-host-progress", "case:reject-stage-lifecycle-host-progress", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1547,7 +1547,7 @@
       "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:stage-profile", "case:stage-finite-counter-closure", "case:stage-cleanup-selected-only-closure", "case:reject-stage-counter-wrap", "case:reject-stage-cleanup-gap", "case:reject-stage-diagnostic-native-state", "case:reject-stage-native-program-language", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:stage-profile", "case:stage-finite-counter-closure", "case:stage-cleanup-selected-only-closure", "case:reject-stage-counter-wrap", "case:reject-stage-cleanup-gap", "case:reject-stage-diagnostic-native-state", "case:reject-stage-native-program-language", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1569,7 +1569,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["case:normalize-stage-profiles", "case:stage-materially-different-nongame-profile", "case:reject-stage-unordered-noncommuting-capabilities", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:normalize-stage-profiles", "case:stage-materially-different-nongame-profile", "case:reject-stage-unordered-noncommuting-capabilities", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1613,7 +1613,7 @@
       "supportingDispositions": ["structural-schema", "ir-identity-deletion-rejection", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:channel-profile.schema.json", "normalizer:channel-profile", "case:normalize-channel-profiles", "case:channel-profile-order-independent", "case:channel-program-public-js-boundary", "case:reject-channel-unknown-field", "case:reject-channel-private-program-requirement", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["schema:channel-profile.schema.json", "normalizer:channel-profile", "case:normalize-channel-profiles", "case:channel-profile-order-independent", "case:channel-program-public-js-boundary", "case:reject-channel-unknown-field", "case:reject-channel-private-program-requirement", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1624,7 +1624,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:channel-profile", "case:channel-state-graph-terminal-and-reuse-closure", "case:channel-reference-serial-publication", "case:channel-reference-multiborrow-accounting", "case:channel-reference-stale-generation-rejected", "case:reject-channel-claim-mode-mismatch", "case:reject-channel-reference-borrow-bound", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:channel-profile", "case:channel-state-graph-terminal-and-reuse-closure", "case:channel-reference-serial-publication", "case:channel-reference-multiborrow-accounting", "case:channel-reference-stale-generation-rejected", "case:reject-channel-claim-mode-mismatch", "case:reject-channel-reference-borrow-bound", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1657,7 +1657,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-logical-release-acquire-publication", "case:channel-reference-serial-publication", "case:reject-channel-publication-release-gap", "case:reject-channel-publication-scope-gap", "case:reject-channel-publication-private-recipe", "case:reject-channel-reference-missing-release", "case:reject-channel-reference-missing-acquire", "case:reject-channel-reference-uninitialized-publication", "proof:cuda-js-123-capability-gap", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:channel-logical-release-acquire-publication", "case:channel-reference-serial-publication", "case:reject-channel-publication-release-gap", "case:reject-channel-publication-scope-gap", "case:reject-channel-publication-private-recipe", "case:reject-channel-reference-missing-release", "case:reject-channel-reference-missing-acquire", "case:reject-channel-reference-uninitialized-publication", "proof:cuda-js-release-acquire-public-contract", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1690,7 +1690,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-cleanup-lifecycle-closure", "case:channel-reference-cancel-late-completion-no-resurrection", "case:channel-reference-expiry-terminal", "case:channel-reference-stale-generation-rejected", "case:reject-channel-cancellation-state-gap", "case:reject-channel-reclamation-reference-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:channel-cleanup-lifecycle-closure", "case:channel-reference-cancel-late-completion-no-resurrection", "case:channel-reference-expiry-terminal", "case:channel-reference-stale-generation-rejected", "case:reject-channel-cancellation-state-gap", "case:reject-channel-reclamation-reference-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1701,7 +1701,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-device-owned-boundary", "case:channel-program-public-js-boundary", "case:reject-channel-host-progress-loop", "case:reject-channel-native-program-language", "case:reject-channel-runtime-registry", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:channel-device-owned-boundary", "case:channel-program-public-js-boundary", "case:reject-channel-host-progress-loop", "case:reject-channel-native-program-language", "case:reject-channel-runtime-registry", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1712,7 +1712,7 @@
       "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-profile-second-instance-distinct", "case:channel-profile-order-independent", "case:channel-first-product-deletion-zero-owned-residue", "case:channel-identity-content-sensitive", "case:reject-channel-plan-drift", "case:reject-channel-counter-wrap", "planned:IR-DELETION-ID-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:channel-profile-second-instance-distinct", "case:channel-profile-order-independent", "case:channel-first-product-deletion-zero-owned-residue", "case:channel-identity-content-sensitive", "case:reject-channel-plan-drift", "case:reject-channel-counter-wrap", "planned:IR-DELETION-ID-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1723,7 +1723,7 @@
       "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:channel-profile", "case:channel-cleanup-lifecycle-closure", "case:reject-channel-owner-profile-drift", "case:reject-channel-status-gap", "case:reject-channel-cleanup-gap", "case:reject-channel-native-program-language", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["normalizer:channel-profile", "case:channel-cleanup-lifecycle-closure", "case:reject-channel-owner-profile-drift", "case:reject-channel-status-gap", "case:reject-channel-cleanup-gap", "case:reject-channel-native-program-language", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -1745,7 +1745,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-reference-serial-publication", "case:channel-reference-multiborrow-accounting", "case:channel-reference-producer-service-while-pending", "case:channel-reference-typed-no-progress", "case:reject-channel-reference-missing-release", "case:reject-channel-reference-missing-acquire", "case:reject-channel-reference-borrow-bound", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-WINDOWS-01"],
+      "evidenceRefs": ["case:channel-reference-serial-publication", "case:channel-reference-multiborrow-accounting", "case:channel-reference-producer-service-while-pending", "case:channel-reference-typed-no-progress", "case:reject-channel-reference-missing-release", "case:reject-channel-reference-missing-acquire", "case:reject-channel-reference-borrow-bound", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {

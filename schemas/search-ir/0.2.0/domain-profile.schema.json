@@ -136,7 +136,7 @@
           "additionalProperties": false,
           "required": ["boundary", "disposition"],
           "properties": {
-            "boundary": { "enum": ["reroot", "restart", "persistence"] },
+            "boundary": { "enum": ["root-advance", "restart", "persistence"] },
             "disposition": { "enum": ["invalid", "resettable", "valid"] }
           }
         },
@@ -145,7 +145,7 @@
           "additionalProperties": false,
           "required": ["boundary", "disposition", "adapter"],
           "properties": {
-            "boundary": { "enum": ["reroot", "restart", "persistence"] },
+            "boundary": { "enum": ["root-advance", "restart", "persistence"] },
             "disposition": { "const": "transformable" },
             "adapter": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
           }

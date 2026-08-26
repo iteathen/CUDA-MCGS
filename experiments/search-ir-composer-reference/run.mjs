@@ -4546,18 +4546,18 @@ await runCase('reject-output-product-owner', () => {
 await runCase('session-schema-closed', () => {
   assert.equal(sessionProfileSchema.properties.schema.const, 'cuda-mcgs.session-profile/0.2.0');
   assert.equal(sessionProfileSchema.additionalProperties, false);
-  for (const name of ['inputSchema', 'commands', 'transaction', 'root', 'owner', 'stateFamily', 'control', 'observation', 'reclamation', 'counter', 'lifecycle', 'port', 'status', 'security', 'cleanup', 'programContribution']) assert.equal(sessionProfileSchema.$defs[name].additionalProperties, false);
+  for (const name of ['inputSchema', 'commands', 'rootTransaction', 'root', 'owner', 'stateFamily', 'attentionProfile', 'observation', 'reclamation', 'counter', 'lifecycle', 'port', 'status', 'security', 'cleanup', 'programContribution']) assert.equal(sessionProfileSchema.$defs[name].additionalProperties, false);
 });
 
 await runCase('session-profile-second-instances-distinct', () => {
   assert.equal(new Set(sessionProfiles.map(({ identity }) => identity.sha256)).size, 2);
   assert.deepEqual(sessionProfiles.map(({ normalized }) => normalized.root.pressureOutcome), ['reject-keep-session', 'restart-required']);
-  assert.deepEqual(sessionProfiles.map(({ normalized }) => normalized.controls.length), [1, 0]);
+  assert.deepEqual(sessionProfiles.map(({ normalized }) => normalized.attention.kind), ['selected', 'absent']);
 });
 
 await runCase('session-profile-order-independent', () => {
   const reordered = clone(sessionProfileInputs[0]);
-  for (const key of ['owners', 'controls', 'counters', 'statuses', 'permissions', 'productData']) reordered[key].reverse();
+  for (const key of ['owners', 'counters', 'statuses', 'permissions', 'productData']) reordered[key].reverse();
   reordered.root.workScopes.reverse();
   reordered.observations.profiles.reverse();
   reordered.programContribution.inputs.reverse();
@@ -4583,24 +4583,93 @@ await runCase('session-owner-boundary-exact', () => {
   assert(normalized.owners.filter(({ role }) => role === 'participant').every(({ state }) => state.length > 0));
 });
 
-await runCase('session-transaction-admission-before-mutation', () => {
+await runCase('session-root-transaction-admission-before-mutation', () => {
   const normalized = sessionProfiles[0].normalized;
   assert.equal(normalized.commands.admissionBeforeMutation, true);
-  assert.equal(normalized.transaction.preMutationAdmission, true);
-  assert.equal(normalized.transaction.rejectedEffect, 'none');
-  assert.equal(normalized.transaction.duplicateEffect, 'none');
-  assert.equal(normalized.transaction.partialCommit, 'fatal-quarantine');
-  assert.deepEqual(normalized.transaction.abortOrder, [...normalized.transaction.prepareOrder].reverse());
+  assert.equal(normalized.rootTransaction.preMutationAdmission, true);
+  assert.equal(normalized.rootTransaction.rejectedEffect, 'none');
+  assert.equal(normalized.rootTransaction.duplicateEffect, 'none');
+  assert.equal(normalized.rootTransaction.partialCommit, 'fatal-quarantine');
+  assert.deepEqual(normalized.rootTransaction.abortOrder, [...normalized.rootTransaction.prepareOrder].reverse());
+  const rootIndependentOwner = normalized.owners.find(({ state }) => state.every(({ classification }) => classification === 'root-independent-retain'));
+  assert(rootIndependentOwner);
+  assert(!normalized.rootTransaction.prepareOrder.includes(rootIndependentOwner.id));
 });
 
-await runCase('session-selected-control-deletion', () => {
-  assert(sessionProfiles[0].normalized.ports.some(({ id }) => id === 'prepareControlChange'));
-  assert(!sessionProfiles[1].normalized.ports.some(({ id }) => id === 'prepareControlChange'));
-  assert(!sessionProfiles[1].normalized.commands.inputs.some(({ kind }) => kind === 'control'));
-  assert.equal(sessionProfiles[1].normalized.controls.length, 0);
-  assert(!sessionProfiles[1].normalized.lifecycle.postIgnitionInteractions.includes('control-change'));
-  assert(!sessionProfiles[1].normalized.permissions.some(({ id }) => id.includes('permission-control')));
-  assert(!sessionProfiles[1].normalized.statuses.some(({ code }) => code.startsWith('session-control-')));
+await runCase('session-selected-attention-deletion', () => {
+  assert(sessionProfiles[0].normalized.ports.some(({ id }) => id === 'applyAttentionChange'));
+  assert(!sessionProfiles[1].normalized.ports.some(({ id }) => id === 'applyAttentionChange'));
+  assert(!sessionProfiles[1].normalized.commands.inputs.some(({ kind }) => kind === 'attention'));
+  assert.equal(sessionProfiles[1].normalized.attention.kind, 'absent');
+  assert(!sessionProfiles[1].normalized.lifecycle.postIgnitionInteractions.includes('attention-change'));
+  assert(!sessionProfiles[1].normalized.permissions.some(({ id }) => id.includes('permission-attention')));
+  assert(!sessionProfiles[1].normalized.statuses.some(({ code }) => code.includes('attention')));
+  assert(!sessionProfiles[1].normalized.counters.some(({ kind }) => kind === 'attention-generation'));
+  assert(!sessionProfiles[1].normalized.cleanup.kinds.includes('attention-publication'));
+});
+
+await runCase('session-attention-root-and-reclamation-separation', () => {
+  const normalized = sessionProfiles[0].normalized;
+  const attention = normalized.attention.profile;
+  const command = normalized.commands.inputs.find(({ id }) => id === attention.input);
+  assert.equal(command.kind, 'attention');
+  assert.equal(command.epochScope, 'session');
+  assert.equal(attention.rootEpochEffect, 'none');
+  assert.equal(attention.graphWork, 'none');
+  assert.equal(attention.reclamation, 'none');
+  assert.equal(attention.existingWork, 'unchanged');
+  assert.equal('compoundAdmission' in attention, false);
+  assert.notEqual(attention.generationCounter, normalized.root.epochCounter);
+  assert(!JSON.stringify(attention).includes(normalized.rootTransaction.compoundAdmission.rootReserve));
+});
+
+await runCase('session-attention-lazy-multidevice-safe-point', () => {
+  const attention = sessionProfiles[0].normalized.attention.profile;
+  assert.equal(attention.application, 'queued-device-control-work-at-existing-safe-point');
+  assert.equal(attention.steadyStatePolling, 'none');
+  assert.equal(attention.applicationCost, 'bounded-independent-of-search-state');
+  assert.equal(attention.synchronization, 'no-global-barrier');
+  assert.equal(attention.multiDeviceVisibility, 'per-device-versioned-safe-point');
+});
+
+await runCase('session-attention-selected-owner-flexibility', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  const alternativeOwner = mutated.owners.find(({ role, contract }) => role === 'participant' && contract.id === 'SPEC-0013');
+  mutated.commands.inputs.find(({ kind }) => kind === 'attention').owner = alternativeOwner.id;
+  mutated.attention.profile.owner = alternativeOwner.id;
+  const result = normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult);
+  assert.equal(result.normalized.attention.profile.owner, alternativeOwner.id);
+  assert.notDeepEqual(result.identity, sessionProfiles[0].identity);
+});
+
+await runCase('reject-session-attention-root-epoch-scope', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  mutated.commands.inputs.find(({ kind }) => kind === 'attention').epochScope = 'session-and-root-epoch';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ATTENTION_INPUT' });
+});
+
+await runCase('reject-session-attention-graph-work', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.attention.profile.graphWork = 'traverse-retained-graph';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ATTENTION_CONTRACT' });
+});
+
+await runCase('reject-session-attention-steady-state-polling', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.attention.profile.steadyStatePolling = 'per-search-iteration';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ATTENTION_CONTRACT' });
+});
+
+await runCase('reject-session-attention-generation-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.counters = mutated.counters.filter(({ kind }) => kind !== 'attention-generation');
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_COUNTER_COVERAGE' });
+});
+
+await runCase('reject-session-root-transaction-unaffected-owner', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  const unaffected = mutated.owners.find(({ state }) => state.every(({ classification }) => classification === 'root-independent-retain')).id;
+  mutated.rootTransaction.prepareOrder.push(unaffected);
+  mutated.rootTransaction.commitOrder.push(unaffected);
+  mutated.rootTransaction.abortOrder.unshift(unaffected);
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_TRANSACTION_ORDER' });
 });
 
 await runCase('session-observation-output-binding', () => {
@@ -4622,7 +4691,7 @@ await runCase('session-root-work-epoch-closure', () => {
 
 await runCase('session-finite-counter-closure', () => {
   const normalized = sessionProfiles[0].normalized;
-  assert.deepEqual(normalized.counters.map(({ kind }) => kind).sort(), ['command', 'observation-generation', 'reclamation-generation', 'root-epoch', 'session-incarnation']);
+  assert.deepEqual(normalized.counters.map(({ kind }) => kind).sort(), ['attention-generation', 'command', 'observation-generation', 'reclamation-generation', 'root-epoch', 'session-incarnation']);
   assert(normalized.counters.every(({ staleAliasProhibited }) => staleAliasProhibited));
   assert.equal(normalized.counters.find(({ kind }) => kind === 'session-incarnation').rollover, 'prohibited');
 });
@@ -4631,7 +4700,7 @@ await runCase('session-device-owned-progress-boundary', () => {
   const normalized = sessionProfiles[0].normalized;
   assert.equal(normalized.commands.hostProgress, 'none');
   assert.equal(normalized.lifecycle.hostProgress, 'none');
-  assert(normalized.controls.every(({ hostProgress }) => hostProgress === 'none'));
+  assert.equal(normalized.attention.profile.hostProgress, 'none');
   assert(normalized.ports.every(({ hostProgress, mechanism }) => hostProgress === 'none' && mechanism === 'public-cuda-js-contract'));
 });
 
@@ -4644,7 +4713,7 @@ await runCase('session-program-public-js-boundary', () => {
 
 await runCase('session-cleanup-lifecycle-closure', () => {
   const normalized = sessionProfiles[0].normalized;
-  assert.equal(normalized.cleanup.kinds.length, 11);
+  assert.equal(normalized.cleanup.kinds.length, 12);
   assert.equal(normalized.cleanup.terminalBorrowPreservedUntilRelease, true);
   assert.equal(normalized.lifecycle.persistence, 'none');
   assert.equal(normalized.compatibility.persistence.kind, 'none');
@@ -4706,24 +4775,24 @@ await runCase('reject-session-root-application-gap', () => {
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_INPUT_APPLICATION' });
 });
 
-await runCase('reject-session-transaction-mutation-before-admission', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.transaction.preMutationAdmission = false;
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_TRANSACTION_CONTRACT' });
+await runCase('reject-session-root-transaction-mutation-before-admission', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.rootTransaction.preMutationAdmission = false;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_TRANSACTION_CONTRACT' });
 });
 
-await runCase('reject-session-transaction-owner-gap', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.transaction.prepareOrder.pop();
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_TRANSACTION_ORDER' });
+await runCase('reject-session-root-transaction-owner-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.rootTransaction.prepareOrder.pop();
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_TRANSACTION_ORDER' });
 });
 
-await runCase('reject-session-transaction-abort-order', () => {
-  const mutated = clone(sessionProfileInputs[0]); [mutated.transaction.abortOrder[0], mutated.transaction.abortOrder[1]] = [mutated.transaction.abortOrder[1], mutated.transaction.abortOrder[0]];
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_TRANSACTION_ORDER' });
+await runCase('reject-session-root-transaction-abort-order', () => {
+  const mutated = clone(sessionProfileInputs[0]); [mutated.rootTransaction.abortOrder[0], mutated.rootTransaction.abortOrder[1]] = [mutated.rootTransaction.abortOrder[1], mutated.rootTransaction.abortOrder[0]];
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_TRANSACTION_ORDER' });
 });
 
-await runCase('reject-session-compound-admission-drift', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.transaction.compoundAdmission.rootReserve = progressResourceResults[2].normalized.reserves.find(({ purpose }) => purpose === 'terminal-result').id;
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ADMISSION_BINDING' });
+await runCase('reject-session-root-compound-admission-drift', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.rootTransaction.compoundAdmission.rootReserve = progressResourceResults[2].normalized.reserves.find(({ purpose }) => purpose === 'terminal-result').id;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_ADMISSION_BINDING' });
 });
 
 await runCase('reject-session-root-owner-drift', () => {
@@ -4751,14 +4820,14 @@ await runCase('reject-session-reuse-validity-gap', () => {
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_STATE_CLASSIFICATION' });
 });
 
-await runCase('reject-session-control-host-progress', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.controls[0].hostProgress = 'host-callback';
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_CONTROL_CONTRACT' });
+await runCase('reject-session-attention-host-progress', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.attention.profile.hostProgress = 'host-callback';
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ATTENTION_CONTRACT' });
 });
 
-await runCase('reject-session-control-application-drift', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.controls[0].applicationPoint = sessionSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-application-point');
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_CONTROL_CONTRACT' });
+await runCase('reject-session-attention-application-drift', () => {
+  const mutated = clone(sessionProfileInputs[0]); mutated.attention.profile.applicationPoint = sessionSyntheticSchemaReference('cuda-mcgs.synthetic-invalid-application-point');
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ATTENTION_CONTRACT' });
 });
 
 await runCase('reject-session-observation-read-authority', () => {
@@ -4816,8 +4885,8 @@ await runCase('reject-session-completion-binding', () => {
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_COMPLETION_BINDING' });
 });
 
-await runCase('reject-session-unselected-control-port', () => {
-  const mutated = clone(sessionProfileInputs[1]); const extra = clone(mutated.ports[0]); extra.id = 'prepareControlChange'; extra.phase = 'device-active'; mutated.ports.push(extra);
+await runCase('reject-session-unselected-attention-port', () => {
+  const mutated = clone(sessionProfileInputs[1]); const extra = clone(mutated.ports[0]); extra.id = 'applyAttentionChange'; extra.phase = 'device-active'; mutated.ports.push(extra);
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_PORT_COVERAGE' });
 });
 
@@ -5387,7 +5456,7 @@ await runCase('channel-logical-release-acquire-publication', () => {
   for (const channel of channelProfiles[0].normalized.channels) {
     assert.equal(channel.publication.release, 'logical-release'); assert.equal(channel.publication.acquire, 'logical-acquire');
     assert.equal(channel.publication.scope, 'device'); assert.equal(channel.publication.nativeSpelling, 'none');
-    assert.equal(channel.publication.nativeQualification, 'blocked-cuda-js-123');
+    assert.equal(channel.publication.nativeQualification, 'pending-exact-compatible-pair');
   }
 });
 
@@ -5424,7 +5493,7 @@ await runCase('channel-program-public-js-boundary', () => {
   const program = channelProfiles[0].normalized.programContribution;
   assert.equal(program.language, 'restricted-device-js'); assert.equal(program.runtimeRegistry, false); assert.equal(program.nativeArtifacts, false);
   assert.deepEqual(program.requirements.map(({ id }) => id), ['cuda-js.device-js/0.1.0', 'cuda-js.device-publication-release-acquire/0.1.0', 'cuda-js.operation-lifecycle/0.1.0']);
-  assert.equal(channelProfiles[0].normalized.compatibility.nativeQualification, 'blocked-cuda-js-123');
+  assert.equal(channelProfiles[0].normalized.compatibility.nativeQualification, 'pending-exact-compatible-pair');
 });
 
 await runCase('channel-cleanup-lifecycle-closure', () => {
@@ -5767,9 +5836,36 @@ await runCase('channel-reference-cancellation-preserves-borrow-accounting', () =
   assert.equal(result.slots[0].state, 'free');
 });
 
+await runCase('universal-normalized-product-assumption-absence', () => {
+  const normalizedUniversalArtifacts = [
+    frameworkSelection.normalized,
+    ...domainProfiles.map(({ normalized }) => normalized),
+    ...graphProfiles.map(({ normalized }) => normalized),
+    ...policyProfiles.map(({ normalized }) => normalized),
+    ...evaluatorProfiles.map(({ normalized }) => normalized),
+    ...resourceProfiles.map(({ normalized }) => normalized),
+    ...progressProfiles.map(({ normalized }) => normalized),
+    ...outputProfiles.map(({ normalized }) => normalized),
+    ...sessionProfiles.map(({ normalized }) => normalized),
+    ...stageProfiles.map(({ normalized }) => normalized),
+    ...channelProfiles.map(({ normalized }) => normalized),
+    ...programPackageProfiles.map(({ normalized }) => normalized),
+    ...searchPrograms.map(({ normalized }) => normalized),
+    ...executionPackages.map(({ normalized }) => normalized),
+  ];
+  const serialized = JSON.stringify(normalizedUniversalArtifacts);
+  assert(!/(?:chess|connect(?:-?4|[- ]four)|board|player|zero-sum|alternating-turn|best-move|multipv)/i.test(serialized));
+  assert(domainProfiles.some(({ normalized }) => normalized.roles.some(({ category }) => category === 'custom')));
+  assert(domainProfiles.some(({ normalized }) => normalized.transitionModes.some(({ kind }) => kind === 'sampled-stochastic')));
+  assert(policyProfiles.some(({ normalized }) => normalized.value.kind === 'none'));
+  assert(policyProfiles.some(({ normalized }) => normalized.value.family === 'vector' && normalized.value.coordinates.length > 1));
+  assert(evaluatorProfiles.some(({ normalized }) => normalized.outputs.some(({ family }) => family === 'distribution')));
+  assert(outputProfiles.some(({ normalized }) => normalized.fields.every(({ semanticRole }) => semanticRole !== 'ranking')));
+});
+
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 855,
+  expected: 864,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -5777,7 +5873,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 855 - cases.length,
+  notDiscovered: 864 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -5891,7 +5987,7 @@ const evidence = {
     'Resource evidence covers three strict finite-plan instances, contribution composition, exact arithmetic, partitions/reserves/admission/ledgers/pressure/exhaustion/lifecycle/provider projections and evaluator-absence zero residue, not behavioral oracle, concurrent accounting, physical CUDA-JS allocation, native or compatible-pair qualification.',
     'Progress evidence covers three scheduler-neutral work/readiness/fairness/no-progress/stop/closure plans, including evaluator absence and selected live-session external wait, not behavioral oracle, schedule exploration, physical scheduler/CUDA-JS execution, native or compatible-pair qualification.',
     'Output evidence covers three strict terminal/live profile instances, exact source readiness, finite workspace/observation/terminal capacity, snapshot/publication/borrow/lifecycle/consumer/cleanup checks and terminal-only zero live residue, not behavioral oracle, concurrent publication, physical CUDA-JS transfer, native or compatible-pair qualification.',
-    'Search Session evidence covers two strict selected instances plus terminal-only absence, bounded root/control/observation transactions, epoch/reuse/stale/reclamation/counter/lifecycle/cleanup checks and exact upstream owner bindings, not behavioral oracle, concurrent session execution, physical sideband realization, native or compatible-pair qualification.',
+    'Search Session evidence covers two strict selected instances plus terminal-only absence, bounded root transactions, independent attention publications, observation coordination, epoch/reuse/stale/reclamation/counter/lifecycle/cleanup checks and exact upstream owner bindings, not behavioral oracle, concurrent session execution, physical sideband realization, native or compatible-pair qualification.',
     'Search Stage evidence covers two materially different strict selected profiles, one same-profile first-product deletion projection, stable entry/exit surfaces, least-authority source-owner ports, deterministic capability order, finite resource/progress/counter/lifecycle closure and whole-substrate absence, not native execution or compatible-pair qualification.',
     'Async Stage Channel evidence covers strict optional selected/absent profiles, exact Stage action grants, finite resource/progress/item/claim/publication/cancellation/reclamation semantics, evaluator-like required request/result and advisory multi-borrow secondary work, first-product deletion and a bounded logical happens-before/ownership reference oracle. It does not select a CUDA queue/layout/topology or claim native publication; the former CUDA-JS #123 public-capability gap is resolved, while exact native compatible-pair qualification remains mandatory.',
     'Program/package evidence covers four strict composition profiles, canonical restricted Device-JS Search Programs, consumer-neutral CUDA-JS request projections, opaque success/failure realization fixtures, exact first-consumer deletion and a complete reference-only compatible-pair record. It remains proposal evidence and does not claim CUDA-JS compilation, native artifacts, installed-package support or a qualified pair.',

@@ -200,7 +200,7 @@ EXT-OUTCOME-005. Timing or schedule races cannot silently change selected domain
 
 ## 10. External session, output and internal-channel boundaries
 
-EXT-BOUNDARY-001. External root/control commands, cancellation requests, observation requests/borrows and terminal result consumption are not Stage Extension Surfaces. Optional SPEC-0006 coordinates their transaction/lifecycle; SPEC-0013 owns result/observation payload publication.
+EXT-BOUNDARY-001. External root/attention commands, cancellation requests, observation requests/borrows and terminal result consumption are not Stage Extension Surfaces. Optional SPEC-0006 coordinates their distinct root-transaction/attention-publication lifecycles; SPEC-0013 owns result/observation payload publication.
 
 EXT-BOUNDARY-002. A capability may consume root-epoch or immutable observation facts only when its selected source-owner contract and surface grant them. It cannot turn an internal checkpoint into host-driven search progression or an output read into search mutation.
 

@@ -29,7 +29,7 @@ Normative dependencies are:
 - accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for foundational normalized Search IR/reference meaning within its current scope; and
 - proposal [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md) for domain state/action identity, relevant history, roles, transitions and terminal outcomes.
 
-Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) and retained SESSION-001 results are informative adjacency for reroot/reclamation and stale-reference evidence. Implementations, experiments and products remain evidence beneath this proposal.
+Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) and retained SESSION-001 results are informative adjacency for root-advance/reclamation and stale-reference evidence. Implementations, experiments and products remain evidence beneath this proposal.
 
 Accepted authority governs conflicts. This proposal does not supersede another specification and is not production implementation authority.
 
@@ -247,7 +247,7 @@ GRAPH-PATH-007. Closing/abandoning a path dispositions owner-local reservations,
 
 GRAPH-PATH-008. A self-loop, directed cycle, DAG transposition, stochastic parallel transition and history-distinct equal-base-state case must all be representable without changing node/edge/path ownership.
 
-## 10. Root anchors, reroot and retained graph state
+## 10. Root anchors, root advance and retained graph state
 
 GRAPH-ROOT-001. A graph root anchor is a protected typed node reference. Search Session or one-shot lifecycle owns which anchor is current, the root epoch and root-update commit; graph owns anchor validity/protection storage.
 
@@ -255,7 +255,7 @@ GRAPH-ROOT-002. Resolving a replacement root uses the same domain validation, co
 
 GRAPH-ROOT-003. A rejected/full-capacity replacement-root attempt leaves the prior protected root and accepted graph/session state unchanged. Resource/session profiles may reserve root-admission capacity or choose typed failure/restart, but graph cannot allocate hidden capacity.
 
-GRAPH-ROOT-004. Logical reroot and reclamation are separate transitions. Publishing a new root/epoch does not immediately prove old nodes unreachable or safe to reuse.
+GRAPH-ROOT-004. Logical root advance and reclamation are separate transitions. Publishing a new root/epoch does not immediately prove old nodes unreachable or safe to reuse.
 
 GRAPH-ROOT-005. Domain/policy/evaluator/output/extension owners classify retained records as retain, retain-if-key-valid, transform, reset or invalidate. Graph executes storage disposition through public lifecycle ports without inventing reuse semantics.
 
@@ -360,7 +360,7 @@ GRAPH-COMPAT-004. Persistence is optional. A persistent profile defines canonica
 
 GRAPH-COMPAT-005. In-memory layout and physical addresses are never automatically durable format. Loading validates every object/reference/index entry before publication; an invalid artifact is rejected/quarantined without partial live graph mutation.
 
-GRAPH-COMPAT-006. Reroot reuse within a live arena is not persistence and does not imply cross-engine/package compatibility.
+GRAPH-COMPAT-006. Root-advance reuse within a live arena is not persistence and does not imply cross-engine/package compatibility.
 
 ## 17. Search IR, schema and downstream obligations
 
@@ -395,7 +395,7 @@ Later `ENGINE-IR-COMPOSER-01` and `ENGINE-REFERENCE-01` must consolidate at leas
 | `graph-history-sensitive-path` | Base-state equality discards domain-relevant history. |
 | `graph-self-loop-cycle-dag-multigraph` | A non-tree graph shape requires ownership redesign. |
 | `graph-path-capacity-no-truncation` | Path pressure silently truncates semantic history/occurrences. |
-| `graph-reroot-before-reclaim` | Logical reroot immediately reuses old storage without quiescence. |
+| `graph-root-advance-before-reclaim` | Logical root advance immediately reuses old storage without quiescence. |
 | `graph-old-work-protection` | Stale-epoch work loses storage protection before termination. |
 | `graph-protect-retire-race` | Concurrent protection acquisition succeeds after retirement has made an object reclaimable. |
 | `graph-stale-generation-reuse` | A reference to reclaimed slot accesses its replacement. |
@@ -414,7 +414,7 @@ The minimum fixture set includes:
 2. a self-loop/cyclic history-sensitive graph with multiple active paths;
 3. a stochastic parallel-edge multigraph with repeatable action occurrences;
 4. a fixed arena with no reclamation and deterministic saturation; and
-5. a reclamation-enabled reroot sequence with old work, retained observation borrow, retirement, quiescence and slot reuse.
+5. a reclamation-enabled root-advance sequence with old work, retained observation borrow, retirement, quiescence and slot reuse.
 
 Before selecting a production transposition/reclamation implementation, `TT-001` compares credible mechanisms under identical normalized domain/policy/resource/publication obligations and records methodology, workload, exact source/revision/license/provenance, memory, collision/load behavior, concurrency/progress, cleanup and result. That mechanism evidence is not a circular prerequisite for backend-neutral proposal authorship.
 

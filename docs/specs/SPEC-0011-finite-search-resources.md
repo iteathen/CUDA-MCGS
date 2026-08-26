@@ -237,9 +237,9 @@ RESOURCE-EXHAUST-008. No exhaustion path performs post-ignition host allocation,
 
 RESOURCE-LIFE-001. Resource lifecycle is `profile-normalized → physical-plan-admitted → pools/ledgers-initialized → active → draining → terminal → released`, with failure/quarantine paths and exact rollback.
 
-RESOURCE-LIFE-002. Root/session/work-scoped leases carry exact epochs. Reroot does not free or relabel them until owning stale-work/reclamation dispositions complete; new-root compound admission precedes authoritative mutation.
+RESOURCE-LIFE-002. Root/session/work-scoped leases carry exact epochs. Root advance does not free or relabel them until owning stale-work/reclamation dispositions complete; new-root compound admission precedes authoritative mutation.
 
-RESOURCE-LIFE-003. A rejected root/control update leaves current plan/leases/ledgers authoritative and unchanged except bounded failed-admission diagnostics.
+RESOURCE-LIFE-003. A rejected root update or attention publication leaves current plan/leases/ledgers authoritative and unchanged except bounded failed-admission diagnostics.
 
 RESOURCE-LIFE-004. Teardown stops new admission, resolves compound transactions, drains/abandons owner work, retires/reclaims or quarantines all leases, freezes final ledgers/evidence, then releases opaque CUDA-JS resources in dependency-reverse order.
 

@@ -8,7 +8,7 @@
 
 **Priority:** P0 prerequisite to semantic acceptance and production implementation
 
-**Parent plan:** `CUDA-MCGS-V0/22`
+**Parent plan:** `CUDA-MCGS-V0/23`
 
 **Integration owner:** CUDA-MCGS Search IR/Composer integration spine
 
@@ -107,7 +107,7 @@ The coverage index links IDs to evidence without copying normative sentences. A 
 
 ### CUDA-JS completeness classification
 
-No additional generic CUDA-JS feature is required for backend-neutral schema, normalization, composition or CUDA-free reference evidence. Current public Device-JS contracts naturally carry restricted source and consumer-neutral compiler/resource/operation requirements. The previously classified CUDA-JS issue #123 remains the only known new gap: explicit device-scope release/acquire publication helpers are required before native Async Stage Channel qualification. The schema may name that public capability only when a selected channel profile requires it; availability never makes it universal.
+No additional generic CUDA-JS feature is required for backend-neutral schema, normalization, composition or CUDA-free reference evidence. Current public Device-JS contracts naturally carry restricted source and consumer-neutral compiler/resource/operation requirements. The previously classified CUDA-JS issue #123 gap is resolved by the public device-scope release/acquire Device-JS contract in `cuda-js@0.1.0-alpha.7`. A selected Channel profile names that public capability without making it universal; native Channel execution still requires the later exact compatible-pair qualification rather than a stale missing-capability label.
 
 Any later urge to add native code, CUDA spelling, private artifact inspection or an awkward synchronization recipe in CUDA-MCGS is a stop signal. The need must be reclassified as either existing public CUDA-JS capability, a new consumer-neutral CUDA-JS contract, or evidence that the CUDA-MCGS design is wrong.
 
@@ -147,6 +147,9 @@ accepted Search IR 0.1.0 + decision-complete 989-requirement packet
                      IR-COMPOSER-01
                               |
                               v
+                  SESSION-ATTENTION-01
+                              |
+                              v
                    IR-DELETION-ID-01
                               |
                               v
@@ -177,7 +180,8 @@ The arrows express integration order, not reverse semantic ownership. Later owne
 | `IR-CHANNEL-01` | integrated through PR #103 at `main@1baadc5` | Optional nonblocking channel fragment and logical publication/progress/resource semantics | Channel schema/normalizer/fixtures/coverage | Blocking/spinning is encoded, ownership is lost/duplicated, cycles hold resources, or CUDA memory-order spellings enter semantic IR. |
 | `IR-PROGRAM-PACKAGE-01` | integrates through PR #111; focused capsule 839/839 | Strict composition profile, Search Program and public execution-package schemas | Composition/package schemas/fixtures/coverage | CUDA-JS receives MCGS meaning, CUDA-MCGS parses native output, source mapping is incomplete, or unselected capability changes core bytes. |
 | `IR-COMPOSER-01` | completed locally from `main@ba15c4a`; focused capsule 855/855 | Deterministic static reference Composer, canonical restricted Device-JS/public-request generation and ADR-0020 resolved-input/default provenance/equivalence | Experiment Composer/source generators/cases | Runtime interpreter/registry exists, equivalent explicit/resolved inputs differ, a material default lacks reason/version identity, owner conflict passes, or partial failure publishes valid output. |
-| `IR-DELETION-ID-01` | dependency-ready after Composer integration | Cross-profile identity sensitivity, second-instance and exact structural deletion matrix | Metamorphic fixtures/oracles/evidence | Materially different engines collide or removing optional/product inputs leaves unexplained residue. |
+| `SESSION-ATTENTION-01` | integrates through PR #114 from `main@e1ca191`; focused capsule 864/864; issue #113 | Split selected-owner-flexible lazy directional attention publication from structural root advance and restrict root transactions to affected owners | ADR-0021, SPEC-0006 draft 0.2.0, Session schema/normalizer/fixtures/cases, catalog/evidence reconciliation and bounded product-assumption audit | Attention advances root epoch, touches graph/reuse/reclamation/resources, requires polling/global barrier, hard-codes one semantic-owner contract, a root-independent owner remains a transaction participant, or normalized universal artifacts contain product vocabulary. |
+| `IR-DELETION-ID-01` | dependency-ready after PR #114 protected-target verification | Cross-profile identity sensitivity, second-instance and exact structural deletion matrix | Metamorphic fixtures/oracles/evidence | Materially different engines collide or removing optional/product inputs leaves unexplained residue. |
 | `IR-INTEGRATE-01` | blocked by every leaf | One exact representation/composition evidence key, 989-ID accounting, routing and cleanup | Results, indexes/status/plan/issues/handoff | Any requirement/leaf is unaccounted, proposal status is overstated, evidence keys disagree, generated residue remains, or downstream reference must invent schema meaning. |
 
 ### IR-COMPOSER-01 execution packet
@@ -191,6 +195,18 @@ Future JavaScript overload-like invocation shapes, and later TypeScript overload
 Expected local effects are a closed proposal schema, bounded reference modules/cases and synchronized evidence documentation. The falsifier is any identity divergence for equivalent calls, invisible material default, owner/version conflict acceptance, partial publication after a downstream failure, dependency on the removable facade, or runtime/native mechanism leakage. Before publication, rollback is exact removal of the isolated branch/worktree after preserving any needed failure evidence; after integration, correction requires a new revision and invalidates dependent identities. Required verification is the focused capsule, accepted Search IR regression, retained extension capsule, repository validation, exact-head author review and generated-state/branch/worktree cleanup.
 
 The local result adds sixteen cases and passes 855/855. The equivalent resolved input has identity `598f988853335f02c9839c0535bfd65fe9deb2bcf8f63472504176f8bd0b145e`; the final atomic publication has identity `25425c54b93070b303d16ffe5d9a7f15abb054fbfd9702243bee04bf3187da72`. The first failure attempt appended a newline, which correctly remained identity-equivalent under the existing LF/trailing-newline canonicalization; the falsifier was repaired to use a byte-material trailing space and then proved null publication on downstream source-identity failure. No frozen requirement text, accepted 0.1.0 artifact or CUDA-JS boundary changed.
+
+### SESSION-ATTENTION-01 correction packet
+
+Issue #113 and direct owner clarification invalidate the proposal-only assumption that directional attention belongs in the same all-owner transaction as structural root change. The correction is dependency-ready from protected `main@e1ca19132d79f3c2a15fd0f7fe5b78a190c0371b` on isolated branch `codex/session-attention-01`. Its owned outcome is one revised SPEC-0006 source identity plus strict Session representation/reference evidence; it does not add production code, a CUDA-JS mechanism, a public SDK shape or native performance qualification.
+
+The alternatives were: (A) documentation-only renaming, rejected because schema authority would remain wrong; (B) keeping attention in the root transaction, rejected because it exports root/reuse/reclamation lifecycle and work; (C) one generic transaction for every external command, rejected because it centralizes distinct owner lifecycles; and (D) distinct `rootTransaction` plus selected/absent owner-scoped `attention`, selected as the smallest truthful system. ADR-0021 records the accepted boundary.
+
+Expected effects are a deliberate SPEC-0006 draft/version/source-digest change, invalidated proposal-derived identities, seven additional negative/separation cases, one selected-owner flexibility case, one whole-profile product-assumption absence case and exact attention-absence deletion. Attention is session-scoped with an independent generation, queued at an existing device safe point, bounded independently of search-state size and prohibited from root-epoch, graph, reuse, resource-resize, reclamation, steady-state-polling or global-barrier effects. Root transactions statically omit root-independent owners and prefer generation/lazy lifecycle work over retained-graph traversal where each owner permits.
+
+The focused falsifier is any accepted mutation that reintroduces those effects, any attention-owned residue in an absent profile, any root-independent transaction participant, requirement-count drift, accepted Search IR 0.1.0 drift or a native/performance claim from structural evidence. Rollback before publication is exact removal of the isolated branch/worktree after preserving failure evidence; after integration, correction requires a new proposal revision and invalidates dependent identities. Required verification is the expanded Composer capsule, accepted Search IR regression, retained extension capsule, full repository validation, exact-head author review and complete generated/branch/worktree cleanup. `IR-DELETION-ID-01` resumes only after this correction integrates.
+
+The local result passes 864/864 focused cases, including reassignment of the attention schema/effect to a materially different selected participant without a Session-schema change. Selected attention normalizes to Session identity `899353808c626e05909cf804f4459ba5b148927204671b177405901f53c89d66`; attention absence normalizes to `15f390e9c5fed6adada3701b402ee2fd689ba9c837ff18f42c3ad9a45d1a6833`. Contract-set, coverage and expanded-requirement identities are `54f5e7ce38423042ae95098fe38e0cf5bd33acdca8cd1fecf0f1c939ef945177`, `4f03a710a881097b27a4c1fbea55854b7bfc845be1bd0d672a9daa1714e1451e` and `b148bac6b06af985b172d65d5465b09456ef402c289ba4f54fe6a565b4c7f01d`. Coverage routing now points native obligations to OS-neutral `ENGINE-NATIVE-01`, and Channel evidence records CUDA-JS release/acquire as available while retaining exact compatible-pair qualification as pending. The [bounded product-assumption leakage audit](2026-08-25-product-assumption-leakage-audit.md) accounts for all 244 tracked base paths and deeply reviews current universal authority/schema/executable/composition surfaces; it finds no confirmed chess or Connect Four leak while leaving the complete product/capability deletion matrix to `IR-DELETION-ID-01`.
 
 ## Common execution contract
 

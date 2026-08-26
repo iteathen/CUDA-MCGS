@@ -108,7 +108,7 @@ The expanded capsule passes 200/200 CUDA-free cases. It retains all catalog/foun
 - policy-owned record scopes/storage/numeric/visibility semantics, bounded reservations and intrinsic/evaluator candidate admission through exact public domain/graph/profile references;
 - evaluator modes `absent`, `proposal-only`, `evaluation-only` and `combined`, with evaluator-specific selection/value/resource/program inputs absent when unselected;
 - scalar role-relative, three-coordinate non-zero-sum vector, proof-lattice ordered and no-value policy families with explicit source conversion and perspective;
-- bounded cycle partitions, transactional occurrence-owned exactly-once backup, must-drain after first result-visible mutation, deterministic sequencing where order affects meaning, typed stopping budgets and complete reroot dispositions;
+- bounded cycle partitions, transactional occurrence-owned exactly-once backup, must-drain after first result-visible mutation, deterministic sequencing where order affects meaning, typed stopping budgets and complete root-advance dispositions;
 - materialized and stateless graph profiles, with the stateless/no-value instance retaining no path, ready-edge, cycle, backup, reservation or value-only residue; and
 - restricted Device-JS program-contribution identity with exact domain/graph/evaluator inputs and no scheduler, CUDA mechanism, C/C++ or native implementation selection.
 
@@ -239,8 +239,8 @@ This slice is structural/normalizer evidence only. It does not qualify concurren
 The expanded capsule passes 625/625 CUDA-free cases. It retains all catalog/foundation/domain/graph/policy/evaluator/resource/progress/output cases and adds strict normalized optional Search Session evidence across:
 
 - exact selected-owner profile/contribution closure, with Session coordinating rather than absorbing domain root validity, graph materialization/reclamation, policy/evaluator reuse, resource admission, progress closure or output publication meaning;
-- bounded versioned root/control/cancellation/observation inputs, total command ordering, replay/idempotence, compound root-reserve admission before mutation and explicit owner prepare/commit/reverse-abort order;
-- one authoritative root-epoch publication point, old-root authority through prepare, root-relative work scopes, stale isolation/release, owner-specific reuse classification and reroot/reclamation separation;
+- bounded versioned root/attention/cancellation/observation inputs, total command ordering, replay/idempotence, compound root-reserve admission before mutation and explicit affected-owner prepare/commit/reverse-abort order;
+- one authoritative root-epoch publication point, old-root authority through prepare, root-relative work scopes, stale isolation/release, owner-specific reuse classification and root-advance/reclamation separation;
 - finite session/root/command/observation/reclamation counters with typed exhaustion and no stale alias through silent wrap;
 - selected-only external attention control plus read-only output-owned observation coordination, both independently progress-safe with no callback, polling/relaunch or observation-to-control host loop;
 - lifecycle/cancellation/completion/teardown ordering, bounded diagnostics, least-authority permissions and complete transaction/lease/work/borrow/transfer/counter/root-protection cleanup; and
@@ -359,7 +359,7 @@ Their Search Program identities are `7f0974b1194cebd5880f6cbef0c9cf2ea06dbc52637
 
 The strict program-package, Search Program, execution-package and compatible-pair schemas have checkout-neutral source digests `126db1391c94e4f3fd4058b95e91a28fa00c2d954384ae79c8aa0b5abc05e614`, `fbe78e5ac54cc64372389b7853fecca9578f577f599562405536d85211a8a1c2`, `a85b5ebe495a6a05cdc2ef5ca07a4b371fb9febd837efb01218de8519f8b413b` and `402757189cb9da7270aefba72e42f19ee45329662027a8318527b5c9b2725510`. Coverage identity is `3d88ab22aa73f61eb291d12ebc6ef31d2830c00377ce1810322785fae160e864`; expanded requirement routing identity is `687a4c32c3bb44332744f92bdf6d0a1136eda565c7f9e88fbba57499f8cc8b69`. All 989 proposal requirements now have classified evidence lanes, but every lane remains explicitly partial or deferred.
 
-This slice is strict structural, normalization and bounded static-composition evidence only. It does not validate Device-JS syntax, compile through CUDA-JS, inspect or own generated native artifacts, run on a GPU, qualify an installed package or prove an exact native compatible pair. No proposal contract is accepted, no production component is authorized and no native/CUDA-specific implementation is added to CUDA-MCGS. The integrated `IR-COMPOSER-01`, `IR-DELETION-ID-01`, `ENGINE-REFERENCE-01`, `ENGINE-CONTRACT-ACCEPTANCE-01` and `ENGINE-NATIVE-01` gates remain downstream.
+At the `IR-PROGRAM-PACKAGE-01` evidence revision, this slice was strict structural, normalization and bounded static-composition evidence only. It did not validate Device-JS syntax, compile through CUDA-JS, inspect or own generated native artifacts, run on a GPU, qualify an installed package or prove an exact native compatible pair. No proposal contract was accepted, no production component was authorized and no native/CUDA-specific implementation was added to CUDA-MCGS. `IR-COMPOSER-01`, `IR-DELETION-ID-01`, `ENGINE-REFERENCE-01`, `ENGINE-CONTRACT-ACCEPTANCE-01` and `ENGINE-NATIVE-01` were then downstream.
 
 ## IR-COMPOSER-01
 
@@ -379,3 +379,27 @@ The expanded capsule passes 855/855 CUDA-free cases. It retains all 839 prior ca
 The equivalent resolved-input identity is `598f988853335f02c9839c0535bfd65fe9deb2bcf8f63472504176f8bd0b145e` over 31,061 canonical bytes. The final atomic Composer publication identity is `25425c54b93070b303d16ffe5d9a7f15abb054fbfd9702243bee04bf3187da72` over 546 canonical bytes. The resolved-input schema has checkout-neutral source digest `f3a65b12cda9ad57e6d0708a3ebc7d1b5925399a89fd0d26322d5ba0cc3a6b11`. The frozen contract-set, coverage and expanded-requirement identities remain unchanged, and all 989 proposal requirements remain classified partial or deferred rather than silently reworded or accepted.
 
 This slice proves only deterministic pre-admission resolution and failure-atomic composition through the already owned Program Package/Search Program/execution-package path. It does not declare a stable facade/class/function API, default foundational domain meaning, hidden post-ignition adaptation, production implementation, Device-JS compilation, GPU behavior, native support or an exact compatible pair. `IR-DELETION-ID-01`, integrated reference evidence, semantic acceptance and native qualification remain downstream.
+
+## SESSION-ATTENTION-01
+
+**Focused evidence assembled:** 2026-08-25T17:16:51.6010000-07:00
+
+**Full repository validation completed:** 2026-08-25T17:18:06.2655999-07:00
+
+The expanded capsule passes 864/864 CUDA-free cases. It retains all 855 prior catalog/owner/composition/package/Composer cases and adds nine bounded correction/audit cases across:
+
+- exact separation of structural root transactions from directional attention publication;
+- root-transaction participant derivation that includes only selected root-affected owners and omits `root-independent-retain` owners;
+- independently versioned, coalescible attention observed at an existing device safe point without root-epoch advancement;
+- selected-owner flexibility proven by moving the attention schema/effect from the policy participant to a different selected participant without changing the Session representation;
+- strict rejection of attention-driven graph traversal or mutation, reuse classification, admitted-work invalidation, resource resizing, reclamation, steady-state host polling/relaunch and global multi-GPU barriers;
+- exact selected-to-absent attention deletion while root transaction behavior remains valid; and
+- whole-profile absence of chess, Connect Four, board, player, alternating-turn, zero-sum, best-move and MultiPV vocabulary across normalized universal artifacts.
+
+The selected-attention Session identity is `899353808c626e05909cf804f4459ba5b148927204671b177405901f53c89d66` over 53,871 canonical bytes. The attention-absent restart Session identity is `15f390e9c5fed6adada3701b402ee2fd689ba9c837ff18f42c3ad9a45d1a6833` over 50,115 canonical bytes. The revised Session schema has checkout-neutral source digest `34e4b03b8b1951a84622bd33858e55ccb3600435df247b7cded4ae6160688215`. The exact contract-set identity is `54f5e7ce38423042ae95098fe38e0cf5bd33acdca8cd1fecf0f1c939ef945177`; coverage identity is `4f03a710a881097b27a4c1fbea55854b7bfc845be1bd0d672a9daa1714e1451e`; expanded requirement-routing identity is `b148bac6b06af985b172d65d5465b09456ef402c289ba4f54fe6a565b4c7f01d`; and the framework-selection identity is `960c2dc5a9ed6881ff455eee09b396390d5efe282e537c7d4e16a08088117b76` over 10,422 canonical bytes. All 989 proposal requirements remain classified partial or deferred.
+
+The revised upstream contract identities deliberately change the same canonical Composer path: resolved input is `cf7501f2e61d7936624ff931b839d2d2a1c81026e701b147679115ac9d78df55` over 31,061 canonical bytes and failure-atomic publication is `8bd3a263eadbc3e6c21cc3aecc65c382a9ff7fef011cd0ddf17f3b6f1cf32442` over 546 canonical bytes. Historical identities above remain evidence for their named exact revisions rather than current-output claims.
+
+The same reconciliation replaces the stale Channel `blocked-cuda-js-123` label with `pending-exact-compatible-pair` and routes former `ENGINE-WINDOWS-01` evidence lanes to OS-neutral `ENGINE-NATIVE-01`. The Channel schema digest is now `845f7d45c6d9a1ce3ad41526f1838b9c2679c2db5185080d4b83e1c1c9a61767`; the reference-only compatible-pair identity is `8f6871dbe4863751ce129839f89c4c80d32e1436e4a92b38349da438f9eb3444`. This records public-contract availability without claiming native qualification.
+
+This correction is bounded structural/reference evidence, not measured hot-path timing, native multi-GPU qualification or a complete first-product deletion proof. The [product-assumption leakage audit](../../docs/development/2026-08-25-product-assumption-leakage-audit.md) found no chess or Connect Four semantic assumption in current universal authority, schemas, executable proposal capsules or package projections; `IR-DELETION-ID-01` still owns the complete cross-profile product/capability deletion and identity matrix. Accepted Search IR 0.1.0 remains unchanged, and no production or native-support claim is made.

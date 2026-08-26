@@ -39,7 +39,7 @@ The integrated `IR-POLICY-01` slice adds only SPEC-0008-owned normalized search-
 
 - exact domain-role handling plus policy-owned records, finite numeric/storage rules, selection, reservation and candidate-admission semantics;
 - evaluator-absent, proposal-only, evaluation-only and combined modes through opaque exact profile references, without absorbing evaluator execution/readiness ownership;
-- scalar, vector, proof-lattice and no-value structural instances with explicit perspective, algebra, cycle response, transactional exactly-once backup, stopping and reroot reuse;
+- scalar, vector, proof-lattice and no-value structural instances with explicit perspective, algebra, cycle response, transactional exactly-once backup, stopping and root-advance reuse;
 - materialized and stateless graph bindings, with exact removal of path/edge/backup/reservation/value/evaluator residue when inapplicable; and
 - section-level evidence classification for all 91 policy requirements, with behavioral, concurrent backup, composition and native obligations left partial, pending or deferred.
 
@@ -78,13 +78,13 @@ The integrated `IR-OUTPUT-01` slice adds only the SPEC-0013-owned result and obs
 - three structural instances spanning evaluator absence, structured evaluator output and selected live session output, with terminal-only live-state deletion; and
 - section-level evidence classification for all 88 output requirements, with behavioral publication/snapshot consistency, native execution and compatible-pair qualification left partial, pending or deferred.
 
-The integrated `IR-SESSION-01` slice adds only the optional SPEC-0006-owned external lifecycle coordination:
+The integrated `IR-SESSION-01` slice, corrected by `SESSION-ATTENTION-01`, adds only the optional SPEC-0006-owned external lifecycle coordination:
 
 - exact binding to the selected domain, graph, policy, evaluator, resource, progress and output owner profiles without taking over their validity, reuse, pressure, progress or publication meaning;
-- bounded least-authority root, control, cancellation and observation inputs with admission before mutation, explicit prepare/commit/abort ordering and fatal quarantine for partial post-commit failure;
-- finite session/root/command/observation/reclamation generations, exact root-relative work scopes and stale dispositions, owner-specific reuse classification and reclamation separated from reroot commit;
+- bounded least-authority root, attention, cancellation and observation inputs, with admission before structural root mutation, explicit root prepare/commit/abort ordering and fatal quarantine for partial post-commit failure;
+- finite session/root/command/observation/reclamation generations, exact root-relative work scopes and stale dispositions, owner-specific reuse classification and reclamation separated from root-advance commit;
 - read-only observation request/acquire/release coordination bound to the selected output profile, with no observation acknowledgement, callback, poll/relaunch or host read-decide-write search progression;
-- two selected structural instances spanning reject-on-pressure with external attention control and restart-required with that control's input, permission, statuses, port and lifecycle interaction deleted, plus terminal-only Session absence; and
+- two selected structural instances spanning reject-on-pressure with independently versioned lazy attention and restart-required with attention input, permission, statuses, port and lifecycle interaction deleted, plus terminal-only Session absence; and
 - section-level evidence classification for all 59 Session requirements, with behavioral concurrency, native sideband/publication and compatible-pair qualification left partial, pending or deferred.
 
 The integrated `IR-STAGE-01` slice adds only the optional SPEC-0003-owned stage/surface/capability selection:
@@ -103,7 +103,7 @@ The integrated `IR-CHANNEL-01` slice adds only the optional SPEC-0004-owned inte
 - final binding of versioned Stage requirements to exact Stage/capability/surface action grants, with no Channel-side authority widening and no cyclic Stage/Channel content identity;
 - finite item/generation/correlation/payload/state/claim/counter contracts, explicit unordered or owner-defined cross-item ordering, single-transfer and immutable multi-borrow ownership, exact admission/resource conservation and typed pressure/rollback;
 - scheduler-neutral producer/consumer/completion/reclamation/pending descriptors, released workers and mutable leases, finite producer/escape paths, required-cycle rejection and typed no-progress;
-- logical device-scope release/acquire happens-before semantics plus a CUDA-free reference model that rejects missing release/acquire, uninitialized publication, stale or exhausted generations, pending-capacity overflow, over-borrow, ownership-erasing cancellation, unsafe reclaim and late-result resurrection;
+- logical device-scope release/acquire happens-before semantics plus a CUDA-free reference model that rejects missing release/acquire, uninitialized publication, stale or exhausted generations, pending-capacity overflow, over-borrow, ownership-erasing cancellation, unsafe reclaim and late-result resurrection; its public CUDA-JS capability is available while native execution remains pending exact compatible-pair qualification;
 - cancellation/expiry/stale/reclamation/teardown closure and restricted Device-JS/public CUDA-JS requirements only; the former CUDA-JS #123 publication gap is resolved in `cuda-js@0.1.0-alpha.7`, while exact native pair qualification remains separate; and
 - section-level evidence classification for all 90 Async Stage Channel requirements, with physical CUDA realization and compatible-pair qualification left partial or deferred.
 
@@ -126,6 +126,14 @@ The integrated `IR-COMPOSER-01` slice adds only deterministic cross-owner resolu
 - one pure publication transaction that exposes no valid partial result when downstream profile validation fails; and
 - source-level deletion evidence that the authoritative Composer does not import the facade, runtime interpretation/registry machinery, native FFI or CUDA/PTX source.
 
+The `SESSION-ATTENTION-01` correction adds only the revised SPEC-0006 representation and bounded falsifiers required by ADR-0021:
+
+- a structural `rootTransaction` whose participant set contains exactly the selected root-affected owners and omits root-independent owners;
+- selected-or-absent attention with its own monotone version, coalescible publication and observation at an existing device safe point;
+- rejection of attention that advances root epoch, traverses or mutates graph state, classifies reuse, invalidates admitted work, resizes resources, triggers reclamation, requires steady-state host polling/relaunch or imposes a global multi-GPU barrier;
+- exact attention-absence deletion and separation from root prepare/commit/abort lifecycle; and
+- a whole-profile normalized-artifact assertion that rejects chess, Connect Four, board, player, alternating-turn, zero-sum, best-move and MultiPV vocabulary while retaining materially different stochastic, no-player, vector, proof, no-value, evaluator-absent and non-ranking instances.
+
 Normative sentences remain solely in [`docs/specs/`](../../docs/specs/). The checked-in catalog records identities, owners, counts, paths and `sha256-utf8-lf-v1` digests; the explicit LF-normalized UTF-8 digest contract is checkout-platform independent. The capsule expands the IDs directly from the frozen sources and fails on source, metadata, count, prefix, uniqueness or coverage-route drift. Hierarchical requirement families use their one most-specific matching classification prefix, allowing bare `SESSION-###` requirements to retain the contract prefix while nested `SESSION-ROOT-###` and similar families keep independent owners/evidence.
 
 Run with Node.js 26 or newer:
@@ -134,4 +142,4 @@ Run with Node.js 26 or newer:
 node experiments/search-ir-composer-reference/run.mjs
 ```
 
-Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic framework selection fixture binds the exact schema digests and normalized identities of the first domain, graph, policy, resource, progress and output profiles while leaving the optional evaluator, Search Session, stage extension, Async Stage Channel and live output structurally absent; selected policy/resource/progress/output/session/stage/channel/package fixtures bind exact normalized upstream profiles through public identities and ports. The reference Composer assembles exact owner-provided source snapshots and public metadata but does not validate or lower Device-JS syntax; CUDA-JS retains that authority and owns every generated native artifact/runtime resource. These fixtures prove bounded representation/composition closure only, not a public SDK, production behavior or native support. The next focus leaf reconciles the full cross-profile deletion/identity matrix. Native CUDA-JS qualification remains separate.
+Generated `build/evidence.json` is ignored, reproducible evidence and must not be committed. The synthetic framework selection fixture binds the exact schema digests and normalized identities of the first domain, graph, policy, resource, progress and output profiles while leaving the optional evaluator, Search Session, stage extension, Async Stage Channel and live output structurally absent; selected policy/resource/progress/output/session/stage/channel/package fixtures bind exact normalized upstream profiles through public identities and ports. The reference Composer assembles exact owner-provided source snapshots and public metadata but does not validate or lower Device-JS syntax; CUDA-JS retains that authority and owns every generated native artifact/runtime resource. These fixtures prove bounded representation/composition closure and product-assumption absence for their declared surfaces only, not complete product deletion, a public SDK, production behavior or native support. The next focus leaf reconciles the full cross-profile deletion/identity matrix. Native CUDA-JS qualification remains separate.

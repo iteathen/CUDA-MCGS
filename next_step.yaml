@@ -1,11 +1,11 @@
 {
-  "schema_version": 56,
+  "schema_version": 57,
   "updated": "2026-08-25",
-  "status": "ir_deletion_identity_ready_os_neutral_linux_reference_direction",
+  "status": "ir_deletion_identity_ready_after_session_attention_correction",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "711a0570115ecf08d005a07408ee77f3c6671cba",
+    "cuda_mcgs_authority_input_baseline": "e1ca19132d79f3c2a15fd0f7fe5b78a190c0371b",
     "cuda_js_authority_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
     "cuda_js_implementation_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
     "cuda_js_package": "cuda-js@0.1.0-alpha.7"
@@ -19,6 +19,8 @@
     "docs/decisions/ADR-0018-universal-core-extension-product-layering.md",
     "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
     "docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md",
+    "docs/decisions/ADR-0021-separate-attention-from-root-advance.md",
+    "docs/development/2026-08-25-product-assumption-leakage-audit.md",
     "docs/development/2026-08-25-os-neutral-native-execution-direction.md",
     "docs/development/2026-08-25-multi-gpu-execution-direction.md",
     "docs/specs/SPEC-0001-device-search-publication-and-resources.md",
@@ -26,12 +28,12 @@
   ],
   "current_focus": {
     "id": "ENGINE-IR-COMPOSER-01",
-    "parent_plan_version": "CUDA-MCGS-V0/22",
+    "parent_plan_version": "CUDA-MCGS-V0/23",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": "docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md",
     "active_leaf": "IR-DELETION-ID-01",
     "ready_queued_leaves": [],
-    "next_action": "Execute dependency-ready IR-DELETION-ID-01 after IR-COMPOSER-01 integration: reconcile cross-profile semantic sensitivity, materially different second instances and exact evaluator/live/session/extension/channel/capability/product structural deletion through the one canonical Composer path. Preserve the frozen 989-requirement packet, resolved-input identity rules and public CUDA-JS-only projection. Keep platform facts out of semantic IR and engine contracts; the first exact native realization later qualifies on Linux under the owner direction and CUDA-JS ADR-0006.",
+    "next_action": "After PR #114 protected-target verification, execute IR-DELETION-ID-01: reconcile cross-profile semantic sensitivity, materially different second instances and exact evaluator/live/session/attention/extension/channel/capability/product structural deletion through the one canonical Composer path. Preserve the 989-requirement count, corrected attention/root boundary, revised contract/source identities, resolved-input identity rules and public CUDA-JS-only projection. Keep platform facts and product meaning out of semantic IR and engine contracts; the first exact native realization later qualifies on Linux under the owner direction and CUDA-JS ADR-0006.",
     "exit": "Materially different engines cannot collide; removing every optional capability/product owner leaves no solely owned source, function, resource, requirement, operation, manifest or identity residue; and every surviving byte change is explained by a truthfully changed selected-owner or composed identity."
   },
   "deliverables": [

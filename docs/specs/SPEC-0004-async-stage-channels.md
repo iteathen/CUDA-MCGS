@@ -45,7 +45,7 @@ CHANNEL-SCOPE-001. This specification owns selected channel identity, finite ite
 
 CHANNEL-SCOPE-002. SPEC-0011 owns aggregate resource normalization/admission/accounting/pressure/exhaustion, and SPEC-0012 owns composed readiness/service/fairness/no-progress/stop/drain/closure. A channel contributes descriptors and local transitions only.
 
-CHANNEL-SCOPE-003. This specification does not own external root/control/cancellation/observation ports, terminal/live output publication, source payload meaning, stage permissions, CUDA atomics/queues/streams/events, one physical scheduler or host progress.
+CHANNEL-SCOPE-003. This specification does not own external root/attention/cancellation/observation ports, terminal/live output publication, source payload meaning, stage permissions, CUDA atomics/queues/streams/events, one physical scheduler or host progress.
 
 ## 3. LEGO ownership and deletion
 
@@ -206,7 +206,7 @@ CHANNEL-CANCEL-003. Expiry uses a finite engine-owned epoch, work budget or gene
 
 CHANNEL-CANCEL-004. A source-owner validity key may include graph generation, policy/evaluator incarnation, output cut or Search Session root epoch. The source owner defines stale meaning; channel identity detects/carries it and progress owns service/abandon/closure.
 
-CHANNEL-CANCEL-005. Optional SPEC-0006 coordinates root-transaction prepare/commit/abort and gathers owner stale dispositions. The channel does not become an external root-command transport or own reroot/reuse/reclamation policy.
+CHANNEL-CANCEL-005. Optional SPEC-0006 coordinates root-transaction prepare/commit/abort and gathers owner stale dispositions. The channel does not become an external root-command transport or own root-advance reuse/reclamation policy.
 
 CHANNEL-CANCEL-006. Late completion after cancel/stale/expiry follows one ignore/quarantine/reclaim/terminal-failure rule and cannot resurrect pending work or overwrite a newer generation.
 
@@ -214,7 +214,7 @@ CHANNEL-CANCEL-007. Teardown proves every reservation, item, payload/result, pen
 
 ## 12. External session, output and host boundaries
 
-CHANNEL-BOUNDARY-001. External root/control commands, cancellation requests, observation requests/borrows and terminal result consumption are SPEC-0006/SPEC-0013/package operations, not Async Stage Channels, even if CUDA-JS realizes both with similar generic memory mechanisms.
+CHANNEL-BOUNDARY-001. External root/attention commands, cancellation requests, observation requests/borrows and terminal result consumption are SPEC-0006/SPEC-0013/package operations, not Async Stage Channels, even if CUDA-JS realizes both with similar generic memory mechanisms.
 
 CHANNEL-BOUNDARY-002. Terminal/live output publication remains SPEC-0013-owned. An internal channel may carry output work or source facts but cannot define payload selection, snapshot/cut consistency, slot publication or external borrow semantics.
 

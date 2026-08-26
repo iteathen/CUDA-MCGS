@@ -48,13 +48,13 @@ The upper layer adds ease but owns no parallel search semantics. Minimal and exp
 The universal core contract families are conceptually independent:
 
 - **Domain contract** — state, action, transition, identity, node role, terminal, history, stochasticity/observation and cycle semantics.
-- **Search-policy contract** — selection, reservation, widening, policy-owned statistics, backup, stopping/budget semantics and reroot reuse classification. No ranked-action output is mandatory.
+- **Search-policy contract** — selection, reservation, widening, policy-owned statistics, backup, stopping/budget semantics and root-advance reuse classification. No ranked-action output is mandatory.
 - **Evaluator contract** — encoding, proposals/values/other outputs, perspective, batching, workspace, publication, resident execution and cache-validity semantics.
 - **Graph/storage contract** — graph objects, typed references, parent edges, paths, transpositions, structural publication, protection and reclamation.
 - **Generic output/observation contract** — mandatory bounded terminal publication and optional immutable live observations without requiring one product payload such as ranked moves.
 - **Resource contract/profile** — finite contributions, capacities, safety reserve, compound admission, pressure, exhaustion and cleanup accounting.
 - **Device-progress contract** — work readiness, finite service/fairness, typed no-progress, stop/drain and closure without selecting a scheduler topology.
-- **Search Session contract when selected** — external root/control transaction and root-epoch authority plus bounded observation-request/borrow lifecycle coordination; source owners retain stale-work, reuse, reclamation and publication meaning.
+- **Search Session contract when selected** — external structural root transaction/root-epoch authority, independent attention publication and bounded observation-request/borrow lifecycle coordination; source owners retain stale-work, reuse, reclamation and publication meaning.
 
 These contracts must remain semantically meaningful if the extension substrate and chess product are removed.
 
@@ -132,7 +132,7 @@ A product owns its:
 - selected policy/evaluator semantics;
 - product output/observation schemas;
 - product-specific extension capabilities;
-- product reroot/reuse/reset/transform rules;
+- product root-advance/reuse/reset/transform rules;
 - package/support/benchmark/search-quality requirements.
 
 The first explicit product proposal is [`CHESS-0001`](../specs/products/chess/CHESS-0001-search-product.md).
@@ -227,7 +227,7 @@ A long-lived Search Session is a selected universal lifecycle capability, not a 
 The generic session contract owns only the optional external lifecycle boundary:
 
 - session/current-root transaction authority and finite root epoch;
-- bounded root/control command identity, validation/admission coordination and one commit point;
+- bounded root/attention command identity, distinct validation/admission coordination and declared publication/commit order;
 - concurrent/replayed command ordering and typed transaction outcomes;
 - collection of owner-declared prepare/reuse/stale/cleanup dispositions without reinterpreting them;
 - bounded observation request/acquire/release and teardown coordination against output-owned immutable publication; and
@@ -250,7 +250,7 @@ The realized device program contains only what the selected Search Image require
 - selected evaluator execution/publication;
 - selected policy reservation/backup/stopping behavior;
 - selected stage transitions/surfaces/capabilities/internal channels;
-- selected Search Session root/control transaction and observation-request coordination;
+- selected Search Session root transaction, attention publication and observation-request coordination;
 - selected product logic/output;
 - pressure/stop/diagnostics;
 - device-owned progress.
@@ -286,7 +286,7 @@ Higher-level CUDA libraries remain methodology/benchmark/source-donor candidates
 
 ## 11. Data ownership and memory
 
-State-node shared data and parent-edge-specific data remain distinct under SPEC-0001. A selected policy decides exact statistics and their reroot validity; retaining a physical node does not automatically make every statistic semantically reusable.
+State-node shared data and parent-edge-specific data remain distinct under SPEC-0001. A selected policy decides exact statistics and their root-advance validity; retaining a physical node does not automatically make every statistic semantically reusable.
 
 Memory is finite and explicitly partitioned across:
 
@@ -312,7 +312,7 @@ Universal conformance must be independent of chess and cover materially differen
 6. stage surface/capability deletion and a materially different second capability;
 7. internal Async Channel pending/progress/pressure/cancellation/deadlock;
 8. finite resource pressure/exhaustion;
-9. Search Session root/control transaction and observation-request coordination integrated with owner-defined stale work, reuse, reclamation, immutable publication and counter exhaustion;
+9. Search Session root transaction, attention publication and observation-request coordination integrated with owner-defined stale work, reuse, reclamation, immutable publication and counter exhaustion;
 10. reference/native semantic parity for an exact compatible CUDA-JS pair.
 
 Chess adds its own legality/history/evaluator/output/search-quality conformance on top. Chess passing cannot substitute for universal second-instance evidence.

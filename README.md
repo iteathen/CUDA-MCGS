@@ -36,7 +36,7 @@ The universal core owns product-neutral search contracts and lifecycle:
 - evaluator capability/residency semantics without one value shape;
 - finite memory/resource admission, pressure, failure and cleanup;
 - device-owned search progress;
-- optional long-lived Search Session/root-update/reroot semantics;
+- optional long-lived Search Session/root-update/root-advance semantics;
 - generic bounded result/observation publication;
 - Search IR, Search Composer, deterministic specialization, conformance and execution-package meaning.
 
@@ -97,7 +97,7 @@ Universal MCGS contracts
 When selected, it covers:
 
 - finite root epochs;
-- bounded root/control command identity, validation/admission **before** command-specific mutation, prepare/commit/abort and typed outcomes;
+- bounded structural root-advance transactions plus independently versioned lazy attention publication, validation/admission **before** root-specific mutation, root prepare/commit/abort and typed outcomes;
 - coordination of source-owner stale-work and retain/retain-if-key-valid/transform/reset/invalidate dispositions;
 - separation of the logical root transaction from graph-owned generation-safe reclamation;
 - bounded request/acquire/release coordination for output-owned immutable **read-only** live observations; and
@@ -149,7 +149,7 @@ None of the proposal documents authorize production implementation by themselves
 
 The repository is **public and pre-release**. CUDA-MCGS is still in framework definition, research, specification and bounded evidence gathering. No production search runtime, stable public API, released CUDA-MCGS/CUDA-JS compatible pair, native Linux support claim, or chess engine release is implied by repository visibility.
 
-The canonical plan is [`next_step.yaml`](next_step.yaml) under parent `CUDA-MCGS-V0/22`. It has separate universal-core, universal-extension-substrate, universal-integration/native, and non-gating downstream product lanes.
+The canonical plan is [`next_step.yaml`](next_step.yaml) under parent `CUDA-MCGS-V0/23`. It has separate universal-core, universal-extension-substrate, universal-integration/native, and non-gating downstream product lanes.
 
 ## Engineering invariants
 

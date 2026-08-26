@@ -17,7 +17,7 @@ This document defines the architectural boundary for a chess search product buil
 - [`../../SPEC-0001-device-search-publication-and-resources.md`](../../SPEC-0001-device-search-publication-and-resources.md) owns accepted publication/graph/resource foundations.
 - [`../../SPEC-0002-search-ir-and-reference-semantics.md`](../../SPEC-0002-search-ir-and-reference-semantics.md) owns the accepted foundational Search IR slice.
 - [`../../SPEC-0003-search-stage-and-extension-surface.md`](../../SPEC-0003-search-stage-and-extension-surface.md), [`../../SPEC-0004-async-stage-channels.md`](../../SPEC-0004-async-stage-channels.md), and [`../../SPEC-0005-stage-ptx-and-search-image-composition.md`](../../SPEC-0005-stage-ptx-and-search-image-composition.md) define/propose the universal extension substrate.
-- [`../../SPEC-0006-search-session-control-and-observation.md`](../../SPEC-0006-search-session-control-and-observation.md) proposes generic long-lived session, reroot and observation semantics.
+- [`../../SPEC-0006-search-session-control-and-observation.md`](../../SPEC-0006-search-session-control-and-observation.md) proposes generic long-lived session, root-advance and observation semantics.
 
 If chess requires a new universal concept, the change must be proposed and accepted in the universal specification family independently. This product file cannot amend universal meaning by usage.
 
@@ -57,7 +57,7 @@ The chess policy contract owns product search behavior such as:
 - widening/action-admission policy if selected;
 - backup perspective/algebra and value interpretation;
 - stopping/budget policy;
-- which graph/node/edge statistics remain valid across chess reroots;
+- which graph/node/edge statistics remain valid across chess root advances;
 - which statistics reset, transform or invalidate after a played move or authoritative position update.
 
 No PUCT/UCT/formula is universal merely because the chess product selects it.
@@ -71,7 +71,7 @@ The chess evaluator contract owns:
 - optional policy/proposal outputs;
 - model identity/version and resident workspace;
 - batching and asynchronous result behavior;
-- cache/reuse validity across reroot and history changes;
+- cache/reuse validity across root advance and history changes;
 - fallback/absence behavior where a product profile permits evaluator-free search.
 
 No neural-network architecture, tensor layout, scalar score or WDL shape is a universal CUDA-MCGS requirement.
@@ -100,9 +100,9 @@ The observation consumes the generic read-only publication mechanism from SPEC-0
 
 Terminal chess results and live analysis observations remain separate contracts.
 
-## 4. Chess reroot and persistent search
+## 4. Chess root advance and persistent search
 
-The chess product intends to use the generic Search Session profile for continuous search/pondering and rerooting.
+The chess product intends to use the generic Search Session profile for continuous search/pondering and structural root advance.
 
 A chess root update may be derived from:
 
@@ -182,7 +182,7 @@ Planned chess-specific cases include:
 - evaluator perspective/output correctness;
 - product policy/backup invariants;
 - live root-move observation correctness and read-only behavior;
-- reroot after a played move with explicit retained/reset/invalidated facts;
+- root advance after a played move with explicit retained/reset/invalidated facts;
 - replacement-position root update;
 - finite-memory root-update pressure;
 - deterministic package identity and compatible-pair rejection;

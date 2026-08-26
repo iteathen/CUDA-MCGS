@@ -236,7 +236,7 @@ function deterministicTransposing(catalogById) {
       identityParticipation: 'embedded-state',
       finiteRule: { kind: 'none' },
       reuse: [
-        { boundary: 'reroot', disposition: 'valid' },
+        { boundary: 'root-advance', disposition: 'valid' },
         { boundary: 'restart', disposition: 'invalid' },
         { boundary: 'persistence', disposition: 'invalid' },
       ],
@@ -309,7 +309,7 @@ function stochasticHistory(catalogById) {
       identityParticipation: 'carried-history',
       finiteRule: { kind: 'exact-summary', bound: '256', exhaustion: 'domain-history-exhausted' },
       reuse: [
-        { boundary: 'reroot', disposition: 'resettable' },
+        { boundary: 'root-advance', disposition: 'resettable' },
         { boundary: 'restart', disposition: 'invalid' },
         { boundary: 'persistence', disposition: 'invalid' },
       ],
@@ -412,7 +412,7 @@ function lazyContinuous(catalogById) {
       identityParticipation: 'none',
       finiteRule: { kind: 'none' },
       reuse: [
-        { boundary: 'reroot', disposition: 'valid' },
+        { boundary: 'root-advance', disposition: 'valid' },
         { boundary: 'restart', disposition: 'invalid' },
         { boundary: 'persistence', disposition: 'invalid' },
       ],
