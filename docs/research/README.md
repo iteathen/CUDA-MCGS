@@ -19,9 +19,9 @@ Research records external evidence that may affect CUDA-MCGS/UMCGS. It does not 
 
 - [`2026-08-11-stage-resident-extension-assessment.md`](2026-08-11-stage-resident-extension-assessment.md) — official CUDA and primary-literature research plus a second-pass adversarial assessment of semantic Search Stages, stable entry/exit surfaces, one optional composed Stage PTX input per stage, and nonblocking cross-stage/cross-surface dataflow.
 
-## Tensor-shaped MCGS execution
+## Tensor-shaped and prospective MCGS execution
 
-- [`2026-08-25-tensor-math-in-mcgs-assessment.md`](2026-08-25-tensor-math-in-mcgs-assessment.md) — evidence-backed disposition separating tensor-shaped batching from Tensor Core execution, identifying evaluator/model batching as the strongest owner-local candidate, and rejecting tensor-shaped live-graph foundations without representative end-to-end evidence.
+- [`2026-08-25-tensor-math-in-mcgs-assessment.md`](2026-08-25-tensor-math-in-mcgs-assessment.md) — evidence-backed disposition separating tensor-shaped batching from Tensor Core execution and universal framework mechanisms from future prospective/adaptive strategy implementations; evaluator/model batching is the strongest owner-local candidate, while speculative depth/width and tensor-shaped live-graph foundations remain non-gating experiments requiring representative evidence.
 
 The current research conclusion is that no reviewed search framework supplies the complete CUDA-MCGS boundary, but proven CUDA composition, task-parallel, publication and collection mechanisms substantially reduce the amount that must be invented. The stage reassessment retires fine independently callable PTX hooks in favor of useful semantic stage boundaries, shared stage capability sets, and bounded nonblocking dataflow while keeping physical scheduler topology experiment-selected.
 

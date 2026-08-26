@@ -1,12 +1,12 @@
-# Tensor Math in Universal MCGS
+# Tensor Math, Evaluator Batching and Prospective Search in Universal MCGS
 
 **Status:** Research Note
 
 **Inspected:** 2026-08-25
 
-**Question:** Which CUDA-MCGS work can naturally benefit from tensor-shaped execution or NVIDIA Tensor Cores without making hardware shape, one evaluator, fixed actions or dense-tree assumptions part of the universal framework?
+**Question:** Which CUDA-MCGS work can naturally benefit from tensor-shaped execution, evaluator batching or prospective evaluation without making hardware shape, one evaluator, one speculative algorithm, fixed actions or dense-tree assumptions part of the universal framework?
 
-This note records evidence beneath accepted [`ADR-0023`](../decisions/ADR-0023-parallel-first-native-execution.md). Its architectural disposition is adopted by [`ADR-0024`](../decisions/ADR-0024-first-class-neural-evaluator-and-tensor-acceleration.md), which makes qualified tensor acceleration and the neural evaluator connector first-class optional core features. This note does not itself authorize implementation, amend an evaluator or scheduler contract, require a CUDA-JS capability, or block the current reference/native path.
+This note records evidence beneath accepted [`ADR-0023`](../decisions/ADR-0023-parallel-first-native-execution.md). Its tensor disposition is adopted by [`ADR-0024`](../decisions/ADR-0024-first-class-neural-evaluator-and-tensor-acceleration.md), while [`ADR-0025`](../decisions/ADR-0025-framework-versus-technique-ownership-for-prospective-evaluation.md) separates reusable framework seams from particular prospective-search techniques. This note does not itself authorize implementation, amend an evaluator or scheduler contract, require a CUDA-JS capability, or block the current reference/native path.
 
 ## Terminology boundary
 
@@ -29,6 +29,33 @@ No source implementation was copied or adapted. Published performance claims bel
 | [Dakkak et al., Tensor Core reduction and scan](https://arxiv.org/abs/1811.09736), revision 2 / ICS 2019 | The authors express reduction and scan as matrix multiplication and report substantial gains for small segments on Volta-era hardware. | Selection, backup or compaction reductions are legitimate experiments only where value algebra, order and precision permit them. They must beat current warp/block baselines on representative hardware. | Primary paper; publication only; performance claim not reproduced. |
 | [NVIDIA cuSPARSELt workflow](https://docs.nvidia.com/cuda/cusparselt/getting_started.html), current documentation | Structured sparse matrix multiplication requires problem definition, planning, pruning/compression, workspace and execution lifecycle. | Arbitrary evolving MCGS adjacency does not naturally satisfy structured sparsity. Setup, compression and workspace costs prohibit assuming sparse Tensor Core suitability. | Official NVIDIA documentation; current page inspected 2026-08-25. |
 
+## Batching, incomplete-work and speculation evidence
+
+The sources below were inspected after prospective look-ahead, adaptive frontier width and continuous batch refill were proposed in design discussion. They establish useful mechanisms and counterexamples, but no reviewed work establishes the complete proposed combination for a persistent GPU-resident transposition graph.
+
+| Source | Verified observation or author claim | CUDA-MCGS inference | Provenance |
+|---|---|---|---|
+| [Cazenave, Batch Monte Carlo Tree Search](https://arxiv.org/abs/2104.04278), arXiv `2104.04278v1`, 2021 | The author builds inference batches from search-selected unknown states, keeps neural results in a transposition table separate from MCTS tree statistics, and uses temporary batch-tree statistics while results are unknown. | Search-selected cache-before-main-tree evaluation is supported prior art. It does not establish arbitrary deep prospective expansion or a universal materialization policy. | Primary paper; CC BY 4.0 publication; Go/MobileNet results not reproduced. |
+| [Liu et al., WU-UCT](https://arxiv.org/abs/1810.11755), arXiv `1810.11755v5`, 2020 revision | The authors track ongoing incomplete simulations as "unobserved samples" and modify selection statistics; they report near-linear speedup with limited performance loss on their benchmarks. | In-flight evaluator work must have explicit search-visible disposition. An implementation cannot merely enqueue unknown work and let other workers behave as if it does not exist. | Primary paper; publication only; author claims not reproduced. |
+| [Meng et al., adaptive DNN-MCTS parallelism](https://arxiv.org/abs/2310.05313), arXiv `2310.05313v1`, 2023 | The authors model and empirically tune CPU/GPU inference batch size. Their selected batch size changes with worker count, and both very small and full batches lose through different latency/overlap costs. | No static universal batch threshold is justified. A selected implementation must measure its request-arrival, inference, overlap and quality behavior on the exact profile. | Primary paper; Gomoku CPU/GPU results not reproduced. |
+| [Cheng et al., Speculative MCTS](https://proceedings.neurips.cc/paper_files/paper/2024/file/a19940b01b77b6acd41ff8b32b334e7c-Paper-Conference.pdf), NeurIPS 2024 | The authors pipeline future game decisions predicted from partial MCTS results, reuse neural-cache entries after misprediction, and report Go/NoGo training speedups. They also model flush/resource costs and report an out-of-memory configuration. | Speculation can have value and cache reuse can salvage some discarded work. This is inter-decision game speculation, not evidence for a deep mixed-frontier reservoir within one continuously active MCGS graph. | Primary conference paper; performance/resource claims not reproduced. |
+| [Yu et al., ORCA](https://www.usenix.org/conference/osdi22/presentation/yu), OSDI 2022 | The authors use iteration-level scheduling so a transformer-serving batch can change between iterations; they report higher throughput at comparable latency. | Continuous refill is a credible scheduling pattern for iterative GPU work, but transformer request semantics do not establish MCGS selection, backup, transposition or stale-work correctness. | Primary systems paper; serving results not reproduced. |
+| [Yang et al., streaming batched beam search](https://aclanthology.org/2020.emnlp-main.366/), EMNLP 2020 | The authors refill variable-width decoding batches as candidates terminate or are pruned and report runtime reductions while matching their decoding baseline. | Variable-width/refill techniques are useful analogies for a future strategy implementation. Autoregressive decoding is not a universal MCGS oracle, and its beam must not become core terminology or behavior. | Primary conference paper; CC BY 4.0 publication; results not reproduced. |
+| [Couetoux et al., Continuous RAVE](https://proceedings.mlr.press/v20/couetoux11.html), 2011 | The paper applies progressive widening so the number of considered actions grows with state visits in large or continuous action spaces. | Progressive widening is the established search-policy concept for controlling active branching. It remains policy-owned and must not be silently replaced by hardware batch-fill pressure. | Primary conference paper; experimental claims not reproduced. |
+
+### Evidence limit
+
+The research supports batched evaluation, explicit incomplete-work accounting, evaluation caches separate from tree statistics, measured batch sizing, policy-owned progressive widening and bounded experiments with speculation. It does **not** establish:
+
+- a universal prospective frontier;
+- a useful depth of 40 or any other fixed depth;
+- an adaptive width/depth rule suitable across MCGS domains;
+- batch occupancy as a valid substitute for search value;
+- policy-head redundancy after deeper value evaluation; or
+- a continuously maintained mixed-depth speculative reservoir for a persistent transposition graph.
+
+These remain hypotheses. Absence of prior validation does not disprove them, but it prevents them from becoming framework requirements or defaults before representative evidence exists.
+
 ## Owner-by-owner disposition
 
 | Semantic owner or work family | Disposition | Reason |
@@ -40,6 +67,38 @@ No source implementation was copied or adapted. Published performance claims bel
 | Selection, backup, allocation and queue reductions/scans | **Measured implementation experiment only** | Some algebra can map to matrix operations, but segments are often small or irregular and order/precision may be semantic. Modern warp/block primitives are the required baseline. |
 | Frozen or slowly changing owner-local graph views | **Distant experiment** | A derived frontier/tile view may amortize translation in a special profile. It never becomes authoritative graph identity or storage. |
 | Live graph adjacency, transposition lookup/publication, allocation, reclamation, root control and cancellation | **Reject as tensor design targets** | These are irregular identity, ownership, atomic, lifecycle and control operations. Tensor conversion would add work and leak hardware shape into universal semantics. |
+| Demand-driven evaluator batching and exact-key result caching | **Universal framework support** | Finite request/result lifecycles, compatibility, cache identity, incomplete work, cancellation and scatter are broadly useful evaluator/progress/resource concerns already represented by proposed `SPEC-0009`. |
+| Prospective cache-before-node evaluation | **Future strategy experiment** | Search-selected one-level precedent exists, but candidate choice, depth, materialization and value belong to a selected strategy rather than universal evaluator or graph meaning. |
+| Adaptive prospective depth or width | **Future strategy experiment** | Research demonstrates workload-specific adaptation in adjacent domains, not a universal MCGS rule. Search policy owns semantic widening; an implementation may use idle-capacity admission only within an explicit strategy contract. |
+| Inter-decision speculation | **Downstream product/strategy technique** | It depends on a sequence of externally realized decisions and prediction/flush meaning that many MCGS uses do not have. |
+
+## Framework versus future implementation ownership
+
+CUDA-MCGS should make advanced batching and prospective techniques expressible without implementing any particular technique as universal behavior.
+
+The universal framework owns only reusable contracts and composition needed by materially different techniques:
+
+- finite evaluator requests, results, compatible batching, workspaces and exact scatter;
+- explicit in-flight, pending, cancelled, stale and ready lifecycles;
+- evaluation cache identity and reuse independent from authoritative graph-node materialization;
+- policy-owned candidate purpose, widening and result consumption;
+- graph-owned identity, storage, protection, publication and reclamation;
+- Progress/Resource-owned bounded admission, service, pressure, stopping and cleanup;
+- pre-ignition selection and specialization so unselected capabilities leave no hot-path or resource residue; and
+- bounded observations sufficient to measure batch fill, wait, reuse, waste, staleness, memory and search effect without host-directed progress.
+
+The universal framework does not own or directly implement:
+
+- a prospective frontier, beam, reservoir or look-ahead tree;
+- candidate ranking, speculative depth/width or confidence formulas;
+- a rule that spends spare tensor capacity on speculative work;
+- prediction, flush or recovery policy after a speculative miss;
+- domain/model-specific encodings, priors or materialization decisions; or
+- a default claim that speculative work improves search.
+
+Those algorithms belong to selected future CUDA-MCGS strategy/profile implementations, downstream products or isolated experiments consuming public framework contracts. Their code and terminology must not leak into universal owners. If a technique later has an independent package or repository lifecycle, that boundary requires its own decision; this note does not create one.
+
+The architectural test is deletion: removing every prospective strategy must leave the neural connector, evaluator-free and non-neural profiles, core graph search, reference semantics and generated engine complete. Conversely, a strategy should be implementable without private CUDA-MCGS imports or changes to universal semantic owners. If it cannot, the missing piece must first be classified as either a genuinely reusable CUDA-MCGS contract gap or a consumer-neutral CUDA-JS mechanism gap.
 
 ## Architecture disposition
 
@@ -63,6 +122,19 @@ Tensor work begins only after a representative parallel engine can expose or rep
 
 Promotion requires a repeatable end-to-end benefit over the best credible non-tensor parallel baseline on the exact selected workload/hardware/profile, with semantic, quality, finite-resource, lifecycle and cleanup equivalence. A failed experiment is retained as evidence against repeating the same transformation; it does not weaken the complete non-tensor engine.
 
+## Prospective-strategy research sequence
+
+This is a non-gating future implementation lane. It begins only after the ordinary parallel engine and evaluator connector expose representative demand and shape evidence.
+
+1. Establish demand-driven batching with exact in-flight accounting and evaluation caching as the baseline. Measure whether normal continuous parallel search already fills useful batches.
+2. Record request-arrival distribution, queue delay, batch occupancy, inference service curve, blocked-search time, cache reuse, stale work after `advance`, memory high-water and search quality at fixed wall time/work.
+3. Compare one-level search-selected cache-before-node evaluation against the unchanged baseline under the same policy, model, resources and stop conditions.
+4. Only if one-level speculation wins, compare shallow fixed depths/widths. Do not begin with adaptive control or depth 40.
+5. Consider adaptive admission only after fixed experiments identify reproducible signals. Required work must remain distinguishable from anticipatory/speculative work, and hardware occupancy must not silently redefine policy semantics.
+6. Promote a technique only into its selected strategy/profile boundary after materially different domain/evaluator instances show repeatable benefit and complete failure, cancellation, `advance`, finite-resource and cleanup behavior.
+
+Failure at any step retires or narrows that technique without changing universal framework completeness.
+
 ## Unknowns and revisit triggers
 
 Current evidence does not establish:
@@ -74,4 +146,6 @@ Current evidence does not establish:
 - whether Tensor Core work would contend with an already Tensor-Core-heavy evaluator; or
 - which public CUDA-JS operation boundary would be smallest and sufficient for a successful selected experiment.
 
-Revisit when reference/native profiles provide representative shape telemetry, a second natural evaluator/policy instance supports the same owner-local operation, CUDA-JS exposes a relevant consumer-neutral operation, or new primary evidence demonstrates dynamic transposition-graph gains with transformation and lifecycle costs included.
+It also does not establish whether ordinary continuous GPU-resident search supplies enough natural evaluator demand to make speculation unnecessary, how often prospective results survive `advance`, or whether reusable transpositions repay discarded speculative work across materially different domains.
+
+Revisit when reference/native profiles provide representative shape and evaluator-demand telemetry, a second natural evaluator/policy instance supports the same owner-local operation, CUDA-JS exposes a relevant consumer-neutral operation, or new primary evidence demonstrates dynamic transposition-graph gains with transformation and lifecycle costs included.

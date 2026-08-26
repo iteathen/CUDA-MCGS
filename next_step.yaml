@@ -1,5 +1,5 @@
 {
-  "schema_version": 65,
+  "schema_version": 66,
   "updated": "2026-08-25",
   "status": "engine_reference_root_control_reconciliation_ready",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
@@ -35,6 +35,7 @@
     "docs/decisions/ADR-0022-distinguish-root-advance-reroot-and-attention.md",
     "docs/decisions/ADR-0023-parallel-first-native-execution.md",
     "docs/decisions/ADR-0024-first-class-neural-evaluator-and-tensor-acceleration.md",
+    "docs/decisions/ADR-0025-framework-versus-technique-ownership-for-prospective-evaluation.md",
     "docs/development/2026-08-25-product-assumption-leakage-audit.md",
     "docs/development/2026-08-25-os-neutral-native-execution-direction.md",
     "docs/development/2026-08-25-multi-gpu-execution-direction.md",
@@ -121,7 +122,8 @@
     "reopen completed Connect Four reference, Search IR foundation or CUDA-JS portable capability implementation as current tasks",
     "begin REF-GRAPH-01 while proposal root/advance/reroot/attention representation and dependent evidence still conflict with ADR-0022",
     "present a serial-only native search loop as ENGINE-NATIVE-01 or the first usable GPU engine",
-    "make one persistent-kernel, warp, queue, CUDA Graph, multi-kernel or tensor execution topology universal before a selected profile and representative evidence justify it"
+    "make one persistent-kernel, warp, queue, CUDA Graph, multi-kernel or tensor execution topology universal before a selected profile and representative evidence justify it",
+    "implement prospective-frontier, adaptive-depth/width, beam/reservoir or tensor-capacity-filling policy as universal CUDA-MCGS behavior; expose reusable public contracts and leave technique ownership to selected future strategy/product implementations"
   ],
   "archived_plan_provenance": [
     "docs/archive/plans/2026-08-12-next-step-plan16.json",

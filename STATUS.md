@@ -71,6 +71,8 @@ The owner-directed production boundary remains: CUDA-MCGS owns JavaScript-only s
 
 ADR-0023 now makes bounded useful GPU concurrency a requirement of the first usable native engine. This does not select one scheduler: semantic owners define legal dependencies, schedules and outcomes, while native profiles own grid/block/warp/queue/kernel mapping and qualification. The correctness-first profile should begin with the smallest sufficient public CUDA-JS mechanisms; advanced primitives are demand-driven and tensor-shaped execution remains a separate measured research lane.
 
+ADR-0024 makes the optional neural evaluator connector and qualified tensor execution first-class framework features. ADR-0025 keeps that framework support separate from technique ownership: prospective frontiers, adaptive depth/width, beam/reservoir scheduling and tensor-capacity-filling policies remain selected future strategy/product experiments with their own evidence. They do not gate `ENGINE-REFERENCE-01`, the first parallel correctness engine or release completion.
+
 ## Current unfinished work
 
 The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`](docs/development/2026-08-12-v0-forward-plan.md).

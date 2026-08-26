@@ -186,6 +186,7 @@ After correctness/lifecycle are established:
 - implement ADR-0024's first-class optional neural evaluator connector through one canonical resolved-package/composition path, while preserving evaluator-absent and non-neural/non-tensor completeness;
 - strongly recommend a tensor variant for an eligible neural profile only after it beats an equivalent non-tensor parallel baseline with packing, transformation, synchronization, batching, tail, resource and search-quality costs included;
 - qualify at least one representative tensor-accelerated neural path before claiming the planned core feature complete, without making tensor support a prerequisite for the first parallel correctness engine;
+- under ADR-0025, keep prospective-frontier, adaptive-depth/width, beam/reservoir and tensor-capacity-filling algorithms outside the universal engine implementation; public framework contracts enable selected future strategies/products/experiments, which own their algorithms and evidence;
 - characterize the exact Linux CUDA-JS/CUDA-MCGS pair on qualified hardware before any representative performance claim;
 - keep Linux support and performance claims exact and independent from portable/reference or retained Windows evidence;
 - add Windows performance/qualification as a separate peer profile, never as a substitute for the first Linux reference cell or as a reason to shape shared engine contracts.
