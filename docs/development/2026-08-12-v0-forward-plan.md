@@ -183,7 +183,9 @@ After correctness/lifecycle are established:
 - select scheduler topology from evidence while preserving device closure;
 - compare the parallel baseline against credible profile alternatives using occupancy, divergence, contention, batching, memory and synchronization evidence;
 - characterize representative resource/performance/search-quality behavior without elevating one domain metric to universal semantics;
-- keep tensor-shaped execution in a separate experimental lane until an owner-local candidate beats an equivalent non-tensor parallel baseline after packing, transformation and synchronization costs;
+- implement ADR-0024's first-class optional neural evaluator connector through one canonical resolved-package/composition path, while preserving evaluator-absent and non-neural/non-tensor completeness;
+- strongly recommend a tensor variant for an eligible neural profile only after it beats an equivalent non-tensor parallel baseline with packing, transformation, synchronization, batching, tail, resource and search-quality costs included;
+- qualify at least one representative tensor-accelerated neural path before claiming the planned core feature complete, without making tensor support a prerequisite for the first parallel correctness engine;
 - characterize the exact Linux CUDA-JS/CUDA-MCGS pair on qualified hardware before any representative performance claim;
 - keep Linux support and performance claims exact and independent from portable/reference or retained Windows evidence;
 - add Windows performance/qualification as a separate peer profile, never as a substitute for the first Linux reference cell or as a reason to shape shared engine contracts.
@@ -197,6 +199,7 @@ Public CUDA-MCGS SDK/package/release remains last:
 - exact compatible-pair evidence;
 - first-consumer deletion and materially different second-instance evidence;
 - finite resource and lifecycle conformance;
+- a documented progressively disclosed neural evaluator connector, resolved neural package boundary, explicit non-tensor override and one qualified representative tensor path;
 - honest Windows/Linux/capability support matrix;
 - protected exact-head stabilization.
 

@@ -34,6 +34,7 @@
     "docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md",
     "docs/decisions/ADR-0022-distinguish-root-advance-reroot-and-attention.md",
     "docs/decisions/ADR-0023-parallel-first-native-execution.md",
+    "docs/decisions/ADR-0024-first-class-neural-evaluator-and-tensor-acceleration.md",
     "docs/development/2026-08-25-product-assumption-leakage-audit.md",
     "docs/development/2026-08-25-os-neutral-native-execution-direction.md",
     "docs/development/2026-08-25-multi-gpu-execution-direction.md",
@@ -63,7 +64,8 @@
     "optional live-session native profile only after accepted session semantics plus generic CUDA-JS sideband capability",
     "representative Linux scheduler/resource/performance evidence and separately qualified secondary platform profiles",
     "public SDK/package/release only after exact-head and compatibility stabilization",
-    "one complete progressively disclosed public library whose convenience facade, presets and explicit composition share canonical normalization, resolved-profile inspection and material-default identity"
+    "one complete progressively disclosed public library whose convenience facade, presets and explicit composition share canonical normalization, resolved-profile inspection and material-default identity",
+    "one first-class optional neural evaluator connector with complete non-neural deletion and at least one representative qualified tensor-accelerated path before the core feature is claimed complete"
   ],
   "forward_lanes": {
     "universal_core": ["ENGINE-CONTRACT-01", "ENGINE-REFERENCE-01"],

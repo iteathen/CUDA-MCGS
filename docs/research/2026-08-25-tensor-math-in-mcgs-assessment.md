@@ -6,7 +6,7 @@
 
 **Question:** Which CUDA-MCGS work can naturally benefit from tensor-shaped execution or NVIDIA Tensor Cores without making hardware shape, one evaluator, fixed actions or dense-tree assumptions part of the universal framework?
 
-This note records evidence beneath accepted [`ADR-0023`](../decisions/ADR-0023-parallel-first-native-execution.md). It does not authorize implementation, amend an evaluator or scheduler contract, require a CUDA-JS capability, or block the current reference/native path.
+This note records evidence beneath accepted [`ADR-0023`](../decisions/ADR-0023-parallel-first-native-execution.md). Its architectural disposition is adopted by [`ADR-0024`](../decisions/ADR-0024-first-class-neural-evaluator-and-tensor-acceleration.md), which makes qualified tensor acceleration and the neural evaluator connector first-class optional core features. This note does not itself authorize implementation, amend an evaluator or scheduler contract, require a CUDA-JS capability, or block the current reference/native path.
 
 ## Terminology boundary
 
@@ -43,7 +43,7 @@ No source implementation was copied or adapted. Published performance claims bel
 
 ## Architecture disposition
 
-1. Tensor acceleration remains an optional leaf implementation behind an existing semantic owner. CUDA-MCGS does not add a general tensor subsystem or tensor-shaped universal graph.
+1. Tensor acceleration is a first-class optional core capability implemented behind an existing semantic owner. It is strongly recommended for eligible qualified workloads, while non-tensor engines remain complete. CUDA-MCGS does not add a general tensor subsystem or tensor-shaped universal graph.
 2. Evaluator/model batching is the first and strongest candidate. The evaluator owns semantic compatibility, numeric class, batch sensitivity, padding-lane isolation, scatter identity, artifacts, workspace, failures and cleanup; Progress owns service/fairness rather than evaluator grouping meaning.
 3. Independent search batching is an optional engine/product profile. It does not require multiple roots, fixed action widths or replica merging in the universal core.
 4. Graph translation, fixed-width child tensors and whole-search dense layouts are rejected as foundations. A later derived view must be owner-local, finite, disposable and justified by reuse.
