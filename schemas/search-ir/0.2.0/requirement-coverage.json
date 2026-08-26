@@ -160,8 +160,8 @@
       "primaryDisposition": "ir-identity-deletion-rejection",
       "supportingDispositions": ["deterministic-composition", "engine-reference-oracle"],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
-      "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:IR-STAGE-01", "planned:IR-CHANNEL-01", "planned:IR-DELETION-ID-01"],
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:stage-zero-capability-complete-absence", "case:channel-absence-zero-residue", "case:canonical-composer-stage-substrate-deletion", "case:canonical-composer-async-channel-deletion", "case:canonical-composer-capability-product-deletion", "planned:ENGINE-REFERENCE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -182,8 +182,8 @@
       "primaryDisposition": "ir-identity-deletion-rejection",
       "supportingDispositions": ["cross-specification-proof"],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
-      "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:IR-DELETION-ID-01", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:materially-different-composer-engines-cannot-collide", "case:deletion-matrix-product-assumption-absence", "case:canonical-composer-namespaced-product-deletion", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -215,8 +215,8 @@
       "primaryDisposition": "deterministic-composition",
       "supportingDispositions": ["native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
-      "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:IR-PROGRAM-PACKAGE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:program-package-profile.schema.json", "schema:search-program.schema.json", "schema:execution-package.schema.json", "case:compose-canonical-search-programs", "case:build-canonical-execution-packages", "case:deletion-matrix-public-cuda-js-contract-only", "planned:ENGINE-NATIVE-01"],
       "classificationStatus": "classified"
     },
     {
@@ -259,8 +259,8 @@
       "primaryDisposition": "deterministic-composition",
       "supportingDispositions": ["engine-reference-oracle"],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
-      "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:IR-RESOURCE-01", "planned:ENGINE-REFERENCE-01"],
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["schema:resource-profile.schema.json", "normalizer:resource-profile", "case:normalize-resource-profiles", "case:public-resource-projection-is-generic-subset", "case:canonical-composer-evaluator-deletion", "planned:ENGINE-REFERENCE-01"],
       "classificationStatus": "classified"
     },
     {
