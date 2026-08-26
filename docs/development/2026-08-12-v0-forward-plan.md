@@ -107,7 +107,7 @@ ADR-0020 and [issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) gove
 
 ## ENGINE-REFERENCE-01 — universal reference/conformance
 
-**Current focus after PR #116 protected-target verification.** Build a consolidated deterministic CUDA-free universal reference/conformance layer from the frozen Composer evidence key after the owning semantic contracts stabilize. Begin with a critical assessment and dependency-sized focus map; downstream reference code may exercise proposal meaning but may not invent, repair or bypass missing schema meaning.
+**Current focus after PR #116 protected-target verification, tracked in [issue #36](https://github.com/iteathen/CUDA-MCGS/issues/36).** Build a consolidated deterministic CUDA-free universal reference/conformance layer from the frozen Composer evidence key after the owning semantic contracts stabilize. Begin with a critical assessment and dependency-sized focus map; downstream reference code may exercise proposal meaning but may not invent, repair or bypass missing schema meaning.
 
 - retain existing Search IR reference evidence;
 - add materially different synthetic domains/evaluator/output shapes so Connect Four cannot become the hidden template;

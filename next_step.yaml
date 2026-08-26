@@ -36,6 +36,7 @@
   ],
   "current_focus": {
     "id": "ENGINE-REFERENCE-01",
+    "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36",
     "parent_plan_version": "CUDA-MCGS-V0/24",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": null,
