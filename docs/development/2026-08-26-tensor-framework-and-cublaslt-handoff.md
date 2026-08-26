@@ -90,6 +90,7 @@ No CUDA-MCGS PR has been opened for this branch and none of its research documen
 - The pre-existing detached dirty audit worktree `C:\Users\josho\AppData\Local\Temp\cuda-js-pr99-audit-019ff9e3` remains protected. Its broad tracked deletions were not created by this task and must not be removed without separate authority.
 - Other long-lived CUDA-JS worktrees remain pre-existing and untouched.
 - Five stale CUDA-JS worktree metadata remnants with no live `gitdir` or lock, plus two clean obsolete temporary worktrees, were removed only after exact ownership and path verification. No active worktree was deleted.
+- CUDA-MCGS verification refreshed three ignored reproducible `build/` evidence directories. Their generated files and OneDrive reparse-point directories were removed after validation and verified absent; they are not retained authority or recovery inputs.
 - No `the_restaurant` file, branch, issue, package, model, process, device context, or remote state was changed. Its retained future-integration plan is `C:\Users\josho\OneDrive\Documents\ChatGPT\CUDA-JS-Tensor\docs\integrations\the_restaurant.md`.
 - No task-created process, port, container, lock, credential, release, or GPU context remains.
 
