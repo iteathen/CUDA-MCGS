@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { canonicalClone, canonicalIdentity, sourceTextSha256 } from './src/canonical.mjs';
+import { registerDomainCases } from './src/domain-cases.mjs';
 import { assertUniqueStrings, exactKeys, fail } from './src/errors.mjs';
 import { assertMutationDetected } from './src/mutation.mjs';
 import { normalizeDeclaredSchedule, runDeclaredSchedule } from './src/schedule.mjs';
@@ -12,7 +13,11 @@ import { normalizeDeclaredSchedule, runDeclaredSchedule } from './src/schedule.m
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'neutral-schedules.json');
+const domainFixturePath = path.join(experimentRoot, 'fixtures', 'domain-cases.json');
 const composerEvidencePath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'evidence.json');
+const domainProjectionPath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'domain-profiles.json');
+const domainSpecPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0007-domain-state-action-and-transition.md');
+const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 
 assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS search-semantics reference requires Node 26 or newer; found ${process.version}`);
 
@@ -26,14 +31,50 @@ async function readJson(absolutePath, missingCode) {
 }
 
 const fixture = await readJson(fixturePath);
+const domainFixture = await readJson(domainFixturePath);
 exactKeys(fixture, ['composerEvidence', 'expectedCases', 'schedules', 'schema'], 'HARNESS_FIXTURE_FIELDS', 'neutral schedule fixture');
+exactKeys(domainFixture, ['composerEvidence', 'expectedCases', 'profileProjection', 'roots', 'schema'], 'DOMAIN_FIXTURE_FIELDS', 'Domain fixture');
 assert.equal(fixture.schema, 'cuda-mcgs.reference-harness-fixtures/0.1.0');
+assert.equal(domainFixture.schema, 'cuda-mcgs.reference-domain-fixtures/0.1.0');
 exactKeys(fixture.schedules, ['dependent', 'independentAlphaFirst', 'independentBetaFirst'], 'HARNESS_FIXTURE_SCHEDULES', 'neutral fixture schedules');
 exactKeys(fixture.composerEvidence, ['algorithm', 'byteLength', 'sha256'], 'HARNESS_FIXTURE_EVIDENCE', 'fixture Composer evidence');
+exactKeys(domainFixture.composerEvidence, ['algorithm', 'byteLength', 'sha256'], 'DOMAIN_FIXTURE_EVIDENCE', 'Domain fixture Composer evidence');
+exactKeys(domainFixture.profileProjection, ['algorithm', 'byteLength', 'schema', 'sha256'], 'DOMAIN_FIXTURE_PROJECTION', 'Domain fixture profile projection');
+assert.deepEqual(domainFixture.composerEvidence, fixture.composerEvidence);
 const expectedEvidenceKey = fixture.composerEvidence.sha256;
-const expectedCaseIds = assertUniqueStrings(fixture.expectedCases, 'HARNESS_EXPECTED_CASES', 'expectedCases');
+const neutralExpectedCaseIds = assertUniqueStrings(fixture.expectedCases, 'HARNESS_EXPECTED_CASES', 'neutral expectedCases');
+const domainExpectedCaseIds = assertUniqueStrings(domainFixture.expectedCases, 'DOMAIN_EXPECTED_CASES', 'Domain expectedCases');
+const expectedCaseIds = assertUniqueStrings([...neutralExpectedCaseIds, ...domainExpectedCaseIds], 'HARNESS_EXPECTED_CASES', 'combined expectedCases');
 if (expectedCaseIds.length === 0 || expectedCaseIds.some((id) => !/^[a-z0-9]+(?:-[a-z0-9]+)+$/.test(id))) fail('HARNESS_EXPECTED_CASES', 'expectedCases contains an invalid case id');
 const composerEvidence = await readJson(composerEvidencePath, 'HARNESS_COMPOSER_EVIDENCE_MISSING');
+const domainProjection = await readJson(domainProjectionPath, 'DOMAIN_PROJECTION_MISSING');
+const requirementCoverage = await readJson(requirementCoveragePath);
+const domainSpec = await readFile(domainSpecPath, 'utf8');
+
+const directDomainPrefixes = Object.freeze([
+  'DOMAIN-STATE-',
+  'DOMAIN-HISTORY-',
+  'DOMAIN-ROLE-',
+  'DOMAIN-ACTION-',
+  'DOMAIN-TRANSITION-',
+  'DOMAIN-ROOT-',
+  'DOMAIN-CLEANUP-',
+]);
+const domainRequirementClassifications = requirementCoverage.classifications.filter((entry) =>
+  entry.contract === 'SPEC-0007'
+  && directDomainPrefixes.includes(entry.requirementPrefix)
+  && entry.primaryDisposition === 'engine-reference-oracle'
+  && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01');
+assert.deepEqual(domainRequirementClassifications.map(({ requirementPrefix }) => requirementPrefix).sort(), [...directDomainPrefixes].sort());
+const domainRequirementIds = assertUniqueStrings(
+  [...domainSpec.matchAll(/^(DOMAIN-(?:STATE|HISTORY|ROLE|ACTION|TRANSITION|ROOT|CLEANUP)-\d{3})\./gm)].map((match) => match[1]),
+  'DOMAIN_REQUIREMENT_SOURCE',
+  'direct Domain requirements',
+);
+for (const classification of domainRequirementClassifications) {
+  assert.equal(domainRequirementIds.filter((id) => id.startsWith(classification.requirementPrefix)).length, classification.requirementCount);
+}
+assert.equal(domainRequirementIds.length, 47);
 
 function clone(value) {
   return canonicalClone(value);
@@ -71,9 +112,10 @@ function run(schedule, handlers = transitions) {
 }
 
 const definitions = [];
-function defineCase(id, body) {
+function defineCase(id, body, requirements = []) {
   if (definitions.some((entry) => entry.id === id)) throw new Error(`duplicate case ${id}`);
-  definitions.push({ id, body });
+  const uniqueRequirements = assertUniqueStrings(requirements, 'DOMAIN_CASE_REQUIREMENTS', `${id} requirements`);
+  definitions.push({ id, body, requirements: uniqueRequirements });
 }
 
 defineCase('composer-evidence-input-exact', () => {
@@ -274,6 +316,31 @@ defineCase('harness-evidence-identity-content-sensitive', () => {
   return { baseline, mutated };
 });
 
+function plannedDomainCoverage() {
+  const direct = new Set(domainRequirementIds);
+  const casesByRequirement = Object.fromEntries(domainRequirementIds.map((id) => [id, []]));
+  for (const definition of definitions) {
+    for (const requirement of definition.requirements) {
+      if (!direct.has(requirement)) fail('DOMAIN_REQUIREMENT_SCOPE', `${definition.id} maps non-owned requirement ${requirement}`);
+      casesByRequirement[requirement].push(definition.id);
+    }
+  }
+  const uncovered = domainRequirementIds.filter((id) => casesByRequirement[id].length === 0);
+  if (uncovered.length !== 0) fail('DOMAIN_REQUIREMENT_COVERAGE', `direct Domain requirements lack cases: ${uncovered.join(', ')}`);
+  return {
+    requirementCount: domainRequirementIds.length,
+    requirements: domainRequirementIds.map((id) => ({ id, cases: casesByRequirement[id] })),
+  };
+}
+
+registerDomainCases({
+  defineCase,
+  fixture: domainFixture,
+  projection: domainProjection,
+  composerEvidence,
+  plannedCoverage: plannedDomainCoverage,
+});
+
 const args = process.argv.slice(2);
 let selectedCase = null;
 if (args.length !== 0) {
@@ -296,6 +363,11 @@ for (const definition of definitions) {
 }
 
 const failed = cases.filter(({ status }) => status === 'fail');
+const plannedDomainRequirementCoverage = plannedDomainCoverage();
+const executedCaseIds = new Set(cases.map(({ id }) => id));
+const executedDomainRequirements = plannedDomainRequirementCoverage.requirements
+  .map(({ id, cases: mappedCases }) => ({ id, cases: mappedCases.filter((caseId) => executedCaseIds.has(caseId)) }))
+  .filter(({ cases: mappedCases }) => mappedCases.length !== 0);
 const summary = {
   expected: expectedCaseIds.length,
   discovered: definitions.length,
@@ -313,18 +385,32 @@ if (selectedCase === null) assert.equal(cases.length, expectedCaseIds.length);
 
 const sourcePaths = [
   'experiments/search-semantics-reference/fixtures/neutral-schedules.json',
+  'experiments/search-semantics-reference/fixtures/domain-cases.json',
   'experiments/search-semantics-reference/src/errors.mjs',
   'experiments/search-semantics-reference/src/canonical.mjs',
   'experiments/search-semantics-reference/src/schedule.mjs',
   'experiments/search-semantics-reference/src/mutation.mjs',
+  'experiments/search-semantics-reference/src/domain.mjs',
+  'experiments/search-semantics-reference/src/domain-instances.mjs',
+  'experiments/search-semantics-reference/src/domain-cases.mjs',
+  'experiments/search-ir-composer-reference/export-domain-profiles.mjs',
+  'scripts/export-search-ir-composer-domain-profiles.mjs',
+  'docs/specs/SPEC-0007-domain-state-action-and-transition.md',
+  'schemas/search-ir/0.2.0/requirement-coverage.json',
   'experiments/search-semantics-reference/run.mjs',
   'scripts/run-search-semantics-reference.mjs',
 ];
 const sources = {};
 for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
 const evidenceSubject = {
-  schema: 'cuda-mcgs.search-semantics-reference-evidence-key/0.1.0',
+  schema: 'cuda-mcgs.search-semantics-reference-evidence-key/0.2.0',
   composerEvidence: fixture.composerEvidence,
+  domainProfileProjection: domainProjection.projectionIdentity,
+  domainRequirementCoverage: {
+    planned: plannedDomainRequirementCoverage,
+    executedRequirementCount: executedDomainRequirements.length,
+    executed: executedDomainRequirements,
+  },
   selection: selectedCase,
   sources,
   summary,
@@ -333,19 +419,26 @@ const evidenceSubject = {
 const evidenceIdentity = canonicalIdentity(evidenceSubject, 'search-semantics reference evidence');
 const evidence = {
   schemaVersion: 1,
-  capsule: 'cuda-mcgs-search-semantics-reference-harness-v0.1.0',
-  scope: selectedCase === null ? 'full-harness' : 'focused-case',
+  capsule: 'cuda-mcgs-search-semantics-reference-v0.2.0',
+  scope: selectedCase === null ? 'full-reference' : 'focused-case',
   status: failed.length === 0 ? 'pass' : 'fail',
   generatedAt: new Date().toISOString(),
   environment: { node: process.version, platform: process.platform, architecture: process.arch, osRelease: os.release() },
   composerEvidence: fixture.composerEvidence,
+  domainProfileProjection: domainProjection.projectionIdentity,
+  domainRequirementCoverage: {
+    planned: plannedDomainRequirementCoverage,
+    executedRequirementCount: executedDomainRequirements.length,
+    executed: executedDomainRequirements,
+  },
   evidenceIdentity,
   sources,
   summary,
   cases,
   claimLimits: [
-    'Semantic-neutral declared-schedule, owner-isolation, public-fact, mutation-sensitivity and evidence-identity harness behavior only.',
-    'No Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session, Stage or Channel search semantics are implemented by this capsule.',
+    'Semantic-neutral declared-schedule harness behavior plus bounded Domain-owned state, action, history, role, transition, root and cleanup reference-oracle behavior only.',
+    'The Domain oracle consumes a deterministic public normalized-profile projection; it does not import Composer internals or modify the frozen Composer evidence key.',
+    'No Graph, Policy, Evaluator, Resource, Progress, Output, Session, Stage or Channel search semantics are implemented by this capsule.',
     'No production runtime, physical scheduler, CUDA-JS execution, native CUDA, performance, search-quality, public SDK, contract acceptance or multi-GPU support claim.',
   ],
 };
