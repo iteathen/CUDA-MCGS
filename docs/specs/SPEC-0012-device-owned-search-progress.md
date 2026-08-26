@@ -112,7 +112,7 @@ PROGRESS-NOPROGRESS-001. When no work is ready, the device-visible classifier ac
 
 PROGRESS-NOPROGRESS-002. Outcomes distinguish `terminal-quiescent`, `legitimate-external-wait`, `recoverable-resource-wait`, `producer-pending`, `deadlock`, `livelock`, `starvation`, `orphaned-work`, `stale-only`, `counter-exhausted` and namespaced exact equivalents.
 
-PROGRESS-NOPROGRESS-003. Legitimate external wait exists only for a selected live-session state explicitly awaiting optional root/control input; it cannot hold active internal search work that requires the host to continue.
+PROGRESS-NOPROGRESS-003. Legitimate external wait exists only for a selected live-session state explicitly awaiting optional root/attention input; it cannot hold active internal search work that requires the host to continue.
 
 PROGRESS-NOPROGRESS-004. Deadlock proof uses the normalized wait-for graph/current terminal states and publishes bounded owner/class/dependency evidence. Absence of queue entries alone is insufficient.
 
@@ -198,7 +198,7 @@ Required cases include:
 | `progress-owner-deletion-zero-residue` | Removed evaluator/observation/capability leaves work. |
 | `progress-oracle-sensitivity` | Removing readiness/fairness/closure checks still passes. |
 
-Fixtures cover serial and parallel schedules, evaluator absence/batching, graph cycles, resource pressure/recovery, stop during backup, stale reroot work, optional observation, deadlock/livelock/starvation and at least two mechanism-neutral scheduler models.
+Fixtures cover serial and parallel schedules, evaluator absence/batching, graph cycles, resource pressure/recovery, stop during backup, stale root-advance work, optional observation, deadlock/livelock/starvation and at least two mechanism-neutral scheduler models.
 
 Native qualification additionally verifies visibility, contended claims, fairness/no-progress bounds, stop/root/cancel races, device closure, resource conservation and cleanup. Production scheduler selection requires representative workload/search-quality/occupancy/contention evidence while freezing semantics.
 

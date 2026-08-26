@@ -134,7 +134,7 @@ The consequence of a wrong contract boundary is high and broad because every sch
 
 - **Universal framework:** active; every branch uses materially different second instances and first-consumer deletion.
 - **GPU/concurrency:** active semantically for publication, progress, cancellation, device closure, memory spaces, and stale state; physical CUDA mechanism evidence is explicitly deferred.
-- **Persistence/compatibility:** active for graph/session retention, incarnations, schema versions, generated identity, and reroot reuse; durable cross-process graph persistence remains out of scope unless a branch proves it necessary.
+- **Persistence/compatibility:** active for graph/session retention, incarnations, schema versions, generated identity, and root-advance reuse; durable cross-process graph persistence remains out of scope unless a branch proves it necessary.
 - **Security/trust:** active for fail-closed schema inputs, executable Device-JS boundary, bounded diagnostics, opaque CUDA-JS artifacts, and no raw-pointer/native authority.
 - **Performance/search quality:** active only as an obligation to preserve equivalent semantics/resources/stopping/quality in later mechanism selection; no current performance claim is made.
 
@@ -172,7 +172,7 @@ Provisional specification paths become authoritative only if their proposal bran
 | `EC-OUTPUT-01` | `integrated proposal` | Generic bounded terminal result/live observation payload publication contract | SPEC-0001, domain/policy/evaluator outputs | [`SPEC-0013`](../specs/SPEC-0013-result-and-observation-publication.md) at `main@8fab142` | Deleting ranked actions leaves the contract incoherent, or observation changes search semantics. |
 | `EC-RESOURCE-01` | `integrated proposal` | Finite search-resource composition/admission/pressure/exhaustion contract | Graph, policy, evaluator, output contributions | [`SPEC-0011`](../specs/SPEC-0011-finite-search-resources.md) at `main@98caeb5` | A selected owner can acquire unplanned memory or has no typed saturation behavior. |
 | `EC-PROGRESS-01` | `integrated proposal` | Device-owned readiness/progress/fairness/deadlock/stop semantics | Graph, policy, evaluator, output, resource contracts | [`SPEC-0012`](../specs/SPEC-0012-device-owned-search-progress.md) at `main@7c20146` | Semantics require a persistent queue, CUDA Graph, host relaunch, or exact schedule. |
-| `EC-SESSION-01` | `integrated proposal` | Reconciled optional Search Session/root/control/observation proposal | All prior owners | [`SPEC-0006`](../specs/SPEC-0006-search-session-control-and-observation.md) at `main@5fe5777` | A rejected update mutates state, stale work contaminates a new epoch, or live reads advance search. |
+| `EC-SESSION-01` | `integrated proposal; revised by SESSION-ATTENTION-01` | Reconciled optional Search Session/root/attention/observation proposal | All prior owners | [`SPEC-0006`](../specs/SPEC-0006-search-session-control-and-observation.md); ADR-0021 correction | A rejected update mutates state, stale work contaminates a new epoch, attention invokes root work, or live reads advance search. |
 | `EC-FRAMEWORK-01` | `integrated proposal` | Cross-cutting proposal map with no duplicate owner | All proposal outputs | [`SPEC-0000`](../specs/SPEC-0000-framework-requirements.md) at `main@1ef7324` | SPEC-0000 independently owns a fact already assigned to a leaf or extension/product contract. |
 | `EC-INTEGRATE-01` | `integrated proposal` | One exact proposal packet, branch dispositions, downstream handoff | Every integrated or explicitly disposed leaf | Routing/handoff through PR #79 at `main@22e3ea5` | Any planned branch is unaccounted, terms contradict, dependencies cycle, or later nodes must invent meaning. |
 
@@ -194,7 +194,7 @@ Each leaf:
 
 - `EC-DOMAIN-01` owns semantic identity/equality inputs and state/action/transition/history/observation/node-role meaning. It does not own graph incarnations, search policy, evaluator interpretation, storage layout, or product rules.
 - `EC-GRAPH-01` owns graph object/storage validity, references, transposition publication, paths and reclamation. It consumes domain identity and stores selected policy/evaluator records without owning their meaning.
-- `EC-POLICY-01` owns search decisions/statistics/reservations/backup/stopping and reroot reuse classification. It consumes graph/domain ports and does not own storage, evaluator execution, or public payload publication.
+- `EC-POLICY-01` owns search decisions/statistics/reservations/backup/stopping and root-advance reuse classification. It consumes graph/domain ports and does not own storage, evaluator execution, or public payload publication.
 - `EC-EVALUATOR-01` owns selected evaluator capabilities, resident execution semantics, request/output interpretation, batching/workspace and cache validity. Generic compilation/allocation/operation lifetime remains CUDA-JS-owned.
 - `EC-OUTPUT-01` owns bounded publication selection and immutable payload validity for terminal results and optional observations. Session owns live lifetime/epoch coordination; policy/product contracts own ranking or payload meaning.
 - `EC-RESOURCE-01` owns finite search-resource contribution normalization, partition/admission, watermarks, pressure/exhaustion and semantic accounting. It does not allocate CUDA resources or silently choose eviction/search policy.

@@ -103,7 +103,7 @@
       "properties": {
         "readyState": { "const": "ready" }, "release": { "const": "logical-release" }, "acquire": { "const": "logical-acquire" }, "scope": { "const": "device" },
         "publicationWord": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "payloadBeforeReady": { "const": true }, "consumeAfterAcquire": { "const": true },
-        "nativeSpelling": { "const": "none" }, "publicRequirement": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "nativeQualification": { "const": "blocked-cuda-js-123" }
+        "nativeSpelling": { "const": "none" }, "publicRequirement": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "nativeQualification": { "const": "pending-exact-compatible-pair" }
       }
     },
     "capacity": {
@@ -219,7 +219,7 @@
     "noPersistence": { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "none" } } },
     "rootCompatibility": {
       "type": "object", "additionalProperties": false, "required": ["packageIdentityRequired", "cudaJsPublicContractsOnly", "nativeQualification", "migration"],
-      "properties": { "packageIdentityRequired": { "const": true }, "cudaJsPublicContractsOnly": { "const": true }, "nativeQualification": { "const": "blocked-cuda-js-123" }, "migration": { "$ref": "#/$defs/noPersistence" } }
+      "properties": { "packageIdentityRequired": { "const": true }, "cudaJsPublicContractsOnly": { "const": true }, "nativeQualification": { "const": "pending-exact-compatible-pair" }, "migration": { "$ref": "#/$defs/noPersistence" } }
     },
     "rootCleanup": {
       "type": "object", "additionalProperties": false, "required": ["kinds", "disposition", "quarantine", "releaseOrder", "ownerOrder", "retainedEvidence"],

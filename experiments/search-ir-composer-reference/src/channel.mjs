@@ -198,7 +198,7 @@ function normalizeOrdering(input, channelId) {
 
 function normalizePublication(input, channelId) {
   exactKeys(input, ['readyState', 'release', 'acquire', 'scope', 'publicationWord', 'payloadBeforeReady', 'consumeAfterAcquire', 'nativeSpelling', 'publicRequirement', 'nativeQualification'], 'CHANNEL_PUBLICATION_FIELDS', `${channelId} publication`);
-  if (input.readyState !== 'ready' || input.release !== 'logical-release' || input.acquire !== 'logical-acquire' || input.scope !== 'device' || input.payloadBeforeReady !== true || input.consumeAfterAcquire !== true || input.nativeSpelling !== 'none' || input.nativeQualification !== 'blocked-cuda-js-123') fail('CHANNEL_PUBLICATION', `${channelId} publication contract is invalid`);
+  if (input.readyState !== 'ready' || input.release !== 'logical-release' || input.acquire !== 'logical-acquire' || input.scope !== 'device' || input.payloadBeforeReady !== true || input.consumeAfterAcquire !== true || input.nativeSpelling !== 'none' || input.nativeQualification !== 'pending-exact-compatible-pair') fail('CHANNEL_PUBLICATION', `${channelId} publication contract is invalid`);
   const publicRequirement = normalizeSchemaReference(input.publicRequirement, `${channelId} publication requirement`);
   if (publicRequirement.id !== 'cuda-js.device-publication-release-acquire/0.1.0') fail('CHANNEL_PUBLICATION', `${channelId} publication requirement is not the consumer-neutral CUDA-JS boundary`);
   return { readyState: input.readyState, release: input.release, acquire: input.acquire, scope: input.scope, publicationWord: normalizeSchemaReference(input.publicationWord, `${channelId} publicationWord`), payloadBeforeReady: true, consumeAfterAcquire: true, nativeSpelling: input.nativeSpelling, publicRequirement, nativeQualification: input.nativeQualification };
@@ -429,7 +429,7 @@ function normalizeDiagnostics(input) {
 function normalizeRootCompatibility(input) {
   exactKeys(input, ['packageIdentityRequired', 'cudaJsPublicContractsOnly', 'nativeQualification', 'migration'], 'CHANNEL_ROOT_COMPATIBILITY_FIELDS', 'channel compatibility');
   exactKeys(input.migration, ['kind'], 'CHANNEL_ROOT_MIGRATION_FIELDS', 'channel migration');
-  if (input.packageIdentityRequired !== true || input.cudaJsPublicContractsOnly !== true || input.nativeQualification !== 'blocked-cuda-js-123' || input.migration.kind !== 'none') fail('CHANNEL_ROOT_COMPATIBILITY', 'channel compatibility is invalid');
+  if (input.packageIdentityRequired !== true || input.cudaJsPublicContractsOnly !== true || input.nativeQualification !== 'pending-exact-compatible-pair' || input.migration.kind !== 'none') fail('CHANNEL_ROOT_COMPATIBILITY', 'channel compatibility is invalid');
   return { packageIdentityRequired: true, cudaJsPublicContractsOnly: true, nativeQualification: input.nativeQualification, migration: { kind: 'none' } };
 }
 

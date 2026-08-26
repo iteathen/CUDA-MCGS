@@ -4,9 +4,9 @@
 
 **Last reconciled:** 2026-08-25
 
-**Parent plan version:** `CUDA-MCGS-V0/22`
+**Parent plan version:** `CUDA-MCGS-V0/23`
 
-**CUDA-MCGS input baseline:** protected `main` `05d4925b8241537d586d4e44672b4e23647bc297`.
+**CUDA-MCGS input baseline:** protected `main` `e1ca19132d79f3c2a15fd0f7fe5b78a190c0371b`.
 
 **CUDA-JS authority baseline:** protected `main` `05008fb988558e909cb3802fa12a73d612e70bf0`.
 
@@ -90,7 +90,7 @@ The assessment classified device-scope release/acquire publication as a missing 
 
 ## ENGINE-IR-COMPOSER-01 — normalized Search IR and Search Composer
 
-**Current focus.** The critical assessment and dependency-ordered semantic focus map are [`2026-08-25-engine-ir-composer-01-assessment-and-plan.md`](2026-08-25-engine-ir-composer-01-assessment-and-plan.md). It preserves accepted Search IR 0.1.0, assigns proposal Search IR 0.2.0 fragments to their semantic owners and keeps the reference Composer under bounded experiments rather than prematurely creating a production component. `IR-CATALOG-01` through `IR-EVALUATOR-01` are integrated through PRs #90 through #95 at `main@ed4baa2`. The integrated evaluator leaf owns only optional capability/input/output/request/batch/publication/cache/resident-state/progress/reuse/lifecycle representation and five combined/proposal-only/proof/analytic/batch-sensitive instances. `IR-RESOURCE-01` now supplies only finite logical contribution/class/pool/partition/reserve/admission/ledger/pressure/exhaustion/lifecycle/provider representation and three evaluator-absent/evaluator-workspace/live-session plans; its integration is pending before device-owned progress composition begins.
+**Current focus.** The critical assessment and dependency-ordered semantic focus map are [`2026-08-25-engine-ir-composer-01-assessment-and-plan.md`](2026-08-25-engine-ir-composer-01-assessment-and-plan.md). It preserves accepted Search IR 0.1.0, assigns proposal Search IR 0.2.0 fragments to their semantic owners and keeps the reference Composer under bounded experiments rather than prematurely creating a production component. `IR-CATALOG-01` through `IR-COMPOSER-01` are integrated through PR #112 at `main@e1ca191`. Before `IR-DELETION-ID-01`, owner direction and [issue #113](https://github.com/iteathen/CUDA-MCGS/issues/113) require `SESSION-ATTENTION-01` to correct the proposal Session model: structural root advance owns a root transaction containing only affected owners, while directional attention is an independently versioned lazy publication owned by any selected participant with no root/reuse/reclamation/resource-resize effect, steady-state polling or global multi-GPU barrier. The bounded implementation passes 864/864 CUDA-free cases, and the accompanying [product-assumption leakage audit](2026-08-25-product-assumption-leakage-audit.md) finds no chess or Connect Four semantic assumption in current universal authority, schemas, executable proposal capsules or package projections; complete deletion remains the next leaf rather than an overclaim from this audit.
 
 After the core and extension proposals are decision-complete, execute an explicitly bounded, non-production schema/normalizer/reference-composer evidence node:
 
@@ -103,7 +103,7 @@ After the core and extension proposals are decision-complete, execute an explici
 
 The Composer may select a CUDA-JS capability such as RDC/LTO only when a later concrete realization needs it and its claimed profile is qualified; availability alone does not make it a framework dependency. This node authorizes representation and CUDA-free reference evidence only, not production CUDA lowering.
 
-ADR-0020 and [issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) now govern the public-library input boundary. The exact 989-requirement catalog remains frozen through the active owner leaf. At the next dependency-safe reconciliation, the plan must add resolved-input/default provenance and prove that a convenience call and its explicit equivalent produce the same canonical profile and identity before `ENGINE-CONTRACT-ACCEPTANCE-01`. Exact SDK class/function names and production facade implementation remain downstream of accepted semantics.
+ADR-0020 and [issue #109](https://github.com/iteathen/CUDA-MCGS/issues/109) govern the public-library input boundary; `IR-COMPOSER-01` has integrated its resolved-input/default provenance and convenient/explicit canonical-equivalence evidence. ADR-0021 deliberately revises proposal SPEC-0006 and its catalog source identity before deletion reconciliation; this is an explicit invalidation, not silent drift of a frozen input. The 989 requirement IDs and owners remain fixed, while their revised proposal source/evidence identities must be regenerated. Exact SDK class/function names and production facade implementation remain downstream of accepted semantics.
 
 ## ENGINE-REFERENCE-01 — universal reference/conformance
 
@@ -155,7 +155,7 @@ Required:
 
 ## ENGINE-SESSION-NATIVE-01 — optional live-session profile
 
-Long-lived external root/control/observation during active device work is a **separate profile**, not a universal release blocker for the finite terminal engine.
+Long-lived external root/attention/observation during active device work is a **separate profile**, not a universal release blocker for the finite terminal engine.
 
 It additionally requires:
 

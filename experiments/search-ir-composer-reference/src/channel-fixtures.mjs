@@ -103,7 +103,7 @@ function baseChannel(profile, channelToken, requirement, semanticOwner, roles, s
     publication: {
       readyState: 'ready', release: 'logical-release', acquire: 'logical-acquire', scope: 'device',
       publicationWord: schemaReference(`cuda-mcgs.synthetic-${profile}-${channelToken}-generation-ready-word`), payloadBeforeReady: true, consumeAfterAcquire: true,
-      nativeSpelling: 'none', publicRequirement: schemaReference('cuda-js.device-publication-release-acquire'), nativeQualification: 'blocked-cuda-js-123',
+      nativeSpelling: 'none', publicRequirement: schemaReference('cuda-js.device-publication-release-acquire'), nativeQualification: 'pending-exact-compatible-pair',
     },
     capacity: options.capacity,
     resources: {
@@ -200,7 +200,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, stageR
     resourceContribution: resourceOwner.profile, progressContribution: resourceOwner.profile, owners: selectedOwners, channels, statuses: statuses(),
     lifecycle: { states: ['profile-normalized', 'resources-admitted', 'composed', 'active', 'draining', 'terminal', 'released'], partialFailure: 'publish-none-unwind-all', cancellation: schemaReference(`cuda-mcgs.synthetic-${profile}-channel-lifecycle-cancellation`), stop: schemaReference(`cuda-mcgs.synthetic-${profile}-channel-lifecycle-stop`), teardown: schemaReference(`cuda-mcgs.synthetic-${profile}-channel-lifecycle-teardown`), release: schemaReference(`cuda-mcgs.synthetic-${profile}-channel-lifecycle-release`) },
     diagnostics: { authority: 'non-authoritative', maxRecords: '256', maxBytes: '32768', overflow: 'count', rawPointers: false, cudaHandles: false, nativeArtifacts: false, privatePayloads: false, wallClock: false },
-    compatibility: { packageIdentityRequired: true, cudaJsPublicContractsOnly: true, nativeQualification: 'blocked-cuda-js-123', migration: { kind: 'none' } },
+    compatibility: { packageIdentityRequired: true, cudaJsPublicContractsOnly: true, nativeQualification: 'pending-exact-compatible-pair', migration: { kind: 'none' } },
     cleanup: { kinds: CLEANUP_KINDS, disposition: schemaReference(`cuda-mcgs.synthetic-${profile}-channel-cleanup-disposition`), quarantine: schemaReference(`cuda-mcgs.synthetic-${profile}-channel-cleanup-quarantine`), releaseOrder: schemaReference(`cuda-mcgs.synthetic-${profile}-channel-cleanup-release-order`), ownerOrder: schemaReference(`cuda-mcgs.synthetic-${profile}-channel-cleanup-owner-order`), retainedEvidence: schemaReference(`cuda-mcgs.synthetic-${profile}-channel-cleanup-retained-evidence`) },
     programContribution: { kind: 'device-program', language: 'restricted-device-js', sourceIdentity: contentIdentity(`${profile}:${channels.map(({ id }) => id).sort().join(',')}:restricted-device-js-channel-source`), inputs: [profileReference(resourceResult), profileReference(progressResult), profileReference(stageResult)], requirements: requirements(), runtimeRegistry: false, nativeArtifacts: false, provenance: { origin: 'first-party', trust: 'first-party-reviewed', revision: REVISION, license: 'Apache-2.0', review: schemaReference(`cuda-mcgs.synthetic-${profile}-channel-program-security-review`) } },
     productData: [],

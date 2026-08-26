@@ -1,11 +1,12 @@
 import { createHash } from 'node:crypto';
 
 const VERSION = '0.1.0';
-const REVISION = '650b8a098b58b498396a653dc83d616f1d79581a';
+const REVISION = '93f42b53367cb445a87810940659f753d1646491';
 const TRANSACTION_STATES = ['vacant', 'validating', 'admitting', 'prepared', 'committing', 'committed', 'aborting', 'aborted', 'quarantined'];
 const LIFECYCLE_STATES = ['profile-normalized', 'resources-admitted', 'initialized', 'active-external-wait', 'cancelling-draining', 'terminal', 'released'];
 const TEARDOWN_ORDER = ['stop-inputs', 'stop-acquisition', 'abort-prepared', 'dispose-work', 'quiesce-borrows', 'release-owner-state', 'preserve-terminal-borrow', 'release-cuda-js-opaque-state'];
-const BASE_CLEANUP_KINDS = ['command', 'transaction', 'compound-lease', 'old-epoch-work', 'diagnostic', 'program-artifact', 'session-counter', 'root-protection'];
+const BASE_CLEANUP_KINDS = ['command', 'root-transaction', 'compound-lease', 'old-epoch-work', 'diagnostic', 'program-artifact', 'session-counter', 'root-protection'];
+const ATTENTION_CLEANUP_KINDS = ['attention-publication'];
 const OBSERVATION_CLEANUP_KINDS = ['observation-request', 'borrow', 'transfer'];
 
 function sha256(label) {
@@ -68,18 +69,19 @@ function owner(profile, contributor) {
   };
 }
 
-function statuses(controlSelected, observationSelected) {
+function statuses(attentionSelected, observationSelected) {
   const classes = {
     'invalid-session-profile': 'fatal',
     'session-command-capacity': 'pressure',
     'session-command-duplicate': 'reject',
     'session-command-stale': 'reject',
-    'session-control-invalid': 'reject',
-    'session-control-conflict': 'reject',
+    'session-attention-invalid': 'reject',
+    'session-attention-conflict': 'reject',
     'root-invalid': 'reject',
     'root-update-pressure': 'pressure',
     'root-update-conflict': 'reject',
     'root-epoch-exhausted': 'stop',
+    'attention-generation-exhausted': 'stop',
     'session-cancelling': 'cancellation',
     'session-restart-required': 'stop',
     'session-terminal': 'normal',
@@ -90,7 +92,7 @@ function statuses(controlSelected, observationSelected) {
     'session-observation-pressure': 'pressure',
   };
   return Object.entries(classes)
-    .filter(([code]) => (controlSelected || !code.startsWith('session-control-')) && (observationSelected || !code.startsWith('session-observation-')))
+    .filter(([code]) => (attentionSelected || (!code.startsWith('session-attention-') && code !== 'attention-generation-exhausted')) && (observationSelected || !code.startsWith('session-observation-')))
     .map(([code, statusClass]) => ({ code, class: statusClass, diagnostic: true }));
 }
 
@@ -136,27 +138,27 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
   const rootClass = resource.classes.find(({ id, contributor }) => id === rootReserve.class && contributor === sessionOwner.id);
   const rootAdmission = resource.admissionGroups.find(({ classes }) => classes.includes(rootClass.id));
   const selectedObservation = output.observations.kind === 'selected' ? output.observations.profiles[0] : null;
-  const controlSelected = options.control !== false;
+  const attentionSelected = options.attention !== false;
   const observationSelected = selectedObservation !== null;
   const rootPermission = schemaReference(`cuda-mcgs.synthetic-${profile}-permission-root-update`);
-  const controlPermission = schemaReference(`cuda-mcgs.synthetic-${profile}-permission-control`);
+  const attentionPermission = schemaReference(`cuda-mcgs.synthetic-${profile}-permission-attention`);
   const cancellationPermission = schemaReference(`cuda-mcgs.synthetic-${profile}-permission-cancellation`);
   const observationPermission = selectedObservation?.request.permission ?? schemaReference(`cuda-mcgs.synthetic-${profile}-permission-observation`);
   const administratorPermission = schemaReference(`cuda-mcgs.synthetic-${profile}-permission-session-admin`);
-  const permissions = [rootPermission, cancellationPermission, ...(controlSelected ? [controlPermission] : []), ...(observationSelected ? [observationPermission] : []), administratorPermission];
+  const permissions = [rootPermission, cancellationPermission, ...(attentionSelected ? [attentionPermission] : []), ...(observationSelected ? [observationPermission] : []), administratorPermission];
   const rootSchema = schemaReference(`cuda-mcgs.synthetic-${profile}-root-command`);
   const rootAuthority = schemaReference(`cuda-mcgs.synthetic-${profile}-root-authority`);
   const rootIdempotence = schemaReference(`cuda-mcgs.synthetic-${profile}-root-idempotence`);
   const rootEffect = schemaReference(`cuda-mcgs.synthetic-${profile}-root-effect`);
   const rootApplication = schemaReference(`cuda-mcgs.synthetic-${profile}-root-commit-point`);
   const cancellationSchema = schemaReference(`cuda-mcgs.synthetic-${profile}-cancellation-command`);
-  const controlSchema = schemaReference(`cuda-mcgs.synthetic-${profile}-attention-control`);
-  const controlAuthority = schemaReference(`cuda-mcgs.synthetic-${profile}-attention-authority`);
-  const controlIdempotence = schemaReference(`cuda-mcgs.synthetic-${profile}-attention-idempotence`);
-  const controlEffect = schemaReference(`cuda-mcgs.synthetic-${profile}-attention-effect`);
-  const controlApplication = schemaReference(`cuda-mcgs.synthetic-${profile}-attention-device-application`);
+  const attentionSchema = schemaReference(`cuda-mcgs.synthetic-${profile}-attention-change`);
+  const attentionAuthority = schemaReference(`cuda-mcgs.synthetic-${profile}-attention-authority`);
+  const attentionIdempotence = schemaReference(`cuda-mcgs.synthetic-${profile}-attention-idempotence`);
+  const attentionEffect = schemaReference(`cuda-mcgs.synthetic-${profile}-attention-effect`);
+  const attentionApplication = schemaReference(`cuda-mcgs.synthetic-${profile}-attention-device-application`);
   const rootInputId = `session-input.${profile}.root-update`;
-  const controlInputId = `session-input.${profile}.attention-control`;
+  const attentionInputId = `session-input.${profile}.attention-change`;
   const cancellationInputId = `session-input.${profile}.cancellation`;
   const observationInputId = `session-input.${profile}.observation-request`;
   const inputs = [
@@ -172,10 +174,10 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
       deviceApplicationPoint: null, runtimeCode: false,
     },
   ];
-  if (options.control !== false) inputs.push({
-    id: controlInputId, kind: 'control', schema: controlSchema, owner: policyOwner.id, permission: controlPermission, authority: controlAuthority,
-    idempotence: controlIdempotence, epochScope: 'session-and-root-epoch', maxBytes: '1024', pressureStatus: 'session-control-conflict',
-    effect: controlEffect, deviceApplicationPoint: controlApplication, runtimeCode: false,
+  if (attentionSelected) inputs.push({
+    id: attentionInputId, kind: 'attention', schema: attentionSchema, owner: policyOwner.id, permission: attentionPermission, authority: attentionAuthority,
+    idempotence: attentionIdempotence, epochScope: 'session', maxBytes: '1024', pressureStatus: 'session-attention-conflict',
+    effect: attentionEffect, deviceApplicationPoint: attentionApplication, runtimeCode: false,
   });
   if (selectedObservation) inputs.push({
     id: observationInputId, kind: 'observation-request', schema: selectedObservation.request.identity, owner: outputOwner.id, permission: observationPermission,
@@ -186,7 +188,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
 
   const owners = progress.contributors.map((entry) => owner(profile, entry));
   const participantByContract = new Map(owners.filter(({ role }) => role === 'participant').map((entry) => [entry.contract.id, entry.id]));
-  const prepareOrder = ['SPEC-0007', 'SPEC-0010', 'SPEC-0008', 'SPEC-0009', 'SPEC-0011', 'SPEC-0012', 'SPEC-0013'].map((id) => participantByContract.get(id)).filter(Boolean);
+  const prepareOrder = ['SPEC-0007', 'SPEC-0010', 'SPEC-0008', 'SPEC-0009', 'SPEC-0012', 'SPEC-0013'].map((id) => participantByContract.get(id)).filter(Boolean);
   const outputObservationProfiles = selectedObservation ? [{
     id: `session-observation.${profile}.live`,
     outputProfile: selectedObservation.id,
@@ -216,22 +218,28 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
       release: schemaReference(`cuda-mcgs.synthetic-${profile}-${work.id.replaceAll('.', '-')}-stale-release`),
     };
   });
-  const controls = options.control === false ? [] : [{
-    id: `session-control.${profile}.attention`, owner: policyOwner.id, input: controlInputId, schema: controlSchema, authority: controlAuthority,
-    identity: schemaReference(`cuda-mcgs.synthetic-${profile}-attention-identity`), idempotence: controlIdempotence, epochScope: 'session-and-root-epoch',
-    effect: controlEffect, applicationPoint: controlApplication, visibility: schemaReference(`cuda-mcgs.synthetic-${profile}-attention-visibility`),
-    pressureOutcome: 'session-control-conflict', mutationAfterCommit: true, hostProgress: 'none',
-  }];
+  const attention = attentionSelected ? {
+    kind: 'selected',
+    profile: {
+      id: `session-attention.${profile}.policy`, owner: policyOwner.id, input: attentionInputId, schema: attentionSchema, authority: attentionAuthority,
+      identity: schemaReference(`cuda-mcgs.synthetic-${profile}-attention-identity`), idempotence: attentionIdempotence,
+      generationCounter: `session-counter.${profile}.attention-generation`, effect: attentionEffect, applicationPoint: attentionApplication,
+      visibility: schemaReference(`cuda-mcgs.synthetic-${profile}-attention-visibility`), coalescing: 'latest-unapplied-version',
+      application: 'queued-device-control-work-at-existing-safe-point', steadyStatePolling: 'none', applicationCost: 'bounded-independent-of-search-state',
+      existingWork: 'unchanged', rootEpochEffect: 'none', graphWork: 'none', reclamation: 'none', synchronization: 'no-global-barrier',
+      multiDeviceVisibility: 'per-device-versioned-safe-point', pressureOutcome: 'session-attention-conflict', hostProgress: 'none',
+    },
+  } : { kind: 'absent' };
   const portDefinitions = [
     ['validateSessionInput', 'host-preignition', ['invalid-session-profile', 'root-invalid']],
     ['prepareRootUpdate', 'device-active', ['root-update-accepted', 'root-update-pressure', 'root-epoch-exhausted']],
-    ['commitSessionTransaction', 'device-active', ['root-update-accepted', 'session-internal-failure']],
-    ['abortSessionTransaction', 'device-active', ['session-command-stale', 'session-internal-failure']],
+    ['commitRootTransaction', 'device-active', ['root-update-accepted', 'session-internal-failure']],
+    ['abortRootTransaction', 'device-active', ['session-command-stale', 'session-internal-failure']],
     ['requestCancellation', 'host-async', ['session-cancelling', 'session-terminal']],
     ['completeSession', 'device-active', ['session-terminal', 'session-internal-failure']],
     ['teardownSession', 'host-async', ['session-terminal', 'session-internal-failure']],
   ];
-  if (controls.length > 0) portDefinitions.push(['prepareControlChange', 'device-active', ['session-control-invalid', 'session-control-conflict']]);
+  if (attentionSelected) portDefinitions.push(['applyAttentionChange', 'device-active', ['session-attention-invalid', 'session-attention-conflict']]);
   if (selectedObservation) portDefinitions.push(
     ['requestObservation', 'host-async', ['session-observation-unavailable', 'session-observation-pressure']],
     ['acquireObservation', 'host-async', ['session-observation-unavailable', 'session-observation-stale']],
@@ -259,7 +267,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
       root: schemaReference(`cuda-mcgs.synthetic-${profile}-root-identity`),
       rootEpoch: schemaReference(`cuda-mcgs.synthetic-${profile}-root-epoch`),
       command: schemaReference(`cuda-mcgs.synthetic-${profile}-command-identity`),
-      transaction: schemaReference(`cuda-mcgs.synthetic-${profile}-transaction-identity`),
+      rootTransaction: schemaReference(`cuda-mcgs.synthetic-${profile}-root-transaction-identity`),
     },
     commands: {
       capacity: progress.noProgress.externalWait.maxPendingCommands,
@@ -273,7 +281,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
       hostProgress: 'none',
       inputs,
     },
-    transaction: {
+    rootTransaction: {
       states: TRANSACTION_STATES,
       linearization: 'root-epoch-publication',
       preMutationAdmission: true,
@@ -285,8 +293,8 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
       duplicateEffect: 'none',
       partialCommit: 'fatal-quarantine',
       concurrentOrder: 'single-authoritative-transaction-order',
-      completion: schemaReference(`cuda-mcgs.synthetic-${profile}-transaction-completion`),
-      cleanup: schemaReference(`cuda-mcgs.synthetic-${profile}-transaction-cleanup`),
+      completion: schemaReference(`cuda-mcgs.synthetic-${profile}-root-transaction-completion`),
+      cleanup: schemaReference(`cuda-mcgs.synthetic-${profile}-root-transaction-cleanup`),
     },
     root: {
       descriptorSchema: rootSchema,
@@ -304,12 +312,12 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
       exhaustedOutcome: options.restart ? 'session-restart-required' : 'root-update-pressure',
     },
     owners,
-    controls,
+    attention,
     observations: selectedObservation ? { kind: 'selected', profiles: outputObservationProfiles } : { kind: 'absent' },
     reclamation: {
       rootCommitSeparate: true,
       fullGraphSynchronous: false,
-      protectedReferences: ['old-epoch-work', 'observation', 'borrow', 'transaction'],
+      protectedReferences: ['old-epoch-work', 'observation', 'borrow', 'root-transaction'],
       generationSafety: schemaReference(`cuda-mcgs.synthetic-${profile}-reclamation-generation-safety`),
       gracePeriod: schemaReference(`cuda-mcgs.synthetic-${profile}-reclamation-grace-period`),
       pressureOutcome: 'root-update-pressure',
@@ -320,30 +328,31 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
       counter(profile, 'session-incarnation', '18446744073709551615', 'session-restart-required'),
       counter(profile, 'root-epoch', rootClass.range.generationMaximum, 'root-epoch-exhausted'),
       counter(profile, 'command', '340282366920938463463374607431768211455', 'session-command-capacity'),
+      ...(attentionSelected ? [counter(profile, 'attention-generation', '340282366920938463463374607431768211455', 'attention-generation-exhausted')] : []),
       counter(profile, 'observation-generation', '340282366920938463463374607431768211455', 'session-restart-required'),
       counter(profile, 'reclamation-generation', '18446744073709551615', 'session-restart-required'),
     ],
     lifecycle: {
       states: LIFECYCLE_STATES,
-      cancellationOrder: 'transaction-linearized',
+      cancellationOrder: 'root-transaction-and-attention-version-order',
       cancellationIdempotent: true,
       completion: {
         freezeCommands: true,
         progressClosure: progress.closure.publication,
         terminalCapture: output.terminal.cleanup,
-        transactionClosure: schemaReference(`cuda-mcgs.synthetic-${profile}-completion-transaction-closure`),
+        rootTransactionClosure: schemaReference(`cuda-mcgs.synthetic-${profile}-completion-root-transaction-closure`),
         borrowQuiescence: output.publication.borrowExpiry,
       },
       health: schemaReference(`cuda-mcgs.synthetic-${profile}-session-health`),
       restart: 'new-session-incarnation',
       persistence: 'none',
-      postIgnitionInteractions: ['root-update', ...(controls.length > 0 ? ['control-change'] : []), ...(selectedObservation ? ['observation-read'] : []), 'cancellation', 'completion', 'teardown'],
+      postIgnitionInteractions: ['root-update', ...(attentionSelected ? ['attention-change'] : []), ...(selectedObservation ? ['observation-read'] : []), 'cancellation', 'completion', 'teardown'],
       hostProgress: 'none',
       teardownOrder: TEARDOWN_ORDER,
       terminalResultBinding: output.terminal.cleanup,
     },
     ports: portDefinitions.map(([id, phase, portStatuses]) => port(profile, id, phase, administratorPermission, portStatuses)),
-    statuses: statuses(controlSelected, observationSelected),
+    statuses: statuses(attentionSelected, observationSelected),
     permissions,
     security: {
       untrustedUntilValidated: true,
@@ -365,7 +374,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
       persistence: { kind: 'none' },
     },
     cleanup: {
-      kinds: [...BASE_CLEANUP_KINDS, ...(selectedObservation ? OBSERVATION_CLEANUP_KINDS : [])],
+      kinds: [...BASE_CLEANUP_KINDS, ...(attentionSelected ? ATTENTION_CLEANUP_KINDS : []), ...(selectedObservation ? OBSERVATION_CLEANUP_KINDS : [])],
       disposition: schemaReference(`cuda-mcgs.synthetic-${profile}-cleanup-disposition`),
       quarantine: schemaReference(`cuda-mcgs.synthetic-${profile}-cleanup-quarantine`),
       releaseOrder: schemaReference(`cuda-mcgs.synthetic-${profile}-cleanup-release-order`),
@@ -393,7 +402,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
 export function buildSessionProfiles(inspected, resourceResult, progressResult, outputResult) {
   return [
     buildProfile('synthetic-live-session', inspected, resourceResult, progressResult, outputResult),
-    buildProfile('synthetic-live-session-restart', inspected, resourceResult, progressResult, outputResult, { restart: true, control: false }),
+    buildProfile('synthetic-live-session-restart', inspected, resourceResult, progressResult, outputResult, { restart: true, attention: false }),
   ];
 }
 

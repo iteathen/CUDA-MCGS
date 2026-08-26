@@ -203,7 +203,7 @@ DOMAIN-HISTORY-004. `classifyPathRelation` consumes bounded domain identity/hist
 
 DOMAIN-HISTORY-005. A transposition is valid only when the domain state-view equality relation says future domain behavior is interchangeable. The graph must not infer this from base-state bytes while discarding relevant history.
 
-DOMAIN-HISTORY-006. Reroot reuse is classified later by graph/policy/evaluator/session contracts. The domain contributes whether state/history meaning remains valid, resettable, transformable or invalid under the new root; it does not reclaim or retain storage itself.
+DOMAIN-HISTORY-006. Root-advance reuse is classified later by graph/policy/evaluator/session contracts. The domain contributes whether state/history meaning remains valid, resettable, transformable or invalid under the new root; it does not reclaim or retain storage itself.
 
 ## 8. Node roles, terminal classification and outcomes
 
@@ -336,7 +336,7 @@ DOMAIN-CLEANUP-001. A failed or cancelled operation leaves no ready partial doma
 
 DOMAIN-CLEANUP-002. Domain-profile teardown releases only domain-owned host metadata and references to admitted ranges. CUDA-JS owns generic CUDA resource and operation destruction; graph/resource owners control search-storage reclamation.
 
-DOMAIN-CLEANUP-003. Retained state/history across reroot, restart or persistence requires an explicit compatibility/reuse classification. Absence of such a classification means invalidation, not optimistic reuse.
+DOMAIN-CLEANUP-003. Retained state/history across root advance, restart or persistence requires an explicit compatibility/reuse classification. Absence of such a classification means invalidation, not optimistic reuse.
 
 DOMAIN-CLEANUP-004. A fatal identity/equality inconsistency quarantines affected graph/evaluator/policy/output evidence for the engine incarnation. Recovery cannot continue by trusting potentially merged unequal states.
 

@@ -189,14 +189,14 @@ function normalizeReuse(input, index) {
   if (input?.disposition === 'transformable') {
     exactKeys(input, ['boundary', 'disposition', 'adapter'], 'DOMAIN_HISTORY_REUSE_FIELDS', baseLabel);
     return {
-      boundary: assertEnum(input.boundary, ['reroot', 'restart', 'persistence'], 'DOMAIN_HISTORY_REUSE_BOUNDARY', `${baseLabel} boundary`),
+      boundary: assertEnum(input.boundary, ['root-advance', 'restart', 'persistence'], 'DOMAIN_HISTORY_REUSE_BOUNDARY', `${baseLabel} boundary`),
       disposition: 'transformable',
       adapter: normalizeSchemaReference(input.adapter, `${baseLabel} adapter`),
     };
   }
   exactKeys(input, ['boundary', 'disposition'], 'DOMAIN_HISTORY_REUSE_FIELDS', baseLabel);
   return {
-    boundary: assertEnum(input.boundary, ['reroot', 'restart', 'persistence'], 'DOMAIN_HISTORY_REUSE_BOUNDARY', `${baseLabel} boundary`),
+    boundary: assertEnum(input.boundary, ['root-advance', 'restart', 'persistence'], 'DOMAIN_HISTORY_REUSE_BOUNDARY', `${baseLabel} boundary`),
     disposition: assertEnum(input.disposition, ['invalid', 'resettable', 'valid'], 'DOMAIN_HISTORY_REUSE_DISPOSITION', `${baseLabel} disposition`),
   };
 }
@@ -230,7 +230,7 @@ function normalizeHistory(input, valuesById) {
   if (!Array.isArray(input.reuse) || input.reuse.length !== 3) fail('DOMAIN_HISTORY_REUSE_COUNT', 'history reuse must cover three boundaries');
   const reuse = input.reuse.map(normalizeReuse).sort((left, right) => compareRaw(left.boundary, right.boundary));
   uniqueBy(reuse, 'boundary', 'DOMAIN_HISTORY_REUSE_DUPLICATE', 'history reuse boundary');
-  if (reuse.map(({ boundary }) => boundary).join(',') !== 'persistence,reroot,restart') fail('DOMAIN_HISTORY_REUSE_COUNT', 'history reuse boundaries are incomplete');
+  if (reuse.map(({ boundary }) => boundary).join(',') !== 'persistence,restart,root-advance') fail('DOMAIN_HISTORY_REUSE_COUNT', 'history reuse boundaries are incomplete');
   return { disposition, valueSchema, identityParticipation: input.identityParticipation, finiteRule, reuse };
 }
 

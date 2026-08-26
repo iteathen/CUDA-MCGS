@@ -7,7 +7,7 @@
   "required": [
     "schema", "representation", "status", "contract", "id", "version",
     "resourcePlan", "progressPlan", "outputProfile", "resourceContribution", "progressContribution",
-    "identity", "commands", "transaction", "root", "owners", "controls", "observations",
+    "identity", "commands", "rootTransaction", "root", "owners", "attention", "observations",
     "reclamation", "counters", "lifecycle", "ports", "statuses", "permissions", "security",
     "compatibility", "cleanup", "programContribution", "productData"
   ],
@@ -25,13 +25,13 @@
     "progressContribution": { "$ref": "#/$defs/profileReference" },
     "identity": { "$ref": "#/$defs/sessionIdentity" },
     "commands": { "$ref": "#/$defs/commands" },
-    "transaction": { "$ref": "#/$defs/transaction" },
+    "rootTransaction": { "$ref": "#/$defs/rootTransaction" },
     "root": { "$ref": "#/$defs/root" },
     "owners": { "type": "array", "minItems": 4, "uniqueItems": true, "items": { "$ref": "#/$defs/owner" } },
-    "controls": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/control" } },
+    "attention": { "$ref": "#/$defs/attention" },
     "observations": { "$ref": "#/$defs/observations" },
     "reclamation": { "$ref": "#/$defs/reclamation" },
-    "counters": { "type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": { "$ref": "#/$defs/counter" } },
+    "counters": { "type": "array", "minItems": 5, "maxItems": 6, "uniqueItems": true, "items": { "$ref": "#/$defs/counter" } },
     "lifecycle": { "$ref": "#/$defs/lifecycle" },
     "ports": { "type": "array", "minItems": 7, "uniqueItems": true, "items": { "$ref": "#/$defs/port" } },
     "statuses": { "type": "array", "minItems": 15, "uniqueItems": true, "items": { "$ref": "#/$defs/status" } },
@@ -75,14 +75,14 @@
     },
     "sessionIdentity": {
       "type": "object", "additionalProperties": false,
-      "required": ["session", "incarnation", "root", "rootEpoch", "command", "transaction"],
+      "required": ["session", "incarnation", "root", "rootEpoch", "command", "rootTransaction"],
       "properties": {
         "session": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "incarnation": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "root": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "rootEpoch": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "command": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
-        "transaction": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
+        "rootTransaction": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
       }
     },
     "inputSchema": {
@@ -90,7 +90,7 @@
       "required": ["id", "kind", "schema", "owner", "permission", "authority", "idempotence", "epochScope", "maxBytes", "pressureStatus", "effect", "deviceApplicationPoint", "runtimeCode"],
       "properties": {
         "id": { "$ref": "#/$defs/namespacedId" },
-        "kind": { "enum": ["root-update", "control", "cancellation", "observation-request"] },
+        "kind": { "enum": ["root-update", "attention", "cancellation", "observation-request"] },
         "schema": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "owner": { "$ref": "#/$defs/namespacedId" },
         "permission": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
@@ -124,7 +124,7 @@
         "maxTransactions": { "$ref": "#/$defs/decimalUint" }, "rollback": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
       }
     },
-    "transaction": {
+    "rootTransaction": {
       "type": "object", "additionalProperties": false,
       "required": ["states", "linearization", "preMutationAdmission", "prepareOrder", "commitOrder", "abortOrder", "compoundAdmission", "rejectedEffect", "duplicateEffect", "partialCommit", "concurrentOrder", "completion", "cleanup"],
       "properties": {
@@ -186,18 +186,35 @@
         "state": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/stateFamily" } }
       }
     },
-    "control": {
+    "attentionProfile": {
       "type": "object", "additionalProperties": false,
-      "required": ["id", "owner", "input", "schema", "authority", "identity", "idempotence", "epochScope", "effect", "applicationPoint", "visibility", "pressureOutcome", "mutationAfterCommit", "hostProgress"],
+      "required": [
+        "id", "owner", "input", "schema", "authority", "identity", "idempotence", "generationCounter", "effect",
+        "applicationPoint", "visibility", "coalescing", "application", "steadyStatePolling", "applicationCost",
+        "existingWork", "rootEpochEffect", "graphWork", "reclamation", "synchronization", "multiDeviceVisibility",
+        "pressureOutcome", "hostProgress"
+      ],
       "properties": {
         "id": { "$ref": "#/$defs/namespacedId" }, "owner": { "$ref": "#/$defs/namespacedId" }, "input": { "$ref": "#/$defs/namespacedId" },
         "schema": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "authority": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "identity": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "idempotence": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
-        "epochScope": { "enum": ["session", "root-epoch", "session-and-root-epoch"] }, "effect": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "generationCounter": { "$ref": "#/$defs/namespacedId" }, "effect": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "applicationPoint": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "visibility": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
-        "pressureOutcome": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }, "mutationAfterCommit": { "const": true },
-        "hostProgress": { "const": "none" }
+        "coalescing": { "enum": ["none", "latest-unapplied-version"] },
+        "application": { "const": "queued-device-control-work-at-existing-safe-point" },
+        "steadyStatePolling": { "const": "none" }, "applicationCost": { "const": "bounded-independent-of-search-state" },
+        "existingWork": { "const": "unchanged" }, "rootEpochEffect": { "const": "none" },
+        "graphWork": { "const": "none" }, "reclamation": { "const": "none" },
+        "synchronization": { "const": "no-global-barrier" },
+        "multiDeviceVisibility": { "const": "per-device-versioned-safe-point" },
+        "pressureOutcome": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }, "hostProgress": { "const": "none" }
       }
+    },
+    "attention": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "absent" } } },
+        { "type": "object", "additionalProperties": false, "required": ["kind", "profile"], "properties": { "kind": { "const": "selected" }, "profile": { "$ref": "#/$defs/attentionProfile" } } }
+      ]
     },
     "observation": {
       "type": "object", "additionalProperties": false,
@@ -223,7 +240,7 @@
       "required": ["rootCommitSeparate", "fullGraphSynchronous", "protectedReferences", "generationSafety", "gracePeriod", "pressureOutcome", "failureOutcome", "cleanup"],
       "properties": {
         "rootCommitSeparate": { "const": true }, "fullGraphSynchronous": { "const": false },
-        "protectedReferences": { "type": "array", "minItems": 4, "uniqueItems": true, "items": { "enum": ["old-epoch-work", "observation", "borrow", "transaction"] } },
+        "protectedReferences": { "type": "array", "minItems": 4, "uniqueItems": true, "items": { "enum": ["old-epoch-work", "observation", "borrow", "root-transaction"] } },
         "generationSafety": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "gracePeriod": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "pressureOutcome": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }, "failureOutcome": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
         "cleanup": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
@@ -233,7 +250,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["id", "kind", "maximum", "reserved", "exhaustionThreshold", "rollover", "exhaustionOutcome", "staleAliasProhibited"],
       "properties": {
-        "id": { "$ref": "#/$defs/namespacedId" }, "kind": { "enum": ["session-incarnation", "root-epoch", "command", "observation-generation", "reclamation-generation"] },
+        "id": { "$ref": "#/$defs/namespacedId" }, "kind": { "enum": ["session-incarnation", "root-epoch", "command", "attention-generation", "observation-generation", "reclamation-generation"] },
         "maximum": { "$ref": "#/$defs/decimalUint" }, "reserved": { "$ref": "#/$defs/decimalUint" }, "exhaustionThreshold": { "$ref": "#/$defs/decimalUint" },
         "rollover": { "enum": ["prohibited", "new-session-incarnation"] }, "exhaustionOutcome": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
         "staleAliasProhibited": { "const": true }
@@ -241,10 +258,10 @@
     },
     "completion": {
       "type": "object", "additionalProperties": false,
-      "required": ["freezeCommands", "progressClosure", "terminalCapture", "transactionClosure", "borrowQuiescence"],
+      "required": ["freezeCommands", "progressClosure", "terminalCapture", "rootTransactionClosure", "borrowQuiescence"],
       "properties": {
         "freezeCommands": { "const": true }, "progressClosure": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
-        "terminalCapture": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "transactionClosure": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "terminalCapture": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "rootTransactionClosure": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "borrowQuiescence": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
       }
     },
@@ -253,10 +270,10 @@
       "required": ["states", "cancellationOrder", "cancellationIdempotent", "completion", "health", "restart", "persistence", "postIgnitionInteractions", "hostProgress", "teardownOrder", "terminalResultBinding"],
       "properties": {
         "states": { "const": ["profile-normalized", "resources-admitted", "initialized", "active-external-wait", "cancelling-draining", "terminal", "released"] },
-        "cancellationOrder": { "const": "transaction-linearized" }, "cancellationIdempotent": { "const": true },
+        "cancellationOrder": { "const": "root-transaction-and-attention-version-order" }, "cancellationIdempotent": { "const": true },
         "completion": { "$ref": "#/$defs/completion" }, "health": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "restart": { "const": "new-session-incarnation" }, "persistence": { "const": "none" },
-        "postIgnitionInteractions": { "type": "array", "minItems": 4, "maxItems": 6, "uniqueItems": true, "items": { "enum": ["root-update", "control-change", "observation-read", "cancellation", "completion", "teardown"] } },
+        "postIgnitionInteractions": { "type": "array", "minItems": 4, "maxItems": 6, "uniqueItems": true, "items": { "enum": ["root-update", "attention-change", "observation-read", "cancellation", "completion", "teardown"] } },
         "hostProgress": { "const": "none" },
         "teardownOrder": { "const": ["stop-inputs", "stop-acquisition", "abort-prepared", "dispose-work", "quiesce-borrows", "release-owner-state", "preserve-terminal-borrow", "release-cuda-js-opaque-state"] },
         "terminalResultBinding": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
@@ -266,7 +283,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["id", "phase", "input", "output", "maxWorkUnits", "permission", "statuses", "mechanism", "hostProgress"],
       "properties": {
-        "id": { "enum": ["validateSessionInput", "prepareRootUpdate", "prepareControlChange", "commitSessionTransaction", "abortSessionTransaction", "requestObservation", "acquireObservation", "releaseObservation", "requestCancellation", "completeSession", "teardownSession"] },
+        "id": { "enum": ["validateSessionInput", "prepareRootUpdate", "applyAttentionChange", "commitRootTransaction", "abortRootTransaction", "requestObservation", "acquireObservation", "releaseObservation", "requestCancellation", "completeSession", "teardownSession"] },
         "phase": { "enum": ["host-preignition", "device-active", "host-async"] },
         "input": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "output": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "maxWorkUnits": { "$ref": "#/$defs/decimalUint" }, "permission": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
@@ -305,7 +322,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["kinds", "disposition", "quarantine", "releaseOrder", "ownerOrder", "retainedEvidence", "terminalBorrowPreservedUntilRelease"],
       "properties": {
-        "kinds": { "type": "array", "minItems": 8, "maxItems": 11, "uniqueItems": true, "items": { "enum": ["command", "transaction", "compound-lease", "old-epoch-work", "observation-request", "borrow", "transfer", "diagnostic", "program-artifact", "session-counter", "root-protection"] } },
+        "kinds": { "type": "array", "minItems": 8, "maxItems": 12, "uniqueItems": true, "items": { "enum": ["command", "root-transaction", "compound-lease", "old-epoch-work", "attention-publication", "observation-request", "borrow", "transfer", "diagnostic", "program-artifact", "session-counter", "root-protection"] } },
         "disposition": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "quarantine": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "releaseOrder": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "ownerOrder": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "retainedEvidence": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "terminalBorrowPreservedUntilRelease": { "const": true }

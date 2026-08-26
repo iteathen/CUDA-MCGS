@@ -10,7 +10,7 @@
 
 **Consumers:** search policy, result/observation, finite-resource, device-progress and Search Session contracts; Search IR; Search Composer; domain/product adapters; graph owner-region composition; deterministic reference and native conformance
 
-This proposal defines the product-neutral evaluator brick that owns selected evaluator capabilities, finite requests, input encoding, device-resident execution meaning, batching, workspace, internal result readiness, caches and reroot reuse. It does not require a neural model, scalar value, action ranking, a host inference loop, one batch layout, an external output payload, a CUDA mechanism or an evaluator at all.
+This proposal defines the product-neutral evaluator brick that owns selected evaluator capabilities, finite requests, input encoding, device-resident execution meaning, batching, workspace, internal result readiness, caches and root-advance reuse. It does not require a neural model, scalar value, action ranking, a host inference loop, one batch layout, an external output payload, a CUDA mechanism or an evaluator at all.
 
 ## 1. Authority, identity, and applicability
 
@@ -62,7 +62,7 @@ The selected evaluator profile owns:
 - candidate-proposal production and proposal metadata before domain validation/policy admission;
 - internal evaluator-result publication/readiness and failure;
 - optional evaluator cache keys, entries, coherence and invalidation; and
-- reroot/root-epoch reuse/reset/transform/invalidate classification for evaluator-owned state.
+- root-advance/root-epoch reuse/reset/transform/invalidate classification for evaluator-owned state.
 
 ### 3.2 Explicit non-ownership
 
@@ -101,7 +101,7 @@ Injected dependencies are bounded public domain state/history/role/action views,
 
 Permitted evaluators include pure analytic functions, heuristics, learned models, lookup/table/proof systems, constraint solvers, candidate generators, ensembles and namespaced product evaluators. They may use fixed or variable bounded inputs, one-item or larger batches, immutable assets, selected mutable evaluator state, exact or approximate numeric representations and deterministic or declared nondeterministic execution.
 
-Deleting chess, ranked output, neural inference, all model assets, batching above one, caches, optional extensions, rerooting or one physical scheduler leaves the applicable evaluator contract coherent. Selecting `absent` removes every evaluator-owned program, input/output field, request/batch/cache record, owner region, channel, artifact, workspace, resource, diagnostic and synchronization dependency.
+Deleting chess, ranked output, neural inference, all model assets, batching above one, caches, optional extensions, root advance or one physical scheduler leaves the applicable evaluator contract coherent. Selecting `absent` removes every evaluator-owned program, input/output field, request/batch/cache record, owner region, channel, artifact, workspace, resource, diagnostic and synchronization dependency.
 
 Splitting request/result readiness from evaluator execution would create competing lifecycle authorities. Merging policy use, domain action validity, external output or CUDA mechanisms into evaluator would couple independently substitutable bricks. This evaluator boundary is therefore the simplest sufficient total-system owner.
 
@@ -150,7 +150,7 @@ EVAL-PROFILE-001. A selected profile declares, with no unknown fields:
 - compatibility/grouping/order/batch-sensitivity and finite resumable execution rules;
 - workspace/cache/queue/result/continuation/resource formulas and maxima;
 - cancellation, stale-work, failure, diagnostics, fallback and cleanup;
-- reroot/root-epoch reuse dispositions; and
+- root-advance/root-epoch reuse dispositions; and
 - persistence/compatibility policy when selected.
 
 EVAL-PROFILE-002. Missing/unknown/duplicate fields, overlapping capability ownership, ambiguous input/output perspective or units, insufficient range/precision, undeclared required-result fallback, unbounded execution/batch/cache/workspace, invalid resource formula, nonterminal request state or arithmetic overflow rejects specialization before ignition.
@@ -345,7 +345,7 @@ EVAL-REUSE-001. Every persistent evaluator artifact/state/cache/result/request c
 
 EVAL-REUSE-002. Physical graph-node retention does not imply evaluator result/cache validity. History, observation, root-relative perspective, requester purpose, artifact/state generation and product facts remain in the key when they can change output.
 
-EVAL-REUSE-003. Root-independent requests/results may survive reroot only when their exact key and consumer contract prove validity. Root-relative work cannot publish into a newer epoch merely because its state node survives.
+EVAL-REUSE-003. Root-independent requests/results may survive root advance only when their exact key and consumer contract prove validity. Root-relative work cannot publish into a newer epoch merely because its state node survives.
 
 EVAL-REUSE-004. Search Session coordinates root commit and stale-work disposition; evaluator owns meaning of cache/result/state validity; graph owns storage protection/reclamation. No owner infers another's reuse decision.
 
@@ -405,7 +405,7 @@ EVAL-COMPAT-003. Changing any result-affecting input/key, artifact/parameter/sta
 
 EVAL-COMPAT-004. A migration may retain cached/persisted evaluator state only with an explicit old-to-new semantic equivalence proof, canonical transform, atomic commit/rollback, provenance and post-migration oracle. Version-number similarity is not proof.
 
-EVAL-IR-001. Complete Search IR represents evaluator absence or normalized profile identity, capabilities/purposes/requirement classes, input views/encodings/keys, result schemas/perspectives, resident artifacts/state, request/batch/publication/cache lifecycles, finite resource contributions, failures/cancellation and reroot reuse.
+EVAL-IR-001. Complete Search IR represents evaluator absence or normalized profile identity, capabilities/purposes/requirement classes, input views/encodings/keys, result schemas/perspectives, resident artifacts/state, request/batch/publication/cache lifecycles, finite resource contributions, failures/cancellation and root-advance reuse.
 
 EVAL-IR-002. Search IR names semantic owners/ports/publication/resource/progress dependencies without exposing one framework, private model type, current JavaScript module, raw pointer, PTX/CUDA symbol, atomic spelling, stream/event, scheduler or host callback.
 
@@ -446,7 +446,7 @@ Later `ENGINE-IR-COMPOSER-01` and `ENGINE-REFERENCE-01` must consolidate at leas
 | `evaluator-cancel-publication-race` | Cancelled/stale request becomes consumable or leaks resources. |
 | `evaluator-cache-full-key-collision` | Hash/key collision returns a semantically different result. |
 | `evaluator-cache-mutable-state-invalidation` | Old-state cache entry survives result-affecting mutation. |
-| `evaluator-reroot-history-invalidation` | Physical node retention preserves root/history-invalid result. |
+| `evaluator-root-advance-history-invalidation` | Physical node retention preserves root/history-invalid result. |
 | `evaluator-device-closure` | Host-produced intermediate, batch loop or observation is required for progress. |
 | `evaluator-resource-pressure` | Full queue/workspace/cache creates hidden spill, spin or untyped failure. |
 | `evaluator-capability-deletion` | Removing a product/capability leaves solely owned code/state/resources. |
@@ -458,7 +458,7 @@ The minimum fixture set includes:
 2. a proposal-only lazy candidate generator whose candidates require domain validation;
 3. an evaluation-only analytic evaluator with no model assets and batch size one;
 4. a combined evaluator with independently ready proposal and vector/distributional outputs;
-5. a history-sensitive cached evaluator across transposition and reroot;
+5. a history-sensitive cached evaluator across transposition and root advance;
 6. a batch-independent evaluator exercised under different groupings plus an explicitly batch-sensitive evaluator;
 7. a finite resumable evaluator under queue/workspace/cache pressure, cancellation and stale epochs; and
 8. a materially different proof/constraint/table-like evaluator without neural/tensor assumptions.
@@ -467,7 +467,7 @@ Native qualification additionally tests actual restricted Device-JS validation/l
 
 ## 19. Examples and rationale (informative)
 
-A policy-only proof search may select no evaluator. A proposal-only optimizer may emit sampled continuous candidates that the domain validates. An analytic heuristic may evaluate one item without model assets. A learned evaluator may publish a vector distribution plus candidate metadata from shared resident parameters. A table/proof evaluator may publish a certificate-like opaque record. A history-sensitive evaluator may reuse cached output only when the full history key remains valid after reroot.
+A policy-only proof search may select no evaluator. A proposal-only optimizer may emit sampled continuous candidates that the domain validates. An analytic heuristic may evaluate one item without model assets. A learned evaluator may publish a vector distribution plus candidate metadata from shared resident parameters. A table/proof evaluator may publish a certificate-like opaque record. A history-sensitive evaluator may reuse cached output only when the full history key remains valid after root advance.
 
 These examples do not select a neural framework, tensor layout, batch size, cache, scalar value, WDL, logits, search formula, scheduler, external result payload or CUDA mechanism.
 

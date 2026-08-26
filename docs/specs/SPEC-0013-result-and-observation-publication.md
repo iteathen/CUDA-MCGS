@@ -72,7 +72,7 @@ The output contract does not own:
 - policy selection, statistics, value/perspective, backup, stopping facts, order/ranking or search-quality meaning;
 - evaluator execution or internal evaluator-result readiness;
 - graph structure/reference/storage/reclamation;
-- resource partition/watermarks, device work scheduling/fairness/deadlock or Search Session root/control authority;
+- resource partition/watermarks, device work scheduling/fairness/deadlock or Search Session root/attention authority;
 - product payload semantics such as chess legal moves, MultiPV, best move, WDL or principal variation;
 - generic allocation, atomic/fence, transfer, mailbox, stream/event, operation, context or teardown mechanisms, which belong to CUDA-JS; or
 - host UI, networking, file persistence, analytics or consumer policy.
@@ -100,7 +100,7 @@ Injected dependencies are read-only acquired public facts from domain, policy, e
 
 Permitted profiles include envelope-only, domain-outcome, policy summary, proof/certificate, ranked candidates, sequence/frontier, custom product payload and selected combinations. Live profiles may publish periodic, request-driven, event-triggered, latest-only, ring-retained or terminal-only views with declared bounded semantics.
 
-Deleting chess, ranking, an evaluator, scalar value, live observation, optional extensions, rerooting or one physical scheduler leaves the applicable output boundary coherent. Deleting live observation removes every observation request/slot/sequence/borrow/resource/code/diagnostic/synchronization field while retaining terminal completion. Deleting a product payload removes its fields/adapters/resources without widening the universal envelope.
+Deleting chess, ranking, an evaluator, scalar value, live observation, optional extensions, root advance or one physical scheduler leaves the applicable output boundary coherent. Deleting live observation removes every observation request/slot/sequence/borrow/resource/code/diagnostic/synchronization field while retaining terminal completion. Deleting a product payload removes its fields/adapters/resources without widening the universal envelope.
 
 Splitting payload validity from publication would create competing external truth authorities. Merging source meaning, session control or CUDA transfer mechanisms into output would couple independent lifecycles. This output brick is the simplest sufficient owner.
 

@@ -23,23 +23,25 @@ const TRANSACTION_STATES = ['vacant', 'validating', 'admitting', 'prepared', 'co
 const LIFECYCLE_STATES = ['profile-normalized', 'resources-admitted', 'initialized', 'active-external-wait', 'cancelling-draining', 'terminal', 'released'];
 const TEARDOWN_ORDER = ['stop-inputs', 'stop-acquisition', 'abort-prepared', 'dispose-work', 'quiesce-borrows', 'release-owner-state', 'preserve-terminal-borrow', 'release-cuda-js-opaque-state'];
 const REQUIRED_PORTS = new Map([
-  ['validateSessionInput', 'host-preignition'], ['prepareRootUpdate', 'device-active'], ['prepareControlChange', 'device-active'],
-  ['commitSessionTransaction', 'device-active'], ['abortSessionTransaction', 'device-active'], ['requestObservation', 'host-async'],
+  ['validateSessionInput', 'host-preignition'], ['prepareRootUpdate', 'device-active'], ['applyAttentionChange', 'device-active'],
+  ['commitRootTransaction', 'device-active'], ['abortRootTransaction', 'device-active'], ['requestObservation', 'host-async'],
   ['acquireObservation', 'host-async'], ['releaseObservation', 'host-async'], ['requestCancellation', 'host-async'],
   ['completeSession', 'device-active'], ['teardownSession', 'host-async'],
 ]);
 const REQUIRED_STATUSES = new Map([
   ['invalid-session-profile', 'fatal'], ['session-command-capacity', 'pressure'], ['session-command-duplicate', 'reject'],
-  ['session-command-stale', 'reject'], ['session-control-invalid', 'reject'], ['session-control-conflict', 'reject'],
+  ['session-command-stale', 'reject'], ['session-attention-invalid', 'reject'], ['session-attention-conflict', 'reject'],
   ['root-invalid', 'reject'], ['root-update-pressure', 'pressure'], ['root-update-conflict', 'reject'],
-  ['root-epoch-exhausted', 'stop'], ['session-cancelling', 'cancellation'], ['session-restart-required', 'stop'],
+  ['root-epoch-exhausted', 'stop'], ['attention-generation-exhausted', 'stop'], ['session-cancelling', 'cancellation'], ['session-restart-required', 'stop'],
   ['session-terminal', 'normal'], ['session-internal-failure', 'fatal'], ['root-update-accepted', 'normal'],
   ['session-observation-unavailable', 'pending'], ['session-observation-stale', 'reject'], ['session-observation-pressure', 'pressure'],
 ]);
-const CONTROL_STATUSES = new Set(['session-control-invalid', 'session-control-conflict']);
+const ATTENTION_STATUSES = new Set(['session-attention-invalid', 'session-attention-conflict', 'attention-generation-exhausted']);
 const OBSERVATION_STATUSES = new Set(['session-observation-unavailable', 'session-observation-stale', 'session-observation-pressure']);
-const COUNTER_KINDS = ['session-incarnation', 'root-epoch', 'command', 'observation-generation', 'reclamation-generation'];
-const BASE_CLEANUP_KINDS = ['command', 'transaction', 'compound-lease', 'old-epoch-work', 'diagnostic', 'program-artifact', 'session-counter', 'root-protection'];
+const BASE_COUNTER_KINDS = ['session-incarnation', 'root-epoch', 'command', 'observation-generation', 'reclamation-generation'];
+const COUNTER_KINDS = [...BASE_COUNTER_KINDS, 'attention-generation'];
+const BASE_CLEANUP_KINDS = ['command', 'root-transaction', 'compound-lease', 'old-epoch-work', 'diagnostic', 'program-artifact', 'session-counter', 'root-protection'];
+const ATTENTION_CLEANUP_KINDS = ['attention-publication'];
 const OBSERVATION_CLEANUP_KINDS = ['observation-request', 'borrow', 'transfer'];
 const BASE_PUBLIC_REQUIREMENTS = [
   'cuda-js.device-js/0.1.0',
@@ -108,7 +110,7 @@ function normalizeContract(input, catalogById, label) {
 }
 
 function normalizeIdentity(input) {
-  exactKeys(input, ['session', 'incarnation', 'root', 'rootEpoch', 'command', 'transaction'], 'SESSION_IDENTITY_FIELDS', 'identity');
+  exactKeys(input, ['session', 'incarnation', 'root', 'rootEpoch', 'command', 'rootTransaction'], 'SESSION_IDENTITY_FIELDS', 'identity');
   return Object.fromEntries(Object.keys(input).map((key) => [key, normalizeSchemaReference(input[key], `identity ${key}`)]));
 }
 
@@ -119,9 +121,9 @@ function normalizeInput(input, index, ownerById, permissions) {
   if (!ownerById.has(input.owner)) fail('SESSION_INPUT_OWNER', `${input.id} names unknown owner`);
   const permission = normalizeSchemaReference(input.permission, `${input.id} permission`);
   if (!permissions.has(schemaKey(permission))) fail('SESSION_INPUT_PERMISSION', `${input.id} permission is not selected`);
-  const kind = assertEnum(input.kind, ['root-update', 'control', 'cancellation', 'observation-request'], 'SESSION_INPUT_KIND', `${input.id} kind`);
+  const kind = assertEnum(input.kind, ['root-update', 'attention', 'cancellation', 'observation-request'], 'SESSION_INPUT_KIND', `${input.id} kind`);
   const deviceApplicationPoint = input.deviceApplicationPoint === null ? null : normalizeSchemaReference(input.deviceApplicationPoint, `${input.id} deviceApplicationPoint`);
-  if (['root-update', 'control'].includes(kind) !== (deviceApplicationPoint !== null)) fail('SESSION_INPUT_APPLICATION', `${input.id} application point differs from input kind`);
+  if (['root-update', 'attention'].includes(kind) !== (deviceApplicationPoint !== null)) fail('SESSION_INPUT_APPLICATION', `${input.id} application point differs from input kind`);
   if (input.runtimeCode !== false) fail('SESSION_INPUT_RUNTIME_CODE', `${input.id} permits runtime code`);
   return {
     id: input.id, kind, schema: normalizeSchemaReference(input.schema, `${input.id} schema`), owner: input.owner, permission,
@@ -184,25 +186,25 @@ function assertExactMembers(actual, expected, code, label) {
   if (!Array.isArray(actual) || actual.length !== expected.length || new Set(actual).size !== actual.length || actual.some((id) => !expected.includes(id))) fail(code, `${label} must exactly cover participating owners`);
 }
 
-function normalizeTransaction(input, participantIds, rootReserve, rootAdmission) {
-  exactKeys(input, ['states', 'linearization', 'preMutationAdmission', 'prepareOrder', 'commitOrder', 'abortOrder', 'compoundAdmission', 'rejectedEffect', 'duplicateEffect', 'partialCommit', 'concurrentOrder', 'completion', 'cleanup'], 'SESSION_TRANSACTION_FIELDS', 'transaction');
+function normalizeRootTransaction(input, affectedOwnerIds, rootReserve, rootAdmission) {
+  exactKeys(input, ['states', 'linearization', 'preMutationAdmission', 'prepareOrder', 'commitOrder', 'abortOrder', 'compoundAdmission', 'rejectedEffect', 'duplicateEffect', 'partialCommit', 'concurrentOrder', 'completion', 'cleanup'], 'SESSION_ROOT_TRANSACTION_FIELDS', 'rootTransaction');
   if (!Array.isArray(input.states) || input.states.length !== TRANSACTION_STATES.length || input.states.some((state, index) => state !== TRANSACTION_STATES[index])
       || input.linearization !== 'root-epoch-publication' || input.preMutationAdmission !== true || input.rejectedEffect !== 'none'
-      || input.duplicateEffect !== 'none' || input.partialCommit !== 'fatal-quarantine' || input.concurrentOrder !== 'single-authoritative-transaction-order') fail('SESSION_TRANSACTION_CONTRACT', 'transaction contract is incomplete');
-  assertExactMembers(input.prepareOrder, participantIds, 'SESSION_TRANSACTION_ORDER', 'prepareOrder');
-  assertExactMembers(input.commitOrder, participantIds, 'SESSION_TRANSACTION_ORDER', 'commitOrder');
-  assertExactMembers(input.abortOrder, participantIds, 'SESSION_TRANSACTION_ORDER', 'abortOrder');
-  if (input.abortOrder.some((id, index) => id !== [...input.prepareOrder].reverse()[index])) fail('SESSION_TRANSACTION_ORDER', 'abortOrder must reverse prepareOrder');
-  exactKeys(input.compoundAdmission, ['resourceGroup', 'rootReserve', 'maxTransactions', 'rollback'], 'SESSION_ADMISSION_FIELDS', 'compoundAdmission');
-  const maxTransactions = positiveDecimal(input.compoundAdmission.maxTransactions, 'SESSION_ADMISSION_RANGE', 'compoundAdmission maxTransactions');
+      || input.duplicateEffect !== 'none' || input.partialCommit !== 'fatal-quarantine' || input.concurrentOrder !== 'single-authoritative-transaction-order') fail('SESSION_ROOT_TRANSACTION_CONTRACT', 'root transaction contract is incomplete');
+  assertExactMembers(input.prepareOrder, affectedOwnerIds, 'SESSION_ROOT_TRANSACTION_ORDER', 'prepareOrder');
+  assertExactMembers(input.commitOrder, affectedOwnerIds, 'SESSION_ROOT_TRANSACTION_ORDER', 'commitOrder');
+  assertExactMembers(input.abortOrder, affectedOwnerIds, 'SESSION_ROOT_TRANSACTION_ORDER', 'abortOrder');
+  if (input.abortOrder.some((id, index) => id !== [...input.prepareOrder].reverse()[index])) fail('SESSION_ROOT_TRANSACTION_ORDER', 'abortOrder must reverse prepareOrder');
+  exactKeys(input.compoundAdmission, ['resourceGroup', 'rootReserve', 'maxTransactions', 'rollback'], 'SESSION_ROOT_ADMISSION_FIELDS', 'root compoundAdmission');
+  const maxTransactions = positiveDecimal(input.compoundAdmission.maxTransactions, 'SESSION_ROOT_ADMISSION_RANGE', 'root compoundAdmission maxTransactions');
   if (input.compoundAdmission.resourceGroup !== rootAdmission.id || input.compoundAdmission.rootReserve !== rootReserve.id
-      || compareDecimalUint(maxTransactions, rootAdmission.maxTransactions) > 0 || schemaKey(normalizeSchemaReference(input.compoundAdmission.rollback, 'compoundAdmission rollback')) !== schemaKey(rootAdmission.rollback)) fail('SESSION_ADMISSION_BINDING', 'compound admission differs from resource plan');
+      || compareDecimalUint(maxTransactions, rootAdmission.maxTransactions) > 0 || schemaKey(normalizeSchemaReference(input.compoundAdmission.rollback, 'root compoundAdmission rollback')) !== schemaKey(rootAdmission.rollback)) fail('SESSION_ROOT_ADMISSION_BINDING', 'root compound admission differs from resource plan');
   return {
     states: [...input.states], linearization: input.linearization, preMutationAdmission: true,
     prepareOrder: [...input.prepareOrder], commitOrder: [...input.commitOrder], abortOrder: [...input.abortOrder],
-    compoundAdmission: { resourceGroup: input.compoundAdmission.resourceGroup, rootReserve: input.compoundAdmission.rootReserve, maxTransactions, rollback: normalizeSchemaReference(input.compoundAdmission.rollback, 'compoundAdmission rollback') },
+    compoundAdmission: { resourceGroup: input.compoundAdmission.resourceGroup, rootReserve: input.compoundAdmission.rootReserve, maxTransactions, rollback: normalizeSchemaReference(input.compoundAdmission.rollback, 'root compoundAdmission rollback') },
     rejectedEffect: input.rejectedEffect, duplicateEffect: input.duplicateEffect, partialCommit: input.partialCommit, concurrentOrder: input.concurrentOrder,
-    completion: normalizeSchemaReference(input.completion, 'transaction completion'), cleanup: normalizeSchemaReference(input.cleanup, 'transaction cleanup'),
+    completion: normalizeSchemaReference(input.completion, 'root transaction completion'), cleanup: normalizeSchemaReference(input.cleanup, 'root transaction cleanup'),
   };
 }
 
@@ -233,23 +235,54 @@ function normalizeRoot(input, ownerById, workById) {
   };
 }
 
-function normalizeControl(input, index, ownerById, inputById) {
-  exactKeys(input, ['id', 'owner', 'input', 'schema', 'authority', 'identity', 'idempotence', 'epochScope', 'effect', 'applicationPoint', 'visibility', 'pressureOutcome', 'mutationAfterCommit', 'hostProgress'], 'SESSION_CONTROL_FIELDS', `control ${index}`);
-  assertNamespacedId(input.id, 'SESSION_CONTROL_ID', `control ${index} id`);
-  const command = inputById.get(input.input);
-  if (!command || command.kind !== 'control' || command.owner !== input.owner || ownerById.get(input.owner)?.role !== 'participant') fail('SESSION_CONTROL_INPUT', `${input.id} control input/owner is invalid`);
-  const schema = normalizeSchemaReference(input.schema, `${input.id} schema`);
-  const authority = normalizeSchemaReference(input.authority, `${input.id} authority`);
-  const idempotence = normalizeSchemaReference(input.idempotence, `${input.id} idempotence`);
-  const effect = normalizeSchemaReference(input.effect, `${input.id} effect`);
-  const applicationPoint = normalizeSchemaReference(input.applicationPoint, `${input.id} applicationPoint`);
-  if (schemaKey(schema) !== schemaKey(command.schema) || schemaKey(authority) !== schemaKey(command.authority) || schemaKey(idempotence) !== schemaKey(command.idempotence)
-      || input.epochScope !== command.epochScope || schemaKey(effect) !== schemaKey(command.effect) || schemaKey(applicationPoint) !== schemaKey(command.deviceApplicationPoint)
-      || input.mutationAfterCommit !== true || input.hostProgress !== 'none') fail('SESSION_CONTROL_CONTRACT', `${input.id} differs from admitted device-visible control`);
+function normalizeAttention(input, ownerById, inputById) {
+  if (input.kind === 'absent') {
+    exactKeys(input, ['kind'], 'SESSION_ATTENTION_FIELDS', 'attention');
+    return { kind: 'absent' };
+  }
+  exactKeys(input, ['kind', 'profile'], 'SESSION_ATTENTION_FIELDS', 'attention');
+  if (input.kind !== 'selected') fail('SESSION_ATTENTION_KIND', 'attention kind is invalid');
+  const profile = input.profile;
+  exactKeys(profile, [
+    'id', 'owner', 'input', 'schema', 'authority', 'identity', 'idempotence', 'generationCounter', 'effect',
+    'applicationPoint', 'visibility', 'coalescing', 'application', 'steadyStatePolling', 'applicationCost',
+    'existingWork', 'rootEpochEffect', 'graphWork', 'reclamation', 'synchronization', 'multiDeviceVisibility',
+    'pressureOutcome', 'hostProgress',
+  ], 'SESSION_ATTENTION_PROFILE_FIELDS', 'attention profile');
+  assertNamespacedId(profile.id, 'SESSION_ATTENTION_ID', 'attention profile id');
+  assertNamespacedId(profile.generationCounter, 'SESSION_ATTENTION_COUNTER', 'attention generationCounter');
+  const command = inputById.get(profile.input);
+  const owner = ownerById.get(profile.owner);
+  if (!command || command.kind !== 'attention' || command.owner !== profile.owner || command.epochScope !== 'session'
+      || owner?.role !== 'participant') {
+    fail('SESSION_ATTENTION_INPUT', `${profile.id} attention input/owner/scope is invalid`);
+  }
+  const schema = normalizeSchemaReference(profile.schema, `${profile.id} schema`);
+  const authority = normalizeSchemaReference(profile.authority, `${profile.id} authority`);
+  const idempotence = normalizeSchemaReference(profile.idempotence, `${profile.id} idempotence`);
+  const effect = normalizeSchemaReference(profile.effect, `${profile.id} effect`);
+  const applicationPoint = normalizeSchemaReference(profile.applicationPoint, `${profile.id} applicationPoint`);
+  if (schemaKey(schema) !== schemaKey(command.schema) || schemaKey(authority) !== schemaKey(command.authority)
+      || schemaKey(idempotence) !== schemaKey(command.idempotence) || schemaKey(effect) !== schemaKey(command.effect)
+      || schemaKey(applicationPoint) !== schemaKey(command.deviceApplicationPoint)
+      || !['none', 'latest-unapplied-version'].includes(profile.coalescing)
+      || profile.application !== 'queued-device-control-work-at-existing-safe-point' || profile.steadyStatePolling !== 'none'
+      || profile.applicationCost !== 'bounded-independent-of-search-state' || profile.existingWork !== 'unchanged'
+      || profile.rootEpochEffect !== 'none' || profile.graphWork !== 'none' || profile.reclamation !== 'none'
+      || profile.synchronization !== 'no-global-barrier' || profile.multiDeviceVisibility !== 'per-device-versioned-safe-point'
+      || profile.hostProgress !== 'none') fail('SESSION_ATTENTION_CONTRACT', `${profile.id} violates lazy attention separation`);
   return {
-    id: input.id, owner: input.owner, input: input.input, schema, authority, identity: normalizeSchemaReference(input.identity, `${input.id} identity`), idempotence,
-    epochScope: input.epochScope, effect, applicationPoint, visibility: normalizeSchemaReference(input.visibility, `${input.id} visibility`),
-    pressureOutcome: input.pressureOutcome, mutationAfterCommit: true, hostProgress: input.hostProgress,
+    kind: 'selected',
+    profile: {
+      id: profile.id, owner: profile.owner, input: profile.input, schema, authority,
+      identity: normalizeSchemaReference(profile.identity, `${profile.id} identity`), idempotence,
+      generationCounter: profile.generationCounter, effect, applicationPoint,
+      visibility: normalizeSchemaReference(profile.visibility, `${profile.id} visibility`), coalescing: profile.coalescing,
+      application: profile.application, steadyStatePolling: 'none', applicationCost: profile.applicationCost,
+      existingWork: 'unchanged', rootEpochEffect: 'none', graphWork: 'none', reclamation: 'none',
+      synchronization: 'no-global-barrier', multiDeviceVisibility: 'per-device-versioned-safe-point',
+      pressureOutcome: profile.pressureOutcome, hostProgress: 'none',
+    },
   };
 }
 
@@ -294,8 +327,8 @@ function normalizeObservations(input, outputProfile, inputById) {
 
 function normalizeReclamation(input) {
   exactKeys(input, ['rootCommitSeparate', 'fullGraphSynchronous', 'protectedReferences', 'generationSafety', 'gracePeriod', 'pressureOutcome', 'failureOutcome', 'cleanup'], 'SESSION_RECLAMATION_FIELDS', 'reclamation');
-  if (input.rootCommitSeparate !== true || input.fullGraphSynchronous !== false) fail('SESSION_RECLAMATION_AUTHORITY', 'reroot and reclamation are not separate');
-  const expected = ['borrow', 'observation', 'old-epoch-work', 'transaction'];
+  if (input.rootCommitSeparate !== true || input.fullGraphSynchronous !== false) fail('SESSION_RECLAMATION_AUTHORITY', 'root advance and reclamation are not separate');
+  const expected = ['borrow', 'observation', 'old-epoch-work', 'root-transaction'];
   const protectedReferences = [...input.protectedReferences].sort(compareRaw);
   if (protectedReferences.length !== expected.length || new Set(protectedReferences).size !== expected.length || expected.some((entry) => !protectedReferences.includes(entry))) fail('SESSION_RECLAMATION_PROTECTION', 'reclamation protections are incomplete');
   return {
@@ -318,15 +351,15 @@ function normalizeCounter(input, index) {
   return { id: input.id, kind, maximum, reserved, exhaustionThreshold, rollover, exhaustionOutcome: input.exhaustionOutcome, staleAliasProhibited: true };
 }
 
-function normalizeLifecycle(input, progressProfile, outputProfile, controlSelected, observationSelected) {
+function normalizeLifecycle(input, progressProfile, outputProfile, attentionSelected, observationSelected) {
   exactKeys(input, ['states', 'cancellationOrder', 'cancellationIdempotent', 'completion', 'health', 'restart', 'persistence', 'postIgnitionInteractions', 'hostProgress', 'teardownOrder', 'terminalResultBinding'], 'SESSION_LIFECYCLE_FIELDS', 'lifecycle');
   if (!Array.isArray(input.states) || input.states.length !== LIFECYCLE_STATES.length || input.states.some((state, index) => state !== LIFECYCLE_STATES[index])
-      || input.cancellationOrder !== 'transaction-linearized' || input.cancellationIdempotent !== true || input.restart !== 'new-session-incarnation'
+      || input.cancellationOrder !== 'root-transaction-and-attention-version-order' || input.cancellationIdempotent !== true || input.restart !== 'new-session-incarnation'
       || input.persistence !== 'none'
       || input.hostProgress !== 'none' || !Array.isArray(input.teardownOrder) || input.teardownOrder.some((entry, index) => entry !== TEARDOWN_ORDER[index])) fail('SESSION_LIFECYCLE_CONTRACT', 'session lifecycle is incomplete');
-  const expectedInteractions = ['root-update', ...(controlSelected ? ['control-change'] : []), ...(observationSelected ? ['observation-read'] : []), 'cancellation', 'completion', 'teardown'];
+  const expectedInteractions = ['root-update', ...(attentionSelected ? ['attention-change'] : []), ...(observationSelected ? ['observation-read'] : []), 'cancellation', 'completion', 'teardown'];
   if (!Array.isArray(input.postIgnitionInteractions) || input.postIgnitionInteractions.length !== expectedInteractions.length || input.postIgnitionInteractions.some((entry, index) => entry !== expectedInteractions[index])) fail('SESSION_LIFECYCLE_RESIDUE', 'post-ignition interactions differ from selected capabilities');
-  exactKeys(input.completion, ['freezeCommands', 'progressClosure', 'terminalCapture', 'transactionClosure', 'borrowQuiescence'], 'SESSION_COMPLETION_FIELDS', 'lifecycle completion');
+  exactKeys(input.completion, ['freezeCommands', 'progressClosure', 'terminalCapture', 'rootTransactionClosure', 'borrowQuiescence'], 'SESSION_COMPLETION_FIELDS', 'lifecycle completion');
   const progressClosure = normalizeSchemaReference(input.completion.progressClosure, 'completion progressClosure');
   const terminalCapture = normalizeSchemaReference(input.completion.terminalCapture, 'completion terminalCapture');
   const borrowQuiescence = normalizeSchemaReference(input.completion.borrowQuiescence, 'completion borrowQuiescence');
@@ -334,7 +367,7 @@ function normalizeLifecycle(input, progressProfile, outputProfile, controlSelect
       || schemaKey(terminalCapture) !== schemaKey(outputProfile.terminal.cleanup) || schemaKey(borrowQuiescence) !== schemaKey(outputProfile.publication.borrowExpiry)) fail('SESSION_COMPLETION_BINDING', 'completion differs from progress/output closure');
   return {
     states: [...input.states], cancellationOrder: input.cancellationOrder, cancellationIdempotent: true,
-    completion: { freezeCommands: true, progressClosure, terminalCapture, transactionClosure: normalizeSchemaReference(input.completion.transactionClosure, 'completion transactionClosure'), borrowQuiescence },
+    completion: { freezeCommands: true, progressClosure, terminalCapture, rootTransactionClosure: normalizeSchemaReference(input.completion.rootTransactionClosure, 'completion rootTransactionClosure'), borrowQuiescence },
     health: normalizeSchemaReference(input.health, 'lifecycle health'), restart: input.restart, persistence: input.persistence,
     postIgnitionInteractions: [...input.postIgnitionInteractions], hostProgress: input.hostProgress, teardownOrder: [...input.teardownOrder],
     terminalResultBinding: normalizeSchemaReference(input.terminalResultBinding, 'lifecycle terminalResultBinding'),
@@ -381,10 +414,10 @@ function normalizeCompatibility(input) {
   return { ownerSemanticsRequired: true, packageIdentityRequired: true, sidebandTransportOpaque: true, nativeQualification: input.nativeQualification, persistence: { kind: 'none' } };
 }
 
-function normalizeCleanup(input, observationSelected) {
+function normalizeCleanup(input, attentionSelected, observationSelected) {
   exactKeys(input, ['kinds', 'disposition', 'quarantine', 'releaseOrder', 'ownerOrder', 'retainedEvidence', 'terminalBorrowPreservedUntilRelease'], 'SESSION_CLEANUP_FIELDS', 'cleanup');
   const kinds = [...input.kinds].sort(compareRaw);
-  const expected = [...BASE_CLEANUP_KINDS, ...(observationSelected ? OBSERVATION_CLEANUP_KINDS : [])].sort(compareRaw);
+  const expected = [...BASE_CLEANUP_KINDS, ...(attentionSelected ? ATTENTION_CLEANUP_KINDS : []), ...(observationSelected ? OBSERVATION_CLEANUP_KINDS : [])].sort(compareRaw);
   if (kinds.length !== expected.length || new Set(kinds).size !== expected.length || expected.some((kind) => !kinds.includes(kind)) || input.terminalBorrowPreservedUntilRelease !== true) fail('SESSION_CLEANUP_COVERAGE', 'cleanup does not exactly cover selected session state');
   return {
     kinds, disposition: normalizeSchemaReference(input.disposition, 'cleanup disposition'), quarantine: normalizeSchemaReference(input.quarantine, 'cleanup quarantine'),
@@ -421,7 +454,7 @@ function normalizeProductData(input, index) {
 }
 
 export function normalizeSessionProfile(input, inspectedCatalog, resourceResult, progressResult, outputResult) {
-  exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'resourcePlan', 'progressPlan', 'outputProfile', 'resourceContribution', 'progressContribution', 'identity', 'commands', 'transaction', 'root', 'owners', 'controls', 'observations', 'reclamation', 'counters', 'lifecycle', 'ports', 'statuses', 'permissions', 'security', 'compatibility', 'cleanup', 'programContribution', 'productData'], 'SESSION_ROOT_FIELDS', 'session profile');
+  exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'resourcePlan', 'progressPlan', 'outputProfile', 'resourceContribution', 'progressContribution', 'identity', 'commands', 'rootTransaction', 'root', 'owners', 'attention', 'observations', 'reclamation', 'counters', 'lifecycle', 'ports', 'statuses', 'permissions', 'security', 'compatibility', 'cleanup', 'programContribution', 'productData'], 'SESSION_ROOT_FIELDS', 'session profile');
   if (input.schema !== SESSION_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('SESSION_SCHEMA', 'unsupported session schema/representation/status');
   assertNamespacedId(input.id, 'SESSION_PROFILE_ID', 'session profile id');
   assertVersion(input.version, 'SESSION_PROFILE_VERSION', 'session profile version');
@@ -466,41 +499,47 @@ export function normalizeSessionProfile(input, inspectedCatalog, resourceResult,
   const permissionKeys = new Set(permissions.map(schemaKey));
   const commands = normalizeCommands(input.commands, ownerById, permissionKeys, externalWait, rootClass, outputResult.normalized.observations.kind === 'selected');
   const inputById = new Map(commands.inputs.map((entry) => [entry.id, entry]));
-  const participantIds = owners.filter(({ role }) => role === 'participant').map(({ id }) => id);
-  const transaction = normalizeTransaction(input.transaction, participantIds, rootReserve, rootAdmission);
+  const rootAffectedOwnerIds = owners
+    .filter(({ role, state }) => role === 'participant' && state.some(({ classification }) => classification !== 'root-independent-retain'))
+    .map(({ id }) => id);
+  const rootTransaction = normalizeRootTransaction(input.rootTransaction, rootAffectedOwnerIds, rootReserve, rootAdmission);
   const workById = new Map(progressResult.normalized.workClasses.map((entry) => [entry.id, entry]));
   const root = normalizeRoot(input.root, ownerById, workById);
-  const controls = input.controls.map((entry, index) => normalizeControl(entry, index, ownerById, inputById)).sort((left, right) => compareRaw(left.id, right.id));
-  uniqueBy(controls, 'id', 'SESSION_CONTROL_DUPLICATE', 'control');
-  const controlInputs = commands.inputs.filter(({ kind }) => kind === 'control');
-  if (controls.length !== controlInputs.length || controlInputs.some(({ id }) => !controls.some(({ input: inputId }) => inputId === id))) fail('SESSION_CONTROL_COVERAGE', 'controls do not exactly cover admitted control inputs');
+  const attention = normalizeAttention(input.attention, ownerById, inputById);
+  const attentionInputs = commands.inputs.filter(({ kind }) => kind === 'attention');
+  if ((attention.kind === 'selected' ? 1 : 0) !== attentionInputs.length
+      || (attention.kind === 'selected' && attention.profile.input !== attentionInputs[0].id)) {
+    fail('SESSION_ATTENTION_COVERAGE', 'attention does not exactly cover its admitted input');
+  }
   const observations = normalizeObservations(input.observations, outputResult.normalized, inputById);
   const observationInputs = commands.inputs.filter(({ kind }) => kind === 'observation-request');
   if ((observations.kind === 'selected' ? observations.profiles.length : 0) !== observationInputs.length) fail('SESSION_OBSERVATION_COVERAGE', 'observation command inputs differ from selected observations');
   const reclamation = normalizeReclamation(input.reclamation);
   const counters = input.counters.map(normalizeCounter).sort((left, right) => compareRaw(left.kind, right.kind));
   uniqueBy(counters, 'id', 'SESSION_COUNTER_DUPLICATE', 'counter'); uniqueBy(counters, 'kind', 'SESSION_COUNTER_KIND_DUPLICATE', 'counter kind');
-  if (counters.length !== COUNTER_KINDS.length || COUNTER_KINDS.some((kind) => !counters.some((entry) => entry.kind === kind))) fail('SESSION_COUNTER_COVERAGE', 'finite counter coverage is incomplete');
+  const expectedCounterKinds = [...BASE_COUNTER_KINDS, ...(attention.kind === 'selected' ? ['attention-generation'] : [])];
+  if (counters.length !== expectedCounterKinds.length || expectedCounterKinds.some((kind) => !counters.some((entry) => entry.kind === kind))) fail('SESSION_COUNTER_COVERAGE', 'finite counter coverage is incomplete');
   const rootCounter = counters.find(({ kind }) => kind === 'root-epoch');
   const observationCounter = counters.find(({ kind }) => kind === 'observation-generation');
   if (root.epochCounter !== rootCounter.id || compareDecimalUint(rootCounter.maximum, rootClass.range.generationMaximum) > 0) fail('SESSION_ROOT_COUNTER', 'root epoch counter differs from resource generation range');
+  if (attention.kind === 'selected' && attention.profile.generationCounter !== counters.find(({ kind }) => kind === 'attention-generation').id) fail('SESSION_ATTENTION_COUNTER', 'attention generation counter is invalid');
   if (outputResult.normalized.observations.kind === 'selected' && outputResult.normalized.observations.profiles.some(({ maxSequence }) => compareDecimalUint(maxSequence, observationCounter.maximum) > 0)) fail('SESSION_OBSERVATION_COUNTER', 'observation counter is narrower than output sequence');
 
   const statuses = input.statuses.map(normalizeStatus).sort((left, right) => compareRaw(left.code, right.code));
   uniqueBy(statuses, 'code', 'SESSION_STATUS_DUPLICATE', 'status');
   const statusCodes = new Set(statuses.map(({ code }) => code));
-  const requiredStatusCodes = new Set([...REQUIRED_STATUSES.keys()].filter((code) => (controls.length > 0 || !CONTROL_STATUSES.has(code)) && (observations.kind === 'selected' || !OBSERVATION_STATUSES.has(code))));
+  const requiredStatusCodes = new Set([...REQUIRED_STATUSES.keys()].filter((code) => (attention.kind === 'selected' || !ATTENTION_STATUSES.has(code)) && (observations.kind === 'selected' || !OBSERVATION_STATUSES.has(code))));
   if (statusCodes.size !== requiredStatusCodes.size || [...requiredStatusCodes].some((code) => !statusCodes.has(code))) fail('SESSION_STATUS_REQUIRED', 'status vocabulary differs from selected session capabilities');
   for (const command of commands.inputs) if (!statusCodes.has(command.pressureStatus)) fail('SESSION_INPUT_STATUS', `${command.id} pressure status is undeclared`);
   for (const status of [root.rejectedOutcome, root.acceptedOutcome, root.exhaustedOutcome, reclamation.pressureOutcome, reclamation.failureOutcome]) if (!statusCodes.has(status)) fail('SESSION_STATUS_REFERENCE', `${status} is undeclared`);
-  for (const control of controls) if (!statusCodes.has(control.pressureOutcome)) fail('SESSION_CONTROL_STATUS', `${control.id} pressure status is undeclared`);
+  if (attention.kind === 'selected' && !statusCodes.has(attention.profile.pressureOutcome)) fail('SESSION_ATTENTION_STATUS', `${attention.profile.id} pressure status is undeclared`);
   if (observations.kind === 'selected') for (const observation of observations.profiles) for (const status of [observation.unavailable, observation.stale, observation.pressure]) if (!statusCodes.has(status)) fail('SESSION_OBSERVATION_STATUS', `${observation.id} status ${status} is undeclared`);
 
-  const lifecycle = normalizeLifecycle(input.lifecycle, progressResult.normalized, outputResult.normalized, controls.length > 0, observations.kind === 'selected');
+  const lifecycle = normalizeLifecycle(input.lifecycle, progressResult.normalized, outputResult.normalized, attention.kind === 'selected', observations.kind === 'selected');
   const ports = input.ports.map((entry, index) => normalizePort(entry, index, permissionKeys, statusCodes)).sort((left, right) => compareRaw(left.id, right.id));
   uniqueBy(ports, 'id', 'SESSION_PORT_DUPLICATE', 'port');
-  const requiredPortIds = ['validateSessionInput', 'prepareRootUpdate', 'commitSessionTransaction', 'abortSessionTransaction', 'requestCancellation', 'completeSession', 'teardownSession'];
-  if (controls.length > 0) requiredPortIds.push('prepareControlChange');
+  const requiredPortIds = ['validateSessionInput', 'prepareRootUpdate', 'commitRootTransaction', 'abortRootTransaction', 'requestCancellation', 'completeSession', 'teardownSession'];
+  if (attention.kind === 'selected') requiredPortIds.push('applyAttentionChange');
   if (observations.kind === 'selected') requiredPortIds.push('requestObservation', 'acquireObservation', 'releaseObservation');
   if (ports.length !== requiredPortIds.length || requiredPortIds.some((id) => !ports.some((entry) => entry.id === id))) fail('SESSION_PORT_COVERAGE', 'semantic ports differ from selected session capabilities');
   const referencedPermissions = new Set([...commands.inputs, ...ports].map(({ permission }) => schemaKey(permission)));
@@ -508,7 +547,7 @@ export function normalizeSessionProfile(input, inspectedCatalog, resourceResult,
   const security = normalizeSecurity(input.security, rootClass);
   const compatibility = normalizeCompatibility(input.compatibility);
   if (lifecycle.persistence !== compatibility.persistence.kind) fail('SESSION_PERSISTENCE', 'lifecycle/compatibility persistence differs');
-  const cleanup = normalizeCleanup(input.cleanup, observations.kind === 'selected');
+  const cleanup = normalizeCleanup(input.cleanup, attention.kind === 'selected', observations.kind === 'selected');
   const requiredProgramProfiles = new Map([[resourcePlan.id, resourcePlan], [progressPlan.id, progressPlan], [outputProfile.id, outputProfile]]);
   for (const owner of owners.filter(({ role }) => role === 'participant')) if (!requiredProgramProfiles.has(owner.profile.id)) requiredProgramProfiles.set(owner.profile.id, owner.profile);
   const programContribution = normalizeProgram(input.programContribution, requiredProgramProfiles, observations.kind === 'selected');
@@ -517,7 +556,7 @@ export function normalizeSessionProfile(input, inspectedCatalog, resourceResult,
   const normalized = {
     schema: input.schema, representation: input.representation, status: input.status, contract, id: input.id, version: input.version,
     resourcePlan, progressPlan, outputProfile, resourceContribution, progressContribution, identity: normalizeIdentity(input.identity),
-    commands, transaction, root, owners, controls, observations, reclamation, counters, lifecycle, ports, statuses, permissions,
+    commands, rootTransaction, root, owners, attention, observations, reclamation, counters, lifecycle, ports, statuses, permissions,
     security, compatibility, cleanup, programContribution, productData,
   };
   return { normalized, identity: canonicalIdentity(normalized) };
