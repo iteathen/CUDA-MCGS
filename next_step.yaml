@@ -1,11 +1,11 @@
 {
-  "schema_version": 60,
+  "schema_version": 61,
   "updated": "2026-08-25",
-  "status": "engine_reference_assessment_ready_after_ir_composer_integration",
+  "status": "engine_reference_harness_ready_after_critical_assessment",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
-    "cuda_mcgs_authority_input_baseline": "f273c79a345f8e8b389d79bed21b5af1ff1bb0f6",
+    "cuda_mcgs_authority_input_baseline": "b578de197cf92d8ba06ff236e3c2d1ca05278423",
     "cuda_js_authority_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
     "cuda_js_implementation_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
     "cuda_js_package": "cuda-js@0.1.0-alpha.7"
@@ -31,18 +31,19 @@
     "docs/development/2026-08-25-product-assumption-leakage-audit.md",
     "docs/development/2026-08-25-os-neutral-native-execution-direction.md",
     "docs/development/2026-08-25-multi-gpu-execution-direction.md",
+    "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
     "docs/specs/SPEC-0001-device-search-publication-and-resources.md",
     "docs/specs/SPEC-0002-search-ir-and-reference-semantics.md"
   ],
   "current_focus": {
     "id": "ENGINE-REFERENCE-01",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36",
-    "parent_plan_version": "CUDA-MCGS-V0/24",
+    "parent_plan_version": "CUDA-MCGS-V0/25",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
-    "focus_branch_map": null,
-    "active_leaf": "REF-ASSESS-01",
-    "ready_queued_leaves": [],
-    "next_action": "After PR #116 protected-target verification and source-branch/worktree cleanup, execute REF-ASSESS-01: critically assess and dependency-size the universal CUDA-free behavioral reference/conformance layer against the frozen representation/composition evidence key. Map materially different domain/action/evaluator/output shapes; DAG/transposition/path/cycle/history behavior; stochastic, observed and lazy production; finite pressure; cancellation/publication/cleanup; selected Stage/Channel behavior; and optional Session/root/attention behavior. Do not implement a monolithic reference engine or invent schema meaning before the map is accepted.",
+    "focus_branch_map": "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
+    "active_leaf": "REF-HARNESS-01",
+    "ready_queued_leaves": ["REF-HARNESS-01"],
+    "next_action": "After REF-ASSESS-01 protected integration and cleanup, execute REF-HARNESS-01 from main: create the bounded experiments/search-semantics-reference skeleton and semantic-neutral declared-schedule/event/mutation/evidence harness. Bind the exact representation/composition evidence key, own no search semantics, import no owner internals, add focused mismatch/determinism/mutation cases, update the experiment index/system registry, and stop before Domain behavior begins.",
     "exit": "Independent deterministic or schedule-invariant oracles falsify every owned semantic behavior across materially different product-neutral instances, all pending behavioral lanes have exact evidence, and the resulting packet is ready for atomic ENGINE-CONTRACT-ACCEPTANCE-01 without production or native claims."
   },
   "deliverables": [
