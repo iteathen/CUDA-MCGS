@@ -6,7 +6,7 @@
     "schema": "cuda-mcgs.search-ir.contract-set/0.2.0",
     "identity": {
       "algorithm": "sha256",
-      "sha256": "54f5e7ce38423042ae95098fe38e0cf5bd33acdca8cd1fecf0f1c939ef945177"
+      "sha256": "5d7a6ffb2861716789acf5e14ef405d7a70d4b151980b9726adbd2a3b10180b9"
     }
   },
   "frameworkContract": {
