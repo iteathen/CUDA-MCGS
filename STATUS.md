@@ -8,17 +8,19 @@
 
 Protected `main` is currently:
 
-`e4069458ece47bbea0c2770204fa21fffbde6bb6`
+`5a42d5aed072ae763631790ea4a4dfa871e3e6ce`
 
-This is PR #137 / integrated Graph PATH. Protected-main run `33103891049` passed verify, Windows/Ubuntu Search IR, Graph NODE, EDGE, REF and PATH.
+This is PR #138 / integrated Graph ROOT. Protected-main run `33108165300` passed all eight current jobs: verify, Windows/Ubuntu Search IR, Graph NODE, EDGE, REF, PATH and ROOT.
 
-Current active work is the next bounded `REF-GRAPH-01` owner brick, `GRAPH-ROOT-001..006`, on `ref/graph-root-01`. ROOT is hosted-qualified but **not yet protected-main integrated**. Its durable semantic checkpoint is `d6b091e7c1afc6c09eb7e562cd7f72eb2773874d`; hosted qualification run `33107176873` passed the complete Composer → Domain → NODE → EDGE → REF → PATH → ROOT chain and repository verification, then self-removed its temporary migration tooling.
+Graph ROOT is therefore **protected-main integrated**, not merely a hosted candidate. The former `ref/graph-root-01` integration gate is complete and that branch is no longer a live continuation target.
 
 CUDA-MCGS remains a public pre-release universal GPU-resident MCGS framework project. No production universal runtime, public stable SDK, native CUDA-MCGS implementation, released compatible CUDA-JS pair or product release is accepted yet.
 
+The portfolio-level continuation is tracked by issue #142. Repository authority/integration repair is intentionally ahead of additional semantic implementation: #139 is the next governance gate, followed by #44 product-boundary reconciliation. The semantic `ENGINE-REFERENCE-01` path remains issue #36 with Graph owned by #24.
+
 ## Architectural boundary
 
-Accepted architecture remains governed by ADR-0018/0019/0020/0022/0023:
+Accepted architecture remains governed by ADR-0018/0019/0020/0022/0023 pending the explicit product-boundary reconciliation tracked by #44:
 
 - CUDA-MCGS owns product-neutral MCGS semantics, normalized composition, finite search resources, ordinary Node.js host lifecycle and restricted Device-JS search/domain/capability programs.
 - CUDA-JS owns generic CUDA lowering, compiler/ABI/runtime/resource/operation/synchronization/platform mechanisms and may use native/CUDA implementation behind public contracts.
@@ -34,9 +36,9 @@ Root authority is deliberately separated:
 - `reroot` owns general authority replacement, protected pre-mutation admission and owner-declared retained-state reconciliation;
 - `attention` has no root-authority, Graph-work or reclamation effect.
 
-## Current CUDA-free reference packet
+## Protected CUDA-free reference packet
 
-The current ROOT candidate rebinds proposal-derived evidence to:
+The protected ROOT integration is bound to:
 
 - Composer `879/879`, representation/composition `ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529`;
 - Domain `49/49`, direct `47/47`, evidence `f186412a9b8d964c7f92e4c4000942768fa0ae81d62349c2528fd3aba12aa5e7`;
@@ -48,7 +50,7 @@ The current ROOT candidate rebinds proposal-derived evidence to:
 - generated root-control projection `2c71df25fff213f515aae02a01e210292a8e9b76fc84e14ab6cafb251fbbc9f1`;
 - ROOT `14/14`, direct `6/6`, evidence `7e4fe6bf748ec110bebc1798d7742e03b89909df84da709f2fdeb51a42311ed0`.
 
-See [`experiments/search-semantics-reference/RESULTS.md`](experiments/search-semantics-reference/RESULTS.md) for the exact candidate identities and claim limits.
+See [`experiments/search-semantics-reference/RESULTS.md`](experiments/search-semantics-reference/RESULTS.md) for the exact identities and claim limits.
 
 ## ROOT-specific result
 
@@ -65,26 +67,25 @@ Session/semantic owners retain current-root selection, root epoch, operation cho
 
 ROOT falsification closed three Graph representation gaps:
 
-1. root-anchor storage now has explicit finite resource funding;
+1. root-anchor storage has explicit finite resource funding;
 2. aggregate `protection-capacity` slots cover protection-record plus root-anchor storage;
-3. root-anchor/protection-record terminal states explicitly reset privately to `free` before generation-safe reuse.
+3. root-anchor/protection-record terminal states reset privately to `free` before generation-safe reuse.
 
 ROOT also proves that authority change does not itself establish reclamation safety: old work may retain an independent protection, and one superseded occurrence cannot invalidate a still-valid shared transposed node.
 
 ## Current critical path
 
-Current focus remains `ENGINE-REFERENCE-01` / issue #36, with Graph owned by issue #24.
+Issue #142 governs portfolio ordering without replacing semantic owners.
 
 Immediate sequence:
 
-1. freeze the final documentation-bearing `ref/graph-root-01` head;
-2. open the ROOT PR against current protected `main`;
-3. require ordinary exact-head CI: verify, Windows/Ubuntu Search IR, NODE, EDGE, REF, PATH and ROOT;
-4. complete exact-head author review and owner authorization without mislabeling it independent review;
-5. guarded squash merge using the expected head SHA;
-6. require protected-main ROOT readback on the squash SHA;
-7. add the protected ROOT checkpoint to issue #24;
-8. only then dependency-review and begin `GRAPH-RECLAIM-001..009` plus remaining ADR-0022 occurrence-supersession/lifecycle closure.
+1. complete #139 so the protected `verify` context fails closed when any required owner-local semantic/reference job fails;
+2. complete #44 and reassess #47 so production-product ownership is unambiguous before further framework work accumulates;
+3. return to #24 / `REF-GRAPH-01` only after the RECLAIM preflight representation gaps are corrected;
+4. then implement and qualify `GRAPH-RECLAIM-001..009` plus remaining ADR-0022 occurrence-supersession/lifecycle closure;
+5. continue issue #36 owner-by-owner toward #122 atomic semantic acceptance.
+
+The RECLAIM preflight has already found that the reclaiming profile declares retirement-record storage and `maxScratchBytes` without corresponding finite storage/scratch resource contributions, and that the retirement-record lifecycle lacks explicit generation-safe reuse. These are representation blockers to truthful RECLAIM evidence; they are not permission to select a native reclamation algorithm.
 
 Production lowering and `ENGINE-CONTRACT-ACCEPTANCE-01` remain blocked until the complete behavioral/reference packet is integrated on one exact protected revision.
 
@@ -92,21 +93,22 @@ Production lowering and `ENGINE-CONTRACT-ACCEPTANCE-01` remain blocked until the
 
 CUDA-JS exact compatible-pair/native Linux qualification remains downstream. Current generic mechanisms being available does not itself qualify a CUDA-MCGS pair.
 
-CUDA-JS-Tensor is an optional evaluator mechanism, not universal MCGS semantics. Real-model Tensor sufficiency remains a downstream consumer qualification with UCI Arena Vector.
+CUDA-JS-Tensor is an optional evaluator mechanism, not universal MCGS semantics. Real-model Tensor sufficiency remains a downstream consumer qualification.
 
-Production chess/UCI/Book Forge/Timing Evidence/tablebase semantics belong in `iteathen/UCI-Arena-Vector` and other owning UCI Arena repositories, not CUDA-MCGS.
+The exact production-product repository boundary is being reconciled under #44. Until that accepted authority is integrated, do not use the older repository-local product wording as implementation authorization.
 
 ## Claim limits / blockers
 
-- ROOT is hosted-qualified but not yet protected-main integrated.
-- `GRAPH-RECLAIM-*` and remaining Graph lifecycle closure are unfinished.
+- ROOT is protected-main integrated and its readback is green.
+- `GRAPH-RECLAIM-*` and remaining Graph lifecycle closure are unfinished; the RECLAIM representation preflight has unresolved finite-resource/lifecycle gaps.
 - Policy/Evaluator/Resource/Progress/Output and terminal integration leaves remain after Graph.
+- #139 merge enforcement and #44 product-boundary authority are portfolio-priority governance repairs.
 - no production universal engine is accepted;
 - no native Linux compatible pair is qualified;
 - no performance, public SDK or release claim follows from the CUDA-free reference packet.
 
 ## Cleanup / handoff
 
-The sole live handoff for current work is [`docs/handoffs/2026-08-27-graph-root-01-resume.md`](docs/handoffs/2026-08-27-graph-root-01-resume.md). The PATH handoff is explicitly `Superseded`.
+[`docs/handoffs/2026-08-27-graph-root-01-resume.md`](docs/handoffs/2026-08-27-graph-root-01-resume.md) is historical and superseded as a live resume point because ROOT is merged. The portfolio continuation is issue #142; Graph semantics remain issue #24 / #36.
 
 Remote recovery ref `checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f` remains bounded cleanup debt because the available connector exposes no safe delete-ref operation. Its handoff content is already preserved on protected main and no open PR depends on it.

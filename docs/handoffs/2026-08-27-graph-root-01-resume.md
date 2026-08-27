@@ -1,38 +1,50 @@
 # CUDA-MCGS handoff — Graph ROOT semantic brick
 
-> **Active live resume point.** ROOT semantics are hosted-qualified. Resume at the exact current `ref/graph-root-01` head, finish the PR/integration gate, and do not begin RECLAIM before protected-main ROOT readback.
+> **Historical handoff.** ROOT is integrated on protected `main@5a42d5aed072ae763631790ea4a4dfa871e3e6ce` through PR #138. Protected-main workflow `33108165300` passed all eight current jobs. Do not resume `ref/graph-root-01` or repeat the ROOT integration gate.
 
-**Status:** Informational
+**Status:** Superseded
 
 **Date:** 2026-08-27
 
-## Protected base
+## Superseded continuation
 
-ROOT was built from protected:
+This handoff previously directed work to finish the Graph ROOT PR/integration gate. That gate is complete.
 
-`main@e4069458ece47bbea0c2770204fa21fffbde6bb6`
+Current continuation is governed by:
 
-That SHA is PR #137 / integrated Graph PATH. Protected-main run `33103891049` passed verify, Windows/Ubuntu Search IR, NODE, EDGE, REF and PATH.
+- portfolio ordering and issue disposition: [issue #142](https://github.com/iteathen/CUDA-MCGS/issues/142);
+- Graph semantics/reference owner: [issue #24](https://github.com/iteathen/CUDA-MCGS/issues/24);
+- universal deterministic reference parent: [issue #36](https://github.com/iteathen/CUDA-MCGS/issues/36);
+- canonical current state: [`STATUS.md`](../../STATUS.md) and [`next_step.yaml`](../../next_step.yaml).
 
-## Qualified ROOT candidate
+The next semantic candidate is Graph RECLAIM, but it is **not implementation-ready** until the representation preflight corrects and falsifies explicit retirement-record storage funding, reclamation scratch-byte funding and retirement-record generation-safe reuse.
 
-Active branch:
+## Protected ROOT integration
 
-`ref/graph-root-01`
+Protected merge:
 
-Durable semantic qualification checkpoint:
+`main@5a42d5aed072ae763631790ea4a4dfa871e3e6ce`
 
-`d6b091e7c1afc6c09eb7e562cd7f72eb2773874d`
+PR:
 
-Hosted qualification run:
+`#138 — Add Graph ROOT and protected-anchor semantic reference`
 
-`33107176873`
+Protected-main workflow:
 
-The run passed the complete Composer → Domain → NODE → EDGE → REF → PATH → ROOT chain plus `./scripts/verify-docs.sh`, then self-removed all temporary migration/correction workflow/tool files before publishing the durable semantic checkpoint.
+`33108165300` — success
 
-Permanent ROOT CI was added after that checkpoint; therefore the final documentation-bearing branch head is newer and must be frozen/read directly before PR review.
+The protected run passed:
 
-## Exact candidate evidence
+- verify;
+- Search IR Windows;
+- Search IR Ubuntu;
+- Graph NODE;
+- Graph EDGE;
+- Graph REF;
+- Graph PATH;
+- Graph ROOT.
+
+## Exact ROOT evidence retained for provenance
 
 - Composer `879/879`; representation/composition `ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529`
 - Domain projection `e9df2902e6edaad40c6abf0b85eeecb06e94b4d5598d9c0b9c7238fa20c3edaa`
@@ -53,13 +65,13 @@ Selected normalized identities:
 - Progress `7f3fcb4229bb7694b60469d3edba6302e5584bf87ef1284856a73f1b677ce8e8`
 - Output `3bdc5d9c8fc63fb1bd34a6d93d7fc034518d4e7abb2b41f49406aaf8641b98a5`
 
-## ROOT-owned corrections
+## ROOT-owned corrections retained
 
-ROOT falsification found and corrected three Graph-profile omissions:
+ROOT falsification corrected three Graph-profile omissions:
 
-1. root-anchor storage now has explicit finite `resource-root-anchor-slots` funding;
+1. root-anchor storage has explicit finite `resource-root-anchor-slots` funding;
 2. aggregate `protection-capacity` resources cover both protection-record and root-anchor layouts;
-3. root-anchor/protection-record terminal states explicitly reset privately to `free` before generation-safe reuse.
+3. root-anchor/protection-record terminal states reset privately to `free` before generation-safe reuse.
 
 A ready protection record still requires its normal release transition. ROOT does not bypass REF protection/generation authority.
 
@@ -76,23 +88,6 @@ Session/owner contracts still own:
 - authority commit.
 
 ROOT proves advance does not imply reclamation/eager cleanup and proves old-work/shared-transposed-node protection survives authority changes. It does not implement reclamation.
-
-## Remaining integration gate
-
-1. keep `experiments/search-semantics-reference/README.md` and `RESULTS.md` bound to the exact ROOT candidate;
-2. reconcile `STATUS.md` / `next_step.yaml` so protected PATH and hosted-qualified ROOT are distinguished;
-3. freeze the final branch head and compare it against current protected `main`;
-4. open draft ROOT PR;
-5. require ordinary PR CI: verify, Windows/Ubuntu Search IR, NODE, EDGE, REF, PATH, ROOT;
-6. complete exact-head non-independent author review and exact-head owner authorization;
-7. squash-merge only with expected-head guard;
-8. require protected-main seven Graph/reference lanes plus ROOT to reproduce on the squash SHA;
-9. add issue #24 protected ROOT checkpoint;
-10. only then select/start `GRAPH-RECLAIM-*` from that protected squash revision.
-
-## Non-goals / stop conditions
-
-No `GRAPH-RECLAIM-*`, reclamation algorithm, native/CUDA implementation, physical scheduler, Policy cycle response, production graph mechanism, performance claim or contract acceptance belongs before ROOT integration closes.
 
 ## Cleanup debt
 
