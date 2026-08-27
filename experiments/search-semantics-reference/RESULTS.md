@@ -37,7 +37,7 @@ The focused `domain-oracle-sensitivity-equality` mutation remains separate focus
 
 ## REF-GRAPH-01 — NODE/transposition brick
 
-The first Graph owner brick is separately qualified on hosted Ubuntu Node.js `v26.7.0` at PR #134 exact head `0b5463f68e75a51b09545e43766b1137769b9f69`:
+The first Graph owner brick is integrated from PR #134 and remains separately qualified:
 
 - capsule: `cuda-mcgs-graph-node-reference-v0.2.0`;
 - expected/discovered/executed/passed: `13/13/13/13`;
@@ -71,12 +71,47 @@ The 13 cases prove, within the bounded reference model:
 - conflicting ready publication is fatal; and
 - deliberate removal of collision verification or node-before-entry publication ordering is caught by named mutation falsifiers.
 
-The dedicated hosted run also retained the exact Graph projection and NODE evidence as an Actions artifact. Ordinary exact-head Ubuntu Search IR, Windows Search IR, and documentation/governance jobs were green on the same semantic tree before the temporary qualification workflow was retired into ordinary repository CI.
+Protected `main@f7b9b4d8aa99ed0a618d5299d498b0e5397bbe0d` passed the permanent Graph NODE job plus Ubuntu/Windows Search IR and governance verification.
+
+## REF-GRAPH-01 — EDGE/expansion brick
+
+PR #135 now qualifies the second Graph owner brick for `GRAPH-EDGE-001` through `GRAPH-EDGE-010` against the exact integrated NODE evidence above.
+
+The reviewed hosted qualification on semantic tree `5be0364ff7e83fe66e2918beef5e01c5e456e802` produced:
+
+- capsule: `cuda-mcgs-graph-edge-reference-v0.2.0`;
+- expected/discovered/executed/passed: `15/15/15/15`;
+- failed: `0`;
+- not discovered/not executed by selection: `0/0`;
+- direct `GRAPH-EDGE-*` planned/executed requirement coverage: `10/10`;
+- exact upstream NODE evidence: `0f2d90a9e61c831c467d94f7cc761fb6a44050c00d40b2e2e71bfebba4a1d767`;
+- exact Graph projection: `22a7fd46605dee3a202fe42aba800fa92fc0e7d4de1f8b619123c1e7d489053e`;
+- EDGE evidence SHA-256: `6f836cd4f9d6fdc5ab2fc825b23b5cbde9473e475ff0545824408701618d840b`;
+- EDGE evidence canonical bytes: `11337`.
+
+The same run (`33044928137`) passed all five permanent jobs: governance verification, Ubuntu Search IR, Windows Search IR, Graph NODE, and Graph EDGE.
+
+The EDGE cases prove, within this bounded owner brick:
+
+- parent-local edge identity remains distinct for independent incoming edges even when both resolve to one shared/transposed child node;
+- action publication precedes child-resolution consumption, including a mutation that genuinely invokes child resolution while the edge is still reserved;
+- a pending-valid child claim can later become a ready child link without republishing the action;
+- expansion batch publication is all-or-nothing over complete visible edge/action records and producer cursor/status data remains opaque to Graph;
+- caller-reported action material cannot exceed the normalized `domain-action` owner-region bound, and opaque producer data is canonically bounded by the normalized expansion record;
+- unique versus repeatable action multiplicity comes from the injected rule rather than Graph inference;
+- expansion generations have one advancing claimer and explicit terminal outcomes;
+- unpublished failed/cancelled reservations roll back exactly, while already-published reservations remain accounted and become `published-failed`;
+- cancelling an expansion terminalizes a batch-published `child-pending` edge so no consumer is stranded;
+- later finite batches remain admissible until a declared finite pressure outcome;
+- structural edge readiness does not publish or imply readiness of Policy/Evaluator/Output/extension-owned records; and
+- deliberate parent-identity collapse, early child consumption and partial-batch publication are each caught by named mutation falsifiers.
+
+This EDGE brick imports no Domain or Policy implementation. Action identity/equality/multiplicity are injected through neutral contracts; NODE is consumed through typed-reference/child-resolution callbacks. No active-path, root-protection, generation/reclamation, Session authority, storage algorithm or CUDA mechanism is selected here.
 
 ## Evidence lifecycle and claim limits
 
 Machine evidence is reproducible in ignored `experiments/search-semantics-reference/build/`. Generated evidence is disposable and is not treated as source authority.
 
-The current results prove only the semantic-neutral harness, bounded Domain behavior, and the first Graph NODE/transposition publication brick. Edge/expansion, path/occurrence, typed-reference/generation, root-protection, retirement/quiescence/reclamation, ADR-0022 occurrence supersession, later owner oracles, a complete terminal reference engine and integrated proposal acceptance remain unfinished.
+The current results prove only the semantic-neutral harness, bounded Domain behavior, the integrated Graph NODE/transposition brick, and the qualified Graph EDGE/expansion brick described above. Path/occurrence, typed-reference/generation, root-protection, retirement/quiescence/reclamation, ADR-0022 occurrence supersession, later owner oracles, a complete terminal reference engine and integrated proposal acceptance remain unfinished.
 
 No production runtime, native CUDA, CUDA-JS device execution, performance, search-quality, public-SDK, contract-acceptance or multi-GPU-support claim is made here.
