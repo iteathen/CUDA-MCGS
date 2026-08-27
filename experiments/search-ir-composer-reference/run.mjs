@@ -882,6 +882,7 @@ await runCase('graph-arbitrary-width-ranges', () => {
   expansionLayout.bytePool = '21778071482940061661655974875633165533120';
   expansionLayout.offsetRange = expansionLayout.bytePool;
   mutated.resources[0].maximum = boundary;
+  mutated.resources.find(({ id }) => id.endsWith('resource-expansion-slots')).maximum = boundary;
   const normalized = normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain).normalized;
   assert.equal(normalized.referenceEncoding.slotRange, boundary);
   assert.equal(normalized.layouts.find(({ objectKind }) => objectKind === expansionObject).capacity, boundary);
