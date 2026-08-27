@@ -1,11 +1,12 @@
 {
-  "schema_version": 68,
+  "schema_version": 69,
   "updated": "2026-08-26",
-  "status": "engine_reference_root_control_qualified_pending_integration",
+  "status": "engine_reference_graph_active",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
   "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
     "cuda_mcgs_reconciliation_main_input": "173765cf86fc6ab91364d8d52eb6a045dcbe2346",
+    "cuda_mcgs_root_control_integrated_main": "bef5d976e96cd42ed4e206b98a0342b53713b154",
     "cuda_mcgs_frozen_reference_harness_input": "3675a1db23b8ce3ca7de32178616b59d4c0de819",
     "cuda_js_authority_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
     "cuda_js_implementation_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
@@ -60,9 +61,9 @@
     "parent_plan_version": "CUDA-MCGS-V0/27",
     "plan": "docs/development/2026-08-12-v0-forward-plan.md",
     "focus_branch_map": "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
-    "active_leaf": "REF-ROOT-CONTROL-01",
+    "active_leaf": "REF-GRAPH-01",
     "ready_queued_leaves": [],
-    "next_action": "Complete exact-head review and guarded integration of PR #127. After protected main read-back confirms distinct root/advance/reroot/attention semantics, reroot-only retained-state classification, reroot-admission resource ownership and regenerated evidence, mark REF-GRAPH-01 dependency-ready.",
+    "next_action": "Execute bounded REF-GRAPH-01 CUDA-free Graph reference work under issue #24 from protected main@bef5d976e96cd42ed4e206b98a0342b53713b154. Begin with the exact SPEC-0010/GRAPH-IR requirement and fixture audit, then add owner-local Graph oracles/falsifiers for competing claims, ready-only publication, transposition occurrences, generation safety, retirement/quiescence/reclamation and ADR-0022 advance/reroot interaction without selecting a production or native storage mechanism.",
     "exit": "Independent deterministic or schedule-invariant oracles falsify every owned semantic behavior across materially different product-neutral instances, all pending behavioral lanes have exact evidence, and the resulting packet is ready for atomic ENGINE-CONTRACT-ACCEPTANCE-01 without production or native claims."
   },
   "deliverables": [
@@ -137,8 +138,7 @@
     "escalation_rule": "A naturally generic GPU need that is awkward, unsafe or lifecycle-incomplete through the current public surface is classified as a consumer-neutral CUDA-JS capability; no local native escape path or forced semantic distortion."
   },
   "blockers": [
-    "REF-GRAPH-01 remains blocked only until qualified REF-ROOT-CONTROL-01 PR #127 integrates to protected main and its exact evidence is read back.",
-    "the semantic-neutral harness and bounded Domain oracle do not form a complete engine; Graph through integrated lifecycle oracles and atomic semantic acceptance remain required before any owned production lowering",
+    "the semantic-neutral harness and bounded Domain/root-control oracles do not form a complete engine; Graph through integrated lifecycle oracles and atomic semantic acceptance remain required before any owned production lowering",
     "CUDA-JS native Linux Driver/compiler/installed-package qualification under issue #4 is incomplete and blocks the first native Linux compatible pair, not backend-neutral contract/schema/reference work",
     "exact native compatible-pair evidence remains unfinished",
     "SESSION-002 native live-session concurrency evidence for the selected CUDA-JS mailbox profile is absent",
@@ -173,7 +173,9 @@
     "treat CUDA-JS portable implementation as native qualification",
     "make sideband, multi-stream, graph/cooperative, RDC or LTO universal or pair prerequisites without a selected-profile need",
     "reopen completed Connect Four reference, Search IR foundation or CUDA-JS portable capability implementation as current tasks",
-    "begin REF-GRAPH-01 before qualified REF-ROOT-CONTROL-01 is integrated to protected main and read back with its exact four-operation evidence identities",
+    "let REF-GRAPH-01 redefine the integrated root/advance/reroot/attention authority model or move retained-state classification/protected admission out of reroot ownership",
+    "treat an occurrence superseded by advance as authority to invalidate a shared graph node that remains reachable through another valid occurrence or retained owner reference",
+    "select a production/native graph table, arena, reclamation algorithm or CUDA mechanism inside the CUDA-free REF-GRAPH-01 semantic reference leaf",
     "present a serial-only native search loop as ENGINE-NATIVE-01 or the first usable GPU engine",
     "make one persistent-kernel, warp, queue, CUDA Graph, multi-kernel or tensor execution topology universal before a selected profile and representative evidence justify it"
   ],
