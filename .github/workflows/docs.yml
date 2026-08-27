@@ -116,6 +116,18 @@ jobs:
           if (!script.includes(exportCall)) throw new Error('Domain projection export call missing');
           script = script.replace(exportCall, "sed -i 's/: 878,/: 879,/g' experiments/search-ir-composer-reference/export-domain-profiles.mjs\n          node scripts/export-search-ir-composer-domain-profiles.mjs");
 
+          const semanticCall = 'node scripts/run-search-semantics-reference.mjs';
+          if (!script.includes(semanticCall)) throw new Error('semantic reference call missing');
+          const semanticRefresh = [
+            "test \"$(grep -c '    expected: 878,' experiments/search-semantics-reference/run.mjs)\" -eq 1",
+            "test \"$(grep -c '    discovered: 878,' experiments/search-semantics-reference/run.mjs)\" -eq 1",
+            "test \"$(grep -c '    executed: 878,' experiments/search-semantics-reference/run.mjs)\" -eq 1",
+            "test \"$(grep -c '    passed: 878,' experiments/search-semantics-reference/run.mjs)\" -eq 1",
+            "sed -i -e 's/    expected: 878,/    expected: 879,/' -e 's/    discovered: 878,/    discovered: 879,/' -e 's/    executed: 878,/    executed: 879,/' -e 's/    passed: 878,/    passed: 879,/' experiments/search-semantics-reference/run.mjs",
+            semanticCall,
+          ].join('\n          ');
+          script = script.replace(semanticCall, semanticRefresh);
+
           const cleanupOld = 'git rm --ignore-unmatch .github/workflows/reconcile-reroot-resource-deletion.yml';
           const cleanupNew = 'git show 033c7086a77bc7eed63a3c3285182752def20b48:.github/workflows/docs.yml > .github/workflows/docs.yml';
           if (!script.includes(cleanupOld)) throw new Error('v1 cleanup missing');
