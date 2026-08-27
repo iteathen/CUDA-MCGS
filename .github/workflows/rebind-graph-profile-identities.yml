@@ -55,6 +55,14 @@ jobs:
             fs.writeFileSync(file, text.replace(oldValue, newValue));
             console.log(`${oldValue} -> ${newValue} in ${file}`);
           }
+
+          const runPath = `${root}/run.mjs`;
+          const runText = fs.readFileSync(runPath, 'utf8');
+          const before = "  mutated.resources[0].maximum = boundary;\n  const normalized = normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain).normalized;";
+          const after = "  mutated.resources[0].maximum = boundary;\n  mutated.resources.find(({ id }) => id.endsWith('resource-expansion-slots')).maximum = boundary;\n  const normalized = normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain).normalized;";
+          const first = runText.indexOf(before);
+          if (first < 0 || runText.indexOf(before, first + 1) >= 0) throw new Error('run.mjs: expected exactly one arbitrary-width resource target');
+          fs.writeFileSync(runPath, runText.slice(0, first) + after + runText.slice(first + before.length));
           NODE
           git rm --ignore-unmatch .github/workflows/rebind-graph-profile-identities.yml
           node scripts/run-search-ir-composer-reference.mjs
