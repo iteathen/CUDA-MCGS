@@ -1,0 +1,309 @@
+name: one-shot root control finalization
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.event.pull_request.head.ref == 'docs/ref-root-control-01-reconcile'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/ref-root-control-01-reconcile
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.7.0
+      - name: Reconcile live naming, current routing, and evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          node --input-type=module <<'NODE'
+          import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
+          import path from 'node:path';
+
+          async function replaceInFile(file, transform) {
+            const before = await readFile(file, 'utf8');
+            const after = transform(before);
+            if (after !== before) await writeFile(file, after);
+          }
+
+          async function walk(directory) {
+            const out = [];
+            for (const name of await readdir(directory)) {
+              const absolute = path.join(directory, name);
+              const info = await stat(absolute);
+              if (info.isDirectory()) out.push(...await walk(absolute));
+              else out.push(absolute);
+            }
+            return out;
+          }
+
+          const liveRootDocs = ['AGENTS.md', 'README.md', 'CONTRIBUTING.md', 'SECURITY.md', 'LICENSING.md'];
+          for (const file of liveRootDocs) {
+            await replaceInFile(file, (text) => text
+              .replaceAll('application_specific/UMCGS_PROFILE.md', 'application_specific/CUDA_MCGS_PROFILE.md')
+              .replaceAll('UMCGS', 'CUDA-MCGS'));
+          }
+
+          for (const file of await walk('agent_files')) {
+            if (!file.endsWith('.md')) continue;
+            if (file === path.join('agent_files', 'application_specific', 'UMCGS_PROFILE.md')) continue;
+            await replaceInFile(file, (text) => text
+              .replaceAll('application_specific/UMCGS_PROFILE.md', 'application_specific/CUDA_MCGS_PROFILE.md')
+              .replaceAll('UMCGS_PROFILE.md', 'CUDA_MCGS_PROFILE.md')
+              .replaceAll('UMCGS', 'CUDA-MCGS'));
+          }
+
+          await replaceInFile('scripts/verify-docs.sh', (text) => {
+            const old = '  agent_files/application_specific/UMCGS_PROFILE.md\n';
+            if (!text.includes(old)) throw new Error('verify-docs compatibility profile anchor missing');
+            return text.replace(old,
+              '  agent_files/application_specific/CUDA_MCGS_PROFILE.md\n' +
+              '  agent_files/application_specific/UMCGS_PROFILE.md\n');
+          });
+
+          for (const file of await walk(path.join('schemas', 'search-ir', '0.2.0'))) {
+            if (!file.endsWith('.json')) continue;
+            await replaceInFile(file, (text) => text.replaceAll(
+              'https://github.com/iteathen/UMCGS/',
+              'https://github.com/iteathen/CUDA-MCGS/',
+            ));
+          }
+
+          for (const file of [
+            'docs/README.md',
+            'docs/PROJECT_CHARTER.md',
+            'docs/architecture/README.md',
+            'docs/architecture/FRAMEWORK_OVERVIEW.md',
+            'docs/architecture/REPOSITORY_TOPOLOGY.md',
+            'docs/specs/README.md',
+            'docs/specs/SPEC-0000-framework-requirements.md',
+            'docs/specs/SPEC-0003-search-stage-and-extension-surface.md',
+            'docs/specs/SPEC-0004-async-stage-channels.md',
+            'docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md',
+            'docs/specs/SPEC-0006-search-session-control-and-observation.md',
+            'docs/specs/SPEC-0007-domain-state-action-and-transition.md',
+            'docs/specs/SPEC-0008-search-policy-and-backup.md',
+            'docs/specs/SPEC-0009-evaluator-contract.md',
+            'docs/specs/SPEC-0010-graph-storage-and-reclamation.md',
+            'docs/specs/SPEC-0011-finite-search-resources.md',
+            'docs/specs/SPEC-0012-device-owned-search-progress.md',
+            'docs/specs/SPEC-0013-result-and-observation-publication.md',
+            'docs/specs/products/chess/CHESS-0001-search-product.md',
+          ]) {
+            await replaceInFile(file, (text) => text.replaceAll('UMCGS', 'CUDA-MCGS'));
+          }
+
+          await replaceInFile('docs/architecture/FRAMEWORK_OVERVIEW.md', (text) => text
+            .replace(
+              'external structural root transaction/root-epoch authority, independent attention publication and bounded observation-request/borrow lifecycle coordination',
+              'external initial-root/advance/reroot authority and provenance, independent attention publication and bounded observation-request/borrow lifecycle coordination',
+            ));
+
+          await replaceInFile('docs/specs/README.md', (text) => text
+            .replace(
+              /^> \*\*Current proposal correction:\*\* .*$/m,
+              '> **Current proposal reconciliation:** ADR-0022 four-operation root control is implemented and fully qualified on PR #127 by `REF-ROOT-CONTROL-01`. Initial root, minimum-work advance, general reroot and non-structural attention are represented separately. The regenerated proposal-derived evidence remains branch-local until protected-main integration; `REF-GRAPH-01` stays blocked until that integration is read back.',
+            )
+            .replace(
+              'optional structural root-transaction/root-epoch, independent bounded attention and observation-request lifecycle coordination',
+              'optional initial-root/advance/reroot authority and provenance, independent bounded attention and observation-request lifecycle coordination',
+            ));
+
+          await replaceInFile('agent_files/SYSTEM_REGISTRY.md', (text) => text.replace(
+            /^\| `product\.chess` \|.*$/m,
+            '| `product.chess` | CUDA-MCGS downstream chess consumer/conformance semantics only; the external engine product owns its policy, UCI behavior, integrations, packaging and support lifecycle | [`../docs/specs/products/chess/CHESS-0001-search-product.md`](../docs/specs/products/chess/CHESS-0001-search-product.md); external product authority: [`iteathen/UCI-Arena-Vector`](https://github.com/iteathen/UCI-Arena-Vector) | Proposal conformance profile; does not gate universal parent or own the external engine |',
+          ));
+
+          const staleLive = [];
+          for (const file of [...liveRootDocs, ...await walk('agent_files')]) {
+            if (!file.endsWith('.md')) continue;
+            if (file === path.join('agent_files', 'application_specific', 'UMCGS_PROFILE.md')) continue;
+            const text = await readFile(file, 'utf8');
+            if (text.includes('UMCGS')) staleLive.push(file);
+          }
+          if (staleLive.length) throw new Error(`live UMCGS naming remains in: ${staleLive.join(', ')}`);
+
+          for (const file of await walk(path.join('schemas', 'search-ir', '0.2.0'))) {
+            if (!file.endsWith('.json')) continue;
+            const text = await readFile(file, 'utf8');
+            if (text.includes('iteathen/UMCGS')) throw new Error(`stale schema repository identity remains: ${file}`);
+          }
+          NODE
+
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-domain-profiles.mjs
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          import { canonicalIdentity, normalizeContractSet, normalizeRequirementCoverage } from './experiments/search-ir-composer-reference/src/catalog.mjs';
+
+          const composer = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/domain-profiles.json', 'utf8'));
+          const contractSet = JSON.parse(await readFile('schemas/search-ir/0.2.0/contract-set.json', 'utf8'));
+          const coverage = JSON.parse(await readFile('schemas/search-ir/0.2.0/requirement-coverage.json', 'utf8'));
+          const representationKey = composer.representationCompositionEvidenceKey.sha256;
+          const contractSetIdentity = canonicalIdentity(normalizeContractSet(contractSet)).sha256;
+          const coverageIdentity = canonicalIdentity(normalizeRequirementCoverage(coverage)).sha256;
+          const deletionIdentity = composer.deletionIdentityMatrixIdentity?.sha256 ?? null;
+          if (!deletionIdentity) throw new Error('Composer deletion identity is unavailable');
+
+          for (const fixturePath of [
+            'experiments/search-semantics-reference/fixtures/neutral-schedules.json',
+            'experiments/search-semantics-reference/fixtures/domain-cases.json',
+          ]) {
+            const fixture = JSON.parse(await readFile(fixturePath, 'utf8'));
+            fixture.composerEvidence = composer.representationCompositionEvidenceKey;
+            if (fixture.schedules) {
+              for (const schedule of Object.values(fixture.schedules)) schedule.evidenceKey = representationKey;
+            }
+            if (fixture.profileProjection) fixture.profileProjection = { schema: projection.schema, ...projection.projectionIdentity };
+            await writeFile(fixturePath, `${JSON.stringify(fixture, null, 2)}\n`);
+          }
+
+          await writeFile('/tmp/root-control-derived.json', `${JSON.stringify({
+            representationKey,
+            contractSetIdentity,
+            coverageIdentity,
+            deletionIdentity,
+            projectionIdentity: projection.projectionIdentity.sha256,
+          }, null, 2)}\n`);
+          NODE
+
+          node scripts/run-search-semantics-reference.mjs
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          const derived = JSON.parse(await readFile('/tmp/root-control-derived.json', 'utf8'));
+          const semantic = JSON.parse(await readFile('experiments/search-semantics-reference/build/evidence.json', 'utf8'));
+          const semanticIdentity = semantic.evidenceIdentity.sha256;
+          const mainInput = '173765cf86fc6ab91364d8d52eb6a045dcbe2346';
+          const historicalComposer = '70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9';
+          const historicalProjection = '612c72274be7986bcae53237be97b34e64d97a781eeb55e61964d11b942b9f47';
+          const historicalSemantic = '70f5c454b7d31cd18374350fd75ebd52b961c828e515b0e6eabeefb8499b6402';
+
+          const nextPath = 'next_step.yaml';
+          const next = JSON.parse(await readFile(nextPath, 'utf8'));
+          next.schema_version = 66;
+          next.updated = '2026-08-26';
+          next.status = 'engine_reference_root_control_qualified_pending_integration';
+          next.exact_input_revisions = {
+            cuda_mcgs_reconciliation_main_input: mainInput,
+            cuda_mcgs_frozen_reference_harness_input: next.exact_input_revisions.cuda_mcgs_authority_input_baseline,
+            cuda_js_authority_baseline: next.exact_input_revisions.cuda_js_authority_baseline,
+            cuda_js_implementation_baseline: next.exact_input_revisions.cuda_js_implementation_baseline,
+            cuda_js_package: next.exact_input_revisions.cuda_js_package,
+          };
+          next.exact_evidence_inputs.representation_composition_evidence_key = derived.representationKey;
+          next.exact_evidence_inputs.contract_set_identity = derived.contractSetIdentity;
+          next.exact_evidence_inputs.requirement_coverage_identity = derived.coverageIdentity;
+          next.exact_evidence_inputs.deletion_matrix_identity = derived.deletionIdentity;
+          next.exact_evidence_inputs.domain_profile_projection_identity = derived.projectionIdentity;
+          next.exact_evidence_inputs.semantic_reference_evidence_key = semanticIdentity;
+          next.current_focus.active_leaf = 'REF-ROOT-CONTROL-01';
+          next.current_focus.ready_queued_leaves = [];
+          next.current_focus.next_action = 'Complete exact-head review and guarded integration of PR #127. After protected main read-back confirms the qualified four-operation representation and regenerated evidence, mark REF-GRAPH-01 dependency-ready and execute it without reopening historical Search IR 0.1.0 or proposal provenance.';
+          next.blockers = next.blockers.map((entry) => entry.startsWith('ADR-0022 supersedes the current proposal')
+            ? 'REF-GRAPH-01 remains blocked only until qualified REF-ROOT-CONTROL-01 PR #127 integrates to protected main and its exact evidence is read back.'
+            : entry);
+          next.do_not = next.do_not.map((entry) => entry.startsWith('begin REF-GRAPH-01 while proposal root/advance/reroot/attention')
+            ? 'begin REF-GRAPH-01 before qualified REF-ROOT-CONTROL-01 is integrated to protected main and read back with its exact four-operation evidence identities'
+            : entry);
+          next.forward_lanes.downstream_products = [
+            'PRODUCT-CONNECT4-01',
+            'CHESS-0001 remains an independent CUDA-MCGS consumer/conformance profile; iteathen/UCI-Arena-Vector owns the production chess engine product',
+          ];
+          await writeFile(nextPath, `${JSON.stringify(next, null, 2)}\n`);
+
+          const statusPath = 'STATUS.md';
+          let status = await readFile(statusPath, 'utf8');
+          status = status.replace('**Updated:** 2026-08-25', '**Updated:** 2026-08-26');
+          status = status.replace(
+            'The protected CUDA-MCGS `main` input baseline for the active contract packet is:\n\n```text\nb578de197cf92d8ba06ff236e3c2d1ca05278423\n```',
+            `The protected CUDA-MCGS \`main\` input to the current root-control reconciliation is:\n\n\`\`\`text\n${mainInput}\n\`\`\`\n\nThe older frozen harness/evidence inputs remain provenance for the exact revisions that produced them; they are not current authority heads. PR #127 carries the qualified proposal-derived reconciliation and remains non-authoritative until protected-main integration.`,
+          );
+          status = status.replace(
+            /\*\*ENGINE-IR-COMPOSER-01\*\*[\s\S]*?none is accepted\./,
+            `**ENGINE-IR-COMPOSER-01** completed its original bounded representation/composition scope through PR #116. Its original frozen evidence key \`${historicalComposer}\` remains truthful historical provenance for that proposal input. REF-ROOT-CONTROL-01 deliberately regenerated the affected proposal-derived Session representation under ADR-0022; the qualified current branch binds \`${derived.representationKey}\` across 878/878 CUDA-free Composer cases. The 989 requirements remain proposal/reference evidence rather than accepted production authority.`,
+          );
+          status = status.replace(
+            /Current focus is \*\*ENGINE-REFERENCE-01\*\*[\s\S]*?before Graph begins\./,
+            `Current focus is **ENGINE-REFERENCE-01**, tracked in [issue #36](https://github.com/iteathen/CUDA-MCGS/issues/36). \`REF-ROOT-CONTROL-01\`, coordinated by [issue #113](https://github.com/iteathen/CUDA-MCGS/issues/113), is now qualified on PR #127: SPEC-0006, Search IR 0.2.0 Session schema/normalization/fixtures/tests, distinct advance/reroot deletion, deterministic reroot rollback order, and dependent evidence all conform to ADR-0022 on the PR branch. \`REF-GRAPH-01\` remains blocked only until this exact qualified branch integrates to protected \`main\` and is read back.`,
+          );
+          status = status.replace(
+            /`REF-HARNESS-01` supplies[\s\S]*?source-keyed evidence identity\./,
+            `\`REF-HARNESS-01\` supplies the semantic-neutral foundation through the [\`search-semantics-reference\`](experiments/search-semantics-reference/README.md) experiment. Its 22 neutral cases are rebound to the qualified Composer representation key \`${derived.representationKey}\`; the harness semantics themselves remain unchanged.`,
+          );
+          status = status.replace(
+            /`REF-DOMAIN-01` extends[\s\S]*?Graph is blocked until the deliberate proposal\/evidence reconciliation integrates\./,
+            `\`REF-DOMAIN-01\` still contributes the same 27 Domain cases and exact 47 direct SPEC-0007 behavioral requirements, but its public projection/evidence bindings were regenerated because the proposal-derived Composer identity changed. The current projection identity is \`${derived.projectionIdentity}\`; the full 49/49 semantic-reference evidence identity is \`${semanticIdentity}\`. Historical projection \`${historicalProjection}\` and semantic key \`${historicalSemantic}\` remain truthful only for their exact earlier proposal input. Graph remains blocked until PR #127 integrates.`,
+          );
+          status = status.replace(
+            /After core semantics:\n\n(?:- .*\n)+\nChess remains a separately tracked downstream proposal and does not gate universal parent completion\./,
+            `After root-control integration:\n\n- execute \`REF-GRAPH-01\`, then the dependency-ordered Policy, Evaluator, Resource, Progress, Output, lifecycle, terminal-slice, optional Session/Stage/Channel and integration leaves;\n- accept the integrated semantic contract/schema packet only after the complete reference evidence agrees on one exact protected revision;\n- build one finite parallel OS-neutral native universal engine through an exact public CUDA-JS pair and qualify its first realization on Linux;\n- treat live Search Session native sideband/concurrency as an optional profile, not a finite-engine release blocker; and\n- continue representative scheduler/resource/performance evidence, secondary-platform qualification and package/release stabilization.\n\nCHESS-0001 is a downstream CUDA-MCGS consumer/conformance profile. The production chess-engine product authority is \`iteathen/UCI-Arena-Vector\`; chess does not gate universal parent completion.`,
+          );
+          await writeFile(statusPath, status);
+
+          const specsResults = [
+            'experiments/search-ir-composer-reference/README.md',
+            'experiments/search-ir-composer-reference/RESULTS.md',
+          ];
+          for (const file of specsResults) {
+            let text = await readFile(file, 'utf8');
+            text = text.replaceAll(historicalComposer, derived.representationKey);
+            text = text.replaceAll('bounded root transactions', 'distinct initial-root/advance/reroot authority');
+            await writeFile(file, text);
+          }
+          for (const file of [
+            'experiments/search-semantics-reference/README.md',
+            'experiments/search-semantics-reference/RESULTS.md',
+          ]) {
+            let text = await readFile(file, 'utf8');
+            text = text.replaceAll(historicalComposer, derived.representationKey);
+            text = text.replaceAll(historicalProjection, derived.projectionIdentity);
+            text = text.replaceAll(historicalSemantic, semanticIdentity);
+            await writeFile(file, text);
+          }
+
+          const planPath = 'docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md';
+          let plan = await readFile(planPath, 'utf8');
+          plan = plan.replace(
+            '| `REF-ROOT-CONTROL-01` | next; issue #113 |',
+            '| `REF-ROOT-CONTROL-01` | qualified on PR #127; pending protected-main integration |',
+          );
+          plan = plan.replace(
+            '| `REF-GRAPH-01` | blocked on root-control reconciliation |',
+            '| `REF-GRAPH-01` | blocked only on qualified PR #127 integration/read-back |',
+          );
+          plan = plan.replace(
+            'ADR-0022 subsequently exposed a root-control representation conflict, so `REF-ROOT-CONTROL-01` is the next dependency-ready leaf and Graph remains blocked until that reconciliation integrates.',
+            'ADR-0022 subsequently exposed a root-control representation conflict. `REF-ROOT-CONTROL-01` is now qualified on PR #127 with regenerated proposal-derived evidence; Graph remains blocked only until that exact branch integrates to protected main and is read back.',
+          );
+          await writeFile(planPath, plan);
+          NODE
+
+          ./scripts/verify-docs.sh
+
+          grep -RIl --exclude='UMCGS_PROFILE.md' 'UMCGS' agent_files && {
+            echo 'stale live UMCGS naming remains under agent_files' >&2
+            exit 1
+          } || true
+          if grep -RIl 'iteathen/UMCGS' schemas/search-ir/0.2.0; then
+            echo 'stale active schema repository identity remains' >&2
+            exit 1
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/finalize-root-control.yml
+          git add -A
+          git diff --cached --check
+          git commit -m 'docs: finalize root-control reconciliation state'
+          git push origin HEAD:docs/ref-root-control-01-reconcile
