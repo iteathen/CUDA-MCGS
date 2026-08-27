@@ -8,7 +8,7 @@ This registry tells developers and agents where durable information and future i
 
 - One boundary has one stable ID and one primary owner.
 - One kind of durable truth has one authoritative location.
-- Product components must have a manifest and README before production code enters them.
+- CUDA-MCGS production components must have a manifest and README before production code enters them.
 - Planned boundaries are not implementation authorization.
 - Focus branches are semantic work packets, not new ownership boundaries unless authority explicitly creates one.
 - Engineering-decision records organize path selection beneath authority; they do not replace specifications or ADRs.
@@ -17,7 +17,8 @@ This registry tells developers and agents where durable information and future i
 - Cross-component dependencies must be declared in both the component manifest and governing architecture/specification where material.
 - Archived and superseded locations never regain authority merely because an agent finds them.
 - Retained temporary, evidence, recovery, archive, cleanup-debt, token-budget, document-reading, test-batch, and engineering-decision state has an owner and objective lifecycle trigger.
-- Under ADR-0018, universal core, universal extension substrate, and downstream product boundaries remain explicit. A product/capability does not gain universal ownership by being the first consumer.
+- Under ADR-0018, universal core, universal extension substrate, and downstream product meaning remain semantically explicit. Under ADR-0024, production domain/search products live outside CUDA-MCGS production ownership. A product/capability does not gain universal ownership by being the first consumer.
+- Concrete named domains/products may remain as removable conformance, research or example evidence; they do not create a CUDA-MCGS product registry entry or release owner.
 
 ## Governance and documentation boundaries
 
@@ -37,14 +38,14 @@ This registry tells developers and agents where durable information and future i
 | `governance.sanity` | Sanity/audit claims, semantic coverage, risk-based depth, reconciliation, and findings | [`general_foundation/SANITY_CHECKING.md`](general_foundation/SANITY_CHECKING.md) and [`general_foundation/SEMANTIC_INTERROGATION.md`](general_foundation/SEMANTIC_INTERROGATION.md) | Accepted |
 | `governance.pr-integration` | Exact-head PR readiness/review, guarded merge, post-merge verification, and branch/coordination disposition | [`general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) | Accepted |
 | `governance.owner-entry` | Mandatory repository entry rules | [`../AGENTS.md`](../AGENTS.md) | Active |
-| `project.charter` | Universal CUDA-MCGS mission, three-layer product boundary, and peer-runtime separation | [`../docs/PROJECT_CHARTER.md`](../docs/PROJECT_CHARTER.md) | Accepted |
-| `project.decisions` | Cross-cutting accepted choices, including ADR-0018 layering | [`../docs/decisions/`](../docs/decisions/README.md) | Active |
-| `project.specifications` | Universal core, universal extension-substrate, interop, and downstream product specifications | [`../docs/specs/`](../docs/specs/README.md) | Active; accepted/proposal/product documents indexed separately |
+| `project.charter` | Universal CUDA-MCGS mission, framework-only production boundary, and peer-runtime separation | [`../docs/PROJECT_CHARTER.md`](../docs/PROJECT_CHARTER.md) | Accepted |
+| `project.decisions` | Cross-cutting accepted choices, including ADR-0018 semantic layering and ADR-0024 production ownership | [`../docs/decisions/`](../docs/decisions/README.md) | Active |
+| `project.specifications` | CUDA-MCGS universal core, extension-substrate and interop specifications | [`../docs/specs/`](../docs/specs/README.md) | Active; accepted/proposal framework documents indexed separately |
 | `project.architecture` | Explanatory architecture and repository topology | [`../docs/architecture/`](../docs/architecture/README.md) | Active/proposal set |
 | `project.research` | Prior-art and external technical evidence | [`../docs/research/`](../docs/research/README.md) | Active |
-| `project.archive` | Superseded documentation provenance | [`../docs/archive/`](../docs/archive/README.md) | Active |
+| `project.archive` | Superseded documentation provenance, including historical repository-local product proposals | [`../docs/archive/`](../docs/archive/README.md) | Active; never current authority |
 | `project.state` | Current phase and authority summary | [`../STATUS.md`](../STATUS.md) | Active |
-| `project.next-step` | Canonical universal engine plan plus explicitly non-gating downstream product lanes | [`../next_step.yaml`](../next_step.yaml) | Active |
+| `project.next-step` | Canonical issue-portfolio sequencing and exact current execution state | [`../next_step.yaml`](../next_step.yaml) | Active |
 | `project.licensing` | Open-source license, commercial-license path, contribution/relicensing grant, and third-party licensing boundary | [`../LICENSE`](../LICENSE) and [`../LICENSING.md`](../LICENSING.md) | Active; `AGPL-3.0-or-later` plus separate commercial licensing |
 | `project.contributing` | Public contribution workflow, contributor declarations, and review-entry expectations | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) and [`../.github/pull_request_template.md`](../.github/pull_request_template.md) | Public |
 | `project.security` | Public vulnerability-reporting policy, secret-handling expectations, and repository security entry point | [`../SECURITY.md`](../SECURITY.md) and [`general_foundation/SECURITY.md`](general_foundation/SECURITY.md) | Public |
@@ -56,14 +57,14 @@ This registry tells developers and agents where durable information and future i
 |---|---|---|---|
 | `schemas` | Versioned CUDA-MCGS machine-readable universal and namespaced selected contracts/metaschemas | [`../schemas/`](../schemas/README.md) | Active; Search IR 0.1.0 accepted, 0.2.0 strict owner/profile/program/package proposal evidence active |
 | `components` | Production universal CUDA-MCGS search components | [`../components/`](../components/README.md) | Reserved; no implementation authorized |
-| `adapters` | Universal/domain/product policy, evaluator, output, domain, and peer-runtime adapters | [`../adapters/`](../adapters/README.md) | Reserved |
-| `conformance` | Universal reference backend, synthetic domains, search-contract suites, and public peer-boundary compatibility | [`../conformance/`](../conformance/README.md) | Reserved |
-| `benchmarks` | Cross-component reproducible universal and separately namespaced product performance/search-quality suites | [`../benchmarks/`](../benchmarks/README.md) | Reserved |
+| `adapters` | Consumer-neutral domain/policy/evaluator/output integration and peer-runtime adapters | [`../adapters/`](../adapters/README.md) | Reserved; no external product semantics owned here |
+| `conformance` | Universal reference backend, materially varied removable domains/workloads, search-contract suites, and public peer/external-consumer boundary compatibility | [`../conformance/`](../conformance/README.md) | Reserved |
+| `benchmarks` | Cross-component reproducible framework mechanism/resource/performance suites; concrete workloads remain evidence rather than product quality authority | [`../benchmarks/`](../benchmarks/README.md) | Reserved |
 | `experiments` | Disposable research/prototypes | [`../experiments/`](../experiments/README.md) | Active; CUDA-free bounded evidence only; deleted native experiment conclusions are archived as non-executable provenance |
-| `examples` | Minimal public-surface usage examples | [`../examples/`](../examples/README.md) | Reserved |
+| `examples` | Minimal public-surface usage examples, including removable concrete consumers where useful | [`../examples/`](../examples/README.md) | Reserved |
 | `tools` | CUDA-MCGS-owned developer/build/search-specialization tools | [`../tools/`](../tools/README.md) | Reserved |
 | `scripts` | Thin repository task entry points | [`../scripts/`](../scripts/) | Active |
-| `tests` | Cross-component/system/end-to-end tests only | [`../tests/`](../tests/README.md) | Reserved |
+| `tests` | Cross-component/system/end-to-end framework tests only | [`../tests/`](../tests/README.md) | Reserved |
 | `packaging` | CUDA-MCGS Search Image/execution-package composition, manifests, compatibility records, and distribution metadata | [`../packaging/`](../packaging/README.md) | Reserved |
 | `third-party` | Vendored external material and provenance | [`../third_party/`](../third_party/README.md) | Reserved |
 
@@ -94,25 +95,25 @@ The active dependency graph and owner-level proposal outputs are governed beneat
 | `contract.session` | Optional external Search Session coordination with initial root, minimum-work advance, general reroot, independently versioned attention, cancellation and observation-request/borrow lifecycles; source owners retain semantic validity while advance performs no retained-state reclassification or allocation | [`../docs/specs/SPEC-0006-search-session-control-and-observation.md`](../docs/specs/SPEC-0006-search-session-control-and-observation.md) proposal |
 | `contract.output` | Generic bounded result/observation publication contracts; no mandatory ranked-action payload | [`../docs/specs/SPEC-0013-result-and-observation-publication.md`](../docs/specs/SPEC-0013-result-and-observation-publication.md) proposal |
 | `contract.extensions` | Optional Search Stage/surface/capability, nonblocking internal channel and deterministic restricted Device-JS Search Program composition semantics with exact unselected deletion | [`../docs/specs/SPEC-0003-search-stage-and-extension-surface.md`](../docs/specs/SPEC-0003-search-stage-and-extension-surface.md), [`../docs/specs/SPEC-0004-async-stage-channels.md`](../docs/specs/SPEC-0004-async-stage-channels.md), [`../docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md`](../docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) proposals |
-| `contract.resources` | Search-memory plan, capacities, initial-root planning, reroot-admission reserve/pressure, capability/product resources, exhaustion/cancellation/teardown; advance has no allocation/resize admission path | [`../docs/specs/SPEC-0011-finite-search-resources.md`](../docs/specs/SPEC-0011-finite-search-resources.md) proposal |
+| `contract.resources` | Search-memory plan, capacities, initial-root planning, reroot-admission reserve/pressure, selected-consumer/capability resources, exhaustion/cancellation/teardown; advance has no allocation/resize admission path | [`../docs/specs/SPEC-0011-finite-search-resources.md`](../docs/specs/SPEC-0011-finite-search-resources.md) proposal |
 | `contract.progress` | Device-owned work readiness, progress, fairness, typed no-progress/deadlock, stopping and scheduler-neutral semantics | [`../docs/specs/SPEC-0012-device-owned-search-progress.md`](../docs/specs/SPEC-0012-device-owned-search-progress.md) proposal |
 | `contract.cuda-js-package` | CUDA-MCGS canonical restricted Device-JS Search Program/execution-package projection, opaque CUDA-JS realization identity and exact compatible-pair manifest | Interop contract v0 |
 | `tool.search-schema` | Parse, validate, normalize, diff, and generate universal plus namespaced selected search contracts | Future accepted component specification |
-| `tool.search-compiler` | Capability/product resolution, search specialization, layouts/device code, and execution-package generation | Future accepted component specification |
+| `tool.search-compiler` | Capability/consumer resolution, search specialization, layouts/device code, and execution-package generation | Future accepted component specification |
 | `integration.cuda-js` | CUDA-MCGS adapter from execution-package semantics to public CUDA-JS runtime | Interop contract v0 |
-| `conformance.search` | Synthetic-domain/end-to-end universal CUDA-MCGS conformance independent of chess | Future accepted component specification |
+| `conformance.search` | Synthetic/removable end-to-end universal CUDA-MCGS conformance independent of every external production product | Future accepted component specification |
 
-## Downstream domain/search product boundaries
+## External domain/search product boundary
 
-Downstream products consume universal contracts; they do not define them. Product deletion must leave universal architecture/conformance complete.
+Production domain/search products consume public CUDA-MCGS contracts but are not CUDA-MCGS registry entries. Their authoritative domain/policy/evaluator/output/protocol/quality/package/release state lives in their own repositories or independently owned packages.
 
-| Product boundary ID | Owns | Authoritative location | Status |
-|---|---|---|---|
-| `product.chess` | CUDA-MCGS downstream chess consumer/conformance semantics only; the external engine product owns its policy, UCI behavior, integrations, packaging and support lifecycle | [`../docs/specs/products/chess/CHESS-0001-search-product.md`](../docs/specs/products/chess/CHESS-0001-search-product.md); external product authority: [`iteathen/UCI-Arena-Vector`](https://github.com/iteathen/UCI-Arena-Vector) | Proposal conformance profile; does not gate universal parent or own the external engine |
+`iteathen/UCI-Arena-Vector` is a current concrete external consumer and requirements falsifier for chess/UCI integration. It is named here only to identify a real external boundary; its branch/issue/PR state does not become CUDA-MCGS authority merely by reference.
+
+Historical repository-local CHESS-0001 material is retained under [`../docs/archive/specs/CHESS-0001-search-product.md`](../docs/archive/specs/CHESS-0001-search-product.md) as `Superseded` provenance. It is not an active product contract or registry owner.
 
 Generic Node/V8 bindings, CUDA Driver call machinery, generic memory providers, NVRTC/link/load, generic long-lived sideband mechanisms, launch/completion/error/teardown, and generic runtime packaging belong to independent `iteathen/CUDA-JS` and must not become CUDA-MCGS component/product entries.
 
-Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts. CUDA-JS may use JIT, native code and CUDA-specific implementation wherever needed or desired behind those contracts. A generic GPU mechanism that cannot be expressed naturally, safely and with bounded lifecycle/resource semantics through the current surface is classified for consumer-neutral CUDA-JS ownership under ADR-0019; it is not a new CUDA-MCGS native component. Search/domain/evaluator/product policy remains in the owning CUDA-MCGS boundary.
+Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts. CUDA-JS may use JIT, native code and CUDA-specific implementation wherever needed or desired behind those contracts. A generic GPU mechanism that cannot be expressed naturally, safely and with bounded lifecycle/resource semantics through the current surface is classified for consumer-neutral CUDA-JS ownership under ADR-0019; it is not a new CUDA-MCGS native component. Generic tensor mathematics belongs to its natural tensor/math owner. External product policy/protocol/model/output semantics remain external even when their supplied programs are compiled into a Search Image.
 
 ## Adding, changing, archiving, or removing a registry entry
 
@@ -127,4 +128,4 @@ A coherent change must include:
 7. validation/test owner;
 8. cleanup, migration, archive, or supersession record.
 
-Use [`templates/component-manifest.template.yaml`](templates/component-manifest.template.yaml) for product components, [`templates/engineering-decision.template.yaml`](templates/engineering-decision.template.yaml) for durable path/value decisions, [`templates/document-reading.template.yaml`](templates/document-reading.template.yaml) for durable authority/applicability coverage when needed, [`general_foundation/PROJECT_ORGANIZATION.md`](general_foundation/PROJECT_ORGANIZATION.md) for placement, and [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md) for lifecycle. Focus branches, token postures, reading maps, and engineering decisions organize work without inventing new product ownership.
+Use [`templates/component-manifest.template.yaml`](templates/component-manifest.template.yaml) for CUDA-MCGS components, [`templates/engineering-decision.template.yaml`](templates/engineering-decision.template.yaml) for durable path/value decisions, [`templates/document-reading.template.yaml`](templates/document-reading.template.yaml) for durable authority/applicability coverage when needed, [`general_foundation/PROJECT_ORGANIZATION.md`](general_foundation/PROJECT_ORGANIZATION.md) for placement, and [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md) for lifecycle. Focus branches, token postures, reading maps, and engineering decisions organize work without inventing new product ownership.
