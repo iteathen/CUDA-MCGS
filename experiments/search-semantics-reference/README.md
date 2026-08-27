@@ -8,7 +8,7 @@ Can CUDA-MCGS execute finite declared semantic schedules and bounded product-neu
 
 The harness owns canonical evidence identity, finite declared-schedule validation, owner-local state isolation, explicit dependency/publication rules, mutation detection and case accounting. It owns no search semantics, physical scheduler, storage mechanism or CUDA topology.
 
-The Domain oracle owns only bounded state/history normalization and equality, roles, action validity/identity/production, transitions, terminal outcomes, root validation, domain path relations and reuse classifications. Its previously integrated 49-case result remains separate historical evidence; this Graph-only proposal change did not rebind or rerun the Domain capsule.
+The Domain oracle owns only bounded state/history normalization and equality, roles, action validity/identity/production, transitions, terminal outcomes, root validation, domain path relations and reuse classifications. Its shared fixtures and every checked-in neutral schedule are rebound to the same current Composer representation identity as Graph. The full harness/Domain capsule passes 49/49 with 47/47 direct Domain requirement coverage.
 
 The Graph NODE oracle owns only state-node/transposition claim, collision verification, finite local admission accounting and node/transposition-entry ready/failed publication for `GRAPH-NODE-001` through `GRAPH-NODE-011`. Domain identity and equality are injected through neutral public ports. Required foreign-owner initialization is invoked only through a neutral lifecycle callback that receives Graph claim/reference authority; Graph never receives authority to publish or mutate foreign owner records.
 
@@ -23,9 +23,9 @@ EDGE additionally enforces the finite structure selected by the normalized Graph
 - expansion exhaustion uses the already declared `edge-capacity` pressure vocabulary rather than inventing a new product-specific failure; and
 - published-pending cancellation is terminal and conservative.
 
-## Exact Graph-chain inputs
+## Exact current evidence chain
 
-The current Graph fixtures bind the proposal Composer result qualified during PR #135:
+The current Composer result is:
 
 - capsule: `cuda-mcgs-search-ir-composer-reference-v0.2.0`;
 - expected/discovered/executed/passed: `879/879/879/879`;
@@ -34,12 +34,21 @@ The current Graph fixtures bind the proposal Composer result qualified during PR
 - representation/composition SHA-256: `f4e85941091a820047778679a3ab79573218f700349cc282d6210ba43942e98f`;
 - representation/composition canonical bytes: `719510`.
 
+The shared harness/Domain chain is current against that representation identity:
+
+- Domain projection SHA-256: `e169677d15c1220747f2f5e63434342dab6b46d65108a05aeb78485a490c338c`;
+- Domain projection canonical bytes: `69524`;
+- harness/Domain cases: `49/49`;
+- direct Domain planned/executed coverage: `47/47`;
+- harness/Domain evidence SHA-256: `9d9d468f95010848210f25019563f7e7351e58dc74a29aa83391d0903a9db1b2`;
+- canonical bytes: `30372`.
+
 The Composer-owned Graph projection contains four exact normalized profiles:
 
 - SHA-256: `f6abe5bbef4db62c5c79211ac954ece110a2da764cce6b5ce5e854870e9390ba`;
 - canonical bytes: `132969`.
 
-The NODE capsule was rebound to that exact Composer/projection pair and passed:
+The NODE capsule is rebound to that exact Composer/projection pair:
 
 - cases: `13/13`;
 - direct `GRAPH-NODE-*` planned/executed coverage: `11/11`;
@@ -52,8 +61,6 @@ EDGE refuses to run unless those exact Composer, projection and NODE identities 
 - direct `GRAPH-EDGE-*` planned/executed coverage: `10/10`;
 - evidence SHA-256: `4a0ad1a80b5b02243ce1e1fd85a881f4127999fc14ca68b701550f7eda0cab40`;
 - canonical bytes: `11661`.
-
-The older integrated Domain/harness evidence remains independently reproducible at its own earlier Composer identity. It is intentionally not relabeled as current Graph-chain evidence.
 
 ## Run
 
@@ -94,7 +101,9 @@ node scripts/run-graph-edge-reference.mjs --case graph-edge-published-pending-ca
 
 Generated machine evidence lives under ignored `experiments/search-semantics-reference/build/` and is disposable. Focused evidence cannot support a full-capsule claim.
 
-## Current Graph cases
+## Current cases
+
+The shared harness/Domain capsule has 49 cases with all 47 direct Domain requirements exercised. The neutral schedule fixtures bind the current representation/composition identity both at the fixture level and inside every declared schedule.
 
 The Graph NODE capsule has 13 cases covering all 11 direct `GRAPH-NODE-*` requirements, including exact projection binding, collision verification, competing claimers, owner initialization ordering, failed initialization, compound admission, transposition exhaustion, isolated scopes, immutable Domain payload, conflicting ready publication and mutation falsifiers.
 
@@ -119,7 +128,7 @@ The Graph normalizer also rejects a materialized profile whose aggregate per-eng
 
 Shared/Domain:
 
-- `fixtures/neutral-schedules.json` and `fixtures/domain-cases.json` — harness/Domain fixtures;
+- `fixtures/neutral-schedules.json` and `fixtures/domain-cases.json` — current evidence-bound harness/Domain fixtures;
 - `src/errors.mjs`, `src/canonical.mjs`, `src/schedule.mjs`, `src/mutation.mjs` — neutral harness support;
 - `src/domain.mjs`, `src/domain-instances.mjs`, `src/domain-cases.mjs` — Domain-owned oracle/cases;
 - `run.mjs` — harness/Domain capsule.
@@ -142,10 +151,10 @@ Graph EDGE:
 
 ## Success, promotion and disposal
 
-NODE is qualified at 13/13 with 11/11 direct coverage. The EDGE brick is qualified at 16/16 with 10/10 direct coverage and remains guarded until final exact-head repository CI and protected-main readback complete.
+Harness/Domain is current at 49/49 with 47/47 direct coverage. NODE is qualified at 13/13 with 11/11 direct coverage. EDGE is qualified at 16/16 with 10/10 direct coverage. Merge remains guarded until final exact-head repository CI and protected-main readback complete.
 
 Future Graph leaves add active-path/occurrence/cycle, typed-reference/generation, root-protection and retirement/quiescence/reclamation behavior beside these modules, followed by ADR-0022 occurrence supersession and final Graph reconciliation. They may consume normalized public profiles and owner facts, but they may not put search meaning into the neutral harness, import another owner's internal state or convert the experiment into a production CPU runtime. Production code must never import this experiment.
 
 ## Claim limits
 
-Passing the current Graph capsules proves only the integrated Graph NODE/transposition brick and the qualified Graph EDGE/expansion brick against the exact proposal identities above. It does not prove active paths/cycles, reference-generation safety, root protection, reclamation, the remaining Graph contract, a complete terminal reference engine, proposal acceptance, production JavaScript/Device-JS implementation, CUDA-JS execution, native CUDA, performance, search quality, a public SDK or multi-GPU support.
+Passing the current capsules proves only the semantic-neutral harness, bounded Domain behavior, the Graph NODE/transposition brick and the Graph EDGE/expansion brick against the exact proposal identities above. It does not prove active paths/cycles, reference-generation safety, root protection, reclamation, the remaining Graph contract, a complete terminal reference engine, proposal acceptance, production JavaScript/Device-JS implementation, CUDA-JS execution, native CUDA, performance, search quality, a public SDK or multi-GPU support.
