@@ -6,7 +6,7 @@
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS framework with a universal least-authority extension/composition substrate and finite specialized Search Images.**
 
-[`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md) makes the dependency direction explicit:
+[`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md) defines the semantic layering, and [`ADR-0024`](../decisions/ADR-0024-framework-only-production-ownership.md) fixes the production ownership boundary:
 
 ```text
 universal MCGS semantic core
@@ -15,12 +15,10 @@ universal MCGS semantic core
         │                 │
         │                 └──── optional selected capabilities
         │
-        └────────► downstream domain/search products
-                          │
-                          └──── chess, future Go/planning/optimization/...
+        └────────► externally owned domain/search products
 ```
 
-The universal core is complete without chess and without any optional capability. The extension substrate can consume stable universal facts but does not define core semantics. A product selects universal contracts/capabilities and adds product-owned meaning; it cannot redefine the core merely by being the first consumer.
+The universal core is complete without any external product and without any optional capability. The extension substrate can consume stable universal facts but does not define core semantics. A product selects universal contracts/capabilities and adds externally owned product meaning; it cannot redefine the core merely by being the first consumer.
 
 CUDA-MCGS is therefore a **search compiler/composer plus a finite specialized device program**, consuming the independent generic CUDA-JS runtime rather than owning Node/CUDA Driver plumbing.
 
@@ -56,7 +54,7 @@ The universal core contract families are conceptually independent:
 - **Device-progress contract** — work readiness, finite service/fairness, typed no-progress, stop/drain and closure without selecting a scheduler topology.
 - **Search Session contract when selected** — external initial-root/advance/reroot authority and provenance, independent attention publication and bounded observation-request/borrow lifecycle coordination; source owners retain stale-work, reuse, reclamation and publication meaning.
 
-These contracts must remain semantically meaningful if the extension substrate and chess product are removed.
+These contracts must remain semantically meaningful if the extension substrate and every external product are removed.
 
 ```text
 Domain ────────────────┐
@@ -88,9 +86,9 @@ The key boundary is:
 
 > **The extension substrate is universal; a capability's semantic payload is not automatically universal.**
 
-For example, a future chess tablebase capability may bind to a universally meaningful stable checkpoint. Chess/tablebase fields appear only in Search Images selecting that capability. They do not become part of the base checkpoint context, every node layout, or universal Search IR semantic core.
+For example, an external chess consumer may select a tablebase capability at a universally meaningful stable checkpoint. Chess/tablebase fields appear only in Search Images selecting that capability. They do not become part of the base checkpoint context, every node layout, or universal Search IR semantic core.
 
-A capability that changes search meaning must identify the owning selected domain/policy/evaluator/output/session/product contract authorizing that effect. The surface itself cannot redefine state identity, graph ownership, resource conservation, session lifecycle or other core invariants.
+A capability that changes search meaning must identify the owning selected domain/policy/evaluator/output/session contract authorizing that effect. Product-specific meaning remains supplied/owned externally. The surface itself cannot redefine state identity, graph ownership, resource conservation, session lifecycle or other core invariants.
 
 ### 2.1 Search Stages
 
@@ -122,32 +120,35 @@ A required unavailable result moves the logical work item to a pending state and
 
 Internal Async Stage Channels are **not** the external host↔Search Session control/observation boundary merely because a physical lowering may use similar mailbox/ring mechanics.
 
-## 3. Domain/search products
+## 3. External domain/search products
 
-A domain/search product sits downstream of universal contracts and the extension substrate.
+A production domain/search product sits downstream of universal contracts and the extension substrate and is owned outside the CUDA-MCGS production source tree under ADR-0024.
 
 A product owns its:
 
 - domain-specific state/action/history/terminal semantics;
 - selected policy/evaluator semantics;
-- product output/observation schemas;
+- product output/observation/protocol schemas;
 - product-specific extension capabilities;
 - product root-advance/reuse/reset/transform rules;
-- package/support/benchmark/search-quality requirements.
+- package/support/benchmark/search-quality requirements; and
+- release and operational lifecycle.
 
-The first explicit product proposal is [`CHESS-0001`](../specs/products/chess/CHESS-0001-search-product.md).
+CUDA-MCGS may retain concrete product-like fixtures only as removable conformance/research/example evidence. No such fixture is a production product specification, privileged default, or release owner.
 
-Chess may define a bounded ranked legal-move observation, best-move output or MultiPV. That does **not** make ranking a universal MCGS requirement. A future planning or evaluation-only product can select different outputs or no live ranking at all.
+A chess product, for example, may define a bounded ranked legal-move observation, best-move output or MultiPV. That does **not** make ranking a universal MCGS requirement. A planning or evaluation-only product can select different outputs or no live ranking at all.
 
 The deletion test is deliberate:
 
 ```text
-remove CHESS-0001 and every chess capability
+remove every external product and every product-specific capability
         ↓
 universal core contracts remain complete
 extension surfaces remain product-neutral
 universal reference/native conformance still has independent oracles
 ```
+
+Historical repository-local chess product/conformance proposal material is retained only as superseded archive provenance; it is not active framework authority.
 
 ## 4. Search Composer
 
@@ -160,7 +161,7 @@ universal contracts
         +
 selected universal extension graph/capabilities
         +
-optional downstream product contracts/capabilities
+consumer-supplied product contracts/capabilities
         +
 finite target/resource/CUDA profile
         ↓
@@ -170,7 +171,7 @@ normalized Search IR + namespaced selected specialization inputs
         ↓
 finite layouts/resources/stage-channel-session plan
         ↓
-generated restricted Device-JS core + selected capability/product behavior
+generated restricted Device-JS core + selected consumer behavior
         ↓
 Search Image / execution package
 ```
@@ -180,7 +181,7 @@ The Composer must:
 - resolve convenience, preset and explicit inputs through one canonical pre-ignition path;
 - expose the complete resolved profile and provenance of each applied default or adaptive selection;
 - normalize universal contracts without embedding first-product fields as core meaning;
-- validate namespaced selected capability/product schemas under their owners;
+- validate namespaced selected capability/product schemas supplied by their owners;
 - construct/validate the stage graph and stable base contexts only when the selected extension profile requires them;
 - compose only selected capability context/state/resources;
 - validate internal Async Stage Channels and Search Session control/observation contracts;
@@ -199,15 +200,15 @@ Version zero expresses CUDA-MCGS-owned device behavior in restricted Device-JS/S
 
 No selected capability means the complete extension profile/stage graph/surface/context/channel/source/resource/package contribution is absent. Each materialized surface with selected capabilities contributes exactly one semantic stage capability program unit for its complete selected set; deleting one capability removes every solely owned contribution.
 
-Artifact granularity does not imply semantic ownership: one semantic program unit may contain reusable framework capability behavior and product-specific capability behavior because both bind to the same stable checkpoint. CUDA-JS may realize that unit across one or more opaque generated artifacts.
+Artifact granularity does not imply semantic ownership: one semantic program unit may contain reusable framework capability behavior and consumer-supplied capability behavior because both bind to the same stable checkpoint. CUDA-JS may realize that unit across one or more opaque generated artifacts.
 
 The final binary must charge code size, registers, local/shared memory, occupancy and latency to the realized engine. Representative selected capability behavior is compared against an equivalent fused/generated control using CUDA-JS-owned artifact/resource evidence. Tiny fine-grained hooks are not assumed cheap merely because compilation succeeds.
 
-A strong product-deletion check compares otherwise equivalent images with and without the product capability and proves product-only ABI/context/code/resource residue disappears.
+A strong product-deletion check compares otherwise equivalent images with and without consumer-supplied product capability and proves product-only ABI/context/code/resource residue disappears.
 
 ## 6. Search Image and pre-ignition boundary
 
-The **Search Image** is the complete finite executable specialization: the CUDA-MCGS semantic engine profile, restricted Device-JS Search Program/execution package, layouts/resources/configuration and selected contracts/capabilities/products bound to an opaque qualified CUDA-JS realization and compatible-pair identity.
+The **Search Image** is the complete finite executable specialization: the CUDA-MCGS semantic engine profile, restricted Device-JS Search Program/execution package, layouts/resources/configuration and selected contracts/capabilities plus consumer-supplied product inputs bound to an opaque qualified CUDA-JS realization and compatible-pair identity.
 
 Before ignition, the host may validate, compose, compile/link, allocate, upload and prepare launch/session resources.
 
@@ -249,12 +250,12 @@ The realized device program contains only what the selected Search Image require
 - node/edge/state/action/path arenas;
 - transposition/collision/publication/generation mechanisms;
 - bounded work queues;
-- selected domain transition/action behavior;
+- selected consumer-supplied domain transition/action behavior;
 - selected evaluator execution/publication;
 - selected policy reservation/backup/stopping behavior;
 - selected stage transitions/surfaces/capabilities/internal channels;
 - selected Search Session initial-root, advance, reroot, attention-publication and observation-request coordination;
-- selected product logic/output;
+- selected consumer-supplied product logic/output;
 - pressure/stop/diagnostics;
 - device-owned progress.
 
@@ -283,7 +284,7 @@ CUDA-MCGS universal owners include:
 - finite search-resource composition and device-progress profiles;
 - universal conformance and compatible-pair acceptance.
 
-Downstream product owners include their domain/policy/evaluator/output/reuse/capability/support semantics.
+External product owners retain their domain representation choices, product policy/evaluator/output/reuse/capability/protocol/quality/support/release semantics even when their inputs are compiled through CUDA-MCGS.
 
 CUDA-JS owns generic CUDA host-runtime/toolchain mechanics: opaque resources, memory/module/function operations, NVRTC/nvJitLink, artifact caching, launch/completion/generic sideband/error/teardown and runtime qualification.
 
@@ -299,7 +300,7 @@ Memory is finite and explicitly partitioned across:
 - evaluator/model/workspace;
 - Search Session control/observation/root-admission reserve when selected;
 - extension capability state/workspace/internal channels;
-- selected product resources/outputs;
+- selected consumer-supplied product resources/outputs;
 - CUDA-JS/runtime/code reserve;
 - diagnostics/safety reserve.
 
@@ -307,7 +308,7 @@ A valid new authoritative root under a full arena has an explicit bounded admiss
 
 ## 12. Conformance strategy
 
-Universal conformance must be independent of chess and cover materially different semantics:
+Universal conformance must be independent of every production product and cover materially different semantics:
 
 1. fixed DAG/transposition;
 2. cyclic/history-sensitive;
@@ -320,12 +321,12 @@ Universal conformance must be independent of chess and cover materially differen
 9. Search Session root transaction, attention publication and observation-request coordination integrated with owner-defined stale work, reuse, reclamation, immutable publication and counter exhaustion;
 10. reference/native semantic parity for an exact compatible CUDA-JS pair.
 
-Chess adds its own legality/history/evaluator/output/search-quality conformance on top. Chess passing cannot substitute for universal second-instance evidence.
+A concrete chess, Connect Four, planning, optimization, or other named fixture may add useful conformance pressure, but it remains removable and cannot substitute for universal second-instance evidence or become a production owner.
 
 ## 13. Repository product direction
 
-Universal CUDA-MCGS completion/release and chess product completion are separate milestones.
+CUDA-MCGS framework completion/release and every external product release are separate milestones.
 
-The universal framework may release with the chess product still proposal-only. Conversely, chess work may proceed as a downstream specification/experiment once its consumed universal contracts are stable enough, but must not use product implementation to silently fill gaps in universal meaning.
+External product work may proceed in its owning repository as consumed contracts stabilize, but it must not use product implementation to silently fill gaps in universal meaning or gain private repository access. CUDA-MCGS proves the public external-consumer boundary through embedding/deletion evidence rather than by shipping a repository-local production product.
 
-The canonical sequencing and explicit non-gating chess lane are maintained in [`../../next_step.yaml`](../../next_step.yaml).
+The canonical issue ordering and current dependency state are maintained in [`../../next_step.yaml`](../../next_step.yaml) and portfolio issue #142.
