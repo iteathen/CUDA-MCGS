@@ -1,0 +1,43 @@
+name: one-shot root control repair v4
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.event.pull_request.head.ref == 'docs/ref-root-control-01-reconcile'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/ref-root-control-01-reconcile
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.7.0
+      - name: Reuse v3 repair and rebind declared schedules
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          const workflow = await readFile('.github/workflows/repair-root-control-v3.yml', 'utf8');
+          const marker = '        run: |\n';
+          const start = workflow.indexOf(marker);
+          if (start < 0) throw new Error('v3 repair run block not found');
+          let script = workflow.slice(start + marker.length)
+            .split('\n')
+            .map((line) => line.startsWith('          ') ? line.slice(10) : line)
+            .join('\n');
+
+          const execute = 'bash /tmp/repair-root-control.sh';
+          if (!script.includes(execute)) throw new Error('v3 repair execution marker not found');
+          const patch = `node --input-type=module <<'PATCH'\nimport { readFile, writeFile } from 'node:fs/promises';\nconst path = '/tmp/repair-root-control.sh';\nlet inner = await readFile(path, 'utf8');\nconst before = '          neutral.composerEvidence = composer.representationCompositionEvidenceKey;';\nconst after = \`          neutral.composerEvidence = composer.representationCompositionEvidenceKey;\\n          for (const schedule of Object.values(neutral.schedules)) schedule.evidenceKey = composer.representationCompositionEvidenceKey.sha256;\`;\nif (!inner.includes(before)) throw new Error('semantic schedule rebind anchor not found');\ninner = inner.replace(before, after);\nawait writeFile(path, inner);\nPATCH\n${execute}`;
+          script = script.replace(execute, patch);
+          await writeFile('/tmp/repair-root-control-v4.sh', `set -euo pipefail\n${script}`, { mode: 0o700 });
+          NODE
+          bash /tmp/repair-root-control-v4.sh
