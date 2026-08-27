@@ -23,13 +23,16 @@ jobs:
         with:
           node-version: 26.7.0
       - name: Apply ROOT profile correction, rebind evidence, and qualify ROOT
-        run: node tools/graph-root-semantic-migration.mjs
+        run: |
+          node tools/correct-graph-root-migration.mjs
+          node tools/graph-root-semantic-migration.mjs
       - name: Publish qualified ROOT migration and remove temporary tooling
         shell: bash
         run: |
           set -euo pipefail
           git rm -f --ignore-unmatch \
             .github/workflows/qualify-graph-root.yml \
+            tools/correct-graph-root-migration.mjs \
             tools/graph-root-semantic-migration.mjs
           git config user.name iteathen
           git config user.email josh.oshiro@gmail.com

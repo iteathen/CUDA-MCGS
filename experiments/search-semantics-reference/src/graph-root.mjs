@@ -110,8 +110,8 @@ export function createGraphRootOracle({
   for (const terminal of anchorObject.lifecycle.terminalStates) {
     if (!hasPrivateReset(anchorObject, terminal)) fail('GRAPH_ROOT_PROFILE', `root-anchor terminal state ${terminal} lacks private reset-to-free transition`);
   }
-  for (const reusable of [...protectionObject.lifecycle.readyStates, ...protectionObject.lifecycle.terminalStates]) {
-    if (!hasPrivateReset(protectionObject, reusable)) fail('GRAPH_ROOT_PROFILE', `protection-record state ${reusable} lacks private reset-to-free transition`);
+  for (const terminal of protectionObject.lifecycle.terminalStates) {
+    if (!hasPrivateReset(protectionObject, terminal)) fail('GRAPH_ROOT_PROFILE', `protection-record terminal state ${terminal} lacks private reset-to-free transition`);
   }
 
   const rootReserve = decimal(profile.rootProtection.admissionReserve, 'GRAPH_ROOT_PROFILE', 'rootProtection admissionReserve');
@@ -127,7 +127,6 @@ export function createGraphRootOracle({
   const freeState = anchorObject.lifecycle.initialState;
   const readyState = lifecycleState(anchorObject, 'ready');
   const releasedState = lifecycleState(anchorObject, 'released');
-  const failedState = lifecycleState(anchorObject, 'failed');
   const anchors = [];
   const events = [];
   let sequence = 0n;
