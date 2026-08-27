@@ -38,3 +38,24 @@ jobs:
         with:
           name: search-ir-reference-${{ matrix.os }}
           path: experiments/search-ir-reference/build/evidence.json
+
+  graph-node-reference:
+    name: Graph NODE reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Composer, Graph projection, and NODE reference
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-graph-profiles.mjs
+          node scripts/run-graph-node-reference.mjs
+      - name: Retain Graph NODE evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: graph-node-reference
+          path: |
+            experiments/search-ir-composer-reference/build/graph-profiles.json
+            experiments/search-semantics-reference/build/graph-node-evidence.json

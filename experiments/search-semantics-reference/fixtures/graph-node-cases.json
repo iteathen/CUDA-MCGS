@@ -1,0 +1,29 @@
+{
+  "schema": "cuda-mcgs.reference-graph-node-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 719510,
+    "sha256": "4846fe8686721afd13dfe4ac66ebbfdb0722979481183e76b96bf9118f340b3f"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 132436,
+    "sha256": "22a7fd46605dee3a202fe42aba800fa92fc0e7d4de1f8b619123c1e7d489053e"
+  },
+  "expectedCases": [
+    "graph-node-profile-projection-exact",
+    "graph-node-collision-verification-before-sharing",
+    "graph-node-competing-claimers-schedule-invariant",
+    "graph-node-ready-publication-orders-payload-owner-and-entry",
+    "graph-node-failure-wakes-waiters-and-dispositions-admission",
+    "graph-node-compound-admission-fails-without-partial-residue",
+    "graph-node-transposition-capacity-and-probe-exhaustion-fail-closed",
+    "graph-node-isolated-profile-separates-declared-scopes",
+    "graph-node-domain-payload-immutable-owner-record-independent",
+    "graph-node-conflicting-ready-publication-is-fatal",
+    "graph-node-oracle-sensitivity-collision-verification",
+    "graph-node-oracle-sensitivity-entry-ready-order",
+    "graph-node-requirement-coverage-exact"
+  ]
+}
