@@ -1,20 +1,20 @@
 {
-  "schema_version": 72,
+  "schema_version": 73,
   "updated": "2026-08-27",
-  "status": "merge_gate_repaired_product_boundary_authority_active",
+  "status": "framework_only_production_authority_candidate",
   "objective": "Resolve the complete CUDA-MCGS open-issue portfolio by assessed dependency and consequence order, preserving one exact protected semantic/reference packet before production lowering and implementing production only through ordinary Node.js/restricted Device-JS over public CUDA-JS contracts.",
-  "ownership_boundary": "CUDA-MCGS owns universal MCGS semantics, normalized Search IR/composition, finite search resources, JavaScript/restricted Device-JS search programs, reference/native semantic conformance and its public CUDA-JS adapter. CUDA-JS owns generic CUDA lowering/compiler/ABI/runtime/resource/operation/synchronization/platform mechanisms and may use native/CUDA implementation. Missing generic GPU mechanism is classified to CUDA-JS rather than implemented as a CUDA-MCGS native escape path. Production-product repository ownership is being reconciled under issue #44; older repository-local product wording is not implementation authorization.",
+  "ownership_boundary": "Protected authority keeps CUDA-MCGS universal and JavaScript/restricted-Device-JS only. The current #44 candidate ADR-0024 narrows ADR-0018 further: CUDA-MCGS production owns reusable MCGS framework semantics, composition, integration seams and removable conformance; production domain/search products own their product semantics, protocol, model interpretation, quality, packaging, release and support lifecycle in independently owned repositories or packages. Concrete named domains remain allowed as removable evidence. CUDA-JS owns generic CUDA lowering/compiler/ABI/runtime/resource/operation/synchronization/platform mechanisms; missing generic GPU mechanisms route there rather than to a CUDA-MCGS native escape path.",
   "protected_base": {
-    "cuda_mcgs_main": "6b2298c9418634c190e422d97a2bfc8d38f7bd82",
-    "meaning": "Protected Graph ROOT semantic packet plus PR #144 fail-closed required verify aggregate; protected workflow 33115610091 passed every current merge-gate job and final verify."
+    "cuda_mcgs_main": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
+    "meaning": "Protected Graph ROOT semantic packet plus fail-closed verify aggregation and post-merge state reconciliation; protected workflow 33115975009 succeeded."
   },
   "candidate": {
-    "branch": "main",
+    "branch": "architecture/44-framework-only-production",
     "qualified_semantic_checkpoint": "5a42d5aed072ae763631790ea4a4dfa871e3e6ce",
-    "current_protected_head": "6b2298c9418634c190e422d97a2bfc8d38f7bd82",
-    "qualification_run": "33115610091",
+    "current_protected_head": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
     "root_status": "protected-integrated",
-    "merge_gate_status": "fail-closed-aggregate-integrated"
+    "merge_gate_status": "fail-closed-aggregate-integrated",
+    "product_boundary_status": "ADR-0024-candidate-pending-pr-and-protected-readback"
   },
   "exact_candidate_evidence": {
     "representation_composition": "ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529",
@@ -49,6 +49,9 @@
     "docs/specs/SPEC-0010-graph-storage-and-reclamation.md",
     "https://github.com/iteathen/CUDA-MCGS/issues/142"
   ],
+  "candidate_authority": [
+    "docs/decisions/ADR-0024-framework-only-production-ownership.md"
+  ],
   "deliverables": [
     "one exact protected CUDA-free universal semantic/reference packet before production lowering",
     "independently replaceable Domain, Graph, Policy, Evaluator, Output, Resource, Progress, Session and extension reference owners",
@@ -56,7 +59,7 @@
     "normalized Search IR/Composer products with exact finite resources, lifecycle, failure, identity and provenance",
     "production CUDA-MCGS implemented only as ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts",
     "one bounded parallel native framework and exact CUDA-MCGS/CUDA-JS compatible-pair qualification only after semantic acceptance",
-    "external-consumer embedding evidence without importing product-specific meaning into CUDA-MCGS",
+    "external-consumer embedding evidence without importing product-specific meaning or product lifecycle into CUDA-MCGS",
     "every open issue assessed, researched, reassessed and either completed, transferred, blocked by exact external evidence, or closed not planned/duplicate with documentation"
   ],
   "current_focus": {
@@ -64,8 +67,8 @@
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/142",
     "active_leaf": "ISSUE-44-AUTHORITY",
     "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/44",
-    "next_action": "Integrate one current-main ADR-0024 that narrows ADR-0018 to framework-only production ownership without editing accepted ADR history, remove repository-local production product specifications from active authority, archive CHESS-0001 as superseded provenance, and enforce the active-product-spec boundary without banning removable named examples/falsifiers.",
-    "after_integration": "Reassess issue #47 against the accepted framework-only boundary. Preserve any useful Connect Four-like case only as #36-owned removable conformance evidence; do not implement an in-repository product merely because #47 requests one.",
+    "next_action": "Qualify the exact architecture/44-framework-only-production head: ADR-0024 must narrow ADR-0018 without rewriting accepted history; active docs/specs/products must be empty/absent; historical CHESS-0001 must be Superseded archive provenance; Charter/README/architecture/spec-index/registry/status/plan must agree; organization validation must structurally reject future active product specs without banning concrete examples.",
+    "after_integration": "Reassess issue #47 against protected ADR-0024. Preserve any useful Connect Four-like case only as #36-owned removable conformance evidence; close the in-repository product request not planned if invalid. Then close #141 once all audit findings have durable disposition and return to #24 RECLAIM preflight.",
     "exit": "Repository current-state truth, merge enforcement and production-product ownership are unambiguous enough that semantic work cannot be merged or routed from stale/conflicting instructions."
   },
   "merge_gate": {
@@ -91,28 +94,8 @@
     ],
     "next_semantic_action": "Correct and falsify the RECLAIM representation/resource/lifecycle preflight before implementing GRAPH-RECLAIM-001..009."
   },
-  "root_boundary": {
-    "graph_owns": [
-      "finite root-anchor storage and typed lifecycle",
-      "REF-mediated node protection/generation",
-      "anchor publication/release",
-      "opaque owner reroot-disposition delegation"
-    ],
-    "session_or_owner_retains": [
-      "current root",
-      "root epoch",
-      "root/advance/reroot/attention operation authority",
-      "retained-state classification",
-      "authority commit"
-    ],
-    "root_profile_corrections": [
-      "explicit root-anchor resource funding",
-      "aggregate protection-capacity covers protection-record plus root-anchor layouts",
-      "terminal root-anchor/protection-record states reset privately to free before generation-safe reuse"
-    ]
-  },
   "blockers": [
-    "Issue #44: accepted/current product-boundary authority is internally inconsistent and competing stale remediation PRs remain open.",
+    "Issue #44 candidate ADR-0024 and its active-spec/archive/registry enforcement are not protected until exact-head PR validation and protected-main readback succeed.",
     "Graph RECLAIM representation/resource/lifecycle preflight is incomplete; production lowering and ENGINE-CONTRACT-ACCEPTANCE-01 remain blocked.",
     "CUDA-JS native Linux qualification and the exact CUDA-MCGS/CUDA-JS compatible pair remain downstream evidence gates."
   ],
@@ -139,10 +122,11 @@
     "require host-produced intermediate decisions for active search progress",
     "implement an issue merely because its current title/body asks for a mechanism before reassessing its authority and dependency state",
     "edit an accepted ADR in place when a successor decision is required",
-    "ban concrete named domains merely because production products are externally owned; removable conformance examples remain allowed"
+    "ban concrete named domains merely because production products are externally owned; removable conformance examples remain allowed",
+    "treat an external product's current branch/PR state as CUDA-MCGS authority merely because the product is named as a consumer"
   ],
   "cleanup_debt": [
     "checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f is redundant recovery state preserved because the available connector exposes no safe delete-ref action.",
-    "PR #126 and PR #132 are stale/unmergeable competing product-boundary remediation packets; issue #44 owns their reassessment and disposition."
+    "PR #126 and PR #132 are stale/unmergeable pre-existing product-boundary remediation packets; #44 must disposition them after a protected successor exists, preserving any unique non-product research before branch cleanup."
   ]
 }
