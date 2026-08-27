@@ -255,6 +255,18 @@ export function registerGraphEdgeCases({ defineCase, fixture, projection, compos
     return { batches: 3, pressure: pressure.code };
   }, ['GRAPH-EDGE-008', 'GRAPH-EDGE-009']);
 
+  defineCase('graph-edge-expansion-capacity-is-explicit-and-finite', () => {
+    const { oracle, nodes } = createEdgeHarness(projection, { admission: { expansionSlots: '1' } });
+    const parentA = nodes.ready('parent-cap-a', 'parent-cap-a');
+    const parentB = nodes.ready('parent-cap-b', 'parent-cap-b');
+    const first = oracle.claimExpansion({ claimer: 'expander-a', generation: '0', parent: parentA });
+    assert.equal(first.kind, 'initializer');
+    const pressure = oracle.claimExpansion({ claimer: 'expander-b', generation: '0', parent: parentB });
+    assert.deepEqual(pressure, { kind: 'pressure', code: 'edge-capacity' });
+    assert.equal(oracle.snapshot().limits.expansionSlots, '1');
+    return { first: first.kind, pressure: pressure.code, expansionSlots: '1' };
+  }, ['GRAPH-EDGE-009']);
+
   defineCase('graph-edge-expansion-generation-has-one-advancing-claimer', () => {
     const { oracle, nodes } = createEdgeHarness(projection);
     const parent = nodes.ready('parent', 'parent');

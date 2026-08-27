@@ -25,6 +25,7 @@
     "graph-edge-explicit-multiplicity-controls-duplicates",
     "graph-edge-failure-and-expansion-cancellation-are-terminal-and-conservative",
     "graph-edge-later-batches-remain-admissible-until-declared-capacity",
+    "graph-edge-expansion-capacity-is-explicit-and-finite",
     "graph-edge-expansion-generation-has-one-advancing-claimer",
     "graph-edge-structural-ready-does-not-publish-foreign-records",
     "graph-edge-oracle-sensitivity-parent-identity",

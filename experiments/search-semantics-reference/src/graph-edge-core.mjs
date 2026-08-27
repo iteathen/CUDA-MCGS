@@ -96,13 +96,17 @@ export function createGraphEdgeOracle({
   const expansionRecordBytes = decimal(expansionLayout.recordBytes, 'GRAPH_EDGE_PROFILE', `${expansionLayout.id} recordBytes`);
 
   const profileEdgeSlots = resourceMaximum(profile, 'resource-edge-slots');
+  const profileExpansionSlots = resourceMaximum(profile, 'resource-expansion-slots');
   const profileActionBytes = resourceMaximum(profile, 'resource-action-bytes');
-  const expansionCapacity = decimal(expansionLayout.capacity, 'GRAPH_EDGE_PROFILE', `${expansionLayout.id} capacity`);
+  const expansionLayoutCapacity = decimal(expansionLayout.capacity, 'GRAPH_EDGE_PROFILE', `${expansionLayout.id} capacity`);
+  if (profileExpansionSlots > expansionLayoutCapacity) fail('GRAPH_EDGE_PROFILE', 'expansion-slot resource exceeds the normalized expansion layout');
   const limits = {
     edgeSlots: admission.edgeSlots === undefined ? profileEdgeSlots : decimal(admission.edgeSlots, 'GRAPH_EDGE_ADMISSION', 'edgeSlots'),
+    expansionSlots: admission.expansionSlots === undefined ? profileExpansionSlots : decimal(admission.expansionSlots, 'GRAPH_EDGE_ADMISSION', 'expansionSlots'),
     actionBytes: admission.actionBytes === undefined ? profileActionBytes : decimal(admission.actionBytes, 'GRAPH_EDGE_ADMISSION', 'actionBytes'),
   };
-  if (limits.edgeSlots > profileEdgeSlots || limits.actionBytes > profileActionBytes || limits.edgeSlots === 0n || limits.actionBytes === 0n) {
+  if (limits.edgeSlots > profileEdgeSlots || limits.expansionSlots > profileExpansionSlots || limits.expansionSlots > expansionLayoutCapacity
+      || limits.actionBytes > profileActionBytes || limits.edgeSlots === 0n || limits.expansionSlots === 0n || limits.actionBytes === 0n) {
     fail('GRAPH_EDGE_ADMISSION', 'test admission plan exceeds or eliminates normalized Graph capacity');
   }
 
@@ -152,7 +156,7 @@ export function createGraphEdgeOracle({
       if (['claimed', 'open'].includes(existing.state)) return { kind: 'pending', expansionId: existing.id, state: existing.state };
       return { kind: 'terminal', expansionId: existing.id, state: existing.state, failure: existing.failure };
     }
-    if (BigInt(expansions.length) >= expansionCapacity) return { kind: 'pressure', code: 'edge-capacity' };
+    if (BigInt(expansions.length) >= limits.expansionSlots) return { kind: 'pressure', code: 'edge-capacity' };
     const expansion = {
       id: `expansion.${expansions.length}`,
       parent,
@@ -361,7 +365,7 @@ export function createGraphEdgeOracle({
   function snapshot() {
     return canonicalClone({
       profileId: profile.id,
-      limits: { edgeSlots: toDecimal(limits.edgeSlots), actionBytes: toDecimal(limits.actionBytes), actionByteLimit: toDecimal(actionByteLimit), expansionRecordBytes: toDecimal(expansionRecordBytes) },
+      limits: { edgeSlots: toDecimal(limits.edgeSlots), expansionSlots: toDecimal(limits.expansionSlots), actionBytes: toDecimal(limits.actionBytes), actionByteLimit: toDecimal(actionByteLimit), expansionRecordBytes: toDecimal(expansionRecordBytes) },
       ledger: { edgeSlots: toDecimal(ledger.edgeSlots), actionBytes: toDecimal(ledger.actionBytes) },
       expansions: expansions.map(expansionPublic),
       edges: edges.map(edgePublic),
