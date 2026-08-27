@@ -77,11 +77,26 @@ function lifecycle(profile, role, reclamation) {
     readyStates = ['open', 'complete']; terminalStates = ['cancelled', 'failed'];
   } else if (role === 'active-path') {
     states = ['free', 'active', 'completing', 'released', 'abandoned', 'failed'];
-    transitions = [transition('free', 'active', 'release-publication'), transition('active', 'completing', 'private'), transition('completing', 'released', 'terminal-publication'), transition('active', 'abandoned', 'terminal-publication'), transition('active', 'failed', 'terminal-publication')];
+    transitions = [
+      transition('free', 'active', 'release-publication'),
+      transition('active', 'completing', 'private'),
+      transition('completing', 'released', 'terminal-publication'),
+      transition('active', 'abandoned', 'terminal-publication'),
+      transition('active', 'failed', 'terminal-publication'),
+      transition('released', 'free', 'private'),
+      transition('abandoned', 'free', 'private'),
+      transition('failed', 'free', 'private'),
+    ];
     readyStates = ['active']; terminalStates = ['abandoned', 'failed', 'released'];
   } else if (role === 'path-occurrence') {
     states = ['free', 'reserved', 'ready', 'failed'];
-    transitions = [transition('free', 'reserved', 'private'), transition('reserved', 'ready', 'release-publication'), transition('reserved', 'failed', 'terminal-publication')];
+    transitions = [
+      transition('free', 'reserved', 'private'),
+      transition('reserved', 'ready', 'release-publication'),
+      transition('reserved', 'failed', 'terminal-publication'),
+      transition('ready', 'free', 'private'),
+      transition('failed', 'free', 'private'),
+    ];
     readyStates = ['ready']; terminalStates = ['failed'];
   } else if (role === 'transposition-entry') {
     states = ['empty', 'claimed', 'ready', 'failed', 'tombstone'];
@@ -274,6 +289,7 @@ function resources(profile, { reclamation = false, transposition = true } = {}) 
     { id: `graph.${profile}.resource-expansion-slots`, unit: 'slots', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'edge-capacity' },
     { id: `graph.${profile}.resource-state-bytes`, unit: 'bytes', minimum: '1', maximum: '1441792', alignment: '8', scope: 'per-engine', pressureOutcome: 'state-byte-capacity' },
     { id: `graph.${profile}.resource-action-bytes`, unit: 'bytes', minimum: '1', maximum: '262144', alignment: '8', scope: 'per-engine', pressureOutcome: 'action-byte-capacity' },
+    { id: `graph.${profile}.resource-active-path-slots`, unit: 'slots', minimum: '1', maximum: '256', alignment: '8', scope: 'per-engine', pressureOutcome: 'path-capacity' },
     { id: `graph.${profile}.resource-path-records`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'path-capacity' },
     { id: `graph.${profile}.resource-path-depth`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-invocation', pressureOutcome: 'path-depth' },
     { id: `graph.${profile}.resource-protection-slots`, unit: 'slots', minimum: '1', maximum: '8192', alignment: '8', scope: 'per-engine', pressureOutcome: 'protection-capacity' },

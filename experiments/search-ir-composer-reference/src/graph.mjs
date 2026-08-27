@@ -351,6 +351,16 @@ function normalizePath(input, domainProfile, objectById, layoutByObject) {
       || compareDecimalUint(maxDepth, layoutByObject.get(input.occurrenceObject).capacity) > 0) fail('GRAPH_PATH_CAPACITY', 'path bounds exceed selected layouts');
   const historyProjection = normalizeSchemaReference(input.historyProjection, 'path historyProjection');
   if (schemaKey(historyProjection) !== schemaKey(domainProfile.classifyPathRelationPort)) fail('GRAPH_PATH_DOMAIN_PORT', 'path history projection differs from domain relation port');
+  const pathLifecycle = objectById.get(input.pathObject).lifecycle;
+  const occurrenceLifecycle = objectById.get(input.occurrenceObject).lifecycle;
+  const hasPrivateReset = (lifecycle, from) => lifecycle.transitions.some((transition) =>
+    transition.from === from && transition.to === lifecycle.initialState && transition.visibility === 'private');
+  for (const terminal of pathLifecycle.terminalStates) {
+    if (!hasPrivateReset(pathLifecycle, terminal)) fail('GRAPH_PATH_LIFECYCLE', `active-path terminal state ${terminal} cannot return to free for stale-safe reuse`);
+  }
+  for (const reusable of [...occurrenceLifecycle.readyStates, ...occurrenceLifecycle.terminalStates]) {
+    if (!hasPrivateReset(occurrenceLifecycle, reusable)) fail('GRAPH_PATH_LIFECYCLE', `path-occurrence state ${reusable} cannot return to free after path release`);
+  }
   return {
     kind: input.kind,
     pathObject: input.pathObject,
@@ -696,6 +706,26 @@ export function normalizeGraphProfile(input, inspectedCatalog, domainProfileResu
     const protectionDemand = layoutByObject.get(roleObject.get('protection-record')).capacity;
     if (compareDecimalUint(protectionSlotCapacity, protectionDemand) < 0) {
       fail('GRAPH_RESOURCE_CAPACITY', 'protection-capacity slot resources cannot cover protection-record layout capacity');
+    }
+    const activePathSlotCapacity = resources
+      .filter(({ unit, pressureOutcome, scope }) => unit === 'slots' && pressureOutcome === 'path-capacity' && scope === 'per-engine')
+      .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+    const occurrenceRecordCapacity = resources
+      .filter(({ unit, pressureOutcome, scope }) => unit === 'records' && pressureOutcome === 'path-capacity' && scope === 'per-engine')
+      .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+    const pathDepthCapacity = resources
+      .filter(({ unit, pressureOutcome, scope }) => unit === 'records' && pressureOutcome === 'path-depth' && scope === 'per-invocation')
+      .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+    const activePathDemand = layoutByObject.get(roleObject.get('active-path')).capacity;
+    const occurrenceDemand = layoutByObject.get(roleObject.get('path-occurrence')).capacity;
+    if (compareDecimalUint(activePathSlotCapacity, activePathDemand) < 0 || compareDecimalUint(activePathSlotCapacity, path.maxPaths) < 0) {
+      fail('GRAPH_RESOURCE_CAPACITY', 'path-capacity slot resources cannot cover active-path layout/maxPaths');
+    }
+    if (compareDecimalUint(occurrenceRecordCapacity, occurrenceDemand) < 0) {
+      fail('GRAPH_RESOURCE_CAPACITY', 'path-capacity record resources cannot cover path-occurrence layout capacity');
+    }
+    if (compareDecimalUint(pathDepthCapacity, path.maxDepth) < 0) {
+      fail('GRAPH_RESOURCE_CAPACITY', 'path-depth resources cannot cover maxDepth');
     }
     const requiredRegions = [['domain-state', roleObject.get('state-node')], ['domain-action', roleObject.get('parent-edge')]];
     if (domainProfileResult.normalized.history.disposition === 'carried' || domainProfileResult.normalized.history.disposition === 'hybrid') requiredRegions.push(['domain-history', roleObject.get('path-occurrence')]);
