@@ -1,0 +1,35 @@
+{
+  "schema": "cuda-mcgs.reference-graph-edge-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 719510,
+    "sha256": "4846fe8686721afd13dfe4ac66ebbfdb0722979481183e76b96bf9118f340b3f"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 132436,
+    "sha256": "22a7fd46605dee3a202fe42aba800fa92fc0e7d4de1f8b619123c1e7d489053e"
+  },
+  "nodeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10123,
+    "sha256": "0f2d90a9e61c831c467d94f7cc761fb6a44050c00d40b2e2e71bfebba4a1d767"
+  },
+  "expectedCases": [
+    "graph-edge-profile-projection-exact",
+    "graph-edge-parent-local-incoming-edges-share-child-only",
+    "graph-edge-action-ready-precedes-child-resolution",
+    "graph-edge-pending-child-link-becomes-ready-without-republishing-action",
+    "graph-edge-batch-publication-is-complete-and-producer-opaque",
+    "graph-edge-explicit-multiplicity-controls-duplicates",
+    "graph-edge-failure-and-expansion-cancellation-are-terminal-and-conservative",
+    "graph-edge-later-batches-remain-admissible-until-declared-capacity",
+    "graph-edge-expansion-generation-has-one-advancing-claimer",
+    "graph-edge-structural-ready-does-not-publish-foreign-records",
+    "graph-edge-oracle-sensitivity-parent-identity",
+    "graph-edge-oracle-sensitivity-action-before-child",
+    "graph-edge-oracle-sensitivity-partial-batch",
+    "graph-edge-requirement-coverage-exact"
+  ]
+}
