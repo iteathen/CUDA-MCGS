@@ -10,12 +10,16 @@ function replaceOnce(before, after) {
 }
 
 replaceOnce(
-  "  for (const reusable of [...protectionObject.lifecycle.readyStates, ...protectionObject.lifecycle.terminalStates]) {\n    if (!hasPrivateReset(protectionObject, reusable)) fail('GRAPH_ROOT_LIFECYCLE', `protection-record state ${reusable} cannot return to free`);\n  }",
-  "  for (const terminal of protectionObject.lifecycle.terminalStates) {\n    if (!hasPrivateReset(protectionObject, terminal)) fail('GRAPH_ROOT_LIFECYCLE', `protection-record terminal state ${terminal} cannot return to free`);\n  }",
+  'for (const reusable of [...protectionObject.lifecycle.readyStates, ...protectionObject.lifecycle.terminalStates])',
+  'for (const terminal of protectionObject.lifecycle.terminalStates)',
 );
 replaceOnce(
-  "  protection.lifecycle.transitions = protection.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-ready') && to.endsWith('state-free')));",
-  "  protection.lifecycle.transitions = protection.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-released') && to.endsWith('state-free')));",
+  "hasPrivateReset(protectionObject, reusable)) fail('GRAPH_ROOT_LIFECYCLE', `protection-record state ${reusable} cannot return to free`)",
+  "hasPrivateReset(protectionObject, terminal)) fail('GRAPH_ROOT_LIFECYCLE', `protection-record terminal state ${terminal} cannot return to free`)",
+);
+replaceOnce(
+  "protection.lifecycle.transitions = protection.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-ready') && to.endsWith('state-free')))",
+  "protection.lifecycle.transitions = protection.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-released') && to.endsWith('state-free')))",
 );
 
 fs.writeFileSync(file, source);
