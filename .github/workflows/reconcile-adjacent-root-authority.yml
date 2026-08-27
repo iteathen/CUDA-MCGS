@@ -1,0 +1,286 @@
+name: one-shot adjacent root authority reconciliation
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    if: github.event.pull_request.head.ref == 'docs/ref-root-control-01-reconcile'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/ref-root-control-01-reconcile
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.7.0
+      - name: Reconcile adjacent authority semantics and regenerate evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          import { sourceTextSha256 } from './experiments/search-ir-composer-reference/src/validation.mjs';
+
+          async function update(file, transform) {
+            const before = await readFile(file, 'utf8');
+            const after = transform(before);
+            if (after === before) throw new Error(`expected ${file} to change`);
+            await writeFile(file, after);
+          }
+
+          function replaceExact(text, before, after, label) {
+            const first = text.indexOf(before);
+            if (first < 0) throw new Error(`missing ${label}`);
+            if (text.indexOf(before, first + before.length) >= 0) throw new Error(`duplicate ${label}`);
+            return text.slice(0, first) + after + text.slice(first + before.length);
+          }
+
+          await update('agent_files/SYSTEM_REGISTRY.md', (text) => {
+            text = text.replace(
+              /^\| `contract\.policy` \|.*$/m,
+              '| `contract.policy` | Product-neutral selection/reservation/widening/policy statistics/backup/stopping, reroot reuse classification, and advance provenance/compatibility | [`../docs/specs/SPEC-0008-search-policy-and-backup.md`](../docs/specs/SPEC-0008-search-policy-and-backup.md) proposal |',
+            );
+            text = text.replace(
+              /^\| `contract\.evaluator` \|.*$/m,
+              '| `contract.evaluator` | Resident evaluator semantics/capabilities/batching/workspace/publication, reroot cache/state reuse, and advance provenance/compatibility | [`../docs/specs/SPEC-0009-evaluator-contract.md`](../docs/specs/SPEC-0009-evaluator-contract.md) proposal |',
+            );
+            text = text.replace(
+              /^\| `contract\.session` \|.*$/m,
+              '| `contract.session` | Optional external Search Session coordination with initial root, minimum-work advance, general reroot, independently versioned attention, cancellation and observation-request/borrow lifecycles; source owners retain semantic validity while advance performs no retained-state reclassification or allocation | [`../docs/specs/SPEC-0006-search-session-control-and-observation.md`](../docs/specs/SPEC-0006-search-session-control-and-observation.md) proposal |',
+            );
+            text = text.replace(
+              /^\| `contract\.resources` \|.*$/m,
+              '| `contract.resources` | Search-memory plan, capacities, initial-root planning, reroot-admission reserve/pressure, capability/product resources, exhaustion/cancellation/teardown; advance has no allocation/resize admission path | [`../docs/specs/SPEC-0011-finite-search-resources.md`](../docs/specs/SPEC-0011-finite-search-resources.md) proposal |',
+            );
+            return text;
+          });
+
+          await update('docs/specs/SPEC-0008-search-policy-and-backup.md', (text) => {
+            const replacements = [
+              ['stopping-budget semantics and root-advance reuse classification.', 'stopping-budget semantics, reroot reuse classification, and advance compatibility/provenance.'],
+              ['Every policy decision, record, reservation, value conversion, backup contribution, stopping fact and root-advance reuse disposition has finite declared meaning and identity;', 'Every policy decision, record, reservation, value conversion, backup contribution, stopping fact and authority-transition validity/reuse disposition has finite declared meaning and identity;'],
+              ['- root-advance/root-epoch reuse/reset/transform/invalidate classification for policy-owned state.', '- reroot reuse/reset/transform/invalidate classification for policy-owned state; advance never invokes retained-state reclassification and instead uses already-scoped provenance to preserve compatible selected-descendant state while occurrence-scoped sibling state is superseded lazily.'],
+              ['- Search Session root-update authority/commit, external control, observation cadence or reclamation; or', '- Search Session root/advance/reroot authority/publication, external control, observation cadence or reclamation; or'],
+              ['10. `classifyPolicyReuse` — declare retain/retain-if-key-valid/transform/reset/invalidate across root epochs.', '10. `classifyPolicyReuse` — declare retain/retain-if-key-valid/transform/reset/invalidate for reroot reconciliation. Advance never invokes this port; it preserves already-compatible selected-descendant state and supersedes occurrence-scoped sibling state by provenance.'],
+              ['backup, stopping and root-advance reuse for one engine identity.', 'backup, stopping, reroot reuse and advance provenance/compatibility for one engine identity.'],
+              ['- root-epoch/reuse dispositions;', '- reroot reuse dispositions plus record scope/provenance sufficient to determine advance compatibility without retained-state reclassification;'],
+              ['Root-relative or path-relative data cannot be reused as graph-global data merely because its physical node survives a root advance.', 'Root-relative or path-relative data cannot be reused as graph-global data merely because its physical node survives an authority change. Advance preserves only already-compatible selected-descendant state by provenance; it does not reclassify retained state.'],
+              ['stopping budgets/causes and root-advance reuse.', 'stopping budgets/causes, reroot reuse and advance provenance/compatibility.'],
+              ['| `policy-root-advance-reuse-classification` | Physical node retention implicitly preserves root-invalid policy state. |', '| `policy-advance-no-reclassification` | Advance invokes reuse/reset/transform classification or physical node retention implicitly preserves occurrence-invalid policy state. |'],
+              ['6. a root-advance/stop sequence with stale work, partial backup must-drain, bounded overshoot and explicit reuse dispositions.', '6. an advance/stop sequence with stale work, partial backup must-drain, bounded overshoot and provenance-scoped compatibility, plus a separate reroot case with explicit reuse dispositions.'],
+            ];
+            for (const [before, after] of replacements) text = replaceExact(text, before, after, `SPEC-0008: ${before.slice(0, 32)}`);
+            return text;
+          });
+
+          await update('docs/specs/SPEC-0009-evaluator-contract.md', (text) => {
+            const replacements = [
+              ['caches and root-advance reuse.', 'caches, reroot reuse classification, and advance compatibility/provenance.'],
+              ['- root-advance/root-epoch reuse/reset/transform/invalidate classification for evaluator-owned state.', '- reroot reuse/reset/transform/invalidate classification for evaluator-owned state; advance never invokes retained-state reclassification and may preserve an entry only when its existing key/provenance is already valid for the selected descendant occurrence.'],
+              ['10. `classifyEvaluatorReuse` — declare retain/retain-if-key-valid/transform/reset/invalidate across root epochs.', '10. `classifyEvaluatorReuse` — declare retain/retain-if-key-valid/transform/reset/invalidate for reroot reconciliation. Advance never invokes this port; existing cache/state survives only when its already-declared key/provenance remains valid without transformation or reset.'],
+              ['- root-advance/root-epoch reuse dispositions; and', '- reroot reuse dispositions plus input/cache provenance sufficient to determine advance compatibility without retained-state reclassification; and'],
+              ['failures/cancellation and root-advance reuse.', 'failures/cancellation, reroot reuse and advance provenance/compatibility.'],
+              ['| `evaluator-root-advance-history-invalidation` | Physical node retention preserves root/history-invalid result. |', '| `evaluator-advance-history-provenance` | Advance invokes cache reclassification or physical node retention preserves a result whose existing history/provenance key is invalid for the selected descendant occurrence. |'],
+            ];
+            for (const [before, after] of replacements) text = replaceExact(text, before, after, `SPEC-0009: ${before.slice(0, 32)}`);
+            return text;
+          });
+
+          await update('docs/specs/SPEC-0010-graph-storage-and-reclamation.md', (text) => {
+            const replacements = [
+              ['informative adjacency for root-advance/reclamation and stale-reference evidence.', 'informative adjacency for advance/reroot authority, reclamation and stale-reference evidence.'],
+              ['| `graph-root-advance-before-reclaim` | Logical root advance immediately reuses old storage without quiescence. |', '| `graph-advance-before-reclaim` | Advance immediately reuses superseded-occurrence storage without quiescence. |'],
+              ['a reclamation-enabled root-advance sequence with old work, retained observation borrow, retirement, quiescence and slot reuse.', 'a reclamation-enabled advance sequence with old work, retained observation borrow, retirement, quiescence and slot reuse.'],
+              ['progress/occupancy interaction, root-update pressure, reclamation and teardown', 'progress/occupancy interaction, reroot-admission pressure, reclamation and teardown'],
+            ];
+            for (const [before, after] of replacements) text = replaceExact(text, before, after, `SPEC-0010: ${before.slice(0, 32)}`);
+            return text;
+          });
+
+          await update('docs/specs/SPEC-0011-finite-search-resources.md', (text) => {
+            text = text.replaceAll('root-update reserve', 'reroot-admission reserve');
+            return replaceExact(
+              text,
+              'output/observation, root-update reserve, diagnostics and selected capability/product resources compose under different finite profiles;',
+              'output/observation, reroot-admission reserve, diagnostics and selected capability/product resources compose under different finite profiles while advance requires no allocation/resize admission;',
+              'SPEC-0011 outcome sentence',
+            );
+          });
+
+          await update('docs/specs/SPEC-0013-result-and-observation-publication.md', (text) => {
+            const replacements = [
+              ['- output-owned state reuse/reset/invalidate across root/session incarnations.', '- output-owned reroot/session reuse/reset/invalidate; advance changes authority provenance without invoking output-state reclassification, so prior root-relative publications become non-current by their existing provenance.'],
+              ['8. `classifyOutputReuse` — retain/reset/invalidate output-owned sequences/slots across root/session transitions.', '8. `classifyOutputReuse` — retain/reset/invalidate output-owned sequences/slots for reroot/session reconciliation. Advance never invokes this port; publication freshness/currentness follows existing root-incarnation/epoch/advance provenance.'],
+              ['- root/session reuse/reset/invalidate dispositions.', '- reroot/session reuse/reset/invalidate dispositions plus root/advance provenance sufficient to classify publication freshness without retained-state reclassification.'],
+            ];
+            for (const [before, after] of replacements) text = replaceExact(text, before, after, `SPEC-0013: ${before.slice(0, 32)}`);
+            return text;
+          });
+
+          const machineFiles = [
+            'schemas/search-ir/0.2.0/resource-profile.schema.json',
+            'experiments/search-ir-composer-reference/src/resource.mjs',
+            'experiments/search-ir-composer-reference/src/resource-fixtures.mjs',
+            'experiments/search-ir-composer-reference/src/session.mjs',
+            'experiments/search-ir-composer-reference/src/session-fixtures.mjs',
+            'experiments/search-ir-composer-reference/run.mjs',
+          ];
+          for (const file of machineFiles) {
+            let text = await readFile(file, 'utf8');
+            text = text.replaceAll('root-update', 'reroot-admission');
+            text = text.replaceAll('legacyRerootReserve', 'rerootReserve');
+            text = text.replaceAll('legacyRootReserve', 'rerootReserve');
+            text = text.replaceAll('rootClassId', 'rerootClassId');
+            text = text.replaceAll('rootClass', 'rerootClass');
+            text = text.replaceAll('resource-live-session-root-reserve', 'resource-live-session-reroot-reserve');
+            text = text.replaceAll('reject-resource-root-reserve-missing', 'reject-resource-reroot-reserve-missing');
+            await writeFile(file, text);
+          }
+
+          const contractSetPath = 'schemas/search-ir/0.2.0/contract-set.json';
+          const contractSet = JSON.parse(await readFile(contractSetPath, 'utf8'));
+          for (const contract of contractSet.contracts) {
+            contract.sha256 = sourceTextSha256(await readFile(contract.sourcePath));
+          }
+          await writeFile(contractSetPath, `${JSON.stringify(contractSet, null, 2)}\n`);
+
+          const frameworkPath = 'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json';
+          const framework = JSON.parse(await readFile(frameworkPath, 'utf8'));
+          const schemaFiles = new Map([
+            ['domain', 'domain-profile.schema.json'], ['graph', 'graph-profile.schema.json'], ['output', 'output-profile.schema.json'],
+            ['policy', 'policy-profile.schema.json'], ['program-package', 'program-package-profile.schema.json'],
+            ['progress', 'progress-profile.schema.json'], ['resource', 'resource-profile.schema.json'],
+          ]);
+          for (const profile of framework.profiles) {
+            profile.schema.sha256 = sourceTextSha256(await readFile(`schemas/search-ir/0.2.0/${schemaFiles.get(profile.role)}`));
+          }
+          await writeFile(frameworkPath, `${JSON.stringify(framework, null, 2)}\n`);
+          NODE
+
+          set +e
+          node scripts/run-search-ir-composer-reference.mjs
+          discovery_status=$?
+          set -e
+          test -s experiments/search-ir-composer-reference/build/evidence.json
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const fixturePath = 'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json';
+          const fixture = JSON.parse(await readFile(fixturePath, 'utf8'));
+          const evidence = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const byRole = new Map([
+            ['domain', evidence.domainProfileIdentities?.[0]], ['graph', evidence.graphProfileIdentities?.[0]],
+            ['policy', evidence.policyProfileIdentities?.[0]], ['resource', evidence.resourceProfileIdentities?.[0]],
+            ['progress', evidence.progressProfileIdentities?.[0]], ['output', evidence.outputProfileIdentities?.[0]],
+          ]);
+          for (const profile of fixture.profiles) {
+            const identity = byRole.get(profile.role);
+            if (!identity) continue;
+            if (!/^[0-9a-f]{64}$/.test(identity.sha256)) throw new Error(`missing derived identity for ${profile.role}`);
+            profile.identity = { algorithm: identity.algorithm, sha256: identity.sha256 };
+          }
+          await writeFile(fixturePath, `${JSON.stringify(fixture, null, 2)}\n`);
+          NODE
+
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-domain-profiles.mjs
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const composer = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/domain-profiles.json', 'utf8'));
+          for (const fixturePath of [
+            'experiments/search-semantics-reference/fixtures/neutral-schedules.json',
+            'experiments/search-semantics-reference/fixtures/domain-cases.json',
+          ]) {
+            const fixture = JSON.parse(await readFile(fixturePath, 'utf8'));
+            fixture.composerEvidence = composer.representationCompositionEvidenceKey;
+            if (fixture.schedules) for (const schedule of Object.values(fixture.schedules)) schedule.evidenceKey = composer.representationCompositionEvidenceKey.sha256;
+            if (fixture.profileProjection) fixture.profileProjection = { schema: projection.schema, ...projection.projectionIdentity };
+            await writeFile(fixturePath, `${JSON.stringify(fixture, null, 2)}\n`);
+          }
+          NODE
+
+          node scripts/run-search-semantics-reference.mjs
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          import { canonicalIdentity, normalizeContractSet, normalizeRequirementCoverage } from './experiments/search-ir-composer-reference/src/catalog.mjs';
+
+          const composer = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const semantic = JSON.parse(await readFile('experiments/search-semantics-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/domain-profiles.json', 'utf8'));
+          const contractSet = JSON.parse(await readFile('schemas/search-ir/0.2.0/contract-set.json', 'utf8'));
+          const coverage = JSON.parse(await readFile('schemas/search-ir/0.2.0/requirement-coverage.json', 'utf8'));
+          const nextPath = 'next_step.yaml';
+          const next = JSON.parse(await readFile(nextPath, 'utf8'));
+          next.schema_version = Math.max(next.schema_version ?? 0, 67);
+          next.updated = '2026-08-26';
+          next.exact_evidence_inputs.representation_composition_evidence_key = composer.representationCompositionEvidenceKey.sha256;
+          next.exact_evidence_inputs.contract_set_identity = canonicalIdentity(normalizeContractSet(contractSet)).sha256;
+          next.exact_evidence_inputs.requirement_coverage_identity = canonicalIdentity(normalizeRequirementCoverage(coverage)).sha256;
+          next.exact_evidence_inputs.deletion_matrix_identity = composer.deletionIdentityMatrixIdentity.sha256;
+          next.exact_evidence_inputs.domain_profile_projection_identity = projection.projectionIdentity.sha256;
+          next.exact_evidence_inputs.semantic_reference_evidence_key = semantic.evidenceIdentity.sha256;
+          next.current_focus.next_action = 'Complete exact-head review and guarded integration of PR #127. After protected main read-back confirms distinct root/advance/reroot/attention semantics, reroot-only retained-state classification, reroot-admission resource ownership and regenerated evidence, mark REF-GRAPH-01 dependency-ready.';
+          await writeFile(nextPath, `${JSON.stringify(next, null, 2)}\n`);
+
+          const oldComposer = 'b189211a774e6d4bd9b27ee8a744ed80743cfe45f3564be93deb310383efc906';
+          const oldProjection = '321f913bea8b74b9dfef3b01341b148734c0448cb97c69f7e2b170b9985f26a0';
+          const oldSemantic = '7bdc38b6c1c12ed45cfeaeeb91546fb39ffd6d10117d1d8261be136d0062cd3c';
+          for (const file of ['STATUS.md', 'experiments/search-ir-composer-reference/README.md', 'experiments/search-ir-composer-reference/RESULTS.md']) {
+            let text = await readFile(file, 'utf8');
+            text = text.replaceAll(oldComposer, composer.representationCompositionEvidenceKey.sha256);
+            if (file === 'STATUS.md') {
+              text = text.replaceAll(oldProjection, projection.projectionIdentity.sha256);
+              text = text.replaceAll(oldSemantic, semantic.evidenceIdentity.sha256);
+              text = text.replace(
+                'SPEC-0006, Search IR 0.2.0 Session schema/normalization/fixtures/tests, distinct advance/reroot deletion, deterministic reroot rollback order, and dependent evidence all conform to ADR-0022',
+                'SPEC-0006, adjacent Policy/Evaluator/Graph/Resource/Output proposal wording, Search IR 0.2.0 Session/resource semantics, distinct advance/reroot deletion, reroot-only retained-state classification, deterministic reroot rollback order, and dependent evidence all conform to ADR-0022',
+              );
+            }
+            await writeFile(file, text);
+          }
+          for (const file of ['experiments/search-semantics-reference/README.md', 'experiments/search-semantics-reference/RESULTS.md']) {
+            let text = await readFile(file, 'utf8');
+            text = text.replaceAll(oldComposer, composer.representationCompositionEvidenceKey.sha256)
+              .replaceAll(oldProjection, projection.projectionIdentity.sha256)
+              .replaceAll(oldSemantic, semantic.evidenceIdentity.sha256);
+            await writeFile(file, text);
+          }
+          NODE
+
+          ./scripts/verify-docs.sh
+
+          if grep -RIn 'root-update' \
+              schemas/search-ir/0.2.0/resource-profile.schema.json \
+              experiments/search-ir-composer-reference/src/resource.mjs \
+              experiments/search-ir-composer-reference/src/resource-fixtures.mjs \
+              experiments/search-ir-composer-reference/src/session.mjs \
+              experiments/search-ir-composer-reference/src/session-fixtures.mjs \
+              experiments/search-ir-composer-reference/run.mjs; then
+            echo 'stale generic root-update machine vocabulary remains' >&2
+            exit 1
+          fi
+          if grep -n 'root-advance reuse\|root-advance/root-epoch' docs/specs/SPEC-0008-search-policy-and-backup.md docs/specs/SPEC-0009-evaluator-contract.md; then
+            echo 'stale advance reclassification semantics remain' >&2
+            exit 1
+          fi
+          if grep -n 'structural root transaction' agent_files/SYSTEM_REGISTRY.md; then
+            echo 'stale Session transaction ownership remains in registry' >&2
+            exit 1
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/reconcile-adjacent-root-authority.yml
+          git add -A
+          git diff --cached --check
+          git commit -m 'docs: reconcile adjacent root-control ownership'
+          git push origin HEAD:docs/ref-root-control-01-reconcile
