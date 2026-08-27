@@ -223,14 +223,38 @@ function buildProfile(profile, inspected, selected, schemaShas, options = {}) {
   const ledgerClass = resourceClass(profile, resourceContributor.id, { id: ledgerClassId, unit: 'records', minimum: '1024', maximum: '65536', alignment: '8', scope: 'per-engine', pressureStatus: 'resource-capacity' }, { id: ledgerClassId, sourceResource: ledgerClassId, basis: 'maximum-live', ownerPressureStatus: 'resource-capacity' });
   classes.push(terminalClass, workingClass, ...(observationClass ? [observationClass] : []), progressClass, ledgerClass);
 
-  let rerootClass = null;
-  if (options.session) {
-    const rererootClassId = `resource.${profile}.class-reroot-admission`;
-    const sessionContributor = opaqueContributor(profile, inspected, `session.${profile}`, 'SPEC-0006', [rererootClassId], true);
-    contributors.push(sessionContributor);
-    rerootClass = resourceClass(profile, sessionContributor.id, { id: rererootClassId, unit: 'bytes', minimum: '16384', maximum: '16384', alignment: '256', scope: 'per-engine', pressureStatus: 'session-reroot-admission-capacity' }, { id: rererootClassId, sourceResource: rererootClassId, basis: 'optional-reserve', ownerPressureStatus: 'session-reroot-admission-capacity', memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'], lifetime: 'session' });
+  let sessionControlClass = null;
+let rerootClass = null;
+if (options.session) {
+  const sessionControlClassId = `resource.${profile}.class-session-control`;
+  const rerootSelected = options.reroot !== false;
+  const rerootClassId = `resource.${profile}.class-reroot-admission`;
+  const sessionContributor = opaqueContributor(
+    profile,
+    inspected,
+    `session.${profile}`,
+    'SPEC-0006',
+    [sessionControlClassId, ...(rerootSelected ? [rerootClassId] : [])],
+    true,
+  );
+  contributors.push(sessionContributor);
+  sessionControlClass = resourceClass(
+    profile,
+    sessionContributor.id,
+    { id: sessionControlClassId, unit: 'bytes', minimum: '16384', maximum: '16384', alignment: '256', scope: 'per-engine', pressureStatus: 'session-control-capacity' },
+    { id: sessionControlClassId, sourceResource: sessionControlClassId, basis: 'maximum-live', ownerPressureStatus: 'session-control-capacity', memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'], lifetime: 'session' },
+  );
+  classes.push(sessionControlClass);
+  if (rerootSelected) {
+    rerootClass = resourceClass(
+      profile,
+      sessionContributor.id,
+      { id: rerootClassId, unit: 'bytes', minimum: '16384', maximum: '16384', alignment: '256', scope: 'per-engine', pressureStatus: 'session-reroot-admission-capacity' },
+      { id: rerootClassId, sourceResource: rerootClassId, basis: 'optional-reserve', ownerPressureStatus: 'session-reroot-admission-capacity', memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'], lifetime: 'session' },
+    );
     classes.push(rerootClass);
   }
+}
 
   if (options.stage) {
     const stageStateClassId = `resource.${profile}.class-stage-state`;

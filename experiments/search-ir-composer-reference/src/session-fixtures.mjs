@@ -150,14 +150,19 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
   const graphOwner = progress.contributors.find(({ contract }) => contract.id === 'SPEC-0010');
   const policyOwner = progress.contributors.find(({ contract }) => contract.id === 'SPEC-0008');
   const outputOwner = progress.contributors.find(({ contract }) => contract.id === 'SPEC-0013');
-  const rerootReserve = resource.reserves.find(({ purpose }) => purpose === 'reroot-admission');
-  const rererootClass = resource.classes.find(({ id, contributor }) => id === rerootReserve?.class && contributor === sessionOwner.id);
-  const rerootAdmission = resource.admissionGroups.find(({ classes }) => classes.includes(rererootClass?.id));
   const selectedObservation = output.observations.kind === 'selected' ? output.observations.profiles[0] : null;
   const advanceSelected = options.advance !== false;
   const rerootSelected = options.reroot !== false;
   const attentionSelected = options.attention !== false;
   const observationSelected = selectedObservation !== null;
+  const rerootReserve = rerootSelected ? resource.reserves.find(({ purpose }) => purpose === 'reroot-admission') : null;
+  const rerootClass = rerootReserve ? resource.classes.find(({ id, contributor }) => id === rerootReserve.class && contributor === sessionOwner.id) : null;
+  const rerootAdmission = rerootClass ? resource.admissionGroups.find(({ classes }) => classes.includes(rerootClass.id)) : null;
+  const sessionControlClasses = resource.classes.filter(({ contributor, id }) => contributor === sessionOwner.id && id !== rerootClass?.id);
+  if (sessionControlClasses.length !== 1) throw new Error('synthetic Session requires exactly one generic control class');
+  const sessionControlClass = sessionControlClasses[0];
+  if (rerootSelected && (!rerootReserve || !rerootClass || !rerootAdmission)) throw new Error('synthetic reroot resources are incomplete');
+  if (!rerootSelected && resource.reserves.some(({ purpose }) => purpose === 'reroot-admission')) throw new Error('synthetic reroot reserve survived deletion');
 
   const advancePermission = schemaReference(`cuda-mcgs.synthetic-${profile}-permission-advance`);
   const rerootPermission = schemaReference(`cuda-mcgs.synthetic-${profile}-permission-reroot`);
@@ -419,8 +424,8 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
     },
     counters: [
       counter(profile, 'session-incarnation', '18446744073709551615', 'session-restart-required'),
-      counter(profile, 'root-incarnation', rererootClass.range.generationMaximum, 'root-incarnation-exhausted'),
-      counter(profile, 'root-epoch', rererootClass.range.generationMaximum, 'root-epoch-exhausted'),
+      counter(profile, 'root-incarnation', sessionControlClass.range.generationMaximum, 'root-incarnation-exhausted'),
+      counter(profile, 'root-epoch', sessionControlClass.range.generationMaximum, 'root-epoch-exhausted'),
       ...(advanceSelected ? [counter(profile, 'advance-generation', '340282366920938463463374607431768211455', 'advance-generation-exhausted')] : []),
       counter(profile, 'command', '340282366920938463463374607431768211455', 'session-command-capacity'),
       ...(attentionSelected ? [counter(profile, 'attention-generation', '340282366920938463463374607431768211455', 'attention-generation-exhausted')] : []),

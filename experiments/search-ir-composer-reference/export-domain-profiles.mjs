@@ -31,10 +31,10 @@ try {
 assert.equal(composerEvidence.capsule, 'cuda-mcgs-search-ir-composer-reference-v0.2.0');
 assert.equal(composerEvidence.status, 'pass');
 assert.deepEqual(composerEvidence.summary, {
-  expected: 878,
-  discovered: 878,
-  executed: 878,
-  passed: 878,
+  expected: 879,
+  discovered: 879,
+  executed: 879,
+  passed: 879,
   failed: 0,
   requiredSkipped: 0,
   conditionalSkipped: 0,

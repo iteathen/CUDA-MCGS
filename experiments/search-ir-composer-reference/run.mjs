@@ -1797,10 +1797,26 @@ await runCase('compose-cross-profile-deletion-matrix', () => {
   assert.equal(attentionAfter.session.normalized.commands.inputs.some(({ kind }) => kind === 'attention'), false);
   assert.equal(attentionAfter.session.normalized.ports.some(({ id }) => id === 'applyAttentionChange'), false);
   assert.deepEqual(attentionBefore.resource.identity, attentionAfter.resource.identity);
-  assert.deepEqual(attentionBefore.progress.identity, attentionAfter.progress.identity);
-  assert.deepEqual(attentionBefore.output.identity, attentionAfter.output.identity);
+assert.deepEqual(attentionBefore.progress.identity, attentionAfter.progress.identity);
+assert.deepEqual(attentionBefore.output.identity, attentionAfter.output.identity);
 
-  const stageBefore = buildOwnerChain({ label: 'deletion-stage', domain: domainProfiles[0], graph: graphProfiles[0], policy: policyProfiles[0], resourceOptions: { stage: true }, outputOptions: { structured: true }, stageOptions: {} });
+const rerootBefore = buildOwnerChain({ label: 'deletion-reroot', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { session: true }, outputOptions: { structured: true }, sessionOptions: { attention: false } });
+const rerootAfter = buildOwnerChain({ label: 'deletion-reroot', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { session: true, reroot: false }, outputOptions: { structured: true }, sessionOptions: { reroot: false, attention: false } });
+assert.equal(rerootBefore.session.normalized.reroot.kind, 'selected');
+assert.equal(rerootAfter.session.normalized.reroot.kind, 'absent');
+assert.equal(rerootAfter.session.normalized.advance.kind, 'selected');
+assert.equal(rerootAfter.resource.normalized.reserves.some(({ purpose }) => purpose === 'reroot-admission'), false);
+const rerootAfterSessionOwner = rerootAfter.resource.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0006');
+assert(rerootAfterSessionOwner);
+assert(rerootAfter.resource.normalized.classes.some(({ contributor, ownerPressureStatus }) => contributor === rerootAfterSessionOwner.id && ownerPressureStatus === 'session-control-capacity'));
+assert.equal(rerootAfter.resource.normalized.classes.some(({ contributor, ownerPressureStatus }) => contributor === rerootAfterSessionOwner.id && ownerPressureStatus === 'session-reroot-admission-capacity'), false);
+assert.equal(rerootAfter.progress.normalized.workClasses.find(({ owner }) => owner === rerootAfterSessionOwner.id).reserve, null);
+assert.equal(rerootAfter.session.normalized.commands.inputs.some(({ kind }) => kind === 'reroot'), false);
+assert.equal(rerootAfter.session.normalized.ports.some(({ id }) => ['prepareReroot', 'commitReroot', 'abortReroot'].includes(id)), false);
+assert.equal(rerootAfter.session.normalized.cleanup.kinds.includes('reroot-transaction'), false);
+assert.equal(rerootAfter.session.normalized.cleanup.kinds.includes('compound-lease'), false);
+
+const stageBefore = buildOwnerChain({ label: 'deletion-stage', domain: domainProfiles[0], graph: graphProfiles[0], policy: policyProfiles[0], resourceOptions: { stage: true }, outputOptions: { structured: true }, stageOptions: {} });
   const stageAfter = buildOwnerChain({ label: 'deletion-stage', domain: domainProfiles[0], graph: graphProfiles[0], policy: policyProfiles[0], outputOptions: { structured: true } });
   assert.equal(stageAfter.stage, null);
   assert.equal(stageAfter.resource.normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0003'), false);
@@ -1863,6 +1879,26 @@ await runCase('compose-cross-profile-deletion-matrix', () => {
     composeOwnerChain(stateless, 'identity-stateless').composition,
     composeOwnerChain(proof, 'identity-proof').composition,
   ];
+});
+
+await runCase('session-reroot-deletion-removes-reserve', () => {
+  const rerootBefore = buildOwnerChain({ label: 'deletion-reroot-case', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { session: true }, outputOptions: { structured: true }, sessionOptions: { attention: false } });
+  const rerootAfter = buildOwnerChain({ label: 'deletion-reroot-case', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { session: true, reroot: false }, outputOptions: { structured: true }, sessionOptions: { reroot: false, attention: false } });
+  assert.equal(rerootBefore.session.normalized.reroot.kind, 'selected');
+  assert.equal(rerootAfter.session.normalized.reroot.kind, 'absent');
+  assert.equal(rerootAfter.session.normalized.advance.kind, 'selected');
+  assert.equal(rerootAfter.resource.normalized.reserves.some(({ purpose }) => purpose === 'reroot-admission'), false);
+  const sessionOwner = rerootAfter.resource.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0006');
+  assert(sessionOwner);
+  assert(rerootAfter.resource.normalized.classes.some(({ contributor, ownerPressureStatus }) => contributor === sessionOwner.id && ownerPressureStatus === 'session-control-capacity'));
+  assert.equal(rerootAfter.resource.normalized.classes.some(({ contributor, ownerPressureStatus }) => contributor === sessionOwner.id && ownerPressureStatus === 'session-reroot-admission-capacity'), false);
+  const externalControl = rerootAfter.progress.normalized.workClasses.find(({ owner }) => owner === sessionOwner.id);
+  assert.equal(externalControl.kind, 'external-control');
+  assert.equal(externalControl.reserve, null);
+  assert.equal(rerootAfter.session.normalized.commands.inputs.some(({ kind }) => kind === 'reroot'), false);
+  assert.equal(rerootAfter.session.normalized.ports.some(({ id }) => ['prepareReroot', 'commitReroot', 'abortReroot'].includes(id)), false);
+  assert.equal(rerootAfter.session.normalized.cleanup.kinds.includes('reroot-transaction'), false);
+  assert.equal(rerootAfter.session.normalized.cleanup.kinds.includes('compound-lease'), false);
 });
 
 await runCase('materially-different-composer-engines-cannot-collide', () => {
@@ -3573,9 +3609,11 @@ await runCase('reject-resource-reserve-total', () => {
   assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_RANGE' });
 });
 
-await runCase('reject-resource-reroot-reserve-missing', () => {
+await runCase('resource-reroot-reserve-is-optional-at-resource-layer', () => {
   const mutated = clone(resourceProfileInputs[2]); mutated.reserves = mutated.reserves.filter(({ purpose }) => purpose !== 'reroot-admission');
-  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_OWNER' });
+  const normalized = normalizeResourceProfile(mutated, inspected, knownResourceProfiles).normalized;
+  assert.equal(normalized.reserves.some(({ purpose }) => purpose === 'reroot-admission'), false);
+  assert(normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0006'));
 });
 
 await runCase('reject-resource-borrow-incomplete', () => {
@@ -6176,7 +6214,7 @@ await runCase('integration-requirement-disposition-handoff', () => {
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 878,
+  expected: 879,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -6184,7 +6222,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 878 - cases.length,
+  notDiscovered: 879 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 

@@ -26,11 +26,11 @@ The Domain oracle owns only bounded state/history normalization and equality, ro
 The current fixture binds the exact proposal Composer result:
 
 - capsule: `cuda-mcgs-search-ir-composer-reference-v0.2.0`;
-- expected/executed/passed: `878/878/878`;
-- representation/composition SHA-256: `bbe8645637244392d0ffe9347417204dad3e675efccdc29043fd197e1d12cd56`;
+- expected/executed/passed: `879/879/878`;
+- representation/composition SHA-256: `4846fe8686721afd13dfe4ac66ebbfdb0722979481183e76b96bf9118f340b3f`;
 - canonical bytes: `719393`.
 
-The harness consumes the generated Composer `build/evidence.json` as an evidence manifest. The Composer owner then exports the three exact normalized Domain profiles to ignored `build/domain-profiles.json`. That projection has SHA-256 `3ec9521040b12f69a3d5bcd308ec540c3d1c4d2d870f409c9027738c132423d8` over `69524` canonical bytes. The Domain oracle consumes only this deterministic projection; it neither deep-imports Composer internals nor copies the normalizer. Missing, failed or identity-mismatched Composer/projection evidence fails closed.
+The harness consumes the generated Composer `build/evidence.json` as an evidence manifest. The Composer owner then exports the three exact normalized Domain profiles to ignored `build/domain-profiles.json`. That projection has SHA-256 `6c073d11c688bc64b7bf4233c93de56ce29a95706f8a1ac665c8a04d939f13ee` over `69524` canonical bytes. The Domain oracle consumes only this deterministic projection; it neither deep-imports Composer internals nor copies the normalizer. Missing, failed or identity-mismatched Composer/projection evidence fails closed.
 
 Schedules are finite checked-in data. Event order is meaningful; owner lists and dependency/read sets normalize canonically. A transition receives only a frozen clone of its own state, its explicit input and explicitly declared public facts. It returns a replacement owner state and zero or more immutable facts in its non-overlapping owner namespace. The harness provides no loop, queue, retry, discovery, callback, worker wait or host progression mechanism.
 

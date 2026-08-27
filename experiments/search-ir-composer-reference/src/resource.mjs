@@ -568,11 +568,11 @@ export function normalizeResourceProfile(input, inspectedCatalog, profileResults
   const reserves = input.reserves.map((entry, index) => normalizeReserve(entry, index, classById, partitionById, contributorById)).sort((left, right) => compareRaw(left.id, right.id));
   uniqueBy(reserves, 'id', 'RESOURCE_RESERVE_DUPLICATE', 'reserve');
   for (const purpose of ['terminal-result', 'progress-cleanup']) if (!reserves.some((reserve) => reserve.purpose === purpose)) fail('RESOURCE_RESERVE_REQUIRED', `required ${purpose} reserve is absent`);
-  const requiredReserveOwners = new Map([['terminal-result', 'SPEC-0013'], ['progress-cleanup', 'SPEC-0012'], ['reroot-admission', 'SPEC-0006']]);
-  for (const [purpose, contractId] of requiredReserveOwners) {
+  const reserveOwners = new Map([['terminal-result', 'SPEC-0013'], ['progress-cleanup', 'SPEC-0012'], ['reroot-admission', 'SPEC-0006']]);
+  for (const [purpose, contractId] of reserveOwners) {
     const selectedOwner = contributors.find(({ contract: ownerContract }) => ownerContract.id === contractId);
     const selectedReserve = reserves.find((reserve) => reserve.purpose === purpose);
-    if ((purpose === 'reroot-admission' && selectedOwner && !selectedReserve) || (selectedReserve && (!selectedOwner || classById.get(selectedReserve.class).contributor !== selectedOwner.id || !selectedReserve.eligibleOwners.includes(selectedOwner.id)))) fail('RESOURCE_RESERVE_OWNER', `${purpose} reserve owner is invalid`);
+    if (selectedReserve && (!selectedOwner || classById.get(selectedReserve.class).contributor !== selectedOwner.id || !selectedReserve.eligibleOwners.includes(selectedOwner.id))) fail('RESOURCE_RESERVE_OWNER', `${purpose} reserve owner is invalid`);
     if (selectedReserve && (selectedReserve.borrow.kind !== 'none' || selectedReserve.minimum !== classById.get(selectedReserve.class).formula.maximumUnits || selectedReserve.maximum !== classById.get(selectedReserve.class).formula.maximumUnits)) fail('RESOURCE_RESERVE_PROTECTION', `${purpose} reserve is not fully protected`);
   }
   const reserveById = new Map(reserves.map((entry) => [entry.id, entry]));

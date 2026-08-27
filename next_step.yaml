@@ -1,5 +1,5 @@
 {
-  "schema_version": 67,
+  "schema_version": 68,
   "updated": "2026-08-26",
   "status": "engine_reference_root_control_qualified_pending_integration",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
@@ -12,14 +12,14 @@
     "cuda_js_package": "cuda-js@0.1.0-alpha.7"
   },
   "exact_evidence_inputs": {
-    "representation_composition_evidence_key": "bbe8645637244392d0ffe9347417204dad3e675efccdc29043fd197e1d12cd56",
+    "representation_composition_evidence_key": "4846fe8686721afd13dfe4ac66ebbfdb0722979481183e76b96bf9118f340b3f",
     "contract_set_identity": "2a3ded0b25f59d6f6a5dfffefefceae73f25e9df0558953b0bea29201d47c10d",
     "requirement_coverage_identity": "fe510fb69890b070ae6e7dfc60bd3e113a3f7e6354fa6bfcd8e48a6336c6c07a",
     "expanded_requirement_identity": "32fc66ca775046121146f3afc621e3407bab69711355e283b769d947fd185e0a",
-    "deletion_matrix_identity": "04d904544b424f0e3093e53d46f102653059d7d1b68c9c8565db72ace6874b05",
+    "deletion_matrix_identity": "722d681af6aa6ee9e8f935bce0754dd8c442aa64801269bd219a7af0ac37dcd6",
     "semantic_neutral_harness_evidence_key": "126c654ccf4ccf3fbadc35cd00c628c8e4f9dedd28fdcd5a712973e8cdb0fd1f",
-    "domain_profile_projection_identity": "3ec9521040b12f69a3d5bcd308ec540c3d1c4d2d870f409c9027738c132423d8",
-    "semantic_reference_evidence_key": "7afd8930a9af337be0ecbc5bff930ea21444ddb1afa6bf261c083db5cb95bd5b",
+    "domain_profile_projection_identity": "6c073d11c688bc64b7bf4233c93de56ce29a95706f8a1ac665c8a04d939f13ee",
+    "semantic_reference_evidence_key": "cf6aafa528af6f4ad6854d16d7c6c046f6ff33a7e9f18d153cb0386a9b4044b8",
     "semantic_reference_cases": {
       "expected": 49,
       "executed": 49,

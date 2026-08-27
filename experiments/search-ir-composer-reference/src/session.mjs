@@ -257,6 +257,7 @@ function normalizeReroot(input, owners, inputById, workById, rerootReserve, rero
   if (input.kind !== 'selected') fail('SESSION_REROOT_KIND', 'reroot kind is invalid');
   const p = input.profile;
   exactKeys(p, ['input', 'transaction', 'oldRoot', 'materialization', 'publication', 'reuseClassification', 'workScopes', 'pressureOutcome', 'rejectedOutcome', 'acceptedOutcome', 'exhaustedOutcome', 'hostProgress'], 'SESSION_REROOT_PROFILE_FIELDS', 'reroot profile');
+  if (!rerootReserve || !rerootAdmission) fail('SESSION_REROOT_ADMISSION', 'selected reroot requires its protected admission reserve');
   const command = inputById.get(p.input);
   const domainOwnerId = owners.find(({ contract }) => contract.id === 'SPEC-0007')?.id;
   if (!command || command.kind !== 'reroot' || command.owner !== domainOwnerId || command.epochScope !== 'session-and-root-authority') fail('SESSION_REROOT_INPUT', 'reroot input/owner/scope is invalid');
@@ -464,12 +465,15 @@ export function normalizeSessionProfile(input, inspectedCatalog, resourceResult,
   if (profileKey(resourceContribution) !== profileKey(resourceSession.profile) || profileKey(progressContribution) !== profileKey(progressSession.profile)) fail('SESSION_CONTRIBUTION', 'session contribution differs from selected plans');
 
   const rerootReserve = resourceResult.normalized.reserves.find(({ purpose }) => purpose === 'reroot-admission');
-  const sessionClass = resourceResult.normalized.classes.find(({ id, contributor }) => id === rerootReserve?.class && contributor === resourceSession.id);
-  const rerootAdmission = resourceResult.normalized.admissionGroups.find(({ classes }) => classes.includes(sessionClass?.id));
+  const rerootClass = rerootReserve ? resourceResult.normalized.classes.find(({ id, contributor }) => id === rerootReserve.class && contributor === resourceSession.id) : null;
+  const rerootAdmission = rerootClass ? resourceResult.normalized.admissionGroups.find(({ classes }) => classes.includes(rerootClass.id)) : null;
   const sessionWork = progressResult.normalized.workClasses.find(({ owner }) => owner === progressSession.id);
+  const sessionControlClasses = resourceResult.normalized.classes.filter(({ id, contributor }) => contributor === resourceSession.id && id !== rerootClass?.id && sessionWork?.resources?.includes(id));
+  const sessionClass = sessionControlClasses.length === 1 ? sessionControlClasses[0] : null;
   const externalWait = progressResult.normalized.noProgress.externalWait;
-  if (!rerootReserve || !sessionClass || !rerootAdmission || rerootReserve.borrow.kind !== 'none' || sessionWork?.kind !== 'external-control'
+  if (!sessionClass || sessionWork?.kind !== 'external-control' || sessionWork.reserve !== null
       || externalWait.kind !== 'session-only' || externalWait.owner !== progressSession.id || !progressSession.publicTransitions.some((entry) => schemaKey(entry) === schemaKey(externalWait.state))) fail('SESSION_UPSTREAM_CONTRACT', 'selected resource/progress Session boundary is incomplete');
+  if (rerootReserve && (!rerootClass || !rerootAdmission || rerootReserve.borrow.kind !== 'none')) fail('SESSION_REROOT_ADMISSION', 'reroot reserve is incomplete');
 
   const contributorById = new Map(progressResult.normalized.contributors.map((entry) => [entry.id, entry]));
   const owners = input.owners.map((entry, index) => normalizeOwner(entry, index, catalogById, contributorById, progressSession.id)).sort((a, b) => compareRaw(a.id, b.id));
@@ -491,6 +495,7 @@ export function normalizeSessionProfile(input, inspectedCatalog, resourceResult,
   const attention = normalizeAttention(input.attention, ownerById, inputById);
   const observations = normalizeObservations(input.observations, outputResult.normalized, inputById);
   const selected = { advance: advance.kind === 'selected', reroot: reroot.kind === 'selected', attention: attention.kind === 'selected', observations: observations.kind === 'selected' };
+  if (!selected.reroot && rerootReserve) fail('SESSION_REROOT_RESIDUE', 'reroot admission reserve remains while reroot is absent');
   if (selected.advance !== commands.inputs.some(({ kind }) => kind === 'advance') || selected.reroot !== commands.inputs.some(({ kind }) => kind === 'reroot') || selected.attention !== commands.inputs.some(({ kind }) => kind === 'attention')) fail('SESSION_INPUT_COVERAGE', 'selected operation objects differ from command inputs');
   const observationInputs = commands.inputs.filter(({ kind }) => kind === 'observation-request');
   if ((selected.observations ? observations.profiles.length : 0) !== observationInputs.length) fail('SESSION_OBSERVATION_COVERAGE', 'observation command inputs differ from selected observations');

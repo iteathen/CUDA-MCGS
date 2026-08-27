@@ -117,10 +117,8 @@ function buildWorkClass(profile, contributor, resourcePlan, transitionsByOwner) 
   const resources = resourcePlan.classes.filter(({ contributor: owner }) => owner === contributor.id).map(({ id }) => id);
   const progressReserve = resourcePlan.reserves.find(({ purpose }) => purpose === 'progress-cleanup')?.id ?? null;
   const terminalReserve = resourcePlan.reserves.find(({ purpose }) => purpose === 'terminal-result')?.id ?? null;
-  const rootReserve = resourcePlan.reserves.find(({ purpose }) => purpose === 'root-update')?.id ?? null;
   const reserve = kind === 'terminal-output' ? terminalReserve
-    : (['producer-unblocking', 'must-drain', 'resource-recovery'].includes(kind) ? progressReserve
-      : (kind === 'external-control' ? rootReserve : null));
+    : (['producer-unblocking', 'must-drain', 'resource-recovery'].includes(kind) ? progressReserve : null);
   const id = workId(profile, contributor.id);
   const evaluator = contributor.contract.id === 'SPEC-0009';
   const continuing = evaluator || kind === 'must-drain';
