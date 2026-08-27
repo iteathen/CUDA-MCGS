@@ -1,8 +1,8 @@
 # Agent Documentation
 
-**Scope:** Canonical developer and agent guidance for UMCGS.
+**Scope:** Canonical developer and agent guidance for CUDA-MCGS.
 
-This directory is the durable operating system for development. The root [`AGENTS.md`](../AGENTS.md) is the mandatory entry point; this directory provides the reusable foundation, UMCGS-specific constraints, and task templates.
+This directory is the durable operating system for development. The root [`AGENTS.md`](../AGENTS.md) is the mandatory entry point; this directory provides the reusable foundation, CUDA-MCGS-specific constraints, and task templates.
 
 ## Canonical files
 
@@ -48,9 +48,10 @@ This directory is the durable operating system for development. The root [`AGENT
 - [`general_foundation/REVIEW.md`](general_foundation/REVIEW.md)
 - [`general_foundation/DOCUMENTATION_GOVERNANCE.md`](general_foundation/DOCUMENTATION_GOVERNANCE.md)
 
-## UMCGS application profile
+## CUDA-MCGS application profile
 
-- [`application_specific/UMCGS_PROFILE.md`](application_specific/UMCGS_PROFILE.md)
+- [`application_specific/CUDA_MCGS_PROFILE.md`](application_specific/CUDA_MCGS_PROFILE.md) — canonical current project profile.
+- [`application_specific/UMCGS_PROFILE.md`](application_specific/UMCGS_PROFILE.md) — compatibility-only pointer for the former project name; do not use for new references.
 - [`application_specific/REPOSITORY_ORGANIZATION.md`](application_specific/REPOSITORY_ORGANIZATION.md)
 - [`application_specific/ARCHITECTURE_GUARDRAILS.md`](application_specific/ARCHITECTURE_GUARDRAILS.md)
 - [`application_specific/MEMORY_AND_PERFORMANCE.md`](application_specific/MEMORY_AND_PERFORMANCE.md)
