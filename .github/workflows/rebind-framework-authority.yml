@@ -29,33 +29,38 @@ jobs:
 
           const specPath = 'docs/specs/SPEC-0000-framework-requirements.md';
           const catalogPath = 'schemas/search-ir/0.2.0/contract-set.json';
+          const selectionPath = 'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json';
           const workflowPath = '.github/workflows/rebind-framework-authority.yml';
 
           let spec = readFileSync(specPath, 'utf8').replace(/\r\n/g, '\n');
           const accidental = /^FRAMEWORK-PRODUCT-005\. CUDA-MCGS contains no active production product specification or product implementation owner\. Concrete named product-like fixtures are permitted only as removable non-production conformance\/research\/example evidence under ADR-0024\.\n\n/m;
-          if (!accidental.test(spec)) {
-            throw new Error('expected accidental FRAMEWORK-PRODUCT-005 line is absent or changed');
-          }
+          if (!accidental.test(spec)) throw new Error('expected accidental FRAMEWORK-PRODUCT-005 line is absent or changed');
           spec = spec.replace(accidental, '');
-          const ids = [...spec.matchAll(/^([A-Z][A-Z0-9-]*-[0-9]{3})\./gm)].map((match) => match[1]);
-          const frameworkIds = ids.filter((id) => id.startsWith('FRAMEWORK-'));
-          if (frameworkIds.length !== 80 || new Set(frameworkIds).size !== 80) {
-            throw new Error(`SPEC-0000 must retain exactly 80 unique FRAMEWORK requirements; found ${frameworkIds.length}`);
-          }
+          const frameworkIds = [...spec.matchAll(/^([A-Z][A-Z0-9-]*-[0-9]{3})\./gm)]
+            .map((match) => match[1])
+            .filter((id) => id.startsWith('FRAMEWORK-'));
+          if (frameworkIds.length !== 80 || new Set(frameworkIds).size !== 80) throw new Error(`SPEC-0000 must retain exactly 80 unique FRAMEWORK requirements; found ${frameworkIds.length}`);
           writeFileSync(specPath, spec, 'utf8');
 
-          const sha256 = createHash('sha256').update(Buffer.from(spec, 'utf8')).digest('hex');
+          const specSha256 = createHash('sha256').update(Buffer.from(spec, 'utf8')).digest('hex');
+          if (specSha256 !== 'e933e119f7a5d8d6f0bce6a67296166f7326dbd8bc99e7920bcb0358161b6b99') throw new Error(`unexpected corrected SPEC-0000 digest ${specSha256}`);
+
           const catalog = JSON.parse(readFileSync(catalogPath, 'utf8'));
           const framework = catalog.contracts.find((entry) => entry.id === 'SPEC-0000');
-          if (!framework || framework.requirementCount !== 80 || catalog.totals?.requirements !== 989) {
-            throw new Error('frozen proposal catalog cardinality is not the expected 80/989 baseline');
-          }
-          framework.sha256 = sha256;
+          if (!framework || framework.requirementCount !== 80 || catalog.totals?.requirements !== 989) throw new Error('frozen proposal catalog cardinality is not the expected 80/989 baseline');
+          framework.sha256 = specSha256;
           catalog.authorityBaseline = 'ee4434be0ae927c4ae1d5c106f91503d28b1aa01';
           writeFileSync(catalogPath, `${JSON.stringify(catalog, null, 2)}\n`, 'utf8');
 
+          const selection = JSON.parse(readFileSync(selectionPath, 'utf8'));
+          if (selection.frameworkContract?.id !== 'SPEC-0000') throw new Error('minimal framework selection does not bind SPEC-0000 as expected');
+          selection.contractSet.identity.sha256 = 'b4c91a46e4fe304f3bcfc4602e23e5f4e68a30869da223deab3978289ca6b4a1';
+          selection.frameworkContract.sha256 = specSha256;
+          writeFileSync(selectionPath, `${JSON.stringify(selection, null, 2)}\n`, 'utf8');
+
           unlinkSync(workflowPath);
-          console.log(`SPEC-0000 sha256=${sha256}`);
+          console.log(`SPEC-0000 sha256=${specSha256}`);
+          console.log('contract-set sha256=b4c91a46e4fe304f3bcfc4602e23e5f4e68a30869da223deab3978289ca6b4a1');
           NODE
           node scripts/run-search-ir-composer-reference.mjs
           git diff --check
@@ -64,6 +69,6 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add docs/specs/SPEC-0000-framework-requirements.md schemas/search-ir/0.2.0/contract-set.json .github/workflows/rebind-framework-authority.yml
+          git add docs/specs/SPEC-0000-framework-requirements.md schemas/search-ir/0.2.0/contract-set.json experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json .github/workflows/rebind-framework-authority.yml
           git commit -m 'docs: rebind framework proposal authority'
           git push origin HEAD:architecture/44-framework-only-production
