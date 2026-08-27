@@ -1,0 +1,57 @@
+name: Rebind Domain evidence
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  rebind:
+    if: github.event.pull_request.head.ref == 'ref/graph-edge-01'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ref/graph-edge-01
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26.7.0
+      - name: Rebind exact Domain evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-domain-profiles.mjs
+          node <<'NODE'
+          const fs = require('node:fs');
+          const composer = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/domain-profiles.json', 'utf8'));
+          const path = 'experiments/search-semantics-reference/fixtures/domain-cases.json';
+          const fixture = JSON.parse(fs.readFileSync(path, 'utf8'));
+          fixture.composerEvidence = composer.representationCompositionEvidenceKey;
+          fixture.profileProjection = {
+            schema: projection.schema,
+            algorithm: projection.projectionIdentity.algorithm,
+            byteLength: projection.projectionIdentity.byteLength,
+            sha256: projection.projectionIdentity.sha256,
+          };
+          fs.writeFileSync(path, `${JSON.stringify(fixture, null, 2)}\n`);
+          console.log(`domain_fixture_composer=${fixture.composerEvidence.sha256} bytes=${fixture.composerEvidence.byteLength}`);
+          console.log(`domain_fixture_projection=${fixture.profileProjection.sha256} bytes=${fixture.profileProjection.byteLength}`);
+          NODE
+          node scripts/run-search-semantics-reference.mjs
+          node <<'NODE'
+          const fs = require('node:fs');
+          const evidence = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/evidence.json', 'utf8'));
+          if (evidence.status !== 'pass' || evidence.summary.passed !== 49 || evidence.domainRequirementCoverage.executedRequirementCount !== 47) {
+            throw new Error('Domain evidence is not fully qualified');
+          }
+          console.log(`qualified_domain=${evidence.evidenceIdentity.sha256} bytes=${evidence.evidenceIdentity.byteLength}`);
+          NODE
+          git rm --ignore-unmatch .github/workflows/rebind-domain-evidence.yml
+          git config user.name iteathen
+          git config user.email josh.oshiro@gmail.com
+          git add experiments/search-semantics-reference/fixtures/domain-cases.json
+          git commit -m "ref: rebind Domain evidence after Graph resource closure"
+          git push origin HEAD:ref/graph-edge-01
