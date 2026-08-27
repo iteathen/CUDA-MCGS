@@ -1,6 +1,8 @@
 # CUDA-MCGS handoff — Graph ROOT semantic brick
 
-**Status:** Active live resume point
+> **Active live resume point.** This is the canonical continuation packet for current `GRAPH-ROOT-*` work. Prefer any later exact ROOT qualification checkpoint recorded in this file or on the branch over older PATH/REF handoffs.
+
+**Status:** Informational
 
 **Date:** 2026-08-27
 
