@@ -1,0 +1,63 @@
+name: one-shot root control repair v2
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.event.pull_request.head.ref == 'docs/ref-root-control-01-reconcile'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/ref-root-control-01-reconcile
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.7.0
+      - name: Reuse and finish the bounded repair
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          const workflow = await readFile('.github/workflows/repair-root-control.yml', 'utf8');
+          const marker = '        run: |\n';
+          const start = workflow.indexOf(marker);
+          if (start < 0) throw new Error('repair workflow run block not found');
+          let script = workflow.slice(start + marker.length)
+            .split('\n')
+            .map((line) => line.startsWith('          ') ? line.slice(10) : line)
+            .join('\n');
+
+          const transactionMembers = [
+            "  assertExactMembers(input.prepareOrder, participantIds, 'SESSION_REROOT_ORDER', 'reroot prepare order');",
+            "  assertExactMembers(input.commitOrder, participantIds, 'SESSION_REROOT_ORDER', 'reroot commit order');",
+            "  assertExactMembers(input.abortOrder, participantIds, 'SESSION_REROOT_ORDER', 'reroot abort order');",
+          ].join('\\n');
+          const transactionOrdered = `${transactionMembers}\n  if (input.commitOrder.some((id, index) => id !== input.prepareOrder[index]) || input.abortOrder.some((id, index) => id !== input.prepareOrder[input.prepareOrder.length - 1 - index])) fail('SESSION_REROOT_ORDER', 'reroot commit/abort order must preserve prepare order and reverse it for abort');`;
+          const orderPatch = `session = replaceOnce(\n  session,\n  ${JSON.stringify(transactionMembers)},\n  ${JSON.stringify(transactionOrdered)},\n  'reroot transaction ordering',\n);`;
+          const writeMarker = 'await writeFile(sessionPath, session);';
+          if (!script.includes(writeMarker)) throw new Error('session write marker not found');
+          script = script.replace(writeMarker, `${orderPatch}\n${writeMarker}`);
+
+          for (const line of [
+            "  reordered.reroot.profile.transaction.prepareOrder = [...reordered.reroot.profile.transaction.prepareOrder].reverse();\n",
+            "  reordered.reroot.profile.transaction.commitOrder = [...reordered.reroot.profile.transaction.commitOrder].reverse();\n",
+            "  reordered.reroot.profile.transaction.abortOrder = [...reordered.reroot.profile.transaction.abortOrder].reverse();\n",
+          ]) {
+            if (!script.includes(line)) throw new Error(`expected stale order mutation not found: ${line.trim()}`);
+            script = script.replace(line, '');
+          }
+
+          const oldCode = "{ code: 'SESSION_REROOT_ADMISSION_BINDING' }";
+          const newCode = "{ code: 'SESSION_REROOT_ADMISSION' }";
+          if (!script.includes(oldCode)) throw new Error('stale reroot admission error expectation not found');
+          script = script.replace(oldCode, newCode);
+
+          await writeFile('/tmp/repair-root-control.sh', script, { mode: 0o700 });
+          NODE
+          bash /tmp/repair-root-control.sh
