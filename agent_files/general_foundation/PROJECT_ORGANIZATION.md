@@ -305,6 +305,6 @@ Before accepting a structural change, verify:
 - migration and history are complete;
 - project organization checks pass.
 
-## UMCGS mapping
+## CUDA-MCGS mapping
 
-The UMCGS-specific product areas and allowed repository topology are defined in [`../application_specific/REPOSITORY_ORGANIZATION.md`](../application_specific/REPOSITORY_ORGANIZATION.md). The governing decision is [`../../docs/decisions/ADR-0004-large-project-organization.md`](../../docs/decisions/ADR-0004-large-project-organization.md).
+The CUDA-MCGS-specific product areas and allowed repository topology are defined in [`../application_specific/REPOSITORY_ORGANIZATION.md`](../application_specific/REPOSITORY_ORGANIZATION.md). The governing decision is [`../../docs/decisions/ADR-0004-large-project-organization.md`](../../docs/decisions/ADR-0004-large-project-organization.md).

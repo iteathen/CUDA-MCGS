@@ -2,13 +2,13 @@
 
 **Status:** Informational
 
-CUDA-MCGS is the product-facing name of the universal MCGS framework hosted in `iteathen/CUDA-MCGS`. Existing accepted UMCGS ADR/specification identifiers remain authoritative until a separate identifier migration is accepted.
+CUDA-MCGS is the product-facing name of the universal MCGS framework hosted in `iteathen/CUDA-MCGS`. Existing accepted CUDA-MCGS ADR/specification identifiers remain authoritative until a separate identifier migration is accepted.
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS engine with schema-backed extension support.**
 
 ## Start here
 
-- [`PROJECT_CHARTER.md`](PROJECT_CHARTER.md) — accepted UMCGS/CUDA-MCGS search mission and boundary.
+- [`PROJECT_CHARTER.md`](PROJECT_CHARTER.md) — accepted CUDA-MCGS/CUDA-MCGS search mission and boundary.
 - [`../CONTRIBUTING.md`](../CONTRIBUTING.md) — public fork/PR workflow and contributor-license grant.
 - [`../SECURITY.md`](../SECURITY.md) — private vulnerability reporting and public security posture.
 - [`../LICENSING.md`](../LICENSING.md) — AGPL-3.0-or-later, commercial licensing, contribution/relicensing, and third-party boundaries.

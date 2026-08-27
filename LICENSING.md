@@ -4,7 +4,7 @@ Copyright (C) 2026 iteathen.
 
 ## Open-source license
 
-CUDA-MCGS, developed in the `iteathen/UMCGS` repository, is free software distributed under the **GNU Affero General Public License, version 3 or (at your option) any later version** (`AGPL-3.0-or-later`). The complete license is in [`LICENSE`](LICENSE).
+CUDA-MCGS, developed in the `iteathen/CUDA-MCGS` repository, is free software distributed under the **GNU Affero General Public License, version 3 or (at your option) any later version** (`AGPL-3.0-or-later`). The complete license is in [`LICENSE`](LICENSE).
 
 The AGPL permits commercial use, modification, distribution, and charging fees, subject to its conditions. In particular, covered source obligations apply when modified versions are conveyed and when users interact remotely with a modified network-facing version.
 
@@ -12,7 +12,7 @@ Repository visibility does not replace, narrow, or expand the license grant. A p
 
 ## Commercial licensing
 
-Organizations that cannot or do not want to comply with the AGPL may request a separate commercial license from the copyright holder through the [CUDA-MCGS repository](https://github.com/iteathen/UMCGS). Commercial terms, support, warranty, indemnity, private development, certification, and other paid services are available only through a separately executed agreement; this repository does not grant those terms.
+Organizations that cannot or do not want to comply with the AGPL may request a separate commercial license from the copyright holder through the [CUDA-MCGS repository](https://github.com/iteathen/CUDA-MCGS). Commercial terms, support, warranty, indemnity, private development, certification, and other paid services are available only through a separately executed agreement; this repository does not grant those terms.
 
 ## Contributions and relicensing
 

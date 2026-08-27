@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/compatible-pair-record.schema.json",
+  "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/compatible-pair-record.schema.json",
   "title": "CUDA-MCGS and CUDA-JS exact compatible-pair record proposal evidence",
   "type": "object",
   "additionalProperties": false,
@@ -10,7 +10,7 @@
     "status": { "enum": ["reference-fixture", "exact-compatible-pair"] },
     "cudaMcgs": {
       "type": "object", "additionalProperties": false, "required": ["repository", "revision", "package", "searchIr", "searchProgram", "executionPackage"],
-      "properties": { "repository": { "const": "iteathen/UMCGS" }, "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" }, "package": { "type": "string" }, "searchIr": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "searchProgram": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "executionPackage": { "$ref": "primitives.schema.json#/$defs/contentIdentity" } }
+      "properties": { "repository": { "const": "iteathen/CUDA-MCGS" }, "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" }, "package": { "type": "string" }, "searchIr": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "searchProgram": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "executionPackage": { "$ref": "primitives.schema.json#/$defs/contentIdentity" } }
     },
     "cudaJs": {
       "type": "object", "additionalProperties": false, "required": ["repository", "revision", "package", "apiSchema", "capabilities", "deviceProgram", "artifacts", "resources", "operations", "runtime"],

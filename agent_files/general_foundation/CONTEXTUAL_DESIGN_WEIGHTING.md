@@ -95,7 +95,7 @@ Use:
 
 Within a class prioritize dependency unlock, consequence reduction, information value, cost of delay, exposure, reversibility/recovery cost, then effort.
 
-## UMCGS examples
+## CUDA-MCGS examples
 
 ### Search IR and public schemas
 
@@ -105,7 +105,7 @@ Hard gates: semantic correctness, accurate generality, versioning, deterministic
 
 Hard gates: device closure, publication correctness, bounded resources, pressure/exhaustion behavior, cancellation, teardown, and stale-reference safety. Mission objectives: search quality, throughput, latency, and memory efficiency within those bounds.
 
-### UMCGS-to-CUDA-JS contract
+### CUDA-MCGS-to-CUDA-JS contract
 
 Hard gates: one owner per field/lifecycle transition, one-way dependency direction, no private-source coupling, opaque runtime resources, complete compatibility/cache identity, and device-closure preservation. Delivery convenience and early performance optimization are lower-order concerns.
 

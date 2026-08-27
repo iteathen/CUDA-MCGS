@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/resolved-composer-input.schema.json",
+  "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/resolved-composer-input.schema.json",
   "title": "CUDA-MCGS canonical resolved Composer input proposal evidence",
   "description": "Closed pre-admission envelope for one complete Program Package profile and its material resolution-rule provenance. Caller invocation history is deliberately outside semantic identity.",
   "type": "object",

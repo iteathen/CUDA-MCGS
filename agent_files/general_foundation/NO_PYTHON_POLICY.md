@@ -1,10 +1,10 @@
-# UMCGS Ecosystem No-Python Policy
+# CUDA-MCGS Ecosystem No-Python Policy
 
 **Status:** Accepted
 
-**Policy ID:** `UMCGS-ECO-LANG-001`
+**Policy ID:** `CUDA-MCGS-ECO-LANG-001`
 
-**Scope:** `iteathen/CUDA-MCGS`, `iteathen/CUDA-JS`, and every future repository, package, installer, tool, integration project, benchmark project, or extracted component whose primary purpose is to build, test, package, release, operate, or extend the UMCGS ecosystem.
+**Scope:** `iteathen/CUDA-MCGS`, `iteathen/CUDA-JS`, and every future repository, package, installer, tool, integration project, benchmark project, or extracted component whose primary purpose is to build, test, package, release, operate, or extend the CUDA-MCGS ecosystem.
 
 ## Rule
 
@@ -67,8 +67,8 @@ Any Python artifact or dependency discovered later is not grandfathered. Freeze 
 
 ## Cross-repository inheritance
 
-- Every new UMCGS-related repository adopts this policy before code-bearing work begins.
+- Every new CUDA-MCGS-related repository adopts this policy before code-bearing work begins.
 - Repository topology and project charters must identify the policy as an ecosystem-wide invariant.
 - Application profiles may add stricter language constraints but may not permit Python.
-- A substantive policy change must be coordinated across UMCGS and CUDA-JS so their accepted authority does not drift.
+- A substantive policy change must be coordinated across CUDA-MCGS and CUDA-JS so their accepted authority does not drift.
 - No agent, plan, experiment, contributor, dependency, or convenience may infer an exception. Only an explicit project-owner instruction that deliberately changes this accepted policy can do so.

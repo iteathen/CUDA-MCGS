@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/channel-profile.schema.json",
+  "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/channel-profile.schema.json",
   "title": "CUDA-MCGS Async Stage Channel profile proposal evidence",
   "type": "object",
   "additionalProperties": false,

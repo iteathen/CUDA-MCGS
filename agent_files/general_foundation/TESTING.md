@@ -1,6 +1,6 @@
 # Testing and Repair-Loop Discipline
 
-**Scope:** All test planning, test implementation, test execution, failure diagnosis, repair, regression capture, conformance, integration, performance validation, CI, and release evidence in UMCGS.
+**Scope:** All test planning, test implementation, test execution, failure diagnosis, repair, regression capture, conformance, integration, performance validation, CI, and release evidence in CUDA-MCGS.
 
 ## Purpose
 
@@ -468,7 +468,7 @@ Track:
 
 Metrics diagnose waste; they are not targets to game.
 
-## UMCGS-specific testing
+## CUDA-MCGS-specific testing
 
 ### Universal contracts
 

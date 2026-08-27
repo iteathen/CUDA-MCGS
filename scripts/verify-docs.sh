@@ -63,6 +63,7 @@ required=(
   agent_files/general_foundation/CHANGE_MANAGEMENT.md
   agent_files/general_foundation/REVIEW.md
   agent_files/general_foundation/DOCUMENTATION_GOVERNANCE.md
+  agent_files/application_specific/CUDA_MCGS_PROFILE.md
   agent_files/application_specific/UMCGS_PROFILE.md
   agent_files/application_specific/REPOSITORY_ORGANIZATION.md
   agent_files/application_specific/ARCHITECTURE_GUARDRAILS.md
@@ -252,7 +253,7 @@ done
   exit 1
 }
 
-node_bin="${UMCGS_NODE:-}"
+node_bin="${CUDA_MCGS_NODE:-${UMCGS_NODE:-}}"
 if [[ -z "$node_bin" ]]; then
   for candidate in \
     "$repo_root/build/toolchains/node-v26.7.0-win-x64/node.exe" \

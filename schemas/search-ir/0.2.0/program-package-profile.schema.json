@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/program-package-profile.schema.json",
+  "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/program-package-profile.schema.json",
   "title": "CUDA-MCGS deterministic Search Program composition profile proposal evidence",
   "type": "object",
   "additionalProperties": false,
@@ -23,7 +23,7 @@
           "additionalProperties": false,
           "required": ["repository", "revision"],
           "properties": {
-            "repository": { "const": "iteathen/UMCGS" },
+            "repository": { "const": "iteathen/CUDA-MCGS" },
             "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
           }
         },

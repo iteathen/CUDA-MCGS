@@ -1,10 +1,10 @@
-# UMCGS Architecture Guardrails
+# CUDA-MCGS Architecture Guardrails
 
 **Scope:** Project-specific architectural constraints for specifications, components, generated engines, adapters, and runtime work.
 
 ## LEGO ownership map
 
-UMCGS contracts and components must remain independently owned bricks. In particular:
+CUDA-MCGS contracts and components must remain independently owned bricks. In particular:
 
 - schema/IR meaning is owned separately from parsing, compilation, generated layout, and execution;
 - the composition/compiler layer selects concrete domain, policy, evaluator, storage, scheduling, and resource implementations but does not own their domain rules;

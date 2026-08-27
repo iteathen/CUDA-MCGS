@@ -1,4 +1,4 @@
-# UMCGS System Registry
+# CUDA-MCGS System Registry
 
 **Scope:** Canonical ownership and source-of-truth registry.
 
@@ -108,7 +108,7 @@ Downstream products consume universal contracts; they do not define them. Produc
 
 | Product boundary ID | Owns | Authoritative location | Status |
 |---|---|---|---|
-| `product.chess` | Chess-specific domain/policy/evaluator/output/session-reuse/support/search-quality semantics, including any ranked legal-move/best-move/MultiPV observation | [`../docs/specs/products/chess/CHESS-0001-search-product.md`](../docs/specs/products/chess/CHESS-0001-search-product.md) and issue #45 | Proposal; does not gate universal parent |
+| `product.chess` | CUDA-MCGS downstream chess consumer/conformance semantics only; the external engine product owns its policy, UCI behavior, integrations, packaging and support lifecycle | [`../docs/specs/products/chess/CHESS-0001-search-product.md`](../docs/specs/products/chess/CHESS-0001-search-product.md); external product authority: [`iteathen/UCI-Arena-Vector`](https://github.com/iteathen/UCI-Arena-Vector) | Proposal conformance profile; does not gate universal parent or own the external engine |
 
 Generic Node/V8 bindings, CUDA Driver call machinery, generic memory providers, NVRTC/link/load, generic long-lived sideband mechanisms, launch/completion/error/teardown, and generic runtime packaging belong to independent `iteathen/CUDA-JS` and must not become CUDA-MCGS component/product entries.
 

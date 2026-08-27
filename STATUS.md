@@ -2,15 +2,17 @@
 
 **Status:** Informational
 
-**Updated:** 2026-08-25
+**Updated:** 2026-08-26
 
 ## Current repository state
 
-The protected CUDA-MCGS `main` input baseline for the active contract packet is:
+The protected CUDA-MCGS `main` input to the current root-control reconciliation is:
 
 ```text
-b578de197cf92d8ba06ff236e3c2d1ca05278423
+173765cf86fc6ab91364d8d52eb6a045dcbe2346
 ```
+
+The older frozen harness/evidence inputs remain provenance for the exact revisions that produced them; they are not current authority heads. PR #127 carries the qualified proposal-derived reconciliation and remains non-authoritative until protected-main integration.
 
 CUDA-MCGS is a **public pre-release repository** in framework definition, specification and bounded evidence gathering. Public visibility is not a stable API, native support claim, released CUDA-MCGS/CUDA-JS compatible pair, or product release.
 
@@ -79,13 +81,13 @@ The canonical forward plan is [`docs/development/2026-08-12-v0-forward-plan.md`]
 
 **ENGINE-EXTENSION-01** completed its proposal-packet scope through PR #87 at `main@0ba119f`. Its critical assessment/execution record is [`docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md`](docs/development/2026-08-25-engine-extension-01-assessment-and-plan.md). SPEC-0003/0004/0005 are decision-complete 80/90/78-requirement optional stage/channel/restricted Device-JS composition proposals. Together with the core packet, they hand 989 unique proposal requirements to schema/reference work.
 
-**ENGINE-IR-COMPOSER-01** completes its bounded representation/composition evidence scope through PR #116. Its [critical assessment, focus map and handoff](docs/development/2026-08-25-engine-ir-composer-01-assessment-and-plan.md) preserves accepted Search IR 0.1.0 and reconciles owner-composed proposal Search IR 0.2.0 through exact contract cataloging, strict schemas, normalization, deterministic reference composition, package projection and deletion/identity evidence. The 878/878 CUDA-free capsule binds one `70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9` representation/composition evidence key. Its 989 requirements partition truthfully into 904 partial, 33 pending behavioral-oracle and 52 deferred native-compatible-pair lanes; none is accepted.
+**ENGINE-IR-COMPOSER-01** completed its original bounded representation/composition scope through PR #116. Its original frozen evidence key `70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9` remains truthful historical provenance for that proposal input. REF-ROOT-CONTROL-01 deliberately regenerated the affected proposal-derived Session representation under ADR-0022; the qualified current branch binds `b189211a774e6d4bd9b27ee8a744ed80743cfe45f3564be93deb310383efc906` across 878/878 CUDA-free Composer cases. The 989 requirements remain proposal/reference evidence rather than accepted production authority.
 
-Current focus is **ENGINE-REFERENCE-01**, tracked in [issue #36](https://github.com/iteathen/CUDA-MCGS/issues/36). Its [critical assessment and focus map](docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md) divides 352 directly routed behavioral requirements into owner-local CUDA-free oracles and retains 41 existing Channel-oracle requirements with their current owner. ADR-0022 exposed a proposal-representation conflict after Domain integration: proposal SPEC-0006 and Search IR 0.2.0 still encode the heavier reroot lifecycle under root-advance terminology. `REF-ROOT-CONTROL-01`, coordinated by [issue #113](https://github.com/iteathen/CUDA-MCGS/issues/113), is therefore the next leaf and must reconcile the four operations and regenerate affected evidence before Graph begins.
+Current focus is **ENGINE-REFERENCE-01**, tracked in [issue #36](https://github.com/iteathen/CUDA-MCGS/issues/36). `REF-ROOT-CONTROL-01`, coordinated by [issue #113](https://github.com/iteathen/CUDA-MCGS/issues/113), is now qualified on PR #127: SPEC-0006, Search IR 0.2.0 Session schema/normalization/fixtures/tests, distinct advance/reroot deletion, deterministic reroot rollback order, and dependent evidence all conform to ADR-0022 on the PR branch. `REF-GRAPH-01` remains blocked only until this exact qualified branch integrates to protected `main` and is read back.
 
-`REF-HARNESS-01` supplies that semantic-neutral foundation through the [`search-semantics-reference`](experiments/search-semantics-reference/README.md) experiment. Its 22 CUDA-free cases bind the live 878/878 Composer output and exact representation/composition key, prove exact checked-in discovery, canonical deterministic finite declared schedules, strict unknown-field rejection, exact owner-state isolation, immutable explicitly dependent public facts, non-overlapping owner namespaces, owner-specific mutation failures and source-keyed evidence identity.
+`REF-HARNESS-01` supplies the semantic-neutral foundation through the [`search-semantics-reference`](experiments/search-semantics-reference/README.md) experiment. Its 22 neutral cases are rebound to the qualified Composer representation key `b189211a774e6d4bd9b27ee8a744ed80743cfe45f3564be93deb310383efc906`; the harness semantics themselves remain unchanged.
 
-`REF-DOMAIN-01` extends the same capsule to 49/49 passing cases with no skips. A Composer-owned exporter publishes three exact normalized Domain profiles under projection identity `612c72274be7986bcae53237be97b34e64d97a781eeb55e61964d11b942b9f47`; the Domain oracle consumes that artifact without deep-importing or duplicating Composer normalization. Twenty-seven Domain cases cover all 47 direct SPEC-0007 reference-oracle requirements across deterministic transpositions/collisions, stochastic carried history and observations, bounded lazy continuous actions, no-player/custom roles, structured terminal outcomes, immutable publication, capacity/cancellation and targeted mutations. The full semantic evidence key is `70f5c454b7d31cd18374350fd75ebd52b961c828e515b0e6eabeefb8499b6402`. This remains valid bounded evidence for its exact historical proposal input, not ADR-0022 conformance. `REF-ROOT-CONTROL-01` is next; Graph is blocked until the deliberate proposal/evidence reconciliation integrates.
+`REF-DOMAIN-01` still contributes the same 27 Domain cases and exact 47 direct SPEC-0007 behavioral requirements, but its public projection/evidence bindings were regenerated because the proposal-derived Composer identity changed. The current projection identity is `321f913bea8b74b9dfef3b01341b148734c0448cb97c69f7e2b170b9985f26a0`; the full 49/49 semantic-reference evidence identity is `7bdc38b6c1c12ed45cfeaeeb91546fb39ffd6d10117d1d8261be136d0062cd3c`. Historical projection `612c72274be7986bcae53237be97b34e64d97a781eeb55e61964d11b942b9f47` and semantic key `70f5c454b7d31cd18374350fd75ebd52b961c828e515b0e6eabeefb8499b6402` remain truthful only for their exact earlier proposal input. Graph remains blocked until PR #127 integrates.
 
 The terminal reference slice is the nearest concrete developer-preview milestone, but it is not yet the GPU library. Production lowering remains blocked on the complete behavioral packet and atomic `ENGINE-CONTRACT-ACCEPTANCE-01`; a first GPU developer preview additionally needs a bounded parallel production JavaScript/restricted Device-JS engine/package and later exact native qualification in [issue #37](https://github.com/iteathen/CUDA-MCGS/issues/37). A serial native diagnostic control does not satisfy that milestone.
 
@@ -95,18 +97,15 @@ Project-owner direction plus CUDA-JS ADR-0006 require OS-neutral CUDA-MCGS contr
 
 The assessment found one consumer-neutral CUDA-JS gap: device-scope release/acquire publication for a multi-word internal channel payload. [CUDA-JS #123](https://github.com/iteathen/CUDA-JS/issues/123) has now integrated that bounded generic helper in `cuda-js@0.1.0-alpha.7`. Backend-neutral proposal/schema/reference work remains independent; later native internal-channel qualification must consume the public capability and prove the exact pair rather than adding a CUDA-MCGS workaround.
 
-After core semantics:
+After root-control integration:
 
-- make the schema-backed extension substrate proposals decision-complete with selected-only attachment points and zero unused-capability residue;
-- extend Search IR/Composer in a bounded non-production evidence node for proposed core + namespaced capability/product specialization inputs;
-- build consolidated materially different CUDA-free reference/conformance domains;
-- accept the integrated semantic contract/schema packet after that reference evidence agrees on one exact revision;
-- formalize Connect Four downstream product semantics and run the Device-JS external deletion test after neutral native Device-JS evidence;
+- execute `REF-GRAPH-01`, then the dependency-ordered Policy, Evaluator, Resource, Progress, Output, lifecycle, terminal-slice, optional Session/Stage/Channel and integration leaves;
+- accept the integrated semantic contract/schema packet only after the complete reference evidence agrees on one exact protected revision;
 - build one finite parallel OS-neutral native universal engine through an exact public CUDA-JS pair and qualify its first realization on Linux;
-- treat live Search Session native sideband/concurrency as an optional profile, not a finite-engine release blocker;
-- continue representative Linux scheduler/resource/performance evidence and secondary platform qualification, then package/release stabilization.
+- treat live Search Session native sideband/concurrency as an optional profile, not a finite-engine release blocker; and
+- continue representative scheduler/resource/performance evidence, secondary-platform qualification and package/release stabilization.
 
-Chess remains a separately tracked downstream proposal and does not gate universal parent completion.
+CHESS-0001 is a downstream CUDA-MCGS consumer/conformance profile. The production chess-engine product authority is `iteathen/UCI-Arena-Vector`; chess does not gate universal parent completion.
 
 ## Claim limits / blockers
 

@@ -1,8 +1,8 @@
-# UMCGS Repository Organization
+# CUDA-MCGS Repository Organization
 
-**Scope:** Accepted UMCGS mapping of the general large-project organization policy.
+**Scope:** Accepted CUDA-MCGS mapping of the general large-project organization policy.
 
-This file applies [`../general_foundation/PROJECT_ORGANIZATION.md`](../general_foundation/PROJECT_ORGANIZATION.md) to UMCGS. The governing organization decision is [`../../docs/decisions/ADR-0004-large-project-organization.md`](../../docs/decisions/ADR-0004-large-project-organization.md); the accepted generic-runtime extraction is [`../../docs/decisions/ADR-0014-extract-cuda-js-runtime.md`](../../docs/decisions/ADR-0014-extract-cuda-js-runtime.md).
+This file applies [`../general_foundation/PROJECT_ORGANIZATION.md`](../general_foundation/PROJECT_ORGANIZATION.md) to CUDA-MCGS. The governing organization decision is [`../../docs/decisions/ADR-0004-large-project-organization.md`](../../docs/decisions/ADR-0004-large-project-organization.md); the accepted generic-runtime extraction is [`../../docs/decisions/ADR-0014-extract-cuda-js-runtime.md`](../../docs/decisions/ADR-0014-extract-cuda-js-runtime.md).
 
 ## Multi-repository topology
 
@@ -18,20 +18,20 @@ iteathen/CUDA-JS
   launch/completion/error/teardown, packaging, and runtime conformance
 ```
 
-The dependency is one-way. CUDA-JS must not import UMCGS. UMCGS must not depend on CUDA-JS private source paths, branches, worktrees, or unversioned build output.
+The dependency is one-way. CUDA-JS must not import CUDA-MCGS. CUDA-MCGS must not depend on CUDA-JS private source paths, branches, worktrees, or unversioned build output.
 
 No Git submodule is used. Released packages/artifacts, schemas, checksums, and compatibility manifests are the connection surface.
 
-The UMCGS-to-CUDA-JS adapter remains an UMCGS component until it has an independently versioned lifecycle or multiple independent producers. Do not create a third repository merely to mirror the boundary.
+The CUDA-MCGS-to-CUDA-JS adapter remains an CUDA-MCGS component until it has an independently versioned lifecycle or multiple independent producers. Do not create a third repository merely to mirror the boundary.
 
-## UMCGS repository topology
+## CUDA-MCGS repository topology
 
 ```text
 /
 ├── agent_files/       canonical developer and coding-agent guidance
 ├── docs/              charter, ADRs, specs, architecture, research, archive
 ├── schemas/           versioned machine-readable search and interop contracts
-├── components/        production UMCGS search framework components
+├── components/        production CUDA-MCGS search framework components
 ├── adapters/          domain, policy, evaluator, output, and runtime adapters
 ├── conformance/       Search IR reference backend, synthetic domains, contract suites
 ├── benchmarks/        cross-component and compatible-runtime performance/quality suites
@@ -40,7 +40,7 @@ The UMCGS-to-CUDA-JS adapter remains an UMCGS component until it has an independ
 ├── tools/             reusable search build/generation/test tooling
 ├── scripts/           thin repository task entry points
 ├── tests/             cross-component, system, end-to-end, and interop capsules
-├── packaging/         UMCGS releases, execution-package manifests, compatibility metadata
+├── packaging/         CUDA-MCGS releases, execution-package manifests, compatibility metadata
 ├── third_party/       vendored external material and provenance
 └── .github/           GitHub workflow and collaboration configuration
 ```
@@ -59,15 +59,15 @@ Adding another top-level directory requires an accepted organizational decision 
 
 ### `schemas/`
 
-Authoritative UMCGS Search IR, domain, policy, evaluator, resource, graph, output, execution-package, component, and compatibility schemas. Generated bindings do not become independent sources of truth.
+Authoritative CUDA-MCGS Search IR, domain, policy, evaluator, resource, graph, output, execution-package, component, and compatibility schemas. Generated bindings do not become independent sources of truth.
 
 Generic CUDA Driver entry-point or runtime-resource schemas belong in CUDA-JS.
 
 ### `components/`
 
-Production UMCGS components. Every immediate child has `README.md` and `component.yaml`, public/internal separation, owner-local tests, and explicit cleanup/lifecycle behavior.
+Production CUDA-MCGS components. Every immediate child has `README.md` and `component.yaml`, public/internal separation, owner-local tests, and explicit cleanup/lifecycle behavior.
 
-Planned UMCGS responsibility areas include Search IR tooling, search capability resolution/compiler, finite memory planning, search layout/device-program generation, graph store, transposition, device search scheduler, evaluator composition, search diagnostics, and public SDK. Generic Node/CUDA runtime responsibilities are excluded.
+Planned CUDA-MCGS responsibility areas include Search IR tooling, search capability resolution/compiler, finite memory planning, search layout/device-program generation, graph store, transposition, device search scheduler, evaluator composition, search diagnostics, and public SDK. Generic Node/CUDA runtime responsibilities are excluded.
 
 ### `adapters/`
 
@@ -81,11 +81,11 @@ adapters/outputs/
 adapters/runtimes/
 ```
 
-The CUDA-JS adapter consumes only CUDA-JS public contracts and owns UMCGS package/result semantic mapping. Adapter implementation must not leak back into universal search contracts or into CUDA-JS.
+The CUDA-JS adapter consumes only CUDA-JS public contracts and owns CUDA-MCGS package/result semantic mapping. Adapter implementation must not leak back into universal search contracts or into CUDA-JS.
 
 ### `conformance/`
 
-Owns the deterministic Search IR reference backend, synthetic search domains, cross-implementation search-contract capsules, golden cases, and compatible UMCGS/CUDA-JS pair matrices.
+Owns the deterministic Search IR reference backend, synthetic search domains, cross-implementation search-contract capsules, golden cases, and compatible CUDA-MCGS/CUDA-JS pair matrices.
 
 Conformance consumes public contracts. It does not become a hidden production dependency or duplicate CUDA-JS generic runtime suites.
 
@@ -99,7 +99,7 @@ Owns disposable search, runtime-boundary, scheduling, device-closure, and integr
 
 ### `examples/`
 
-Uses only UMCGS public contracts and released peer runtime surfaces. An example that requires private CUDA-JS or UMCGS imports exposes a boundary failure.
+Uses only CUDA-MCGS public contracts and released peer runtime surfaces. An example that requires private CUDA-JS or CUDA-MCGS imports exposes a boundary failure.
 
 ### `tools/`
 
@@ -107,11 +107,11 @@ Owns reusable Search IR, specialization, package generation, inspection, migrati
 
 ### `tests/`
 
-Contains only integration/system/end-to-end capsules spanning UMCGS components or the public CUDA-JS compatibility boundary. Unit and component-contract tests stay with their owner. CUDA-JS native ABI/resource tests stay in CUDA-JS.
+Contains only integration/system/end-to-end capsules spanning CUDA-MCGS components or the public CUDA-JS compatibility boundary. Unit and component-contract tests stay with their owner. CUDA-JS native ABI/resource tests stay in CUDA-JS.
 
 ### `packaging/`
 
-Owns UMCGS release manifests, generated execution-package metadata, CUDA-JS compatibility ranges/exact tested pairs, checksums, installation/distribution composition, and reproducibility metadata.
+Owns CUDA-MCGS release manifests, generated execution-package metadata, CUDA-JS compatibility ranges/exact tested pairs, checksums, installation/distribution composition, and reproducibility metadata.
 
 It consumes released CUDA-JS artifacts and manifests rather than source paths.
 
@@ -121,7 +121,7 @@ Contains copied/vendored external material only with origin, revision, license, 
 
 ## Component identity
 
-UMCGS component IDs express search ownership, for example:
+CUDA-MCGS component IDs express search ownership, for example:
 
 ```text
 contract.search-ir
@@ -137,15 +137,15 @@ adapter.domain.chess
 adapter.policy.puct
 ```
 
-Generic IDs such as `runtime.host` or a generic CUDA memory/Driver owner are not UMCGS components after ADR-0014.
+Generic IDs such as `runtime.host` or a generic CUDA memory/Driver owner are not CUDA-MCGS components after ADR-0014.
 
 ## Dependency direction
 
-- UMCGS schemas/contracts are data authorities and do not depend on generated consumers.
+- CUDA-MCGS schemas/contracts are data authorities and do not depend on generated consumers.
 - Search adapters depend on stable contracts/SDK, never private compiler/runtime paths.
-- `integration.cuda-js` depends on UMCGS execution-package contracts and released CUDA-JS public contracts.
-- Other UMCGS components do not call CUDA-JS directly unless an accepted dependency decision moves that responsibility.
-- CUDA-JS cannot depend on UMCGS.
+- `integration.cuda-js` depends on CUDA-MCGS execution-package contracts and released CUDA-JS public contracts.
+- Other CUDA-MCGS components do not call CUDA-JS directly unless an accepted dependency decision moves that responsibility.
+- CUDA-JS cannot depend on CUDA-MCGS.
 - Conformance/examples consume public surfaces.
 - Tools may generate artifacts, but generated output identifies its source and complete peer-runtime compatibility inputs.
 - Diagnostics observe through bounded contracts and never control active search.
@@ -159,7 +159,7 @@ Do not create planned component directories merely to reserve names. At creation
 
 A new repository still requires an independent version/release, deployment/install, access/security, ownership/roadmap, external-consumer, toolchain/legal, or peer-composition lifecycle.
 
-CUDA-JS meets that threshold through its generic native/JIT toolchain, security boundary, release compatibility, and unrelated-consumer potential. The UMCGS adapter currently does not.
+CUDA-JS meets that threshold through its generic native/JIT toolchain, security boundary, release compatibility, and unrelated-consumer potential. The CUDA-MCGS adapter currently does not.
 
 A repository split includes:
 
@@ -173,4 +173,4 @@ A repository split includes:
 
 ## Enforcement
 
-[`../../scripts/check-project-organization.mjs`](../../scripts/check-project-organization.mjs) enforces UMCGS topology, root source-file prohibition, component manifests, and dumping-ground rules. Cross-repository contract conformance is added with the accepted version-zero interop specification.
+[`../../scripts/check-project-organization.mjs`](../../scripts/check-project-organization.mjs) enforces CUDA-MCGS topology, root source-file prohibition, component manifests, and dumping-ground rules. Cross-repository contract conformance is added with the accepted version-zero interop specification.

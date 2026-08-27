@@ -1,4 +1,4 @@
-# UMCGS Memory and Performance Policy
+# CUDA-MCGS Memory and Performance Policy
 
 **Scope:** GPU-memory planning, hot-path design, benchmarking, and performance evidence.
 

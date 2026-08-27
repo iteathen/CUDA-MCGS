@@ -27,10 +27,10 @@ The current fixture binds the exact proposal Composer result:
 
 - capsule: `cuda-mcgs-search-ir-composer-reference-v0.2.0`;
 - expected/executed/passed: `878/878/878`;
-- representation/composition SHA-256: `70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9`;
+- representation/composition SHA-256: `b189211a774e6d4bd9b27ee8a744ed80743cfe45f3564be93deb310383efc906`;
 - canonical bytes: `719393`.
 
-The harness consumes the generated Composer `build/evidence.json` as an evidence manifest. The Composer owner then exports the three exact normalized Domain profiles to ignored `build/domain-profiles.json`. That projection has SHA-256 `612c72274be7986bcae53237be97b34e64d97a781eeb55e61964d11b942b9f47` over `69524` canonical bytes. The Domain oracle consumes only this deterministic projection; it neither deep-imports Composer internals nor copies the normalizer. Missing, failed or identity-mismatched Composer/projection evidence fails closed.
+The harness consumes the generated Composer `build/evidence.json` as an evidence manifest. The Composer owner then exports the three exact normalized Domain profiles to ignored `build/domain-profiles.json`. That projection has SHA-256 `321f913bea8b74b9dfef3b01341b148734c0448cb97c69f7e2b170b9985f26a0` over `69524` canonical bytes. The Domain oracle consumes only this deterministic projection; it neither deep-imports Composer internals nor copies the normalizer. Missing, failed or identity-mismatched Composer/projection evidence fails closed.
 
 Schedules are finite checked-in data. Event order is meaningful; owner lists and dependency/read sets normalize canonically. A transition receives only a frozen clone of its own state, its explicit input and explicitly declared public facts. It returns a replacement owner state and zero or more immutable facts in its non-overlapping owner namespace. The harness provides no loop, queue, retry, discovery, callback, worker wait or host progression mechanism.
 

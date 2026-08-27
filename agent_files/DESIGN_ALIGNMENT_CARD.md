@@ -1,4 +1,4 @@
-# UMCGS Design Alignment Card
+# CUDA-MCGS Design Alignment Card
 
 Read this before architecture, specification, engineering decisions, implementation, material testing/debugging, large-task decomposition, cleanup/disposition, or PR integration. Token backpressure applies even to routine work. It intentionally repeats the rules most likely to prevent agent drift; load deeper doctrine only when the task triggers it.
 
@@ -125,7 +125,7 @@ A violation is an architecture defect and a stop condition before implementation
 
 ## Universality without vagueness
 
-UMCGS is universal at contracts and compilation boundaries, not through one giant generic runtime object.
+CUDA-MCGS is universal at contracts and compilation boundaries, not through one giant generic runtime object.
 
 - Name the widest truthful invariant, not the first domain or consumer.
 - State intended members, permitted variation, and excluded cases.
@@ -192,7 +192,7 @@ Consolidation merges execution overhead, not semantic accountability.
 - Verify resulting target SHA/tree, issue/branch/worktree/dependent effects, branch integration state, and post-merge cleanup.
 - Reduced evidence narrows the claim; it does not preserve an unsupported full/release claim.
 
-## UMCGS non-negotiables
+## CUDA-MCGS non-negotiables
 
 - A concrete engine is finite and memory-planned.
 - Active production search remains device-closed after ignition.

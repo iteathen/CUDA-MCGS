@@ -51,7 +51,7 @@ This directory is the durable operating system for development. The root [`AGENT
 ## CUDA-MCGS application profile
 
 - [`application_specific/CUDA_MCGS_PROFILE.md`](application_specific/CUDA_MCGS_PROFILE.md) — canonical current project profile.
-- [`application_specific/UMCGS_PROFILE.md`](application_specific/UMCGS_PROFILE.md) — compatibility-only pointer for the former project name; do not use for new references.
+- [`application_specific/CUDA_MCGS_PROFILE.md`](application_specific/CUDA_MCGS_PROFILE.md) — compatibility-only pointer for the former project name; do not use for new references.
 - [`application_specific/REPOSITORY_ORGANIZATION.md`](application_specific/REPOSITORY_ORGANIZATION.md)
 - [`application_specific/ARCHITECTURE_GUARDRAILS.md`](application_specific/ARCHITECTURE_GUARDRAILS.md)
 - [`application_specific/MEMORY_AND_PERFORMANCE.md`](application_specific/MEMORY_AND_PERFORMANCE.md)

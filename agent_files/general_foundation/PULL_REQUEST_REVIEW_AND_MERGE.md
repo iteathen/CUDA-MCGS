@@ -14,7 +14,7 @@ Review and merge are separate transactions:
 
 Passing CI does not override a demonstrated defect. A stale approval does not authorize a changed head. A merged button response does not prove the target contains the intended result.
 
-## Current UMCGS phase
+## Current CUDA-MCGS phase
 
 CUDA-MCGS is a public pre-release repository in framework-definition/development. Ordinary forks, pull requests, configured CODEOWNERS/branch-protection enforcement, and public GitHub-hosted CI are the collaboration posture; public visibility does not constitute a CUDA-MCGS product release or stable compatibility promise.
 

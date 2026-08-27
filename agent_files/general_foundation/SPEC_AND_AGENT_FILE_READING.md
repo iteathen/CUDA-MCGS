@@ -1,6 +1,6 @@
 # Selective Specification and Agent-File Reading
 
-**Scope:** Discovering, interpreting, applying, refreshing, and retiring specifications, ADRs, agent instructions, manifests, indexes, plans, and supporting documentation for any UMCGS task.
+**Scope:** Discovering, interpreting, applying, refreshing, and retiring specifications, ADRs, agent instructions, manifests, indexes, plans, and supporting documentation for any CUDA-MCGS task.
 
 ## Purpose
 
@@ -73,7 +73,7 @@ A task that begins as a local edit must be reclassified when it changes a public
 
 ## 2. Load the mandatory operating kernel
 
-UMCGS’s kernel is intentionally small and current:
+CUDA-MCGS’s kernel is intentionally small and current:
 
 - root `AGENTS.md`;
 - canonical `agent_files/AGENTS.md`;
@@ -406,7 +406,7 @@ A correct initial reading does not support a final claim after the scope or auth
 
 If uncertainty remains about a document’s applicability and the consequence is material, read it. The cost of one relevant document is lower than implementing against the wrong authority.
 
-## 17. UMCGS examples
+## 17. CUDA-MCGS examples
 
 ### Typographical correction in an informational README
 
@@ -424,7 +424,7 @@ Read the path instruction chain; owning search/runtime contract; device-closure,
 
 Read the kernel and changed component authority, then the PR-review/merge and cleanup doctrine regardless of whether implementation authors already read them. Refresh the final head, discussion, checks, branch/dependent state, and changed authority before merge.
 
-### UMCGS-to-CUDA-JS contract work
+### CUDA-MCGS-to-CUDA-JS contract work
 
 Read both repositories’ root instruction chains, each side’s public ownership authority, and the inter-repository contract. Do not import either repository’s private implementation instructions into the other. Test each repository internally and the public compatible pair once.
 

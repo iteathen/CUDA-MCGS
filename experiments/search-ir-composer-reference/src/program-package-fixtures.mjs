@@ -203,7 +203,7 @@ export function buildProgramPackageProfile(inspected, context, label) {
   const input = {
     schema: 'cuda-mcgs.program-package-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence', contract: catalogContract(inspected, 'SPEC-0005'), id: profileId, version: VERSION,
     semanticEngine: {
-      contractSet: identityReference(inspected.identities.contractSet), authority: { repository: 'iteathen/UMCGS', revision: AUTHORITY_REVISION }, profiles,
+      contractSet: identityReference(inspected.identities.contractSet), authority: { repository: 'iteathen/CUDA-MCGS', revision: AUTHORITY_REVISION }, profiles,
       resourcePlan: profileReference(context.resourceResult), progressPlan: profileReference(context.progressResult), outputProfile: profileReference(context.outputResult),
       sessionProfile: context.sessionResult ? { kind: 'selected', profile: profileReference(context.sessionResult) } : { kind: 'absent' },
       stageProfile: context.stageResult ? { kind: 'selected', profile: profileReference(context.stageResult) } : { kind: 'absent' },
@@ -240,7 +240,7 @@ export function buildCudaJsFailureFixture(label, errorClass = 'unsupported-capab
 export function buildCompatiblePairFixture(packageResult, programResult, realizationResult, label) {
   return {
     schema: 'cuda-mcgs.compatible-pair-record/0.2.0', status: 'reference-fixture',
-    cudaMcgs: { repository: 'iteathen/UMCGS', revision: AUTHORITY_REVISION, package: 'cuda-mcgs@0.0.0-proposal', searchIr: { ...packageResult.normalized.semantic.engineIdentity }, searchProgram: identityReference(programResult.identity), executionPackage: identityReference(packageResult.identity) },
+    cudaMcgs: { repository: 'iteathen/CUDA-MCGS', revision: AUTHORITY_REVISION, package: 'cuda-mcgs@0.0.0-proposal', searchIr: { ...packageResult.normalized.semantic.engineIdentity }, searchProgram: identityReference(programResult.identity), executionPackage: identityReference(packageResult.identity) },
     cudaJs: { repository: 'iteathen/CUDA-JS', revision: CUDA_JS_REVISION, package: CUDA_JS_PACKAGE, apiSchema: '1', capabilities: packageResult.normalized.cudaJs.requirements.map((entry) => ({ ...entry })), deviceProgram: { ...realizationResult.normalized.deviceProgram }, artifacts: realizationResult.normalized.artifacts.map((entry) => ({ ...entry })), resources: realizationResult.normalized.resources.map((entry) => ({ ...entry })), operations: realizationResult.normalized.operations.map((entry) => ({ ...entry })), runtime: { ...realizationResult.normalized.runtime } },
     environment: { platform: contentIdentity(`${label}:platform`), architecture: contentIdentity(`${label}:architecture`), device: contentIdentity(`${label}:device`), toolchain: contentIdentity(`${label}:toolchain`) },
     evidence: [contentIdentity(`${label}:reference-evidence`)],

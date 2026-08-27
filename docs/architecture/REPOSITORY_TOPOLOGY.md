@@ -1,8 +1,8 @@
-# CUDA-MCGS/UMCGS and CUDA-JS Repository Topology
+# CUDA-MCGS/CUDA-MCGS and CUDA-JS Repository Topology
 
 **Status:** Informational
 
-The accepted boundary is two peer repositories with one-way dependency and versioned artifacts. CUDA-MCGS is the product-facing name of the search framework hosted in `iteathen/CUDA-MCGS`; existing accepted UMCGS identifiers remain authoritative until a separate identifier migration is accepted.
+The accepted boundary is two peer repositories with one-way dependency and versioned artifacts. CUDA-MCGS is the product-facing name of the search framework hosted in `iteathen/CUDA-MCGS`; existing accepted CUDA-MCGS identifiers remain authoritative until a separate identifier migration is accepted.
 
 ## Repositories
 
@@ -85,7 +85,7 @@ CUDA-MCGS expresses requirements through public CUDA-JS capability and evidence 
 ## Dependency rules
 
 - CUDA-MCGS may depend only on CUDA-JS public packages, schemas, capabilities, and artifact manifests.
-- CUDA-JS never imports CUDA-MCGS/UMCGS source, Search IR, schemas, fixtures, or search terminology.
+- CUDA-JS never imports CUDA-MCGS/CUDA-MCGS source, Search IR, schemas, fixtures, or search terminology.
 - CUDA-MCGS source may call generic CUDA behavior only through its CUDA-JS adapter, except in explicitly isolated experiments.
 - The CUDA-MCGS Search Composer owns stage/capability/channel composition decisions; CUDA-JS owns generic compile/link/load mechanisms.
 - No consumer relies on a peer repository's branch, worktree, internal path, unversioned generated file, or local build directory.

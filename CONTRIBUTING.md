@@ -1,6 +1,6 @@
 # Contributing to CUDA-MCGS
 
-CUDA-MCGS is a public pre-release, documentation-first project open to public contribution. The canonical repository is `iteathen/CUDA-MCGS`; existing accepted UMCGS identifiers remain stable specification and governance identifiers.
+CUDA-MCGS is a public pre-release, documentation-first project open to public contribution. The canonical repository is `iteathen/CUDA-MCGS`; existing accepted CUDA-MCGS identifiers remain stable specification and governance identifiers.
 
 Before making a material change, read [`AGENTS.md`](AGENTS.md) and the relevant governance/specification files it routes to. The project is intentionally contract-first: proposals and experiments do not silently authorize production implementation.
 

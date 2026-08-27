@@ -8,7 +8,7 @@ Compatibility is translation at an owned boundary, not permanent contamination o
 
 ## Compatibility classes
 
-UMCGS compatibility may include:
+CUDA-MCGS compatibility may include:
 
 - Search IR and schema versions;
 - domain/policy/evaluator adapter contracts;
@@ -59,4 +59,4 @@ Deprecation records replacement, reason, first deprecated version, removal trigg
 
 ## Compatibility budget
 
-UMCGS does not promise indefinite support for every private pre-release snapshot or internal interface. Support promises are explicit and narrow. Keep the public surface deliberate so internals remain evolvable.
+CUDA-MCGS does not promise indefinite support for every private pre-release snapshot or internal interface. Support promises are explicit and narrow. Keep the public surface deliberate so internals remain evolvable.

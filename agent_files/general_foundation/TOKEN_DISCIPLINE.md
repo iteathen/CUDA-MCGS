@@ -1,6 +1,6 @@
 # Token-Use, Context, and Backpressure Discipline
 
-**Scope:** Every agent task in UMCGS, including routine edits, research, assessment, planning, engineering decisions, focus-branch work, implementation, debugging, testing, validation, review, integration, cleanup, and handoff.
+**Scope:** Every agent task in CUDA-MCGS, including routine edits, research, assessment, planning, engineering decisions, focus-branch work, implementation, debugging, testing, validation, review, integration, cleanup, and handoff.
 
 ## Purpose
 
@@ -507,7 +507,7 @@ Examples:
 
 Material token debt blocks completion. Pay it by moving unique truth to the correct owner, not by adding another generic summary.
 
-## UMCGS-specific discipline
+## CUDA-MCGS-specific discipline
 
 - do not load every domain adapter while defining one universal contract; use synthetic counterexamples and exact second instances;
 - do not ingest entire CUDA documentation when one capability, ABI, launch, memory, or synchronization question is decisive;
@@ -516,7 +516,7 @@ Material token debt blocks completion. Pay it by moving unique truth to the corr
 - reserve capacity for cross-contract reconciliation, finite memory, device closure, cancellation/teardown, JIT/ABI/cache identity, and search-quality equivalence;
 - treat profiler traces, generated engines, models, datasets, and large logs as artifacts rather than prompt text;
 - do not spend the validation reserve on speculative CUDA optimization or first-domain convenience;
-- do not use token pressure to justify host participation, incomplete memory/lifecycle contracts, weak compatibility identity, or duplicated UMCGS/CUDA-JS ownership.
+- do not use token pressure to justify host participation, incomplete memory/lifecycle contracts, weak compatibility identity, or duplicated CUDA-MCGS/CUDA-JS ownership.
 
 ## Prohibited patterns
 

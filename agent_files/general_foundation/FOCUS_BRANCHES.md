@@ -314,9 +314,9 @@ A continuation or integration packet contains:
 
 Another qualified agent should be able to continue without reconstructing chat history or loading unrelated branches.
 
-## UMCGS-specific use
+## CUDA-MCGS-specific use
 
-For UMCGS, large framework work commonly needs distinct focus branches for:
+For CUDA-MCGS, large framework work commonly needs distinct focus branches for:
 
 - shared Search IR vocabulary and capability envelope;
 - domain state/action/transition/history identity;

@@ -356,9 +356,9 @@ On pause or failure:
 
 Do not abandon a half-applied contract, migration, generated artifact, device allocation, background process, branch, credential, or external resource.
 
-## UMCGS-specific execution obligations
+## CUDA-MCGS-specific execution obligations
 
-A UMCGS plan node must not silently introduce:
+A CUDA-MCGS plan node must not silently introduce:
 
 - a game-, board-, player-, zero-sum-, action-width-, state-size-, evaluator-, tree-, or GPU-specific assumption into universal contracts;
 - host-produced intermediate decisions after active-search ignition;

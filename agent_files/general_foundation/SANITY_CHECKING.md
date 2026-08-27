@@ -103,7 +103,7 @@ If the subject changes, mark affected evidence invalid. A final full claim must 
 
 Partition by semantic ownership and integration rather than arbitrary file count.
 
-A UMCGS repository/system map may include:
+A CUDA-MCGS repository/system map may include:
 
 ```text
 authority, organization, and source-of-truth records
@@ -215,7 +215,7 @@ A set of locally correct branches can still form an incoherent boundary.
 
 Trace representative and critical paths from input/configuration and authority through transition, state, scheduling, evaluation, failure, and resource behavior to observable output and terminal cleanup.
 
-For UMCGS, selected paths may include:
+For CUDA-MCGS, selected paths may include:
 
 - schema/profile → normalized IR → memory/layout plan → generated engine → load/launch;
 - root input → selection/transition/lookup/evaluation/backup → output;

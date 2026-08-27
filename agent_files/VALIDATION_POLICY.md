@@ -1,6 +1,6 @@
 # Validation Policy
 
-**Scope:** Evidence required before a UMCGS engineering decision, change, test result, focus-branch result, plan-node acceptance, cleanup claim, review claim, or integration may be considered complete.
+**Scope:** Evidence required before a CUDA-MCGS engineering decision, change, test result, focus-branch result, plan-node acceptance, cleanup claim, review claim, or integration may be considered complete.
 
 ## Principle
 

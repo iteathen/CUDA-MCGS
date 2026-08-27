@@ -19,7 +19,7 @@ Before choosing a type or layout, define the domain it must survive:
 
 ## Accidental limits
 
-Do not encode the first observed case as the system limit. UMCGS examples include:
+Do not encode the first observed case as the system limit. CUDA-MCGS examples include:
 
 - node/action/path IDs sized only for the first GPU profile;
 - a fixed policy width derived from chess or Go;

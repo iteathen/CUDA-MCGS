@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/execution-package.schema.json",
+  "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/execution-package.schema.json",
   "title": "CUDA-MCGS public execution-package and CUDA-JS request projection proposal evidence",
   "type": "object",
   "additionalProperties": false,
