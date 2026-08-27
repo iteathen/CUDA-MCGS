@@ -666,6 +666,16 @@ export function normalizeGraphProfile(input, inspectedCatalog, domainProfileResu
     if (pressureOutcomes.has('transposition-capacity') !== (transposition.kind === 'verified-sharing')) fail('GRAPH_TRANSPOSITION_RESIDUE', 'transposition resource presence differs from sharing selection');
     if (pressureOutcomes.has('reclamation-not-quiescent') !== (reclamation.kind === 'enabled')) fail('GRAPH_RECLAIM_RESIDUE', 'reclamation resource presence differs from reclamation selection');
     const roleObject = new Map(objectKinds.map((object) => [object.role, object.id]));
+    const edgeSlotCapacity = resources
+      .filter(({ unit, pressureOutcome, scope }) => unit === 'slots' && pressureOutcome === 'edge-capacity' && scope === 'per-engine')
+      .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+    const structuralEdgeDemand = addDecimalUint(
+      layoutByObject.get(roleObject.get('parent-edge')).capacity,
+      layoutByObject.get(roleObject.get('expansion')).capacity,
+    );
+    if (compareDecimalUint(edgeSlotCapacity, structuralEdgeDemand) < 0) {
+      fail('GRAPH_RESOURCE_CAPACITY', 'edge-capacity slot resources cannot cover parent-edge plus expansion layout capacity');
+    }
     const requiredRegions = [['domain-state', roleObject.get('state-node')], ['domain-action', roleObject.get('parent-edge')]];
     if (domainProfileResult.normalized.history.disposition === 'carried' || domainProfileResult.normalized.history.disposition === 'hybrid') requiredRegions.push(['domain-history', roleObject.get('path-occurrence')]);
     for (const [semanticRole, objectKind] of requiredRegions) {
