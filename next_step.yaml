@@ -47,12 +47,21 @@
     "docs/specs/SPEC-0010-graph-storage-and-reclamation.md",
     "docs/handoffs/2026-08-27-graph-root-01-resume.md"
   ],
+  "deliverables": [
+    "one exact protected CUDA-free universal semantic/reference packet before production lowering",
+    "independently replaceable Domain, Graph, Policy, Evaluator, Output, Resource, Progress, Session and extension reference owners",
+    "Graph NODE, EDGE, REF, PATH, ROOT and later RECLAIM evidence with direct requirement coverage and cross-owner falsifiers",
+    "normalized Search IR/Composer products with exact finite resources, lifecycle, failure, identity and provenance",
+    "production CUDA-MCGS implemented only as ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts",
+    "one bounded parallel native framework and exact CUDA-MCGS/CUDA-JS compatible-pair qualification only after semantic acceptance",
+    "external-consumer embedding evidence without importing product-specific chess/UCI/book/timing/tablebase meaning into CUDA-MCGS"
+  ],
   "current_focus": {
     "id": "ENGINE-REFERENCE-01",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36",
     "active_leaf": "REF-GRAPH-01/GRAPH-ROOT",
     "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/24",
-    "next_action": "Freeze the final documentation-bearing ref/graph-root-01 head, open/review/qualify the ROOT PR against current protected main, squash-merge with expected-head guard, and require protected-main ROOT evidence readback. Do not start GRAPH-RECLAIM until that readback succeeds.",
+    "next_action": "Qualify the final documentation-bearing ref/graph-root-01 PR head against current protected main, complete exact-head review, squash-merge with expected-head guard, and require protected-main ROOT evidence readback. Do not start GRAPH-RECLAIM until that readback succeeds.",
     "after_integration": "Dependency-review GRAPH-RECLAIM-001..009 and ADR-0022 occurrence-supersession/lifecycle closure from the exact protected ROOT squash revision.",
     "exit": "All Graph owner obligations are integrated into the CUDA-free reference packet with exact evidence and no production/native claims."
   },
