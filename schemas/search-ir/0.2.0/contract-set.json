@@ -156,7 +156,7 @@
       "specificationIdentity": "CUDA-MCGS-SPEC-0012@0.1.0-draft",
       "draftVersion": "0.1.0",
       "status": "Proposal",
-      "semanticOwner": "CUDA-MCGS universal device-owned search-progress semantics",
+      "semanticOwner": "CUDA-MCGS universal device-owned search progress semantics",
       "sourcePath": "docs/specs/SPEC-0012-device-owned-search-progress.md",
       "sha256": "d4dad4fbd63ad8eecb59b9bd2cefd652cf7dc471a9106a2d42daf559f817f2e6",
       "requirementPrefix": "PROGRESS-",
