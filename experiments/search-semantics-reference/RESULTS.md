@@ -2,116 +2,101 @@
 
 **Status:** Informational
 
-**Updated:** 2026-08-26
+**Updated:** 2026-08-27
 
 ## Harness + Domain
 
-The combined `REF-HARNESS-01` plus `REF-DOMAIN-01` capsule remains qualified:
+The previously integrated `REF-HARNESS-01` plus `REF-DOMAIN-01` capsule remains retained historical evidence:
 
 - expected/discovered/executed/passed: `49/49/49/49`;
 - failed: `0`;
-- required/conditional/optional skipped: `0/0/0`;
-- not discovered/not executed by selection: `0/0`.
+- direct SPEC-0007 requirement coverage: `47/47`;
+- representation/composition SHA-256 consumed by that run: `4846fe8686721afd13dfe4ac66ebbfdb0722979481183e76b96bf9118f340b3f`;
+- Domain projection SHA-256: `6c073d11c688bc64b7bf4233c93de56ce29a95706f8a1ac665c8a04d939f13ee`;
+- harness/Domain evidence SHA-256: `cf6aafa528af6f4ad6854d16d7c6c046f6ff33a7e9f18d153cb0386a9b4044b8`.
 
-The exact consumed representation/composition evidence is:
+PR #135 changes only the proposal Graph-profile chain. It does not relabel this earlier Domain result as newly requalified evidence.
 
-- SHA-256: `4846fe8686721afd13dfe4ac66ebbfdb0722979481183e76b96bf9118f340b3f`;
-- canonical bytes: `719510`;
-- Composer cases: `879/879` passed.
+## REF-GRAPH-01 — current proposal chain
 
-The Composer-owned normalized Domain-profile projection is:
+The explicit expansion-resource correction changed the normalized Graph profile and therefore legitimately rebound the downstream selected-profile and behavioral evidence identities.
 
-- profiles: `3`;
-- SHA-256: `6c073d11c688bc64b7bf4233c93de56ce29a95706f8a1ac665c8a04d939f13ee`;
-- canonical bytes: `69524`.
+The current Composer qualification is:
 
-The Domain mapping derives 47 direct SPEC-0007 requirements from the normative source and exact public requirement-coverage classifications. All `47/47` have at least one checked-in case and all `47/47` were exercised by the full capsule.
-
-The harness/Domain evidence identity remains:
-
-- algorithm: SHA-256 over canonical source-keyed evidence;
-- SHA-256: `cf6aafa528af6f4ad6854d16d7c6c046f6ff33a7e9f18d153cb0386a9b4044b8`;
-- canonical bytes: `30372`.
-
-The focused `domain-oracle-sensitivity-equality` mutation remains separate focused evidence and is not used for the full-reference claim.
-
-## REF-GRAPH-01 — NODE/transposition brick
-
-The first Graph owner brick is integrated from PR #134 and remains separately qualified:
-
-- capsule: `cuda-mcgs-graph-node-reference-v0.2.0`;
-- expected/discovered/executed/passed: `13/13/13/13`;
-- failed: `0`;
-- not discovered/not executed by selection: `0/0`;
-- direct `GRAPH-NODE-*` planned/executed requirement coverage: `11/11`.
+- capsule: `cuda-mcgs-search-ir-composer-reference-v0.2.0`;
+- expected/discovered/executed/passed: `879/879/879/879`;
+- contract-set SHA-256: `2a3ded0b25f59d6f6a5dfffefefceae73f25e9df0558953b0bea29201d47c10d`;
+- requirement-coverage SHA-256: `fe510fb69890b070ae6e7dfc60bd3e113a3f7e6354fa6bfcd8e48a6336c6c07a`;
+- expanded-requirements SHA-256: `32fc66ca775046121146f3afc621e3407bab69711355e283b769d947fd185e0a`;
+- framework-selection SHA-256: `48e0c83e6bad0a674efec8b84ac43246d20cb8c2eea82f78170442b2d699dc11` (`10422` canonical bytes);
+- representation/composition SHA-256: `f4e85941091a820047778679a3ab79573218f700349cc282d6210ba43942e98f` (`719510` canonical bytes).
 
 The Composer-owned normalized Graph-profile projection is:
 
 - profiles: `4`;
-- SHA-256: `22a7fd46605dee3a202fe42aba800fa92fc0e7d4de1f8b619123c1e7d489053e`;
-- canonical bytes: `132436`;
-- producer representation/composition key: `4846fe8686721afd13dfe4ac66ebbfdb0722979481183e76b96bf9118f340b3f`.
+- SHA-256: `f6abe5bbef4db62c5c79211ac954ece110a2da764cce6b5ce5e854870e9390ba`;
+- canonical bytes: `132969`.
 
-The owner-isolated Graph NODE evidence identity is:
+### NODE/transposition brick
 
-- SHA-256: `0f2d90a9e61c831c467d94f7cc761fb6a44050c00d40b2e2e71bfebba4a1d767`;
+NODE was rebound to the exact current Composer/projection pair and passed:
+
+- capsule: `cuda-mcgs-graph-node-reference-v0.2.0`;
+- expected/discovered/executed/passed: `13/13/13/13`;
+- failed: `0`;
+- direct `GRAPH-NODE-*` planned/executed requirement coverage: `11/11`;
+- evidence SHA-256: `1e284c4f8da41c9afc794b6803e4d4ce13b7c0c74f903c383ca900bdacfee687`;
 - canonical bytes: `10123`.
 
-The 13 cases prove, within the bounded reference model:
+The earlier protected-main NODE result remains the integrated historical checkpoint, but this rebound identity is the exact dependency required by the current EDGE proposal.
 
-- independent domain-key collision verification before equal-state sharing;
-- exactly one initializer among competing equal claimers and terminal convergence to one ready node;
-- required owner initialization and payload visibility before node ready, with transposition-entry ready only after node ready;
-- failed initialization releases waiters to a terminal failed result and dispositions the failed claim;
-- compound admission fails without partial capacity residue;
-- typed transposition capacity/probe exhaustion;
-- declared isolated scopes do not silently share and cannot materialize a second live claim in the same scope;
-- Domain state/history payload is immutable after node ready;
-- independently owned records remain outside Graph mutation authority and do not alter Graph node identity;
-- conflicting ready publication is fatal; and
-- deliberate removal of collision verification or node-before-entry publication ordering is caught by named mutation falsifiers.
+### EDGE/expansion brick
 
-Protected `main@f7b9b4d8aa99ed0a618d5299d498b0e5397bbe0d` passed the permanent Graph NODE job plus Ubuntu/Windows Search IR and governance verification.
-
-## REF-GRAPH-01 — EDGE/expansion brick
-
-PR #135 now qualifies the second Graph owner brick for `GRAPH-EDGE-001` through `GRAPH-EDGE-010` against the exact integrated NODE evidence above.
-
-The reviewed hosted qualification on semantic tree `5be0364ff7e83fe66e2918beef5e01c5e456e802` produced:
+The current second Graph owner brick qualifies `GRAPH-EDGE-001` through `GRAPH-EDGE-010`:
 
 - capsule: `cuda-mcgs-graph-edge-reference-v0.2.0`;
-- expected/discovered/executed/passed: `15/15/15/15`;
+- expected/discovered/executed/passed: `16/16/16/16`;
 - failed: `0`;
-- not discovered/not executed by selection: `0/0`;
 - direct `GRAPH-EDGE-*` planned/executed requirement coverage: `10/10`;
-- exact upstream NODE evidence: `0f2d90a9e61c831c467d94f7cc761fb6a44050c00d40b2e2e71bfebba4a1d767`;
-- exact Graph projection: `22a7fd46605dee3a202fe42aba800fa92fc0e7d4de1f8b619123c1e7d489053e`;
-- EDGE evidence SHA-256: `6f836cd4f9d6fdc5ab2fc825b23b5cbde9473e475ff0545824408701618d840b`;
-- EDGE evidence canonical bytes: `11337`.
+- exact upstream NODE evidence: `1e284c4f8da41c9afc794b6803e4d4ce13b7c0c74f903c383ca900bdacfee687`;
+- exact Graph projection: `f6abe5bbef4db62c5c79211ac954ece110a2da764cce6b5ce5e854870e9390ba`;
+- EDGE evidence SHA-256: `4a0ad1a80b5b02243ce1e1fd85a881f4127999fc14ca68b701550f7eda0cab40`;
+- EDGE evidence canonical bytes: `11661`.
 
-The same run (`33044928137`) passed all five permanent jobs: governance verification, Ubuntu Search IR, Windows Search IR, Graph NODE, and Graph EDGE.
-
-The EDGE cases prove, within this bounded owner brick:
+The 16 cases prove, within this bounded owner brick:
 
 - parent-local edge identity remains distinct for independent incoming edges even when both resolve to one shared/transposed child node;
-- action publication precedes child-resolution consumption, including a mutation that genuinely invokes child resolution while the edge is still reserved;
+- action publication precedes child-resolution consumption, with a true mutation that invokes child resolution while the edge is still reserved;
 - a pending-valid child claim can later become a ready child link without republishing the action;
-- expansion batch publication is all-or-nothing over complete visible edge/action records and producer cursor/status data remains opaque to Graph;
-- caller-reported action material cannot exceed the normalized `domain-action` owner-region bound, and opaque producer data is canonically bounded by the normalized expansion record;
+- expansion batch publication is all-or-nothing over complete visible edge/action records;
+- producer cursor/status data remains opaque to Graph and is bounded by the normalized expansion-record size;
+- caller-reported action material cannot exceed the normalized `domain-action` owner-region bound;
 - unique versus repeatable action multiplicity comes from the injected rule rather than Graph inference;
 - expansion generations have one advancing claimer and explicit terminal outcomes;
 - unpublished failed/cancelled reservations roll back exactly, while already-published reservations remain accounted and become `published-failed`;
 - cancelling an expansion terminalizes a batch-published `child-pending` edge so no consumer is stranded;
 - later finite batches remain admissible until a declared finite pressure outcome;
+- expansion slots have an explicit finite resource contribution and an independently exercised exhaustion case;
 - structural edge readiness does not publish or imply readiness of Policy/Evaluator/Output/extension-owned records; and
-- deliberate parent-identity collapse, early child consumption and partial-batch publication are each caught by named mutation falsifiers.
+- parent-identity collapse, early child consumption and partial-batch publication are each caught by named mutation falsifiers.
 
-This EDGE brick imports no Domain or Policy implementation. Action identity/equality/multiplicity are injected through neutral contracts; NODE is consumed through typed-reference/child-resolution callbacks. No active-path, root-protection, generation/reclamation, Session authority, storage algorithm or CUDA mechanism is selected here.
+## Expansion resource correction
+
+Author review found that the normalized Graph profile had an expansion layout but did not previously contribute explicit finite expansion-slot capacity. The reference must not infer hidden storage from a layout or silently borrow parent-edge capacity.
+
+The correction keeps the existing generic failure vocabulary and LEGO ownership boundary:
+
+- materialized Graph fixtures now contribute explicit expansion slots with `edge-capacity` as the declared pressure outcome;
+- the generic Graph normalizer sums per-engine slot resources whose pressure outcome is `edge-capacity` and requires them to cover parent-edge plus expansion layout capacity;
+- a profile may still use separate or shared storage pools, but the finite budget must be explicit;
+- under-budgeted profiles fail with `GRAPH_RESOURCE_CAPACITY` before use;
+- the arbitrary-width Graph test scales the corresponding expansion-slot budget when it expands layout ranges, so the test does not manufacture a capacity contradiction; and
+- no new `expansion-capacity` semantic failure, storage algorithm or CUDA mechanism was introduced.
 
 ## Evidence lifecycle and claim limits
 
 Machine evidence is reproducible in ignored `experiments/search-semantics-reference/build/`. Generated evidence is disposable and is not treated as source authority.
 
-The current results prove only the semantic-neutral harness, bounded Domain behavior, the integrated Graph NODE/transposition brick, and the qualified Graph EDGE/expansion brick described above. Path/occurrence, typed-reference/generation, root-protection, retirement/quiescence/reclamation, ADR-0022 occurrence supersession, later owner oracles, a complete terminal reference engine and integrated proposal acceptance remain unfinished.
+The current Graph results prove only the NODE/transposition and EDGE/expansion bricks described above. Path/occurrence, typed-reference/generation, root-protection, retirement/quiescence/reclamation, ADR-0022 occurrence supersession, later owner oracles, a complete terminal reference engine and integrated proposal acceptance remain unfinished.
 
 No production runtime, native CUDA, CUDA-JS device execution, performance, search-quality, public-SDK, contract-acceptance or multi-GPU-support claim is made here.
