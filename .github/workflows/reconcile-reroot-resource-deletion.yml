@@ -1,0 +1,311 @@
+name: one-shot reroot resource deletion reconciliation
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    if: github.event.pull_request.head.ref == 'docs/ref-root-control-01-reconcile'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/ref-root-control-01-reconcile
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.7.0
+      - name: Reconcile reroot-only resource deletion and regenerate evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          async function update(file, transform) {
+            const before = await readFile(file, 'utf8');
+            const after = transform(before);
+            if (after === before) throw new Error(`expected ${file} to change`);
+            await writeFile(file, after);
+          }
+
+          function replaceExact(text, before, after, label) {
+            const first = text.indexOf(before);
+            if (first < 0) throw new Error(`missing ${label}`);
+            if (text.indexOf(before, first + before.length) >= 0) throw new Error(`duplicate ${label}`);
+            return text.slice(0, first) + after + text.slice(first + before.length);
+          }
+
+          function replaceSection(text, startMarker, endMarker, replacement, label) {
+            const start = text.indexOf(startMarker);
+            if (start < 0) throw new Error(`missing ${label} start`);
+            const end = text.indexOf(endMarker, start);
+            if (end < 0) throw new Error(`missing ${label} end`);
+            if (text.indexOf(startMarker, start + startMarker.length) >= 0) throw new Error(`duplicate ${label} start`);
+            return text.slice(0, start) + replacement + text.slice(end);
+          }
+
+          await update('experiments/search-ir-composer-reference/src/resource.mjs', (text) => {
+            text = replaceExact(
+              text,
+              "  const requiredReserveOwners = new Map([['terminal-result', 'SPEC-0013'], ['progress-cleanup', 'SPEC-0012'], ['reroot-admission', 'SPEC-0006']]);\n  for (const [purpose, contractId] of requiredReserveOwners) {",
+              "  const reserveOwners = new Map([['terminal-result', 'SPEC-0013'], ['progress-cleanup', 'SPEC-0012'], ['reroot-admission', 'SPEC-0006']]);\n  for (const [purpose, contractId] of reserveOwners) {",
+              'resource reserve owner map',
+            );
+            return replaceExact(
+              text,
+              "    if ((purpose === 'reroot-admission' && selectedOwner && !selectedReserve) || (selectedReserve && (!selectedOwner || classById.get(selectedReserve.class).contributor !== selectedOwner.id || !selectedReserve.eligibleOwners.includes(selectedOwner.id)))) fail('RESOURCE_RESERVE_OWNER', `${purpose} reserve owner is invalid`);",
+              "    if (selectedReserve && (!selectedOwner || classById.get(selectedReserve.class).contributor !== selectedOwner.id || !selectedReserve.eligibleOwners.includes(selectedOwner.id))) fail('RESOURCE_RESERVE_OWNER', `${purpose} reserve owner is invalid`);",
+              'resource optional reroot reserve',
+            );
+          });
+
+          await update('experiments/search-ir-composer-reference/src/resource-fixtures.mjs', (text) => {
+            return replaceSection(
+              text,
+              "  let rerootClass = null;\n  if (options.session) {",
+              "\n\n  if (options.stage)",
+              `  let sessionControlClass = null;
+          let rerootClass = null;
+          if (options.session) {
+            const sessionControlClassId = \`resource.\${profile}.class-session-control\`;
+            const rerootSelected = options.reroot !== false;
+            const rerootClassId = \`resource.\${profile}.class-reroot-admission\`;
+            const sessionContributor = opaqueContributor(
+              profile,
+              inspected,
+              \`session.\${profile}\`,
+              'SPEC-0006',
+              [sessionControlClassId, ...(rerootSelected ? [rerootClassId] : [])],
+              true,
+            );
+            contributors.push(sessionContributor);
+            sessionControlClass = resourceClass(
+              profile,
+              sessionContributor.id,
+              { id: sessionControlClassId, unit: 'bytes', minimum: '16384', maximum: '16384', alignment: '256', scope: 'per-engine', pressureStatus: 'session-control-capacity' },
+              { id: sessionControlClassId, sourceResource: sessionControlClassId, basis: 'maximum-live', ownerPressureStatus: 'session-control-capacity', memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'], lifetime: 'session' },
+            );
+            classes.push(sessionControlClass);
+            if (rerootSelected) {
+              rerootClass = resourceClass(
+                profile,
+                sessionContributor.id,
+                { id: rerootClassId, unit: 'bytes', minimum: '16384', maximum: '16384', alignment: '256', scope: 'per-engine', pressureStatus: 'session-reroot-admission-capacity' },
+                { id: rerootClassId, sourceResource: rerootClassId, basis: 'optional-reserve', ownerPressureStatus: 'session-reroot-admission-capacity', memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'], lifetime: 'session' },
+              );
+              classes.push(rerootClass);
+            }
+          }`,
+              'resource fixture session classes',
+            );
+          });
+
+          await update('experiments/search-ir-composer-reference/src/progress-fixtures.mjs', (text) => {
+            return replaceExact(
+              text,
+              "  const rootReserve = resourcePlan.reserves.find(({ purpose }) => purpose === 'root-update')?.id ?? null;\n  const reserve = kind === 'terminal-output' ? terminalReserve\n    : (['producer-unblocking', 'must-drain', 'resource-recovery'].includes(kind) ? progressReserve\n      : (kind === 'external-control' ? rootReserve : null));",
+              "  const reserve = kind === 'terminal-output' ? terminalReserve\n    : (['producer-unblocking', 'must-drain', 'resource-recovery'].includes(kind) ? progressReserve : null);",
+              'progress external-control reserve separation',
+            );
+          });
+
+          await update('experiments/search-ir-composer-reference/src/session-fixtures.mjs', (text) => {
+            text = replaceExact(
+              text,
+              "  const rerootReserve = resource.reserves.find(({ purpose }) => purpose === 'reroot-admission');\n  const rererootClass = resource.classes.find(({ id, contributor }) => id === rerootReserve?.class && contributor === sessionOwner.id);\n  const rerootAdmission = resource.admissionGroups.find(({ classes }) => classes.includes(rererootClass?.id));\n  const selectedObservation = output.observations.kind === 'selected' ? output.observations.profiles[0] : null;\n  const advanceSelected = options.advance !== false;\n  const rerootSelected = options.reroot !== false;\n  const attentionSelected = options.attention !== false;\n  const observationSelected = selectedObservation !== null;",
+              "  const selectedObservation = output.observations.kind === 'selected' ? output.observations.profiles[0] : null;\n  const advanceSelected = options.advance !== false;\n  const rerootSelected = options.reroot !== false;\n  const attentionSelected = options.attention !== false;\n  const observationSelected = selectedObservation !== null;\n  const rerootReserve = rerootSelected ? resource.reserves.find(({ purpose }) => purpose === 'reroot-admission') : null;\n  const rerootClass = rerootReserve ? resource.classes.find(({ id, contributor }) => id === rerootReserve.class && contributor === sessionOwner.id) : null;\n  const rerootAdmission = rerootClass ? resource.admissionGroups.find(({ classes }) => classes.includes(rerootClass.id)) : null;\n  const sessionControlClasses = resource.classes.filter(({ contributor, id }) => contributor === sessionOwner.id && id !== rerootClass?.id);\n  if (sessionControlClasses.length !== 1) throw new Error('synthetic Session requires exactly one generic control class');\n  const sessionControlClass = sessionControlClasses[0];\n  if (rerootSelected && (!rerootReserve || !rerootClass || !rerootAdmission)) throw new Error('synthetic reroot resources are incomplete');\n  if (!rerootSelected && resource.reserves.some(({ purpose }) => purpose === 'reroot-admission')) throw new Error('synthetic reroot reserve survived deletion');",
+              'session fixture resource selection',
+            );
+            text = text.replaceAll('rererootClass.range.generationMaximum', 'sessionControlClass.range.generationMaximum');
+            return text;
+          });
+
+          await update('experiments/search-ir-composer-reference/src/session.mjs', (text) => {
+            text = replaceExact(
+              text,
+              "  const rerootReserve = resourceResult.normalized.reserves.find(({ purpose }) => purpose === 'reroot-admission');\n  const sessionClass = resourceResult.normalized.classes.find(({ id, contributor }) => id === rerootReserve?.class && contributor === resourceSession.id);\n  const rerootAdmission = resourceResult.normalized.admissionGroups.find(({ classes }) => classes.includes(sessionClass?.id));\n  const sessionWork = progressResult.normalized.workClasses.find(({ owner }) => owner === progressSession.id);\n  const externalWait = progressResult.normalized.noProgress.externalWait;\n  if (!rerootReserve || !sessionClass || !rerootAdmission || rerootReserve.borrow.kind !== 'none' || sessionWork?.kind !== 'external-control'\n      || externalWait.kind !== 'session-only' || externalWait.owner !== progressSession.id || !progressSession.publicTransitions.some((entry) => schemaKey(entry) === schemaKey(externalWait.state))) fail('SESSION_UPSTREAM_CONTRACT', 'selected resource/progress Session boundary is incomplete');",
+              "  const rerootReserve = resourceResult.normalized.reserves.find(({ purpose }) => purpose === 'reroot-admission');\n  const rerootClass = rerootReserve ? resourceResult.normalized.classes.find(({ id, contributor }) => id === rerootReserve.class && contributor === resourceSession.id) : null;\n  const rerootAdmission = rerootClass ? resourceResult.normalized.admissionGroups.find(({ classes }) => classes.includes(rerootClass.id)) : null;\n  const sessionWork = progressResult.normalized.workClasses.find(({ owner }) => owner === progressSession.id);\n  const sessionControlClasses = resourceResult.normalized.classes.filter(({ id, contributor }) => contributor === resourceSession.id && id !== rerootClass?.id && sessionWork?.resources?.includes(id));\n  const sessionClass = sessionControlClasses.length === 1 ? sessionControlClasses[0] : null;\n  const externalWait = progressResult.normalized.noProgress.externalWait;\n  if (!sessionClass || sessionWork?.kind !== 'external-control' || sessionWork.reserve !== null\n      || externalWait.kind !== 'session-only' || externalWait.owner !== progressSession.id || !progressSession.publicTransitions.some((entry) => schemaKey(entry) === schemaKey(externalWait.state))) fail('SESSION_UPSTREAM_CONTRACT', 'selected resource/progress Session boundary is incomplete');\n  if (rerootReserve && (!rerootClass || !rerootAdmission || rerootReserve.borrow.kind !== 'none')) fail('SESSION_REROOT_ADMISSION', 'reroot reserve is incomplete');",
+              'session upstream resource separation',
+            );
+            text = replaceExact(
+              text,
+              "  const p = input.profile;\n  exactKeys(p, ['input', 'transaction', 'oldRoot', 'materialization', 'publication', 'reuseClassification', 'workScopes', 'pressureOutcome', 'rejectedOutcome', 'acceptedOutcome', 'exhaustedOutcome', 'hostProgress'], 'SESSION_REROOT_PROFILE_FIELDS', 'reroot profile');\n  const command = inputById.get(p.input);",
+              "  const p = input.profile;\n  exactKeys(p, ['input', 'transaction', 'oldRoot', 'materialization', 'publication', 'reuseClassification', 'workScopes', 'pressureOutcome', 'rejectedOutcome', 'acceptedOutcome', 'exhaustedOutcome', 'hostProgress'], 'SESSION_REROOT_PROFILE_FIELDS', 'reroot profile');\n  if (!rerootReserve || !rerootAdmission) fail('SESSION_REROOT_ADMISSION', 'selected reroot requires its protected admission reserve');\n  const command = inputById.get(p.input);",
+              'session selected reroot admission',
+            );
+            return replaceExact(
+              text,
+              "  const selected = { advance: advance.kind === 'selected', reroot: reroot.kind === 'selected', attention: attention.kind === 'selected', observations: observations.kind === 'selected' };\n  if (selected.advance !== commands.inputs.some(({ kind }) => kind === 'advance') || selected.reroot !== commands.inputs.some(({ kind }) => kind === 'reroot') || selected.attention !== commands.inputs.some(({ kind }) => kind === 'attention')) fail('SESSION_INPUT_COVERAGE', 'selected operation objects differ from command inputs');",
+              "  const selected = { advance: advance.kind === 'selected', reroot: reroot.kind === 'selected', attention: attention.kind === 'selected', observations: observations.kind === 'selected' };\n  if (!selected.reroot && rerootReserve) fail('SESSION_REROOT_RESIDUE', 'reroot admission reserve remains while reroot is absent');\n  if (selected.advance !== commands.inputs.some(({ kind }) => kind === 'advance') || selected.reroot !== commands.inputs.some(({ kind }) => kind === 'reroot') || selected.attention !== commands.inputs.some(({ kind }) => kind === 'attention')) fail('SESSION_INPUT_COVERAGE', 'selected operation objects differ from command inputs');",
+              'session reroot reserve deletion',
+            );
+          });
+
+          await update('experiments/search-ir-composer-reference/run.mjs', (text) => {
+            text = replaceExact(
+              text,
+              "await runCase('reject-resource-reroot-reserve-missing', () => {\n  const mutated = clone(resourceProfileInputs[2]); mutated.reserves = mutated.reserves.filter(({ purpose }) => purpose !== 'reroot-admission');\n  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_OWNER' });\n});",
+              "await runCase('resource-reroot-reserve-is-optional-at-resource-layer', () => {\n  const mutated = clone(resourceProfileInputs[2]); mutated.reserves = mutated.reserves.filter(({ purpose }) => purpose !== 'reroot-admission');\n  const normalized = normalizeResourceProfile(mutated, inspected, knownResourceProfiles).normalized;\n  assert.equal(normalized.reserves.some(({ purpose }) => purpose === 'reroot-admission'), false);\n  assert(normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0006'));\n});",
+              'resource reroot reserve ownership test',
+            );
+            const insertionAnchor = "  assert.deepEqual(attentionBefore.resource.identity, attentionAfter.resource.identity);\n  assert.deepEqual(attentionBefore.progress.identity, attentionAfter.progress.identity);\n  assert.deepEqual(attentionBefore.output.identity, attentionAfter.output.identity);\n\n  const stageBefore = buildOwnerChain";
+            const insertion = `  assert.deepEqual(attentionBefore.resource.identity, attentionAfter.resource.identity);
+          assert.deepEqual(attentionBefore.progress.identity, attentionAfter.progress.identity);
+          assert.deepEqual(attentionBefore.output.identity, attentionAfter.output.identity);
+
+          const rerootBefore = buildOwnerChain({ label: 'deletion-reroot', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { session: true }, outputOptions: { structured: true }, sessionOptions: { attention: false } });
+          const rerootAfter = buildOwnerChain({ label: 'deletion-reroot', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { session: true, reroot: false }, outputOptions: { structured: true }, sessionOptions: { reroot: false, attention: false } });
+          assert.equal(rerootBefore.session.normalized.reroot.kind, 'selected');
+          assert.equal(rerootAfter.session.normalized.reroot.kind, 'absent');
+          assert.equal(rerootAfter.session.normalized.advance.kind, 'selected');
+          assert.equal(rerootAfter.resource.normalized.reserves.some(({ purpose }) => purpose === 'reroot-admission'), false);
+          const rerootAfterSessionOwner = rerootAfter.resource.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0006');
+          assert(rerootAfterSessionOwner);
+          assert(rerootAfter.resource.normalized.classes.some(({ contributor, pressureStatus }) => contributor === rerootAfterSessionOwner.id && pressureStatus === 'session-control-capacity'));
+          assert.equal(rerootAfter.resource.normalized.classes.some(({ contributor, pressureStatus }) => contributor === rerootAfterSessionOwner.id && pressureStatus === 'session-reroot-admission-capacity'), false);
+          assert.equal(rerootAfter.progress.normalized.workClasses.find(({ owner }) => owner === rerootAfterSessionOwner.id).reserve, null);
+          assert.equal(rerootAfter.session.normalized.commands.inputs.some(({ kind }) => kind === 'reroot'), false);
+          assert.equal(rerootAfter.session.normalized.ports.some(({ id }) => ['prepareReroot', 'commitReroot', 'abortReroot'].includes(id)), false);
+          assert.equal(rerootAfter.session.normalized.cleanup.kinds.includes('reroot-transaction'), false);
+          assert.equal(rerootAfter.session.normalized.cleanup.kinds.includes('compound-lease'), false);
+
+          const stageBefore = buildOwnerChain`;
+            text = replaceExact(text, insertionAnchor, insertion, 'reroot deletion conformance insertion');
+            text = replaceExact(text, '  expected: 878,', '  expected: 879,', 'composer expected cases');
+            return replaceExact(text, '  notDiscovered: 878 - cases.length,', '  notDiscovered: 879 - cases.length,', 'composer undiscovered cases');
+          });
+          NODE
+
+          set +e
+          node scripts/run-search-ir-composer-reference.mjs
+          discovery_status=$?
+          set -e
+          test -s experiments/search-ir-composer-reference/build/evidence.json
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const fixturePath = 'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json';
+          const fixture = JSON.parse(await readFile(fixturePath, 'utf8'));
+          const evidence = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const byRole = new Map([
+            ['domain', evidence.domainProfileIdentities?.[0]], ['graph', evidence.graphProfileIdentities?.[0]],
+            ['policy', evidence.policyProfileIdentities?.[0]], ['resource', evidence.resourceProfileIdentities?.[0]],
+            ['progress', evidence.progressProfileIdentities?.[0]], ['output', evidence.outputProfileIdentities?.[0]],
+          ]);
+          for (const profile of fixture.profiles) {
+            const identity = byRole.get(profile.role);
+            if (!identity) continue;
+            if (!/^[0-9a-f]{64}$/.test(identity.sha256)) throw new Error(`missing derived identity for ${profile.role}`);
+            profile.identity = { algorithm: identity.algorithm, sha256: identity.sha256 };
+          }
+          await writeFile(fixturePath, `${JSON.stringify(fixture, null, 2)}\n`);
+          NODE
+
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-domain-profiles.mjs
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const composer = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          if (composer.summary.expected !== 879 || composer.summary.passed !== 879 || composer.summary.failed !== 0) throw new Error('Composer did not qualify 879/879');
+          const projection = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/domain-profiles.json', 'utf8'));
+          for (const fixturePath of [
+            'experiments/search-semantics-reference/fixtures/neutral-schedules.json',
+            'experiments/search-semantics-reference/fixtures/domain-cases.json',
+          ]) {
+            const fixture = JSON.parse(await readFile(fixturePath, 'utf8'));
+            fixture.composerEvidence = composer.representationCompositionEvidenceKey;
+            if (fixture.schedules) for (const schedule of Object.values(fixture.schedules)) schedule.evidenceKey = composer.representationCompositionEvidenceKey.sha256;
+            if (fixture.profileProjection) fixture.profileProjection = { schema: projection.schema, ...projection.projectionIdentity };
+            await writeFile(fixturePath, `${JSON.stringify(fixture, null, 2)}\n`);
+          }
+          NODE
+
+          node scripts/run-search-semantics-reference.mjs
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          import { canonicalIdentity, normalizeContractSet, normalizeRequirementCoverage } from './experiments/search-ir-composer-reference/src/catalog.mjs';
+
+          const composer = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const semantic = JSON.parse(await readFile('experiments/search-semantics-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/domain-profiles.json', 'utf8'));
+          if (semantic.summary.expected !== 49 || semantic.summary.passed !== 49 || semantic.summary.failed !== 0) throw new Error('semantic reference did not qualify 49/49');
+          const contractSet = JSON.parse(await readFile('schemas/search-ir/0.2.0/contract-set.json', 'utf8'));
+          const coverage = JSON.parse(await readFile('schemas/search-ir/0.2.0/requirement-coverage.json', 'utf8'));
+          const nextPath = 'next_step.yaml';
+          const next = JSON.parse(await readFile(nextPath, 'utf8'));
+          const oldComposer = next.exact_evidence_inputs.representation_composition_evidence_key;
+          const oldDeletion = next.exact_evidence_inputs.deletion_matrix_identity;
+          const oldProjection = next.exact_evidence_inputs.domain_profile_projection_identity;
+          const oldSemantic = next.exact_evidence_inputs.semantic_reference_evidence_key;
+          next.schema_version = Math.max(next.schema_version ?? 0, 68);
+          next.updated = '2026-08-26';
+          next.exact_evidence_inputs.representation_composition_evidence_key = composer.representationCompositionEvidenceKey.sha256;
+          next.exact_evidence_inputs.contract_set_identity = canonicalIdentity(normalizeContractSet(contractSet)).sha256;
+          next.exact_evidence_inputs.requirement_coverage_identity = canonicalIdentity(normalizeRequirementCoverage(coverage)).sha256;
+          next.exact_evidence_inputs.deletion_matrix_identity = composer.deletionIdentityMatrixIdentity.sha256;
+          next.exact_evidence_inputs.domain_profile_projection_identity = projection.projectionIdentity.sha256;
+          next.exact_evidence_inputs.semantic_reference_evidence_key = semantic.evidenceIdentity.sha256;
+          await writeFile(nextPath, `${JSON.stringify(next, null, 2)}\n`);
+
+          const activeDocs = [
+            'STATUS.md',
+            'experiments/search-ir-composer-reference/README.md',
+            'experiments/search-ir-composer-reference/RESULTS.md',
+            'experiments/search-semantics-reference/README.md',
+            'experiments/search-semantics-reference/RESULTS.md',
+            'docs/handoffs/2026-08-26-ref-root-control-01-qualified.md',
+          ];
+          for (const file of activeDocs) {
+            let text = await readFile(file, 'utf8');
+            text = text.replaceAll(oldComposer, composer.representationCompositionEvidenceKey.sha256)
+              .replaceAll(oldDeletion, composer.deletionIdentityMatrixIdentity.sha256)
+              .replaceAll(oldProjection, projection.projectionIdentity.sha256)
+              .replaceAll(oldSemantic, semantic.evidenceIdentity.sha256);
+            if (file !== 'experiments/search-ir-composer-reference/RESULTS.md') text = text.replaceAll('878/878', '879/879');
+            if (file === 'experiments/search-ir-composer-reference/RESULTS.md') {
+              text = text.replace(
+                'The integrated capsule passes 878/878 CUDA-free cases. It retains all 877 structural/schema/normalizer/Composer/deletion cases and adds one packet-level handoff falsifier that requires exactly:',
+                'The reconciled capsule passes 879/879 CUDA-free cases. It retains the packet-level handoff falsifier and adds one root-control deletion falsifier proving reroot-owned protected capacity can be deleted while the remaining Search Session stays selected; the packet handoff still requires exactly:',
+              );
+              text = text.replaceAll('live 878/878 evidence', 'live 879/879 evidence');
+            }
+            if (file === 'docs/handoffs/2026-08-26-ref-root-control-01-qualified.md') {
+              text += `\n## Final review follow-up\n\nTargeted executable review after the first exact-head green run found one ownership leak: the reference Session/resource chain required the reroot-admission reserve even when reroot was structurally absent. The follow-up splits generic Session-control capacity from reroot-only protected admission capacity, removes reroot reserve/class/ports/input/cleanup residue when reroot is unselected, keeps advance independently selected, and adds a focused deletion falsifier. The Composer case inventory is now 879/879; semantic-reference coverage remains 49/49.\n`;
+            }
+            await writeFile(file, text);
+          }
+          NODE
+
+          ./scripts/verify-docs.sh
+
+          if grep -RIn 'root-update' \
+              experiments/search-ir-composer-reference/src/resource.mjs \
+              experiments/search-ir-composer-reference/src/resource-fixtures.mjs \
+              experiments/search-ir-composer-reference/src/progress-fixtures.mjs \
+              experiments/search-ir-composer-reference/src/session.mjs \
+              experiments/search-ir-composer-reference/src/session-fixtures.mjs; then
+            echo 'stale root-update mechanism vocabulary remains in live reference code' >&2
+            exit 1
+          fi
+
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          const evidence = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const rerootCase = evidence.cases.find(({ id }) => id === 'session-reroot-deletion-removes-reserve');
+          if (!rerootCase || rerootCase.status !== 'pass') throw new Error('reroot deletion falsifier is not passing');
+          NODE
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --ignore-unmatch .github/workflows/reconcile-reroot-resource-deletion.yml
+          git add -A
+          git diff --cached --check
+          git commit -m 'ref: delete reroot-only resource residue'
+          git push origin HEAD:docs/ref-root-control-01-reconcile
