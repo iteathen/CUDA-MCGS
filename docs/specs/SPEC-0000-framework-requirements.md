@@ -235,8 +235,6 @@ FRAMEWORK-PRODUCT-003. A concrete engine may reject unsupported combinations bef
 
 FRAMEWORK-PRODUCT-004. Ranked candidates, best action, top-k, legal moves, WDL, principal variation and similar outputs exist only when selected policy/external-product/output contracts define them.
 
-FRAMEWORK-PRODUCT-005. CUDA-MCGS contains no active production product specification or product implementation owner. Concrete named product-like fixtures are permitted only as removable non-production conformance/research/example evidence under ADR-0024.
-
 ## 11. Compatibility, persistence, security and diagnostics
 
 FRAMEWORK-COMPAT-001. Framework semantic compatibility requires compatible identities for every selected owner profile/schema/port binding, resource/progress/output/session plan, extension/external-product input, arithmetic/determinism choice and cleanup disposition. Matching package version or byte layout alone is insufficient.
