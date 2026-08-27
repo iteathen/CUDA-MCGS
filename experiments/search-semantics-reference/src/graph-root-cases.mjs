@@ -54,24 +54,34 @@ function makeHarness({ profile, rootAdmission = {}, refAdmission = {}, ownerRero
   return { profile, root: rootOracle, ref, addReady, staticSlots };
 }
 
+function sameReference(left, right) {
+  return left?.kind === right?.kind
+    && left?.arena === right?.arena
+    && left?.slot === right?.slot
+    && left?.generation === right?.generation;
+}
+
 function heldProtections(refSnapshot, reference = null) {
   return refSnapshot.protections.filter((entry) => entry.state === 'held'
-    && (reference === null || JSON.stringify(entry.reference) === JSON.stringify(reference)));
+    && (reference === null || sameReference(entry.reference, reference)));
 }
 
 function rootControlFacts(rootControl) {
   assert.equal(rootControl.schema, 'cuda-mcgs.search-ir-composer-root-control-projection/0.2.0');
-  assert.equal(rootControl.root.kind, 'selected');
-  assert.equal(rootControl.root.profile.establishment, 'domain-validated-graph-owned');
+  assert.equal(rootControl.root.establishment, 'pre-ignition-validate-admit-materialize');
+  assert.equal(rootControl.root.publication, 'release-after-full-initialization');
+  assert.equal(typeof rootControl.root.validationOwner, 'string');
+  assert.equal(typeof rootControl.root.graphOwner, 'string');
+  assert.notEqual(rootControl.root.validationOwner, rootControl.root.graphOwner);
   assert.equal(rootControl.advance.kind, 'selected');
   assert.equal(rootControl.advance.profile.realizedTransitionRequired, true);
   assert.equal(rootControl.advance.profile.successorReadyRequired, true);
   assert.equal(rootControl.advance.profile.existingResourcesOnly, true);
-  assert.equal(rootControl.advance.profile.stateTraversal, 'none');
-  assert.equal(rootControl.advance.profile.stateCopy, 'none');
+  assert.equal(rootControl.advance.profile.graphTraversal, 'none');
+  assert.equal(rootControl.advance.profile.semanticStateCopy, 'none');
   assert.equal(rootControl.advance.profile.stateTransform, 'none');
-  assert.equal(rootControl.advance.profile.stateReset, 'none');
-  assert.equal(rootControl.advance.profile.resourceResize, 'none');
+  assert.equal(rootControl.advance.profile.reset, 'none');
+  assert.equal(rootControl.advance.profile.resize, 'none');
   assert.equal(rootControl.advance.profile.reclassification, 'none');
   assert.equal(rootControl.advance.profile.reclamation, 'none');
   assert.equal(rootControl.advance.profile.eagerCleanup, 'none');
@@ -118,7 +128,7 @@ export function registerGraphRootCases({ defineCase, fixture, projection, nodeEv
   defineCase('graph-root-control-projection-preserves-operation-separation', () => {
     rootControlFacts(rootControl);
     return {
-      root: rootControl.root.profile.establishment,
+      root: rootControl.root.establishment,
       advance: rootControl.advance.profile.siblingOccurrenceWork,
       reroot: rootControl.reroot.profile.oldRoot,
       attention: rootControl.attention.profile.rootAuthorityEffect,

@@ -383,6 +383,16 @@ function normalizeRootProtection(input, objectById, layoutByObject) {
       || objectById.get(input.protectionObject)?.role !== 'protection-record') fail('GRAPH_ROOT_OBJECT', 'rootProtection names wrong object roles');
   const admissionReserve = positiveDecimal(input.admissionReserve, 'GRAPH_ROOT_RESERVE', 'rootProtection admissionReserve');
   if (compareDecimalUint(admissionReserve, layoutByObject.get(input.anchorObject).capacity) > 0) fail('GRAPH_ROOT_RESERVE', 'root admission reserve exceeds anchor capacity');
+  const hasPrivateReset = (object, from) => object.lifecycle.transitions.some((transition) =>
+    transition.from === from && transition.to === object.lifecycle.initialState && transition.visibility === 'private');
+  const anchorObject = objectById.get(input.anchorObject);
+  const protectionObject = objectById.get(input.protectionObject);
+  for (const terminal of anchorObject.lifecycle.terminalStates) {
+    if (!hasPrivateReset(anchorObject, terminal)) fail('GRAPH_ROOT_LIFECYCLE', `root-anchor terminal state ${terminal} cannot return to free`);
+  }
+  for (const terminal of protectionObject.lifecycle.terminalStates) {
+    if (!hasPrivateReset(protectionObject, terminal)) fail('GRAPH_ROOT_LIFECYCLE', `protection-record terminal state ${terminal} cannot return to free`);
+  }
   return {
     kind: input.kind,
     anchorObject: input.anchorObject,
@@ -703,9 +713,12 @@ export function normalizeGraphProfile(input, inspectedCatalog, domainProfileResu
     const protectionSlotCapacity = resources
       .filter(({ unit, pressureOutcome, scope }) => unit === 'slots' && pressureOutcome === 'protection-capacity' && scope === 'per-engine')
       .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
-    const protectionDemand = layoutByObject.get(roleObject.get('protection-record')).capacity;
+    const protectionDemand = addDecimalUint(
+      layoutByObject.get(roleObject.get('protection-record')).capacity,
+      layoutByObject.get(roleObject.get('root-anchor')).capacity,
+    );
     if (compareDecimalUint(protectionSlotCapacity, protectionDemand) < 0) {
-      fail('GRAPH_RESOURCE_CAPACITY', 'protection-capacity slot resources cannot cover protection-record layout capacity');
+      fail('GRAPH_RESOURCE_CAPACITY', 'protection-capacity slot resources cannot cover protection-record plus root-anchor layout capacity');
     }
     const activePathSlotCapacity = resources
       .filter(({ unit, pressureOutcome, scope }) => unit === 'slots' && pressureOutcome === 'path-capacity' && scope === 'per-engine')

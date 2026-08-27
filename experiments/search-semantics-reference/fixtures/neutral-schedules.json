@@ -3,7 +3,7 @@
   "composerEvidence": {
     "algorithm": "sha256",
     "byteLength": 719510,
-    "sha256": "c02b4c278edd6ab5cb432593e3aa5e0317eba14bb5eb7f7783f531513c49d34c"
+    "sha256": "ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529"
   },
   "expectedCases": [
     "composer-evidence-input-exact",
@@ -32,7 +32,7 @@
   "schedules": {
     "dependent": {
       "schema": "cuda-mcgs.reference-declared-schedule/0.1.0",
-      "evidenceKey": "c02b4c278edd6ab5cb432593e3aa5e0317eba14bb5eb7f7783f531513c49d34c",
+      "evidenceKey": "ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529",
       "id": "schedule.dependent-publication",
       "owners": [
         {
@@ -79,7 +79,7 @@
     },
     "independentAlphaFirst": {
       "schema": "cuda-mcgs.reference-declared-schedule/0.1.0",
-      "evidenceKey": "c02b4c278edd6ab5cb432593e3aa5e0317eba14bb5eb7f7783f531513c49d34c",
+      "evidenceKey": "ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529",
       "id": "schedule.independent",
       "owners": [
         {
@@ -122,7 +122,7 @@
     },
     "independentBetaFirst": {
       "schema": "cuda-mcgs.reference-declared-schedule/0.1.0",
-      "evidenceKey": "c02b4c278edd6ab5cb432593e3aa5e0317eba14bb5eb7f7783f531513c49d34c",
+      "evidenceKey": "ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529",
       "id": "schedule.independent",
       "owners": [
         {
