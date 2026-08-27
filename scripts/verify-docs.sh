@@ -15,6 +15,7 @@ required=(
   CLAUDE.md
   GEMINI.md
   .github/CODEOWNERS
+  .github/dependabot.yml
   .github/copilot-instructions.md
   .github/pull_request_template.md
   .github/workflows/docs.yml

@@ -2,7 +2,10 @@
 
 **Universal Monte Carlo Graph Search**
 
-CUDA-MCGS is a public pre-release library intended to make finite GPU-resident Monte Carlo Graph Search easy to use while remaining complete enough for unrelated domains, evaluator types and search needs.
+[![Documentation](https://github.com/iteathen/CUDA-MCGS/actions/workflows/docs.yml/badge.svg)](https://github.com/iteathen/CUDA-MCGS/actions/workflows/docs.yml)
+[![License: AGPL-3.0-or-later](https://img.shields.io/badge/License-AGPL--3.0--or--later-blue.svg)](LICENSE)
+
+CUDA-MCGS is a public pre-release framework project for finite GPU-resident Monte Carlo Graph Search across unrelated domains, evaluator types and search needs. It currently publishes specifications, schemas and bounded reference evidence—not a production runtime or installable package.
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS framework with a universal least-authority extension/composition substrate and finite specialized Search Images.**
 
@@ -16,7 +19,7 @@ The core must not inherit the shape of the first product. Chess, Go, planning, o
 2. complete composable contracts/components for explicit control; and
 3. low-level Search IR, schema and extension tools for new integrations.
 
-These are levels of access to one library, not separate runtimes. A minimal call and its fully explicit equivalent must resolve to the same canonical framework profile, validation, specialization and execution package.
+These are planned levels of access to one library, not separate runtimes. A future minimal call and its fully explicit equivalent must resolve to the same canonical framework profile, validation, specialization and execution package.
 
 Defaults are local, bounded, deterministic, documented, inspectable and overridable. CUDA-MCGS may adapt from declared capabilities, stable input contracts and unambiguous call shape before ignition. It does not guess domain semantics from sample values or runtime coincidences, and it does not invent a domain, evaluator, state identity or other required fact merely to make every construction parameter-free.
 
@@ -153,7 +156,7 @@ None of the proposal documents authorize production implementation by themselves
 
 The repository is **public and pre-release**. CUDA-MCGS is still in framework definition, research, specification and bounded evidence gathering. No production search runtime, stable public API, released CUDA-MCGS/CUDA-JS compatible pair, native Linux support claim, or chess engine release is implied by repository visibility.
 
-The canonical plan is [`next_step.yaml`](next_step.yaml) under parent `CUDA-MCGS-V0/26`. It has separate universal-core, universal-extension-substrate, universal-integration/native, and non-gating downstream product lanes.
+The canonical plan is [`next_step.yaml`](next_step.yaml) under parent `CUDA-MCGS-V0/27`. It has separate universal-core, universal-extension-substrate, universal-integration/native, and non-gating downstream product lanes.
 
 ## Engineering invariants
 

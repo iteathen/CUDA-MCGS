@@ -99,6 +99,11 @@ const scaffoldReadmes = new Set([
 const adapterFamilies = new Set(["domains", "evaluators", "outputs", "policies"]);
 const errors = [];
 
+const workflowPath = path.join(root, ".github", "workflows", "docs.yml");
+const securityPath = path.join(root, "SECURITY.md");
+const issueConfigPath = path.join(root, ".github", "ISSUE_TEMPLATE", "config.yml");
+const dependabotPath = path.join(root, ".github", "dependabot.yml");
+
 function repositoryPath(absolutePath) {
   return path.relative(root, absolutePath).split(path.sep).join("/");
 }
@@ -113,6 +118,18 @@ function isNonEmptyFile(absolutePath) {
 
 function fail(message) {
   errors.push(message);
+}
+
+function requireText(relativePath, requiredText) {
+  const absolutePath = path.join(root, relativePath);
+  if (!isNonEmptyFile(absolutePath)) {
+    fail(`missing non-empty public repository control: ${relativePath}`);
+    return;
+  }
+  const text = readFileSync(absolutePath, "utf8");
+  if (!text.includes(requiredText)) {
+    fail(`${relativePath} must include ${JSON.stringify(requiredText)}`);
+  }
 }
 
 function validateComponent(componentPath, expectedArea) {
@@ -221,6 +238,20 @@ for (const relative of [...scaffoldReadmes].sort()) {
     fail(`missing mature-scale product-area README: ${relative}`);
   }
 }
+
+if (isNonEmptyFile(workflowPath)) {
+  const workflow = readFileSync(workflowPath, "utf8");
+  for (const match of workflow.matchAll(/^\s*uses:\s*([^\s#]+)/gm)) {
+    const action = match[1];
+    if (!/@[0-9a-f]{40}$/.test(action)) {
+      fail(`workflow action must use an immutable full commit SHA: ${action}`);
+    }
+  }
+}
+
+requireText("SECURITY.md", "https://github.com/iteathen/CUDA-MCGS/security/advisories/new");
+requireText(".github/ISSUE_TEMPLATE/config.yml", "https://github.com/iteathen/CUDA-MCGS/security/advisories/new");
+requireText(".github/dependabot.yml", "package-ecosystem: github-actions");
 
 const components = path.join(root, "components");
 if (isDirectory(components)) {

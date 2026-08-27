@@ -1,5 +1,5 @@
-blank_issues_enabled: true
+blank_issues_enabled: false
 contact_links:
   - name: Security vulnerability
-    url: https://github.com/iteathen/UMCGS/blob/main/SECURITY.md
-    about: Read the private vulnerability-reporting policy instead of opening a public exploit-detail issue.
+    url: https://github.com/iteathen/CUDA-MCGS/security/advisories/new
+    about: Report a vulnerability privately instead of opening a public exploit-detail issue.
