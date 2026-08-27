@@ -62,9 +62,9 @@ if (expectedCaseIds.length === 0 || expectedCaseIds.some((id) => !/^[a-z0-9]+(?:
 const classification = requirementCoverage.classifications.find((entry) =>
   entry.contract === 'SPEC-0010'
   && entry.requirementPrefix === 'GRAPH-PATH-'
-  && entry.primaryDisposition === 'semantic-normalizer'
-  && entry.plannedEvidenceOwner === 'IR-GRAPH-01'
-  && entry.supportingDispositions.includes('engine-reference-oracle'));
+  && entry.primaryDisposition === 'engine-reference-oracle'
+  && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01'
+  && entry.supportingDispositions.includes('semantic-normalizer'));
 assert(classification, 'GRAPH-PATH- requirement classification is missing');
 assert.equal(classification.requirementCount, 8);
 const graphPathRequirementIds = assertUniqueStrings(
