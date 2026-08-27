@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   verify:
@@ -38,3 +38,86 @@ jobs:
         with:
           name: search-ir-reference-${{ matrix.os }}
           path: experiments/search-ir-reference/build/evidence.json
+
+  reconcile-reroot-resource-deletion:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'docs/ref-root-control-01-reconcile'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/ref-root-control-01-reconcile
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.7.0
+      - name: Reconcile reroot-only resource deletion and regenerate evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          checkpoint=033c7086a77bc7eed63a3c3285182752def20b48
+          git fetch --no-tags --depth=1 origin "$checkpoint"
+          git show "${checkpoint}:.github/workflows/reconcile-reroot-resource-deletion.yml" > /tmp/reroot-v1.yml
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          const workflow = await readFile('/tmp/reroot-v1.yml', 'utf8');
+          const marker = '        run: |\n';
+          const start = workflow.indexOf(marker);
+          if (start < 0) throw new Error('v1 run block missing');
+          let script = workflow.slice(start + marker.length)
+            .split('\n')
+            .map((line) => line.startsWith('          ') ? line.slice(10) : line)
+            .join('\n');
+
+          const oldControl = "some(({ contributor, pressureStatus }) => contributor === rerootAfterSessionOwner.id && pressureStatus === 'session-control-capacity')";
+          const newControl = "some(({ contributor, ownerPressureStatus }) => contributor === rerootAfterSessionOwner.id && ownerPressureStatus === 'session-control-capacity')";
+          const oldReroot = "some(({ contributor, pressureStatus }) => contributor === rerootAfterSessionOwner.id && pressureStatus === 'session-reroot-admission-capacity')";
+          const newReroot = "some(({ contributor, ownerPressureStatus }) => contributor === rerootAfterSessionOwner.id && ownerPressureStatus === 'session-reroot-admission-capacity')";
+          if (!script.includes(oldControl) || !script.includes(oldReroot)) throw new Error('v1 normalized-class assertions missing');
+          script = script.replaceAll(oldControl, newControl).replaceAll(oldReroot, newReroot);
+
+          const insertionLine = "text = replaceExact(text, insertionAnchor, insertion, 'reroot deletion conformance insertion');";
+          if (!script.includes(insertionLine)) throw new Error('v1 insertion line missing');
+          const standaloneSource = [
+            '});',
+            '',
+            "await runCase('session-reroot-deletion-removes-reserve', () => {",
+            "  const rerootBefore = buildOwnerChain({ label: 'deletion-reroot-case', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { session: true }, outputOptions: { structured: true }, sessionOptions: { attention: false } });",
+            "  const rerootAfter = buildOwnerChain({ label: 'deletion-reroot-case', domain: domainProfiles[1], graph: graphProfiles[1], policy: policyProfiles[1], evaluator: evaluatorProfiles[0], resourceOptions: { session: true, reroot: false }, outputOptions: { structured: true }, sessionOptions: { reroot: false, attention: false } });",
+            "  assert.equal(rerootBefore.session.normalized.reroot.kind, 'selected');",
+            "  assert.equal(rerootAfter.session.normalized.reroot.kind, 'absent');",
+            "  assert.equal(rerootAfter.session.normalized.advance.kind, 'selected');",
+            "  assert.equal(rerootAfter.resource.normalized.reserves.some(({ purpose }) => purpose === 'reroot-admission'), false);",
+            "  const sessionOwner = rerootAfter.resource.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0006');",
+            '  assert(sessionOwner);',
+            "  assert(rerootAfter.resource.normalized.classes.some(({ contributor, ownerPressureStatus }) => contributor === sessionOwner.id && ownerPressureStatus === 'session-control-capacity'));",
+            "  assert.equal(rerootAfter.resource.normalized.classes.some(({ contributor, ownerPressureStatus }) => contributor === sessionOwner.id && ownerPressureStatus === 'session-reroot-admission-capacity'), false);",
+            "  const externalControl = rerootAfter.progress.normalized.workClasses.find(({ owner }) => owner === sessionOwner.id);",
+            "  assert.equal(externalControl.kind, 'external-control');",
+            '  assert.equal(externalControl.reserve, null);',
+            "  assert.equal(rerootAfter.session.normalized.commands.inputs.some(({ kind }) => kind === 'reroot'), false);",
+            "  assert.equal(rerootAfter.session.normalized.ports.some(({ id }) => ['prepareReroot', 'commitReroot', 'abortReroot'].includes(id)), false);",
+            "  assert.equal(rerootAfter.session.normalized.cleanup.kinds.includes('reroot-transaction'), false);",
+            "  assert.equal(rerootAfter.session.normalized.cleanup.kinds.includes('compound-lease'), false);",
+            '});',
+            '',
+            "await runCase('materially-different-composer-engines-cannot-collide', () => {",
+          ].join('\n');
+          const injectedTransform = [
+            insertionLine,
+            "            const standaloneAnchor = \"});\\n\\nawait runCase('materially-different-composer-engines-cannot-collide', () => {\";",
+            `            const standalone = ${JSON.stringify(standaloneSource)};`,
+            "            text = replaceExact(text, standaloneAnchor, standalone, 'standalone reroot deletion case');",
+          ].join('\n');
+          script = script.replace(insertionLine, injectedTransform);
+
+          const cleanupOld = 'git rm --ignore-unmatch .github/workflows/reconcile-reroot-resource-deletion.yml';
+          const cleanupNew = "git show HEAD^:.github/workflows/docs.yml > .github/workflows/docs.yml";
+          if (!script.includes(cleanupOld)) throw new Error('v1 cleanup missing');
+          script = script.replace(cleanupOld, cleanupNew);
+
+          await writeFile('/tmp/reroot-docs-carrier.sh', `set -euo pipefail\n${script}`, { mode: 0o700 });
+          NODE
+
+          bash /tmp/reroot-docs-carrier.sh
