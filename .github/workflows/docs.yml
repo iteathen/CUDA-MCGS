@@ -9,7 +9,8 @@ permissions:
   contents: read
 
 jobs:
-  verify:
+  governance-verification:
+    name: Governance verification
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -156,3 +157,46 @@ jobs:
             experiments/search-semantics-reference/build/graph-ref-evidence.json
             experiments/search-semantics-reference/build/graph-path-evidence.json
             experiments/search-semantics-reference/build/graph-root-evidence.json
+
+  verify:
+    name: verify
+    if: ${{ always() }}
+    needs:
+      - governance-verification
+      - search-ir-reference
+      - graph-node-reference
+      - graph-edge-reference
+      - graph-ref-reference
+      - graph-path-reference
+      - graph-root-reference
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every merge-gate job to succeed
+        env:
+          GOVERNANCE_RESULT: ${{ needs.governance-verification.result }}
+          SEARCH_IR_RESULT: ${{ needs.search-ir-reference.result }}
+          GRAPH_NODE_RESULT: ${{ needs.graph-node-reference.result }}
+          GRAPH_EDGE_RESULT: ${{ needs.graph-edge-reference.result }}
+          GRAPH_REF_RESULT: ${{ needs.graph-ref-reference.result }}
+          GRAPH_PATH_RESULT: ${{ needs.graph-path-reference.result }}
+          GRAPH_ROOT_RESULT: ${{ needs.graph-root-reference.result }}
+        run: |
+          set -euo pipefail
+          names=(GOVERNANCE SEARCH_IR GRAPH_NODE GRAPH_EDGE GRAPH_REF GRAPH_PATH GRAPH_ROOT)
+          results=(
+            "$GOVERNANCE_RESULT"
+            "$SEARCH_IR_RESULT"
+            "$GRAPH_NODE_RESULT"
+            "$GRAPH_EDGE_RESULT"
+            "$GRAPH_REF_RESULT"
+            "$GRAPH_PATH_RESULT"
+            "$GRAPH_ROOT_RESULT"
+          )
+          failed=0
+          for index in "${!results[@]}"; do
+            printf '%s=%s\n' "${names[$index]}" "${results[$index]}"
+            if [[ "${results[$index]}" != "success" ]]; then
+              failed=1
+            fi
+          done
+          exit "$failed"
