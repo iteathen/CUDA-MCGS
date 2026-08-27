@@ -1,0 +1,52 @@
+name: Reconcile Graph expansion resource proof
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    if: github.event.pull_request.head.ref == 'ref/graph-edge-01'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ref/graph-edge-01
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26.7.0
+      - name: Apply generic expansion-resource proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function replaceOnce(path, before, after) {
+            const input = fs.readFileSync(path, 'utf8');
+            const first = input.indexOf(before);
+            if (first < 0 || input.indexOf(before, first + 1) >= 0) throw new Error(`${path}: expected exactly one replacement target`);
+            fs.writeFileSync(path, input.slice(0, first) + after + input.slice(first + before.length));
+          }
+
+          replaceOnce(
+            'experiments/search-ir-composer-reference/src/graph.mjs',
+            "    const roleObject = new Map(objectKinds.map((object) => [object.role, object.id]));\n    const requiredRegions = [['domain-state', roleObject.get('state-node')], ['domain-action', roleObject.get('parent-edge')]];",
+            "    const roleObject = new Map(objectKinds.map((object) => [object.role, object.id]));\n    const edgeSlotCapacity = resources\n      .filter(({ unit, pressureOutcome, scope }) => unit === 'slots' && pressureOutcome === 'edge-capacity' && scope === 'per-engine')\n      .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');\n    const structuralEdgeDemand = addDecimalUint(\n      layoutByObject.get(roleObject.get('parent-edge')).capacity,\n      layoutByObject.get(roleObject.get('expansion')).capacity,\n    );\n    if (compareDecimalUint(edgeSlotCapacity, structuralEdgeDemand) < 0) {\n      fail('GRAPH_RESOURCE_CAPACITY', 'edge-capacity slot resources cannot cover parent-edge plus expansion layout capacity');\n    }\n    const requiredRegions = [['domain-state', roleObject.get('state-node')], ['domain-action', roleObject.get('parent-edge')]];",
+          );
+
+          replaceOnce(
+            'experiments/search-ir-composer-reference/run.mjs',
+            "  const missing = clone(graphProfileInputs[0]);\n  missing.resources = missing.resources.filter(({ pressureOutcome }) => pressureOutcome !== 'action-byte-capacity');\n  assert.throws(() => normalizeGraphProfile(missing, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_REQUIRED' });\n});",
+            "  const missing = clone(graphProfileInputs[0]);\n  missing.resources = missing.resources.filter(({ pressureOutcome }) => pressureOutcome !== 'action-byte-capacity');\n  assert.throws(() => normalizeGraphProfile(missing, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_REQUIRED' });\n  const underfunded = clone(graphProfileInputs[0]);\n  underfunded.resources = underfunded.resources.filter(({ id }) => !id.endsWith('resource-expansion-slots'));\n  assert.throws(() => normalizeGraphProfile(underfunded, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });\n});",
+          );
+          NODE
+
+          git rm --ignore-unmatch .github/workflows/reconcile-expansion-resource-proof.yml
+          git config user.name iteathen
+          git config user.email josh.oshiro@gmail.com
+          git add experiments/search-ir-composer-reference/src/graph.mjs experiments/search-ir-composer-reference/run.mjs
+          git commit -m "ref: prove Graph expansion resource coverage"
+          git push origin HEAD:ref/graph-edge-01
