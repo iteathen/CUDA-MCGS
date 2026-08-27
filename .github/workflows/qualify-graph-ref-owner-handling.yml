@@ -24,7 +24,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git rm --ignore-unmatch \
+          git rm -f --ignore-unmatch \
             .github/workflows/qualify-graph-ref-owner-handling.yml \
             tools/graph-ref-owner-handling-migration.mjs \
             tools/run-graph-ref-owner-handling-qualification.mjs
