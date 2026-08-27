@@ -2,7 +2,7 @@
 
 > **Superseded as a live resume point.** PATH is integrated on protected `main@e4069458ece47bbea0c2770204fa21fffbde6bb6` through PR #137. Continue from [`2026-08-27-graph-root-01-resume.md`](2026-08-27-graph-root-01-resume.md). This file is retained as historical PATH provenance only.
 
-**Status:** Informational / superseded live handoff
+**Status:** Superseded
 
 **Date:** 2026-08-27
 
