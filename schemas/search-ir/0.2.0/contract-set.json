@@ -2,7 +2,7 @@
   "schema": "cuda-mcgs.search-ir.contract-set/0.2.0",
   "representation": "cuda-mcgs.search-ir/0.2.0",
   "status": "proposal-evidence",
-  "authorityBaseline": "e1ca19132d79f3c2a15fd0f7fe5b78a190c0371b",
+  "authorityBaseline": "173765cf86fc6ab91364d8d52eb6a045dcbe2346",
   "sourceDigest": "sha256-utf8-lf-v1",
   "foundation": {
     "representation": "cuda-mcgs.search-ir/0.1.0",
@@ -86,7 +86,7 @@
       "status": "Proposal",
       "semanticOwner": "CUDA-MCGS optional Search Session external lifecycle semantics",
       "sourcePath": "docs/specs/SPEC-0006-search-session-control-and-observation.md",
-      "sha256": "b54e180e2466aea8202d64f7836e30c7ea76fd5fce345b6eedd4e9a63665cdce",
+      "sha256": "ab7a24a804e994cc5613554e36233ea549108d2197dc2fd90c5f48c80eb684f3",
       "requirementPrefix": "SESSION-",
       "requirementCount": 59,
       "plannedLeaf": "IR-SESSION-01"
@@ -156,7 +156,7 @@
       "specificationIdentity": "CUDA-MCGS-SPEC-0012@0.1.0-draft",
       "draftVersion": "0.1.0",
       "status": "Proposal",
-      "semanticOwner": "CUDA-MCGS universal device-owned progress semantics",
+      "semanticOwner": "CUDA-MCGS universal device-owned search-progress semantics",
       "sourcePath": "docs/specs/SPEC-0012-device-owned-search-progress.md",
       "sha256": "d4dad4fbd63ad8eecb59b9bd2cefd652cf7dc471a9106a2d42daf559f817f2e6",
       "requirementPrefix": "PROGRESS-",
