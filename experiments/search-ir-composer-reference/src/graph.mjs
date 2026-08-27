@@ -30,10 +30,10 @@ const BASE_PORTS = [
   'reserve-edge', 'validate-reference',
 ];
 const RECLAIM_PORTS = ['prove-quiescent', 'reclaim', 'retire'];
-const REQUIRED_RESOURCE_PRESSURES = ['action-byte-capacity', 'edge-capacity', 'node-capacity', 'path-capacity', 'path-depth', 'state-byte-capacity'];
+const REQUIRED_RESOURCE_PRESSURES = ['action-byte-capacity', 'edge-capacity', 'node-capacity', 'path-capacity', 'path-depth', 'protection-capacity', 'state-byte-capacity'];
 const REQUIRED_FAILURES = [
   'action-byte-capacity', 'arena-incarnation-mismatch', 'cancelled', 'edge-capacity', 'generation-exhausted', 'graph-internal-failure',
-  'invalid-graph-profile', 'invalid-reference', 'node-capacity', 'owner-lifecycle-failure', 'path-capacity', 'path-depth', 'publication-conflict',
+  'invalid-graph-profile', 'invalid-reference', 'node-capacity', 'owner-lifecycle-failure', 'path-capacity', 'path-depth', 'protection-capacity', 'publication-conflict',
   'reclamation-not-quiescent', 'reference-kind-mismatch', 'stale-reference', 'state-byte-capacity', 'transposition-capacity', 'transposition-probe-exhausted',
 ];
 const REGION_CONTRACT = new Map([
@@ -675,6 +675,13 @@ export function normalizeGraphProfile(input, inspectedCatalog, domainProfileResu
     );
     if (compareDecimalUint(edgeSlotCapacity, structuralEdgeDemand) < 0) {
       fail('GRAPH_RESOURCE_CAPACITY', 'edge-capacity slot resources cannot cover parent-edge plus expansion layout capacity');
+    }
+    const protectionSlotCapacity = resources
+      .filter(({ unit, pressureOutcome, scope }) => unit === 'slots' && pressureOutcome === 'protection-capacity' && scope === 'per-engine')
+      .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+    const protectionDemand = layoutByObject.get(roleObject.get('protection-record')).capacity;
+    if (compareDecimalUint(protectionSlotCapacity, protectionDemand) < 0) {
+      fail('GRAPH_RESOURCE_CAPACITY', 'protection-capacity slot resources cannot cover protection-record layout capacity');
     }
     const requiredRegions = [['domain-state', roleObject.get('state-node')], ['domain-action', roleObject.get('parent-edge')]];
     if (domainProfileResult.normalized.history.disposition === 'carried' || domainProfileResult.normalized.history.disposition === 'hybrid') requiredRegions.push(['domain-history', roleObject.get('path-occurrence')]);

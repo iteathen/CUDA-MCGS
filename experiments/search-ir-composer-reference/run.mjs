@@ -1187,6 +1187,12 @@ await runCase('reject-graph-resource-range', () => {
   const underfunded = clone(graphProfileInputs[0]);
   underfunded.resources = underfunded.resources.filter(({ id }) => !id.endsWith('resource-expansion-slots'));
   assert.throws(() => normalizeGraphProfile(underfunded, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
+  const unprotected = clone(graphProfileInputs[0]);
+  unprotected.resources = unprotected.resources.filter(({ id }) => !id.endsWith('resource-protection-slots'));
+  assert.throws(() => normalizeGraphProfile(unprotected, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_REQUIRED' });
+  const protectionUnderfunded = clone(graphProfileInputs[0]);
+  protectionUnderfunded.resources.find(({ id }) => id.endsWith('resource-protection-slots')).maximum = '8191';
+  assert.throws(() => normalizeGraphProfile(protectionUnderfunded, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
 });
 
 await runCase('reject-graph-persistence-scope', () => {
