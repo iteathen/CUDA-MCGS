@@ -16,6 +16,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 26.7.0
+      - name: Root-control source digest probe
+        run: |
+          node --input-type=module - <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { readFile } from 'node:fs/promises';
+          for (const path of ['docs/specs/SPEC-0006-search-session-control-and-observation.md']) {
+            const text = await readFile(path, 'utf8');
+            const normalized = text.replace(/\r\n?/g, '\n');
+            console.log(`${path} sha256=${createHash('sha256').update(Buffer.from(normalized, 'utf8')).digest('hex')}`);
+          }
+          NODE
       - name: Verify documentation and agent governance
         run: ./scripts/verify-docs.sh
 
