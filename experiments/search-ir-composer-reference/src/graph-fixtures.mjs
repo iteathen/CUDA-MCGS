@@ -274,6 +274,7 @@ function resources(profile, { reclamation = false, transposition = true } = {}) 
     { id: `graph.${profile}.resource-expansion-slots`, unit: 'slots', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'edge-capacity' },
     { id: `graph.${profile}.resource-state-bytes`, unit: 'bytes', minimum: '1', maximum: '1441792', alignment: '8', scope: 'per-engine', pressureOutcome: 'state-byte-capacity' },
     { id: `graph.${profile}.resource-action-bytes`, unit: 'bytes', minimum: '1', maximum: '262144', alignment: '8', scope: 'per-engine', pressureOutcome: 'action-byte-capacity' },
+    { id: `graph.${profile}.resource-active-path-slots`, unit: 'slots', minimum: '1', maximum: '256', alignment: '8', scope: 'per-engine', pressureOutcome: 'path-capacity' },
     { id: `graph.${profile}.resource-path-records`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'path-capacity' },
     { id: `graph.${profile}.resource-path-depth`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-invocation', pressureOutcome: 'path-depth' },
     { id: `graph.${profile}.resource-protection-slots`, unit: 'slots', minimum: '1', maximum: '8192', alignment: '8', scope: 'per-engine', pressureOutcome: 'protection-capacity' },

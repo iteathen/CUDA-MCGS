@@ -697,6 +697,26 @@ export function normalizeGraphProfile(input, inspectedCatalog, domainProfileResu
     if (compareDecimalUint(protectionSlotCapacity, protectionDemand) < 0) {
       fail('GRAPH_RESOURCE_CAPACITY', 'protection-capacity slot resources cannot cover protection-record layout capacity');
     }
+    const activePathSlotCapacity = resources
+      .filter(({ unit, pressureOutcome, scope }) => unit === 'slots' && pressureOutcome === 'path-capacity' && scope === 'per-engine')
+      .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+    const occurrenceRecordCapacity = resources
+      .filter(({ unit, pressureOutcome, scope }) => unit === 'records' && pressureOutcome === 'path-capacity' && scope === 'per-engine')
+      .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+    const pathDepthCapacity = resources
+      .filter(({ unit, pressureOutcome, scope }) => unit === 'records' && pressureOutcome === 'path-depth' && scope === 'per-invocation')
+      .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+    const activePathDemand = layoutByObject.get(roleObject.get('active-path')).capacity;
+    const occurrenceDemand = layoutByObject.get(roleObject.get('path-occurrence')).capacity;
+    if (compareDecimalUint(activePathSlotCapacity, activePathDemand) < 0 || compareDecimalUint(activePathSlotCapacity, path.maxPaths) < 0) {
+      fail('GRAPH_RESOURCE_CAPACITY', 'path-capacity slot resources cannot cover active-path layout/maxPaths');
+    }
+    if (compareDecimalUint(occurrenceRecordCapacity, occurrenceDemand) < 0) {
+      fail('GRAPH_RESOURCE_CAPACITY', 'path-capacity record resources cannot cover path-occurrence layout capacity');
+    }
+    if (compareDecimalUint(pathDepthCapacity, path.maxDepth) < 0) {
+      fail('GRAPH_RESOURCE_CAPACITY', 'path-depth resources cannot cover maxDepth');
+    }
     const requiredRegions = [['domain-state', roleObject.get('state-node')], ['domain-action', roleObject.get('parent-edge')]];
     if (domainProfileResult.normalized.history.disposition === 'carried' || domainProfileResult.normalized.history.disposition === 'hybrid') requiredRegions.push(['domain-history', roleObject.get('path-occurrence')]);
     for (const [semanticRole, objectKind] of requiredRegions) {

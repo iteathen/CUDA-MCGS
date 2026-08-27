@@ -1095,6 +1095,15 @@ await runCase('reject-graph-path-capacity', () => {
   const mutated = clone(graphProfileInputs[0]);
   mutated.path.maxDepth = '4097';
   assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_PATH_CAPACITY' });
+  const underfundedPaths = clone(graphProfileInputs[0]);
+  underfundedPaths.resources.find(({ id }) => id.endsWith('resource-active-path-slots')).maximum = '255';
+  assert.throws(() => normalizeGraphProfile(underfundedPaths, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
+  const underfundedOccurrences = clone(graphProfileInputs[0]);
+  underfundedOccurrences.resources.find(({ id }) => id.endsWith('resource-path-records')).maximum = '4095';
+  assert.throws(() => normalizeGraphProfile(underfundedOccurrences, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
+  const underfundedDepth = clone(graphProfileInputs[0]);
+  underfundedDepth.resources.find(({ id }) => id.endsWith('resource-path-depth')).maximum = '4095';
+  assert.throws(() => normalizeGraphProfile(underfundedDepth, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
 });
 
 await runCase('reject-graph-root-reserve', () => {
