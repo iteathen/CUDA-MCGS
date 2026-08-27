@@ -39,6 +39,11 @@ jobs:
           if (!script.includes(oldSource) || !script.includes(oldTarget)) throw new Error('schema identity migration anchors missing');
           script = script.replace(oldSource, "'iteathen/UMCGS'").replace(oldTarget, "'iteathen/CUDA-MCGS'");
 
+          const composerMarker = 'node scripts/run-search-ir-composer-reference.mjs';
+          if (!script.includes(composerMarker)) throw new Error('Composer execution marker missing');
+          const fixtureRefresh = `node --input-type=module <<'REFRESH'\nimport { readFile, writeFile } from 'node:fs/promises';\nimport { sourceTextSha256 } from './experiments/search-ir-composer-reference/src/validation.mjs';\n\nconst fixturePath = 'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json';\nconst fixture = JSON.parse(await readFile(fixturePath, 'utf8'));\nconst schemaFiles = new Map([\n  ['domain', 'domain-profile.schema.json'],\n  ['graph', 'graph-profile.schema.json'],\n  ['output', 'output-profile.schema.json'],\n  ['policy', 'policy-profile.schema.json'],\n  ['program-package', 'program-package-profile.schema.json'],\n  ['progress', 'progress-profile.schema.json'],\n  ['resource', 'resource-profile.schema.json'],\n]);\nfor (const profile of fixture.profiles) {\n  const file = schemaFiles.get(profile.role);\n  if (!file) throw new Error(\`no schema mapping for framework role \${profile.role}\`);\n  profile.schema.sha256 = sourceTextSha256(await readFile(\`schemas/search-ir/0.2.0/\${file}\`));\n}\nawait writeFile(fixturePath, \`\${JSON.stringify(fixture, null, 2)}\\n\`);\nREFRESH\n\n${composerMarker}`;
+          script = script.replace(composerMarker, fixtureRefresh);
+
           const addMarker = 'git add -A';
           if (!script.includes(addMarker)) throw new Error('git add marker missing');
           script = script.replace(addMarker, "git rm .github/workflows/finalize-root-control-v2.yml\n" + addMarker);
