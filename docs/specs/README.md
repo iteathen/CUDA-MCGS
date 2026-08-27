@@ -1,12 +1,12 @@
 # Specifications
 
-> **Current proposal reconciliation:** ADR-0022 four-operation root control is implemented and fully qualified on PR #127 by `REF-ROOT-CONTROL-01`. Initial root, minimum-work advance, general reroot and non-structural attention are represented separately. The regenerated proposal-derived evidence remains branch-local until protected-main integration; `REF-GRAPH-01` stays blocked until that integration is read back.
+> **Current proposal reconciliation:** Graph NODE, EDGE, REF, PATH and ROOT are protected-main integrated. ROOT protected evidence first landed through PR #138; Graph RECLAIM is the next candidate owner leaf but is blocked at representation preflight until retirement-record storage, reclamation scratch, and generation-safe retirement-record reuse are explicitly represented and falsified.
 
 **Status:** Informational
 
-This directory contains versioned CUDA-MCGS search contracts and downstream product specifications. No interface is accepted merely because it appears in architecture discussion, research, implementation, tests, a plan, product example, or proposal.
+This directory contains versioned CUDA-MCGS framework, extension, and interop contracts. Production domain/search product specifications live in their owning repositories or packages under [`ADR-0024`](../decisions/ADR-0024-framework-only-production-ownership.md). No interface is accepted merely because it appears in architecture discussion, research, implementation, tests, a plan, product example, or proposal.
 
-Read specifications through [`../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md): verify status, owner, scope, version, exact revision and supersession; follow normative references; read governing requirements to semantic closure; inspect material producer/consumer/lifecycle/test adjacency; refresh when scope/authority changes.
+Read specifications through [`../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md): verify status, owner, scope, version, exact revision and supersession; follow normative references; read governing requirements to semantic closure; inspect material producer/consumer/lifecycle/test adjacency; refresh when scope or authority changes.
 
 Accepted status governs only within declared scope. Proposal specifications support drafting, review and explicitly authorized experiments; they do not authorize production implementation by themselves.
 
@@ -16,13 +16,15 @@ Accepted status governs only within declared scope. Proposal specifications supp
 
 1. **Universal MCGS semantic core** — domain/policy/evaluator/graph/resource/session/publication/search-lifecycle contracts and Search IR/Composer meaning that remain coherent across unrelated MCGS products.
 2. **Universal extension/composition substrate** — Search Stages, least-authority Stage Extension Surfaces, namespaced capability schemas, Async Stage Channels and restricted Device-JS/Search Image specialization.
-3. **Domain/search products** — downstream products such as chess that select universal contracts/capabilities and own product-specific state/action/history/evaluator/output semantics.
+3. **External domain/search products** — independently owned consumers that select universal contracts/capabilities and own product-specific state/action/history/evaluator/output/protocol/quality/release meaning.
 
-The extension substrate is universal; a selected capability's payload is not automatically universal core meaning. Product-specific schemas must disappear with the product/capability rather than widening every Search Image.
+[`ADR-0024`](../decisions/ADR-0024-framework-only-production-ownership.md) narrows repository ownership: the third semantic layer is consumed through public CUDA-MCGS boundaries but is not a CUDA-MCGS production product registry/specification lane. Concrete named domains may remain as removable conformance/research/example evidence when they carry no production authority.
 
-[`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) additionally governs every production proposal: ordinary Node.js plus restricted Device-JS is the maintained source boundary; post-ignition host interaction is narrow and asynchronous; and an unnatural expression of a generic GPU mechanism is classified as a CUDA-JS capability gap rather than implemented as native CUDA-MCGS code.
+The extension substrate is universal; a selected capability's payload is not automatically universal core meaning. Product-specific schemas must disappear with the consumer/capability rather than widening every Search Image.
 
-[`ADR-0020`](../decisions/ADR-0020-complete-library-and-resolved-defaults.md) establishes the public-library direction: the complete composable surface is authoritative, while convenience calls and presets resolve into the same canonical normalized framework profile. Defaults must be owned, bounded, deterministic, inspectable, overridable and identity-bearing when material. The integrated 989-requirement Composer packet now includes resolved-input provenance and convenience-equivalence evidence under one frozen representation/composition key; public API naming and production facade implementation remain downstream of behavioral reference evidence and integrated semantic acceptance.
+[`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) governs every production proposal: ordinary Node.js plus restricted Device-JS is the maintained source boundary; post-ignition host interaction is narrow and asynchronous; and an unnatural expression of a generic GPU mechanism is classified as a CUDA-JS capability gap rather than implemented as native CUDA-MCGS code.
+
+[`ADR-0020`](../decisions/ADR-0020-complete-library-and-resolved-defaults.md) establishes the public-library direction: the complete composable surface is authoritative, while convenience calls and presets resolve into the same canonical normalized framework profile. Defaults must be owned, bounded, deterministic, inspectable, overridable and identity-bearing when material. Public API naming and production facade implementation remain downstream of behavioral reference evidence and integrated semantic acceptance.
 
 ## Current accepted contracts
 
@@ -47,7 +49,7 @@ Universal proposal and evidence families include:
 - generic bounded result/observation publication;
 - device-owned progress/device closure without scheduler-mechanism selection;
 - Search Composer and generated Search Image/package;
-- CUDA-MCGS-to-CUDA-JS compatibility/error/lifecycle contract;
+- CUDA-MCGS-to-CUDA-JS compatibility/error/lifecycle contract; and
 - deterministic reference/synthetic conformance/diagnostics.
 
 ### Universal extension/composition substrate
@@ -58,7 +60,7 @@ Universal proposal and evidence families include:
 - capability schemas/permissions/semantic-owner binding;
 - bounded nonblocking Async Stage Channels;
 - restricted Device-JS/Search Program/checkpoint contract/Search Image composition;
-- zero-residue absent-capability specialization;
+- zero-residue absent-capability specialization; and
 - capability provenance/security/resource composition and representative cost evidence.
 
 Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider implementation, NVRTC/nvJitLink plumbing, stream/event wrappers, Node event-loop delivery and generic context teardown are CUDA-JS specification families.
@@ -78,19 +80,17 @@ Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider 
 - [`SPEC-0012-device-owned-search-progress.md`](SPEC-0012-device-owned-search-progress.md) — scheduler-neutral device-side work readiness, finite service/fairness, typed deadlock/livelock/starvation, stop/drain and closure semantics without host progression or physical topology selection.
 - [`SPEC-0013-result-and-observation-publication.md`](SPEC-0013-result-and-observation-publication.md) — mandatory bounded terminal envelopes plus optional immutable read-only live observations, with explicit snapshot consistency, slot/borrow lifecycle, pressure/drop semantics and exact terminal-only sideband deletion.
 
-These proposals do not authorize production lowering. The complete Search IR must represent selected universal semantics plus namespaced capability/product inputs without promoting first-product fields into universal core meaning.
+These proposals do not authorize production lowering. The complete Search IR may represent namespaced consumer-supplied specialization inputs without promoting one product's fields into universal core meaning.
 
 SPEC-0000 and SPEC-0006 through SPEC-0013 form the decision-complete 741-requirement core proposal packet. SPEC-0003 through SPEC-0005 form the decision-complete 248-requirement optional extension packet. The combined 989 proposal requirements remain unaccepted until strict schema/normalizer/Composer and consolidated CUDA-free reference evidence pass atomically at the integrated acceptance gate.
 
-## Domain/search product specifications
+## External product specifications and historical provenance
 
-Products live downstream of universal contracts. Their conformance cannot substitute for universal second-instance tests, and product requirements cannot amend universal semantics by usage.
+Production product specifications live in their owning repositories or independently owned packages. Their conformance cannot substitute for universal second-instance tests, and product requirements cannot amend universal semantics by usage.
 
-Current product proposal:
+CUDA-MCGS contains no active production product specification under `docs/specs/products/`. Historical repository-local product/consumer proposal material may be retained under [`../archive/`](../archive/README.md) with `Superseded` status solely for provenance and design-history recovery.
 
-- [`products/chess/CHESS-0001-search-product.md`](products/chess/CHESS-0001-search-product.md) — chess domain/policy/evaluator/session/output/extension layering, including a future chess-specific ranked legal-move observation published by generic SPEC-0013 output semantics and coordinated by optional SPEC-0006 session semantics.
-
-Future Go/planning/optimization/text-search or other products should be able to replace the chess product without foundational redesign.
+Concrete product-like fixtures may remain in experiments/conformance when they are deliberately removable, non-production evidence and do not become stable product authority or release inputs.
 
 ## Acceptance discipline
 
@@ -100,6 +100,6 @@ An accepted CUDA-MCGS specification must define applicability, normative referen
 
 Specification acceptance and production-profile qualification are distinct gates. Backend-neutral semantic acceptance requires decision-complete obligations plus decisive schema/reference evidence at the risk-appropriate boundary. Native publication/race behavior, final generated artifacts, performance, exact CUDA-JS compatible pairs and runtime teardown qualify a concrete production profile later unless that evidence is genuinely required to determine the contract's meaning. An acceptance clause must not require production implementation that is itself prohibited until the specification is accepted.
 
-For universal extension specifications, acceptance additionally requires first-consumer deletion and materially different second-capability/product tests. For product specifications, acceptance requires explicit proof that product deletion leaves universal architecture/conformance complete.
+For universal extension specifications, acceptance additionally requires first-consumer deletion and materially different second-capability/consumer tests. External product acceptance is owned downstream; CUDA-MCGS instead proves that public embedding/deletion leaves the framework complete and product-neutral.
 
 The canonical execution order and focus branches are maintained in [`../../next_step.yaml`](../../next_step.yaml).
