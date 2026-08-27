@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   reference:
+    # Temporary hosted qualification for the owner-isolated NODE slice.
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.ref == 'ref/graph-01'
     runs-on: ubuntu-latest
     steps:
