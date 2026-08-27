@@ -1,13 +1,13 @@
-name: Discover Graph REF identities
+name: Qualify Graph REF evidence chain
 
 on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  discover:
+  reconcile:
     if: github.event.pull_request.head.ref == 'ref/graph-ref-01'
     runs-on: ubuntu-latest
     steps:
@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26.7.0
-      - name: Apply ephemeral protection-resource closure and expose derived identities
+      - name: Reconcile protection capacity and exact reference evidence
         shell: bash
         run: |
           set -euo pipefail
@@ -36,36 +36,188 @@ jobs:
             "    'node-capacity': 'capacity', 'owner-lifecycle-failure': 'compatibility', 'path-capacity': 'capacity', 'path-depth': 'capacity',\n    'publication-conflict': 'publication'",
             "    'node-capacity': 'capacity', 'owner-lifecycle-failure': 'compatibility', 'path-capacity': 'capacity', 'path-depth': 'capacity',\n    'protection-capacity': 'capacity', 'publication-conflict': 'publication'",
           );
-
           replaceOnce(
             'experiments/search-ir-composer-reference/src/graph-fixtures.mjs',
             "    { id: `graph.${profile}.resource-path-depth`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-invocation', pressureOutcome: 'path-depth' },\n  ];",
             "    { id: `graph.${profile}.resource-path-depth`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-invocation', pressureOutcome: 'path-depth' },\n    { id: `graph.${profile}.resource-protection-slots`, unit: 'slots', minimum: '1', maximum: '8192', alignment: '8', scope: 'per-engine', pressureOutcome: 'protection-capacity' },\n  ];",
           );
-
           replaceOnce(
             'experiments/search-ir-composer-reference/src/graph.mjs',
             "const REQUIRED_RESOURCE_PRESSURES = ['action-byte-capacity', 'edge-capacity', 'node-capacity', 'path-capacity', 'path-depth', 'state-byte-capacity'];",
             "const REQUIRED_RESOURCE_PRESSURES = ['action-byte-capacity', 'edge-capacity', 'node-capacity', 'path-capacity', 'path-depth', 'protection-capacity', 'state-byte-capacity'];",
           );
-
           replaceOnce(
             'experiments/search-ir-composer-reference/src/graph.mjs',
             "  'invalid-graph-profile', 'invalid-reference', 'node-capacity', 'owner-lifecycle-failure', 'path-capacity', 'path-depth', 'publication-conflict',\n  'reclamation-not-quiescent'",
             "  'invalid-graph-profile', 'invalid-reference', 'node-capacity', 'owner-lifecycle-failure', 'path-capacity', 'path-depth', 'protection-capacity', 'publication-conflict',\n  'reclamation-not-quiescent'",
           );
-
           replaceOnce(
             'experiments/search-ir-composer-reference/src/graph.mjs',
             "    if (compareDecimalUint(edgeSlotCapacity, structuralEdgeDemand) < 0) {\n      fail('GRAPH_RESOURCE_CAPACITY', 'edge-capacity slot resources cannot cover parent-edge plus expansion layout capacity');\n    }\n    const requiredRegions =",
             "    if (compareDecimalUint(edgeSlotCapacity, structuralEdgeDemand) < 0) {\n      fail('GRAPH_RESOURCE_CAPACITY', 'edge-capacity slot resources cannot cover parent-edge plus expansion layout capacity');\n    }\n    const protectionSlotCapacity = resources\n      .filter(({ unit, pressureOutcome, scope }) => unit === 'slots' && pressureOutcome === 'protection-capacity' && scope === 'per-engine')\n      .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');\n    const protectionDemand = layoutByObject.get(roleObject.get('protection-record')).capacity;\n    if (compareDecimalUint(protectionSlotCapacity, protectionDemand) < 0) {\n      fail('GRAPH_RESOURCE_CAPACITY', 'protection-capacity slot resources cannot cover protection-record layout capacity');\n    }\n    const requiredRegions =",
           );
-
           replaceOnce(
             'experiments/search-ir-composer-reference/run.mjs',
             "  const underfunded = clone(graphProfileInputs[0]);\n  underfunded.resources = underfunded.resources.filter(({ id }) => !id.endsWith('resource-expansion-slots'));\n  assert.throws(() => normalizeGraphProfile(underfunded, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });\n});",
             "  const underfunded = clone(graphProfileInputs[0]);\n  underfunded.resources = underfunded.resources.filter(({ id }) => !id.endsWith('resource-expansion-slots'));\n  assert.throws(() => normalizeGraphProfile(underfunded, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });\n  const unprotected = clone(graphProfileInputs[0]);\n  unprotected.resources = unprotected.resources.filter(({ id }) => !id.endsWith('resource-protection-slots'));\n  assert.throws(() => normalizeGraphProfile(unprotected, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_REQUIRED' });\n  const protectionUnderfunded = clone(graphProfileInputs[0]);\n  protectionUnderfunded.resources.find(({ id }) => id.endsWith('resource-protection-slots')).maximum = '8191';\n  assert.throws(() => normalizeGraphProfile(protectionUnderfunded, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });\n});",
           );
+
+          const selectionPath = 'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json';
+          let selection = fs.readFileSync(selectionPath, 'utf8');
+          const replacements = new Map([
+            ['e067810464a0bbcfc052dc4f2958f9e6ffb289c14eeca9f669b439fa16e12c22', 'd2b32d346a933d321e98ea2cceae0aeda9fa03751953271d8db6958a23774f87'],
+            ['b7d7183dc73d82774f144aba80a9215aad07666e1864a8203474eae0ca88c5fa', 'f0343b2f086883849317362f2ba31521a682878facaf70119355484aa4b2a236'],
+            ['b060dbf88f88fde6b39380501c89e089f3402e9bd6b2db0f991de92180ae5f0d', '8ef3167dedb92f1d8335d22bf029718e81a71201f01d9e15e069ff2f19788c97'],
+            ['20950a061de105c27d2bc9bf71021483ff9ac697cb24214ead52c168dd20ccc2', '890e23ebda14879497ed272273f78d3ac7f9926a998f26dd30ad817fdb479538'],
+            ['c14d25fa8def9eca4963fa85fd944826120d420c3175ee5589d5b0270f09edc6', '3e8fc45217e6eaaf095f94ab39a08b66ded5c28ca7d699b6e64efe7b014a3795'],
+          ]);
+          for (const [oldValue, newValue] of replacements) {
+            const count = selection.split(oldValue).length - 1;
+            if (count !== 1) throw new Error(`${selectionPath}: ${oldValue} expected once, found ${count}`);
+            selection = selection.replace(oldValue, newValue);
+          }
+          fs.writeFileSync(selectionPath, selection);
           NODE
 
           node scripts/run-search-ir-composer-reference.mjs
+          node <<'NODE'
+          const fs = require('node:fs');
+          const evidence = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          if (evidence.status !== 'pass' || evidence.summary.passed !== 879 || evidence.summary.failed !== 0) throw new Error('Composer did not qualify 879/879');
+          console.log(`qualified_composer=${evidence.representationCompositionEvidenceKey.sha256} bytes=${evidence.representationCompositionEvidenceKey.byteLength}`);
+          console.log(`qualified_framework=${evidence.frameworkSelectionIdentity.sha256} bytes=${evidence.frameworkSelectionIdentity.byteLength}`);
+          NODE
+
+          node scripts/export-search-ir-composer-domain-profiles.mjs
+          node scripts/export-search-ir-composer-graph-profiles.mjs
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const composer = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const domainProjection = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/domain-profiles.json', 'utf8'));
+          const shared = composer.representationCompositionEvidenceKey;
+
+          const neutralPath = 'experiments/search-semantics-reference/fixtures/neutral-schedules.json';
+          const neutral = JSON.parse(fs.readFileSync(neutralPath, 'utf8'));
+          neutral.composerEvidence = shared;
+          for (const [name, schedule] of Object.entries(neutral.schedules)) {
+            if (schedule === null || typeof schedule !== 'object' || typeof schedule.evidenceKey !== 'string') throw new Error(`neutral schedule ${name} lacks evidenceKey`);
+            schedule.evidenceKey = shared.sha256;
+          }
+          fs.writeFileSync(neutralPath, `${JSON.stringify(neutral, null, 2)}\n`);
+
+          const domainPath = 'experiments/search-semantics-reference/fixtures/domain-cases.json';
+          const domain = JSON.parse(fs.readFileSync(domainPath, 'utf8'));
+          domain.composerEvidence = shared;
+          domain.profileProjection = {
+            schema: domainProjection.schema,
+            algorithm: domainProjection.projectionIdentity.algorithm,
+            byteLength: domainProjection.projectionIdentity.byteLength,
+            sha256: domainProjection.projectionIdentity.sha256,
+          };
+          fs.writeFileSync(domainPath, `${JSON.stringify(domain, null, 2)}\n`);
+          console.log(`rebound_domain_projection=${domain.profileProjection.sha256}`);
+          NODE
+
+          node scripts/run-search-semantics-reference.mjs
+          node <<'NODE'
+          const fs = require('node:fs');
+          const evidence = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/evidence.json', 'utf8'));
+          if (evidence.status !== 'pass' || evidence.summary.passed !== 49 || evidence.domainRequirementCoverage.executedRequirementCount !== 47) throw new Error('Harness/Domain did not qualify 49/49 and 47/47');
+          console.log(`qualified_domain=${evidence.evidenceIdentity.sha256} bytes=${evidence.evidenceIdentity.byteLength}`);
+          NODE
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const composer = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/graph-profiles.json', 'utf8'));
+          const path = 'experiments/search-semantics-reference/fixtures/graph-node-cases.json';
+          const fixture = JSON.parse(fs.readFileSync(path, 'utf8'));
+          fixture.composerEvidence = composer.representationCompositionEvidenceKey;
+          fixture.profileProjection = {
+            schema: projection.schema,
+            algorithm: projection.projectionIdentity.algorithm,
+            byteLength: projection.projectionIdentity.byteLength,
+            sha256: projection.projectionIdentity.sha256,
+          };
+          fs.writeFileSync(path, `${JSON.stringify(fixture, null, 2)}\n`);
+          console.log(`rebound_graph_projection=${fixture.profileProjection.sha256}`);
+          NODE
+
+          node scripts/run-graph-node-reference.mjs
+          node <<'NODE'
+          const fs = require('node:fs');
+          const evidence = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-node-evidence.json', 'utf8'));
+          if (evidence.status !== 'pass' || evidence.summary.passed !== 13 || evidence.graphNodeRequirementCoverage.executedRequirementCount !== 11) throw new Error('NODE did not qualify 13/13 and 11/11');
+          console.log(`qualified_node=${evidence.evidenceIdentity.sha256} bytes=${evidence.evidenceIdentity.byteLength}`);
+          NODE
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const composer = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/graph-profiles.json', 'utf8'));
+          const node = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-node-evidence.json', 'utf8'));
+          const path = 'experiments/search-semantics-reference/fixtures/graph-edge-cases.json';
+          const fixture = JSON.parse(fs.readFileSync(path, 'utf8'));
+          fixture.composerEvidence = composer.representationCompositionEvidenceKey;
+          fixture.profileProjection = {
+            schema: projection.schema,
+            algorithm: projection.projectionIdentity.algorithm,
+            byteLength: projection.projectionIdentity.byteLength,
+            sha256: projection.projectionIdentity.sha256,
+          };
+          fixture.nodeEvidence = node.evidenceIdentity;
+          fs.writeFileSync(path, `${JSON.stringify(fixture, null, 2)}\n`);
+          NODE
+
+          node scripts/run-graph-edge-reference.mjs
+          node <<'NODE'
+          const fs = require('node:fs');
+          const evidence = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-edge-evidence.json', 'utf8'));
+          if (evidence.status !== 'pass' || evidence.summary.passed !== 16 || evidence.graphEdgeRequirementCoverage.executedRequirementCount !== 10) throw new Error('EDGE did not qualify 16/16 and 10/10');
+          console.log(`qualified_edge=${evidence.evidenceIdentity.sha256} bytes=${evidence.evidenceIdentity.byteLength}`);
+          NODE
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const composer = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/graph-profiles.json', 'utf8'));
+          const node = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-node-evidence.json', 'utf8'));
+          const path = 'experiments/search-semantics-reference/fixtures/graph-ref-cases.json';
+          const fixture = JSON.parse(fs.readFileSync(path, 'utf8'));
+          fixture.composerEvidence = composer.representationCompositionEvidenceKey;
+          fixture.profileProjection = {
+            schema: projection.schema,
+            algorithm: projection.projectionIdentity.algorithm,
+            byteLength: projection.projectionIdentity.byteLength,
+            sha256: projection.projectionIdentity.sha256,
+          };
+          fixture.nodeEvidence = node.evidenceIdentity;
+          fs.writeFileSync(path, `${JSON.stringify(fixture, null, 2)}\n`);
+          NODE
+
+          node scripts/run-graph-ref-reference.mjs
+          node <<'NODE'
+          const fs = require('node:fs');
+          const evidence = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-ref-evidence.json', 'utf8'));
+          if (evidence.status !== 'pass' || evidence.summary.passed !== 13 || evidence.graphRefRequirementCoverage.executedRequirementCount !== 8) throw new Error('REF did not qualify 13/13 and 8/8');
+          console.log(`qualified_ref=${evidence.evidenceIdentity.sha256} bytes=${evidence.evidenceIdentity.byteLength}`);
+          NODE
+
+          node scripts/run-search-ir-reference.mjs
+          ./scripts/verify-docs.sh
+
+          git rm --ignore-unmatch .github/workflows/discover-graph-ref-identities.yml
+          git config user.name iteathen
+          git config user.email josh.oshiro@gmail.com
+          git add experiments/search-ir-composer-reference/src/graph-fixtures.mjs \
+            experiments/search-ir-composer-reference/src/graph.mjs \
+            experiments/search-ir-composer-reference/run.mjs \
+            experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json \
+            experiments/search-semantics-reference/fixtures/neutral-schedules.json \
+            experiments/search-semantics-reference/fixtures/domain-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-node-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-edge-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-ref-cases.json
+          git commit -m "ref: qualify Graph reference and protection semantics"
+          git push origin HEAD:ref/graph-ref-01
