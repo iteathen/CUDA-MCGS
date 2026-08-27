@@ -1,6 +1,6 @@
 # Canonical Agent Operating Manual
 
-**Scope:** All research, assessment, planning, focus-branch decomposition, specification, plan execution, implementation, cleanup/disposition, sanity checking, pull-request review, merge, debugging, documentation, and publication work in UMCGS.
+**Scope:** All research, assessment, planning, focus-branch decomposition, specification, plan execution, implementation, cleanup/disposition, sanity checking, pull-request review, merge, debugging, documentation, and publication work in CUDA-MCGS.
 
 ## Mission
 

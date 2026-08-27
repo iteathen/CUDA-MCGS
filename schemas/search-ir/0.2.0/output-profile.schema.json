@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/output-profile.schema.json",
+  "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/output-profile.schema.json",
   "title": "CUDA-MCGS Search IR 0.2.0 output profile",
   "description": "Bounded terminal-result and optional live-observation schema, capture, publication, asynchronous transfer, lifecycle and cleanup plan over exact resource and progress plans.",
   "type": "object",

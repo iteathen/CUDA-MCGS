@@ -6,7 +6,7 @@
     "schema": "cuda-mcgs.search-ir.contract-set/0.2.0",
     "identity": {
       "algorithm": "sha256",
-      "sha256": "54f5e7ce38423042ae95098fe38e0cf5bd33acdca8cd1fecf0f1c939ef945177"
+      "sha256": "2a3ded0b25f59d6f6a5dfffefefceae73f25e9df0558953b0bea29201d47c10d"
     }
   },
   "frameworkContract": {
@@ -25,8 +25,15 @@
         "specificationIdentity": "CUDA-MCGS-SPEC-0007@0.1.0-draft",
         "sha256": "2e1c6fc3e43b66f309c370d2ae6d177328b3c15afdd51765b1a0aa360f33a1e7"
       },
-      "schema": { "id": "cuda-mcgs.domain-profile/0.2.0", "version": "0.2.0", "sha256": "6e91533c5b1067e7abc1eba39f1ef1fa0c76aae212872e24e3fddd41dc3424b5" },
-      "identity": { "algorithm": "sha256", "sha256": "6ae172623f6aebd07db9f6516681748a583d0ef7aad176382569c19ac88ee159" }
+      "schema": {
+        "id": "cuda-mcgs.domain-profile/0.2.0",
+        "version": "0.2.0",
+        "sha256": "3a9c39de4d0b14b4609d31448476d3161cb399407acc8506bb3c7769867ba2df"
+      },
+      "identity": {
+        "algorithm": "sha256",
+        "sha256": "6ae172623f6aebd07db9f6516681748a583d0ef7aad176382569c19ac88ee159"
+      }
     },
     {
       "id": "owner.graph",
@@ -35,10 +42,17 @@
         "kind": "catalog",
         "id": "SPEC-0010",
         "specificationIdentity": "CUDA-MCGS-SPEC-0010@0.1.0-draft",
-        "sha256": "7b5f08aa2d413f2521a3fdc64d0d0f934db34f7a8ba2735ce0a04b39e38883a1"
+        "sha256": "e52a11344cca7820f4a4b3ff1600d3c39f4ff9ceca0e01da6305b48242f489a1"
       },
-      "schema": { "id": "cuda-mcgs.graph-profile/0.2.0", "version": "0.2.0", "sha256": "607f67f008f7846346018b2c0837de6f20031bc9eed4ca442a85890508a5c716" },
-      "identity": { "algorithm": "sha256", "sha256": "267011d222091f9a53808f0b4d9af509b17d3f30192d88cc125718673361ac43" }
+      "schema": {
+        "id": "cuda-mcgs.graph-profile/0.2.0",
+        "version": "0.2.0",
+        "sha256": "14152793d7b8510b34ef127996b7cc3353296556c9deddb43af478203aacbfdf"
+      },
+      "identity": {
+        "algorithm": "sha256",
+        "sha256": "332258844f1210f952a22fd4c191d684accbf16060e07fb57a22099675d956b8"
+      }
     },
     {
       "id": "owner.output",
@@ -47,10 +61,17 @@
         "kind": "catalog",
         "id": "SPEC-0013",
         "specificationIdentity": "CUDA-MCGS-SPEC-0013@0.1.0-draft",
-        "sha256": "4fff2665c27146b15962cfde8bd2771e2376400997d57bd1ac69d8527b481d14"
+        "sha256": "657073d141f421dd55ba5ba20b0f28eaa306a21b4ae17e600b28f961589d864b"
       },
-      "schema": { "id": "cuda-mcgs.output-profile/0.2.0", "version": "0.2.0", "sha256": "b6e0d0723152d3d41b4bb7f636fbc4cf0a292a673858fc07f30aa83a83e58c07" },
-      "identity": { "algorithm": "sha256", "sha256": "7873e0ad761f49467dd8d019cef1d0cc87c5341fdaf965ac1f8a6a23d5ffd513" }
+      "schema": {
+        "id": "cuda-mcgs.output-profile/0.2.0",
+        "version": "0.2.0",
+        "sha256": "20d0c444df952dc01b80948260b7b5824ab5a3d4de04fa2246cd73f83c43980c"
+      },
+      "identity": {
+        "algorithm": "sha256",
+        "sha256": "17a2aabbdc26e65912f24306b5ec99256637f2990caf775bd06e2f9212ba977d"
+      }
     },
     {
       "id": "owner.policy",
@@ -59,10 +80,17 @@
         "kind": "catalog",
         "id": "SPEC-0008",
         "specificationIdentity": "CUDA-MCGS-SPEC-0008@0.1.0-draft",
-        "sha256": "49f984e5855998c075c3e6d5bf19c8950b6dedb1657fdc91b30d88a5352d345c"
+        "sha256": "7e0699671619e99f28bfe1b7a272e6c6df2cf6995492eb19f0feffd83b925cc5"
       },
-      "schema": { "id": "cuda-mcgs.policy-profile/0.2.0", "version": "0.2.0", "sha256": "6adb8df41fd6f340ee1fbd7f0644dfa82e9da2b91588f5bc3074d8cda8e27720" },
-      "identity": { "algorithm": "sha256", "sha256": "381debd34583fdb3b4ff3a7ebfe24f8ffb7a2c43a48d5dbd16a6a6cb039daf0f" }
+      "schema": {
+        "id": "cuda-mcgs.policy-profile/0.2.0",
+        "version": "0.2.0",
+        "sha256": "6adb8df41fd6f340ee1fbd7f0644dfa82e9da2b91588f5bc3074d8cda8e27720"
+      },
+      "identity": {
+        "algorithm": "sha256",
+        "sha256": "797990263ff7863bc7c6a25e9d0ff19c91862d94283049e84415209e5313effb"
+      }
     },
     {
       "id": "owner.program-package",
@@ -73,8 +101,15 @@
         "specificationIdentity": "CUDA-MCGS-SPEC-0005@0.4.0-draft",
         "sha256": "38f4377121634a992c43d54c3901752fd929ca6f0187bef76aef35ebb0cc3324"
       },
-      "schema": { "id": "cuda-mcgs.program-package-profile/0.2.0", "version": "0.2.0", "sha256": "aa4ef4718a1bd217023ea7d6c2f3cc7b376928b747957420d2d14790e39f26b2" },
-      "identity": { "algorithm": "sha256", "sha256": "6817db5ed9b94bd6ac64795ab02163ed17624dc2b7dde7f9ff8c2cbd30a0bfd5" }
+      "schema": {
+        "id": "cuda-mcgs.program-package-profile/0.2.0",
+        "version": "0.2.0",
+        "sha256": "a8006346363a6bf56fb93f3dd7ee29109d24883751d032b95db0eb0c947588e6"
+      },
+      "identity": {
+        "algorithm": "sha256",
+        "sha256": "6817db5ed9b94bd6ac64795ab02163ed17624dc2b7dde7f9ff8c2cbd30a0bfd5"
+      }
     },
     {
       "id": "owner.progress",
@@ -85,8 +120,15 @@
         "specificationIdentity": "CUDA-MCGS-SPEC-0012@0.1.0-draft",
         "sha256": "d4dad4fbd63ad8eecb59b9bd2cefd652cf7dc471a9106a2d42daf559f817f2e6"
       },
-      "schema": { "id": "cuda-mcgs.progress-profile/0.2.0", "version": "0.2.0", "sha256": "68a76619ceec2ac0a195536b88caf3e753a9086cd18c7b4344f39437ea4d503a" },
-      "identity": { "algorithm": "sha256", "sha256": "8855f92337ca152d5f7547528fc5c255da88e37e221c7513d9cf89484a03ba34" }
+      "schema": {
+        "id": "cuda-mcgs.progress-profile/0.2.0",
+        "version": "0.2.0",
+        "sha256": "0622eb888305e6361a53063b9e228c79d32e65da67780e1a1597fc793fa7e7c8"
+      },
+      "identity": {
+        "algorithm": "sha256",
+        "sha256": "250471d0d79ca0e5237b60fc921204b51737292fb52e255ad24396fe5b31a4f6"
+      }
     },
     {
       "id": "owner.resource",
@@ -95,126 +137,401 @@
         "kind": "catalog",
         "id": "SPEC-0011",
         "specificationIdentity": "CUDA-MCGS-SPEC-0011@0.1.0-draft",
-        "sha256": "1b1c3f4830afdc554cf45fa17dbbe4481c596d276ae1a2c3f60bdff9dc8ca427"
+        "sha256": "96d85d5047eb8b9e966ecbb81f593f8854da29f35c213877ccc8514210f94f96"
       },
-      "schema": { "id": "cuda-mcgs.resource-profile/0.2.0", "version": "0.2.0", "sha256": "54aaaaae27a945596d14f494e477473091e3e1ed0d019b51ea0661a8948d875b" },
-      "identity": { "algorithm": "sha256", "sha256": "4422989b34ebb04ec7722c8f0f4264b5b928e52b88740dd8d841448e204a6f64" }
+      "schema": {
+        "id": "cuda-mcgs.resource-profile/0.2.0",
+        "version": "0.2.0",
+        "sha256": "9ab7733b3eb59d6db8e9792df0661830ea45001f41453051add37636f323ded3"
+      },
+      "identity": {
+        "algorithm": "sha256",
+        "sha256": "54c8a8c09c86e8c7570fa57c3e7d06119030a2fb59ae66e193805394b0ef99ca"
+      }
     }
   ],
   "dependencies": [
-    { "consumer": "owner.graph", "provider": "owner.domain", "reason": { "ownerProfile": "owner.domain", "id": "domain.identity", "version": "0.1.0" } },
-    { "consumer": "owner.policy", "provider": "owner.domain", "reason": { "ownerProfile": "owner.domain", "id": "domain.roles", "version": "0.1.0" } },
-    { "consumer": "owner.policy", "provider": "owner.graph", "reason": { "ownerProfile": "owner.graph", "id": "graph.ready-facts", "version": "0.1.0" } },
-    { "consumer": "owner.resource", "provider": "owner.domain", "reason": { "ownerProfile": "owner.domain", "id": "domain.resource-contribution", "version": "0.1.0" } },
-    { "consumer": "owner.resource", "provider": "owner.graph", "reason": { "ownerProfile": "owner.graph", "id": "graph.resource-contribution", "version": "0.1.0" } },
-    { "consumer": "owner.resource", "provider": "owner.policy", "reason": { "ownerProfile": "owner.policy", "id": "policy.resource-contribution", "version": "0.1.0" } },
-    { "consumer": "owner.progress", "provider": "owner.graph", "reason": { "ownerProfile": "owner.graph", "id": "graph.progress-transition", "version": "0.1.0" } },
-    { "consumer": "owner.progress", "provider": "owner.policy", "reason": { "ownerProfile": "owner.policy", "id": "policy.work-readiness", "version": "0.1.0" } },
-    { "consumer": "owner.progress", "provider": "owner.resource", "reason": { "ownerProfile": "owner.resource", "id": "resource.admission-transition", "version": "0.1.0" } },
-    { "consumer": "owner.output", "provider": "owner.graph", "reason": { "ownerProfile": "owner.graph", "id": "graph.ready-view", "version": "0.1.0" } },
-    { "consumer": "owner.output", "provider": "owner.policy", "reason": { "ownerProfile": "owner.policy", "id": "policy.ready-result-facts", "version": "0.1.0" } },
-    { "consumer": "owner.output", "provider": "owner.progress", "reason": { "ownerProfile": "owner.progress", "id": "progress.closure", "version": "0.1.0" } },
-    { "consumer": "owner.output", "provider": "owner.resource", "reason": { "ownerProfile": "owner.resource", "id": "resource.terminal-reserve", "version": "0.1.0" } },
-    { "consumer": "owner.program-package", "provider": "owner.domain", "reason": { "ownerProfile": "owner.domain", "id": "domain.program-input", "version": "0.1.0" } },
-    { "consumer": "owner.program-package", "provider": "owner.graph", "reason": { "ownerProfile": "owner.graph", "id": "graph.program-input", "version": "0.1.0" } },
-    { "consumer": "owner.program-package", "provider": "owner.output", "reason": { "ownerProfile": "owner.output", "id": "output.program-input", "version": "0.1.0" } },
-    { "consumer": "owner.program-package", "provider": "owner.policy", "reason": { "ownerProfile": "owner.policy", "id": "policy.program-input", "version": "0.1.0" } },
-    { "consumer": "owner.program-package", "provider": "owner.progress", "reason": { "ownerProfile": "owner.progress", "id": "progress.program-input", "version": "0.1.0" } },
-    { "consumer": "owner.program-package", "provider": "owner.resource", "reason": { "ownerProfile": "owner.resource", "id": "resource.program-input", "version": "0.1.0" } }
+    {
+      "consumer": "owner.graph",
+      "provider": "owner.domain",
+      "reason": {
+        "ownerProfile": "owner.domain",
+        "id": "domain.identity",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.policy",
+      "provider": "owner.domain",
+      "reason": {
+        "ownerProfile": "owner.domain",
+        "id": "domain.roles",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.policy",
+      "provider": "owner.graph",
+      "reason": {
+        "ownerProfile": "owner.graph",
+        "id": "graph.ready-facts",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.resource",
+      "provider": "owner.domain",
+      "reason": {
+        "ownerProfile": "owner.domain",
+        "id": "domain.resource-contribution",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.resource",
+      "provider": "owner.graph",
+      "reason": {
+        "ownerProfile": "owner.graph",
+        "id": "graph.resource-contribution",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.resource",
+      "provider": "owner.policy",
+      "reason": {
+        "ownerProfile": "owner.policy",
+        "id": "policy.resource-contribution",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.progress",
+      "provider": "owner.graph",
+      "reason": {
+        "ownerProfile": "owner.graph",
+        "id": "graph.progress-transition",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.progress",
+      "provider": "owner.policy",
+      "reason": {
+        "ownerProfile": "owner.policy",
+        "id": "policy.work-readiness",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.progress",
+      "provider": "owner.resource",
+      "reason": {
+        "ownerProfile": "owner.resource",
+        "id": "resource.admission-transition",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.output",
+      "provider": "owner.graph",
+      "reason": {
+        "ownerProfile": "owner.graph",
+        "id": "graph.ready-view",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.output",
+      "provider": "owner.policy",
+      "reason": {
+        "ownerProfile": "owner.policy",
+        "id": "policy.ready-result-facts",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.output",
+      "provider": "owner.progress",
+      "reason": {
+        "ownerProfile": "owner.progress",
+        "id": "progress.closure",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.output",
+      "provider": "owner.resource",
+      "reason": {
+        "ownerProfile": "owner.resource",
+        "id": "resource.terminal-reserve",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.program-package",
+      "provider": "owner.domain",
+      "reason": {
+        "ownerProfile": "owner.domain",
+        "id": "domain.program-input",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.program-package",
+      "provider": "owner.graph",
+      "reason": {
+        "ownerProfile": "owner.graph",
+        "id": "graph.program-input",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.program-package",
+      "provider": "owner.output",
+      "reason": {
+        "ownerProfile": "owner.output",
+        "id": "output.program-input",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.program-package",
+      "provider": "owner.policy",
+      "reason": {
+        "ownerProfile": "owner.policy",
+        "id": "policy.program-input",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.program-package",
+      "provider": "owner.progress",
+      "reason": {
+        "ownerProfile": "owner.progress",
+        "id": "progress.program-input",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "consumer": "owner.program-package",
+      "provider": "owner.resource",
+      "reason": {
+        "ownerProfile": "owner.resource",
+        "id": "resource.program-input",
+        "version": "0.1.0"
+      }
+    }
   ],
   "bindings": [
     {
       "id": "binding.domain-identity",
       "version": "0.1.0",
-      "producer": { "ownerProfile": "owner.domain", "id": "domain.identity", "version": "0.1.0" },
+      "producer": {
+        "ownerProfile": "owner.domain",
+        "id": "domain.identity",
+        "version": "0.1.0"
+      },
       "consumers": [
-        { "ownerProfile": "owner.graph", "id": "graph.domain-identity", "version": "0.1.0" },
-        { "ownerProfile": "owner.policy", "id": "policy.domain-identity", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.graph",
+          "id": "graph.domain-identity",
+          "version": "0.1.0"
+        },
+        {
+          "ownerProfile": "owner.policy",
+          "id": "policy.domain-identity",
+          "version": "0.1.0"
+        }
       ],
       "permissions": [
-        { "ownerProfile": "owner.domain", "id": "permission.domain-read-identity", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.domain",
+          "id": "permission.domain-read-identity",
+          "version": "0.1.0"
+        }
       ],
       "representationOwner": "owner.domain",
       "lifecycleOwner": "owner.domain",
-      "epochScope": { "ownerProfile": "owner.domain", "id": "domain.search-incarnation", "version": "0.1.0" },
+      "epochScope": {
+        "ownerProfile": "owner.domain",
+        "id": "domain.search-incarnation",
+        "version": "0.1.0"
+      },
       "resourceContributions": [],
       "progressDependencies": []
     },
     {
       "id": "binding.graph-ready-facts",
       "version": "0.1.0",
-      "producer": { "ownerProfile": "owner.graph", "id": "graph.ready-facts", "version": "0.1.0" },
+      "producer": {
+        "ownerProfile": "owner.graph",
+        "id": "graph.ready-facts",
+        "version": "0.1.0"
+      },
       "consumers": [
-        { "ownerProfile": "owner.output", "id": "output.graph-ready-view", "version": "0.1.0" },
-        { "ownerProfile": "owner.policy", "id": "policy.graph-ready-facts", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.output",
+          "id": "output.graph-ready-view",
+          "version": "0.1.0"
+        },
+        {
+          "ownerProfile": "owner.policy",
+          "id": "policy.graph-ready-facts",
+          "version": "0.1.0"
+        }
       ],
       "permissions": [
-        { "ownerProfile": "owner.graph", "id": "permission.graph-read-ready", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.graph",
+          "id": "permission.graph-read-ready",
+          "version": "0.1.0"
+        }
       ],
       "representationOwner": "owner.graph",
       "lifecycleOwner": "owner.graph",
-      "epochScope": { "ownerProfile": "owner.domain", "id": "domain.search-incarnation", "version": "0.1.0" },
+      "epochScope": {
+        "ownerProfile": "owner.domain",
+        "id": "domain.search-incarnation",
+        "version": "0.1.0"
+      },
       "resourceContributions": [
-        { "ownerProfile": "owner.graph", "id": "graph.resource-contribution", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.graph",
+          "id": "graph.resource-contribution",
+          "version": "0.1.0"
+        }
       ],
       "progressDependencies": [
-        { "ownerProfile": "owner.graph", "id": "graph.publication-readiness", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.graph",
+          "id": "graph.publication-readiness",
+          "version": "0.1.0"
+        }
       ]
     },
     {
       "id": "binding.policy-ready-result",
       "version": "0.1.0",
-      "producer": { "ownerProfile": "owner.policy", "id": "policy.ready-result-facts", "version": "0.1.0" },
+      "producer": {
+        "ownerProfile": "owner.policy",
+        "id": "policy.ready-result-facts",
+        "version": "0.1.0"
+      },
       "consumers": [
-        { "ownerProfile": "owner.output", "id": "output.policy-ready-facts", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.output",
+          "id": "output.policy-ready-facts",
+          "version": "0.1.0"
+        }
       ],
       "permissions": [
-        { "ownerProfile": "owner.policy", "id": "permission.policy-read-result", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.policy",
+          "id": "permission.policy-read-result",
+          "version": "0.1.0"
+        }
       ],
       "representationOwner": "owner.policy",
       "lifecycleOwner": "owner.policy",
-      "epochScope": { "ownerProfile": "owner.domain", "id": "domain.search-incarnation", "version": "0.1.0" },
+      "epochScope": {
+        "ownerProfile": "owner.domain",
+        "id": "domain.search-incarnation",
+        "version": "0.1.0"
+      },
       "resourceContributions": [],
       "progressDependencies": [
-        { "ownerProfile": "owner.policy", "id": "policy.backup-applied", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.policy",
+          "id": "policy.backup-applied",
+          "version": "0.1.0"
+        }
       ]
     },
     {
       "id": "binding.resource-admission",
       "version": "0.1.0",
-      "producer": { "ownerProfile": "owner.resource", "id": "resource.admission-transition", "version": "0.1.0" },
+      "producer": {
+        "ownerProfile": "owner.resource",
+        "id": "resource.admission-transition",
+        "version": "0.1.0"
+      },
       "consumers": [
-        { "ownerProfile": "owner.output", "id": "output.resource-admission", "version": "0.1.0" },
-        { "ownerProfile": "owner.progress", "id": "progress.resource-admission", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.output",
+          "id": "output.resource-admission",
+          "version": "0.1.0"
+        },
+        {
+          "ownerProfile": "owner.progress",
+          "id": "progress.resource-admission",
+          "version": "0.1.0"
+        }
       ],
       "permissions": [
-        { "ownerProfile": "owner.resource", "id": "permission.resource-read-admission", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.resource",
+          "id": "permission.resource-read-admission",
+          "version": "0.1.0"
+        }
       ],
       "representationOwner": "owner.resource",
       "lifecycleOwner": "owner.resource",
-      "epochScope": { "ownerProfile": "owner.domain", "id": "domain.search-incarnation", "version": "0.1.0" },
+      "epochScope": {
+        "ownerProfile": "owner.domain",
+        "id": "domain.search-incarnation",
+        "version": "0.1.0"
+      },
       "resourceContributions": [
-        { "ownerProfile": "owner.resource", "id": "resource.composed-plan", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.resource",
+          "id": "resource.composed-plan",
+          "version": "0.1.0"
+        }
       ],
       "progressDependencies": []
     },
     {
       "id": "binding.progress-closure",
       "version": "0.1.0",
-      "producer": { "ownerProfile": "owner.progress", "id": "progress.closure", "version": "0.1.0" },
+      "producer": {
+        "ownerProfile": "owner.progress",
+        "id": "progress.closure",
+        "version": "0.1.0"
+      },
       "consumers": [
-        { "ownerProfile": "owner.output", "id": "output.progress-closure", "version": "0.1.0" },
-        { "ownerProfile": "owner.program-package", "id": "program-package.progress-closure", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.output",
+          "id": "output.progress-closure",
+          "version": "0.1.0"
+        },
+        {
+          "ownerProfile": "owner.program-package",
+          "id": "program-package.progress-closure",
+          "version": "0.1.0"
+        }
       ],
       "permissions": [
-        { "ownerProfile": "owner.progress", "id": "permission.progress-read-closure", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.progress",
+          "id": "permission.progress-read-closure",
+          "version": "0.1.0"
+        }
       ],
       "representationOwner": "owner.progress",
       "lifecycleOwner": "owner.progress",
-      "epochScope": { "ownerProfile": "owner.domain", "id": "domain.search-incarnation", "version": "0.1.0" },
+      "epochScope": {
+        "ownerProfile": "owner.domain",
+        "id": "domain.search-incarnation",
+        "version": "0.1.0"
+      },
       "resourceContributions": [],
       "progressDependencies": [
-        { "ownerProfile": "owner.progress", "id": "progress.all-selected-work", "version": "0.1.0" }
+        {
+          "ownerProfile": "owner.progress",
+          "id": "progress.all-selected-work",
+          "version": "0.1.0"
+        }
       ]
     }
   ],

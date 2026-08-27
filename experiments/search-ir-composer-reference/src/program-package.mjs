@@ -402,7 +402,7 @@ export function normalizeProgramPackageProfile(input, inspected, suppliedContext
   const contractSet = normalizeContentIdentity(input.semanticEngine.contractSet, 'COMPOSE_CONTRACT_SET', 'semanticEngine contractSet');
   if (contractSet.sha256 !== inspected.identities.contractSet.sha256) fail('COMPOSE_CONTRACT_SET', 'semanticEngine contract set differs from inspected input');
   exactKeys(input.semanticEngine.authority, ['repository', 'revision'], 'COMPOSE_AUTHORITY_FIELDS', 'semanticEngine authority');
-  if (input.semanticEngine.authority.repository !== 'iteathen/UMCGS' || input.semanticEngine.authority.revision !== suppliedContext.authorityRevision) fail('COMPOSE_AUTHORITY', 'semanticEngine authority differs from the frozen input');
+  if (input.semanticEngine.authority.repository !== 'iteathen/CUDA-MCGS' || input.semanticEngine.authority.revision !== suppliedContext.authorityRevision) fail('COMPOSE_AUTHORITY', 'semanticEngine authority differs from the frozen input');
   if (!Array.isArray(input.semanticEngine.profiles)) fail('COMPOSE_PROFILE_COUNT', 'semanticEngine profiles must be an array');
   const profiles = input.semanticEngine.profiles.map((profile, index) => normalizeProfileReference(profile, `semanticEngine profile ${index}`)).sort((left, right) => compareRaw(left.id, right.id));
   uniqueBy(profiles, 'id', 'COMPOSE_PROFILE_DUPLICATE', 'semanticEngine profile');
@@ -595,7 +595,7 @@ export function normalizeCompatiblePair(input, packageResult, programResult, rea
   if (input.schema !== COMPATIBLE_PAIR_SCHEMA || input.status !== 'reference-fixture') fail('COMPOSE_PAIR_SCHEMA', 'compatible-pair schema/status is invalid');
   exactKeys(input.cudaMcgs, ['repository', 'revision', 'package', 'searchIr', 'searchProgram', 'executionPackage'], 'COMPOSE_PAIR_MCGS_FIELDS', 'compatible pair CUDA-MCGS');
   const expectedMcgs = packageResult.normalized.compatibility;
-  if (input.cudaMcgs.repository !== 'iteathen/UMCGS' || input.cudaMcgs.revision !== packageResult.normalized.provenance.revision) fail('COMPOSE_PAIR_MCGS', 'CUDA-MCGS revision differs from package provenance');
+  if (input.cudaMcgs.repository !== 'iteathen/CUDA-MCGS' || input.cudaMcgs.revision !== packageResult.normalized.provenance.revision) fail('COMPOSE_PAIR_MCGS', 'CUDA-MCGS revision differs from package provenance');
   const searchIr = normalizeOpaqueIdentity(input.cudaMcgs.searchIr, 'pair Search IR'); const searchProgram = normalizeOpaqueIdentity(input.cudaMcgs.searchProgram, 'pair Search Program'); const executionPackage = normalizeOpaqueIdentity(input.cudaMcgs.executionPackage, 'pair execution package');
   if (searchIr.sha256 !== packageResult.normalized.semantic.engineIdentity.sha256 || searchProgram.sha256 !== programResult.identity.sha256 || executionPackage.sha256 !== packageResult.identity.sha256) fail('COMPOSE_PAIR_MCGS', 'CUDA-MCGS pair identities differ from package inputs');
   exactKeys(input.cudaJs, ['repository', 'revision', 'package', 'apiSchema', 'capabilities', 'deviceProgram', 'artifacts', 'resources', 'operations', 'runtime'], 'COMPOSE_PAIR_CUDA_JS_FIELDS', 'compatible pair CUDA-JS');

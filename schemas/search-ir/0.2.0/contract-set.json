@@ -2,7 +2,7 @@
   "schema": "cuda-mcgs.search-ir.contract-set/0.2.0",
   "representation": "cuda-mcgs.search-ir/0.2.0",
   "status": "proposal-evidence",
-  "authorityBaseline": "e1ca19132d79f3c2a15fd0f7fe5b78a190c0371b",
+  "authorityBaseline": "173765cf86fc6ab91364d8d52eb6a045dcbe2346",
   "sourceDigest": "sha256-utf8-lf-v1",
   "foundation": {
     "representation": "cuda-mcgs.search-ir/0.1.0",
@@ -86,7 +86,7 @@
       "status": "Proposal",
       "semanticOwner": "CUDA-MCGS optional Search Session external lifecycle semantics",
       "sourcePath": "docs/specs/SPEC-0006-search-session-control-and-observation.md",
-      "sha256": "b54e180e2466aea8202d64f7836e30c7ea76fd5fce345b6eedd4e9a63665cdce",
+      "sha256": "ab7a24a804e994cc5613554e36233ea549108d2197dc2fd90c5f48c80eb684f3",
       "requirementPrefix": "SESSION-",
       "requirementCount": 59,
       "plannedLeaf": "IR-SESSION-01"
@@ -110,7 +110,7 @@
       "status": "Proposal",
       "semanticOwner": "CUDA-MCGS universal search-policy semantics",
       "sourcePath": "docs/specs/SPEC-0008-search-policy-and-backup.md",
-      "sha256": "49f984e5855998c075c3e6d5bf19c8950b6dedb1657fdc91b30d88a5352d345c",
+      "sha256": "7e0699671619e99f28bfe1b7a272e6c6df2cf6995492eb19f0feffd83b925cc5",
       "requirementPrefix": "POLICY-",
       "requirementCount": 91,
       "plannedLeaf": "IR-POLICY-01"
@@ -122,7 +122,7 @@
       "status": "Proposal",
       "semanticOwner": "CUDA-MCGS universal evaluator semantics",
       "sourcePath": "docs/specs/SPEC-0009-evaluator-contract.md",
-      "sha256": "53f4686979f1a9c2a7c536b3dfd250300c0775e03ed203c8052bc929bd311ac0",
+      "sha256": "f778c76f7ad3ceb1b9c1b81b25ebc4b3963144f2c75831fbf2192372467ab359",
       "requirementPrefix": "EVAL-",
       "requirementCount": 121,
       "plannedLeaf": "IR-EVALUATOR-01"
@@ -134,7 +134,7 @@
       "status": "Proposal",
       "semanticOwner": "CUDA-MCGS universal graph/storage semantics",
       "sourcePath": "docs/specs/SPEC-0010-graph-storage-and-reclamation.md",
-      "sha256": "7b5f08aa2d413f2521a3fdc64d0d0f934db34f7a8ba2735ce0a04b39e38883a1",
+      "sha256": "e52a11344cca7820f4a4b3ff1600d3c39f4ff9ceca0e01da6305b48242f489a1",
       "requirementPrefix": "GRAPH-",
       "requirementCount": 93,
       "plannedLeaf": "IR-GRAPH-01"
@@ -146,7 +146,7 @@
       "status": "Proposal",
       "semanticOwner": "CUDA-MCGS universal finite search-resource semantics",
       "sourcePath": "docs/specs/SPEC-0011-finite-search-resources.md",
-      "sha256": "1b1c3f4830afdc554cf45fa17dbbe4481c596d276ae1a2c3f60bdff9dc8ca427",
+      "sha256": "96d85d5047eb8b9e966ecbb81f593f8854da29f35c213877ccc8514210f94f96",
       "requirementPrefix": "RESOURCE-",
       "requirementCount": 74,
       "plannedLeaf": "IR-RESOURCE-01"
@@ -170,7 +170,7 @@
       "status": "Proposal",
       "semanticOwner": "CUDA-MCGS universal external result/observation publication semantics",
       "sourcePath": "docs/specs/SPEC-0013-result-and-observation-publication.md",
-      "sha256": "4fff2665c27146b15962cfde8bd2771e2376400997d57bd1ac69d8527b481d14",
+      "sha256": "657073d141f421dd55ba5ba20b0f28eaa306a21b4ae17e600b28f961589d864b",
       "requirementPrefix": "OUTPUT-",
       "requirementCount": 88,
       "plannedLeaf": "IR-OUTPUT-01"

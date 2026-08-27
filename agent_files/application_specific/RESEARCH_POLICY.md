@@ -1,10 +1,10 @@
-# UMCGS Research Policy
+# CUDA-MCGS Research Policy
 
 **Scope:** Prior art, platform facts, papers, repositories, libraries, hardware behavior, and implementation reuse.
 
 ## Research before foundational invention
 
-Inspect existing work when it may already own the boundary, reveal constraints, provide conformance cases, or falsify a proposed design. Evaluate the complete UMCGS requirement set rather than matching one feature or headline.
+Inspect existing work when it may already own the boundary, reveal constraints, provide conformance cases, or falsify a proposed design. Evaluate the complete CUDA-MCGS requirement set rather than matching one feature or headline.
 
 ## Source priority
 
@@ -46,7 +46,7 @@ Do not decide “already done” or “not done” from a project name or abstra
 
 ## Licensing and private pre-release work
 
-UMCGS may continue original private pre-release design and implementation without selecting its final project license.
+CUDA-MCGS may continue original private pre-release design and implementation without selecting its final project license.
 
 License selection becomes necessary before public release/distribution and before adopting third-party implementation where compatibility or redistribution matters. Until then:
 

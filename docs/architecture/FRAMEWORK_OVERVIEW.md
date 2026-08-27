@@ -54,7 +54,7 @@ The universal core contract families are conceptually independent:
 - **Generic output/observation contract** — mandatory bounded terminal publication and optional immutable live observations without requiring one product payload such as ranked moves.
 - **Resource contract/profile** — finite contributions, capacities, safety reserve, compound admission, pressure, exhaustion and cleanup accounting.
 - **Device-progress contract** — work readiness, finite service/fairness, typed no-progress, stop/drain and closure without selecting a scheduler topology.
-- **Search Session contract when selected** — external structural root transaction/root-epoch authority, independent attention publication and bounded observation-request/borrow lifecycle coordination; source owners retain stale-work, reuse, reclamation and publication meaning.
+- **Search Session contract when selected** — external initial-root/advance/reroot authority and provenance, independent attention publication and bounded observation-request/borrow lifecycle coordination; source owners retain stale-work, reuse, reclamation and publication meaning.
 
 These contracts must remain semantically meaningful if the extension substrate and chess product are removed.
 

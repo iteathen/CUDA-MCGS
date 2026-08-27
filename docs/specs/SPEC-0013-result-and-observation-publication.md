@@ -62,7 +62,7 @@ The selected output profile owns:
 - observation cadence/request/drop/coalescing/retention semantics;
 - output-specific capacity contributions, pressure and failure;
 - consumer-facing serialization/schema compatibility and bounded diagnostics projection; and
-- output-owned state reuse/reset/invalidate across root/session incarnations.
+- output-owned reroot/session reuse/reset/invalidate; advance changes authority provenance without invoking output-state reclassification, so prior root-relative publications become non-current by their existing provenance.
 
 ### 3.2 Explicit non-ownership
 
@@ -90,7 +90,7 @@ The universal output ports are:
 5. `captureObservation` / `resumeObservation` — read/project ready facts under the selected consistency class without search mutation;
 6. `publishOutput` and `failOutput` — terminate one slot incarnation exactly once;
 7. `acquireOutput` / `releaseOutput` — provide and release one immutable bounded consumer borrow; and
-8. `classifyOutputReuse` — retain/reset/invalidate output-owned sequences/slots across root/session transitions.
+8. `classifyOutputReuse` — retain/reset/invalidate output-owned sequences/slots for reroot/session reconciliation. Advance never invokes this port; publication freshness/currentness follows existing root-incarnation/epoch/advance provenance.
 
 These are semantic ports, not mandatory functions, stages, kernels, callbacks or ABI symbols. Search Composer may fuse/specialize/eliminate them while preserving meaning and ownership.
 
@@ -144,7 +144,7 @@ OUTPUT-PROFILE-001. The profile declares, with no unknown fields:
 - finite capture/projection work, continuation, scratch and publication visibility;
 - cancellation/stop/failure/diagnostics/cleanup;
 - consumer serialization/trust/provenance policy; and
-- root/session reuse/reset/invalidate dispositions.
+- reroot/session reuse/reset/invalidate dispositions plus root/advance provenance sufficient to classify publication freshness without retained-state reclassification.
 
 OUTPUT-PROFILE-002. Unknown/duplicate/overlapping fields, ambiguous source owner/perspective/unit, unready source binding, insufficient range, unbounded payload/capture/borrow, undeclared consistency/drop policy, missing terminal capacity, invalid fallback or arithmetic overflow rejects specialization before ignition.
 

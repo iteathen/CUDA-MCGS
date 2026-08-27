@@ -223,14 +223,38 @@ function buildProfile(profile, inspected, selected, schemaShas, options = {}) {
   const ledgerClass = resourceClass(profile, resourceContributor.id, { id: ledgerClassId, unit: 'records', minimum: '1024', maximum: '65536', alignment: '8', scope: 'per-engine', pressureStatus: 'resource-capacity' }, { id: ledgerClassId, sourceResource: ledgerClassId, basis: 'maximum-live', ownerPressureStatus: 'resource-capacity' });
   classes.push(terminalClass, workingClass, ...(observationClass ? [observationClass] : []), progressClass, ledgerClass);
 
-  let rootClass = null;
-  if (options.session) {
-    const rootClassId = `resource.${profile}.class-root-update`;
-    const sessionContributor = opaqueContributor(profile, inspected, `session.${profile}`, 'SPEC-0006', [rootClassId], true);
-    contributors.push(sessionContributor);
-    rootClass = resourceClass(profile, sessionContributor.id, { id: rootClassId, unit: 'bytes', minimum: '16384', maximum: '16384', alignment: '256', scope: 'per-engine', pressureStatus: 'session-root-update-capacity' }, { id: rootClassId, sourceResource: rootClassId, basis: 'optional-reserve', ownerPressureStatus: 'session-root-update-capacity', memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'], lifetime: 'session' });
-    classes.push(rootClass);
+  let sessionControlClass = null;
+let rerootClass = null;
+if (options.session) {
+  const sessionControlClassId = `resource.${profile}.class-session-control`;
+  const rerootSelected = options.reroot !== false;
+  const rerootClassId = `resource.${profile}.class-reroot-admission`;
+  const sessionContributor = opaqueContributor(
+    profile,
+    inspected,
+    `session.${profile}`,
+    'SPEC-0006',
+    [sessionControlClassId, ...(rerootSelected ? [rerootClassId] : [])],
+    true,
+  );
+  contributors.push(sessionContributor);
+  sessionControlClass = resourceClass(
+    profile,
+    sessionContributor.id,
+    { id: sessionControlClassId, unit: 'bytes', minimum: '16384', maximum: '16384', alignment: '256', scope: 'per-engine', pressureStatus: 'session-control-capacity' },
+    { id: sessionControlClassId, sourceResource: sessionControlClassId, basis: 'maximum-live', ownerPressureStatus: 'session-control-capacity', memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'], lifetime: 'session' },
+  );
+  classes.push(sessionControlClass);
+  if (rerootSelected) {
+    rerootClass = resourceClass(
+      profile,
+      sessionContributor.id,
+      { id: rerootClassId, unit: 'bytes', minimum: '16384', maximum: '16384', alignment: '256', scope: 'per-engine', pressureStatus: 'session-reroot-admission-capacity' },
+      { id: rerootClassId, sourceResource: rerootClassId, basis: 'optional-reserve', ownerPressureStatus: 'session-reroot-admission-capacity', memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'], lifetime: 'session' },
+    );
+    classes.push(rerootClass);
   }
+}
 
   if (options.stage) {
     const stageStateClassId = `resource.${profile}.class-stage-state`;
@@ -286,7 +310,7 @@ function buildProfile(profile, inspected, selected, schemaShas, options = {}) {
     { id: terminalReserveId, purpose: 'terminal-result', class: terminalClass.id, partition: partitions.find(({ class: id }) => id === terminalClass.id).id, minimum: '4096', maximum: '4096', eligibleOwners: [outputContributor.id], eligibleTransitions: ['resource.transition-publish-terminal'], borrow: { kind: 'none' }, release: schemaReference(`cuda-mcgs.synthetic-${profile}-terminal-reserve-release`), priority: '1' },
     { id: progressReserveId, purpose: 'progress-cleanup', class: progressClass.id, partition: partitions.find(({ class: id }) => id === progressClass.id).id, minimum: '8192', maximum: '8192', eligibleOwners: contributors.map(({ id }) => id), eligibleTransitions: ['resource.transition-drain', 'resource.transition-teardown'], borrow: { kind: 'none' }, release: schemaReference(`cuda-mcgs.synthetic-${profile}-progress-reserve-release`), priority: '2' },
   ];
-  if (rootClass) reserves.push({ id: `resource.${profile}.reserve-root-update`, purpose: 'root-update', class: rootClass.id, partition: partitions.find(({ class: id }) => id === rootClass.id).id, minimum: rootClass.formula.maximumUnits, maximum: rootClass.formula.maximumUnits, eligibleOwners: [contributors.find(({ id }) => id === `owner.session.${profile}`).id], eligibleTransitions: ['resource.transition-root-admit', 'resource.transition-root-rollback'], borrow: { kind: 'none' }, release: schemaReference(`cuda-mcgs.synthetic-${profile}-root-reserve-release`), priority: '3' });
+  if (rerootClass) reserves.push({ id: `resource.${profile}.reserve-reroot-admission`, purpose: 'reroot-admission', class: rerootClass.id, partition: partitions.find(({ class: id }) => id === rerootClass.id).id, minimum: rerootClass.formula.maximumUnits, maximum: rerootClass.formula.maximumUnits, eligibleOwners: [contributors.find(({ id }) => id === `owner.session.${profile}`).id], eligibleTransitions: ['resource.transition-root-admit', 'resource.transition-root-rollback'], borrow: { kind: 'none' }, release: schemaReference(`cuda-mcgs.synthetic-${profile}-root-reserve-release`), priority: '3' });
 
   const admissionGroups = [admissionGroup(profile, coreAdmission, [terminalClass, progressClass], true)];
   for (const entry of classes.filter(({ id }) => ![terminalClass.id, progressClass.id].includes(id))) admissionGroups.push(admissionGroup(profile, entry.admissionGroup, [entry]));

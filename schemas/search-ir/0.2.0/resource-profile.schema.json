@@ -106,7 +106,7 @@
     "reserve": {
       "type": "object", "additionalProperties": false, "required": ["id", "purpose", "class", "partition", "minimum", "maximum", "eligibleOwners", "eligibleTransitions", "borrow", "release", "priority"],
       "properties": {
-        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" }, "purpose": { "enum": ["terminal-result", "progress-cleanup", "root-update", "diagnostic", "custom"] }, "class": { "$ref": "primitives.schema.json#/$defs/namespacedId" }, "partition": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" }, "purpose": { "enum": ["terminal-result", "progress-cleanup", "reroot-admission", "diagnostic", "custom"] }, "class": { "$ref": "primitives.schema.json#/$defs/namespacedId" }, "partition": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
         "minimum": { "$ref": "#/$defs/decimalUint" }, "maximum": { "$ref": "#/$defs/decimalUint" }, "eligibleOwners": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
         "eligibleTransitions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } }, "borrow": { "$ref": "#/$defs/borrow" },
         "release": { "$ref": "primitives.schema.json#/$defs/schemaReference" }, "priority": { "$ref": "#/$defs/decimalUint" }

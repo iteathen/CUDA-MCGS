@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/stage-profile.schema.json",
+  "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/stage-profile.schema.json",
   "title": "CUDA-MCGS Search Stage and Extension Surface profile proposal evidence",
   "type": "object",
   "additionalProperties": false,

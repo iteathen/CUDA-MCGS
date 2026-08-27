@@ -61,7 +61,7 @@ Inside a valid component, simple direct code is preferred.
 
 Universal means free of accidental caller assumptions. Generic means parameterized. A component may be universal while owning a specific domain invariant.
 
-Good UMCGS examples:
+Good CUDA-MCGS examples:
 
 - A `ResourcePlanner` derives finite capacities from declared memory, model, layout, queue, and safety requirements. It does not care whether the engine searches chess, Go, or text.
 - A `TranspositionIndex` owns key lookup, claim/publication, collision verification, and saturation behavior through an explicit state-identity contract.
@@ -124,7 +124,7 @@ Shared code is valid only when it represents a real shared invariant with an own
 
 Temporary duplication may be safer than a false abstraction. Promote common behavior only after its semantic owner and intended substitution class are clear.
 
-## UMCGS compilation boundary
+## CUDA-MCGS compilation boundary
 
 LEGO boundaries remain conceptual and source-level even when the compiler links domain, policy, evaluator, and runtime device code into one highly specialized binary. Physical inlining does not erase contract ownership.
 

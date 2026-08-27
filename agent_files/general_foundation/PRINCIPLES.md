@@ -1,8 +1,8 @@
 # Engineering Principles
 
-**Scope:** Compact mandatory design alignment for UMCGS. Read this during startup, then load only the detailed doctrine triggered by the task.
+**Scope:** Compact mandatory design alignment for CUDA-MCGS. Read this during startup, then load only the detailed doctrine triggered by the task.
 
-This design system is adapted from the project owner’s Ars Thaumaturgica foundation at commit `c3e25ad1032a1927c9709580fb415ffc48b91020`. UMCGS files are authoritative here; the source repository records provenance rather than an external dependency.
+This design system is adapted from the project owner’s Ars Thaumaturgica foundation at commit `c3e25ad1032a1927c9709580fb415ffc48b91020`. CUDA-MCGS files are authoritative here; the source repository records provenance rather than an external dependency.
 
 ## Governing design hierarchy
 
@@ -190,7 +190,7 @@ CUPID makes the valid implementation composable, idiomatic, predictable, domain-
 
 ## Universal without vague genericity
 
-UMCGS is universal at contracts and compilation boundaries, not through one giant optional-field runtime object.
+CUDA-MCGS is universal at contracts and compilation boundaries, not through one giant optional-field runtime object.
 
 - Name the widest truthful invariant, not the first domain or consumer.
 - State intended members, permitted variation, and excluded cases.
@@ -216,7 +216,7 @@ Measure complexity across callers, adapters, generation, persistence, migration,
 
 Represent essential domain complexity directly. Remove accidental complexity. Reject ceremony that protects no invariant, boundary, responsibility, evidence, or useful operating property.
 
-## UMCGS non-negotiables
+## CUDA-MCGS non-negotiables
 
 - Concrete engines are finite and memory-planned.
 - Production active search remains device-closed after ignition.

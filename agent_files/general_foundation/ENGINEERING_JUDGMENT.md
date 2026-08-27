@@ -533,7 +533,7 @@ After the operation:
 
 A local implementation detail may vary without revisiting the decision only when it preserves authority, owner, contract, value ordering, risk, acceptance, and downstream outputs.
 
-## 11. UMCGS examples
+## 11. CUDA-MCGS examples
 
 ### Device closure versus host convenience
 
@@ -555,9 +555,9 @@ Convenience is a supporting quality. Predictable search-hot residency, bounded m
 
 A mock can satisfy orchestration and lifecycle claims but cannot prove native CUDA ordering, device closure, or performance. Evidence scope is a hard gate on the claim.
 
-### UMCGS versus CUDA-JS ownership
+### CUDA-MCGS versus CUDA-JS ownership
 
-The peer split passes first-consumer deletion and dependency-direction tests: CUDA-JS remains coherent without UMCGS, while UMCGS owns search semantics. Faster implementation through private-source coupling would fail the accepted architecture and compatibility envelope.
+The peer split passes first-consumer deletion and dependency-direction tests: CUDA-JS remains coherent without CUDA-MCGS, while CUDA-MCGS owns search semantics. Faster implementation through private-source coupling would fail the accepted architecture and compatibility envelope.
 
 ## 12. Prohibited patterns
 

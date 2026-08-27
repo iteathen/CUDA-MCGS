@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/iteathen/UMCGS/schemas/search-ir/0.2.0/domain-profile.schema.json",
+  "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/domain-profile.schema.json",
   "title": "CUDA-MCGS Search IR 0.2.0 domain profile",
   "description": "Closed product-neutral domain-owned state, action, history, role, transition, outcome and semantic-port selection. It contains no graph, policy, evaluator, scheduler, output-publication or CUDA mechanism meaning.",
   "type": "object",

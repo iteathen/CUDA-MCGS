@@ -101,7 +101,7 @@ What must be claimed, published, released, and recovered?
 
 before inventing `ReservationManager`.
 
-## UMCGS examples
+## CUDA-MCGS examples
 
 - `ChessNode` is wrong for universal graph storage; `StateNode` may still be too broad unless its exact shared semantics are specified.
 - `PolicyValueModel` is wrong for an evaluator contract that may provide proposal-only, value-only, distributional, heuristic, or no neural outputs.
