@@ -4,22 +4,23 @@
 
 **Updated:** 2026-08-27
 
-## Harness + Domain
+## Shared harness + Domain
 
-The previously integrated `REF-HARNESS-01` plus `REF-DOMAIN-01` capsule remains retained historical evidence:
+The shared `REF-HARNESS-01` plus `REF-DOMAIN-01` capsule is current against the same representation/composition identity used by the Graph proposal chain:
 
 - expected/discovered/executed/passed: `49/49/49/49`;
 - failed: `0`;
-- direct SPEC-0007 requirement coverage: `47/47`;
-- representation/composition SHA-256 consumed by that run: `4846fe8686721afd13dfe4ac66ebbfdb0722979481183e76b96bf9118f340b3f`;
-- Domain projection SHA-256: `6c073d11c688bc64b7bf4233c93de56ce29a95706f8a1ac665c8a04d939f13ee`;
-- harness/Domain evidence SHA-256: `cf6aafa528af6f4ad6854d16d7c6c046f6ff33a7e9f18d153cb0386a9b4044b8`.
+- required/conditional/optional skipped: `0/0/0`;
+- direct SPEC-0007 planned/executed requirement coverage: `47/47`;
+- representation/composition SHA-256: `f4e85941091a820047778679a3ab79573218f700349cc282d6210ba43942e98f` (`719510` canonical bytes);
+- Domain projection SHA-256: `e169677d15c1220747f2f5e63434342dab6b46d65108a05aeb78485a490c338c` (`69524` canonical bytes);
+- harness/Domain evidence SHA-256: `9d9d468f95010848210f25019563f7e7351e58dc74a29aa83391d0903a9db1b2` (`30372` canonical bytes).
 
-PR #135 changes only the proposal Graph-profile chain. It does not relabel this earlier Domain result as newly requalified evidence.
+The rebind updated both the top-level harness fixture identity and each declared neutral schedule's frozen evidence key before the full 49-case capsule was allowed to pass. Domain semantics themselves were unchanged by the Graph resource correction.
 
 ## REF-GRAPH-01 — current proposal chain
 
-The explicit expansion-resource correction changed the normalized Graph profile and therefore legitimately rebound the downstream selected-profile and behavioral evidence identities.
+The explicit expansion-resource correction changed the normalized Graph profile and therefore legitimately rebound the selected-profile and behavioral evidence identities.
 
 The current Composer qualification is:
 
@@ -39,7 +40,7 @@ The Composer-owned normalized Graph-profile projection is:
 
 ### NODE/transposition brick
 
-NODE was rebound to the exact current Composer/projection pair and passed:
+NODE is rebound to the exact current Composer/projection pair and passes:
 
 - capsule: `cuda-mcgs-graph-node-reference-v0.2.0`;
 - expected/discovered/executed/passed: `13/13/13/13`;
@@ -47,8 +48,6 @@ NODE was rebound to the exact current Composer/projection pair and passed:
 - direct `GRAPH-NODE-*` planned/executed requirement coverage: `11/11`;
 - evidence SHA-256: `1e284c4f8da41c9afc794b6803e4d4ce13b7c0c74f903c383ca900bdacfee687`;
 - canonical bytes: `10123`.
-
-The earlier protected-main NODE result remains the integrated historical checkpoint, but this rebound identity is the exact dependency required by the current EDGE proposal.
 
 ### EDGE/expansion brick
 
@@ -97,6 +96,6 @@ The correction keeps the existing generic failure vocabulary and LEGO ownership 
 
 Machine evidence is reproducible in ignored `experiments/search-semantics-reference/build/`. Generated evidence is disposable and is not treated as source authority.
 
-The current Graph results prove only the NODE/transposition and EDGE/expansion bricks described above. Path/occurrence, typed-reference/generation, root-protection, retirement/quiescence/reclamation, ADR-0022 occurrence supersession, later owner oracles, a complete terminal reference engine and integrated proposal acceptance remain unfinished.
+The current results prove the semantic-neutral harness, bounded Domain behavior, the Graph NODE/transposition brick and the Graph EDGE/expansion brick described above. Path/occurrence, typed-reference/generation, root-protection, retirement/quiescence/reclamation, ADR-0022 occurrence supersession, later owner oracles, a complete terminal reference engine and integrated proposal acceptance remain unfinished.
 
 No production runtime, native CUDA, CUDA-JS device execution, performance, search-quality, public-SDK, contract-acceptance or multi-GPU-support claim is made here.
