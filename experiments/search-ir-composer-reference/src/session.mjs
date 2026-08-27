@@ -463,12 +463,12 @@ export function normalizeSessionProfile(input, inspectedCatalog, resourceResult,
   const progressContribution = normalizeProfileReference(input.progressContribution, 'progressContribution');
   if (profileKey(resourceContribution) !== profileKey(resourceSession.profile) || profileKey(progressContribution) !== profileKey(progressSession.profile)) fail('SESSION_CONTRIBUTION', 'session contribution differs from selected plans');
 
-  const legacyRerootReserve = resourceResult.normalized.reserves.find(({ purpose }) => purpose === 'root-update');
-  const sessionClass = resourceResult.normalized.classes.find(({ id, contributor }) => id === legacyRerootReserve?.class && contributor === resourceSession.id);
+  const rerootReserve = resourceResult.normalized.reserves.find(({ purpose }) => purpose === 'reroot-admission');
+  const sessionClass = resourceResult.normalized.classes.find(({ id, contributor }) => id === rerootReserve?.class && contributor === resourceSession.id);
   const rerootAdmission = resourceResult.normalized.admissionGroups.find(({ classes }) => classes.includes(sessionClass?.id));
   const sessionWork = progressResult.normalized.workClasses.find(({ owner }) => owner === progressSession.id);
   const externalWait = progressResult.normalized.noProgress.externalWait;
-  if (!legacyRerootReserve || !sessionClass || !rerootAdmission || legacyRerootReserve.borrow.kind !== 'none' || sessionWork?.kind !== 'external-control'
+  if (!rerootReserve || !sessionClass || !rerootAdmission || rerootReserve.borrow.kind !== 'none' || sessionWork?.kind !== 'external-control'
       || externalWait.kind !== 'session-only' || externalWait.owner !== progressSession.id || !progressSession.publicTransitions.some((entry) => schemaKey(entry) === schemaKey(externalWait.state))) fail('SESSION_UPSTREAM_CONTRACT', 'selected resource/progress Session boundary is incomplete');
 
   const contributorById = new Map(progressResult.normalized.contributors.map((entry) => [entry.id, entry]));
@@ -487,7 +487,7 @@ export function normalizeSessionProfile(input, inspectedCatalog, resourceResult,
   const root = normalizeRoot(input.root, ownerById);
   const advance = normalizeAdvance(input.advance, ownerById, inputById);
   const workById = new Map(progressResult.normalized.workClasses.map((entry) => [entry.id, entry]));
-  const reroot = normalizeReroot(input.reroot, owners, inputById, workById, legacyRerootReserve, rerootAdmission);
+  const reroot = normalizeReroot(input.reroot, owners, inputById, workById, rerootReserve, rerootAdmission);
   const attention = normalizeAttention(input.attention, ownerById, inputById);
   const observations = normalizeObservations(input.observations, outputResult.normalized, inputById);
   const selected = { advance: advance.kind === 'selected', reroot: reroot.kind === 'selected', attention: attention.kind === 'selected', observations: observations.kind === 'selected' };

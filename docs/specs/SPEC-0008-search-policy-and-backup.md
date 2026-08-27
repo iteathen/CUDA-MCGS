@@ -10,7 +10,7 @@
 
 **Consumers:** evaluator, result/observation, finite-resource, device-progress and Search Session contracts; Search IR; Search Composer; domain/product adapters; graph owner-region composition; deterministic reference and native conformance
 
-This proposal defines the product-neutral policy brick that owns search decisions, policy records, in-flight reservations, action admission/widening, value interpretation, backup, stopping-budget semantics and root-advance reuse classification. It defines a family of finite policy profiles, not UCT/PUCT, AlphaZero, rollouts, scalar zero-sum value, ranked output, a scheduler or a production implementation.
+This proposal defines the product-neutral policy brick that owns search decisions, policy records, in-flight reservations, action admission/widening, value interpretation, backup, stopping-budget semantics, reroot reuse classification, and advance compatibility/provenance. It defines a family of finite policy profiles, not UCT/PUCT, AlphaZero, rollouts, scalar zero-sum value, ranked output, a scheduler or a production implementation.
 
 ## 1. Authority, identity, and applicability
 
@@ -48,7 +48,7 @@ The contract succeeds only if it can express scalar and vector/non-zero-sum poli
 
 The search-policy contract owns this invariant:
 
-> Every policy decision, record, reservation, value conversion, backup contribution, stopping fact and root-advance reuse disposition has finite declared meaning and identity; in-flight work is distinguishable from completed work, every completed contribution is applied exactly once according to the selected algebra, and no unready/failed/stale fact influences a valid result.
+> Every policy decision, record, reservation, value conversion, backup contribution, stopping fact and authority-transition validity/reuse disposition has finite declared meaning and identity; in-flight work is distinguishable from completed work, every completed contribution is applied exactly once according to the selected algebra, and no unready/failed/stale fact influences a valid result.
 
 The selected policy profile owns:
 
@@ -63,7 +63,7 @@ The selected policy profile owns:
 - backup path/direction/transform/update/commit semantics;
 - policy budget, proof/convergence and stop-request meaning;
 - policy-side valid-partial/result-consumer eligibility facts; and
-- root-advance/root-epoch reuse/reset/transform/invalidate classification for policy-owned state.
+- reroot reuse/reset/transform/invalidate classification for policy-owned state; advance never invokes retained-state reclassification and instead uses already-scoped provenance to preserve compatible selected-descendant state while occurrence-scoped sibling state is superseded lazily.
 
 ### 3.2 Explicit non-ownership
 
@@ -74,7 +74,7 @@ The policy contract does not own:
 - evaluator model/input/output meaning, execution, batching, workspace, readiness or cache identity;
 - external result/live-observation payload schema, snapshot/publication/lifecycle or product ranking presentation;
 - global resource partition/watermarks, device-ready work scheduling/fairness/deadlock detection or CUDA realization;
-- Search Session root-update authority/commit, external control, observation cadence or reclamation; or
+- Search Session root/advance/reroot authority/publication, external control, observation cadence or reclamation; or
 - product concepts such as chess player, best move, MultiPV, win/draw/loss, board or Elo.
 
 Policy may declare a comparison/order or product-consumable score as policy meaning. That does not create a mandatory external ranking or transfer immutable publication ownership from the output contract.
@@ -92,7 +92,7 @@ The universal policy ports are:
 7. `classifyPathResponse` — map a domain path-relation fact to continue/cut/transform/fail behavior;
 8. `prepareBackup`, `applyBackupStep`, `completeBackup` and `failBackup` — own a finite exactly-once backup transaction;
 9. `evaluatePolicyStop` — publish policy-budget/proof/convergence stop facts; and
-10. `classifyPolicyReuse` — declare retain/retain-if-key-valid/transform/reset/invalidate across root epochs.
+10. `classifyPolicyReuse` — declare retain/retain-if-key-valid/transform/reset/invalidate for reroot reconciliation. Advance never invokes this port; it preserves already-compatible selected-descendant state and supersedes occurrence-scoped sibling state by provenance.
 
 These are semantic ports, not mandatory runtime functions, stage names or ABI symbols. Search Composer may fuse/specialize/eliminate them while preserving observable meaning and ownership.
 
@@ -110,7 +110,7 @@ Splitting reservation from completed statistics or backup from value perspective
 
 ### 4.1 Policy profile and policy record
 
-A **policy profile** is the immutable normalized selection of role handlers, record schemas, selection/admission rules, value sources/algebra, backup, stopping and root-advance reuse for one engine identity.
+A **policy profile** is the immutable normalized selection of role handlers, record schemas, selection/admission rules, value sources/algebra, backup, stopping, reroot reuse and advance provenance/compatibility for one engine identity.
 
 A **policy record** is a finite policy-owned value stored in a declared graph node/edge/path/work/root region or separate policy arena. Graph owns the region's storage validity; policy owns its meaning/mutation/publication.
 
@@ -149,7 +149,7 @@ POLICY-PROFILE-001. The profile declares, with no unknown fields:
 - cycle/path-relation responses;
 - backup path/direction/transform/update/order/idempotence/completion semantics;
 - stopping-budget units, thresholds, cause priority, overshoot/drain and satisfaction meaning;
-- root-epoch/reuse dispositions;
+- reroot reuse dispositions plus record scope/provenance sufficient to determine advance compatibility without retained-state reclassification;
 - finite resource contributions, cancellation points, failures/diagnostics and cleanup; and
 - persistence/compatibility policy when selected.
 
@@ -169,7 +169,7 @@ POLICY-RECORD-001. Every record field declares semantic owner, unit, scope, init
 
 POLICY-RECORD-002. Parent-edge-local facts remain parent-edge-local across transpositions unless the profile separately declares a node/global aggregation with exact semantics. Graph child sharing never implicitly merges incoming-edge statistics.
 
-POLICY-RECORD-003. Node, edge, path, root, work and global scopes are distinct. Root-relative or path-relative data cannot be reused as graph-global data merely because its physical node survives a root advance.
+POLICY-RECORD-003. Node, edge, path, root, work and global scopes are distinct. Root-relative or path-relative data cannot be reused as graph-global data merely because its physical node survives an authority change. Advance preserves only already-compatible selected-descendant state by provenance; it does not reclassify retained state.
 
 POLICY-RECORD-004. Reservation/in-flight fields are distinguishable from applied/completed fields. At minimum, applicable accounting preserves:
 
@@ -355,7 +355,7 @@ POLICY-COMPAT-002. Search Composer/package/cache identity binds normalized selec
 
 POLICY-COMPAT-003. Changing value perspective/schema, record meaning/unit, selection/admission, reservation effect, backup algebra/order/idempotence, stopping or reuse invalidates affected Search IR, generated packages, graph owner regions, evaluator adapters/caches, results/observations, persisted sessions and reference/native evidence.
 
-POLICY-IR-001. Complete Search IR represents role handlers, record schemas/scopes/lifecycles, selection inputs/determinism/ties, reservations, action admission/widening, value source adapters/schema/perspective, cycle responses, backup transactions/algebra/order, stopping budgets/causes and root-advance reuse.
+POLICY-IR-001. Complete Search IR represents role handlers, record schemas/scopes/lifecycles, selection inputs/determinism/ties, reservations, action admission/widening, value source adapters/schema/perspective, cycle responses, backup transactions/algebra/order, stopping budgets/causes, reroot reuse and advance provenance/compatibility.
 
 POLICY-IR-002. Search IR names semantic ports/owners/publication/resource/progress dependencies without exposing one formula, current JavaScript module, private model type, raw pointer, CUDA atomic/memory-order spelling, scheduler or host callback.
 
@@ -392,7 +392,7 @@ Later `ENGINE-IR-COMPOSER-01` and `ENGINE-REFERENCE-01` must consolidate at leas
 | `policy-statistics-overflow` | Counter/value wraps/saturates without declared outcome. |
 | `policy-first-stop-cause-drain` | A later cause overwrites first cause or unready work affects partial result. |
 | `policy-schedule-bounded-overshoot` | Concurrent stop breaks bounds/conservation/result class. |
-| `policy-root-advance-reuse-classification` | Physical node retention implicitly preserves root-invalid policy state. |
+| `policy-advance-no-reclassification` | Advance invokes reuse/reset/transform classification or physical node retention implicitly preserves occurrence-invalid policy state. |
 | `policy-stale-epoch-publication` | Old-epoch backup contaminates new root-relative records. |
 | `policy-no-ranked-output` | A valid policy is forced to publish/rank actions. |
 | `policy-scheduler-semantic-parity` | Two progress mechanisms violate stable policy invariants under equivalent profiles. |
@@ -406,7 +406,7 @@ The minimum fixture set includes:
 3. an order-sensitive/noncommutative or proof-lattice backup policy;
 4. a chance/custom-role stochastic policy with lazy/sampled widening;
 5. evaluator-absent, proposal-only, evaluation-only and combined source profiles; and
-6. a root-advance/stop sequence with stale work, partial backup must-drain, bounded overshoot and explicit reuse dispositions.
+6. an advance/stop sequence with stale work, partial backup must-drain, bounded overshoot and provenance-scoped compatibility, plus a separate reroot case with explicit reuse dispositions.
 
 Native qualification additionally tests contended reservations/records, publication/acquire, backup idempotence/prefix visibility, stop races, cancellation, epoch changes, generated identity, resource conservation and teardown. Performance/search-quality comparisons freeze domain/graph/evaluator/resource/output/stopping profiles, workloads/seeds and policy semantics.
 

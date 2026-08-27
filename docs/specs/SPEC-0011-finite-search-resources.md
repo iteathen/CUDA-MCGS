@@ -29,7 +29,7 @@ Normative dependencies are:
 - accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for foundational normalized Search IR/reference meaning;
 - proposal [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md), [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md), [`SPEC-0009`](SPEC-0009-evaluator-contract.md), [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md) and [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md) for selected owner contributions and owner-specific pressure dispositions.
 
-Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for root-update reserve and restart. CUDA-JS resource/allocation contracts are peer mechanism dependencies selected later, not resource-policy owners.
+Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for reroot-admission reserve and restart. CUDA-JS resource/allocation contracts are peer mechanism dependencies selected later, not resource-policy owners.
 
 Accepted authority governs conflicts. This proposal neither supersedes another specification nor authorizes production implementation.
 
@@ -39,7 +39,7 @@ The required outcome is one resource-owned semantic boundary through which indep
 
 Sections 3 through 12 form one coupled normative contract. Sections 13 through 16 govern identity, conformance and invalidation. Consumers must read contribution, compound-admission, conservation, pressure, generation and teardown rules together.
 
-The contract succeeds only if fixed/variable arenas, paths/queues/channels, evaluator assets/workspaces, caches, output/observation, root-update reserve, diagnostics and selected capability/product resources compose under different finite profiles; if absent owners vanish; and if full/fragmented/counter-exhausted states have typed outcomes without hidden growth or semantic policy leakage.
+The contract succeeds only if fixed/variable arenas, paths/queues/channels, evaluator assets/workspaces, caches, output/observation, reroot-admission reserve, diagnostics and selected capability/product resources compose under different finite profiles while advance requires no allocation/resize admission; if absent owners vanish; and if full/fragmented/counter-exhausted states have typed outcomes without hidden growth or semantic policy leakage.
 
 ## 3. LEGO ownership and design boundary
 

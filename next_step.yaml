@@ -1,5 +1,5 @@
 {
-  "schema_version": 66,
+  "schema_version": 67,
   "updated": "2026-08-26",
   "status": "engine_reference_root_control_qualified_pending_integration",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
@@ -12,14 +12,14 @@
     "cuda_js_package": "cuda-js@0.1.0-alpha.7"
   },
   "exact_evidence_inputs": {
-    "representation_composition_evidence_key": "b189211a774e6d4bd9b27ee8a744ed80743cfe45f3564be93deb310383efc906",
-    "contract_set_identity": "5d7a6ffb2861716789acf5e14ef405d7a70d4b151980b9726adbd2a3b10180b9",
+    "representation_composition_evidence_key": "bbe8645637244392d0ffe9347417204dad3e675efccdc29043fd197e1d12cd56",
+    "contract_set_identity": "2a3ded0b25f59d6f6a5dfffefefceae73f25e9df0558953b0bea29201d47c10d",
     "requirement_coverage_identity": "fe510fb69890b070ae6e7dfc60bd3e113a3f7e6354fa6bfcd8e48a6336c6c07a",
     "expanded_requirement_identity": "32fc66ca775046121146f3afc621e3407bab69711355e283b769d947fd185e0a",
-    "deletion_matrix_identity": "6a7b4f731d948efb02d0e312aba3a7f93b10b5317453c806854fa71ad1f877fb",
+    "deletion_matrix_identity": "04d904544b424f0e3093e53d46f102653059d7d1b68c9c8565db72ace6874b05",
     "semantic_neutral_harness_evidence_key": "126c654ccf4ccf3fbadc35cd00c628c8e4f9dedd28fdcd5a712973e8cdb0fd1f",
-    "domain_profile_projection_identity": "321f913bea8b74b9dfef3b01341b148734c0448cb97c69f7e2b170b9985f26a0",
-    "semantic_reference_evidence_key": "7bdc38b6c1c12ed45cfeaeeb91546fb39ffd6d10117d1d8261be136d0062cd3c",
+    "domain_profile_projection_identity": "3ec9521040b12f69a3d5bcd308ec540c3d1c4d2d870f409c9027738c132423d8",
+    "semantic_reference_evidence_key": "7afd8930a9af337be0ecbc5bff930ea21444ddb1afa6bf261c083db5cb95bd5b",
     "semantic_reference_cases": {
       "expected": 49,
       "executed": 49,
@@ -62,7 +62,7 @@
     "focus_branch_map": "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
     "active_leaf": "REF-ROOT-CONTROL-01",
     "ready_queued_leaves": [],
-    "next_action": "Complete exact-head review and guarded integration of PR #127. After protected main read-back confirms the qualified four-operation representation and regenerated evidence, mark REF-GRAPH-01 dependency-ready and execute it without reopening historical Search IR 0.1.0 or proposal provenance.",
+    "next_action": "Complete exact-head review and guarded integration of PR #127. After protected main read-back confirms distinct root/advance/reroot/attention semantics, reroot-only retained-state classification, reroot-admission resource ownership and regenerated evidence, mark REF-GRAPH-01 dependency-ready.",
     "exit": "Independent deterministic or schedule-invariant oracles falsify every owned semantic behavior across materially different product-neutral instances, all pending behavioral lanes have exact evidence, and the resulting packet is ready for atomic ENGINE-CONTRACT-ACCEPTANCE-01 without production or native claims."
   },
   "deliverables": [

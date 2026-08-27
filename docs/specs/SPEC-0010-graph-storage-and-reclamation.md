@@ -29,7 +29,7 @@ Normative dependencies are:
 - accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for foundational normalized Search IR/reference meaning within its current scope; and
 - proposal [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md) for domain state/action identity, relevant history, roles, transitions and terminal outcomes.
 
-Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) and retained SESSION-001 results are informative adjacency for root-advance/reclamation and stale-reference evidence. Implementations, experiments and products remain evidence beneath this proposal.
+Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) and retained SESSION-001 results are informative adjacency for advance/reroot authority, reclamation and stale-reference evidence. Implementations, experiments and products remain evidence beneath this proposal.
 
 Accepted authority governs conflicts. This proposal does not supersede another specification and is not production implementation authority.
 
@@ -395,7 +395,7 @@ Later `ENGINE-IR-COMPOSER-01` and `ENGINE-REFERENCE-01` must consolidate at leas
 | `graph-history-sensitive-path` | Base-state equality discards domain-relevant history. |
 | `graph-self-loop-cycle-dag-multigraph` | A non-tree graph shape requires ownership redesign. |
 | `graph-path-capacity-no-truncation` | Path pressure silently truncates semantic history/occurrences. |
-| `graph-root-advance-before-reclaim` | Logical root advance immediately reuses old storage without quiescence. |
+| `graph-advance-before-reclaim` | Advance immediately reuses superseded-occurrence storage without quiescence. |
 | `graph-old-work-protection` | Stale-epoch work loses storage protection before termination. |
 | `graph-protect-retire-race` | Concurrent protection acquisition succeeds after retirement has made an object reclaimable. |
 | `graph-stale-generation-reuse` | A reference to reclaimed slot accesses its replacement. |
@@ -414,11 +414,11 @@ The minimum fixture set includes:
 2. a self-loop/cyclic history-sensitive graph with multiple active paths;
 3. a stochastic parallel-edge multigraph with repeatable action occurrences;
 4. a fixed arena with no reclamation and deterministic saturation; and
-5. a reclamation-enabled root-advance sequence with old work, retained observation borrow, retirement, quiescence and slot reuse.
+5. a reclamation-enabled advance sequence with old work, retained observation borrow, retirement, quiescence and slot reuse.
 
 Before selecting a production transposition/reclamation implementation, `TT-001` compares credible mechanisms under identical normalized domain/policy/resource/publication obligations and records methodology, workload, exact source/revision/license/provenance, memory, collision/load behavior, concurrency/progress, cleanup and result. That mechanism evidence is not a circular prerequisite for backend-neutral proposal authorship.
 
-Native qualification additionally tests release/acquire correctness, duplicate claims, stale references/ABA, owner-region races, cancellation, progress/occupancy interaction, root-update pressure, reclamation and teardown on an exact platform/package pair. Performance claims use identical semantics and never relax collision verification or failure behavior.
+Native qualification additionally tests release/acquire correctness, duplicate claims, stale references/ABA, owner-region races, cancellation, progress/occupancy interaction, reroot-admission pressure, reclamation and teardown on an exact platform/package pair. Performance claims use identical semantics and never relax collision verification or failure behavior.
 
 ## 19. Examples and rationale (informative)
 

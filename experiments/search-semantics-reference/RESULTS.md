@@ -13,14 +13,14 @@ The combined `REF-HARNESS-01` plus `REF-DOMAIN-01` capsule passed on 2026-08-25 
 
 The exact consumed representation/composition evidence is:
 
-- SHA-256: `b189211a774e6d4bd9b27ee8a744ed80743cfe45f3564be93deb310383efc906`;
+- SHA-256: `bbe8645637244392d0ffe9347417204dad3e675efccdc29043fd197e1d12cd56`;
 - canonical bytes: `719393`;
 - Composer cases: `878/878` passed.
 
 The Composer-owned normalized Domain-profile projection is:
 
 - profiles: `3`;
-- SHA-256: `321f913bea8b74b9dfef3b01341b148734c0448cb97c69f7e2b170b9985f26a0`;
+- SHA-256: `3ec9521040b12f69a3d5bcd308ec540c3d1c4d2d870f409c9027738c132423d8`;
 - canonical bytes: `69524`.
 
 The Domain mapping derives 47 direct SPEC-0007 requirements from the normative source and exact public requirement-coverage classifications. All `47/47` have at least one checked-in case and all `47/47` were exercised by the full capsule.
@@ -28,7 +28,7 @@ The Domain mapping derives 47 direct SPEC-0007 requirements from the normative s
 The harness evidence identity is:
 
 - algorithm: SHA-256 over canonical source-keyed evidence;
-- SHA-256: `7bdc38b6c1c12ed45cfeaeeb91546fb39ffd6d10117d1d8261be136d0062cd3c`;
+- SHA-256: `7afd8930a9af337be0ecbc5bff930ea21444ddb1afa6bf261c083db5cb95bd5b`;
 - canonical bytes: `30372`.
 
 The focused `domain-oracle-sensitivity-equality` mutation also passed independently with expected/discovered/executed/passed `49/49/1/1`, 48 explicitly unexecuted-by-selection cases and only its four mapped Domain requirements recorded as executed. Its focused evidence key is `ef838e72cb1605730d04088bfd16eb518f4977343eb0e996a60513f10fece796` over `7959` canonical bytes. Focused evidence is not used for the full-reference claim.

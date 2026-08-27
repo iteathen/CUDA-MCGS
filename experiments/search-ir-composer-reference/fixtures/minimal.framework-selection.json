@@ -6,7 +6,7 @@
     "schema": "cuda-mcgs.search-ir.contract-set/0.2.0",
     "identity": {
       "algorithm": "sha256",
-      "sha256": "5d7a6ffb2861716789acf5e14ef405d7a70d4b151980b9726adbd2a3b10180b9"
+      "sha256": "2a3ded0b25f59d6f6a5dfffefefceae73f25e9df0558953b0bea29201d47c10d"
     }
   },
   "frameworkContract": {
@@ -42,7 +42,7 @@
         "kind": "catalog",
         "id": "SPEC-0010",
         "specificationIdentity": "CUDA-MCGS-SPEC-0010@0.1.0-draft",
-        "sha256": "7b5f08aa2d413f2521a3fdc64d0d0f934db34f7a8ba2735ce0a04b39e38883a1"
+        "sha256": "e52a11344cca7820f4a4b3ff1600d3c39f4ff9ceca0e01da6305b48242f489a1"
       },
       "schema": {
         "id": "cuda-mcgs.graph-profile/0.2.0",
@@ -51,7 +51,7 @@
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "60c571ea62536e8fa6977a018067a79a175f99a6a98acba58f487dc771526a93"
+        "sha256": "332258844f1210f952a22fd4c191d684accbf16060e07fb57a22099675d956b8"
       }
     },
     {
@@ -61,7 +61,7 @@
         "kind": "catalog",
         "id": "SPEC-0013",
         "specificationIdentity": "CUDA-MCGS-SPEC-0013@0.1.0-draft",
-        "sha256": "4fff2665c27146b15962cfde8bd2771e2376400997d57bd1ac69d8527b481d14"
+        "sha256": "657073d141f421dd55ba5ba20b0f28eaa306a21b4ae17e600b28f961589d864b"
       },
       "schema": {
         "id": "cuda-mcgs.output-profile/0.2.0",
@@ -70,7 +70,7 @@
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "d3145dda3ef35c880966822f00fbc224c75360bd87885529be446c9025077d43"
+        "sha256": "17a2aabbdc26e65912f24306b5ec99256637f2990caf775bd06e2f9212ba977d"
       }
     },
     {
@@ -80,7 +80,7 @@
         "kind": "catalog",
         "id": "SPEC-0008",
         "specificationIdentity": "CUDA-MCGS-SPEC-0008@0.1.0-draft",
-        "sha256": "49f984e5855998c075c3e6d5bf19c8950b6dedb1657fdc91b30d88a5352d345c"
+        "sha256": "7e0699671619e99f28bfe1b7a272e6c6df2cf6995492eb19f0feffd83b925cc5"
       },
       "schema": {
         "id": "cuda-mcgs.policy-profile/0.2.0",
@@ -89,7 +89,7 @@
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "7d9da6d71835b4654cf825135fb1d5df80db81dee2185076a6fdd7807479fe9a"
+        "sha256": "797990263ff7863bc7c6a25e9d0ff19c91862d94283049e84415209e5313effb"
       }
     },
     {
@@ -127,7 +127,7 @@
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "9ddac77442f220a05b2a89a9b35b2447d7e943b3b777784e51f00ddb48d9ceb1"
+        "sha256": "250471d0d79ca0e5237b60fc921204b51737292fb52e255ad24396fe5b31a4f6"
       }
     },
     {
@@ -137,16 +137,16 @@
         "kind": "catalog",
         "id": "SPEC-0011",
         "specificationIdentity": "CUDA-MCGS-SPEC-0011@0.1.0-draft",
-        "sha256": "1b1c3f4830afdc554cf45fa17dbbe4481c596d276ae1a2c3f60bdff9dc8ca427"
+        "sha256": "96d85d5047eb8b9e966ecbb81f593f8854da29f35c213877ccc8514210f94f96"
       },
       "schema": {
         "id": "cuda-mcgs.resource-profile/0.2.0",
         "version": "0.2.0",
-        "sha256": "54aaaaae27a945596d14f494e477473091e3e1ed0d019b51ea0661a8948d875b"
+        "sha256": "9ab7733b3eb59d6db8e9792df0661830ea45001f41453051add37636f323ded3"
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "6094d7aedd5cbcd5ed20ee05f2c131fe3b60466959545e007b7157758da91c76"
+        "sha256": "54c8a8c09c86e8c7570fa57c3e7d06119030a2fb59ae66e193805394b0ef99ca"
       }
     }
   ],

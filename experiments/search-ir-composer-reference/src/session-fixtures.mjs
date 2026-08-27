@@ -150,9 +150,9 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
   const graphOwner = progress.contributors.find(({ contract }) => contract.id === 'SPEC-0010');
   const policyOwner = progress.contributors.find(({ contract }) => contract.id === 'SPEC-0008');
   const outputOwner = progress.contributors.find(({ contract }) => contract.id === 'SPEC-0013');
-  const legacyRootReserve = resource.reserves.find(({ purpose }) => purpose === 'root-update');
-  const rerootClass = resource.classes.find(({ id, contributor }) => id === legacyRootReserve?.class && contributor === sessionOwner.id);
-  const rerootAdmission = resource.admissionGroups.find(({ classes }) => classes.includes(rerootClass?.id));
+  const rerootReserve = resource.reserves.find(({ purpose }) => purpose === 'reroot-admission');
+  const rererootClass = resource.classes.find(({ id, contributor }) => id === rerootReserve?.class && contributor === sessionOwner.id);
+  const rerootAdmission = resource.admissionGroups.find(({ classes }) => classes.includes(rererootClass?.id));
   const selectedObservation = output.observations.kind === 'selected' ? output.observations.profiles[0] : null;
   const advanceSelected = options.advance !== false;
   const rerootSelected = options.reroot !== false;
@@ -307,7 +307,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
         abortOrder: [...prepareOrder].reverse(),
         compoundAdmission: {
           resourceGroup: rerootAdmission.id,
-          rerootReserve: legacyRootReserve.id,
+          rerootReserve: rerootReserve.id,
           maxTransactions: rerootAdmission.maxTransactions,
           rollback: rerootAdmission.rollback,
         },
@@ -419,8 +419,8 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
     },
     counters: [
       counter(profile, 'session-incarnation', '18446744073709551615', 'session-restart-required'),
-      counter(profile, 'root-incarnation', rerootClass.range.generationMaximum, 'root-incarnation-exhausted'),
-      counter(profile, 'root-epoch', rerootClass.range.generationMaximum, 'root-epoch-exhausted'),
+      counter(profile, 'root-incarnation', rererootClass.range.generationMaximum, 'root-incarnation-exhausted'),
+      counter(profile, 'root-epoch', rererootClass.range.generationMaximum, 'root-epoch-exhausted'),
       ...(advanceSelected ? [counter(profile, 'advance-generation', '340282366920938463463374607431768211455', 'advance-generation-exhausted')] : []),
       counter(profile, 'command', '340282366920938463463374607431768211455', 'session-command-capacity'),
       ...(attentionSelected ? [counter(profile, 'attention-generation', '340282366920938463463374607431768211455', 'attention-generation-exhausted')] : []),

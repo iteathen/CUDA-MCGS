@@ -3218,7 +3218,7 @@ await runCase('reject-evaluator-duplicate-reuse', () => {
 
 await runCase('resource-profile-matrix', () => {
   assert.deepEqual(resourceProfiles.map(({ normalized }) => normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0009')), [false, true, true]);
-  assert.deepEqual(resourceProfiles.map(({ normalized }) => normalized.reserves.some(({ purpose }) => purpose === 'root-update')), [false, false, true]);
+  assert.deepEqual(resourceProfiles.map(({ normalized }) => normalized.reserves.some(({ purpose }) => purpose === 'reroot-admission')), [false, false, true]);
   assert(resourceProfiles.every(({ normalized }) => normalized.classes.length === normalized.partitions.length && normalized.classes.length === normalized.ledgers.length));
 });
 
@@ -3284,9 +3284,9 @@ await runCase('resource-core-compound-and-reserves', () => {
   }
 });
 
-await runCase('resource-live-session-root-reserve', () => {
+await runCase('resource-live-session-reroot-reserve', () => {
   const normalized = resourceProfiles[2].normalized;
-  const reserve = normalized.reserves.find(({ purpose }) => purpose === 'root-update');
+  const reserve = normalized.reserves.find(({ purpose }) => purpose === 'reroot-admission');
   assert(reserve);
   assert.equal(normalized.classes.find(({ id }) => id === reserve.class).lifetime, 'session');
   assert(normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0006'));
@@ -3573,8 +3573,8 @@ await runCase('reject-resource-reserve-total', () => {
   assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_RANGE' });
 });
 
-await runCase('reject-resource-root-reserve-missing', () => {
-  const mutated = clone(resourceProfileInputs[2]); mutated.reserves = mutated.reserves.filter(({ purpose }) => purpose !== 'root-update');
+await runCase('reject-resource-reroot-reserve-missing', () => {
+  const mutated = clone(resourceProfileInputs[2]); mutated.reserves = mutated.reserves.filter(({ purpose }) => purpose !== 'reroot-admission');
   assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_RESERVE_OWNER' });
 });
 

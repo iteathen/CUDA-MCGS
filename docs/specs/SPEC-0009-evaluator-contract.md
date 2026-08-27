@@ -10,7 +10,7 @@
 
 **Consumers:** search policy, result/observation, finite-resource, device-progress and Search Session contracts; Search IR; Search Composer; domain/product adapters; graph owner-region composition; deterministic reference and native conformance
 
-This proposal defines the product-neutral evaluator brick that owns selected evaluator capabilities, finite requests, input encoding, device-resident execution meaning, batching, workspace, internal result readiness, caches and root-advance reuse. It does not require a neural model, scalar value, action ranking, a host inference loop, one batch layout, an external output payload, a CUDA mechanism or an evaluator at all.
+This proposal defines the product-neutral evaluator brick that owns selected evaluator capabilities, finite requests, input encoding, device-resident execution meaning, batching, workspace, internal result readiness, caches, reroot reuse classification, and advance compatibility/provenance. It does not require a neural model, scalar value, action ranking, a host inference loop, one batch layout, an external output payload, a CUDA mechanism or an evaluator at all.
 
 ## 1. Authority, identity, and applicability
 
@@ -62,7 +62,7 @@ The selected evaluator profile owns:
 - candidate-proposal production and proposal metadata before domain validation/policy admission;
 - internal evaluator-result publication/readiness and failure;
 - optional evaluator cache keys, entries, coherence and invalidation; and
-- root-advance/root-epoch reuse/reset/transform/invalidate classification for evaluator-owned state.
+- reroot reuse/reset/transform/invalidate classification for evaluator-owned state; advance never invokes retained-state reclassification and may preserve an entry only when its existing key/provenance is already valid for the selected descendant occurrence.
 
 ### 3.2 Explicit non-ownership
 
@@ -91,7 +91,7 @@ The universal evaluator ports are:
 7. `publishEvaluatorCapability` — publish one complete typed internal result with validity metadata;
 8. `completeEvaluationRequest`, `failEvaluationRequest` and `cancelEvaluationRequest` — terminate all required request outputs and resources exactly once;
 9. `lookupEvaluatorCache` / `publishEvaluatorCache` — use an optional exact-key cache; and
-10. `classifyEvaluatorReuse` — declare retain/retain-if-key-valid/transform/reset/invalidate across root epochs.
+10. `classifyEvaluatorReuse` — declare retain/retain-if-key-valid/transform/reset/invalidate for reroot reconciliation. Advance never invokes this port; existing cache/state survives only when its already-declared key/provenance remains valid without transformation or reset.
 
 These are semantic ports, not mandatory runtime functions, stages, kernels or ABI symbols. Search Composer may fuse, split, specialize or eliminate them while preserving observable meaning and owner boundaries.
 
@@ -150,7 +150,7 @@ EVAL-PROFILE-001. A selected profile declares, with no unknown fields:
 - compatibility/grouping/order/batch-sensitivity and finite resumable execution rules;
 - workspace/cache/queue/result/continuation/resource formulas and maxima;
 - cancellation, stale-work, failure, diagnostics, fallback and cleanup;
-- root-advance/root-epoch reuse dispositions; and
+- reroot reuse dispositions plus input/cache provenance sufficient to determine advance compatibility without retained-state reclassification; and
 - persistence/compatibility policy when selected.
 
 EVAL-PROFILE-002. Missing/unknown/duplicate fields, overlapping capability ownership, ambiguous input/output perspective or units, insufficient range/precision, undeclared required-result fallback, unbounded execution/batch/cache/workspace, invalid resource formula, nonterminal request state or arithmetic overflow rejects specialization before ignition.
@@ -405,7 +405,7 @@ EVAL-COMPAT-003. Changing any result-affecting input/key, artifact/parameter/sta
 
 EVAL-COMPAT-004. A migration may retain cached/persisted evaluator state only with an explicit old-to-new semantic equivalence proof, canonical transform, atomic commit/rollback, provenance and post-migration oracle. Version-number similarity is not proof.
 
-EVAL-IR-001. Complete Search IR represents evaluator absence or normalized profile identity, capabilities/purposes/requirement classes, input views/encodings/keys, result schemas/perspectives, resident artifacts/state, request/batch/publication/cache lifecycles, finite resource contributions, failures/cancellation and root-advance reuse.
+EVAL-IR-001. Complete Search IR represents evaluator absence or normalized profile identity, capabilities/purposes/requirement classes, input views/encodings/keys, result schemas/perspectives, resident artifacts/state, request/batch/publication/cache lifecycles, finite resource contributions, failures/cancellation, reroot reuse and advance provenance/compatibility.
 
 EVAL-IR-002. Search IR names semantic owners/ports/publication/resource/progress dependencies without exposing one framework, private model type, current JavaScript module, raw pointer, PTX/CUDA symbol, atomic spelling, stream/event, scheduler or host callback.
 
@@ -446,7 +446,7 @@ Later `ENGINE-IR-COMPOSER-01` and `ENGINE-REFERENCE-01` must consolidate at leas
 | `evaluator-cancel-publication-race` | Cancelled/stale request becomes consumable or leaks resources. |
 | `evaluator-cache-full-key-collision` | Hash/key collision returns a semantically different result. |
 | `evaluator-cache-mutable-state-invalidation` | Old-state cache entry survives result-affecting mutation. |
-| `evaluator-root-advance-history-invalidation` | Physical node retention preserves root/history-invalid result. |
+| `evaluator-advance-history-provenance` | Advance invokes cache reclassification or physical node retention preserves a result whose existing history/provenance key is invalid for the selected descendant occurrence. |
 | `evaluator-device-closure` | Host-produced intermediate, batch loop or observation is required for progress. |
 | `evaluator-resource-pressure` | Full queue/workspace/cache creates hidden spill, spin or untyped failure. |
 | `evaluator-capability-deletion` | Removing a product/capability leaves solely owned code/state/resources. |
