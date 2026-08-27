@@ -22,9 +22,9 @@ Before choosing a type or layout, define the domain it must survive:
 Do not encode the first observed case as the system limit. UMCGS examples include:
 
 - node/action/path IDs sized only for the first GPU profile;
-- a fixed policy width derived from chess or Go;
+- a fixed policy width derived from the first consumer;
 - state storage assuming a board rather than declared storage capability;
-- scalar evaluation because the first model has one value head;
+- one evaluation shape because the first model happens to use it;
 - tree-only references because the first conformance domain lacks transpositions;
 - path depth chosen from one game;
 - precision that cannot represent declared statistics or resource counters;

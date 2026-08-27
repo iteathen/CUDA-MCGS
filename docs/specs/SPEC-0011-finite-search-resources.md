@@ -94,7 +94,7 @@ Injected dependencies are normalized owner contributions, selected hardware/prof
 
 Permitted plans include fixed records, byte arenas, segmented pools, queues/rings, counters/bitmaps, per-worker/path/batch scratch, immutable artifacts, caches, output slots and selected shared physical pools with proven logical partitions/lifetimes. Physical realization remains separate.
 
-Deleting chess, an evaluator, live observation, optional capabilities, reclamation or one scheduler removes solely owned contributions/partitions/ledgers/code. Deleting the resource brick leaves no single owner able to prove total capacity, compound admission or conservation, confirming the boundary is essential.
+Deleting every production product, an evaluator, live observation, optional capabilities, reclamation or one scheduler removes solely owned contributions/partitions/ledgers/code. Deleting the resource brick leaves no single owner able to prove total capacity, compound admission or conservation, confirming the boundary is essential.
 
 Merging resource policy into every contributor would duplicate total-plan/admission truth; merging semantic eviction/stop policy into resource would centralize unrelated decisions. This brick is the simplest sufficient owner.
 

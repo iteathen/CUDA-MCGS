@@ -62,7 +62,7 @@ Rejected because its game-shaped interface, rollout/multiple-tree model, fixed b
 
 ### Fork CrazyAra
 
-Rejected because it is chess/crazyhouse-specific, host-search oriented, and GPL-3.0.
+Rejected because it is tied to one production domain, host-search oriented, and GPL-3.0.
 
 ### Fork LightZero
 

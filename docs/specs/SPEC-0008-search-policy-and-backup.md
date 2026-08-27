@@ -75,7 +75,7 @@ The policy contract does not own:
 - external result/live-observation payload schema, snapshot/publication/lifecycle or product ranking presentation;
 - global resource partition/watermarks, device-ready work scheduling/fairness/deadlock detection or CUDA realization;
 - Search Session root-update authority/commit, external control, observation cadence or reclamation; or
-- product concepts such as chess player, best move, MultiPV, win/draw/loss, board or Elo.
+- product-specific actor, presentation, outcome-label, state or quality concepts.
 
 Policy may declare a comparison/order or product-consumable score as policy meaning. That does not create a mandatory external ranking or transfer immutable publication ownership from the output contract.
 
@@ -102,7 +102,7 @@ Injected dependencies are public domain/graph/evaluator/resource/progress/sessio
 
 Permitted profiles include deterministic or stochastic selection; count/sum/mean/vector/distribution/interval/proof/custom records; optimistic/pessimistic/uncertainty or no comparison; reservation/virtual-loss/virtual-visit/custom/no in-flight effect; fixed/exhaustive/progressive/lazy/sampled/custom widening; terminal/evaluator/rollout/proof/custom value sources; commutative or order-sensitive backup; and one-shot or root-advancing search.
 
-Deleting chess, ranked output, a neural evaluator, rollouts, optional extensions, transposition reuse, reclamation or one physical scheduler leaves the applicable policy contract coherent. Deleting an optional evaluator removes its channels/records/value-source branches when the policy permits absence; no evaluator residue remains.
+Deleting every production product, any particular output/evaluator shape, rollouts, optional extensions, transposition reuse, reclamation or one physical scheduler leaves the applicable policy contract coherent. Deleting an optional evaluator removes its channels/records/value-source branches when the policy permits absence; no evaluator residue remains.
 
 Splitting reservation from completed statistics or backup from value perspective would create competing accounting/value authorities. Merging graph/evaluator/output/progress behavior into policy would couple independently substitutable state/lifecycles. This policy brick is the simplest sufficient owner.
 
@@ -396,7 +396,7 @@ Later `ENGINE-IR-COMPOSER-01` and `ENGINE-REFERENCE-01` must consolidate at leas
 | `policy-stale-epoch-publication` | Old-epoch backup contaminates new root-relative records. |
 | `policy-no-ranked-output` | A valid policy is forced to publish/rank actions. |
 | `policy-scheduler-semantic-parity` | Two progress mechanisms violate stable policy invariants under equivalent profiles. |
-| `policy-product-extension-deletion` | Removing chess/ranking/evaluator/capabilities leaves solely owned residue. |
+| `policy-product-extension-deletion` | Removing the first product and its evaluator/capabilities leaves solely owned residue. |
 | `policy-oracle-sensitivity-backup` | Removing reservation distinction/idempotence/order does not fail the oracle. |
 
 The minimum fixture set includes:

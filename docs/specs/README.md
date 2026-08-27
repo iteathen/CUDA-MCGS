@@ -16,7 +16,7 @@ Accepted status governs only within declared scope. Proposal specifications supp
 
 1. **Universal MCGS semantic core** — domain/policy/evaluator/graph/resource/session/publication/search-lifecycle contracts and Search IR/Composer meaning that remain coherent across unrelated MCGS products.
 2. **Universal extension/composition substrate** — Search Stages, least-authority Stage Extension Surfaces, namespaced capability schemas, Async Stage Channels and restricted Device-JS/Search Image specialization.
-3. **Domain/search products** — downstream products such as chess that select universal contracts/capabilities and own product-specific state/action/history/evaluator/output semantics.
+3. **Domain/search products** — externally owned products that select universal contracts/capabilities and own their state/action/history/evaluator/output semantics.
 
 The extension substrate is universal; a selected capability's payload is not automatically universal core meaning. Product-specific schemas must disappear with the product/capability rather than widening every Search Image.
 
@@ -82,15 +82,9 @@ These proposals do not authorize production lowering. The complete Search IR mus
 
 SPEC-0000 and SPEC-0006 through SPEC-0013 form the decision-complete 741-requirement core proposal packet. SPEC-0003 through SPEC-0005 form the decision-complete 248-requirement optional extension packet. The combined 989 proposal requirements remain unaccepted until strict schema/normalizer/Composer and consolidated CUDA-free reference evidence pass atomically at the integrated acceptance gate.
 
-## Domain/search product specifications
+## External domain/search product specifications
 
-Products live downstream of universal contracts. Their conformance cannot substitute for universal second-instance tests, and product requirements cannot amend universal semantics by usage.
-
-Current product proposal:
-
-- [`products/chess/CHESS-0001-search-product.md`](products/chess/CHESS-0001-search-product.md) — chess domain/policy/evaluator/session/output/extension layering, including a future chess-specific ranked legal-move observation published by generic SPEC-0013 output semantics and coordinated by optional SPEC-0006 session semantics.
-
-Future Go/planning/optimization/text-search or other products should be able to replace the chess product without foundational redesign.
+Production product specifications live in their owning repositories. Their conformance cannot substitute for universal second-instance tests, and product requirements cannot amend universal semantics by usage. This specification registry contains no privileged first-product contract.
 
 ## Acceptance discipline
 

@@ -6,7 +6,7 @@
 
 UMCGS is a universal framework for generating finite, specialized, GPU-resident Monte Carlo Graph Search engines across unrelated domains, evaluator shapes, action spaces, graph semantics, and output contracts.
 
-The generic search framework is the first product. Chess, Go, text search, planning, policy-only, value-only, and other workloads are adapters or conformance cases—not the permanent shape of the core.
+The generic search framework is the product. Concrete workloads are external consumers or removable conformance cases—not the permanent shape of the core.
 
 ## Repository boundary
 

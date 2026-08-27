@@ -8,11 +8,11 @@
 
 CUDA-MCGS exists to define and realize universal Monte Carlo Graph Search systems across unrelated domains and evaluator types. The project already rejects a game-shaped universal runtime, but plan 15 accidentally promoted one intended consumer requirement — a continuously refreshed ranked root-action list — into the universal north star.
 
-That wording is too narrow. A ranked legal-move list is useful for chess and some decision-search products, but it is not required by every intended MCGS system. Evaluation-only search, proof/search diagnostics, planning, optimization, continuous-action search, partially observable search, and future products may expose different outputs or no continuously ranked root actions at all.
+That wording is too narrow. A ranked candidate list is useful for some decision-search products, but it is not required by every intended MCGS system. Materially different consumers may expose unrelated outputs or no continuously ranked actions at all.
 
 At the same time, treating all non-core behavior as arbitrary callbacks would weaken the project. CUDA-MCGS still needs a universal, enforceable way to compose future capabilities into specialized engines without runtime reflection, host callbacks, or first-consumer fields in the hot path.
 
-The project owner therefore clarified that CUDA-MCGS must make three semantic layers explicit and that chess search will be specified separately on top of the universal layers.
+The project owner therefore clarified that CUDA-MCGS must make three semantic layers explicit and keep concrete product meaning outside the universal layers.
 
 ## Decision
 
@@ -32,7 +32,7 @@ The universal core owns only facts and lifecycle rules that are required to stat
 - generic bounded result and observation publication contracts;
 - Search IR, Search Composer, deterministic specialization, conformance and package identity.
 
-The universal core does **not** require chess, games, legal moves, players, a board, a ranked root-action list, best-move output, top-k output, a policy prior, a scalar value, or a particular evaluator/search formula.
+The universal core does **not** require one application domain, action/state/history convention, actor/value structure, ranked result shape, evaluator family, or search formula.
 
 ### 2. Universal extension and composition substrate
 
@@ -71,9 +71,7 @@ A product may define:
 - product-specific reroot/reuse/reset/transform rules;
 - package/support/benchmark requirements.
 
-Chess search is the first explicitly planned product layer. Chess-specific legal-move ranking, board/history identity, chess evaluator meaning, tablebase/tactical/move-ordering capabilities, and user-facing best-move/multi-PV output belong to the chess product specification, not to the universal CUDA-MCGS core.
-
-A future Go, planning, optimization, text-search, or other product must be able to replace the chess product layer without changing universal core or extension-substrate meaning.
+Production product layers live in their owning repositories. Each owns its domain identity, policy/evaluator interpretation, optional capabilities, and user-facing output without changing universal core or extension-substrate meaning.
 
 ## Promotion rule
 
@@ -102,9 +100,9 @@ Observation must be read-only with respect to search-semantic state unless the s
 - SPEC-0000 and the canonical plan separate universal core, universal extension substrate, and product lanes.
 - SPEC-0003 through SPEC-0005 remain the universal extension-substrate family and must reject domain/product semantics leaking into surface mechanics.
 - A separate Search Session/control/observation specification owns generic reroot, root-epoch, admission, stale-work, reclamation and read-only observation semantics.
-- Chess receives a separate product specification and plan branch. Its ranked-move output is downstream of the universal contracts.
+- Product specifications and roadmaps remain downstream in their owning repositories.
 - SPEC-0001 and SPEC-0002 remain valid in their accepted scopes; their ranking references constrain ranking only when a later selected policy/output contract uses ranking and do not make ranking mandatory.
-- CUDA-JS remains consumer-neutral and must not learn MCGS, chess, root, move, ranking, Search Stage or capability meaning.
+- CUDA-JS remains consumer-neutral and must not learn MCGS, domain, root, output, Search Stage or capability meaning.
 
 ## Alternatives considered
 
@@ -116,7 +114,7 @@ Rejected. Optional foundational vocabulary still shapes Search IR, resource plan
 
 Rejected. It destroys static specialization, least-authority semantics, finite planning, device closure, deterministic identity and zero-residue goals.
 
-### Split core, extensions and chess into independent runtime frameworks
+### Split core, extensions and each product into independent runtime frameworks
 
 Rejected as unnecessary. The separation is semantic ownership and composition. One Search Composer and Search Image may realize all selected layers without duplicating lifecycle/runtime machinery.
 
@@ -124,4 +122,4 @@ Rejected as unnecessary. The separation is semantic ownership and composition. O
 
 This ADR extends ADR-0002 and corrects later plan/proposal wording that overfit ranked root actions. It does not supersede ADR-0002, ADR-0003 or ADR-0014.
 
-Any lower-level document that requires ranked root actions, best-move output, top-k output, or chess-specific meaning as universal CUDA-MCGS behavior must be revised or interpreted as a product/profile requirement before acceptance or production implementation.
+Any lower-level document that requires one product's ranked actions, output convention, or domain meaning as universal CUDA-MCGS behavior must be revised or interpreted as a downstream product/profile requirement before acceptance or production implementation. ADR-0027 supersedes this ADR wherever it previously permitted a production product to live in this repository.

@@ -32,7 +32,7 @@ Normative dependencies are:
 - proposal [`SPEC-0009`](SPEC-0009-evaluator-contract.md) for internal evaluator-result readiness; and
 - proposal [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md) for graph references, owner regions, protection and reclamation.
 
-Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for live request/borrow/root-epoch coordination. Product output specifications such as chess ranking remain downstream. Search Stage/Async Channel and CUDA-JS mailbox/transfer contracts are possible later realizations, not this core meaning.
+Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for live request/borrow/root-epoch coordination. Product output specifications remain externally owned. Search Stage/Async Channel and CUDA-JS mailbox/transfer contracts are possible later realizations, not this core meaning.
 
 Accepted authority governs conflicts. This proposal neither supersedes another specification nor authorizes production implementation.
 
@@ -73,7 +73,7 @@ The output contract does not own:
 - evaluator execution or internal evaluator-result readiness;
 - graph structure/reference/storage/reclamation;
 - resource partition/watermarks, device work scheduling/fairness/deadlock or Search Session root/attention authority;
-- product payload semantics such as chess legal moves, MultiPV, best move, WDL or principal variation;
+- product payload, ranking, selection, outcome-label or presentation semantics;
 - generic allocation, atomic/fence, transfer, mailbox, stream/event, operation, context or teardown mechanisms, which belong to CUDA-JS; or
 - host UI, networking, file persistence, analytics or consumer policy.
 
@@ -100,7 +100,7 @@ Injected dependencies are read-only acquired public facts from domain, policy, e
 
 Permitted profiles include envelope-only, domain-outcome, policy summary, proof/certificate, ranked candidates, sequence/frontier, custom product payload and selected combinations. Live profiles may publish periodic, request-driven, event-triggered, latest-only, ring-retained or terminal-only views with declared bounded semantics.
 
-Deleting chess, ranking, an evaluator, scalar value, live observation, optional extensions, root advance or one physical scheduler leaves the applicable output boundary coherent. Deleting live observation removes every observation request/slot/sequence/borrow/resource/code/diagnostic/synchronization field while retaining terminal completion. Deleting a product payload removes its fields/adapters/resources without widening the universal envelope.
+Deleting every production product, any particular ranking/evaluator/value shape, live observation, optional extensions, root advance or one physical scheduler leaves the applicable output boundary coherent. Deleting live observation removes every observation request/slot/sequence/borrow/resource/code/diagnostic/synchronization field while retaining terminal completion. Deleting a product payload removes its fields/adapters/resources without widening the universal envelope.
 
 Splitting payload validity from publication would create competing external truth authorities. Merging source meaning, session control or CUDA transfer mechanisms into output would couple independent lifecycles. This output brick is the simplest sufficient owner.
 
@@ -367,7 +367,7 @@ Later `ENGINE-IR-COMPOSER-01` and `ENGINE-REFERENCE-01` must consolidate at leas
 | `output-drop-coalesce-accounting` | Lost observations are silent or corrupt search accounting. |
 | `output-host-read-no-progression` | Read completion/ack is required for next search step. |
 | `output-generation-exhaustion` | Sequence/slot generation wraps into stale alias. |
-| `output-product-capability-deletion` | Removing chess/ranking/capability leaves solely owned residue. |
+| `output-product-capability-deletion` | Removing the first product and its capabilities leaves solely owned residue. |
 | `output-oracle-sensitivity-publication` | Removing readiness/incarnation/consistency checks does not fail oracle. |
 
 The minimum fixture set includes:
@@ -385,7 +385,7 @@ Native qualification additionally tests actual restricted Device-JS capture, pub
 
 ## 15. Examples and rationale (informative)
 
-A proof search may publish only completion, proof status and resource exhaustion. An optimization search may publish a bounded vector frontier. A planning product may publish one sequence with explicit truncation. Chess may publish ranked legal moves under a chess-owned schema. A live monitor may request an independently versioned summary and receive `source-unavailable` fields without causing expansion or evaluation.
+A proof search may publish only completion, proof status and resource exhaustion. An optimization search may publish a bounded frontier. A planning product may publish one sequence with explicit truncation. Another product may publish its own ranked domain actions under an externally owned schema. A live monitor may request an independently versioned summary and receive `source-unavailable` fields without causing expansion or evaluation.
 
 These examples do not select a best-action schema, scalar score, evaluator, observation cadence, consistency strength, ring size, transport, scheduler or product behavior.
 

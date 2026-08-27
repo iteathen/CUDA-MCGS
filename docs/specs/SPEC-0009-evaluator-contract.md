@@ -74,7 +74,7 @@ The evaluator contract does not own:
 - external terminal-result/live-observation payload selection, snapshot or publication lifecycle;
 - composed resource partitions/watermarks, device work scheduling/fairness/deadlock detection or Search Session control;
 - generic allocation, transfer, compilation, JIT/link/load, atomic, stream/event, operation, context or teardown mechanisms, which belong to CUDA-JS; or
-- product concepts such as chess position planes, win/draw/loss, best move, logits, neural architecture, tensor framework or tablebase semantics.
+- product-specific feature, outcome, selection, model, framework or external-knowledge semantics.
 
 An evaluator may produce a bounded score/order/probability-like field as evaluator-owned output. Policy decides how or whether it affects search, domain validates proposed actions, and a selected output/product contract decides whether any field becomes externally visible.
 
@@ -101,7 +101,7 @@ Injected dependencies are bounded public domain state/history/role/action views,
 
 Permitted evaluators include pure analytic functions, heuristics, learned models, lookup/table/proof systems, constraint solvers, candidate generators, ensembles and namespaced product evaluators. They may use fixed or variable bounded inputs, one-item or larger batches, immutable assets, selected mutable evaluator state, exact or approximate numeric representations and deterministic or declared nondeterministic execution.
 
-Deleting chess, ranked output, neural inference, all model assets, batching above one, caches, optional extensions, root advance or one physical scheduler leaves the applicable evaluator contract coherent. Selecting `absent` removes every evaluator-owned program, input/output field, request/batch/cache record, owner region, channel, artifact, workspace, resource, diagnostic and synchronization dependency.
+Deleting every production product, any particular output or inference realization, all model assets, batching above one, caches, optional extensions, root advance or one physical scheduler leaves the applicable evaluator contract coherent. Selecting `absent` removes every evaluator-owned program, input/output field, request/batch/cache record, owner region, channel, artifact, workspace, resource, diagnostic and synchronization dependency.
 
 Splitting request/result readiness from evaluator execution would create competing lifecycle authorities. Merging policy use, domain action validity, external output or CUDA mechanisms into evaluator would couple independently substitutable bricks. This evaluator boundary is therefore the simplest sufficient total-system owner.
 
@@ -225,7 +225,7 @@ EVAL-PROPOSAL-002. Candidate batches are finite or use a finite continuation wit
 
 EVAL-PROPOSAL-003. An evaluator candidate is not a valid domain action or graph edge until the domain validates and normalizes it. Invalid candidates receive the domain-owned disposition selected by composition; evaluator cannot bypass validation even when it generated a domain-native encoding.
 
-EVAL-PROPOSAL-004. Proposal scores, probabilities, priors, logits, ranks, uncertainty or custom metadata declare units, perspective, normalization scope, precision and invalid handling. None is universal and none is automatically a policy value or external ranking.
+EVAL-PROPOSAL-004. Proposal scores, probabilities, priors, ranks, uncertainty or model-native metadata declare units, perspective, normalization scope, precision and invalid handling. None is universal and none is automatically a policy value or external ranking.
 
 EVAL-PROPOSAL-005. Rejected/duplicate candidates do not silently count as admitted actions or completed evaluator value. Request/result accounting declares whether production itself completed despite downstream rejection.
 
@@ -469,7 +469,7 @@ Native qualification additionally tests actual restricted Device-JS validation/l
 
 A policy-only proof search may select no evaluator. A proposal-only optimizer may emit sampled continuous candidates that the domain validates. An analytic heuristic may evaluate one item without model assets. A learned evaluator may publish a vector distribution plus candidate metadata from shared resident parameters. A table/proof evaluator may publish a certificate-like opaque record. A history-sensitive evaluator may reuse cached output only when the full history key remains valid after root advance.
 
-These examples do not select a neural framework, tensor layout, batch size, cache, scalar value, WDL, logits, search formula, scheduler, external result payload or CUDA mechanism.
+These examples do not select a model framework, representation layout, batch size, cache, value shape, search formula, scheduler, external result payload or CUDA mechanism.
 
 ## 20. Acceptance blockers and downstream invalidation
 

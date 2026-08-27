@@ -9,7 +9,7 @@ CUDA-MCGS is a public pre-release framework project for finite GPU-resident Mont
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS framework with a universal least-authority extension/composition substrate and finite specialized Search Images.**
 
-The core must not inherit the shape of the first product. Chess, Go, planning, optimization, text search, evaluation-only search, partially observable search, and future MCGS-style workloads are consumers/specializations rather than definitions of universal CUDA-MCGS.
+The core must not inherit the shape of any one consumer. Unrelated application domains, evaluator families, and output needs remain external specializations rather than definitions of CUDA-MCGS.
 
 ## Complete library, easy entry
 
@@ -43,7 +43,7 @@ The universal core owns product-neutral search contracts and lifecycle:
 - generic bounded result/observation publication;
 - Search IR, Search Composer, deterministic specialization, conformance and execution-package meaning.
 
-The universal core does **not** require a board, players, legal moves, ranked moves, best-action/top-k output, scalar value, policy prior, one evaluator architecture, or one scheduler topology.
+The universal core does **not** require one domain, actor/value convention, action representation, result shape, evaluator family, or scheduler topology.
 
 The first usable native engine is nevertheless parallel: it must run bounded useful Domain, Graph, Policy, selected Evaluator and device-progress work concurrently on the GPU. Scheduler neutrality means that grids, blocks, warps, queues, kernels and advanced CUDA-JS mechanisms remain selected implementation profiles; it does not permit a serial search loop to be presented as the GPU product. Tensor-shaped execution remains a measured exploratory profile rather than a current prerequisite.
 
@@ -67,9 +67,7 @@ No selected capability means the complete extension substrate is absent. Deletin
 
 A product selects universal contracts/capabilities and owns its product-specific semantics and outputs.
 
-The first explicit product proposal is [`CHESS-0001`](docs/specs/products/chess/CHESS-0001-search-product.md). Chess owns chess board/history/legal-move semantics, chess policy/evaluator choices, chess-specific extension capabilities, and any ranked legal-move/best-move/MultiPV output.
-
-Chess is intentionally **not** a gate for universal CUDA-MCGS completion or release. Deleting the chess product must leave the universal architecture, Search IR, extension substrate and conformance suite complete.
+Production application products live in their owning repositories. CUDA-MCGS contains no privileged first-product specification or implementation; external products supply their own domain, policy, evaluator interpretation, and output meaning through public contracts.
 
 ```text
 Universal MCGS contracts
@@ -78,7 +76,7 @@ Universal MCGS contracts
         │
         ├────► optional Search Session control / generic observations
         │
-        └────► downstream product contracts (for example chess)
+        └────► external product contracts
                          │
                          ▼
                    Search Composer
@@ -122,7 +120,7 @@ CUDA-MCGS owns MCGS/search semantics, Search IR/Search Composer, extension compo
 
 The independent public [`iteathen/CUDA-JS`](https://github.com/iteathen/CUDA-JS) repository owns consumer-neutral Node/CUDA Driver/compiler/linker/artifact/memory/launch/completion/error/teardown mechanics and generic long-lived sideband mechanisms.
 
-CUDA-JS must not know MCGS, Search IR, Search Stages, capabilities, roots, chess moves, rankings, or product output meaning. CUDA-MCGS must not depend on CUDA-JS private source/handles.
+CUDA-JS must not know MCGS, Search IR, Search Stages, capabilities, root meaning, or product output semantics. CUDA-MCGS must not depend on CUDA-JS private source/handles.
 
 ## Current specification state
 
@@ -146,15 +144,11 @@ Current universal proposals:
 - [`SPEC-0012`](docs/specs/SPEC-0012-device-owned-search-progress.md) — device-owned readiness/fairness/no-progress/stop/drain/closure semantics.
 - [`SPEC-0013`](docs/specs/SPEC-0013-result-and-observation-publication.md) — mandatory terminal and optional immutable live-observation publication semantics.
 
-Downstream product proposal:
-
-- [`CHESS-0001`](docs/specs/products/chess/CHESS-0001-search-product.md) — chess as a consumer/specialization, including future chess-specific ranked legal-move observation.
-
 None of the proposal documents authorize production implementation by themselves.
 
 ## Current phase
 
-The repository is **public and pre-release**. CUDA-MCGS is still in framework definition, research, specification and bounded evidence gathering. No production search runtime, stable public API, released CUDA-MCGS/CUDA-JS compatible pair, native Linux support claim, or chess engine release is implied by repository visibility.
+The repository is **public and pre-release**. CUDA-MCGS is still in framework definition, research, specification and bounded evidence gathering. No production search runtime, stable public API, released CUDA-MCGS/CUDA-JS compatible pair, native platform support claim, or downstream product release is implied by repository visibility.
 
 The canonical plan is [`next_step.yaml`](next_step.yaml) under parent `CUDA-MCGS-V0/27`. It has separate universal-core, universal-extension-substrate, universal-integration/native, and non-gating downstream product lanes.
 
@@ -166,7 +160,7 @@ The canonical plan is [`next_step.yaml`](next_step.yaml) under parent `CUDA-MCGS
 - Every concrete engine has a finite explicit resource plan; exhaustion and reroot pressure are specified behavior, while advance may not allocate or resize.
 - Extensions are least-authority, statically composed before ignition, product-neutral at the substrate boundary, and unable to redefine core invariants through a callback back door.
 - Product needs may motivate universal proposals but cannot silently rewrite the framework from a product branch.
-- Universal conformance uses materially different synthetic domains/products; chess cannot become the universal oracle.
+- Universal conformance uses materially different removable synthetic domains; no consumer becomes the universal oracle.
 - CUDA-JS owns generic CUDA runtime/toolchain behavior and remains consumer-neutral.
 - Python is prohibited throughout the CUDA-MCGS/CUDA-JS ecosystem, including experiments and one-off scripts.
 

@@ -1,9 +1,9 @@
 {
   "schema_version": 65,
-  "updated": "2026-08-25",
+  "updated": "2026-08-26",
   "status": "engine_reference_root_control_reconciliation_ready",
   "objective": "Make the unfinished product-neutral core and least-authority extension contracts decision-complete proposals, build bounded normalized Search IR/Composer and CUDA-free reference evidence, accept the integrated semantic packet on one exact revision, and only then realize one complete, progressively disclosed CUDA-MCGS library through pure Node.js/restricted Device-JS without importing CUDA-specific implementation, convenience-only semantics or first-product meaning into the universal core.",
-  "ownership_boundary": "CUDA-MCGS owns universal/product MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS search/domain/capability programs, reference/native semantic conformance and its CUDA-JS adapter/package. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
+  "ownership_boundary": "CUDA-MCGS owns universal MCGS semantics, Search IR/Search Program composition, finite search resources, restricted Device-JS framework programs, reference/native semantic conformance and its CUDA-JS adapter/package. Production domain products own their domain, policy, evaluator, output and package meaning in their own repositories. Maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS. CUDA-JS owns restricted Device-JS language/helpers and all CUDA-specific lowering/artifacts/compiler/ABI/runtime/resource/operation/sideband/concurrency/platform mechanisms and qualification, and may use JIT/native/CUDA implementation wherever needed or desired. An unnaturally expressed generic GPU mechanism stops for CUDA-JS capability classification; search policy remains in CUDA-MCGS.",
   "exact_input_revisions": {
     "cuda_mcgs_authority_input_baseline": "3675a1db23b8ce3ca7de32178616b59d4c0de819",
     "cuda_js_authority_baseline": "05008fb988558e909cb3802fa12a73d612e70bf0",
@@ -30,6 +30,7 @@
     "docs/decisions/ADR-0003-device-resident-active-search.md",
     "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
     "docs/decisions/ADR-0018-universal-core-extension-product-layering.md",
+    "docs/decisions/ADR-0027-framework-only-production-ownership.md",
     "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
     "docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md",
     "docs/decisions/ADR-0022-distinguish-root-advance-reroot-and-attention.md",
@@ -58,7 +59,7 @@
     "normalized Search IR and deterministic Search Composer separating universal base from namespaced capability/product specialization inputs, with resolved-input provenance, convenience equivalence and removable-facade evidence complete before public API design",
     "consolidated CUDA-free universal reference/conformance across materially different domains/evaluator/output shapes",
     "integrated acceptance of the semantic contracts, normalized schemas and reference oracles on one exact revision before production lowering",
-    "formal downstream Connect Four product specification and Device-JS external deletion proof",
+    "external-product deletion proof using materially different removable conformance fixtures",
     "first finite parallel OS-neutral native CUDA-MCGS engine in pure Node.js/restricted Device-JS through one exact public CUDA-JS compatible pair, initially qualified on Linux",
     "optional live-session native profile only after accepted session semantics plus generic CUDA-JS sideband capability",
     "representative Linux scheduler/resource/performance evidence and separately qualified secondary platform profiles",
@@ -70,7 +71,7 @@
     "universal_extension_substrate": ["ENGINE-EXTENSION-01"],
     "universal_integration": ["ENGINE-IR-COMPOSER-01", "ENGINE-CONTRACT-ACCEPTANCE-01", "ENGINE-NATIVE-01", "ENGINE-PERF-01", "RELEASE-01"],
     "optional_live_session": ["ENGINE-SESSION-NATIVE-01"],
-    "downstream_products": ["PRODUCT-CONNECT4-01", "CHESS-0001 remains independently proposal-only"]
+    "external_consumer_readiness": ["consumer-owned product contracts", "removable synthetic conformance fixtures"]
   },
   "current_cuda_js_dependency_state": {
     "public_capabilities": ["SPEC-0010 RDC", "SPEC-0011 scalar ABI", "SPEC-0012 Device LTO", "SPEC-0013 Device-JS", "SPEC-0014 publication mailboxes", "SPEC-0016 operation lifecycle", "SPEC-0018 bounded multi-operation scheduling", "SPEC-0019 asynchronous transfers", "SPEC-0022 scoped atomic observation", "SPEC-0022 device-scope release/acquire publication"],
@@ -104,7 +105,7 @@
     "treat semantic contract acceptance as native production-profile qualification",
     "make Search Stage mechanics a prerequisite for independently meaningful core domain/policy/evaluator/output/resource contracts",
     "materialize extension hooks/ports/context/channel/storage when no selected capability requires them",
-    "make chess, Connect Four, games, boards, ranked moves, best-action/top-k, scalar value or one evaluator/search formula universal",
+    "make one application, domain, result shape, evaluator shape or search formula universal",
     "create a separate simplified runtime, giant magic options object or convenience-only semantic path",
     "guess required domain/evaluator/identity meaning from samples, incidental object shape, timing or runtime observations",
     "change semantically material defaults without versioned identity/provenance or adapt hidden search semantics after ignition",

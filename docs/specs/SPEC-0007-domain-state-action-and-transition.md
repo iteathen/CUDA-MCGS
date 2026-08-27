@@ -68,7 +68,7 @@ The domain contract does not own:
 - model inputs, inference, proposal interpretation, caches or evaluator values, which belong to evaluator;
 - terminal-result or live-observation payload selection/publication, which belongs to result/observation and Search Session owners;
 - global memory partitioning, CUDA allocation, work scheduling/progress, compilation, launch, synchronization primitives or teardown, which belong to resource/progress/CUDA-JS owners;
-- product UI/protocol concepts such as chess moves, players, boards, best moves or top-k; or
+- product UI/protocol concepts or presentation-specific result shapes; or
 - extension attachment, permissions and namespaced capability payloads.
 
 Storage may retain a selected representation of domain-owned values without owning their meaning. Policy may consume a terminal domain outcome without redefining it. Evaluator and product adapters may translate domain values only through separately declared contracts.
@@ -95,7 +95,7 @@ Injected dependencies may include finite profile constants, explicit random samp
 
 Permitted domain profiles include fixed or variable state/action representations, deterministic or stochastic transitions, fully observable or observation-bearing state, embedded or path-carried relevant history, exhaustive/paged/sparse/lazy/sampled/custom action production, arbitrary finite role catalogues and scalar/vector/structured/absent terminal outcomes.
 
-Deleting chess, Connect Four, ranked actions, scalar values, neural evaluation, all optional extensions or one physical scheduler leaves this contract coherent. Deleting the domain brick leaves graph/policy/evaluator mechanisms unable to assign meaning to states or transitions, which confirms the boundary is essential rather than product residue.
+Deleting every production product, any particular result/value/evaluator shape, all optional extensions or one physical scheduler leaves this contract coherent. Deleting the domain brick leaves graph/policy/evaluator mechanisms unable to assign meaning to states or transitions, which confirms the boundary is essential rather than product residue.
 
 Splitting state identity from transition/history now would create two authorities for behavioral equivalence. Merging graph, policy or evaluator behavior into this contract would couple independent state, lifecycle and substitution boundaries. The selected brick is therefore the simplest sufficient total-system owner.
 
@@ -404,7 +404,7 @@ At minimum, later `ENGINE-IR-COMPOSER-01` and `ENGINE-REFERENCE-01` must consoli
 | `domain-capacity-required-no-partial` | Insufficient capacity exposes a partial state/action/transition as ready. |
 | `domain-bounded-port-resumption` | A long domain operation requires an unbounded invocation/wait or exposes an incomplete resumed value. |
 | `domain-cancellation-no-orphan` | Cancellation leaves a ready partial payload, leaked reservation or required unbounded waiter. |
-| `domain-product-extension-deletion` | Removing chess/ranking/all capabilities leaves universal domain residue or missing meaning. |
+| `domain-product-extension-deletion` | Removing the first product and all capabilities leaves universal domain residue or missing meaning. |
 | `domain-oracle-sensitivity-equality` | Mutating equality/history participation does not fail the reference result. |
 
 The minimum second-instance fixture set is:
@@ -417,7 +417,7 @@ Native qualification additionally tests concurrent purity, publication/acquire, 
 
 ## 19. Examples and rationale (informative)
 
-Chess may encode side-to-move, castling rights, en-passant and repetition-relevant facts in state/history identity, but those fields are not universal. A planning domain may use one actor or none, sparse actions and vector terminal constraints. A belief-search domain may carry a bounded exact belief/history summary and emit observation-bearing transition metadata. A continuous-control domain may sample actions from an explicit distribution without claiming exhaustive enumeration.
+One history-sensitive domain may require additional state/history identity, while another may use one actor or none, sparse actions and structured terminal constraints. A belief-search domain may carry a bounded exact belief/history summary and emit observation-bearing transition metadata. A continuous-control domain may sample actions from an explicit distribution without claiming exhaustive enumeration.
 
 These examples illustrate profile variation only. They do not select representations, widths, policies, evaluator shapes or public output schemas.
 

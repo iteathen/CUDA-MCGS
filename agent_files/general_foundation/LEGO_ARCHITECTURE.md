@@ -63,7 +63,7 @@ Universal means free of accidental caller assumptions. Generic means parameteriz
 
 Good UMCGS examples:
 
-- A `ResourcePlanner` derives finite capacities from declared memory, model, layout, queue, and safety requirements. It does not care whether the engine searches chess, Go, or text.
+- A `ResourcePlanner` derives finite capacities from declared memory, model, layout, queue, and safety requirements. It does not care which external product consumes the engine.
 - A `TranspositionIndex` owns key lookup, claim/publication, collision verification, and saturation behavior through an explicit state-identity contract.
 - A CUDA Driver adapter translates versioned driver entry points into a stable host-runtime port.
 

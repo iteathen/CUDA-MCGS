@@ -2,7 +2,7 @@
 
 **Status:** Informational
 
-**Updated:** 2026-08-25
+**Updated:** 2026-08-26
 
 ## Current repository state
 
@@ -101,17 +101,17 @@ After core semantics:
 - extend Search IR/Composer in a bounded non-production evidence node for proposed core + namespaced capability/product specialization inputs;
 - build consolidated materially different CUDA-free reference/conformance domains;
 - accept the integrated semantic contract/schema packet after that reference evidence agrees on one exact revision;
-- formalize Connect Four downstream product semantics and run the Device-JS external deletion test after neutral native Device-JS evidence;
+- prove external-product deletion with materially different removable conformance fixtures after neutral native Device-JS evidence;
 - build one finite parallel OS-neutral native universal engine through an exact public CUDA-JS pair and qualify its first realization on Linux;
 - treat live Search Session native sideband/concurrency as an optional profile, not a finite-engine release blocker;
 - continue representative Linux scheduler/resource/performance evidence and secondary platform qualification, then package/release stabilization.
 
-Chess remains a separately tracked downstream proposal and does not gate universal parent completion.
+Production product specifications and releases remain outside this repository and do not gate universal framework completion.
 
 ## Claim limits / blockers
 
 - no production universal engine is accepted yet;
-- the [bounded product-assumption leakage audit](docs/development/2026-08-25-product-assumption-leakage-audit.md) found no chess or Connect Four semantic assumption in current universal authority, schemas, executable proposal capsules or package projections; PR #115 adds the complete bounded cross-profile structural deletion matrix;
+- the [bounded product-assumption leakage audit](docs/development/2026-08-25-product-assumption-leakage-audit.md) found no first-product semantic assumption in current universal authority, schemas, executable proposal capsules or package projections; PR #115 adds the complete bounded cross-profile structural deletion matrix;
 - the behavioral assessment, neutral harness and bounded Domain oracle are complete, but Graph-through-lifecycle oracles and the first terminal reference slice are not implemented;
 - CUDA-JS #123 release/acquire Device-JS publication helpers are integrated in `cuda-js@0.1.0-alpha.7`; their exact CUDA-MCGS channel-pair qualification remains downstream;
 - CUDA-MCGS external deletion/compatible-pair evidence is unfinished;

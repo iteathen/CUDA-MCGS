@@ -17,7 +17,7 @@ Reusable architecture is named for the class it intentionally serves, not the fi
 Examples:
 
 ```text
-ChessPolicyAdapter             first-instance name
+FirstConsumerPolicyAdapter     first-instance name
 DenseActionProposalAdapter     representation/contract name
 ActionProposalAdapter          valid only if all declared proposal modes fit
 ```
@@ -103,7 +103,7 @@ before inventing `ReservationManager`.
 
 ## UMCGS examples
 
-- `ChessNode` is wrong for universal graph storage; `StateNode` may still be too broad unless its exact shared semantics are specified.
+- `ProductNode` is wrong for universal graph storage; `StateNode` may still be too broad unless its exact shared semantics are specified.
 - `PolicyValueModel` is wrong for an evaluator contract that may provide proposal-only, value-only, distributional, heuristic, or no neural outputs.
 - `CudaGraphScheduler` is wrong for a scheduler contract intended to permit persistent-kernel or other backends.
 - `SearchManager` is too vague; separate exact owners such as graph storage, work scheduling, memory planning, or lifecycle composition.

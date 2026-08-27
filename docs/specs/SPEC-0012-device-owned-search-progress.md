@@ -42,7 +42,7 @@ The semantic ports are `admitWork`, `publishReady`, `claimReady`, `yieldPending`
 
 Injected dependencies are public owner transitions, resource leases/pressure, stop/control epochs and selected finite profile constants. Progress cannot inspect private payloads, invent semantic work, allocate outside the plan, use raw CUDA pointers, call host callbacks or deep-import CUDA-JS.
 
-Deleting chess, evaluator, live observation, optional capabilities, a queue implementation or one scheduler leaves progress coherent. Splitting readiness from closure would create competing liveness truth; merging semantic work policy or physical scheduling into progress would couple independent bricks.
+Deleting every production product, evaluator, live observation, optional capabilities, a queue implementation or one scheduler leaves progress coherent. Splitting readiness from closure would create competing liveness truth; merging semantic work policy or physical scheduling into progress would couple independent bricks.
 
 ## 4. Terms
 

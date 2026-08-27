@@ -8,7 +8,7 @@
 
 **Consumers:** framework contract; Search IR; Search Composer; CUDA-MCGS-to-CUDA-JS package; reference/native conformance; domain/search products
 
-This proposal defines the optional universal external-lifecycle brick for a long-lived Search Session: bounded structural root-update admission and commit, independently versioned directional attention, session/root epochs, stale-work coordination, owner-defined reuse, cancellation/completion and bounded observation request/borrow coordination while device-owned search continues. It deliberately does **not** define source-owner semantics, observation payload publication, ranked moves, chess, a scheduler or one sideband mechanism. A terminal-only engine removes every live-session-owned field, port, resource, branch and synchronization dependency.
+This proposal defines the optional universal external-lifecycle brick for a long-lived Search Session: bounded structural root-update admission and commit, independently versioned directional attention, session/root epochs, stale-work coordination, owner-defined reuse, cancellation/completion and bounded observation request/borrow coordination while device-owned search continues. It deliberately does **not** define source-owner semantics, product payload publication, a preferred result shape, a scheduler or one sideband mechanism. A terminal-only engine removes every live-session-owned field, port, resource, branch and synchronization dependency.
 
 ## 1. Authority, applicability, and normative references
 
@@ -47,7 +47,7 @@ This specification family owns:
 It does not define:
 
 - a mandatory ranked root-action view;
-- a best-action, top-k, multi-PV or chess output schema;
+- a product-specific ranking, selection or presentation schema;
 - one policy formula or one reusable-statistics policy;
 - one CUDA memory-mapping, queue, stream, kernel or Worker implementation;
 - internal Async Stage Channel semantics, which remain SPEC-0004-owned;
@@ -360,7 +360,7 @@ SESSION-IR-003. Search IR names semantic ports and consumer-neutral mechanism re
 
 SESSION-IR-004. A terminal-only `session-absent` image/package contains no command/root-update/attention/observation-request/session-epoch/sideband/borrow field, branch, resource, code or synchronization dependency. Deletion is inspected in normalized schema, layout, generated code and runtime plan.
 
-The CUDA-MCGS-to-CUDA-JS package MUST express only the generic mechanism requirements needed to realize those selected ports. CUDA-JS MUST NOT interpret root identity, root advance, attention meaning, chess moves, observation payloads, ranking or MCGS semantics.
+The CUDA-MCGS-to-CUDA-JS package MUST express only the generic mechanism requirements needed to realize those selected ports. CUDA-JS MUST NOT interpret root identity, root advance, attention meaning, domain actions, observation payloads, ranking or MCGS semantics.
 
 CUDA-JS SPEC-0014 publication mailboxes provide an accepted generic asynchronous mechanism, but their availability is not CUDA-MCGS Search Session qualification. Any selected live-session profile still requires exact compatible-pair evidence for its declared root/attention/observation schemas, concurrency, visibility, finite pressure, cancellation and teardown semantics.
 
@@ -426,7 +426,7 @@ This proposal cannot become accepted until:
 - representative finite reserved-root, reject-on-pressure and restart-required dispositions plus terminal-only deletion are proven in the CUDA-free semantic reference model;
 - device-owned progress, old-epoch disposition, duplicate/concurrent commands, partial-commit fatal handling and borrow/teardown are proven in that reference model;
 - the CUDA-MCGS-to-CUDA-JS package requirements identify the generic long-lived sideband capability profile without importing its mechanism into session semantics;
-- product-specific observations such as chess ranked moves remain downstream and do not leak into universal acceptance criteria.
+- product-specific observations remain externally owned and do not leak into universal acceptance criteria.
 
 A selected native live-session profile additionally requires actual concurrent device progress, CUDA publication/reclamation evidence, an exact qualified CUDA-JS sideband pair, pressure/cancellation/teardown evidence and separately scoped platform support. Those production-profile gates do not block semantic acceptance of an optional Search Session contract and do not make the live-session profile a prerequisite for the finite terminal engine.
 

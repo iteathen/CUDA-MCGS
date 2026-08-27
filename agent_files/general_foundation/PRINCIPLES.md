@@ -220,7 +220,7 @@ Represent essential domain complexity directly. Remove accidental complexity. Re
 
 - Concrete engines are finite and memory-planned.
 - Production active search remains device-closed after ignition.
-- Universal contracts do not embed chess, games, one evaluator shape, one action shape, one graph model, or one GPU.
+- Universal contracts do not embed one application, domain, evaluator shape, action shape, graph model, or physical target.
 - Generated hot paths may be highly specialized and may eliminate unused abstractions.
 - Performance changes require measured mechanism evidence plus semantic and search-quality guardrails.
 - Focus branches must not independently drift shared Search IR, graph, policy, evaluator, resource, schema/JIT/ABI, device-closure, or search-quality meaning.

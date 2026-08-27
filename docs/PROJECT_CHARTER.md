@@ -42,7 +42,7 @@ The substrate is universal; one capability's semantic payload is not automatical
 
 A domain/search product selects the universal core contracts and extension substrate and then owns its domain-specific semantics, required capabilities, output schemas, support profile, and product-level quality evidence.
 
-Chess search is a separately specified product layer. Chess legal-move ranking, board/history identity, chess evaluator meaning, multi-PV/best-move output, and chess-specific reuse policy do not shape the universal CUDA-MCGS core.
+Production application products are specified and released by their owning repositories. Their domain identity, evaluator interpretation, output, and reuse policy do not shape the universal CUDA-MCGS core.
 
 CUDA-MCGS does **not** own generic Node.js/CUDA Driver bindings, CPU-call ABI generation, native/JIT packaging, generic memory primitives, NVRTC/link/load plumbing, event-loop delivery, or generic CUDA resource handles. Those responsibilities belong to the independent `iteathen/CUDA-JS` repository under ADR-0014.
 
@@ -100,4 +100,4 @@ The extension substrate must not assume that one current capability category, fi
 
 Define the development method, versioned universal search contracts, universal extension/composition contracts, Search IR, memory-planning model, CUDA-MCGS-to-CUDA-JS execution-package contract, consolidated conformance architecture, and synthetic domains before implementing a production domain product.
 
-Chess search may be specified in parallel as a downstream product profile, but its implementation must not become a prerequisite for completing the universal framework.
+External products may be specified in parallel, but no product implementation becomes a prerequisite for completing the universal framework.

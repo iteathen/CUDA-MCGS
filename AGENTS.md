@@ -44,7 +44,7 @@ A plan, budget, or focus-branch map organizes work beneath authority. Token pres
 
 CUDA-MCGS is a **public pre-release repository** in documentation-first framework definition, specification, and bounded evidence gathering while defining a universal GPU-resident Monte Carlo Graph Search framework. Public visibility is established, but it does not authorize production implementation, create a stable API/support promise, or constitute a CUDA-MCGS product release. Production implementation may begin only for a clearly owned boundary with accepted governing specifications, an assessment disposition that permits implementation, and a dependency-ready plan/focus branch—or an explicitly authorized disposable experiment.
 
-The first product is the generic framework, not a chess engine. Chess, Go, text search, planning, optimization, policy-only search, evaluation-only search, partially observable search, and other workloads are adapters or conformance domains. None may permanently shape the core.
+The product is the generic framework. Concrete application domains are external consumers or removable conformance fixtures; none may shape the core, defaults, vocabulary, package, or release lifecycle.
 
 `main` is the current integration trunk. Short-lived `feature/*` and `agent/*` Git branches target `main`; one coherent PR normally uses squash merge. A semantic focus branch is not automatically a Git branch. A different phase/branch model requires an explicit policy transition.
 
@@ -85,7 +85,7 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 - Treat the inclination to write a native solution in CUDA-MCGS as an early diagnostic clue that CUDA-JS may be incomplete. Pause before design or implementation and perform the capability/ownership test; do not wait until a workaround has already been built.
 - State identity, transpositions, history, cycles, action production, evaluation outputs, backup semantics, output semantics, and resource exhaustion are explicit contracts.
 - Keep root control semantics distinct: `root` establishes initial authority; `advance` moves to an already ready realized successor with bounded state-independent publication and no traversal, transformation, reset, resize, reclassification, reclamation, or eager cleanup; `reroot` owns general root replacement/reconciliation; and `attention` changes direction without root change or work invalidation. Advance supersedes occurrences and occurrence-scoped work lazily, not shared graph nodes merely reached through an old path.
-- No hidden assumption of a game, board, player count, zero-sum value, alternating turns, fixed action count, fixed state size, scalar value, deterministic transition, tree, DAG, rollout, or neural evaluator.
+- No hidden assumption from one application domain, actor/value convention, transition family, action/state cardinality, graph topology, evaluator family, or output shape.
 - Foundational ranges and representations may not encode accidental limits from the first domain or first GPU.
 - Cross-component dependencies must be declared, acyclic, and made through public contracts rather than deep imports.
 - Tests, safety checks, validation gates, branch protection, CODEOWNERS, cleanup safeguards, and benchmark requirements may not be weakened to save tokens or make a change pass, look clean, or merge.

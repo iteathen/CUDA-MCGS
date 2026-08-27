@@ -29,7 +29,7 @@ The integrated semantic owner proposals consumed by this map are:
 - device-owned progress [`SPEC-0012`](SPEC-0012-device-owned-search-progress.md); and
 - result/observation output [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md).
 
-Extension-substrate proposals [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) are optional downstream composition adjacency. The chess proposal is one downstream product, not framework authority.
+Extension-substrate proposals [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) are optional downstream composition adjacency. Production products remain external and are not framework authority.
 
 Accepted authority governs conflicts. This proposal neither accepts the listed proposals nor authorizes production implementation.
 
@@ -57,7 +57,7 @@ An engine with no selected extension capability contains exact zero extension-on
 
 ### 2.3 Downstream domain/search products
 
-A product selects core profiles and optional capabilities, then owns product semantics, adapters, outputs, quality/support targets and compatibility. Chess legal-move ranking, MultiPV, board/history encoding and evaluator choices remain in [`CHESS-0001`](products/chess/CHESS-0001-search-product.md).
+A product selects core profiles and optional capabilities, then owns product semantics, adapters, outputs, quality/support targets and compatibility in its owning repository.
 
 FRAMEWORK-LAYER-001. Universal core contracts remain coherent when every extension capability and product is deleted.
 
@@ -142,7 +142,7 @@ FRAMEWORK-IR-002. Cross-owner bindings name semantic port IDs/versions, producer
 
 FRAMEWORK-IR-003. Search IR represents optional absence explicitly and supports structural deletion inspection for evaluator, live output, Search Session, capability and product residue.
 
-FRAMEWORK-IR-004. Search IR contains no mandatory chess/Connect Four/game/ranking/scalar/evaluator/live-session field and no CUDA pointer, handle, stream, event, atomic spelling, PTX, ABI layout or scheduler topology.
+FRAMEWORK-IR-004. Search IR contains no mandatory first-product state, action, actor, ranking, value, evaluator or live-session field and no CUDA pointer, handle, stream, event, atomic spelling, PTX, ABI layout or scheduler topology.
 
 FRAMEWORK-IR-005. Search Composer produces:
 
@@ -233,7 +233,7 @@ FRAMEWORK-PRODUCT-002. The framework supports materially different profiles incl
 
 FRAMEWORK-PRODUCT-003. A concrete engine may reject unsupported combinations before ignition, but a product limitation cannot narrow a universal range, identity, owner or conformance class.
 
-FRAMEWORK-PRODUCT-004. Ranked candidates, best action, top-k, legal moves, WDL, principal variation and similar outputs exist only when selected policy/product/output contracts define them.
+FRAMEWORK-PRODUCT-004. Product-specific ranking, selection, outcome and presentation outputs exist only when selected policy/product/output contracts define them.
 
 ## 11. Compatibility, persistence, security and diagnostics
 

@@ -133,7 +133,7 @@ runtime.search-device
 runtime.graph-store
 runtime.search-scheduler
 sdk.adapters
-adapter.domain.chess
+adapter.domain.synthetic-example
 adapter.policy.puct
 ```
 

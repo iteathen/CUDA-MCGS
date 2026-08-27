@@ -100,15 +100,11 @@ The active dependency graph and owner-level proposal outputs are governed beneat
 | `tool.search-schema` | Parse, validate, normalize, diff, and generate universal plus namespaced selected search contracts | Future accepted component specification |
 | `tool.search-compiler` | Capability/product resolution, search specialization, layouts/device code, and execution-package generation | Future accepted component specification |
 | `integration.cuda-js` | CUDA-MCGS adapter from execution-package semantics to public CUDA-JS runtime | Interop contract v0 |
-| `conformance.search` | Synthetic-domain/end-to-end universal CUDA-MCGS conformance independent of chess | Future accepted component specification |
+| `conformance.search` | Synthetic-domain/end-to-end universal CUDA-MCGS conformance independent of any external product | Future accepted component specification |
 
-## Downstream domain/search product boundaries
+## External domain/search product boundary
 
-Downstream products consume universal contracts; they do not define them. Product deletion must leave universal architecture/conformance complete.
-
-| Product boundary ID | Owns | Authoritative location | Status |
-|---|---|---|---|
-| `product.chess` | Chess-specific domain/policy/evaluator/output/session-reuse/support/search-quality semantics, including any ranked legal-move/best-move/MultiPV observation | [`../docs/specs/products/chess/CHESS-0001-search-product.md`](../docs/specs/products/chess/CHESS-0001-search-product.md) and issue #45 | Proposal; does not gate universal parent |
+External products consume public universal contracts and remain authoritative in their own repositories. CUDA-MCGS has no product registry entry or repository-local production product owner. Deleting every external product must leave this registry, architecture, conformance, package, and release lifecycle complete.
 
 Generic Node/V8 bindings, CUDA Driver call machinery, generic memory providers, NVRTC/link/load, generic long-lived sideband mechanisms, launch/completion/error/teardown, and generic runtime packaging belong to independent `iteathen/CUDA-JS` and must not become CUDA-MCGS component/product entries.
 

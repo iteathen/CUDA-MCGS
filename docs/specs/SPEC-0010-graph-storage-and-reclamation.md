@@ -98,7 +98,7 @@ Injected dependencies are public domain identity/equality/history ports, owner-d
 
 Permitted realizations include open addressing, chaining, cuckoo-like or custom transposition indexes; packed or segmented arenas; fixed/variable records; reference counts, epochs, hazard/lease schemes or no reclamation; and fused or modular generated programs. None is contract meaning until selected and qualified for a concrete profile.
 
-Deleting chess, ranked outputs, an evaluator, optional extensions, persistence, reclamation or transposition reuse leaves the applicable graph boundary coherent. Deleting graph storage from a stateless profile removes its solely owned residue; deleting it from a materializing profile removes the only owner of references/publication/reclamation and therefore invalidates that profile rather than transferring ownership.
+Deleting every production product, any particular output/evaluator shape, optional extensions, persistence, reclamation or transposition reuse leaves the applicable graph boundary coherent. Deleting graph storage from a stateless profile removes its solely owned residue; deleting it from a materializing profile removes the only owner of references/publication/reclamation and therefore invalidates that profile rather than transferring ownership.
 
 Splitting references, transpositions and reclamation into independent authorities would create competing definitions of liveness and reuse. Merging policy/resource/session behavior into storage would make one representation decide unrelated semantics. This graph brick is the simplest sufficient owner.
 
@@ -422,7 +422,7 @@ Native qualification additionally tests release/acquire correctness, duplicate c
 
 ## 19. Examples and rationale (informative)
 
-A chess state reached by different move orders may share one node only when SPEC-0007 equality includes all behavior-relevant rights/history, while each parent move keeps a distinct edge. A planning DAG may have many incoming edges and structured policy records. A stochastic domain may retain parallel sampled transition occurrences. A one-shot bounded search may select no reclamation and stop cleanly at capacity.
+A history-sensitive state reached by different transition sequences may share one node only when SPEC-0007 equality includes all behavior-relevant history, while each parent transition keeps a distinct edge. A planning DAG may have many incoming edges and structured policy records. A stochastic domain may retain parallel sampled transition occurrences. A one-shot bounded search may select no reclamation and stop cleanly at capacity.
 
 These examples do not select a hash table, arena, reclamation algorithm, width, CUDA primitive or product reuse policy.
 

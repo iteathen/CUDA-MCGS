@@ -22,7 +22,7 @@ Concrete implementations may be linked/inlined into one generated binary without
 
 The core may know about generic search concepts only through accepted contracts and Search IR. It must not embed:
 
-- chess or board-game rules;
+- application-specific domain rules;
 - player count or alternation;
 - zero-sum negation;
 - fixed legal-action count;

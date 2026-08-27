@@ -132,6 +132,22 @@ function requireText(relativePath, requiredText) {
   }
 }
 
+function walkFiles(absolutePath) {
+  if (!existsSync(absolutePath)) {
+    return [];
+  }
+  const result = [];
+  for (const entry of readdirSync(absolutePath, { withFileTypes: true })) {
+    const entryPath = path.join(absolutePath, entry.name);
+    if (entry.isDirectory()) {
+      result.push(...walkFiles(entryPath));
+    } else if (entry.isFile()) {
+      result.push(entryPath);
+    }
+  }
+  return result;
+}
+
 function validateComponent(componentPath, expectedArea) {
   if (forbiddenDumpNames.has(path.basename(componentPath).toLowerCase())) {
     fail(`forbidden catch-all component name: ${repositoryPath(componentPath)}`);
@@ -252,6 +268,39 @@ if (isNonEmptyFile(workflowPath)) {
 requireText("SECURITY.md", "https://github.com/iteathen/CUDA-MCGS/security/advisories/new");
 requireText(".github/ISSUE_TEMPLATE/config.yml", "https://github.com/iteathen/CUDA-MCGS/security/advisories/new");
 requireText(".github/dependabot.yml", "package-ecosystem: github-actions");
+requireText("docs/decisions/ADR-0027-framework-only-production-ownership.md", "Production domain/search products live in their owning repositories");
+
+const activeAuthorityFiles = [
+  "AGENTS.md",
+  "README.md",
+  "STATUS.md",
+  "next_step.yaml",
+  "docs/PROJECT_CHARTER.md",
+  ...walkFiles(path.join(root, "agent_files")),
+  ...walkFiles(path.join(root, "docs", "architecture")),
+  ...walkFiles(path.join(root, "docs", "decisions")),
+  ...walkFiles(path.join(root, "docs", "specs")),
+].map((entry) => path.isAbsolute(entry) ? entry : path.join(root, entry));
+
+const namedConsumerTokens = [
+  ["ch", "ess"].join(""),
+  ["uci arena", " vector"].join(""),
+];
+for (const absolutePath of activeAuthorityFiles) {
+  if (!isNonEmptyFile(absolutePath)) {
+    continue;
+  }
+  const text = readFileSync(absolutePath, "utf8").toLowerCase();
+  for (const token of namedConsumerTokens) {
+    if (text.includes(token)) {
+      fail(`active framework authority names an external production consumer (${JSON.stringify(token)}): ${repositoryPath(absolutePath)}`);
+    }
+  }
+}
+
+if (walkFiles(path.join(root, "docs", "specs", "products")).length > 0) {
+  fail("production product specifications must live in their owning repositories, not docs/specs/products");
+}
 
 const components = path.join(root, "components");
 if (isDirectory(components)) {

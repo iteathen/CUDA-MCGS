@@ -121,6 +121,7 @@ required=(
   docs/decisions/ADR-0017-selective-spec-and-agent-file-reading.md
   docs/decisions/ADR-0018-universal-core-extension-product-layering.md
   docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md
+  docs/decisions/ADR-0027-framework-only-production-ownership.md
   docs/development/README.md
   docs/research/README.md
   docs/research/2026-08-10-cuda-js-assumption-audit.md
