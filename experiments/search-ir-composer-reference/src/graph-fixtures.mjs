@@ -172,6 +172,9 @@ function ownerRegion(profile, domainResult, domainSchemaSha, catalogById, semant
     },
     layout: schemaReference(`cuda-mcgs.synthetic-${profile}-${semanticRole}-layout`),
     lifecycle: schemaReference(`cuda-mcgs.synthetic-${profile}-${semanticRole}-lifecycle`),
+    referenceHandling: profile === 'synthetic-reclaiming' && semanticRole === 'domain-state'
+      ? { kind: 'owner-lifecycle', actions: ['fixup', 'release', 'validate'] }
+      : { kind: 'none' },
     offsetBytes,
     sizeBytes,
     alignmentBytes: '8',

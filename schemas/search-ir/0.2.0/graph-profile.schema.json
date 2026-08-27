@@ -153,7 +153,7 @@
     "ownerRegion": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "semanticRole", "objectKind", "ownerContract", "ownerProfile", "layout", "lifecycle", "offsetBytes", "sizeBytes", "alignmentBytes", "permissions", "persistence"],
+      "required": ["id", "semanticRole", "objectKind", "ownerContract", "ownerProfile", "layout", "lifecycle", "referenceHandling", "offsetBytes", "sizeBytes", "alignmentBytes", "permissions", "persistence"],
       "properties": {
         "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
         "semanticRole": { "enum": ["domain-state", "domain-action", "domain-history", "policy-record", "evaluator-record", "output-record", "extension-record", "capability-record", "product-record"] },
@@ -162,6 +162,20 @@
         "ownerProfile": { "$ref": "#/$defs/profileReference" },
         "layout": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
         "lifecycle": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "referenceHandling": {
+          "oneOf": [
+            { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "none" } } },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "actions"],
+              "properties": {
+                "kind": { "const": "owner-lifecycle" },
+                "actions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["validate", "fixup", "release"] } }
+              }
+            }
+          ]
+        },
         "offsetBytes": { "$ref": "#/$defs/decimalUint" },
         "sizeBytes": { "$ref": "#/$defs/decimalUint" },
         "alignmentBytes": { "$ref": "#/$defs/decimalUint" },

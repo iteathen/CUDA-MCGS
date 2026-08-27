@@ -936,6 +936,9 @@ await runCase('graph-identity-content-sensitive', () => {
   const mutated = clone(graphProfileInputs[0]);
   mutated.diagnostics.maxRecords = '257';
   assert.notDeepEqual(normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain).identity, graphProfiles[0].identity);
+  const handling = clone(graphProfileInputs[1]);
+  handling.ownerRegions.find(({ semanticRole }) => semanticRole === 'domain-state').referenceHandling.actions = ['release', 'validate'];
+  assert.notDeepEqual(normalizeGraphProfile(handling, inspected, graphFixtures[1].domain).identity, graphProfiles[1].identity);
 });
 
 await runCase('graph-schema-closed', () => {
@@ -943,6 +946,7 @@ await runCase('graph-schema-closed', () => {
   assert.equal(graphProfileSchema.additionalProperties, false);
   assert.equal(graphProfileSchema.$defs.objectKind.additionalProperties, false);
   assert.equal(graphProfileSchema.$defs.ownerRegion.additionalProperties, false);
+  assert(graphProfileSchema.$defs.ownerRegion.required.includes('referenceHandling'));
 });
 
 await runCase('graph-framework-selection-link', () => {

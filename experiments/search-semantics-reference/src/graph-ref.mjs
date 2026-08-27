@@ -183,12 +183,16 @@ export function createGraphReferenceOracle({
     if (!['fixup', 'release', 'validate'].includes(input.action)) fail('GRAPH_REF_OWNER_LIFECYCLE', 'owner lifecycle action is invalid');
     const region = profile.ownerRegions.find(({ id }) => id === input.regionId);
     if (!region) fail('GRAPH_REF_OWNER_LIFECYCLE', `unknown owner region ${input.regionId}`);
+    if (region.referenceHandling?.kind !== 'owner-lifecycle' || !region.referenceHandling.actions.includes(input.action)) {
+      fail('GRAPH_REF_OWNER_LIFECYCLE', `${region.id} does not declare ${input.action} reference handling`);
+    }
     const publicRegion = freeze({
       id: region.id,
       semanticRole: region.semanticRole,
       ownerContract: region.ownerContract,
       ownerProfile: region.ownerProfile,
       lifecycle: region.lifecycle,
+      referenceHandling: region.referenceHandling,
       permissions: region.permissions,
     }, 'Graph owner lifecycle region');
     const record = freeze(input.record, 'Graph opaque owner reference record');

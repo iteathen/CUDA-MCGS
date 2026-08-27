@@ -47,11 +47,11 @@
       "schema": {
         "id": "cuda-mcgs.graph-profile/0.2.0",
         "version": "0.2.0",
-        "sha256": "14152793d7b8510b34ef127996b7cc3353296556c9deddb43af478203aacbfdf"
+        "sha256": "fe2645f8c0f75bdb06d043d132b3c45245791868471a4d24073c8e85414bbf76"
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "d2b32d346a933d321e98ea2cceae0aeda9fa03751953271d8db6958a23774f87"
+        "sha256": "ff2e3e828ccae14717bb3af059fe832ae690bb8b559d3b312c3d936fff40a985"
       }
     },
     {
@@ -70,7 +70,7 @@
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "3e8fc45217e6eaaf095f94ab39a08b66ded5c28ca7d699b6e64efe7b014a3795"
+        "sha256": "8af3962d05d529744c2dc85fdeff4bafeafa83dc3173dfab857c70e2c7fd55e5"
       }
     },
     {
@@ -89,7 +89,7 @@
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "f0343b2f086883849317362f2ba31521a682878facaf70119355484aa4b2a236"
+        "sha256": "8bb58f176e7ecce6fb6505cef78db2ab1585195ee9d222374ffac556f8fa1b23"
       }
     },
     {
@@ -127,7 +127,7 @@
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "890e23ebda14879497ed272273f78d3ac7f9926a998f26dd30ad817fdb479538"
+        "sha256": "67230eb01119eef7e7722daa213160cb3d0fa0d9f685a602eadfad997ee20e21"
       }
     },
     {
@@ -146,7 +146,7 @@
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "8ef3167dedb92f1d8335d22bf029718e81a71201f01d9e15e069ff2f19788c97"
+        "sha256": "e5f66a14821551d20478075d9a84cac23efefb547b0ad641e7d43d89f5330f1d"
       }
     }
   ],

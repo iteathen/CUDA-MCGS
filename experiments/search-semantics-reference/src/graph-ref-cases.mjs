@@ -138,9 +138,13 @@ export function registerGraphRefCases({ defineCase, fixture, projection, nodeEvi
   }, ['GRAPH-REF-005', 'GRAPH-REF-006']);
 
   defineCase('graph-ref-owner-reference-lifecycle-is-opaque-and-delegated', () => {
-    const profile = profileById(projection);
+    const profile = profileById(projection, 'graph.synthetic-reclaiming');
     const region = profile.ownerRegions.find(({ semanticRole }) => semanticRole === 'domain-state');
+    const noReferenceRegion = profile.ownerRegions.find(({ semanticRole }) => semanticRole === 'domain-action');
     assert(region);
+    assert(noReferenceRegion);
+    assert.deepEqual(region.referenceHandling, { kind: 'owner-lifecycle', actions: ['fixup', 'release', 'validate'] });
+    assert.deepEqual(noReferenceRegion.referenceHandling, { kind: 'none' });
     const seen = [];
     const oracle = createGraphReferenceOracle({
       profile,
@@ -156,6 +160,7 @@ export function registerGraphRefCases({ defineCase, fixture, projection, nodeEvi
     const record = { privateEncoding: { bytes: [9, 8, 7] }, referenceField: 'opaque' };
     const result = oracle.applyOwnerReferenceLifecycle({ action: 'validate', regionId: region.id, record });
     assert.deepEqual(result, { kind: 'delegated', status: 'ready' });
+    assert.throws(() => oracle.applyOwnerReferenceLifecycle({ action: 'validate', regionId: noReferenceRegion.id, record }), { code: 'GRAPH_REF_OWNER_LIFECYCLE' });
     assert.deepEqual(record, { privateEncoding: { bytes: [9, 8, 7] }, referenceField: 'opaque' });
     assert.equal(seen.length, 1);
     const snapshot = oracle.snapshot();

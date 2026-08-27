@@ -249,8 +249,21 @@ function normalizeLayout(input, index, objectById, referenceEncoding) {
   };
 }
 
+function normalizeReferenceHandling(input, label) {
+  if (input?.kind === 'none') {
+    exactKeys(input, ['kind'], 'GRAPH_OWNER_REFERENCE_FIELDS', label);
+    return { kind: 'none' };
+  }
+  exactKeys(input, ['kind', 'actions'], 'GRAPH_OWNER_REFERENCE_FIELDS', label);
+  if (input.kind !== 'owner-lifecycle') fail('GRAPH_OWNER_REFERENCE_KIND', `${label} kind is invalid`);
+  return {
+    kind: input.kind,
+    actions: stringSet(input.actions, { code: 'GRAPH_OWNER_REFERENCE_ACTION', label: `${label} actions`, allowed: ['fixup', 'release', 'validate'], minimum: 1 }),
+  };
+}
+
 function normalizeOwnerRegion(input, index, objectById, catalogById) {
-  exactKeys(input, ['id', 'semanticRole', 'objectKind', 'ownerContract', 'ownerProfile', 'layout', 'lifecycle', 'offsetBytes', 'sizeBytes', 'alignmentBytes', 'permissions', 'persistence'], 'GRAPH_OWNER_REGION_FIELDS', `ownerRegion ${index}`);
+  exactKeys(input, ['id', 'semanticRole', 'objectKind', 'ownerContract', 'ownerProfile', 'layout', 'lifecycle', 'referenceHandling', 'offsetBytes', 'sizeBytes', 'alignmentBytes', 'permissions', 'persistence'], 'GRAPH_OWNER_REGION_FIELDS', `ownerRegion ${index}`);
   assertNamespacedId(input.id, 'GRAPH_OWNER_REGION_ID', `ownerRegion ${index} id`);
   const semanticRole = assertEnum(input.semanticRole, [...REGION_CONTRACT.keys(), 'capability-record', 'product-record'], 'GRAPH_OWNER_REGION_ROLE', `${input.id} semanticRole`);
   assertNamespacedId(input.objectKind, 'GRAPH_OWNER_REGION_OBJECT', `${input.id} objectKind`);
@@ -267,6 +280,7 @@ function normalizeOwnerRegion(input, index, objectById, catalogById) {
     ownerProfile: normalizeProfileReference(input.ownerProfile, `${input.id} ownerProfile`),
     layout: normalizeSchemaReference(input.layout, `${input.id} layout`),
     lifecycle: normalizeSchemaReference(input.lifecycle, `${input.id} lifecycle`),
+    referenceHandling: normalizeReferenceHandling(input.referenceHandling, `${input.id} referenceHandling`),
     offsetBytes,
     sizeBytes,
     alignmentBytes,
