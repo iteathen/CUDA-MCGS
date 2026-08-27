@@ -1,18 +1,18 @@
 {
-  "schema_version": 70,
+  "schema_version": 71,
   "updated": "2026-08-27",
-  "status": "engine_reference_graph_root_qualified_pending_integration",
-  "objective": "Complete the product-neutral CUDA-free semantic/reference packet on one exact protected revision before any production lowering, then realize CUDA-MCGS only through ordinary Node.js and restricted Device-JS over public CUDA-JS contracts.",
-  "ownership_boundary": "CUDA-MCGS owns universal MCGS semantics, normalized Search IR/composition, finite search resources, JavaScript/restricted Device-JS search programs, reference/native semantic conformance and its public CUDA-JS adapter. CUDA-JS owns generic CUDA lowering/compiler/ABI/runtime/resource/operation/synchronization/platform mechanisms and may use native/CUDA implementation. Missing generic GPU mechanism is classified to CUDA-JS rather than implemented as a CUDA-MCGS native escape path.",
+  "status": "protected_root_integrated_portfolio_governance_repair",
+  "objective": "Resolve the complete CUDA-MCGS open-issue portfolio by assessed dependency and consequence order, preserving one exact protected semantic/reference packet before production lowering and implementing production only through ordinary Node.js/restricted Device-JS over public CUDA-JS contracts.",
+  "ownership_boundary": "CUDA-MCGS owns universal MCGS semantics, normalized Search IR/composition, finite search resources, JavaScript/restricted Device-JS search programs, reference/native semantic conformance and its public CUDA-JS adapter. CUDA-JS owns generic CUDA lowering/compiler/ABI/runtime/resource/operation/synchronization/platform mechanisms and may use native/CUDA implementation. Missing generic GPU mechanism is classified to CUDA-JS rather than implemented as a CUDA-MCGS native escape path. Product-boundary wording is being reconciled under issue #44 and must not be expanded by convenience.",
   "protected_base": {
-    "cuda_mcgs_main": "e4069458ece47bbea0c2770204fa21fffbde6bb6",
-    "meaning": "Protected PATH integration through PR #137; ROOT is not yet protected-main integrated."
+    "cuda_mcgs_main": "5a42d5aed072ae763631790ea4a4dfa871e3e6ce",
+    "meaning": "Protected Graph ROOT integration through PR #138; protected-main workflow 33108165300 passed all eight current jobs."
   },
   "candidate": {
-    "branch": "ref/graph-root-01",
-    "qualified_semantic_checkpoint": "d6b091e7c1afc6c09eb7e562cd7f72eb2773874d",
-    "qualification_run": "33107176873",
-    "root_status": "hosted-qualified-pending-pr-and-protected-readback"
+    "branch": "main",
+    "qualified_semantic_checkpoint": "5a42d5aed072ae763631790ea4a4dfa871e3e6ce",
+    "qualification_run": "33108165300",
+    "root_status": "protected-integrated"
   },
   "exact_candidate_evidence": {
     "representation_composition": "ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529",
@@ -45,7 +45,7 @@
     "docs/decisions/ADR-0023-parallel-first-native-execution.md",
     "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
     "docs/specs/SPEC-0010-graph-storage-and-reclamation.md",
-    "docs/handoffs/2026-08-27-graph-root-01-resume.md"
+    "https://github.com/iteathen/CUDA-MCGS/issues/142"
   ],
   "deliverables": [
     "one exact protected CUDA-free universal semantic/reference packet before production lowering",
@@ -54,16 +54,31 @@
     "normalized Search IR/Composer products with exact finite resources, lifecycle, failure, identity and provenance",
     "production CUDA-MCGS implemented only as ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts",
     "one bounded parallel native framework and exact CUDA-MCGS/CUDA-JS compatible-pair qualification only after semantic acceptance",
-    "external-consumer embedding evidence without importing product-specific chess/UCI/book/timing/tablebase meaning into CUDA-MCGS"
+    "external-consumer embedding evidence without importing product-specific meaning into CUDA-MCGS",
+    "every open issue assessed, researched, reassessed and either completed, transferred, blocked by exact external evidence, or closed not planned/duplicate with documentation"
   ],
   "current_focus": {
+    "id": "PORTFOLIO-GOVERNANCE-01",
+    "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/142",
+    "active_leaf": "ISSUE-139",
+    "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/139",
+    "next_action": "Make the already-required verify status a fail-closed aggregate over every current required owner-local workflow job, preserving independent diagnostic jobs and proving a red semantic lane cannot produce a green required verify context.",
+    "after_integration": "Reassess and resolve issue #44 product-boundary authority, then reassess issue #47. Return to Graph RECLAIM only after governance authority is coherent.",
+    "exit": "Repository current-state truth, merge enforcement and product-boundary authority are coherent enough that semantic work cannot be merged or routed from stale/conflicting instructions."
+  },
+  "semantic_focus": {
     "id": "ENGINE-REFERENCE-01",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36",
-    "active_leaf": "REF-GRAPH-01/GRAPH-ROOT",
     "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/24",
-    "next_action": "Qualify the final documentation-bearing ref/graph-root-01 PR head against current protected main, complete exact-head review, squash-merge with expected-head guard, and require protected-main ROOT evidence readback. Do not start GRAPH-RECLAIM until that readback succeeds.",
-    "after_integration": "Dependency-review GRAPH-RECLAIM-001..009 and ADR-0022 occurrence-supersession/lifecycle closure from the exact protected ROOT squash revision.",
-    "exit": "All Graph owner obligations are integrated into the CUDA-free reference packet with exact evidence and no production/native claims."
+    "last_integrated_leaf": "REF-GRAPH-01/GRAPH-ROOT",
+    "next_candidate_leaf": "REF-GRAPH-01/GRAPH-RECLAIM",
+    "dependency_state": "blocked-on-representation-preflight",
+    "preflight_findings": [
+      "reclamation-enabled profile declares retirement-record storage without a matching finite storage resource contribution",
+      "reclamation maxScratchBytes is declared without a matching finite scratch-byte resource contribution",
+      "retirement-record lifecycle lacks an explicit terminal-to-free generation-safe reuse transition"
+    ],
+    "next_semantic_action": "Correct and falsify the RECLAIM representation/resource/lifecycle preflight before implementing GRAPH-RECLAIM-001..009."
   },
   "root_boundary": {
     "graph_owns": [
@@ -86,8 +101,9 @@
     ]
   },
   "blockers": [
-    "ROOT is hosted-qualified but not protected-main integrated; RECLAIM may not begin until exact squash readback succeeds.",
-    "Graph RECLAIM and remaining lifecycle/reference owners are unfinished; production lowering and ENGINE-CONTRACT-ACCEPTANCE-01 remain blocked.",
+    "Issue #139: the required verify status does not yet fail closed on all independent semantic/reference jobs.",
+    "Issue #44: accepted/current product-boundary authority is internally inconsistent and competing stale remediation PRs remain open.",
+    "Graph RECLAIM representation/resource/lifecycle preflight is incomplete; production lowering and ENGINE-CONTRACT-ACCEPTANCE-01 remain blocked.",
     "CUDA-JS native Linux qualification and the exact CUDA-MCGS/CUDA-JS compatible pair remain downstream evidence gates."
   ],
   "validation": [
@@ -102,16 +118,18 @@
     "protected target read-back after merge"
   ],
   "do_not": [
-    "begin GRAPH-RECLAIM before ROOT protected-main readback",
+    "begin GRAPH-RECLAIM behavior before its retirement-storage, scratch-resource and reusable-lifecycle representation is corrected and falsified",
     "move current-root/epoch/operation authority into Graph",
     "make advance traverse, copy, transform, reset, resize, reclassify, reclaim or eagerly clean graph state",
     "invalidate a shared transposed node merely because one occurrence is superseded",
     "invent retained-state classification in Graph",
     "select a production/native graph table, arena, reclamation algorithm, scheduler or CUDA mechanism in the CUDA-free reference leaf",
     "add C/C++, CUDA C++, native addons/FFI, hand-written PTX, embedded CUDA source or direct CUDA-JS private access to CUDA-MCGS production",
-    "require host-produced intermediate decisions for active search progress"
+    "require host-produced intermediate decisions for active search progress",
+    "implement an issue merely because its current title/body asks for a mechanism before reassessing its authority and dependency state"
   ],
   "cleanup_debt": [
-    "checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f is redundant recovery state preserved because the available connector exposes no safe delete-ref action."
+    "checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f is redundant recovery state preserved because the available connector exposes no safe delete-ref action.",
+    "PR #126 and PR #132 are stale/unmergeable competing product-boundary remediation packets; issue #44 owns their reassessment and disposition."
   ]
 }
