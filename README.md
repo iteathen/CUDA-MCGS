@@ -9,7 +9,7 @@ CUDA-MCGS is a public pre-release framework project for finite GPU-resident Mont
 
 > **CUDA-MCGS is a contract-defined universal GPU-resident MCGS framework with a universal least-authority extension/composition substrate and finite specialized Search Images.**
 
-The core must not inherit the shape of the first product. Chess, Go, planning, optimization, text search, evaluation-only search, partially observable search, and future MCGS-style workloads are consumers/specializations rather than definitions of universal CUDA-MCGS.
+The core must not inherit the shape of the first consumer. Chess, Go, planning, optimization, text search, evaluation-only search, partially observable search, and future MCGS-style workloads are consumers/specializations or removable conformance instances rather than definitions of universal CUDA-MCGS.
 
 ## Complete library, easy entry
 
@@ -25,9 +25,9 @@ Defaults are local, bounded, deterministic, documented, inspectable and overrida
 
 Resolved configuration and default provenance are part of the planned public experience. Semantically material defaults are versioned and identity-bearing so convenience remains reproducible rather than magical. Exact public class and function names remain future specification work; the repository does not yet publish a stable API.
 
-## Architecture: three semantic layers
+## Architecture and production ownership
 
-[`ADR-0018`](docs/decisions/ADR-0018-universal-core-extension-product-layering.md) makes the layering explicit.
+[`ADR-0018`](docs/decisions/ADR-0018-universal-core-extension-product-layering.md) separates universal core, extension/composition substrate and downstream product meaning. [`ADR-0024`](docs/decisions/ADR-0024-framework-only-production-ownership.md) fixes the repository boundary: CUDA-MCGS production owns the reusable framework/integration/conformance surface; production domain/search products live in independently owned repositories or packages and consume public CUDA-MCGS contracts.
 
 ### 1. Universal MCGS semantic core
 
@@ -45,7 +45,7 @@ The universal core owns product-neutral search contracts and lifecycle:
 
 The universal core does **not** require a board, players, legal moves, ranked moves, best-action/top-k output, scalar value, policy prior, one evaluator architecture, or one scheduler topology.
 
-The first usable native engine is nevertheless parallel: it must run bounded useful Domain, Graph, Policy, selected Evaluator and device-progress work concurrently on the GPU. Scheduler neutrality means that grids, blocks, warps, queues, kernels and advanced CUDA-JS mechanisms remain selected implementation profiles; it does not permit a serial search loop to be presented as the GPU product. Tensor-shaped execution remains a measured exploratory profile rather than a current prerequisite.
+The first usable native engine is nevertheless parallel: it must run bounded useful Domain, Graph, Policy, selected Evaluator and device-progress work concurrently on the GPU. Scheduler neutrality means grids, blocks, warps, queues, kernels and advanced CUDA-JS mechanisms remain selected implementation profiles; it does not permit a serial search loop to be presented as the GPU product.
 
 ### 2. Universal extension/composition substrate
 
@@ -56,43 +56,32 @@ CUDA-MCGS provides a universal way to extend a specialized engine without turnin
 - a minimal extension-only view of source-owner stable checkpoint facts;
 - namespaced/versioned selected capability contracts and specialization-only context/state/resources;
 - bounded nonblocking internal **Async Stage Channels**;
-- deterministic pre-ignition composition;
-- zero-or-one optional semantic **stage capability program unit** per stage in restricted Device-JS/Search Program source.
+- deterministic pre-ignition composition; and
+- selected semantic **stage capability program units** in restricted Device-JS/Search Program source.
 
-The **substrate is universal; an individual capability's semantics are not automatically universal**. Product-specific capability fields exist only in Search Images selecting them. If a capability changes domain/policy/evaluator/output/session meaning, that effect must also be owned by the selected corresponding contract/profile.
+The **substrate is universal; an individual capability's semantics are not automatically universal**. Product-specific capability fields exist only in Search Images selecting them. If a capability changes domain/policy/evaluator/output/session meaning, that effect must also be owned by the selected corresponding contract or external product.
 
 No selected capability means the complete extension substrate is absent. Deleting any one capability removes its solely owned code/context/state/channel/resource/synchronization/package residue.
 
-### 3. Downstream domain/search products
+### 3. External domain/search products
 
-A product selects universal contracts/capabilities and owns its product-specific semantics and outputs.
+A production product supplies its domain/policy/evaluator/output/protocol meaning through public bounded CUDA-MCGS contracts and owns its own package, quality, release and support lifecycle outside this repository.
 
-The first explicit product proposal is [`CHESS-0001`](docs/specs/products/chess/CHESS-0001-search-product.md). Chess owns chess board/history/legal-move semantics, chess policy/evaluator choices, chess-specific extension capabilities, and any ranked legal-move/best-move/MultiPV output.
+CUDA-MCGS may still use concrete chess, Connect Four, planning, optimization, or other named instances as removable examples, research probes, second-instance tests and conformance falsifiers. A concrete example is not a production owner, privileged default or stable framework vocabulary merely because it is useful evidence.
 
-Chess is intentionally **not** a gate for universal CUDA-MCGS completion or release. Deleting the chess product must leave the universal architecture, Search IR, extension substrate and conformance suite complete.
+The first real external product currently tracked by the ecosystem is [`iteathen/UCI-Arena-Vector`](https://github.com/iteathen/UCI-Arena-Vector). That repository, not CUDA-MCGS, owns UCI/chess product policy, Book Forge consumption, Timing Evidence integration, tablebase semantics, model interpretation, product output, packaging and release. Its requirements may falsify framework completeness but cannot acquire private CUDA-MCGS production authority.
 
 ```text
-Universal MCGS contracts
-        │
-        ├────► universal Search Stage / capability / channel substrate
-        │
-        ├────► optional Search Session control / generic observations
-        │
-        └────► downstream product contracts (for example chess)
-                         │
-                         ▼
-                   Search Composer
-                         │
-                         ▼
-              finite specialized Search Image
-                         │
-                  CUDA-MCGS adapter
-                         │
-                         ▼
-                      CUDA-JS
-                         │
-                         ▼
-                  CUDA Driver / GPU
+external product
+  domain / policy / evaluator / output / protocol
+                    |
+                    v
+                CUDA-MCGS
+        universal search semantics
+              |            |
+              |            |
+              v            v
+           CUDA-JS   optional math/tensor peers
 ```
 
 ## Long-lived Search Sessions
@@ -103,26 +92,26 @@ When selected, it covers:
 
 - finite root incarnations and ordered advance provenance;
 - initial root establishment, minimum-work advance to an already ready realized successor, general reroot and independently versioned lazy attention publication;
-- bounded validation/admission **before** root-specific mutation, reroot prepare/commit/abort and typed outcomes;
+- bounded validation/admission **before** root-specific mutation and typed outcomes;
 - preservation of compatible selected-descendant work and lazy `superseded-by-advance` disposition for sibling-occurrence work, without advance-time traversal, transformation, reset, resize, reclassification, reclamation or eager cleanup;
-- coordination of source-owner stale-work and retain/retain-if-key-valid/transform/reset/invalidate dispositions;
-- separation of the logical reroot transaction and advance publication from graph-owned generation-safe reclamation;
-- bounded request/acquire/release coordination for output-owned immutable **read-only** live observations; and
+- coordination of source-owner stale-work and reuse/reset/transform/invalidate dispositions;
+- separation of logical root-control publication from graph-owned generation-safe reclamation;
+- bounded request/acquire/release coordination for output-owned immutable read-only live observations; and
 - cancellation, completion, stale-safe finite generation/counter exhaustion, restart and exact terminal-only zero-residue behavior.
 
 Session does not own domain root validity, graph reclamation, policy/evaluator reuse meaning, resource pressure policy, device progress, observation payload publication or CUDA sideband mechanisms.
 
-A ranked root-action list is one possible product/policy observation schema. It is not the universal observation contract.
-
-The bounded SESSION-001 prototype found several important semantic failure modes: rejected root changes mutating state before failure, observation publishing materializing search state, stale old-root work contaminating later epochs without an epoch guard, generation ABA on reclaimed-slot reuse, and finite full-arena new-root pressure. Its historical `reroot` operation predates the current four-operation vocabulary and is retained as provenance, not authority for advance semantics.
+A ranked root-action list is one possible external product/policy observation schema. It is not the universal observation contract.
 
 ## CUDA-JS boundary
 
-CUDA-MCGS owns MCGS/search semantics, Search IR/Search Composer, extension composition, finite search resources, Search Session semantics, generated Search Images, universal/product conformance, and the package/adapter contract.
+CUDA-MCGS owns MCGS/search semantics, Search IR/Search Composer, extension composition, finite search resources, Search Session semantics, framework Search Images, universal conformance, and the package/adapter contract.
 
 The independent public [`iteathen/CUDA-JS`](https://github.com/iteathen/CUDA-JS) repository owns consumer-neutral Node/CUDA Driver/compiler/linker/artifact/memory/launch/completion/error/teardown mechanics and generic long-lived sideband mechanisms.
 
-CUDA-JS must not know MCGS, Search IR, Search Stages, capabilities, roots, chess moves, rankings, or product output meaning. CUDA-MCGS must not depend on CUDA-JS private source/handles.
+CUDA-JS must not know MCGS, Search IR, Search Stages, capabilities, root meaning or product output semantics. CUDA-MCGS must not depend on CUDA-JS private source/handles.
+
+If a generic GPU mechanism cannot be expressed naturally and safely through current public CUDA-JS contracts, that is a CUDA-JS capability-classification signal—not permission for native CUDA-MCGS code. Generic dense tensor mathematics belongs to CUDA-JS-Tensor or another natural mathematical owner when selected; search/evaluator/product meaning stays with its semantic owner.
 
 ## Current specification state
 
@@ -137,7 +126,7 @@ Current universal proposals:
 - [`SPEC-0003`](docs/specs/SPEC-0003-search-stage-and-extension-surface.md) — universal Search Stage/surface/base-context/capability semantics.
 - [`SPEC-0004`](docs/specs/SPEC-0004-async-stage-channels.md) — universal internal nonblocking channel/readiness semantics.
 - [`SPEC-0005`](docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md) — restricted Device-JS/Search Image composition, opaque CUDA-JS-generated outputs and product/capability deletion.
-- [`SPEC-0006`](docs/specs/SPEC-0006-search-session-control-and-observation.md) — optional external Search Session root-control and bounded control/observation-request lifecycle coordination; its current root-advance representation is pending ADR-0022 reconciliation under `REF-ROOT-CONTROL-01`.
+- [`SPEC-0006`](docs/specs/SPEC-0006-search-session-control-and-observation.md) — optional external Search Session root-control and bounded control/observation-request lifecycle coordination.
 - [`SPEC-0007`](docs/specs/SPEC-0007-domain-state-action-and-transition.md) — domain state/action/transition/identity/history/role/terminal semantics.
 - [`SPEC-0008`](docs/specs/SPEC-0008-search-policy-and-backup.md) — search selection/reservation/widening/value/backup/stopping/reuse semantics.
 - [`SPEC-0009`](docs/specs/SPEC-0009-evaluator-contract.md) — optional evaluator capability/request/result/residency/batching/cache/reuse semantics.
@@ -146,17 +135,15 @@ Current universal proposals:
 - [`SPEC-0012`](docs/specs/SPEC-0012-device-owned-search-progress.md) — device-owned readiness/fairness/no-progress/stop/drain/closure semantics.
 - [`SPEC-0013`](docs/specs/SPEC-0013-result-and-observation-publication.md) — mandatory terminal and optional immutable live-observation publication semantics.
 
-Downstream product proposal:
-
-- [`CHESS-0001`](docs/specs/products/chess/CHESS-0001-search-product.md) — chess as a consumer/specialization, including future chess-specific ranked legal-move observation.
+Production product specifications are not part of the active CUDA-MCGS specification registry. Historical repository-local chess consumer/product proposal material is retained under `docs/archive/` as superseded provenance only.
 
 None of the proposal documents authorize production implementation by themselves.
 
 ## Current phase
 
-The repository is **public and pre-release**. CUDA-MCGS is still in framework definition, research, specification and bounded evidence gathering. No production search runtime, stable public API, released CUDA-MCGS/CUDA-JS compatible pair, native Linux support claim, or chess engine release is implied by repository visibility.
+The repository is **public and pre-release**. CUDA-MCGS is still in framework definition, research, specification and bounded evidence gathering. No production search runtime, stable public API, released CUDA-MCGS/CUDA-JS compatible pair, native platform support claim, or downstream product release is implied by repository visibility.
 
-The canonical plan is [`next_step.yaml`](next_step.yaml) under parent `CUDA-MCGS-V0/27`. It has separate universal-core, universal-extension-substrate, universal-integration/native, and non-gating downstream product lanes.
+The canonical issue ordering and exact protected state are maintained in [`next_step.yaml`](next_step.yaml) under portfolio issue #142.
 
 ## Engineering invariants
 
@@ -165,8 +152,8 @@ The canonical plan is [`next_step.yaml`](next_step.yaml) under parent `CUDA-MCGS
 - External root, advance, reroot and attention commands may enter only through accepted bounded Search Session contracts and do not make the host a search-progress coordinator.
 - Every concrete engine has a finite explicit resource plan; exhaustion and reroot pressure are specified behavior, while advance may not allocate or resize.
 - Extensions are least-authority, statically composed before ignition, product-neutral at the substrate boundary, and unable to redefine core invariants through a callback back door.
-- Product needs may motivate universal proposals but cannot silently rewrite the framework from a product branch.
-- Universal conformance uses materially different synthetic domains/products; chess cannot become the universal oracle.
+- External product needs may motivate universal proposals but cannot silently rewrite the framework or gain repository-local production authority.
+- Universal conformance uses materially different removable instances; no external consumer becomes the universal oracle.
 - CUDA-JS owns generic CUDA runtime/toolchain behavior and remains consumer-neutral.
 - Python is prohibited throughout the CUDA-MCGS/CUDA-JS ecosystem, including experiments and one-off scripts.
 
@@ -188,6 +175,7 @@ See [`LICENSE`](LICENSE) and [`LICENSING.md`](LICENSING.md).
 
 - [`docs/PROJECT_CHARTER.md`](docs/PROJECT_CHARTER.md)
 - [`docs/decisions/ADR-0018-universal-core-extension-product-layering.md`](docs/decisions/ADR-0018-universal-core-extension-product-layering.md)
+- [`docs/decisions/ADR-0024-framework-only-production-ownership.md`](docs/decisions/ADR-0024-framework-only-production-ownership.md)
 - [`docs/architecture/FRAMEWORK_OVERVIEW.md`](docs/architecture/FRAMEWORK_OVERVIEW.md)
 - [`docs/specs/README.md`](docs/specs/README.md)
 - [`next_step.yaml`](next_step.yaml)
