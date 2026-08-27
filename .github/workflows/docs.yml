@@ -69,6 +69,7 @@ jobs:
         with:
           node-version: 26.7.0
       - name: Run qualified NODE input and EDGE reference
+        # Includes published child-pending cancellation terminality under GRAPH-EDGE-007.
         run: |
           node scripts/run-search-ir-composer-reference.mjs
           node scripts/export-search-ir-composer-graph-profiles.mjs
