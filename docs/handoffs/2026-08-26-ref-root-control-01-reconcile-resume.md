@@ -1,5 +1,7 @@
 # REF-ROOT-CONTROL-01 reconciliation handoff — 2026-08-26
 
+**Status:** Informational
+
 ## Stop point
 
 Stop on PR #127 after the adjacent root-authority reconciliation was fully proven in an ephemeral GitHub Actions checkout but **before those adjacent semantic edits were committed or pushed**.
