@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: docs/ref-root-control-01-reconcile
-          fetch-depth: 5
+          fetch-depth: 1
       - uses: actions/setup-node@v4
         with:
           node-version: 26.7.0
@@ -25,6 +25,7 @@ jobs:
           set -euo pipefail
 
           checkpoint=c0066e559f68b5bcd8faea0dbfe9c389fb347f8f
+          git fetch --no-tags --depth=1 origin "$checkpoint"
           git cat-file -e "${checkpoint}^{commit}"
           git show "${checkpoint}:.github/workflows/reconcile-adjacent-root-authority.yml" > /tmp/reconcile-base.yml
           git show "${checkpoint}:.github/workflows/reconcile-adjacent-root-authority-v3.yml" > /tmp/reconcile-v3.yml
