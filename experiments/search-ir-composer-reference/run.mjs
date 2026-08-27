@@ -1104,6 +1104,14 @@ await runCase('reject-graph-path-capacity', () => {
   const underfundedDepth = clone(graphProfileInputs[0]);
   underfundedDepth.resources.find(({ id }) => id.endsWith('resource-path-depth')).maximum = '4095';
   assert.throws(() => normalizeGraphProfile(underfundedDepth, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
+  const nonReusablePath = clone(graphProfileInputs[0]);
+  const activePath = nonReusablePath.objectKinds.find(({ role }) => role === 'active-path');
+  activePath.lifecycle.transitions = activePath.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-released') && to.endsWith('state-free')));
+  assert.throws(() => normalizeGraphProfile(nonReusablePath, inspected, graphFixtures[0].domain), { code: 'GRAPH_PATH_LIFECYCLE' });
+  const nonReusableOccurrence = clone(graphProfileInputs[0]);
+  const occurrence = nonReusableOccurrence.objectKinds.find(({ role }) => role === 'path-occurrence');
+  occurrence.lifecycle.transitions = occurrence.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-ready') && to.endsWith('state-free')));
+  assert.throws(() => normalizeGraphProfile(nonReusableOccurrence, inspected, graphFixtures[0].domain), { code: 'GRAPH_PATH_LIFECYCLE' });
 });
 
 await runCase('reject-graph-root-reserve', () => {

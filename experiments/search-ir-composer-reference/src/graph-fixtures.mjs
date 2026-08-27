@@ -77,11 +77,26 @@ function lifecycle(profile, role, reclamation) {
     readyStates = ['open', 'complete']; terminalStates = ['cancelled', 'failed'];
   } else if (role === 'active-path') {
     states = ['free', 'active', 'completing', 'released', 'abandoned', 'failed'];
-    transitions = [transition('free', 'active', 'release-publication'), transition('active', 'completing', 'private'), transition('completing', 'released', 'terminal-publication'), transition('active', 'abandoned', 'terminal-publication'), transition('active', 'failed', 'terminal-publication')];
+    transitions = [
+      transition('free', 'active', 'release-publication'),
+      transition('active', 'completing', 'private'),
+      transition('completing', 'released', 'terminal-publication'),
+      transition('active', 'abandoned', 'terminal-publication'),
+      transition('active', 'failed', 'terminal-publication'),
+      transition('released', 'free', 'private'),
+      transition('abandoned', 'free', 'private'),
+      transition('failed', 'free', 'private'),
+    ];
     readyStates = ['active']; terminalStates = ['abandoned', 'failed', 'released'];
   } else if (role === 'path-occurrence') {
     states = ['free', 'reserved', 'ready', 'failed'];
-    transitions = [transition('free', 'reserved', 'private'), transition('reserved', 'ready', 'release-publication'), transition('reserved', 'failed', 'terminal-publication')];
+    transitions = [
+      transition('free', 'reserved', 'private'),
+      transition('reserved', 'ready', 'release-publication'),
+      transition('reserved', 'failed', 'terminal-publication'),
+      transition('ready', 'free', 'private'),
+      transition('failed', 'free', 'private'),
+    ];
     readyStates = ['ready']; terminalStates = ['failed'];
   } else if (role === 'transposition-entry') {
     states = ['empty', 'claimed', 'ready', 'failed', 'tombstone'];

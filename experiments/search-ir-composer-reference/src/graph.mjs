@@ -351,6 +351,16 @@ function normalizePath(input, domainProfile, objectById, layoutByObject) {
       || compareDecimalUint(maxDepth, layoutByObject.get(input.occurrenceObject).capacity) > 0) fail('GRAPH_PATH_CAPACITY', 'path bounds exceed selected layouts');
   const historyProjection = normalizeSchemaReference(input.historyProjection, 'path historyProjection');
   if (schemaKey(historyProjection) !== schemaKey(domainProfile.classifyPathRelationPort)) fail('GRAPH_PATH_DOMAIN_PORT', 'path history projection differs from domain relation port');
+  const pathLifecycle = objectById.get(input.pathObject).lifecycle;
+  const occurrenceLifecycle = objectById.get(input.occurrenceObject).lifecycle;
+  const hasPrivateReset = (lifecycle, from) => lifecycle.transitions.some((transition) =>
+    transition.from === from && transition.to === lifecycle.initialState && transition.visibility === 'private');
+  for (const terminal of pathLifecycle.terminalStates) {
+    if (!hasPrivateReset(pathLifecycle, terminal)) fail('GRAPH_PATH_LIFECYCLE', `active-path terminal state ${terminal} cannot return to free for stale-safe reuse`);
+  }
+  for (const reusable of [...occurrenceLifecycle.readyStates, ...occurrenceLifecycle.terminalStates]) {
+    if (!hasPrivateReset(occurrenceLifecycle, reusable)) fail('GRAPH_PATH_LIFECYCLE', `path-occurrence state ${reusable} cannot return to free after path release`);
+  }
   return {
     kind: input.kind,
     pathObject: input.pathObject,
