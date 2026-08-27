@@ -1,7 +1,7 @@
 {
-  "schema_version": 73,
+  "schema_version": 74,
   "updated": "2026-08-27",
-  "status": "framework_only_production_authority_candidate",
+  "status": "framework_only_production_authority_rebound_pending_full_qualification",
   "objective": "Resolve the complete CUDA-MCGS open-issue portfolio by assessed dependency and consequence order, preserving one exact protected semantic/reference packet before production lowering and implementing production only through ordinary Node.js/restricted Device-JS over public CUDA-JS contracts.",
   "ownership_boundary": "Protected authority keeps CUDA-MCGS universal and JavaScript/restricted-Device-JS only. The current #44 candidate ADR-0024 narrows ADR-0018 further: CUDA-MCGS production owns reusable MCGS framework semantics, composition, integration seams and removable conformance; production domain/search products own their product semantics, protocol, model interpretation, quality, packaging, release and support lifecycle in independently owned repositories or packages. Concrete named domains remain allowed as removable evidence. CUDA-JS owns generic CUDA lowering/compiler/ABI/runtime/resource/operation/synchronization/platform mechanisms; missing generic GPU mechanisms route there rather than to a CUDA-MCGS native escape path.",
   "protected_base": {
@@ -14,9 +14,21 @@
     "current_protected_head": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
     "root_status": "protected-integrated",
     "merge_gate_status": "fail-closed-aggregate-integrated",
-    "product_boundary_status": "ADR-0024-candidate-pending-pr-and-protected-readback"
+    "product_boundary_status": "ADR-0024-framework-catalog-rebound-composer-qualified-pending-full-pr-and-protected-readback"
   },
-  "exact_candidate_evidence": {
+  "framework_rebind_candidate": {
+    "spec_0000_sha256": "e933e119f7a5d8d6f0bce6a67296166f7326dbd8bc99e7920bcb0358161b6b99",
+    "contract_set_sha256": "b4c91a46e4fe304f3bcfc4602e23e5f4e68a30869da223deab3978289ca6b4a1",
+    "coverage_sha256": "fe510fb69890b070ae6e7dfc60bd3e113a3f7e6354fa6bfcd8e48a6336c6c07a",
+    "expanded_requirements_sha256": "32fc66ca775046121146f3afc621e3407bab69711355e283b769d947fd185e0a",
+    "framework_selection_sha256": "6beb8565fa42cf8bd89209bf025a361057d1a5ef119e5d3ccaa299a55e3d53c1",
+    "representation_composition_sha256": "8f91cfa8b13fb1424ba6be22f1a6cc33517a0ec6830b1f240d925bb971697186",
+    "composer": "879/879",
+    "requirements": "989/989 classified, 0 pending",
+    "qualification_run": "33117864822",
+    "temporary_migration_state": "self-removed before durable branch commit"
+  },
+  "protected_root_evidence": {
     "representation_composition": "ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529",
     "domain_projection": "e9df2902e6edaad40c6abf0b85eeecb06e94b4d5598d9c0b9c7238fa20c3edaa",
     "domain_evidence": "f186412a9b8d964c7f92e4c4000942768fa0ae81d62349c2528fd3aba12aa5e7",
@@ -67,7 +79,7 @@
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/142",
     "active_leaf": "ISSUE-44-AUTHORITY",
     "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/44",
-    "next_action": "Qualify the exact architecture/44-framework-only-production head: ADR-0024 must narrow ADR-0018 without rewriting accepted history; active docs/specs/products must be empty/absent; historical CHESS-0001 must be Superseded archive provenance; Charter/README/architecture/spec-index/registry/status/plan must agree; organization validation must structurally reject future active product specs without banning concrete examples.",
+    "next_action": "Run the complete fail-closed PR workflow on the exact rebound authority head. All Graph owner lanes must regenerate naturally against the rebound 989-requirement catalog; any stale identity failure must be corrected at its owning frozen input rather than by weakening identity checks. Then complete exact-head review, guarded squash merge and protected-main readback.",
     "after_integration": "Reassess issue #47 against protected ADR-0024. Preserve any useful Connect Four-like case only as #36-owned removable conformance evidence; close the in-repository product request not planned if invalid. Then close #141 once all audit findings have durable disposition and return to #24 RECLAIM preflight.",
     "exit": "Repository current-state truth, merge enforcement and production-product ownership are unambiguous enough that semantic work cannot be merged or routed from stale/conflicting instructions."
   },
@@ -95,7 +107,7 @@
     "next_semantic_action": "Correct and falsify the RECLAIM representation/resource/lifecycle preflight before implementing GRAPH-RECLAIM-001..009."
   },
   "blockers": [
-    "Issue #44 candidate ADR-0024 and its active-spec/archive/registry enforcement are not protected until exact-head PR validation and protected-main readback succeed.",
+    "Issue #44 candidate ADR-0024 and its rebound catalog/archive/registry enforcement are not protected until exact-head full PR validation and protected-main readback succeed.",
     "Graph RECLAIM representation/resource/lifecycle preflight is incomplete; production lowering and ENGINE-CONTRACT-ACCEPTANCE-01 remain blocked.",
     "CUDA-JS native Linux qualification and the exact CUDA-MCGS/CUDA-JS compatible pair remain downstream evidence gates."
   ],
@@ -123,7 +135,8 @@
     "implement an issue merely because its current title/body asks for a mechanism before reassessing its authority and dependency state",
     "edit an accepted ADR in place when a successor decision is required",
     "ban concrete named domains merely because production products are externally owned; removable conformance examples remain allowed",
-    "treat an external product's current branch/PR state as CUDA-MCGS authority merely because the product is named as a consumer"
+    "treat an external product's current branch/PR state as CUDA-MCGS authority merely because the product is named as a consumer",
+    "weaken frozen-source or identity-drift checks to make an authority correction pass"
   ],
   "cleanup_debt": [
     "checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f is redundant recovery state preserved because the available connector exposes no safe delete-ref action.",
