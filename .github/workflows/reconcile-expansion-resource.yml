@@ -1,0 +1,79 @@
+name: Reconcile Graph expansion resource
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    if: github.event.pull_request.head.ref == 'ref/graph-edge-01'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ref/graph-edge-01
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26.7.0
+      - name: Apply bounded expansion-resource reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function replaceOnce(path, before, after) {
+            const input = fs.readFileSync(path, 'utf8');
+            const first = input.indexOf(before);
+            if (first < 0 || input.indexOf(before, first + 1) >= 0) throw new Error(`${path}: expected exactly one replacement target`);
+            fs.writeFileSync(path, input.slice(0, first) + after + input.slice(first + before.length));
+          }
+
+          replaceOnce(
+            'experiments/search-ir-composer-reference/src/graph-fixtures.mjs',
+            "    { id: `graph.${profile}.resource-edge-slots`, unit: 'slots', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'edge-capacity' },\n    { id: `graph.${profile}.resource-state-bytes`",
+            "    { id: `graph.${profile}.resource-edge-slots`, unit: 'slots', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'edge-capacity' },\n    { id: `graph.${profile}.resource-expansion-slots`, unit: 'slots', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'edge-capacity' },\n    { id: `graph.${profile}.resource-state-bytes`",
+          );
+
+          replaceOnce(
+            'experiments/search-semantics-reference/src/graph-edge-core.mjs',
+            "  const profileEdgeSlots = resourceMaximum(profile, 'resource-edge-slots');\n  const profileActionBytes = resourceMaximum(profile, 'resource-action-bytes');\n  const expansionCapacity = decimal(expansionLayout.capacity, 'GRAPH_EDGE_PROFILE', `${expansionLayout.id} capacity`);\n  const limits = {\n    edgeSlots: admission.edgeSlots === undefined ? profileEdgeSlots : decimal(admission.edgeSlots, 'GRAPH_EDGE_ADMISSION', 'edgeSlots'),\n    actionBytes: admission.actionBytes === undefined ? profileActionBytes : decimal(admission.actionBytes, 'GRAPH_EDGE_ADMISSION', 'actionBytes'),\n  };\n  if (limits.edgeSlots > profileEdgeSlots || limits.actionBytes > profileActionBytes || limits.edgeSlots === 0n || limits.actionBytes === 0n) {\n    fail('GRAPH_EDGE_ADMISSION', 'test admission plan exceeds or eliminates normalized Graph capacity');\n  }",
+            "  const profileEdgeSlots = resourceMaximum(profile, 'resource-edge-slots');\n  const profileExpansionSlots = resourceMaximum(profile, 'resource-expansion-slots');\n  const profileActionBytes = resourceMaximum(profile, 'resource-action-bytes');\n  const expansionLayoutCapacity = decimal(expansionLayout.capacity, 'GRAPH_EDGE_PROFILE', `${expansionLayout.id} capacity`);\n  if (profileExpansionSlots > expansionLayoutCapacity) fail('GRAPH_EDGE_PROFILE', 'expansion-slot resource exceeds the normalized expansion layout');\n  const limits = {\n    edgeSlots: admission.edgeSlots === undefined ? profileEdgeSlots : decimal(admission.edgeSlots, 'GRAPH_EDGE_ADMISSION', 'edgeSlots'),\n    expansionSlots: admission.expansionSlots === undefined ? profileExpansionSlots : decimal(admission.expansionSlots, 'GRAPH_EDGE_ADMISSION', 'expansionSlots'),\n    actionBytes: admission.actionBytes === undefined ? profileActionBytes : decimal(admission.actionBytes, 'GRAPH_EDGE_ADMISSION', 'actionBytes'),\n  };\n  if (limits.edgeSlots > profileEdgeSlots || limits.expansionSlots > profileExpansionSlots || limits.expansionSlots > expansionLayoutCapacity\n      || limits.actionBytes > profileActionBytes || limits.edgeSlots === 0n || limits.expansionSlots === 0n || limits.actionBytes === 0n) {\n    fail('GRAPH_EDGE_ADMISSION', 'test admission plan exceeds or eliminates normalized Graph capacity');\n  }",
+          );
+
+          replaceOnce(
+            'experiments/search-semantics-reference/src/graph-edge-core.mjs',
+            "    if (BigInt(expansions.length) >= expansionCapacity) return { kind: 'pressure', code: 'edge-capacity' };",
+            "    if (BigInt(expansions.length) >= limits.expansionSlots) return { kind: 'pressure', code: 'edge-capacity' };",
+          );
+
+          replaceOnce(
+            'experiments/search-semantics-reference/src/graph-edge-core.mjs',
+            "      limits: { edgeSlots: toDecimal(limits.edgeSlots), actionBytes: toDecimal(limits.actionBytes), actionByteLimit: toDecimal(actionByteLimit), expansionRecordBytes: toDecimal(expansionRecordBytes) },",
+            "      limits: { edgeSlots: toDecimal(limits.edgeSlots), expansionSlots: toDecimal(limits.expansionSlots), actionBytes: toDecimal(limits.actionBytes), actionByteLimit: toDecimal(actionByteLimit), expansionRecordBytes: toDecimal(expansionRecordBytes) },",
+          );
+
+          replaceOnce(
+            'experiments/search-semantics-reference/src/graph-edge-cases.mjs',
+            "  defineCase('graph-edge-expansion-generation-has-one-advancing-claimer', () => {",
+            "  defineCase('graph-edge-expansion-capacity-is-explicit-and-finite', () => {\n    const { oracle, nodes } = createEdgeHarness(projection, { admission: { expansionSlots: '1' } });\n    const parentA = nodes.ready('parent-cap-a', 'parent-cap-a');\n    const parentB = nodes.ready('parent-cap-b', 'parent-cap-b');\n    const first = oracle.claimExpansion({ claimer: 'expander-a', generation: '0', parent: parentA });\n    assert.equal(first.kind, 'initializer');\n    const pressure = oracle.claimExpansion({ claimer: 'expander-b', generation: '0', parent: parentB });\n    assert.deepEqual(pressure, { kind: 'pressure', code: 'edge-capacity' });\n    assert.equal(oracle.snapshot().limits.expansionSlots, '1');\n    return { first: first.kind, pressure: pressure.code, expansionSlots: '1' };\n  }, ['GRAPH-EDGE-009']);\n\n  defineCase('graph-edge-expansion-generation-has-one-advancing-claimer', () => {",
+          );
+
+          replaceOnce(
+            'experiments/search-semantics-reference/fixtures/graph-edge-cases.json',
+            '    "graph-edge-expansion-generation-has-one-advancing-claimer",',
+            '    "graph-edge-expansion-capacity-is-explicit-and-finite",\n    "graph-edge-expansion-generation-has-one-advancing-claimer",',
+          );
+          NODE
+
+          git rm --ignore-unmatch .github/workflows/reconcile-expansion-resource.yml
+          git config user.name iteathen
+          git config user.email josh.oshiro@gmail.com
+          git add experiments/search-ir-composer-reference/src/graph-fixtures.mjs \
+            experiments/search-semantics-reference/src/graph-edge-core.mjs \
+            experiments/search-semantics-reference/src/graph-edge-cases.mjs \
+            experiments/search-semantics-reference/fixtures/graph-edge-cases.json
+          git commit -m "ref: declare finite Graph expansion resource"
+          git push origin HEAD:ref/graph-edge-01
