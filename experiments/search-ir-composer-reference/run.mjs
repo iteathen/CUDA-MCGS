@@ -936,6 +936,9 @@ await runCase('graph-identity-content-sensitive', () => {
   const mutated = clone(graphProfileInputs[0]);
   mutated.diagnostics.maxRecords = '257';
   assert.notDeepEqual(normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain).identity, graphProfiles[0].identity);
+  const handling = clone(graphProfileInputs[1]);
+  handling.ownerRegions.find(({ semanticRole }) => semanticRole === 'domain-state').referenceHandling.actions = ['release', 'validate'];
+  assert.notDeepEqual(normalizeGraphProfile(handling, inspected, graphFixtures[1].domain).identity, graphProfiles[1].identity);
 });
 
 await runCase('graph-schema-closed', () => {
@@ -943,6 +946,7 @@ await runCase('graph-schema-closed', () => {
   assert.equal(graphProfileSchema.additionalProperties, false);
   assert.equal(graphProfileSchema.$defs.objectKind.additionalProperties, false);
   assert.equal(graphProfileSchema.$defs.ownerRegion.additionalProperties, false);
+  assert(graphProfileSchema.$defs.ownerRegion.required.includes('referenceHandling'));
 });
 
 await runCase('graph-framework-selection-link', () => {
@@ -1187,6 +1191,12 @@ await runCase('reject-graph-resource-range', () => {
   const underfunded = clone(graphProfileInputs[0]);
   underfunded.resources = underfunded.resources.filter(({ id }) => !id.endsWith('resource-expansion-slots'));
   assert.throws(() => normalizeGraphProfile(underfunded, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
+  const unprotected = clone(graphProfileInputs[0]);
+  unprotected.resources = unprotected.resources.filter(({ id }) => !id.endsWith('resource-protection-slots'));
+  assert.throws(() => normalizeGraphProfile(unprotected, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_REQUIRED' });
+  const protectionUnderfunded = clone(graphProfileInputs[0]);
+  protectionUnderfunded.resources.find(({ id }) => id.endsWith('resource-protection-slots')).maximum = '8191';
+  assert.throws(() => normalizeGraphProfile(protectionUnderfunded, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
 });
 
 await runCase('reject-graph-persistence-scope', () => {

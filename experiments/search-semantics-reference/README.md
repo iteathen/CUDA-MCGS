@@ -1,6 +1,6 @@
 # CUDA-MCGS search-semantics reference experiment
 
-This disposable CUDA-free experiment is the behavioral reference/conformance capsule planned by [`ENGINE-REFERENCE-01`](../../docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md). `REF-HARNESS-01` supplies the semantic-neutral harness; `REF-DOMAIN-01` supplies the Domain oracle; `REF-GRAPH-01` now has separate NODE/transposition and EDGE/expansion owner bricks while active-path, root-protection, generation/reclamation, Policy, Evaluator, Resource-policy, Progress, Output, Session, Stage and Channel behavior remain outside those Graph bricks.
+This disposable CUDA-free experiment is the behavioral reference/conformance capsule planned by [`ENGINE-REFERENCE-01`](../../docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md). `REF-HARNESS-01` supplies the semantic-neutral harness; `REF-DOMAIN-01` supplies the Domain oracle; `REF-GRAPH-01` now has separate NODE/transposition, EDGE/expansion, and REF/reference-protection owner bricks. Active-path/cycle, root-authority integration, quiescence/reclamation, Policy, Evaluator, Resource-policy, Progress, Output, Session, Stage and Channel behavioral bricks remain outside those completed Graph slices.
 
 ## Question and owner
 
@@ -20,8 +20,15 @@ EDGE additionally enforces the finite structure selected by the normalized Graph
 - opaque producer cursor/status material must fit the normalized expansion record;
 - expansion slots are an explicit finite resource contribution;
 - aggregate per-engine `edge-capacity` slot resources must cover parent-edge plus expansion layout capacity, allowing either distinct or explicitly shared finite pools;
-- expansion exhaustion uses the already declared `edge-capacity` pressure vocabulary rather than inventing a new product-specific failure; and
+- expansion exhaustion uses the already declared `edge-capacity` pressure vocabulary rather than inventing a product-specific failure; and
 - published-pending cancellation is terminal and conservative.
+
+The Graph REF oracle owns only `GRAPH-REF-001` through `GRAPH-REF-008`: typed reference validation, arena/incarnation and slot/generation validity, non-wrapping generation advancement, raw-address exclusion from public reference forms, opaque owner-reference lifecycle delegation, finite protection admission, reusable generation-safe protection tokens, and one declared protection-vs-retirement ordering point. It consumes storage state only through an injected metadata resolver and never receives Domain payload or foreign owner bytes.
+
+REF also closes two normalized-profile gaps discovered by author review:
+
+- materialized profiles explicitly contribute finite `protection-record` capacity with typed `protection-capacity` pressure; and
+- every opaque owner region explicitly declares `referenceHandling: none | owner-lifecycle(actions...)`. The existing owner lifecycle schema identity remains the mediation boundary; Graph does not inspect or rewrite the private record layout.
 
 ## Exact current evidence chain
 
@@ -29,38 +36,45 @@ The current Composer result is:
 
 - capsule: `cuda-mcgs-search-ir-composer-reference-v0.2.0`;
 - expected/discovered/executed/passed: `879/879/879/879`;
-- framework-selection SHA-256: `48e0c83e6bad0a674efec8b84ac43246d20cb8c2eea82f78170442b2d699dc11`;
+- framework-selection SHA-256: `c2fda51cdc63a9e64843e1619bcaa8a148894c2839ee7e4739f7e6d16f3e2d28`;
 - framework-selection canonical bytes: `10422`;
-- representation/composition SHA-256: `f4e85941091a820047778679a3ab79573218f700349cc282d6210ba43942e98f`;
+- representation/composition SHA-256: `1b3173a128215b6fffc68c68a162708aec7f7bdc93e3e4ac7e26648abec39a24`;
 - representation/composition canonical bytes: `719510`.
 
 The shared harness/Domain chain is current against that representation identity:
 
-- Domain projection SHA-256: `e169677d15c1220747f2f5e63434342dab6b46d65108a05aeb78485a490c338c`;
+- Domain projection SHA-256: `278cfce297e1ecb9fc8ea151afb315d6ab67dc745b6beab244c70b5dd5f8508b`;
 - Domain projection canonical bytes: `69524`;
 - harness/Domain cases: `49/49`;
 - direct Domain planned/executed coverage: `47/47`;
-- harness/Domain evidence SHA-256: `9d9d468f95010848210f25019563f7e7351e58dc74a29aa83391d0903a9db1b2`;
+- harness/Domain evidence SHA-256: `3cbb62ccf7498eb848793cd488f0f319c1fe0fc65c68d16f11cdc03c7b3e6491`;
 - canonical bytes: `30372`.
 
 The Composer-owned Graph projection contains four exact normalized profiles:
 
-- SHA-256: `f6abe5bbef4db62c5c79211ac954ece110a2da764cce6b5ce5e854870e9390ba`;
-- canonical bytes: `132969`.
+- SHA-256: `5e4729d33e917ccdcdc45e942fbe610348cdc448361fa9dd3786da9c55e3d85f`;
+- canonical bytes: `134028`.
 
 The NODE capsule is rebound to that exact Composer/projection pair:
 
 - cases: `13/13`;
 - direct `GRAPH-NODE-*` planned/executed coverage: `11/11`;
-- evidence SHA-256: `1e284c4f8da41c9afc794b6803e4d4ce13b7c0c74f903c383ca900bdacfee687`;
+- evidence SHA-256: `cb9c9382fe898421e1730881057f5d75c7c9e1085001d0026562e050bd8ebbbc`;
 - canonical bytes: `10123`.
 
 EDGE refuses to run unless those exact Composer, projection and NODE identities are present. Its current qualified result is:
 
 - cases: `16/16`;
 - direct `GRAPH-EDGE-*` planned/executed coverage: `10/10`;
-- evidence SHA-256: `4a0ad1a80b5b02243ce1e1fd85a881f4127999fc14ca68b701550f7eda0cab40`;
+- evidence SHA-256: `eb9dd011e91fff0896cb0019571eb97346e5da5c595920fe6101c6fa9aa91879`;
 - canonical bytes: `11661`.
+
+REF also refuses mismatched Composer, Graph projection or NODE evidence. Its current qualified result is:
+
+- cases: `14/14`;
+- direct `GRAPH-REF-*` planned/executed coverage: `8/8`;
+- evidence SHA-256: `2c4fac58ef2a7678b5417579c2d05210910596fd57adf9be30ef2f36d0266456`;
+- canonical bytes: `9139`.
 
 ## Run
 
@@ -91,12 +105,22 @@ node scripts/run-graph-node-reference.mjs
 node scripts/run-graph-edge-reference.mjs
 ```
 
+Graph REF capsule consumes the same exact Composer/projection/NODE chain:
+
+```bash
+node scripts/run-search-ir-composer-reference.mjs
+node scripts/export-search-ir-composer-graph-profiles.mjs
+node scripts/run-graph-node-reference.mjs
+node scripts/run-graph-ref-reference.mjs
+```
+
 Focused examples:
 
 ```bash
 node scripts/run-search-semantics-reference.mjs --case mutation-harness-detects-key-drift
 node scripts/run-graph-node-reference.mjs --case graph-node-oracle-sensitivity-collision-verification
 node scripts/run-graph-edge-reference.mjs --case graph-edge-published-pending-cancel-terminal
+node scripts/run-graph-ref-reference.mjs --case graph-ref-oracle-sensitivity-generation-check
 ```
 
 Generated machine evidence lives under ignored `experiments/search-semantics-reference/build/` and is disposable. Focused evidence cannot support a full-capsule claim.
@@ -122,7 +146,19 @@ The Graph EDGE capsule has 16 cases covering all 10 direct `GRAPH-EDGE-*` requir
 - structural-ready independence from foreign Policy/Evaluator/Output/extension records; and
 - parent-identity, true early-child-consumption and partial-batch mutation falsifiers.
 
-The Graph normalizer also rejects a materialized profile whose aggregate per-engine slot resources using `edge-capacity` cannot cover both parent-edge and expansion layout capacities. The arbitrary-width Graph test scales the corresponding resource budget with the enlarged layouts, preserving the no-accidental-limit contract.
+The Graph REF capsule has 14 cases covering all eight direct `GRAPH-REF-*` requirements:
+
+- kind, arena/incarnation, slot, generation and lifecycle validation before access;
+- explicit side-effect-free `arena-incarnation-mismatch` and stale-generation rejection;
+- compatibility with the current NODE reference shape;
+- no generation wrap and no accidental 32-bit range limit;
+- public raw-address rejection;
+- owner-reference lifecycle delegation only when the normalized opaque region explicitly selects the requested action;
+- protection-before-retirement and retirement-before-protection schedules;
+- finite protection pressure plus released-slot reuse with protection-token generation advancement and stale-token rejection; and
+- named generation-check and protect/retire-order mutation falsifiers.
+
+The Graph normalizer also rejects materialized profiles whose declared finite resources do not fund selected expansion/protection storage. Meaning-affecting owner-reference handling participates in normalized profile identity.
 
 ## Files
 
@@ -146,15 +182,22 @@ Graph EDGE:
 - `src/graph-edge-core.mjs` — EDGE/expansion semantic core;
 - `src/graph-edge.mjs` — mutation adapter only;
 - `src/graph-edge-cases.mjs` and `src/graph-edge-lifecycle-cases.mjs` — EDGE cases, lifecycle coverage and falsifiers;
-- `run-graph-edge.mjs` and `../../scripts/run-graph-edge-reference.mjs` — EDGE evidence runner/entrypoint;
+- `run-graph-edge.mjs` and `../../scripts/run-graph-edge-reference.mjs` — EDGE evidence runner/entrypoint.
+
+Graph REF:
+
+- `fixtures/graph-ref-cases.json` — exact Composer/Graph/NODE binding and checked-in 14-case bank;
+- `src/graph-ref.mjs` — typed-reference, generation and protection semantic core;
+- `src/graph-ref-cases.mjs` — REF cases and falsifiers;
+- `run-graph-ref.mjs` and `../../scripts/run-graph-ref-reference.mjs` — REF evidence runner/entrypoint;
 - `RESULTS.md` — retained bounded identities and claim limits.
 
 ## Success, promotion and disposal
 
-Harness/Domain is current at 49/49 with 47/47 direct coverage. NODE is qualified at 13/13 with 11/11 direct coverage. EDGE is qualified at 16/16 with 10/10 direct coverage. Merge remains guarded until final exact-head repository CI and protected-main readback complete.
+Harness/Domain is current at 49/49 with 47/47 direct coverage. NODE is qualified at 13/13 with 11/11 direct coverage. EDGE is qualified at 16/16 with 10/10 direct coverage. REF is qualified at 14/14 with 8/8 direct coverage. Merge remains guarded until final exact-head repository CI and protected-main readback complete.
 
-Future Graph leaves add active-path/occurrence/cycle, typed-reference/generation, root-protection and retirement/quiescence/reclamation behavior beside these modules, followed by ADR-0022 occurrence supersession and final Graph reconciliation. They may consume normalized public profiles and owner facts, but they may not put search meaning into the neutral harness, import another owner's internal state or convert the experiment into a production CPU runtime. Production code must never import this experiment.
+Future Graph leaves add active-path/occurrence/cycle, root-authority/protection integration, retirement/quiescence/reclamation and ADR-0022 occurrence-supersession behavior beside these modules. They may consume normalized public profiles and owner facts, but they may not put search meaning into the neutral harness, import another owner's internal state or convert the experiment into a production CPU runtime. Production code must never import this experiment.
 
 ## Claim limits
 
-Passing the current capsules proves only the semantic-neutral harness, bounded Domain behavior, the Graph NODE/transposition brick and the Graph EDGE/expansion brick against the exact proposal identities above. It does not prove active paths/cycles, reference-generation safety, root protection, reclamation, the remaining Graph contract, a complete terminal reference engine, proposal acceptance, production JavaScript/Device-JS implementation, CUDA-JS execution, native CUDA, performance, search quality, a public SDK or multi-GPU support.
+Passing the current capsules proves only the semantic-neutral harness, bounded Domain behavior, Graph NODE/transposition, Graph EDGE/expansion, and Graph REF/reference-protection bricks against the exact proposal identities above. It does not prove active paths/cycles, Search Session root authority, quiescence/reclamation, the remaining Graph contract, a complete terminal reference engine, proposal acceptance, production JavaScript/Device-JS implementation, CUDA-JS execution, native CUDA, performance, search quality, a public SDK or multi-GPU support.

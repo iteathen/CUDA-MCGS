@@ -30,10 +30,10 @@ const BASE_PORTS = [
   'reserve-edge', 'validate-reference',
 ];
 const RECLAIM_PORTS = ['prove-quiescent', 'reclaim', 'retire'];
-const REQUIRED_RESOURCE_PRESSURES = ['action-byte-capacity', 'edge-capacity', 'node-capacity', 'path-capacity', 'path-depth', 'state-byte-capacity'];
+const REQUIRED_RESOURCE_PRESSURES = ['action-byte-capacity', 'edge-capacity', 'node-capacity', 'path-capacity', 'path-depth', 'protection-capacity', 'state-byte-capacity'];
 const REQUIRED_FAILURES = [
   'action-byte-capacity', 'arena-incarnation-mismatch', 'cancelled', 'edge-capacity', 'generation-exhausted', 'graph-internal-failure',
-  'invalid-graph-profile', 'invalid-reference', 'node-capacity', 'owner-lifecycle-failure', 'path-capacity', 'path-depth', 'publication-conflict',
+  'invalid-graph-profile', 'invalid-reference', 'node-capacity', 'owner-lifecycle-failure', 'path-capacity', 'path-depth', 'protection-capacity', 'publication-conflict',
   'reclamation-not-quiescent', 'reference-kind-mismatch', 'stale-reference', 'state-byte-capacity', 'transposition-capacity', 'transposition-probe-exhausted',
 ];
 const REGION_CONTRACT = new Map([
@@ -249,8 +249,21 @@ function normalizeLayout(input, index, objectById, referenceEncoding) {
   };
 }
 
+function normalizeReferenceHandling(input, label) {
+  if (input?.kind === 'none') {
+    exactKeys(input, ['kind'], 'GRAPH_OWNER_REFERENCE_FIELDS', label);
+    return { kind: 'none' };
+  }
+  exactKeys(input, ['kind', 'actions'], 'GRAPH_OWNER_REFERENCE_FIELDS', label);
+  if (input.kind !== 'owner-lifecycle') fail('GRAPH_OWNER_REFERENCE_KIND', `${label} kind is invalid`);
+  return {
+    kind: input.kind,
+    actions: stringSet(input.actions, { code: 'GRAPH_OWNER_REFERENCE_ACTION', label: `${label} actions`, allowed: ['fixup', 'release', 'validate'], minimum: 1 }),
+  };
+}
+
 function normalizeOwnerRegion(input, index, objectById, catalogById) {
-  exactKeys(input, ['id', 'semanticRole', 'objectKind', 'ownerContract', 'ownerProfile', 'layout', 'lifecycle', 'offsetBytes', 'sizeBytes', 'alignmentBytes', 'permissions', 'persistence'], 'GRAPH_OWNER_REGION_FIELDS', `ownerRegion ${index}`);
+  exactKeys(input, ['id', 'semanticRole', 'objectKind', 'ownerContract', 'ownerProfile', 'layout', 'lifecycle', 'referenceHandling', 'offsetBytes', 'sizeBytes', 'alignmentBytes', 'permissions', 'persistence'], 'GRAPH_OWNER_REGION_FIELDS', `ownerRegion ${index}`);
   assertNamespacedId(input.id, 'GRAPH_OWNER_REGION_ID', `ownerRegion ${index} id`);
   const semanticRole = assertEnum(input.semanticRole, [...REGION_CONTRACT.keys(), 'capability-record', 'product-record'], 'GRAPH_OWNER_REGION_ROLE', `${input.id} semanticRole`);
   assertNamespacedId(input.objectKind, 'GRAPH_OWNER_REGION_OBJECT', `${input.id} objectKind`);
@@ -267,6 +280,7 @@ function normalizeOwnerRegion(input, index, objectById, catalogById) {
     ownerProfile: normalizeProfileReference(input.ownerProfile, `${input.id} ownerProfile`),
     layout: normalizeSchemaReference(input.layout, `${input.id} layout`),
     lifecycle: normalizeSchemaReference(input.lifecycle, `${input.id} lifecycle`),
+    referenceHandling: normalizeReferenceHandling(input.referenceHandling, `${input.id} referenceHandling`),
     offsetBytes,
     sizeBytes,
     alignmentBytes,
@@ -675,6 +689,13 @@ export function normalizeGraphProfile(input, inspectedCatalog, domainProfileResu
     );
     if (compareDecimalUint(edgeSlotCapacity, structuralEdgeDemand) < 0) {
       fail('GRAPH_RESOURCE_CAPACITY', 'edge-capacity slot resources cannot cover parent-edge plus expansion layout capacity');
+    }
+    const protectionSlotCapacity = resources
+      .filter(({ unit, pressureOutcome, scope }) => unit === 'slots' && pressureOutcome === 'protection-capacity' && scope === 'per-engine')
+      .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+    const protectionDemand = layoutByObject.get(roleObject.get('protection-record')).capacity;
+    if (compareDecimalUint(protectionSlotCapacity, protectionDemand) < 0) {
+      fail('GRAPH_RESOURCE_CAPACITY', 'protection-capacity slot resources cannot cover protection-record layout capacity');
     }
     const requiredRegions = [['domain-state', roleObject.get('state-node')], ['domain-action', roleObject.get('parent-edge')]];
     if (domainProfileResult.normalized.history.disposition === 'carried' || domainProfileResult.normalized.history.disposition === 'hybrid') requiredRegions.push(['domain-history', roleObject.get('path-occurrence')]);

@@ -172,6 +172,9 @@ function ownerRegion(profile, domainResult, domainSchemaSha, catalogById, semant
     },
     layout: schemaReference(`cuda-mcgs.synthetic-${profile}-${semanticRole}-layout`),
     lifecycle: schemaReference(`cuda-mcgs.synthetic-${profile}-${semanticRole}-lifecycle`),
+    referenceHandling: profile === 'synthetic-reclaiming' && semanticRole === 'domain-state'
+      ? { kind: 'owner-lifecycle', actions: ['fixup', 'release', 'validate'] }
+      : { kind: 'none' },
     offsetBytes,
     sizeBytes,
     alignmentBytes: '8',
@@ -225,7 +228,7 @@ function failures() {
     'action-byte-capacity': 'capacity', 'arena-incarnation-mismatch': 'input', cancelled: 'cancellation', 'edge-capacity': 'capacity',
     'generation-exhausted': 'exhaustion', 'graph-internal-failure': 'internal', 'invalid-graph-profile': 'input', 'invalid-reference': 'input',
     'node-capacity': 'capacity', 'owner-lifecycle-failure': 'compatibility', 'path-capacity': 'capacity', 'path-depth': 'capacity',
-    'publication-conflict': 'publication', 'reclamation-not-quiescent': 'quiescence', 'reference-kind-mismatch': 'input', 'stale-reference': 'input',
+    'protection-capacity': 'capacity', 'publication-conflict': 'publication', 'reclamation-not-quiescent': 'quiescence', 'reference-kind-mismatch': 'input', 'stale-reference': 'input',
     'state-byte-capacity': 'capacity', 'transposition-capacity': 'capacity', 'transposition-probe-exhausted': 'capacity',
   };
   return Object.entries(kinds).map(([code, kind]) => ({ code, kind, diagnostic: true }));
@@ -273,6 +276,7 @@ function resources(profile, { reclamation = false, transposition = true } = {}) 
     { id: `graph.${profile}.resource-action-bytes`, unit: 'bytes', minimum: '1', maximum: '262144', alignment: '8', scope: 'per-engine', pressureOutcome: 'action-byte-capacity' },
     { id: `graph.${profile}.resource-path-records`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'path-capacity' },
     { id: `graph.${profile}.resource-path-depth`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-invocation', pressureOutcome: 'path-depth' },
+    { id: `graph.${profile}.resource-protection-slots`, unit: 'slots', minimum: '1', maximum: '8192', alignment: '8', scope: 'per-engine', pressureOutcome: 'protection-capacity' },
   ];
   if (transposition) result.push({ id: `graph.${profile}.resource-transposition`, unit: 'slots', minimum: '1', maximum: '8192', alignment: '8', scope: 'per-engine', pressureOutcome: 'transposition-capacity' });
   if (reclamation) result.push({ id: `graph.${profile}.resource-reclaim-work`, unit: 'work-units', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'reclamation-not-quiescent' });
