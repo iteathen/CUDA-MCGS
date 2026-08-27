@@ -24,6 +24,7 @@ jobs:
           node-version: 26.7.0
       - name: Apply ROOT profile correction, rebind evidence, and qualify ROOT
         run: |
+          node tools/correct-graph-root-cases.mjs
           node tools/correct-graph-root-migration.mjs
           node tools/graph-root-semantic-migration.mjs
       - name: Publish qualified ROOT migration and remove temporary tooling
@@ -32,6 +33,7 @@ jobs:
           set -euo pipefail
           git rm -f --ignore-unmatch \
             .github/workflows/qualify-graph-root.yml \
+            tools/correct-graph-root-cases.mjs \
             tools/correct-graph-root-migration.mjs \
             tools/graph-root-semantic-migration.mjs
           git config user.name iteathen
@@ -41,6 +43,7 @@ jobs:
             experiments/search-ir-composer-reference/run.mjs \
             experiments/search-ir-composer-reference/src/graph.mjs \
             experiments/search-ir-composer-reference/src/graph-fixtures.mjs \
+            experiments/search-semantics-reference/src/graph-root-cases.mjs \
             experiments/search-semantics-reference/fixtures/neutral-schedules.json \
             experiments/search-semantics-reference/fixtures/domain-cases.json \
             experiments/search-semantics-reference/fixtures/graph-node-cases.json \
