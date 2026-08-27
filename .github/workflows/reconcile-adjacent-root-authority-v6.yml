@@ -1,0 +1,54 @@
+name: one-shot adjacent root authority reconciliation v6
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    if: github.event.pull_request.head.ref == 'docs/ref-root-control-01-reconcile'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/ref-root-control-01-reconcile
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.7.0
+      - name: Run flattened fail-closed adjacent reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          const workflow = await readFile('.github/workflows/reconcile-adjacent-root-authority-v3.yml', 'utf8');
+          const marker = '        run: |\n';
+          const start = workflow.indexOf(marker);
+          if (start < 0) throw new Error('v3 reconciliation run block not found');
+          let script = workflow.slice(start + marker.length)
+            .split('\n')
+            .map((line) => line.startsWith('          ') ? line.slice(10) : line)
+            .join('\n');
+
+          const importLine = `const importAfter = "import { canonicalIdentity, sourceTextSha256 } from './experiments/search-ir-composer-reference/src/validation.mjs';";`;
+          const importReplacement = `const importAfter = "import { canonicalIdentity, sourceTextSha256 } from './experiments/search-ir-composer-reference/src/validation.mjs';\\nimport { normalizeContractSet } from './experiments/search-ir-composer-reference/src/catalog.mjs';";`;
+          if (!script.includes(importLine)) throw new Error('v3 importAfter anchor missing');
+          script = script.replace(importLine, importReplacement);
+
+          const rawAssignment = 'framework.contractSet.identity = canonicalIdentity(contractSet);\\n';
+          const normalizedAssignment = 'const refreshedContractSetIdentity = canonicalIdentity(normalizeContractSet(contractSet));\\n          framework.contractSet.identity = { algorithm: refreshedContractSetIdentity.algorithm, sha256: refreshedContractSetIdentity.sha256 };\\n';
+          if (!script.includes(rawAssignment)) throw new Error('v3 contract-set assignment anchor missing');
+          script = script.replace(rawAssignment, normalizedAssignment);
+
+          const oldCleanup = 'git rm .github/workflows/reconcile-adjacent-root-authority.yml .github/workflows/reconcile-adjacent-root-authority-v2.yml .github/workflows/reconcile-adjacent-root-authority-v3.yml';
+          const newCleanup = `${oldCleanup} .github/workflows/reconcile-adjacent-root-authority-v4.yml .github/workflows/reconcile-adjacent-root-authority-v5.yml .github/workflows/reconcile-adjacent-root-authority-v6.yml`;
+          if (!script.includes(oldCleanup)) throw new Error('v3 workflow cleanup anchor missing');
+          script = script.replace(oldCleanup, newCleanup);
+
+          await writeFile('/tmp/reconcile-adjacent-root-authority-v6.sh', `set -euo pipefail\n${script}`, { mode: 0o700 });
+          NODE
+          bash /tmp/reconcile-adjacent-root-authority-v6.sh
