@@ -4,115 +4,81 @@
 
 **Updated:** 2026-08-27
 
-## Current qualified candidate
+## Current candidate
 
-The current `ref/graph-path-01` candidate extends `REF-GRAPH-01` through `GRAPH-PATH-001` to `GRAPH-PATH-008`. It is qualified on hosted Ubuntu/Node 26.7.0 but is not protected-main evidence until its PR is merged and the exact protected revision is read back.
+`ref/graph-root-01` extends `REF-GRAPH-01` through `GRAPH-ROOT-001..006`. ROOT is hosted-qualified but is **not** protected-main integrated until its PR is squash-merged and the exact squash SHA passes protected-main readback.
 
-The PATH qualification deliberately regenerated the proposal-derived evidence packet because it closed Graph-owned path resource/lifecycle omissions. Stable semantic case counts remain unchanged for previously completed owners.
+Protected base for this candidate is `main@e4069458ece47bbea0c2770204fa21fffbde6bb6` (PATH integration, PR #137).
 
-## Composer and Domain chain
+Hosted ROOT qualification run `33107176873` passed the complete Composer → Domain → NODE → EDGE → REF → PATH → ROOT chain plus `./scripts/verify-docs.sh`, then removed all temporary migration/correction tooling before publishing durable semantic commit `d6b091e7c1afc6c09eb7e562cd7f72eb2773874d`.
+
+## Exact candidate evidence
 
 Composer:
 
-- capsule: `cuda-mcgs-search-ir-composer-reference-v0.2.0`;
-- expected/discovered/executed/passed: `879/879/879/879`;
-- contract-set SHA-256: `2a3ded0b25f59d6f6a5dfffefefceae73f25e9df0558953b0bea29201d47c10d`;
-- requirement-coverage SHA-256: `fe510fb69890b070ae6e7dfc60bd3e113a3f7e6354fa6bfcd8e48a6336c6c07a`;
-- expanded-requirements SHA-256: `32fc66ca775046121146f3afc621e3407bab69711355e283b769d947fd185e0a`;
-- framework-selection SHA-256: `e570172c64592db51ab7ee17c72e5f0e0b09c54d4a89467bd5b6d916aaff2fce` (`10422` canonical bytes);
-- representation/composition SHA-256: `c02b4c278edd6ab5cb432593e3aa5e0317eba14bb5eb7f7783f531513c49d34c` (`719510` canonical bytes).
+- `879/879` cases;
+- framework selection `de3b9a89f0570752230a6914bcb3c5374f73e5e59c424752819c0892e1f21ea5` (`10422` canonical bytes);
+- representation/composition `ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529` (`719510` canonical bytes).
 
-Shared harness + Domain:
+Domain:
 
-- expected/discovered/executed/passed: `49/49/49/49`;
-- failed/skipped: `0/0`;
-- direct SPEC-0007 planned/executed coverage: `47/47`;
-- Domain projection SHA-256: `b91ead2d6ec6eb13a6b8eb4ec61055023092269d81dbd36fb440777abf5e36a0` (`69524` canonical bytes);
-- harness/Domain evidence SHA-256: `a2b282a6728861e7b537f45d8104e40d45619dbe501e110dca5cfde5548e9971` (`30372` canonical bytes).
+- projection `e9df2902e6edaad40c6abf0b85eeecb06e94b4d5598d9c0b9c7238fa20c3edaa` (`69524` canonical bytes);
+- evidence `f186412a9b8d964c7f92e4c4000942768fa0ae81d62349c2528fd3aba12aa5e7` (`30372` canonical bytes);
+- `49/49`, direct `47/47`.
 
-The Composer-owned Graph projection contains four normalized profiles:
+Graph projection:
 
-- SHA-256: `c736152a9944a6fcd44b395146be70460f3ad368add2f5a54e845ba9ca09ac49`;
-- canonical bytes: `136759`.
+- `89ee04a47d8516ad02e33e884d8f35db9573840f58db140c6cbafe79178e7fd7` (`139099` canonical bytes).
 
-Selected normalized profile identities are:
+Graph owner evidence:
 
-- Graph: `a6983d9e34f6dfd08bf891f344ccc9d2ba1147b59484275cec96a6b6baf1aafc`;
-- Policy: `e1d8bd8ec12b7160da9033a395cdc000edb7e492f04d63e852f6c4f629b9b00c`;
-- Resource: `6b765610ca855818c597d91d2e6d8dcaffd8b2de9078b2ce379132323dc43674`;
-- Progress: `f4df6ef1e2c56eb7854f20dee89f88150977dcb96b422d71fde547c380d929ea`;
-- Output: `5eaab2b8b2c22c37860b47cd7794416da6b4631ec1a2f57d57243e6c38939701`.
+- NODE `4299dccecd33f6ef38c50f144e84316d00c7046a81ed6206b6e2e645b6683f74`, `13/13`, direct `11/11`;
+- EDGE `54b83935d320e6bd656c740ec2f3d8be062e3932bdf6e748c8315f26245faf58`, `16/16`, direct `10/10`;
+- REF `e3370158d1234dd3642d11c4458c9c390abcc3f62a04a75dd68d00faf6c4676d`, `14/14`, direct `8/8`;
+- PATH `af8f140e45f7c2942ec4b09b7d752f49b3eeb28f1cdc5b8c3b74887d34dd4318`, `14/14`, direct `8/8`;
+- generated root-control projection `2c71df25fff213f515aae02a01e210292a8e9b76fc84e14ab6cafb251fbbc9f1`;
+- ROOT `7e4fe6bf748ec110bebc1798d7742e03b89909df84da709f2fdeb51a42311ed0` (`10008` canonical bytes), `14/14`, direct `6/6`.
 
-## REF-GRAPH-01 owner bricks
+Selected normalized profile identities:
 
-### NODE / transposition
+- Graph `450fd5f79d4c0f2ee98f5854008c4c58f57a6c6424e144aa4ae2ad34fdcbcd61`;
+- Policy `1f4097bde39f3f072ace983ba99fc3167625b2ff5db841f6a7792cf9aec37aaf`;
+- Resource `8a722bcd7ae6b0ec86f4d589ea0ee3df8291c64a6d95b10e3dde2a3defe66481`;
+- Progress `7f3fcb4229bb7694b60469d3edba6302e5584bf87ef1284856a73f1b677ce8e8`;
+- Output `3bdc5d9c8fc63fb1bd34a6d93d7fc034518d4e7abb2b41f49406aaf8641b98a5`.
 
-- capsule: `cuda-mcgs-graph-node-reference-v0.2.0`;
-- expected/discovered/executed/passed: `13/13/13/13`;
-- direct `GRAPH-NODE-*` coverage: `11/11`;
-- evidence SHA-256: `dabc89fad787e293b6aa356cf3a841faac171e47bf1c8898be0fadd82668b44b`;
-- canonical bytes: `10123`.
+## ROOT behavior proved
 
-### EDGE / expansion
+The ROOT capsule proves only Graph-owned root storage/protection behavior:
 
-- capsule: `cuda-mcgs-graph-edge-reference-v0.2.0`;
-- expected/discovered/executed/passed: `16/16/16/16`;
-- direct `GRAPH-EDGE-*` coverage: `10/10`;
-- evidence SHA-256: `88be10851ae612d8b410564f6f1c1ba972eb2ee41c37a5459714ae1f26737b8d`;
-- canonical bytes: `11661`.
+- root anchors are finite typed references and are protected before publication;
+- Session/current-root/epoch authority remains outside Graph;
+- released anchor slots reuse only through explicit terminal-to-free lifecycle plus REF generation advancement;
+- a ready successor may be anchored for `advance` without retained-state reclassification, reclamation or eager cleanup;
+- `reroot` resolves/protects the replacement before Session authority commit and leaves the old anchor valid until commit;
+- replacement pressure cannot mutate the prior accepted root;
+- owner retain/retain-if-key-valid/transform/reset/invalidate disposition is delegated over opaque owner records;
+- old-epoch work may retain an independent protection after root authority changes;
+- superseding one occurrence cannot invalidate a still-valid shared transposed node;
+- `attention` changes have zero Graph ROOT effect;
+- publication-before-protection and eager-old-root-release mutations are detected.
 
-### REF / reference protection
+## Graph profile corrections discovered by ROOT
 
-- capsule: `cuda-mcgs-graph-ref-reference-v0.2.0`;
-- expected/discovered/executed/passed: `14/14/14/14`;
-- direct `GRAPH-REF-*` coverage: `8/8`;
-- evidence SHA-256: `8186a7039c79c604e28eca188f69acfcce0bbcc3ac0eeb5061e7de2b823255a0`;
-- canonical bytes: `9139`.
+ROOT falsification closed three Graph-owned representation gaps:
 
-### PATH / active occurrences
+1. materialized root-anchor storage has explicit finite `resource-root-anchor-slots` funding using the existing `protection-capacity` pressure family;
+2. aggregate protection-capacity slot resources must cover both protection-record and root-anchor layouts;
+3. root-anchor and protection-record terminal states have explicit private reset-to-free transitions. Ready protection records still require their normal release transition before reset; ROOT does not bypass REF lifecycle authority.
 
-- capsule: `cuda-mcgs-graph-path-reference-v0.2.0`;
-- expected/discovered/executed/passed: `14/14/14/14`;
-- failed/skipped: `0/0`;
-- direct `GRAPH-PATH-*` planned/executed coverage: `8/8`;
-- exact upstream NODE evidence: `dabc89fad787e293b6aa356cf3a841faac171e47bf1c8898be0fadd82668b44b`;
-- exact upstream REF evidence: `8186a7039c79c604e28eca188f69acfcce0bbcc3ac0eeb5061e7de2b823255a0`;
-- exact Graph projection: `c736152a9944a6fcd44b395146be70460f3ad368add2f5a54e845ba9ca09ac49`;
-- PATH evidence SHA-256: `ce0017528309aefb8ef6ffefc94b75984969a8776dfe02ab0f5ee828821dbe58`;
-- canonical bytes: `9530`.
+These changes intentionally rebound all proposal-derived Composer/Graph/downstream evidence identities above.
 
-The 14 PATH cases prove, within this bounded owner brick:
+## Permanent qualification path
 
-- active paths and occurrences have finite admitted capacity and typed references;
-- reusable transient slots return to `free` only through explicit private lifecycle transitions and REF generation advancement;
-- incoming edge and resolved node references validate before path-visible mutation;
-- occurrence protection is established before visibility, and partial acquisition rolls back exactly;
-- one state node may appear multiple times without Graph deciding cycle/repetition policy;
-- child identity/node resolution precedes Domain `classifyPathRelation`;
-- Domain-history / Policy-local occurrence material remains opaque and owner-mediated;
-- `path-capacity` and `path-depth` occur before partial publication or out-of-bounds mutation;
-- close/abandon publishes a terminal path state, runs owner disposition and releases occurrence protections exactly once before slot reuse;
-- self-loop, directed cycle, DAG transposition, stochastic parallel-transition and history-distinct equal-base-state fixtures preserve the same node/edge/path ownership; and
-- named relation-before-resolution and visibility-before-protection mutations are detected.
+The branch adds a permanent `Graph ROOT reference` job to `.github/workflows/docs.yml`. It replays Composer → Graph projection → NODE → REF → PATH → ROOT and retains `root-control.json` plus the owner evidence artifacts. EDGE remains an independent regression job.
 
-## Graph profile corrections retained by PATH
-
-### Explicit finite PATH resources
-
-Materialized profiles now fund selected active-path slots, path-occurrence records and per-invocation path depth through declared finite resource contributions. The Graph normalizer rejects underfunded layouts/`path.maxPaths`/`path.maxDepth` rather than allowing hidden allocation or inference.
-
-### Explicit transient reuse lifecycle
-
-The normalized active-path lifecycle now has private terminal-to-`free` reset transitions for released/abandoned/failed paths. The path-occurrence lifecycle has private ready/failed-to-`free` reset transitions. `normalizePath` rejects a materialized profile that cannot return those transient slots to `free` after their owner lifecycle/protection obligations complete.
-
-These transitions express storage lifecycle only. REF still owns generation advancement and stale-reference rejection, and RECLAIM remains a later owner for graph-object retirement/quiescence/reclamation.
-
-## Qualification and evidence lifecycle
-
-Hosted qualification run `33102506907` used Ubuntu 24.04 and Node 26.7.0. It regenerated Composer/Domain/Graph/NODE/EDGE/REF evidence, ran the full PATH capsule and `./scripts/verify-docs.sh`, then self-removed the temporary migration workflow/tool before publishing commit `b8965b20f1331b09cd7f733e0d5c1d35a716309c` on `ref/graph-path-01`.
-
-Machine evidence under `experiments/search-semantics-reference/build/` is reproducible, ignored and disposable. Checked-in fixture bindings, source and retained identities are the durable evidence coordinates.
+Before integration, the final documentation-bearing PR head must pass the complete ordinary workflow: verify, Windows/Ubuntu Search IR, NODE, EDGE, REF, PATH and ROOT.
 
 ## Claim limits
 
-The current candidate proves the semantic-neutral harness, bounded Domain behavior, Graph NODE/transposition, EDGE/expansion, REF/reference-protection and PATH/occurrence bricks described above. It does not prove Graph ROOT authority, retirement/quiescence/reclamation, ADR-0022 occurrence supersession, later owner oracles, a complete terminal reference engine, integrated proposal acceptance, production CUDA-MCGS code, CUDA-JS native execution, performance, search quality, a public SDK or multi-GPU support.
+This candidate does **not** prove `GRAPH-RECLAIM-*`, a reclamation mechanism, native/CUDA execution, physical scheduling, production implementation, performance, contract acceptance, SDK/release readiness or multi-GPU support. RECLAIM remains blocked until ROOT is squash-merged and reproduced on protected main.
