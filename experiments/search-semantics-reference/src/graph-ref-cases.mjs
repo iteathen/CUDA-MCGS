@@ -62,6 +62,26 @@ export function registerGraphRefCases({ defineCase, fixture, projection, nodeEvi
     return { valid: valid.reference, events: oracle.snapshot().events.length };
   }, ['GRAPH-REF-001', 'GRAPH-REF-004', 'GRAPH-REF-006']);
 
+  defineCase('graph-ref-arena-incarnation-mismatch-is-typed-and-side-effect-free', () => {
+    const profile = profileById(projection);
+    const ready = readyState(profile, 'state-node');
+    let resolverCalls = 0;
+    const oracle = createGraphReferenceOracle({
+      profile,
+      resolveSlotState: ({ kind, slot }) => {
+        resolverCalls += 1;
+        return { kind, arena: '8', slot, generation: '11', lifecycleState: ready };
+      },
+    });
+    expectInvalid(oracle.validateReference({
+      expectedKind: 'state-node',
+      reference: { kind: 'state-node', arena: '7', slot: '9', generation: '11' },
+    }), 'arena-incarnation-mismatch');
+    assert.equal(resolverCalls, 1);
+    assert.equal(oracle.snapshot().events.length, 0);
+    return { resolverCalls, semanticSideEffects: 0, code: 'arena-incarnation-mismatch' };
+  }, ['GRAPH-REF-001', 'GRAPH-REF-006']);
+
   defineCase('graph-ref-consumes-current-node-reference-shape', () => {
     const profile = profileById(projection);
     const ports = nodePorts();
@@ -186,10 +206,18 @@ export function registerGraphRefCases({ defineCase, fixture, projection, nodeEvi
         { ...two, lifecycleState: readyState(profile, 'state-node') },
       ]),
     });
-    assert.equal(oracle.acquireProtection({ expectedKind: 'state-node', owner: 'a', reference: one }).kind, 'protected');
+    const first = oracle.acquireProtection({ expectedKind: 'state-node', owner: 'a', reference: one });
+    assert.equal(first.kind, 'protected');
     assert.deepEqual(oracle.acquireProtection({ expectedKind: 'state-node', owner: 'b', reference: two }), { kind: 'pressure', code: 'protection-capacity' });
+    assert.equal(oracle.releaseProtection({ token: first.token }).kind, 'released');
+    const reused = oracle.acquireProtection({ expectedKind: 'state-node', owner: 'b', reference: two });
+    assert.equal(reused.kind, 'protected');
+    assert.equal(reused.token.id, first.token.id);
+    assert.equal(reused.token.generation, '1');
+    expectInvalid(oracle.releaseProtection({ token: first.token }), 'stale-reference');
+    assert.equal(oracle.releaseProtection({ token: reused.token }).kind, 'released');
     assert.equal(oracle.snapshot().limits.protectionSlots, '1');
-    return { protectionSlots: '1', pressure: 'protection-capacity' };
+    return { protectionSlots: '1', pressure: 'protection-capacity', reusedGeneration: reused.token.generation };
   }, ['GRAPH-REF-008']);
 
   defineCase('graph-ref-oracle-sensitivity-generation-check', () => {

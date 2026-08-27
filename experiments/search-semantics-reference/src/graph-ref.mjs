@@ -214,13 +214,37 @@ export function createGraphReferenceOracle({
     if (validated.kind !== 'valid') return validated;
     const key = referenceKey(validated.reference);
     if (retirementBarriers.has(key) && mutations.allowProtectionAfterRetirement !== true) return invalid('invalid-reference');
-    if (BigInt(protections.length) >= protectionSlots) return freeze({ kind: 'pressure', code: 'protection-capacity' }, 'Graph protection pressure');
-    const slot = protections.length;
-    const token = freeze({ id: `protection.${slot}`, generation: '0' }, 'Graph protection token');
-    const entry = { token, owner: input.owner, reference: validated.reference, referenceKey: key, state: 'held' };
-    protections.push(entry);
-    emit('protection-acquired', { owner: input.owner, reference: validated.reference, token });
-    return freeze({ kind: 'protected', token }, 'Graph protection acquisition');
+    let entry = protections.find((candidate) => candidate.state === 'released'
+      && decimal(candidate.token.generation, 'GRAPH_REF_PROTECTION', 'protection generation') < ranges.generation);
+    if (entry) {
+      entry.token = freeze({
+        id: entry.token.id,
+        generation: toDecimal(decimal(entry.token.generation, 'GRAPH_REF_PROTECTION', 'protection generation') + 1n),
+      }, 'Graph protection token');
+    } else {
+      if (BigInt(protections.length) >= protectionSlots) {
+        const generationExhausted = protections.length > 0 && protections.every((candidate) => candidate.state === 'released'
+          && decimal(candidate.token.generation, 'GRAPH_REF_PROTECTION', 'protection generation') === ranges.generation);
+        return generationExhausted
+          ? freeze({ kind: 'exhausted', code: 'generation-exhausted' }, 'Graph protection generation exhaustion')
+          : freeze({ kind: 'pressure', code: 'protection-capacity' }, 'Graph protection pressure');
+      }
+      const slot = protections.length;
+      entry = {
+        token: freeze({ id: `protection.${slot}`, generation: '0' }, 'Graph protection token'),
+        owner: null,
+        reference: null,
+        referenceKey: null,
+        state: 'released',
+      };
+      protections.push(entry);
+    }
+    entry.owner = input.owner;
+    entry.reference = validated.reference;
+    entry.referenceKey = key;
+    entry.state = 'held';
+    emit('protection-acquired', { owner: input.owner, reference: validated.reference, token: entry.token });
+    return freeze({ kind: 'protected', token: entry.token }, 'Graph protection acquisition');
   }
 
   function beginRetirementBarrier(input) {
@@ -239,11 +263,13 @@ export function createGraphReferenceOracle({
 
   function releaseProtection(input) {
     if (!isRecord(input) || Object.keys(input).length !== 1 || !Object.hasOwn(input, 'token') || !isRecord(input.token)) return invalid('stale-reference');
-    const token = protections.find((entry) => entry.token.id === input.token.id && entry.token.generation === input.token.generation);
-    if (!token || token.state !== 'held') return invalid('stale-reference');
-    token.state = 'released';
-    emit('protection-released', { owner: token.owner, reference: token.reference, token: token.token });
-    return freeze({ kind: 'released', token: token.token }, 'Graph protection release');
+    const tokenKeys = Object.keys(input.token).sort();
+    if (tokenKeys.length !== 2 || tokenKeys[0] !== 'generation' || tokenKeys[1] !== 'id') return invalid('stale-reference');
+    const slot = protections.find((entry) => entry.token.id === input.token.id);
+    if (!slot || slot.state !== 'held' || slot.token.generation !== input.token.generation) return invalid('stale-reference');
+    slot.state = 'released';
+    emit('protection-released', { owner: slot.owner, reference: slot.reference, token: slot.token });
+    return freeze({ kind: 'released', token: slot.token }, 'Graph protection release');
   }
 
   function observeRetirementBarrier(reference) {

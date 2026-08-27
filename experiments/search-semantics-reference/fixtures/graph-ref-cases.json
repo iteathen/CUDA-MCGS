@@ -19,6 +19,7 @@
   "expectedCases": [
     "graph-ref-profile-projection-and-node-evidence-exact",
     "graph-ref-validates-kind-arena-slot-generation-and-lifecycle-before-use",
+    "graph-ref-arena-incarnation-mismatch-is-typed-and-side-effect-free",
     "graph-ref-consumes-current-node-reference-shape",
     "graph-ref-stale-generation-cannot-read-protect-or-publish-replacement",
     "graph-ref-generation-exhaustion-never-wraps-and-has-no-32-bit-limit",
