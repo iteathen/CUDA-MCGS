@@ -104,7 +104,13 @@ function lifecycle(profile, role, reclamation) {
     readyStates = ['ready']; terminalStates = ['failed', 'tombstone'];
   } else if (role === 'root-anchor' || role === 'protection-record') {
     states = ['free', 'ready', 'released', 'failed'];
-    transitions = [transition('free', 'ready', 'release-publication'), transition('ready', 'released', 'terminal-publication'), transition('free', 'failed', 'terminal-publication')];
+    transitions = [
+      transition('free', 'ready', 'release-publication'),
+      transition('ready', 'released', 'terminal-publication'),
+      transition('free', 'failed', 'terminal-publication'),
+      transition('released', 'free', 'private'),
+      transition('failed', 'free', 'private'),
+    ];
     readyStates = ['ready']; terminalStates = ['failed', 'released'];
   } else {
     states = ['free', 'ready', 'failed'];
@@ -292,6 +298,7 @@ function resources(profile, { reclamation = false, transposition = true } = {}) 
     { id: `graph.${profile}.resource-active-path-slots`, unit: 'slots', minimum: '1', maximum: '256', alignment: '8', scope: 'per-engine', pressureOutcome: 'path-capacity' },
     { id: `graph.${profile}.resource-path-records`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'path-capacity' },
     { id: `graph.${profile}.resource-path-depth`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-invocation', pressureOutcome: 'path-depth' },
+    { id: `graph.${profile}.resource-root-anchor-slots`, unit: 'slots', minimum: '2', maximum: '8', alignment: '8', scope: 'per-engine', pressureOutcome: 'protection-capacity' },
     { id: `graph.${profile}.resource-protection-slots`, unit: 'slots', minimum: '1', maximum: '8192', alignment: '8', scope: 'per-engine', pressureOutcome: 'protection-capacity' },
   ];
   if (transposition) result.push({ id: `graph.${profile}.resource-transposition`, unit: 'slots', minimum: '1', maximum: '8192', alignment: '8', scope: 'per-engine', pressureOutcome: 'transposition-capacity' });

@@ -69,7 +69,6 @@ jobs:
         with:
           node-version: 26.7.0
       - name: Run qualified NODE input and EDGE reference
-        # Replays the rebound Composer/projection/NODE chain before EDGE, including aggregate edge/expansion slot coverage, explicit finite expansion capacity, finite owner-region/producer bounds, published-pending cancellation terminality, and a true action-before-child ordering falsifier.
         run: |
           node scripts/run-search-ir-composer-reference.mjs
           node scripts/export-search-ir-composer-graph-profiles.mjs
@@ -90,7 +89,6 @@ jobs:
         with:
           node-version: 26.7.0
       - name: Run exact Composer, Graph projection, NODE, and REF reference
-        # REF consumes only normalized Graph metadata and qualified NODE reference identity. It proves typed reference/generation validity, explicit finite protection capacity, opaque owner-reference lifecycle declaration, and protection-vs-retirement ordering without claiming PATH/ROOT/RECLAIM behavior.
         run: |
           node scripts/run-search-ir-composer-reference.mjs
           node scripts/export-search-ir-composer-graph-profiles.mjs
@@ -114,7 +112,6 @@ jobs:
         with:
           node-version: 26.7.0
       - name: Run exact Composer, Graph projection, NODE, REF, and PATH reference
-        # PATH consumes REF validation/protection/generation and injected Domain path-relation classification. It proves bounded occurrence storage/lifecycle, protection-before-visibility, identity-before-relation, typed pressure, topology neutrality, opaque owner records and exactly-once release without selecting cycle policy, ROOT, RECLAIM, native/CUDA or storage mechanisms.
         run: |
           node scripts/run-search-ir-composer-reference.mjs
           node scripts/export-search-ir-composer-graph-profiles.mjs
@@ -130,3 +127,32 @@ jobs:
             experiments/search-semantics-reference/build/graph-node-evidence.json
             experiments/search-semantics-reference/build/graph-ref-evidence.json
             experiments/search-semantics-reference/build/graph-path-evidence.json
+
+  graph-root-reference:
+    name: Graph ROOT reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Composer through ROOT reference
+        # ROOT consumes the generated Session root-control projection plus NODE/REF/PATH evidence. Graph owns only root-anchor/protection storage and owner disposition; Session retains current-root/epoch/operation authority and RECLAIM remains downstream.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-graph-profiles.mjs
+          node scripts/run-graph-node-reference.mjs
+          node scripts/run-graph-ref-reference.mjs
+          node scripts/run-graph-path-reference.mjs
+          node scripts/run-graph-root-reference.mjs
+      - name: Retain Graph ROOT evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: graph-root-reference
+          path: |
+            experiments/search-ir-composer-reference/build/graph-profiles.json
+            experiments/search-ir-composer-reference/build/root-control.json
+            experiments/search-semantics-reference/build/graph-node-evidence.json
+            experiments/search-semantics-reference/build/graph-ref-evidence.json
+            experiments/search-semantics-reference/build/graph-path-evidence.json
+            experiments/search-semantics-reference/build/graph-root-evidence.json

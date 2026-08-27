@@ -3,23 +3,23 @@
   "composerEvidence": {
     "algorithm": "sha256",
     "byteLength": 719510,
-    "sha256": "c02b4c278edd6ab5cb432593e3aa5e0317eba14bb5eb7f7783f531513c49d34c"
+    "sha256": "ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
     "algorithm": "sha256",
-    "byteLength": 136759,
-    "sha256": "c736152a9944a6fcd44b395146be70460f3ad368add2f5a54e845ba9ca09ac49"
+    "byteLength": 139099,
+    "sha256": "89ee04a47d8516ad02e33e884d8f35db9573840f58db140c6cbafe79178e7fd7"
   },
   "nodeEvidence": {
     "algorithm": "sha256",
     "byteLength": 10123,
-    "sha256": "dabc89fad787e293b6aa356cf3a841faac171e47bf1c8898be0fadd82668b44b"
+    "sha256": "4299dccecd33f6ef38c50f144e84316d00c7046a81ed6206b6e2e645b6683f74"
   },
   "refEvidence": {
     "algorithm": "sha256",
     "byteLength": 9139,
-    "sha256": "8186a7039c79c604e28eca188f69acfcce0bbcc3ac0eeb5061e7de2b823255a0"
+    "sha256": "e3370158d1234dd3642d11c4458c9c390abcc3f62a04a75dd68d00faf6c4676d"
   },
   "expectedCases": [
     "graph-path-profile-and-upstream-evidence-exact",

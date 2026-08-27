@@ -1118,6 +1118,17 @@ await runCase('reject-graph-root-reserve', () => {
   const mutated = clone(graphProfileInputs[0]);
   mutated.rootProtection.admissionReserve = '9';
   assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[0].domain), { code: 'GRAPH_ROOT_RESERVE' });
+  const underfunded = clone(graphProfileInputs[0]);
+  underfunded.resources = underfunded.resources.filter(({ id }) => !id.endsWith('resource-root-anchor-slots'));
+  assert.throws(() => normalizeGraphProfile(underfunded, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
+  const nonReusableAnchor = clone(graphProfileInputs[0]);
+  const anchor = nonReusableAnchor.objectKinds.find(({ role }) => role === 'root-anchor');
+  anchor.lifecycle.transitions = anchor.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-released') && to.endsWith('state-free')));
+  assert.throws(() => normalizeGraphProfile(nonReusableAnchor, inspected, graphFixtures[0].domain), { code: 'GRAPH_ROOT_LIFECYCLE' });
+  const nonReusableProtection = clone(graphProfileInputs[0]);
+  const protection = nonReusableProtection.objectKinds.find(({ role }) => role === 'protection-record');
+  protection.lifecycle.transitions = protection.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-released') && to.endsWith('state-free')));
+  assert.throws(() => normalizeGraphProfile(nonReusableProtection, inspected, graphFixtures[0].domain), { code: 'GRAPH_ROOT_LIFECYCLE' });
 });
 
 await runCase('reject-graph-reclamation-protection-gap', () => {
@@ -1209,7 +1220,7 @@ await runCase('reject-graph-resource-range', () => {
   underfunded.resources = underfunded.resources.filter(({ id }) => !id.endsWith('resource-expansion-slots'));
   assert.throws(() => normalizeGraphProfile(underfunded, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
   const unprotected = clone(graphProfileInputs[0]);
-  unprotected.resources = unprotected.resources.filter(({ id }) => !id.endsWith('resource-protection-slots'));
+  unprotected.resources = unprotected.resources.filter(({ pressureOutcome }) => pressureOutcome !== 'protection-capacity');
   assert.throws(() => normalizeGraphProfile(unprotected, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_REQUIRED' });
   const protectionUnderfunded = clone(graphProfileInputs[0]);
   protectionUnderfunded.resources.find(({ id }) => id.endsWith('resource-protection-slots')).maximum = '8191';
@@ -6420,6 +6431,19 @@ const evidence = {
 };
 const evidenceDirectory = path.join(experimentRoot, 'build');
 await mkdir(evidenceDirectory, { recursive: true });
+const rootControlProfile = sessionProfiles?.[0];
+if (!rootControlProfile) throw new Error('root-control projection requires the normalized live Session profile');
+const rootControlSubject = {
+  schema: 'cuda-mcgs.search-ir-composer-root-control-projection/0.2.0',
+  sessionProfile: { id: rootControlProfile.normalized.id, schema: rootControlProfile.normalized.schema, identity: rootControlProfile.identity },
+  root: rootControlProfile.normalized.root,
+  advance: rootControlProfile.normalized.advance,
+  reroot: rootControlProfile.normalized.reroot,
+  attention: rootControlProfile.normalized.attention,
+  reclamation: rootControlProfile.normalized.reclamation,
+};
+const rootControlProjection = { ...rootControlSubject, identity: canonicalIdentity(rootControlSubject) };
+await writeFile(path.join(evidenceDirectory, 'root-control.json'), `${JSON.stringify(rootControlProjection, null, 2)}\n`);
 await writeFile(path.join(evidenceDirectory, 'evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`);
 
 console.log(`capsule=${evidence.capsule} expected=${summary.expected} discovered=${summary.discovered} executed=${summary.executed} passed=${summary.passed} failed=${summary.failed} required_skipped=0 conditional_skipped=0 optional_skipped=0 not_discovered=${summary.notDiscovered}`);
