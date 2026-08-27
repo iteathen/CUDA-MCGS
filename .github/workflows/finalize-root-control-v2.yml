@@ -1,0 +1,48 @@
+name: one-shot root control finalization v2
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.event.pull_request.head.ref == 'docs/ref-root-control-01-reconcile'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/ref-root-control-01-reconcile
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.7.0
+      - name: Reuse finalization with complete repository identity migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          const workflow = await readFile('.github/workflows/finalize-root-control.yml', 'utf8');
+          const marker = '        run: |\n';
+          const start = workflow.indexOf(marker);
+          if (start < 0) throw new Error('finalization run block not found');
+          let script = workflow.slice(start + marker.length)
+            .split('\n')
+            .map((line) => line.startsWith('          ') ? line.slice(10) : line)
+            .join('\n');
+
+          const oldSource = "'https://github.com/iteathen/UMCGS/'";
+          const oldTarget = "'https://github.com/iteathen/CUDA-MCGS/'";
+          if (!script.includes(oldSource) || !script.includes(oldTarget)) throw new Error('schema identity migration anchors missing');
+          script = script.replace(oldSource, "'iteathen/UMCGS'").replace(oldTarget, "'iteathen/CUDA-MCGS'");
+
+          const addMarker = 'git add -A';
+          if (!script.includes(addMarker)) throw new Error('git add marker missing');
+          script = script.replace(addMarker, "git rm .github/workflows/finalize-root-control-v2.yml\n" + addMarker);
+
+          await writeFile('/tmp/finalize-root-control-v2.sh', `set -euo pipefail\n${script}`, { mode: 0o700 });
+          NODE
+          bash /tmp/finalize-root-control-v2.sh
