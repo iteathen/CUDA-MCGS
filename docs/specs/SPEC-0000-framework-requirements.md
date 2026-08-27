@@ -6,9 +6,9 @@
 
 **Owner:** CUDA-MCGS universal framework composition, ownership and conformance map
 
-**Consumers:** Search IR; Search Composer; CUDA-MCGS-to-CUDA-JS packaging; extension and product specifications; deterministic reference, native and compatible-pair conformance
+**Consumers:** Search IR; Search Composer; CUDA-MCGS-to-CUDA-JS packaging; extension contracts; externally owned product contracts; deterministic reference, native and compatible-pair conformance
 
-This proposal defines how independently owned CUDA-MCGS semantic contracts compose into finite specialized GPU-resident engines. It owns the cross-contract map, dependency law, engine identity, top-level lifecycle coordination, deletion requirements and integrated conformance obligations. It does **not** redefine domain, graph, policy, evaluator, output, resource, progress, Search Session, extension, product or CUDA-JS meaning.
+This proposal defines how independently owned CUDA-MCGS semantic contracts compose into finite specialized GPU-resident engines. It owns the cross-contract map, dependency law, engine identity, top-level lifecycle coordination, deletion requirements and integrated conformance obligations. It does **not** redefine domain, graph, policy, evaluator, output, resource, progress, Search Session, extension, external product or CUDA-JS meaning.
 
 > **For one normalized engine identity, every material fact, mutation and lifecycle has one visible semantic owner; composition connects only versioned public ports, rejects missing/ambiguous/cyclic authority, specializes away unselected owners and capabilities, and leaves active search device-owned after ignition.**
 
@@ -16,7 +16,7 @@ This proposal defines how independently owned CUDA-MCGS semantic contracts compo
 
 Specification identity is `CUDA-MCGS-SPEC-0000@0.1.0-draft`.
 
-Accepted [`ADR-0002`](../decisions/ADR-0002-universal-contracts-specialized-engines.md), [`ADR-0003`](../decisions/ADR-0003-device-resident-active-search.md), [`ADR-0005`](../decisions/ADR-0005-lego-design-hierarchy.md), [`ADR-0014`](../decisions/ADR-0014-extract-cuda-js-runtime.md), [`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md), [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md), [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) govern this proposal.
+Accepted [`ADR-0002`](../decisions/ADR-0002-universal-contracts-specialized-engines.md), [`ADR-0003`](../decisions/ADR-0003-device-resident-active-search.md), [`ADR-0005`](../decisions/ADR-0005-lego-design-hierarchy.md), [`ADR-0014`](../decisions/ADR-0014-extract-cuda-js-runtime.md), [`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md), [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md), [`ADR-0024`](../decisions/ADR-0024-framework-only-production-ownership.md), [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) govern this proposal.
 
 The integrated semantic owner proposals consumed by this map are:
 
@@ -29,15 +29,15 @@ The integrated semantic owner proposals consumed by this map are:
 - device-owned progress [`SPEC-0012`](SPEC-0012-device-owned-search-progress.md); and
 - result/observation output [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md).
 
-Extension-substrate proposals [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) are optional downstream composition adjacency. The chess proposal is one downstream product, not framework authority.
+Extension-substrate proposals [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) are optional downstream composition adjacency. Production product contracts are externally owned specialization inputs, not CUDA-MCGS specification authority.
 
 Accepted authority governs conflicts. This proposal neither accepts the listed proposals nor authorizes production implementation.
 
 FRAMEWORK-AUTH-001. A concrete engine selects one normalized framework profile and exact compatible versions/digests of every selected owner contract. A proposal label, matching filename or matching JavaScript object shape is not compatibility.
 
-FRAMEWORK-AUTH-002. Framework composition cannot weaken an owner invariant, infer an omitted owner disposition or convert an informative example/experiment/product into normative meaning.
+FRAMEWORK-AUTH-002. Framework composition cannot weaken an owner invariant, infer an omitted owner disposition or convert an informative example/experiment/external product into normative meaning.
 
-FRAMEWORK-AUTH-003. Semantic acceptance, native profile qualification, exact CUDA-JS compatible-pair qualification, performance support and product conformance are distinct gates and claims.
+FRAMEWORK-AUTH-003. Semantic acceptance, native profile qualification, exact CUDA-JS compatible-pair qualification, performance support and external product conformance are distinct gates and claims.
 
 FRAMEWORK-AUTH-004. Production lowering remains prohibited until the integrated contract/schema/reference acceptance gate authorizes it for the selected boundary.
 
@@ -55,17 +55,17 @@ The optional extension substrate composes selected namespaced capabilities throu
 
 An engine with no selected extension capability contains exact zero extension-only field, port, branch, context, channel, resource, diagnostic, program or synchronization residue.
 
-### 2.3 Downstream domain/search products
+### 2.3 External domain/search products
 
-A product selects core profiles and optional capabilities, then owns product semantics, adapters, outputs, quality/support targets and compatibility. Chess legal-move ranking, MultiPV, board/history encoding and evaluator choices remain in [`CHESS-0001`](products/chess/CHESS-0001-search-product.md).
+A production product selects core profiles and optional capabilities, then owns its product semantics, adapters, outputs, quality/support targets, compatibility, package and release lifecycle in its own repository or independently owned package boundary. CUDA-MCGS may normalize and compose its versioned public inputs without becoming the product owner.
 
-FRAMEWORK-LAYER-001. Universal core contracts remain coherent when every extension capability and product is deleted.
+FRAMEWORK-LAYER-001. Universal core contracts remain coherent when every extension capability and external product is deleted.
 
 FRAMEWORK-LAYER-002. Extension contracts remain product-neutral at their public attachment/composition boundary even when their first consumer is product-specific.
 
-FRAMEWORK-LAYER-003. Product schema fields remain namespaced specialization inputs and never become mandatory universal Search IR fields by use or popularity.
+FRAMEWORK-LAYER-003. External product schema fields remain namespaced specialization inputs and never become mandatory universal Search IR fields by use or popularity.
 
-FRAMEWORK-LAYER-004. Deleting the first product removes its adapters, schemas, resources, programs, outputs, diagnostics and tests without changing universal owner contracts.
+FRAMEWORK-LAYER-004. Deleting the first external product removes its adapters, schemas, resources, programs, outputs, diagnostics and tests from the selected composition without changing universal owner contracts or requiring repository-local product source.
 
 ## 3. LEGO owner and dependency map
 
@@ -73,12 +73,12 @@ Each row is an independently meaningful owner with one invariant and public sema
 
 | Owner brick | Owns | Consumes through public contracts | Explicitly does not own |
 |---|---|---|---|
-| Domain | State/action/transition/identity/history/role/terminal meaning | Selected product-domain profile | Graph objects, policy, evaluator, output or CUDA representation |
+| Domain | State/action/transition/identity/history/role/terminal meaning | Selected consumer-supplied domain profile | Graph objects, policy, evaluator, output or CUDA representation |
 | Graph/storage | Object/reference/path/transposition/publication/reclamation validity | Domain identity/equality; opaque selected owner-region layouts | Domain equality meaning, policy statistics, evaluator meaning, root epoch or resource policy |
 | Evaluator, optional | Capability/request/input/artifact/workspace/batch/cache/result meaning | Domain views and selected requester-purpose/input adapters | Policy choice, graph storage, public output, progress or CUDA compilation/allocation |
 | Search policy | Selection/reservation/widening/records/value algebra/backup/stopping/reuse meaning | Domain/graph facts and selected evaluator or other value-source adapters | Graph storage, evaluator execution, external publication, resources, progress or session commit |
 | Result/observation output | Bounded payload/source/cut/slot/sequence/borrow/publication meaning | Ready facts from selected owners | Source semantics, policy ranking meaning, session control or CUDA transfer |
-| Finite search resources | Contribution normalization, partitions/reserves, compound admission, accounting, pressure/exhaustion | Finite contribution descriptors from every selected owner/capability/product | Semantic victim/policy choice or CUDA allocation mechanism |
+| Finite search resources | Contribution normalization, partitions/reserves, compound admission, accounting, pressure/exhaustion | Finite contribution descriptors from every selected owner/capability/external consumer input | Semantic victim/policy choice or CUDA allocation mechanism |
 | Device-owned progress | Work readiness/dependency/service/fairness/no-progress/stop/drain/closure | Owner work descriptors and admitted resource transitions | Work payload meaning, one scheduler topology, session control or CUDA execution mechanism |
 | Search Session, optional | External transaction/root-epoch boundary and bounded control/observation-request lifecycle coordination | All selected owner prepare/reuse/stale/cleanup/publication ports | Source-owner semantics, output payload publication, resource/progress policy or CUDA sideband mechanism |
 
@@ -92,17 +92,17 @@ FRAMEWORK-OWNER-004. Search Composer may fuse, split, inline or eliminate physic
 
 FRAMEWORK-OWNER-005. A shared representation has one layout/storage owner and distinct non-overlapping semantic owner regions or field ownership. Byte adjacency does not authorize cross-owner mutation.
 
-FRAMEWORK-OWNER-006. Optional evaluator, live output, Search Session, extension and product selections each pass a zero-residue deletion test in normalized schema, layout, generated source/package, resource plan, progress plan, runtime state and diagnostics.
+FRAMEWORK-OWNER-006. Optional evaluator, live output, Search Session, extension and external-product selections each pass a zero-residue deletion test in normalized schema, layout, generated source/package, resource plan, progress plan, runtime state and diagnostics.
 
 FRAMEWORK-OWNER-007. Removing one optional owner/capability cannot leave a dangling dependency, empty runtime dispatcher, hidden reserve or compatibility requirement.
 
-FRAMEWORK-OWNER-008. A capability needed by only one current consumer is reusable only when its invariant, owner, bounded lifecycle and plausible second consumer remain meaningful after deleting that consumer; otherwise it remains product-owned.
+FRAMEWORK-OWNER-008. A capability needed by only one current consumer is reusable only when its invariant, owner, bounded lifecycle and plausible second consumer remain meaningful after deleting that consumer; otherwise it remains externally owned/product-specific.
 
 FRAMEWORK-OWNER-009. This is the simplest sufficient total ownership system: merging rows would create competing semantic/storage/lifecycle authority, while splitting a row requires a new independently meaningful invariant, lifecycle and replacement boundary rather than a file-size or first-implementation preference.
 
 ## 4. Normalized framework profile
 
-A **framework profile** is the strict canonical pre-ignition selection of owner profiles, product/capability inputs, cross-owner bindings, finite plans, public CUDA-JS requirements and compatibility identity for one engine equivalence class.
+A **framework profile** is the strict canonical pre-ignition selection of owner profiles, externally owned product/capability inputs, cross-owner bindings, finite plans, public CUDA-JS requirements and compatibility identity for one engine equivalence class.
 
 The top-level semantic ports are `normalizeFrameworkProfile`, `composeSearchIR`, `admitEngineResources`, `createExecutionPackage`, `initializeEngine`, `igniteSearch`, `requestCancellation`, `awaitCompletion`, `acquireTerminalResult`, `releaseTerminalResult` and `teardownEngine`. They are not mandatory functions, modules, kernels, callbacks or ABI symbols.
 
@@ -110,7 +110,7 @@ FRAMEWORK-PROFILE-001. The profile declares, with no unknown fields:
 
 - framework ID/version and accepted-authority baseline;
 - exact selected contract/profile/schema identities and compatibility relations;
-- evaluator present/absent, live-output present/absent, Search Session present/absent, extension capability set and product identity;
+- evaluator present/absent, live-output present/absent, Search Session present/absent, extension capability set and external product identity when selected;
 - every public producer/consumer port binding, owner permission and semantic dependency;
 - all widths/ranges/precision/alignment/arithmetic/randomness/determinism selections;
 - composed resource, progress, output, cancellation, completion, failure, diagnostics and cleanup plans;
@@ -136,11 +136,11 @@ FRAMEWORK-PROFILE-008. Profile normalization is ordinary Node.js work. Device pr
 
 Search IR is the normalized semantic representation; Search Composer validates and specializes it. They integrate owner meaning but do not create it.
 
-FRAMEWORK-IR-001. Complete Search IR contains or references every selected owner profile required by SPEC-0006 through SPEC-0013 and every selected namespaced extension/product input.
+FRAMEWORK-IR-001. Complete Search IR contains or references every selected owner profile required by SPEC-0006 through SPEC-0013 and every selected namespaced extension/external-product input.
 
 FRAMEWORK-IR-002. Cross-owner bindings name semantic port IDs/versions, producer/consumer roles, permission, representation/layout ownership, lifecycle/epoch, resource contribution and progress dependency without deep source paths or runtime object references.
 
-FRAMEWORK-IR-003. Search IR represents optional absence explicitly and supports structural deletion inspection for evaluator, live output, Search Session, capability and product residue.
+FRAMEWORK-IR-003. Search IR represents optional absence explicitly and supports structural deletion inspection for evaluator, live output, Search Session, capability and external-product residue.
 
 FRAMEWORK-IR-004. Search IR contains no mandatory chess/Connect Four/game/ranking/scalar/evaluator/live-session field and no CUDA pointer, handle, stream, event, atomic spelling, PTX, ABI layout or scheduler topology.
 
@@ -151,13 +151,13 @@ FRAMEWORK-IR-005. Search Composer produces:
 - composed finite resource/admission/pressure plan;
 - composed work/readiness/progress/stop/closure plan;
 - terminal and selected live-output/session manifests;
-- selected extension/product composition plan when present;
+- selected extension/external-product composition plan when present;
 - restricted Device-JS/Search Program inputs;
 - a versioned CUDA-MCGS-to-CUDA-JS execution package containing only public mechanism requirements;
 - compatibility/provenance/deletion manifests; and
 - bounded diagnostics and teardown/rollback plan.
 
-FRAMEWORK-IR-006. Search Composer cannot discover semantic owners, attachment points, capability code, schemas or product behavior after ignition. No runtime service locator, callback registry or schema interpreter substitutes for specialization.
+FRAMEWORK-IR-006. Search Composer cannot discover semantic owners, attachment points, capability code, schemas or external product behavior after ignition. No runtime service locator, callback registry or schema interpreter substitutes for specialization.
 
 FRAMEWORK-IR-007. Generated source may specialize/fuse owners but its trace/provenance maps every material generated region and package requirement back to normalized owner/profile/port identity.
 
@@ -201,7 +201,7 @@ FRAMEWORK-DEVICE-006. An inclination to add a native CUDA-MCGS solution triggers
 
 ## 8. Finite resources, progress and output closure
 
-FRAMEWORK-RESOURCE-001. Every selected semantic/capability/product owner contributes exact finite classes/formulas/maxima/lifetimes to SPEC-0011; absent selections contribute zero. CUDA-JS mechanism overhead is separately declared and included before admission.
+FRAMEWORK-RESOURCE-001. Every selected semantic/capability/external-product input contributes exact finite classes/formulas/maxima/lifetimes to SPEC-0011; absent selections contribute zero. CUDA-JS mechanism overhead is separately declared and included before admission.
 
 FRAMEWORK-RESOURCE-002. The composed plan covers graph/path/policy/evaluator/work/output/session/extension/product/diagnostic state, recovery and terminal reserve, concurrent multiplicity, alignment/fragmentation and checked arithmetic within an exact device/runtime budget.
 
@@ -223,21 +223,23 @@ FRAMEWORK-EXT-004. Extension dataflow cannot synchronously block a device worker
 
 FRAMEWORK-EXT-005. An unselected capability contributes exact zero extension-only runtime and package residue. Selected capabilities use the accepted statically specialized composition profile without a universal hot-path callback/dispatch registry.
 
-FRAMEWORK-EXT-006. Extension mechanism and representative cost evidence qualify the selected substrate but cannot prove core semantics or promote one capability/product payload into the framework.
+FRAMEWORK-EXT-006. Extension mechanism and representative cost evidence qualify the selected substrate but cannot prove core semantics or promote one capability/external-product payload into the framework.
 
-## 10. Product boundary and universality
+## 10. External product boundary and universality
 
-FRAMEWORK-PRODUCT-001. Product profiles declare exact domain/policy/evaluator/output/session/capability adapters, support/quality targets and namespaced identity; the framework validates their owner bindings without interpreting product bytes.
+FRAMEWORK-PRODUCT-001. Externally owned product profiles declare exact domain/policy/evaluator/output/session/capability adapters, support/quality targets and namespaced identity; the framework validates their owner bindings without interpreting product bytes or owning the product lifecycle.
 
 FRAMEWORK-PRODUCT-002. The framework supports materially different profiles including fixed/variable states, exhaustive/lazy/sampled actions, deterministic/stochastic transitions, custom roles, tree/DAG/cyclic graphs, evaluator absent/present with scalar/vector/distribution/proof/custom output, commutative/ordered backup, terminal/live/no observation and session absent/present.
 
 FRAMEWORK-PRODUCT-003. A concrete engine may reject unsupported combinations before ignition, but a product limitation cannot narrow a universal range, identity, owner or conformance class.
 
-FRAMEWORK-PRODUCT-004. Ranked candidates, best action, top-k, legal moves, WDL, principal variation and similar outputs exist only when selected policy/product/output contracts define them.
+FRAMEWORK-PRODUCT-004. Ranked candidates, best action, top-k, legal moves, WDL, principal variation and similar outputs exist only when selected policy/external-product/output contracts define them.
+
+FRAMEWORK-PRODUCT-005. CUDA-MCGS contains no active production product specification or product implementation owner. Concrete named product-like fixtures are permitted only as removable non-production conformance/research/example evidence under ADR-0024.
 
 ## 11. Compatibility, persistence, security and diagnostics
 
-FRAMEWORK-COMPAT-001. Framework semantic compatibility requires compatible identities for every selected owner profile/schema/port binding, resource/progress/output/session plan, extension/product input, arithmetic/determinism choice and cleanup disposition. Matching package version or byte layout alone is insufficient.
+FRAMEWORK-COMPAT-001. Framework semantic compatibility requires compatible identities for every selected owner profile/schema/port binding, resource/progress/output/session plan, extension/external-product input, arithmetic/determinism choice and cleanup disposition. Matching package version or byte layout alone is insufficient.
 
 FRAMEWORK-COMPAT-002. The execution-package identity additionally binds restricted Device-JS sources/imports, target constraints, selected public CUDA-JS capability requirements, layout/resource/launch manifests and provenance digests. CUDA-JS artifact/runtime identity remains opaque and separately bound.
 
@@ -251,7 +253,7 @@ FRAMEWORK-PERSIST-001. Persistence is absent by default. A selected persistence 
 
 FRAMEWORK-PERSIST-002. Restored state revalidates every semantic/profile/package identity, finite resource plan, incarnation/generation and stale-reference protection before becoming authoritative. Failure leaves a typed non-ignited or quarantined state.
 
-FRAMEWORK-SEC-001. Profiles, schemas, product inputs, restricted Device-JS, packages and restored state are untrusted until strict field/range/permission/digest/provenance/resource validation. They cannot inject callbacks, filesystem/network access, raw pointers/handles or private provider paths.
+FRAMEWORK-SEC-001. Profiles, schemas, externally supplied product inputs, restricted Device-JS, packages and restored state are untrusted until strict field/range/permission/digest/provenance/resource validation. They cannot inject callbacks, filesystem/network access, raw pointers/handles or private provider paths.
 
 FRAMEWORK-SEC-002. Least authority applies to every port and generated program. A consumer receives only required public facts/effects; physical addressability or shared layout never expands semantic permission.
 
@@ -304,7 +306,7 @@ One consolidated CUDA-free framework capsule MUST include stable cases for:
 10. scalar, vector/distribution/proof/custom and ordered-backup policy/value profiles;
 11. evaluator absent, proposal-only, evaluation-only and combined profiles;
 12. terminal envelope-only, structured result, live observation and no-live-observation profiles;
-13. evaluator/live-output/Search-Session/extension/product deletion with exact zero residue;
+13. evaluator/live-output/Search-Session/extension/external-product deletion with exact zero residue;
 14. bounded live-session root/attention/observation coordination without host progress;
 15. finite ordinary, high, critical, recoverable-pressure and terminal-exhaustion behavior;
 16. compound admission failure at each owner leaving no partial semantic mutation;
@@ -314,7 +316,7 @@ One consolidated CUDA-free framework capsule MUST include stable cases for:
 20. partial package/engine initialization rollback and cleanup;
 21. terminal borrow/transfer quiescence before backing-state release;
 22. extension-absent zero residue and selected extension unable to override an owner;
-23. first-product deletion plus a materially different product/profile composition;
+23. first-external-product deletion plus a materially different product/profile composition;
 24. no required host callback/poll/relaunch/internal decision after ignition;
 25. maintained-source rejection for C/C++, CUDA C++, PTX, FFI, native addon or subprocess search;
 26. missing generic CUDA-JS mechanism producing capability-classification stop, not semantic workaround;
@@ -339,8 +341,8 @@ This proposal cannot become accepted until:
 - the CUDA-MCGS-to-CUDA-JS package contract names only public consumer-neutral requirements and preserves the JavaScript/restricted Device-JS source boundary; and
 - every proposal branch, issue, invalidation, generated artifact and cleanup disposition is reconciled on the integration spine.
 
-Production framework lowering remains prohibited until that integrated acceptance. Native execution, compatible-pair, performance, optional live-session and product qualification follow as separately declared gates unless required to decide semantic meaning.
+Production framework lowering remains prohibited until that integrated acceptance. Native execution, compatible-pair, performance, optional live-session and external-product qualification follow as separately declared gates unless required to decide semantic meaning.
 
-A change to this framework's owner map, dependency law, normalized profile, lifecycle coordination, deletion rule, device boundary, package identity, compatibility or cleanup semantics invalidates affected owner/extension/product proposals, Search IR/schema/normalizers, generated packages, persisted state, reference/native evidence and approvals. The `ENGINE-CONTRACT-01` integration spine records and reconciles the change before dependents continue.
+A change to this framework's owner map, dependency law, normalized profile, lifecycle coordination, deletion rule, device boundary, package identity, compatibility or cleanup semantics invalidates affected owner/extension/external-product inputs, Search IR/schema/normalizers, generated packages, persisted state, reference/native evidence and approvals. The `ENGINE-CONTRACT-01` integration spine records and reconciles the change before dependents continue.
 
 Implementation, testing, review, persistence, security, generated/JIT/ABI, performance/search-quality and cleanup work triggers the specialist doctrine routed from root `AGENTS.md` and `agent_files/AGENTS.md`.
