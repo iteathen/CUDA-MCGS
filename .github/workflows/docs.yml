@@ -69,7 +69,7 @@ jobs:
         with:
           node-version: 26.7.0
       - name: Run qualified NODE input and EDGE reference
-        # Qualifies finite owner-region/producer bounds, published-pending cancellation terminality, and a true action-before-child ordering falsifier.
+        # Qualifies explicit finite expansion capacity, finite owner-region/producer bounds, published-pending cancellation terminality, and a true action-before-child ordering falsifier.
         run: |
           node scripts/run-search-ir-composer-reference.mjs
           node scripts/export-search-ir-composer-graph-profiles.mjs
