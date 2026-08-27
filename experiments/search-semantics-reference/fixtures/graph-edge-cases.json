@@ -30,6 +30,7 @@
     "graph-edge-oracle-sensitivity-parent-identity",
     "graph-edge-oracle-sensitivity-action-before-child",
     "graph-edge-oracle-sensitivity-partial-batch",
-    "graph-edge-requirement-coverage-exact"
+    "graph-edge-requirement-coverage-exact",
+    "graph-edge-published-pending-cancel-terminal"
   ]
 }

@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { canonicalIdentity, sourceTextSha256 } from './src/canonical.mjs';
 import { assertUniqueStrings, exactKeys, fail } from './src/errors.mjs';
 import { registerGraphEdgeCases } from './src/graph-edge-cases.mjs';
+import { registerGraphEdgeLifecycleCases } from './src/graph-edge-lifecycle-cases.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const here = path.join(root, 'experiments', 'search-semantics-reference');
@@ -56,6 +57,7 @@ function plannedCoverage() {
 }
 
 registerGraphEdgeCases({ defineCase, fixture, projection, composerEvidence: composer, plannedCoverage });
+registerGraphEdgeLifecycleCases({ defineCase, projection });
 assert.deepEqual(definitions.map(({ id }) => id), expectedCaseIds);
 
 const args = process.argv.slice(2);
@@ -85,6 +87,7 @@ const sourcePaths = [
   'experiments/search-semantics-reference/src/graph-edge-core.mjs',
   'experiments/search-semantics-reference/src/graph-edge.mjs',
   'experiments/search-semantics-reference/src/graph-edge-cases.mjs',
+  'experiments/search-semantics-reference/src/graph-edge-lifecycle-cases.mjs',
   'experiments/search-semantics-reference/run-graph-edge.mjs',
   'scripts/run-graph-edge-reference.mjs',
   'docs/specs/SPEC-0010-graph-storage-and-reclamation.md',

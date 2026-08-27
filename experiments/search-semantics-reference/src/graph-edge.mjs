@@ -2,11 +2,21 @@ import { createGraphEdgeOracle as createCoreGraphEdgeOracle } from './graph-edge
 
 export function createGraphEdgeOracle(options = {}) {
   const oracle = createCoreGraphEdgeOracle(options);
-  if (options.mutations?.allowChildBeforeAction !== true) return oracle;
 
-  return Object.freeze({
+  const facade = {
     ...oracle,
-    resolveEdgeChild(input) {
+    failExpansion(input) {
+      const snapshot = oracle.snapshot();
+      for (const edge of snapshot.edges) {
+        if (edge.expansionId !== input.expansionId || !edge.batchPublished || !['action-ready', 'child-pending'].includes(edge.state)) continue;
+        oracle.failEdge({ claimer: input.claimer, edgeId: edge.id, code: input.code });
+      }
+      return oracle.failExpansion(input);
+    },
+  };
+
+  if (options.mutations?.allowChildBeforeAction === true) {
+    facade.resolveEdgeChild = (input) => {
       try {
         return oracle.resolveEdgeChild(input);
       } catch (error) {
@@ -14,6 +24,8 @@ export function createGraphEdgeOracle(options = {}) {
         oracle.publishEdgeAction({ claimer: input.claimer, edgeId: input.edgeId });
         return oracle.resolveEdgeChild(input);
       }
-    },
-  });
+    };
+  }
+
+  return Object.freeze(facade);
 }
