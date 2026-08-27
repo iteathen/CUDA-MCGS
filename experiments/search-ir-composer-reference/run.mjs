@@ -1183,6 +1183,9 @@ await runCase('reject-graph-resource-range', () => {
   const missing = clone(graphProfileInputs[0]);
   missing.resources = missing.resources.filter(({ pressureOutcome }) => pressureOutcome !== 'action-byte-capacity');
   assert.throws(() => normalizeGraphProfile(missing, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_REQUIRED' });
+  const underfunded = clone(graphProfileInputs[0]);
+  underfunded.resources = underfunded.resources.filter(({ id }) => !id.endsWith('resource-expansion-slots'));
+  assert.throws(() => normalizeGraphProfile(underfunded, inspected, graphFixtures[0].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
 });
 
 await runCase('reject-graph-persistence-scope', () => {
