@@ -4847,27 +4847,30 @@ await runCase('reject-output-product-owner', () => {
 });
 
 await runCase('session-schema-closed', () => {
-  assert.equal(sessionProfileSchema.properties.schema.const, 'cuda-mcgs.session-profile/0.2.0');
   assert.equal(sessionProfileSchema.additionalProperties, false);
-  for (const name of ['inputSchema', 'commands', 'rootTransaction', 'root', 'owner', 'stateFamily', 'attentionProfile', 'observation', 'reclamation', 'counter', 'lifecycle', 'port', 'status', 'security', 'cleanup', 'programContribution']) assert.equal(sessionProfileSchema.$defs[name].additionalProperties, false);
+  assert.equal(sessionProfileSchema.$defs.advanceProfile.additionalProperties, false);
+  assert.equal(sessionProfileSchema.$defs.rerootTransaction.additionalProperties, false);
+  assert.equal(sessionProfileSchema.$defs.rerootProfile.additionalProperties, false);
+  assert.equal(sessionProfileSchema.$defs.attentionProfile.additionalProperties, false);
+  assert.equal(sessionProfileSchema.properties.advance.$ref, '#/$defs/advance');
+  assert.equal(sessionProfileSchema.properties.reroot.$ref, '#/$defs/reroot');
+  assert.equal(sessionProfileSchema.properties.rootTransaction, undefined);
 });
-
 await runCase('session-profile-second-instances-distinct', () => {
-  assert.equal(new Set(sessionProfiles.map(({ identity }) => identity.sha256)).size, 2);
-  assert.deepEqual(sessionProfiles.map(({ normalized }) => normalized.root.pressureOutcome), ['reject-keep-session', 'restart-required']);
+  assert.notDeepEqual(sessionProfiles[0].identity, sessionProfiles[1].identity);
+  assert.deepEqual(sessionProfiles.map(({ normalized }) => normalized.reroot.profile.pressureOutcome), ['reject-keep-session', 'restart-required']);
   assert.deepEqual(sessionProfiles.map(({ normalized }) => normalized.attention.kind), ['selected', 'absent']);
 });
-
 await runCase('session-profile-order-independent', () => {
   const reordered = clone(sessionProfileInputs[0]);
   for (const key of ['owners', 'counters', 'statuses', 'permissions', 'productData']) reordered[key].reverse();
-  reordered.root.workScopes.reverse();
+  reordered.reroot.profile.workScopes.reverse();
   reordered.observations.profiles.reverse();
   reordered.programContribution.inputs.reverse();
   reordered.programContribution.requirements.reverse();
-  assert.deepEqual(normalizeSessionProfile(reordered, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult).identity, sessionProfiles[0].identity);
+  const normalized = normalizeSessionProfile(reordered, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult);
+  assert.deepEqual(normalized.identity, sessionProfiles[0].identity);
 });
-
 await runCase('session-absence-zero-residue', () => {
   for (const index of [0, 1]) {
     assert(!progressResourceResults[index].normalized.contributors.some(({ contract }) => contract.id === 'SPEC-0006'));
@@ -4880,25 +4883,19 @@ await runCase('session-absence-zero-residue', () => {
 
 await runCase('session-owner-boundary-exact', () => {
   const normalized = sessionProfiles[0].normalized;
-  assert.equal(normalized.owners.length, progressResourceResults[2].normalized.contributors.length);
-  assert.equal(normalized.owners.filter(({ role }) => role === 'coordinator').length, 1);
-  assert.equal(normalized.owners.find(({ role }) => role === 'coordinator').contract.id, 'SPEC-0006');
-  assert(normalized.owners.filter(({ role }) => role === 'participant').every(({ state }) => state.length > 0));
+  assert.equal(normalized.owners.length, outputProgressResults[2].normalized.contributors.length);
+  const coordinator = normalized.owners.find(({ role }) => role === 'coordinator');
+  assert.equal(coordinator.contract.id, 'SPEC-0006');
+  assert.equal(coordinator.reroot.kind, 'absent');
+  assert(normalized.owners.filter(({ reroot }) => reroot.kind === 'selected').every(({ role }) => role === 'participant'));
 });
-
-await runCase('session-root-transaction-admission-before-mutation', () => {
+await runCase('session-reroot-transaction-admission-before-mutation', () => {
   const normalized = sessionProfiles[0].normalized;
-  assert.equal(normalized.commands.admissionBeforeMutation, true);
-  assert.equal(normalized.rootTransaction.preMutationAdmission, true);
-  assert.equal(normalized.rootTransaction.rejectedEffect, 'none');
-  assert.equal(normalized.rootTransaction.duplicateEffect, 'none');
-  assert.equal(normalized.rootTransaction.partialCommit, 'fatal-quarantine');
-  assert.deepEqual(normalized.rootTransaction.abortOrder, [...normalized.rootTransaction.prepareOrder].reverse());
-  const rootIndependentOwner = normalized.owners.find(({ state }) => state.every(({ classification }) => classification === 'root-independent-retain'));
-  assert(rootIndependentOwner);
-  assert(!normalized.rootTransaction.prepareOrder.includes(rootIndependentOwner.id));
+  assert.equal(normalized.reroot.profile.transaction.preMutationAdmission, true);
+  assert.equal(normalized.reroot.profile.transaction.linearization, 'root-incarnation-publication');
+  assert.equal(normalized.advance.profile.existingResourcesOnly, true);
+  assert.equal(normalized.advance.profile.reclassification, 'none');
 });
-
 await runCase('session-selected-attention-deletion', () => {
   assert(sessionProfiles[0].normalized.ports.some(({ id }) => id === 'applyAttentionChange'));
   assert(!sessionProfiles[1].normalized.ports.some(({ id }) => id === 'applyAttentionChange'));
@@ -4913,19 +4910,13 @@ await runCase('session-selected-attention-deletion', () => {
 
 await runCase('session-attention-root-and-reclamation-separation', () => {
   const normalized = sessionProfiles[0].normalized;
-  const attention = normalized.attention.profile;
-  const command = normalized.commands.inputs.find(({ id }) => id === attention.input);
-  assert.equal(command.kind, 'attention');
-  assert.equal(command.epochScope, 'session');
-  assert.equal(attention.rootEpochEffect, 'none');
-  assert.equal(attention.graphWork, 'none');
-  assert.equal(attention.reclamation, 'none');
-  assert.equal(attention.existingWork, 'unchanged');
-  assert.equal('compoundAdmission' in attention, false);
-  assert.notEqual(attention.generationCounter, normalized.root.epochCounter);
-  assert(!JSON.stringify(attention).includes(normalized.rootTransaction.compoundAdmission.rootReserve));
+  assert.equal(normalized.attention.profile.rootAuthorityEffect, 'none');
+  assert.equal(normalized.attention.profile.graphWork, 'none');
+  assert.equal(normalized.attention.profile.reclamation, 'none');
+  assert.equal(normalized.advance.profile.reclamation, 'none');
+  assert.equal(normalized.reclamation.advanceSeparate, true);
+  assert.equal(normalized.reclamation.rerootCommitSeparate, true);
 });
-
 await runCase('session-attention-lazy-multidevice-safe-point', () => {
   const attention = sessionProfiles[0].normalized.attention.profile;
   assert.equal(attention.application, 'queued-device-control-work-at-existing-safe-point');
@@ -4945,12 +4936,11 @@ await runCase('session-attention-selected-owner-flexibility', () => {
   assert.notDeepEqual(result.identity, sessionProfiles[0].identity);
 });
 
-await runCase('reject-session-attention-root-epoch-scope', () => {
+await runCase('reject-session-attention-root-authority-scope', () => {
   const mutated = clone(sessionProfileInputs[0]);
-  mutated.commands.inputs.find(({ kind }) => kind === 'attention').epochScope = 'session-and-root-epoch';
+  mutated.commands.inputs.find(({ kind }) => kind === 'attention').epochScope = 'session-and-root-authority';
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ATTENTION_INPUT' });
 });
-
 await runCase('reject-session-attention-graph-work', () => {
   const mutated = clone(sessionProfileInputs[0]); mutated.attention.profile.graphWork = 'traverse-retained-graph';
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ATTENTION_CONTRACT' });
@@ -4966,15 +4956,14 @@ await runCase('reject-session-attention-generation-gap', () => {
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_COUNTER_COVERAGE' });
 });
 
-await runCase('reject-session-root-transaction-unaffected-owner', () => {
+await runCase('reject-session-reroot-transaction-unaffected-owner', () => {
   const mutated = clone(sessionProfileInputs[0]);
-  const unaffected = mutated.owners.find(({ state }) => state.every(({ classification }) => classification === 'root-independent-retain')).id;
-  mutated.rootTransaction.prepareOrder.push(unaffected);
-  mutated.rootTransaction.commitOrder.push(unaffected);
-  mutated.rootTransaction.abortOrder.unshift(unaffected);
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_TRANSACTION_ORDER' });
+  const unaffected = mutated.owners.find(({ role, reroot }) => role === 'participant' && reroot.kind === 'absent').id;
+  mutated.reroot.profile.transaction.prepareOrder.push(unaffected);
+  mutated.reroot.profile.transaction.commitOrder.push(unaffected);
+  mutated.reroot.profile.transaction.abortOrder.unshift(unaffected);
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_ORDER' });
 });
-
 await runCase('session-observation-output-binding', () => {
   const observation = sessionProfiles[0].normalized.observations.profiles[0];
   const outputObservation = outputProfiles[2].normalized.observations.profiles[0];
@@ -4985,20 +4974,19 @@ await runCase('session-observation-output-binding', () => {
   assert.deepEqual(observation.acquisition, outputProfiles[2].normalized.publication.acquireRead);
 });
 
-await runCase('session-root-work-epoch-closure', () => {
+await runCase('session-reroot-work-authority-closure', () => {
   const normalized = sessionProfiles[0].normalized;
-  assert.equal(normalized.root.workScopes.length, outputProgressResults[2].normalized.workClasses.length);
-  assert(normalized.root.workScopes.filter(({ scope }) => scope === 'root-epoch').every(({ staleDisposition }) => staleDisposition !== 'not-applicable'));
-  assert(normalized.root.workScopes.filter(({ scope }) => scope !== 'root-epoch').every(({ staleDisposition }) => staleDisposition === 'not-applicable'));
+  assert.equal(normalized.reroot.profile.workScopes.length, outputProgressResults[2].normalized.workClasses.length);
+  assert(normalized.reroot.profile.workScopes.filter(({ scope }) => scope === 'root-authority').every(({ staleDisposition }) => staleDisposition !== 'not-applicable'));
+  assert(normalized.reroot.profile.workScopes.filter(({ scope }) => scope !== 'root-authority').every(({ staleDisposition }) => staleDisposition === 'not-applicable'));
+  assert.equal(normalized.advance.profile.selectedDescendantWork, 'preserve-compatible');
+  assert.equal(normalized.advance.profile.siblingOccurrenceWork, 'superseded-by-advance-lazy');
 });
-
 await runCase('session-finite-counter-closure', () => {
-  const normalized = sessionProfiles[0].normalized;
-  assert.deepEqual(normalized.counters.map(({ kind }) => kind).sort(), ['attention-generation', 'command', 'observation-generation', 'reclamation-generation', 'root-epoch', 'session-incarnation']);
-  assert(normalized.counters.every(({ staleAliasProhibited }) => staleAliasProhibited));
-  assert.equal(normalized.counters.find(({ kind }) => kind === 'session-incarnation').rollover, 'prohibited');
+  assert.deepEqual(sessionProfiles[0].normalized.counters.map(({ kind }) => kind).sort(), [
+    'advance-generation', 'attention-generation', 'command', 'observation-generation', 'reclamation-generation', 'root-epoch', 'root-incarnation', 'session-incarnation',
+  ]);
 });
-
 await runCase('session-device-owned-progress-boundary', () => {
   const normalized = sessionProfiles[0].normalized;
   assert.equal(normalized.commands.hostProgress, 'none');
@@ -5016,13 +5004,11 @@ await runCase('session-program-public-js-boundary', () => {
 
 await runCase('session-cleanup-lifecycle-closure', () => {
   const normalized = sessionProfiles[0].normalized;
-  assert.equal(normalized.cleanup.kinds.length, 12);
-  assert.equal(normalized.cleanup.terminalBorrowPreservedUntilRelease, true);
-  assert.equal(normalized.lifecycle.persistence, 'none');
-  assert.equal(normalized.compatibility.persistence.kind, 'none');
-  assert.equal(normalized.reclamation.rootCommitSeparate, true);
+  assert.deepEqual(normalized.cleanup.kinds, [
+    'advance-publication', 'attention-publication', 'borrow', 'command', 'compound-lease', 'diagnostic', 'old-epoch-work', 'observation-request', 'program-artifact', 'reroot-transaction', 'session-counter', 'shared-node-protection', 'root-protection', 'transfer',
+  ].sort());
+  assert.equal(normalized.lifecycle.completion.freezeCommands, true);
 });
-
 await runCase('reject-session-unknown-field', () => {
   const mutated = clone(sessionProfileInputs[0]); mutated.scheduler = 'host-loop';
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_FIELDS' });
@@ -5063,66 +5049,67 @@ await runCase('reject-session-host-progress-loop', () => {
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_COMMAND_CONTRACT' });
 });
 
-await runCase('reject-session-root-input-gap', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.commands.inputs = mutated.commands.inputs.filter(({ kind }) => kind !== 'root-update');
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_INPUT_REQUIRED' });
+await runCase('reject-session-advance-input-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  mutated.commands.inputs = mutated.commands.inputs.filter(({ kind }) => kind !== 'advance');
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ADVANCE_INPUT' });
 });
-
 await runCase('reject-session-runtime-code-input', () => {
   const mutated = clone(sessionProfileInputs[0]); mutated.commands.inputs[0].runtimeCode = true;
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_INPUT_RUNTIME_CODE' });
 });
 
-await runCase('reject-session-root-application-gap', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.commands.inputs.find(({ kind }) => kind === 'root-update').deviceApplicationPoint = null;
+await runCase('reject-session-advance-application-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  mutated.commands.inputs.find(({ kind }) => kind === 'advance').deviceApplicationPoint = null;
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_INPUT_APPLICATION' });
 });
-
-await runCase('reject-session-root-transaction-mutation-before-admission', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.rootTransaction.preMutationAdmission = false;
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_TRANSACTION_CONTRACT' });
+await runCase('reject-session-reroot-mutation-before-admission', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  mutated.reroot.profile.transaction.preMutationAdmission = false;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_TRANSACTION_CONTRACT' });
 });
-
-await runCase('reject-session-root-transaction-owner-gap', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.rootTransaction.prepareOrder.pop();
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_TRANSACTION_ORDER' });
+await runCase('reject-session-reroot-transaction-owner-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  mutated.reroot.profile.transaction.prepareOrder.pop();
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_ORDER' });
 });
-
-await runCase('reject-session-root-transaction-abort-order', () => {
-  const mutated = clone(sessionProfileInputs[0]); [mutated.rootTransaction.abortOrder[0], mutated.rootTransaction.abortOrder[1]] = [mutated.rootTransaction.abortOrder[1], mutated.rootTransaction.abortOrder[0]];
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_TRANSACTION_ORDER' });
+await runCase('reject-session-reroot-transaction-abort-order', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  [mutated.reroot.profile.transaction.abortOrder[0], mutated.reroot.profile.transaction.abortOrder[1]] = [mutated.reroot.profile.transaction.abortOrder[1], mutated.reroot.profile.transaction.abortOrder[0]];
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_ORDER' });
 });
-
-await runCase('reject-session-root-compound-admission-drift', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.rootTransaction.compoundAdmission.rootReserve = progressResourceResults[2].normalized.reserves.find(({ purpose }) => purpose === 'terminal-result').id;
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_ADMISSION_BINDING' });
+await runCase('reject-session-reroot-compound-admission-drift', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  mutated.reroot.profile.transaction.compoundAdmission.rerootReserve = progressResourceResults[2].normalized.reserves.find(({ purpose }) => purpose === 'terminal-result').id;
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_ADMISSION' });
 });
-
 await runCase('reject-session-root-owner-drift', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.root.validationOwner = mutated.owners.find(({ contract }) => contract.id === 'SPEC-0008').id;
+  const mutated = clone(sessionProfileInputs[0]);
+  mutated.root.validationOwner = mutated.owners.find(({ contract }) => contract.id === 'SPEC-0008').id;
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_OWNER' });
 });
-
 await runCase('reject-session-root-authority-gap', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.root.oldRoot = 'destroy-before-prepare';
+  const mutated = clone(sessionProfileInputs[0]);
+  mutated.root.establishment = 'destroy-before-prepare';
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_CONTRACT' });
 });
-
-await runCase('reject-session-work-scope-gap', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.root.workScopes.pop();
-  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_WORK_SCOPE_COVERAGE' });
+await runCase('reject-session-reroot-work-scope-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  mutated.reroot.profile.workScopes.pop();
+  assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_WORK_COVERAGE' });
 });
-
-await runCase('reject-session-old-epoch-disposition-gap', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.root.workScopes.find(({ scope }) => scope === 'root-epoch').staleDisposition = 'not-applicable';
+await runCase('reject-session-reroot-stale-disposition-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  mutated.reroot.profile.workScopes.find(({ scope }) => scope === 'root-authority').staleDisposition = 'not-applicable';
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_WORK_STALE' });
 });
-
-await runCase('reject-session-reuse-validity-gap', () => {
-  const mutated = clone(sessionProfileInputs[0]); mutated.owners.flatMap(({ state }) => state).find(({ classification }) => classification === 'retain-if-key-valid').validity = null;
+await runCase('reject-session-reroot-reuse-validity-gap', () => {
+  const mutated = clone(sessionProfileInputs[0]);
+  const state = mutated.owners.flatMap(({ reroot }) => reroot.kind === 'selected' ? reroot.state : []).find(({ classification }) => classification === 'retain-if-key-valid');
+  state.validity = null;
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_STATE_CLASSIFICATION' });
 });
-
 await runCase('reject-session-attention-host-progress', () => {
   const mutated = clone(sessionProfileInputs[0]); mutated.attention.profile.hostProgress = 'host-callback';
   assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ATTENTION_CONTRACT' });

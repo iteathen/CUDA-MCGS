@@ -2,14 +2,14 @@
   "schema": "cuda-mcgs.reference-domain-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 719393,
-    "sha256": "70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9"
+    "byteLength": 719426,
+    "sha256": "aae077c90a21501594421bc7b2c630edc8e5c4da6caf08a0cbf82f367b331b6b"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-domain-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 69524,
-    "sha256": "612c72274be7986bcae53237be97b34e64d97a781eeb55e61964d11b942b9f47"
+    "sha256": "bde7aca1fe45c26050ce8305fc87617694c6a8015ead39054c97338ba80b9ef8"
   },
   "expectedCases": [
     "domain-profile-projection-exact",
@@ -44,66 +44,153 @@
     "transposingAlphaPacked": {
       "profileId": "domain.synthetic-transposing",
       "scopeId": "scope.engine-a",
-      "state": { "semantic": "alpha", "historyTag": "history.zero", "terminal": false, "encoding": "packed" }
+      "state": {
+        "semantic": "alpha",
+        "historyTag": "history.zero",
+        "terminal": false,
+        "encoding": "packed"
+      }
     },
     "transposingAlphaRecord": {
       "profileId": "domain.synthetic-transposing",
       "scopeId": "scope.engine-a",
-      "state": { "semantic": "alpha", "historyTag": "history.zero", "terminal": false, "encoding": "record" }
+      "state": {
+        "semantic": "alpha",
+        "historyTag": "history.zero",
+        "terminal": false,
+        "encoding": "record"
+      }
     },
     "transposingAlphaOtherHistory": {
       "profileId": "domain.synthetic-transposing",
       "scopeId": "scope.engine-a",
-      "state": { "semantic": "alpha", "historyTag": "history.one", "terminal": false, "encoding": "packed" }
+      "state": {
+        "semantic": "alpha",
+        "historyTag": "history.one",
+        "terminal": false,
+        "encoding": "packed"
+      }
     },
     "transposingBeta": {
       "profileId": "domain.synthetic-transposing",
       "scopeId": "scope.engine-a",
-      "state": { "semantic": "beta", "historyTag": "history.zero", "terminal": false, "encoding": "variable-record" }
+      "state": {
+        "semantic": "beta",
+        "historyTag": "history.zero",
+        "terminal": false,
+        "encoding": "variable-record"
+      }
     },
     "transposingDeadEnd": {
       "profileId": "domain.synthetic-transposing",
       "scopeId": "scope.engine-a",
-      "state": { "semantic": "dead-end", "historyTag": "history.zero", "terminal": false, "encoding": "record" }
+      "state": {
+        "semantic": "dead-end",
+        "historyTag": "history.zero",
+        "terminal": false,
+        "encoding": "record"
+      }
     },
     "transposingGoal": {
       "profileId": "domain.synthetic-transposing",
       "scopeId": "scope.engine-a",
-      "state": { "semantic": "goal", "historyTag": "history.zero", "terminal": true, "encoding": "record" }
+      "state": {
+        "semantic": "goal",
+        "historyTag": "history.zero",
+        "terminal": true,
+        "encoding": "record"
+      }
     },
     "stochasticChance": {
       "profileId": "domain.synthetic-stochastic-history",
       "scopeId": "scope.session-a",
-      "state": { "phase": "chance", "terminal": false, "belief": [0.5, 0.5] },
-      "history": { "observations": [], "steps": 0 }
+      "state": {
+        "phase": "chance",
+        "terminal": false,
+        "belief": [
+          0.5,
+          0.5
+        ]
+      },
+      "history": {
+        "observations": [],
+        "steps": 0
+      }
     },
     "stochasticObservation": {
       "profileId": "domain.synthetic-stochastic-history",
       "scopeId": "scope.session-a",
-      "state": { "phase": "observation", "terminal": false, "belief": [0.4, 0.6] },
-      "history": { "observations": ["prior"], "steps": 1 }
+      "state": {
+        "phase": "observation",
+        "terminal": false,
+        "belief": [
+          0.4,
+          0.6
+        ]
+      },
+      "history": {
+        "observations": [
+          "prior"
+        ],
+        "steps": 1
+      }
     },
     "stochasticTerminal": {
       "profileId": "domain.synthetic-stochastic-history",
       "scopeId": "scope.session-a",
-      "state": { "phase": "terminal", "terminal": true, "belief": [0.8, 0.2] },
-      "history": { "observations": ["prior", "signal"], "steps": 2 }
+      "state": {
+        "phase": "terminal",
+        "terminal": true,
+        "belief": [
+          0.8,
+          0.2
+        ]
+      },
+      "history": {
+        "observations": [
+          "prior",
+          "signal"
+        ],
+        "steps": 2
+      }
     },
     "stochasticHistoryLimit": {
       "profileId": "domain.synthetic-stochastic-history",
       "scopeId": "scope.session-a",
-      "state": { "phase": "observation", "terminal": false, "belief": [0.5, 0.5] },
-      "history": { "observations": ["one", "two", "three"], "steps": 3 }
+      "state": {
+        "phase": "observation",
+        "terminal": false,
+        "belief": [
+          0.5,
+          0.5
+        ]
+      },
+      "history": {
+        "observations": [
+          "one",
+          "two",
+          "three"
+        ],
+        "steps": 3
+      }
     },
     "lazyContinuous": {
       "profileId": "domain.synthetic-lazy-continuous",
       "scopeId": "scope.engine-b",
-      "state": { "position": 0.25, "target": 10.5, "terminal": false }
+      "state": {
+        "position": 0.25,
+        "target": 10.5,
+        "terminal": false
+      }
     },
     "lazyTerminal": {
       "profileId": "domain.synthetic-lazy-continuous",
       "scopeId": "scope.engine-b",
-      "state": { "position": 10.5, "target": 10.5, "terminal": true }
+      "state": {
+        "position": 10.5,
+        "target": 10.5,
+        "terminal": true
+      }
     }
   }
 }

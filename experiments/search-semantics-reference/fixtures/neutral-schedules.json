@@ -2,8 +2,8 @@
   "schema": "cuda-mcgs.reference-harness-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 719393,
-    "sha256": "70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9"
+    "byteLength": 719426,
+    "sha256": "aae077c90a21501594421bc7b2c630edc8e5c4da6caf08a0cbf82f367b331b6b"
   },
   "expectedCases": [
     "composer-evidence-input-exact",
@@ -32,11 +32,21 @@
   "schedules": {
     "dependent": {
       "schema": "cuda-mcgs.reference-declared-schedule/0.1.0",
-      "evidenceKey": "70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9",
+      "evidenceKey": "aae077c90a21501594421bc7b2c630edc8e5c4da6caf08a0cbf82f367b331b6b",
       "id": "schedule.dependent-publication",
       "owners": [
-        { "id": "owner.alpha", "initialState": { "lastPublished": null } },
-        { "id": "owner.beta", "initialState": { "seen": null } }
+        {
+          "id": "owner.alpha",
+          "initialState": {
+            "lastPublished": null
+          }
+        },
+        {
+          "id": "owner.beta",
+          "initialState": {
+            "seen": null
+          }
+        }
       ],
       "events": [
         {
@@ -44,24 +54,46 @@
           "owner": "owner.alpha",
           "after": [],
           "reads": [],
-          "input": { "operation": "publish", "fact": "owner.alpha.signal", "value": "ready" }
+          "input": {
+            "operation": "publish",
+            "fact": "owner.alpha.signal",
+            "value": "ready"
+          }
         },
         {
           "id": "event.beta-capture",
           "owner": "owner.beta",
-          "after": ["event.alpha-publish"],
-          "reads": ["owner.alpha.signal"],
-          "input": { "operation": "capture", "source": "owner.alpha.signal", "fact": "owner.beta.capture" }
+          "after": [
+            "event.alpha-publish"
+          ],
+          "reads": [
+            "owner.alpha.signal"
+          ],
+          "input": {
+            "operation": "capture",
+            "source": "owner.alpha.signal",
+            "fact": "owner.beta.capture"
+          }
         }
       ]
     },
     "independentAlphaFirst": {
       "schema": "cuda-mcgs.reference-declared-schedule/0.1.0",
-      "evidenceKey": "70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9",
+      "evidenceKey": "aae077c90a21501594421bc7b2c630edc8e5c4da6caf08a0cbf82f367b331b6b",
       "id": "schedule.independent",
       "owners": [
-        { "id": "owner.alpha", "initialState": { "lastPublished": null } },
-        { "id": "owner.beta", "initialState": { "seen": null } }
+        {
+          "id": "owner.alpha",
+          "initialState": {
+            "lastPublished": null
+          }
+        },
+        {
+          "id": "owner.beta",
+          "initialState": {
+            "seen": null
+          }
+        }
       ],
       "events": [
         {
@@ -69,24 +101,42 @@
           "owner": "owner.alpha",
           "after": [],
           "reads": [],
-          "input": { "operation": "publish", "fact": "owner.alpha.local", "value": "alpha" }
+          "input": {
+            "operation": "publish",
+            "fact": "owner.alpha.local",
+            "value": "alpha"
+          }
         },
         {
           "id": "event.beta-local",
           "owner": "owner.beta",
           "after": [],
           "reads": [],
-          "input": { "operation": "publish", "fact": "owner.beta.local", "value": "beta" }
+          "input": {
+            "operation": "publish",
+            "fact": "owner.beta.local",
+            "value": "beta"
+          }
         }
       ]
     },
     "independentBetaFirst": {
       "schema": "cuda-mcgs.reference-declared-schedule/0.1.0",
-      "evidenceKey": "70aa92baf5ab1fee4bf4b85af4cf1e6d76eca3c51fc11ab4120d62a6f71529d9",
+      "evidenceKey": "aae077c90a21501594421bc7b2c630edc8e5c4da6caf08a0cbf82f367b331b6b",
       "id": "schedule.independent",
       "owners": [
-        { "id": "owner.alpha", "initialState": { "lastPublished": null } },
-        { "id": "owner.beta", "initialState": { "seen": null } }
+        {
+          "id": "owner.alpha",
+          "initialState": {
+            "lastPublished": null
+          }
+        },
+        {
+          "id": "owner.beta",
+          "initialState": {
+            "seen": null
+          }
+        }
       ],
       "events": [
         {
@@ -94,14 +144,22 @@
           "owner": "owner.beta",
           "after": [],
           "reads": [],
-          "input": { "operation": "publish", "fact": "owner.beta.local", "value": "beta" }
+          "input": {
+            "operation": "publish",
+            "fact": "owner.beta.local",
+            "value": "beta"
+          }
         },
         {
           "id": "event.alpha-local",
           "owner": "owner.alpha",
           "after": [],
           "reads": [],
-          "input": { "operation": "publish", "fact": "owner.alpha.local", "value": "alpha" }
+          "input": {
+            "operation": "publish",
+            "fact": "owner.alpha.local",
+            "value": "alpha"
+          }
         }
       ]
     }

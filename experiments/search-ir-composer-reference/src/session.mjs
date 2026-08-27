@@ -177,7 +177,7 @@ function normalizeOwner(input, index, catalogById, contributorById, sessionOwner
 
 function normalizeRoot(input, ownerById) {
   exactKeys(input, ['descriptorSchema', 'validationOwner', 'graphOwner', 'incarnationCounter', 'epochCounter', 'establishment', 'publication', 'failureOutcome'], 'SESSION_INITIAL_ROOT_FIELDS', 'root');
-  if (!ownerById.has(input.validationOwner) || !ownerById.has(input.graphOwner)) fail('SESSION_ROOT_OWNER', 'initial root names unknown owners');
+  if (ownerById.get(input.validationOwner)?.contract.id !== 'SPEC-0007' || ownerById.get(input.graphOwner)?.contract.id !== 'SPEC-0010') fail('SESSION_ROOT_OWNER', 'initial root must bind Domain validation and Graph ownership');
   if (input.establishment !== 'pre-ignition-validate-admit-materialize' || input.publication !== 'release-after-full-initialization') fail('SESSION_ROOT_CONTRACT', 'initial root contract is incomplete');
   assertNamespacedId(input.incarnationCounter, 'SESSION_ROOT_COUNTER', 'root incarnationCounter');
   assertNamespacedId(input.epochCounter, 'SESSION_ROOT_COUNTER', 'root epochCounter');
@@ -199,7 +199,7 @@ function normalizeAdvance(input, ownerById, inputById) {
   exactKeys(p, ['input', 'validationOwner', 'graphOwner', 'epochCounter', 'generationCounter', 'realizedTransitionRequired', 'successorReadyRequired', 'existingResourcesOnly', 'authorityPublication', 'adoption', 'cost', 'graphTraversal', 'semanticStateCopy', 'stateTransform', 'reset', 'resize', 'reclassification', 'reclamation', 'eagerCleanup', 'selectedDescendantWork', 'siblingOccurrenceWork', 'sharedTransposedNode', 'rejectedOutcome', 'acceptedOutcome', 'exhaustedOutcome', 'hostProgress'], 'SESSION_ADVANCE_PROFILE_FIELDS', 'advance profile');
   const command = inputById.get(p.input);
   if (!command || command.kind !== 'advance' || command.owner !== p.validationOwner || command.epochScope !== 'session-and-root-authority') fail('SESSION_ADVANCE_INPUT', 'advance input/owner/scope is invalid');
-  if (!ownerById.has(p.validationOwner) || !ownerById.has(p.graphOwner)) fail('SESSION_ADVANCE_OWNER', 'advance names unknown owner');
+  if (ownerById.get(p.validationOwner)?.contract.id !== 'SPEC-0007' || ownerById.get(p.graphOwner)?.contract.id !== 'SPEC-0010') fail('SESSION_ADVANCE_OWNER', 'advance must bind Domain validation and Graph ownership');
   const exact = p.realizedTransitionRequired === true && p.successorReadyRequired === true && p.existingResourcesOnly === true
     && p.authorityPublication === 'single-authoritative-linearization' && p.adoption === 'per-device-versioned-safe-point'
     && p.cost === 'bounded-independent-of-retained-search-state' && p.graphTraversal === 'none' && p.semanticStateCopy === 'none'
@@ -225,6 +225,7 @@ function normalizeRerootTransaction(input, participantIds, rerootReserve, reroot
   assertExactMembers(input.prepareOrder, participantIds, 'SESSION_REROOT_ORDER', 'reroot prepare order');
   assertExactMembers(input.commitOrder, participantIds, 'SESSION_REROOT_ORDER', 'reroot commit order');
   assertExactMembers(input.abortOrder, participantIds, 'SESSION_REROOT_ORDER', 'reroot abort order');
+  if (input.commitOrder.some((id, index) => id !== input.prepareOrder[index]) || input.abortOrder.some((id, index) => id !== input.prepareOrder[input.prepareOrder.length - 1 - index])) fail('SESSION_REROOT_ORDER', 'reroot commit/abort order must preserve prepare order and reverse it for abort');
   exactKeys(input.compoundAdmission, ['resourceGroup', 'rerootReserve', 'maxTransactions', 'rollback'], 'SESSION_REROOT_ADMISSION_FIELDS', 'reroot compound admission');
   if (input.compoundAdmission.resourceGroup !== rerootAdmission.id || input.compoundAdmission.rerootReserve !== rerootReserve.id || input.compoundAdmission.maxTransactions !== rerootAdmission.maxTransactions
       || schemaKey(normalizeSchemaReference(input.compoundAdmission.rollback, 'reroot rollback')) !== schemaKey(rerootAdmission.rollback)) fail('SESSION_REROOT_ADMISSION', 'reroot compound admission differs from selected resource plan');
@@ -240,12 +241,10 @@ function normalizeRerootTransaction(input, participantIds, rerootReserve, reroot
 function normalizeWorkScope(input, index, workById) {
   exactKeys(input, ['workClass', 'scope', 'staleDisposition', 'release'], 'SESSION_WORK_SCOPE_FIELDS', `reroot work scope ${index}`);
   if (!workById.has(input.workClass)) fail('SESSION_WORK_SCOPE', `${input.workClass} is unknown`);
-  return {
-    workClass: input.workClass,
-    scope: assertEnum(input.scope, ['engine', 'session', 'root-authority'], 'SESSION_WORK_SCOPE', `${input.workClass} scope`),
-    staleDisposition: assertEnum(input.staleDisposition, ['not-applicable', 'applied-before-authority-change', 'abandoned-stale-root', 'owner-declared'], 'SESSION_WORK_SCOPE', `${input.workClass} staleDisposition`),
-    release: normalizeSchemaReference(input.release, `${input.workClass} release`),
-  };
+  const scope = assertEnum(input.scope, ['engine', 'session', 'root-authority'], 'SESSION_WORK_SCOPE', `${input.workClass} scope`);
+  const staleDisposition = assertEnum(input.staleDisposition, ['not-applicable', 'applied-before-authority-change', 'abandoned-stale-root', 'owner-declared'], 'SESSION_WORK_SCOPE', `${input.workClass} staleDisposition`);
+  if ((scope === 'root-authority' && staleDisposition === 'not-applicable') || (scope !== 'root-authority' && staleDisposition !== 'not-applicable')) fail('SESSION_WORK_STALE', `${input.workClass} stale disposition does not match authority scope`);
+  return { workClass: input.workClass, scope, staleDisposition, release: normalizeSchemaReference(input.release, `${input.workClass} release`) };
 }
 
 function normalizeReroot(input, owners, inputById, workById, rerootReserve, rerootAdmission) {
@@ -259,7 +258,8 @@ function normalizeReroot(input, owners, inputById, workById, rerootReserve, rero
   const p = input.profile;
   exactKeys(p, ['input', 'transaction', 'oldRoot', 'materialization', 'publication', 'reuseClassification', 'workScopes', 'pressureOutcome', 'rejectedOutcome', 'acceptedOutcome', 'exhaustedOutcome', 'hostProgress'], 'SESSION_REROOT_PROFILE_FIELDS', 'reroot profile');
   const command = inputById.get(p.input);
-  if (!command || command.kind !== 'reroot' || command.epochScope !== 'session-and-root-authority') fail('SESSION_REROOT_INPUT', 'reroot input/scope is invalid');
+  const domainOwnerId = owners.find(({ contract }) => contract.id === 'SPEC-0007')?.id;
+  if (!command || command.kind !== 'reroot' || command.owner !== domainOwnerId || command.epochScope !== 'session-and-root-authority') fail('SESSION_REROOT_INPUT', 'reroot input/owner/scope is invalid');
   if (p.oldRoot !== 'authoritative-until-commit' || p.materialization !== 'prepare-nonauthoritative' || p.publication !== 'release-after-full-initialization'
       || p.reuseClassification !== 'owner-declared-reroot-only' || !['reject-keep-session', 'restart-required', 'reserved-admit'].includes(p.pressureOutcome) || p.hostProgress !== 'none') fail('SESSION_REROOT_CONTRACT', 'reroot contract is incomplete');
   const participantIds = owners.filter(({ reroot }) => reroot.kind === 'selected').map(({ id }) => id);
@@ -268,6 +268,7 @@ function normalizeReroot(input, owners, inputById, workById, rerootReserve, rero
   if (!Array.isArray(p.workScopes) || p.workScopes.length === 0) fail('SESSION_REROOT_WORK_SCOPE', 'reroot workScopes must not be empty');
   const workScopes = p.workScopes.map((entry, index) => normalizeWorkScope(entry, index, workById)).sort((a, b) => compareRaw(a.workClass, b.workClass));
   uniqueBy(workScopes, 'workClass', 'SESSION_REROOT_WORK_DUPLICATE', 'reroot work scope');
+  if (workScopes.length !== workById.size || [...workById.keys()].some((id) => !workScopes.some(({ workClass }) => workClass === id))) fail('SESSION_REROOT_WORK_COVERAGE', 'reroot work scopes must exactly cover selected progress work classes');
   return { kind: 'selected', profile: { input: p.input, transaction, oldRoot: p.oldRoot, materialization: p.materialization, publication: p.publication, reuseClassification: p.reuseClassification, workScopes, pressureOutcome: p.pressureOutcome, rejectedOutcome: p.rejectedOutcome, acceptedOutcome: p.acceptedOutcome, exhaustedOutcome: p.exhaustedOutcome, hostProgress: 'none' } };
 }
 
