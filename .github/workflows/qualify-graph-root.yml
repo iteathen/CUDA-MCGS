@@ -1,0 +1,50 @@
+name: Qualify Graph ROOT semantic reference
+
+on:
+  push:
+    branches:
+      - ref/graph-root-01
+
+permissions:
+  contents: write
+
+concurrency:
+  group: graph-root-semantic-migration
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ref/graph-root-01
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26.7.0
+      - name: Apply ROOT profile correction, rebind evidence, and qualify ROOT
+        run: node tools/graph-root-semantic-migration.mjs
+      - name: Publish qualified ROOT migration and remove temporary tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm -f --ignore-unmatch \
+            .github/workflows/qualify-graph-root.yml \
+            tools/graph-root-semantic-migration.mjs
+          git config user.name iteathen
+          git config user.email josh.oshiro@gmail.com
+          git add \
+            experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json \
+            experiments/search-ir-composer-reference/run.mjs \
+            experiments/search-ir-composer-reference/src/graph.mjs \
+            experiments/search-ir-composer-reference/src/graph-fixtures.mjs \
+            experiments/search-semantics-reference/fixtures/neutral-schedules.json \
+            experiments/search-semantics-reference/fixtures/domain-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-node-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-edge-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-ref-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-path-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-root-cases.json
+          git diff --cached --check
+          git commit -m "ref: qualify Graph ROOT semantic reference"
+          git push origin HEAD:ref/graph-root-01
