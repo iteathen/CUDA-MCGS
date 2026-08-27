@@ -1,0 +1,49 @@
+name: one-shot adjacent root authority reconciliation v4
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    if: github.event.pull_request.head.ref == 'docs/ref-root-control-01-reconcile'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/ref-root-control-01-reconcile
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.7.0
+      - name: Reuse reconciliation with canonical two-field contract-set identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          const workflow = await readFile('.github/workflows/reconcile-adjacent-root-authority-v3.yml', 'utf8');
+          const marker = '        run: |\n';
+          const start = workflow.indexOf(marker);
+          if (start < 0) throw new Error('v3 reconciliation run block not found');
+          let script = workflow.slice(start + marker.length)
+            .split('\n')
+            .map((line) => line.startsWith('          ') ? line.slice(10) : line)
+            .join('\n');
+
+          const bad = 'framework.contractSet.identity = canonicalIdentity(contractSet);';
+          const good = "const refreshedContractSetIdentity = canonicalIdentity(contractSet);\n          framework.contractSet.identity = { algorithm: refreshedContractSetIdentity.algorithm, sha256: refreshedContractSetIdentity.sha256 };";
+          if (!script.includes(bad)) throw new Error('contract-set identity assignment anchor missing');
+          script = script.replace(bad, good);
+
+          const oldRm = 'git rm .github/workflows/reconcile-adjacent-root-authority.yml .github/workflows/reconcile-adjacent-root-authority-v2.yml .github/workflows/reconcile-adjacent-root-authority-v3.yml';
+          const newRm = `${oldRm} .github/workflows/reconcile-adjacent-root-authority-v4.yml`;
+          if (!script.includes(oldRm)) throw new Error('workflow cleanup anchor missing');
+          script = script.replace(oldRm, newRm);
+
+          await writeFile('/tmp/reconcile-adjacent-root-authority-v4.sh', `set -euo pipefail\n${script}`, { mode: 0o700 });
+          NODE
+          bash /tmp/reconcile-adjacent-root-authority-v4.sh
