@@ -1,4 +1,4 @@
-import { canonicalClone, canonicalIdentity, frozenCanonicalClone } from './canonical.mjs';
+import { canonicalBytes, canonicalClone, canonicalIdentity, frozenCanonicalClone } from './canonical.mjs';
 import { assertUniqueStrings, exactKeys, fail } from './errors.mjs';
 
 function freeze(value, label) {
@@ -90,6 +90,10 @@ export function createGraphEdgeOracle({
   const { object: expansionObject, layout: expansionLayout } = layoutFor(profile, 'expansion');
   validateLifecycle(edgeObject, ['free', 'reserved', 'action-ready', 'child-pending', 'ready', 'failed'], 'parent-edge');
   validateLifecycle(expansionObject, ['unexpanded', 'claimed', 'open', 'complete', 'failed', 'cancelled'], 'expansion');
+  const actionRegions = profile.ownerRegions.filter(({ objectKind, semanticRole }) => objectKind === edgeObject.id && semanticRole === 'domain-action');
+  if (actionRegions.length !== 1) fail('GRAPH_EDGE_PROFILE', 'parent-edge requires exactly one normalized domain-action owner region');
+  const actionByteLimit = decimal(actionRegions[0].sizeBytes, 'GRAPH_EDGE_PROFILE', `${actionRegions[0].id} sizeBytes`);
+  const expansionRecordBytes = decimal(expansionLayout.recordBytes, 'GRAPH_EDGE_PROFILE', `${expansionLayout.id} recordBytes`);
 
   const profileEdgeSlots = resourceMaximum(profile, 'resource-edge-slots');
   const profileActionBytes = resourceMaximum(profile, 'resource-action-bytes');
@@ -181,7 +185,7 @@ export function createGraphEdgeOracle({
     if (expansion.state !== 'open') fail('GRAPH_EDGE_EXPANSION_STATE', `${expansion.id} is not open`);
     const action = freeze(input.action, 'Graph EDGE action candidate');
     const bytes = decimal(input.actionBytes, 'GRAPH_EDGE_ACTION_BYTES', 'actionBytes');
-    if (bytes === 0n) fail('GRAPH_EDGE_ACTION_BYTES', 'actionBytes must be positive');
+    if (bytes === 0n || bytes > actionByteLimit) fail('GRAPH_EDGE_ACTION_BYTES', 'actionBytes must be positive and fit the normalized domain-action owner region');
     const identity = freeze(actionIdentity({ parent: canonicalClone(expansion.parent), action: canonicalClone(action), occurrence: input.occurrence }), 'Graph EDGE action identity');
     const multiplicity = multiplicityRule({ parent: canonicalClone(expansion.parent), expansionId: expansion.id, action: canonicalClone(action), actionIdentity: canonicalClone(identity) });
     if (!['unique', 'repeatable'].includes(multiplicity)) fail('GRAPH_EDGE_MULTIPLICITY', 'multiplicityRule must return unique or repeatable');
@@ -259,7 +263,6 @@ export function createGraphEdgeOracle({
       if (resolution.reference === undefined) fail('GRAPH_EDGE_CHILD_RESOLUTION', 'pending child resolution requires a typed reference');
       edge.state = 'child-pending';
       edge.pendingChild = freeze(resolution.reference, 'pending child reference');
-      if (mutations.publishPendingChild === true) edge.child = freeze(resolution.reference, 'premature child reference');
       emit('edge-child-pending', edge.id, { reference: edge.pendingChild });
       return { kind: 'pending', edgeId: edge.id, reference: canonicalClone(edge.pendingChild) };
     }
@@ -285,7 +288,10 @@ export function createGraphEdgeOracle({
     if (invalid && mutations.allowPartialBatch !== true) fail('GRAPH_EDGE_BATCH_INCOMPLETE', `batch includes incomplete or foreign edge ${invalid.id}`);
     const publishable = mutations.allowPartialBatch === true ? batchEdges.filter((edge) => edge.expansionId === expansion.id && !edge.batchPublished && ['action-ready', 'child-pending', 'ready'].includes(edge.state)) : batchEdges;
     if (publishable.length !== batchEdges.length && mutations.allowPartialBatch !== true) fail('GRAPH_EDGE_BATCH_INCOMPLETE', 'batch publication is not complete');
-    const batch = freeze({ id: input.batchId, edgeIds: publishable.map(({ id }) => id), generation: expansion.generation, producer: input.producer, status: 'ready' }, 'Graph expansion batch');
+    const producerBytes = BigInt(canonicalBytes(input.producer, 'Graph expansion producer record').byteLength);
+    if (producerBytes > expansionRecordBytes) fail('GRAPH_EDGE_BATCH_PRODUCER_BYTES', 'opaque producer record exceeds the normalized expansion-record byte bound');
+    const producer = freeze(input.producer, 'Graph expansion producer record');
+    const batch = freeze({ id: input.batchId, edgeIds: publishable.map(({ id }) => id), generation: expansion.generation, producer, status: 'ready' }, 'Graph expansion batch');
     for (const edge of publishable) {
       edge.batchId = input.batchId;
       edge.batchPublished = true;
@@ -335,7 +341,7 @@ export function createGraphEdgeOracle({
     const expansion = findExpansion(input.expansionId);
     assertClaimer(expansion, input.claimer);
     if (!['claimed', 'open'].includes(expansion.state)) fail('GRAPH_EDGE_EXPANSION_STATE', `${expansion.id} cannot fail from ${expansion.state}`);
-    for (const edge of edges.filter((entry) => entry.expansionId === expansion.id && !entry.batchPublished && entry.state !== 'failed')) {
+    for (const edge of edges.filter((entry) => entry.expansionId === expansion.id && entry.state !== 'failed')) {
       if (['reserved', 'action-ready', 'child-pending'].includes(edge.state)) failEdge({ claimer: input.claimer, edgeId: edge.id, code: input.code });
     }
     expansion.state = input.cancelled ? 'cancelled' : 'failed';
@@ -355,7 +361,7 @@ export function createGraphEdgeOracle({
   function snapshot() {
     return canonicalClone({
       profileId: profile.id,
-      limits: { edgeSlots: toDecimal(limits.edgeSlots), actionBytes: toDecimal(limits.actionBytes) },
+      limits: { edgeSlots: toDecimal(limits.edgeSlots), actionBytes: toDecimal(limits.actionBytes), actionByteLimit: toDecimal(actionByteLimit), expansionRecordBytes: toDecimal(expansionRecordBytes) },
       ledger: { edgeSlots: toDecimal(ledger.edgeSlots), actionBytes: toDecimal(ledger.actionBytes) },
       expansions: expansions.map(expansionPublic),
       edges: edges.map(edgePublic),

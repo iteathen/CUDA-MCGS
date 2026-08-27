@@ -55,8 +55,20 @@ export function registerGraphEdgeLifecycleCases({ defineCase, projection }) {
     const expansion = edges.claimExpansion({ claimer: 'expander-a', generation: '0', parent });
     assert.equal(expansion.kind, 'initializer');
     edges.openExpansion({ claimer: 'expander-a', expansionId: expansion.expansionId });
+    assert.throws(() => edges.reserveEdge({ claimer: 'expander-a', expansionId: expansion.expansionId, action: { id: 'oversized' }, actionBytes: '65', occurrence: null }), { code: 'GRAPH_EDGE_ACTION_BYTES' });
+    assert.deepEqual(edges.snapshot().ledger, { edgeSlots: '0', actionBytes: '0' });
+
     const edge = edges.reserveEdge({ claimer: 'expander-a', expansionId: expansion.expansionId, action: { id: 'go' }, actionBytes: '16', occurrence: null });
     edges.publishEdgeAction({ claimer: 'expander-a', edgeId: edge.edgeId });
+    assert.throws(() => edges.publishExpansionBatch({
+      claimer: 'expander-a',
+      expansionId: expansion.expansionId,
+      batchId: 'batch.oversized',
+      edgeIds: [edge.edgeId],
+      producer: { cursorToken: 'x'.repeat(96), stateToken: 'more' },
+    }), { code: 'GRAPH_EDGE_BATCH_PRODUCER_BYTES' });
+    assert.equal(edges.observeEdge(edge.edgeId).batchPublished, false);
+
     edges.publishExpansionBatch({ claimer: 'expander-a', expansionId: expansion.expansionId, batchId: 'batch.0', edgeIds: [edge.edgeId], producer: { cursorToken: 'opaque', stateToken: 'more' } });
     const pending = edges.resolveEdgeChild({ claimer: 'expander-a', edgeId: edge.edgeId, input: { target: 'child' } });
     assert.equal(pending.kind, 'pending');
@@ -72,5 +84,5 @@ export function registerGraphEdgeLifecycleCases({ defineCase, projection }) {
     assert.equal(terminalEdge.reservationDisposition, 'published-failed');
     assert.deepEqual(edges.snapshot().ledger, { edgeSlots: '1', actionBytes: '16' });
     return { expansion: cancelled.state, edge: terminalEdge.state, disposition: terminalEdge.reservationDisposition };
-  }, ['GRAPH-EDGE-007', 'GRAPH-EDGE-009']);
+  }, ['GRAPH-EDGE-005', 'GRAPH-EDGE-007', 'GRAPH-EDGE-008', 'GRAPH-EDGE-009']);
 }
