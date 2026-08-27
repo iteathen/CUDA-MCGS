@@ -1,2 +1,3 @@
 #!/usr/bin/env node
-import '../experiments/search-semantics-reference/run-graph-root.mjs';
+process.exitCode = 97;
+throw new Error('intentional #139 aggregate-gate falsifier');
