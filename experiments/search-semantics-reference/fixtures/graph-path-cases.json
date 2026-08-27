@@ -1,0 +1,40 @@
+{
+  "schema": "cuda-mcgs.reference-graph-path-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 719510,
+    "sha256": "be526141e2846a3307f8935184e39e44710dafcd8d8369441232b61907c64e12"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 134564,
+    "sha256": "dc1c6333574f17d657834739c8c8b0ea29999c3ef4427a871a10e1842abbabda"
+  },
+  "nodeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10123,
+    "sha256": "8096fba050f10a56b7d02973d84a868f6ba2bb9a8f17cbb7afed030397c4b559"
+  },
+  "refEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9139,
+    "sha256": "96b55fd85be6d5a6bd3c916454f1b76607b8d88940f79c094736b71c2245f281"
+  },
+  "expectedCases": [
+    "graph-path-profile-and-upstream-evidence-exact",
+    "graph-path-open-reference-lifecycle-and-generation-safe-reuse",
+    "graph-path-append-validates-node-and-edge-before-visible-write",
+    "graph-path-append-protects-before-publication-and-rolls-back",
+    "graph-path-repeated-node-occurrence-is-structurally-valid",
+    "graph-path-child-resolution-precedes-relation-classification",
+    "graph-path-owner-local-records-remain-opaque",
+    "graph-path-active-capacity-fails-without-partial-publication",
+    "graph-path-depth-fails-without-partial-occurrence",
+    "graph-path-close-abandon-releases-protections-once-before-reuse",
+    "graph-path-topology-matrix-preserves-ownership",
+    "graph-path-oracle-sensitivity-relation-before-identity",
+    "graph-path-oracle-sensitivity-visible-before-protection",
+    "graph-path-requirement-coverage-exact"
+  ]
+}
