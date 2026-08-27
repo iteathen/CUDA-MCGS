@@ -1,0 +1,273 @@
+name: one-shot root control repair
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.event.pull_request.head.ref == 'docs/ref-root-control-01-reconcile'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/ref-root-control-01-reconcile
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.7.0
+      - name: Reconcile Session normalizer and stale reference cases
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          function replaceOnce(text, before, after, label) {
+            const index = text.indexOf(before);
+            if (index < 0) throw new Error(`missing replacement anchor: ${label}`);
+            if (text.indexOf(before, index + before.length) >= 0) throw new Error(`duplicate replacement anchor: ${label}`);
+            return text.slice(0, index) + after + text.slice(index + before.length);
+          }
+
+          const sessionPath = 'experiments/search-ir-composer-reference/src/session.mjs';
+          let session = await readFile(sessionPath, 'utf8');
+          session = replaceOnce(
+            session,
+            "  if (!ownerById.has(input.validationOwner) || !ownerById.has(input.graphOwner)) fail('SESSION_ROOT_OWNER', 'initial root names unknown owners');",
+            "  if (ownerById.get(input.validationOwner)?.contract.id !== 'SPEC-0007' || ownerById.get(input.graphOwner)?.contract.id !== 'SPEC-0010') fail('SESSION_ROOT_OWNER', 'initial root must bind Domain validation and Graph ownership');",
+            'initial root owner contracts',
+          );
+          session = replaceOnce(
+            session,
+            "  if (!ownerById.has(p.validationOwner) || !ownerById.has(p.graphOwner)) fail('SESSION_ADVANCE_OWNER', 'advance names unknown owner');",
+            "  if (ownerById.get(p.validationOwner)?.contract.id !== 'SPEC-0007' || ownerById.get(p.graphOwner)?.contract.id !== 'SPEC-0010') fail('SESSION_ADVANCE_OWNER', 'advance must bind Domain validation and Graph ownership');",
+            'advance owner contracts',
+          );
+          session = replaceOnce(
+            session,
+            "  return {\n    workClass: input.workClass,\n    scope: assertEnum(input.scope, ['engine', 'session', 'root-authority'], 'SESSION_WORK_SCOPE', `${input.workClass} scope`),\n    staleDisposition: assertEnum(input.staleDisposition, ['not-applicable', 'applied-before-authority-change', 'abandoned-stale-root', 'owner-declared'], 'SESSION_WORK_SCOPE', `${input.workClass} staleDisposition`),\n    release: normalizeSchemaReference(input.release, `${input.workClass} release`),\n  };",
+            "  const scope = assertEnum(input.scope, ['engine', 'session', 'root-authority'], 'SESSION_WORK_SCOPE', `${input.workClass} scope`);\n  const staleDisposition = assertEnum(input.staleDisposition, ['not-applicable', 'applied-before-authority-change', 'abandoned-stale-root', 'owner-declared'], 'SESSION_WORK_SCOPE', `${input.workClass} staleDisposition`);\n  if ((scope === 'root-authority' && staleDisposition === 'not-applicable') || (scope !== 'root-authority' && staleDisposition !== 'not-applicable')) fail('SESSION_WORK_STALE', `${input.workClass} stale disposition does not match authority scope`);\n  return { workClass: input.workClass, scope, staleDisposition, release: normalizeSchemaReference(input.release, `${input.workClass} release`) };",
+            'reroot work scope semantics',
+          );
+          session = replaceOnce(
+            session,
+            "  const command = inputById.get(p.input);\n  if (!command || command.kind !== 'reroot' || command.epochScope !== 'session-and-root-authority') fail('SESSION_REROOT_INPUT', 'reroot input/scope is invalid');",
+            "  const command = inputById.get(p.input);\n  const domainOwnerId = owners.find(({ contract }) => contract.id === 'SPEC-0007')?.id;\n  if (!command || command.kind !== 'reroot' || command.owner !== domainOwnerId || command.epochScope !== 'session-and-root-authority') fail('SESSION_REROOT_INPUT', 'reroot input/owner/scope is invalid');",
+            'reroot domain owner binding',
+          );
+          session = replaceOnce(
+            session,
+            "  uniqueBy(workScopes, 'workClass', 'SESSION_REROOT_WORK_DUPLICATE', 'reroot work scope');\n  return { kind: 'selected', profile: { input: p.input, transaction, oldRoot: p.oldRoot, materialization: p.materialization, publication: p.publication, reuseClassification: p.reuseClassification, workScopes, pressureOutcome: p.pressureOutcome, rejectedOutcome: p.rejectedOutcome, acceptedOutcome: p.acceptedOutcome, exhaustedOutcome: p.exhaustedOutcome, hostProgress: 'none' } };",
+            "  uniqueBy(workScopes, 'workClass', 'SESSION_REROOT_WORK_DUPLICATE', 'reroot work scope');\n  if (workScopes.length !== workById.size || [...workById.keys()].some((id) => !workScopes.some(({ workClass }) => workClass === id))) fail('SESSION_REROOT_WORK_COVERAGE', 'reroot work scopes must exactly cover selected progress work classes');\n  return { kind: 'selected', profile: { input: p.input, transaction, oldRoot: p.oldRoot, materialization: p.materialization, publication: p.publication, reuseClassification: p.reuseClassification, workScopes, pressureOutcome: p.pressureOutcome, rejectedOutcome: p.rejectedOutcome, acceptedOutcome: p.acceptedOutcome, exhaustedOutcome: p.exhaustedOutcome, hostProgress: 'none' } };",
+            'reroot work coverage',
+          );
+          await writeFile(sessionPath, session);
+
+          const runPath = 'experiments/search-ir-composer-reference/run.mjs';
+          let run = await readFile(runPath, 'utf8');
+          function replaceRunCase(oldId, replacement) {
+            const marker = `await runCase('${oldId}'`;
+            const start = run.indexOf(marker);
+            if (start < 0) throw new Error(`missing runCase ${oldId}`);
+            const end = run.indexOf('\nawait runCase(', start + marker.length);
+            if (end < 0) throw new Error(`missing next runCase after ${oldId}`);
+            run = run.slice(0, start) + replacement.trimEnd() + run.slice(end);
+          }
+
+          replaceRunCase('session-schema-closed', `await runCase('session-schema-closed', () => {
+            assert.equal(sessionProfileSchema.additionalProperties, false);
+            assert.equal(sessionProfileSchema.$defs.advanceProfile.additionalProperties, false);
+            assert.equal(sessionProfileSchema.$defs.rerootTransaction.additionalProperties, false);
+            assert.equal(sessionProfileSchema.$defs.rerootProfile.additionalProperties, false);
+            assert.equal(sessionProfileSchema.$defs.attentionProfile.additionalProperties, false);
+            assert.equal(sessionProfileSchema.properties.advance.$ref, '#/$defs/advance');
+            assert.equal(sessionProfileSchema.properties.reroot.$ref, '#/$defs/reroot');
+            assert.equal(sessionProfileSchema.properties.rootTransaction, undefined);
+          });`);
+
+          replaceRunCase('session-profile-second-instances-distinct', `await runCase('session-profile-second-instances-distinct', () => {
+            assert.notDeepEqual(sessionProfiles[0].identity, sessionProfiles[1].identity);
+            assert.deepEqual(sessionProfiles.map(({ normalized }) => normalized.reroot.profile.pressureOutcome), ['reject-keep-session', 'restart-required']);
+            assert.deepEqual(sessionProfiles.map(({ normalized }) => normalized.attention.kind), ['selected', 'absent']);
+          });`);
+
+          replaceRunCase('session-profile-order-independent', `await runCase('session-profile-order-independent', () => {
+            const reordered = clone(sessionProfileInputs[0]);
+            for (const key of ['owners', 'counters', 'statuses', 'permissions', 'productData']) reordered[key].reverse();
+            reordered.reroot.profile.workScopes.reverse();
+            reordered.reroot.profile.transaction.prepareOrder = [...reordered.reroot.profile.transaction.prepareOrder].reverse();
+            reordered.reroot.profile.transaction.commitOrder = [...reordered.reroot.profile.transaction.commitOrder].reverse();
+            reordered.reroot.profile.transaction.abortOrder = [...reordered.reroot.profile.transaction.abortOrder].reverse();
+            reordered.observations.profiles.reverse();
+            reordered.programContribution.inputs.reverse();
+            reordered.programContribution.requirements.reverse();
+            const normalized = normalizeSessionProfile(reordered, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult);
+            assert.deepEqual(normalized.identity, sessionProfiles[0].identity);
+          });`);
+
+          replaceRunCase('session-owner-boundary-exact', `await runCase('session-owner-boundary-exact', () => {
+            const normalized = sessionProfiles[0].normalized;
+            assert.equal(normalized.owners.length, outputProgressResults[2].normalized.contributors.length);
+            const coordinator = normalized.owners.find(({ role }) => role === 'coordinator');
+            assert.equal(coordinator.contract.id, 'SPEC-0006');
+            assert.equal(coordinator.reroot.kind, 'absent');
+            assert(normalized.owners.filter(({ reroot }) => reroot.kind === 'selected').every(({ role }) => role === 'participant'));
+          });`);
+
+          replaceRunCase('session-root-transaction-admission-before-mutation', `await runCase('session-reroot-transaction-admission-before-mutation', () => {
+            const normalized = sessionProfiles[0].normalized;
+            assert.equal(normalized.reroot.profile.transaction.preMutationAdmission, true);
+            assert.equal(normalized.reroot.profile.transaction.linearization, 'root-incarnation-publication');
+            assert.equal(normalized.advance.profile.existingResourcesOnly, true);
+            assert.equal(normalized.advance.profile.reclassification, 'none');
+          });`);
+
+          replaceRunCase('session-attention-root-and-reclamation-separation', `await runCase('session-attention-root-and-reclamation-separation', () => {
+            const normalized = sessionProfiles[0].normalized;
+            assert.equal(normalized.attention.profile.rootAuthorityEffect, 'none');
+            assert.equal(normalized.attention.profile.graphWork, 'none');
+            assert.equal(normalized.attention.profile.reclamation, 'none');
+            assert.equal(normalized.advance.profile.reclamation, 'none');
+            assert.equal(normalized.reclamation.advanceSeparate, true);
+            assert.equal(normalized.reclamation.rerootCommitSeparate, true);
+          });`);
+
+          replaceRunCase('reject-session-attention-root-epoch-scope', `await runCase('reject-session-attention-root-authority-scope', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            mutated.commands.inputs.find(({ kind }) => kind === 'attention').epochScope = 'session-and-root-authority';
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ATTENTION_INPUT' });
+          });`);
+
+          replaceRunCase('reject-session-root-transaction-unaffected-owner', `await runCase('reject-session-reroot-transaction-unaffected-owner', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            const unaffected = mutated.owners.find(({ role, reroot }) => role === 'participant' && reroot.kind === 'absent').id;
+            mutated.reroot.profile.transaction.prepareOrder.push(unaffected);
+            mutated.reroot.profile.transaction.commitOrder.push(unaffected);
+            mutated.reroot.profile.transaction.abortOrder.unshift(unaffected);
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_ORDER' });
+          });`);
+
+          replaceRunCase('session-root-work-epoch-closure', `await runCase('session-reroot-work-authority-closure', () => {
+            const normalized = sessionProfiles[0].normalized;
+            assert.equal(normalized.reroot.profile.workScopes.length, outputProgressResults[2].normalized.workClasses.length);
+            assert(normalized.reroot.profile.workScopes.filter(({ scope }) => scope === 'root-authority').every(({ staleDisposition }) => staleDisposition !== 'not-applicable'));
+            assert(normalized.reroot.profile.workScopes.filter(({ scope }) => scope !== 'root-authority').every(({ staleDisposition }) => staleDisposition === 'not-applicable'));
+            assert.equal(normalized.advance.profile.selectedDescendantWork, 'preserve-compatible');
+            assert.equal(normalized.advance.profile.siblingOccurrenceWork, 'superseded-by-advance-lazy');
+          });`);
+
+          replaceRunCase('session-finite-counter-closure', `await runCase('session-finite-counter-closure', () => {
+            assert.deepEqual(sessionProfiles[0].normalized.counters.map(({ kind }) => kind).sort(), [
+              'advance-generation', 'attention-generation', 'command', 'observation-generation', 'reclamation-generation', 'root-epoch', 'root-incarnation', 'session-incarnation',
+            ]);
+          });`);
+
+          replaceRunCase('session-cleanup-lifecycle-closure', `await runCase('session-cleanup-lifecycle-closure', () => {
+            const normalized = sessionProfiles[0].normalized;
+            assert.deepEqual(normalized.cleanup.kinds, [
+              'advance-publication', 'attention-publication', 'borrow', 'command', 'compound-lease', 'diagnostic', 'old-epoch-work', 'observation-request', 'program-artifact', 'reroot-transaction', 'session-counter', 'shared-node-protection', 'root-protection', 'transfer',
+            ].sort());
+            assert.equal(normalized.lifecycle.completion.freezeCommands, true);
+          });`);
+
+          replaceRunCase('reject-session-root-input-gap', `await runCase('reject-session-advance-input-gap', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            mutated.commands.inputs = mutated.commands.inputs.filter(({ kind }) => kind !== 'advance');
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ADVANCE_INPUT' });
+          });`);
+
+          replaceRunCase('reject-session-root-application-gap', `await runCase('reject-session-advance-application-gap', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            mutated.commands.inputs.find(({ kind }) => kind === 'advance').deviceApplicationPoint = null;
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_INPUT_APPLICATION' });
+          });`);
+
+          replaceRunCase('reject-session-root-transaction-mutation-before-admission', `await runCase('reject-session-reroot-mutation-before-admission', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            mutated.reroot.profile.transaction.preMutationAdmission = false;
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_TRANSACTION_CONTRACT' });
+          });`);
+
+          replaceRunCase('reject-session-root-transaction-owner-gap', `await runCase('reject-session-reroot-transaction-owner-gap', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            mutated.reroot.profile.transaction.prepareOrder.pop();
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_ORDER' });
+          });`);
+
+          replaceRunCase('reject-session-root-transaction-abort-order', `await runCase('reject-session-reroot-transaction-abort-order', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            [mutated.reroot.profile.transaction.abortOrder[0], mutated.reroot.profile.transaction.abortOrder[1]] = [mutated.reroot.profile.transaction.abortOrder[1], mutated.reroot.profile.transaction.abortOrder[0]];
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_ORDER' });
+          });`);
+
+          replaceRunCase('reject-session-root-compound-admission-drift', `await runCase('reject-session-reroot-compound-admission-drift', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            mutated.reroot.profile.transaction.compoundAdmission.rerootReserve = progressResourceResults[2].normalized.reserves.find(({ purpose }) => purpose === 'terminal-result').id;
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_ADMISSION_BINDING' });
+          });`);
+
+          replaceRunCase('reject-session-root-owner-drift', `await runCase('reject-session-root-owner-drift', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            mutated.root.validationOwner = mutated.owners.find(({ contract }) => contract.id === 'SPEC-0008').id;
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_OWNER' });
+          });`);
+
+          replaceRunCase('reject-session-root-authority-gap', `await runCase('reject-session-root-authority-gap', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            mutated.root.establishment = 'destroy-before-prepare';
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_ROOT_CONTRACT' });
+          });`);
+
+          replaceRunCase('reject-session-work-scope-gap', `await runCase('reject-session-reroot-work-scope-gap', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            mutated.reroot.profile.workScopes.pop();
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_REROOT_WORK_COVERAGE' });
+          });`);
+
+          replaceRunCase('reject-session-old-epoch-disposition-gap', `await runCase('reject-session-reroot-stale-disposition-gap', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            mutated.reroot.profile.workScopes.find(({ scope }) => scope === 'root-authority').staleDisposition = 'not-applicable';
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_WORK_STALE' });
+          });`);
+
+          replaceRunCase('reject-session-reuse-validity-gap', `await runCase('reject-session-reroot-reuse-validity-gap', () => {
+            const mutated = clone(sessionProfileInputs[0]);
+            const state = mutated.owners.flatMap(({ reroot }) => reroot.kind === 'selected' ? reroot.state : []).find(({ classification }) => classification === 'retain-if-key-valid');
+            state.validity = null;
+            assert.throws(() => normalizeSessionProfile(mutated, inspected, progressResourceResults[2], outputProgressResults[2], sessionOutputResult), { code: 'SESSION_STATE_CLASSIFICATION' });
+          });`);
+
+          await writeFile(runPath, run);
+          NODE
+
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-domain-profiles.mjs
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const composer = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(await readFile('experiments/search-ir-composer-reference/build/domain-profiles.json', 'utf8'));
+          const neutralPath = 'experiments/search-semantics-reference/fixtures/neutral-schedules.json';
+          const domainPath = 'experiments/search-semantics-reference/fixtures/domain-cases.json';
+          const neutral = JSON.parse(await readFile(neutralPath, 'utf8'));
+          const domain = JSON.parse(await readFile(domainPath, 'utf8'));
+          neutral.composerEvidence = composer.representationCompositionEvidenceKey;
+          domain.composerEvidence = composer.representationCompositionEvidenceKey;
+          domain.profileProjection = { schema: projection.schema, ...projection.projectionIdentity };
+          await writeFile(neutralPath, `${JSON.stringify(neutral, null, 2)}\n`);
+          await writeFile(domainPath, `${JSON.stringify(domain, null, 2)}\n`);
+          NODE
+
+          node scripts/run-search-semantics-reference.mjs
+          ./scripts/verify-docs.sh
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add experiments/search-ir-composer-reference/src/session.mjs \
+                  experiments/search-ir-composer-reference/run.mjs \
+                  experiments/search-semantics-reference/fixtures/neutral-schedules.json \
+                  experiments/search-semantics-reference/fixtures/domain-cases.json
+          git commit -m 'test: reconcile four-operation Session evidence'
+          git push origin HEAD:docs/ref-root-control-01-reconcile
