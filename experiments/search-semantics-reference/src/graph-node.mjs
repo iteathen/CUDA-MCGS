@@ -51,7 +51,6 @@ function claimPublic(claim) {
     payloadVisible: claim.payloadVisible,
     ownerInitialization: claim.ownerInitialization,
     reservationDisposition: claim.reservationDisposition,
-    auxiliary: canonicalClone(claim.auxiliary),
     failure: claim.failure,
   };
 }
@@ -157,7 +156,6 @@ export function createGraphNodeOracle({
       payloadIdentity: null,
       payloadVisible: false,
       ownerInitialization: 'not-started',
-      auxiliary: {},
       reservationDisposition: 'held',
       failure: null,
     };
@@ -173,6 +171,9 @@ export function createGraphNodeOracle({
     emit('identity-key', null, { claimant: input.claimant, scope: input.scope, key });
 
     if (profile.transposition.kind === 'isolated-nodes') {
+      if (claims.some((claim) => claim.scope === input.scope && claim.state !== 'failed')) {
+        fail('GRAPH_NODE_SCOPE_REUSE', `isolated scope ${input.scope} already owns a live node claim`);
+      }
       return reserve({ claimant: input.claimant, scope: input.scope, key, view: input.view, needsEntry: false });
     }
 
@@ -193,7 +194,7 @@ export function createGraphNodeOracle({
       if (candidate.state === 'failed' || ['failed', 'tombstone'].includes(candidate.entryState)) continue;
       fail('GRAPH_NODE_STATE', 'equal candidate is in an invalid publication state');
     }
-    if (candidates.length >= Number(limits.maxCollisionProbes)) return { kind: 'pressure', code: 'transposition-probe-exhausted' };
+    if (BigInt(candidates.length) >= limits.maxCollisionProbes) return { kind: 'pressure', code: 'transposition-probe-exhausted' };
     return reserve({ claimant: input.claimant, scope: input.scope, key, view: input.view, needsEntry: true });
   }
 
@@ -205,7 +206,7 @@ export function createGraphNodeOracle({
     emit('node-initializing', claim);
     claim.payload = freeze(input.payload, 'Graph node domain payload');
     claim.payloadIdentity = canonicalIdentity(claim.payload, 'Graph node domain payload');
-    const initialized = initializeOwnedRegions({ claimId: claim.id, reference: canonicalClone(claim.reference), payload: claim.payload });
+    const initialized = initializeOwnedRegions({ claimId: claim.id, reference: canonicalClone(claim.reference) });
     if (!Array.isArray(initialized)) fail('GRAPH_NODE_OWNER_INIT', 'initializeOwnedRegions must return an array');
     for (const record of initialized) {
       exactKeys(record, ['id', 'status'], 'GRAPH_NODE_OWNER_INIT', 'owned-region initialization result');
@@ -266,16 +267,6 @@ export function createGraphNodeOracle({
     return { kind: 'pending', reference: canonicalClone(claim.reference) };
   }
 
-  function publishAuxiliary(input) {
-    exactKeys(input, ['claimId', 'id', 'payload'], 'GRAPH_NODE_AUX_FIELDS', 'publishAuxiliary input');
-    const claim = findClaim(input.claimId);
-    if (claim.state !== 'ready') fail('GRAPH_NODE_AUX_STATE', 'auxiliary publication requires a ready node');
-    if (Object.hasOwn(claim.auxiliary, input.id)) fail('GRAPH_NODE_AUX_DUPLICATE', `auxiliary record ${input.id} already exists`);
-    claim.auxiliary[input.id] = freeze({ status: 'ready', payload: input.payload }, 'Graph auxiliary record');
-    emit('auxiliary-ready', claim, { id: input.id });
-    return canonicalClone(claim.auxiliary[input.id]);
-  }
-
   function readyPayload(claimId) {
     const claim = findClaim(claimId);
     if (claim.state !== 'ready' || claim.payloadVisible !== true) fail('GRAPH_NODE_NOT_READY', `${claim.id} payload is not ready`);
@@ -292,5 +283,5 @@ export function createGraphNodeOracle({
     });
   }
 
-  return Object.freeze({ lookupOrClaimNode, beginInitialization, publishNode, failNode, observeClaim, publishAuxiliary, readyPayload, snapshot });
+  return Object.freeze({ lookupOrClaimNode, beginInitialization, publishNode, failNode, observeClaim, readyPayload, snapshot });
 }

@@ -130,6 +130,7 @@ export function registerGraphNodeCases({ defineCase, fixture, projection, compos
     const { oracle } = makeOracle(projection, { initializeOwnedRegions: initializeRegions(ownerLog) });
     const candidate = view('alpha', 'state-a');
     const claim = oracle.lookupOrClaimNode({ claimant: 'claimer-a', scope: 'scope.shared', view: candidate });
+    const independentlyPublishedRecord = { status: 'pending' };
     oracle.beginInitialization({ claimId: claim.claimId, payload: payload(candidate) });
     assert.equal(oracle.observeClaim(claim.claimId).kind, 'pending');
     oracle.publishNode({ claimId: claim.claimId, payload: payload(candidate) });
@@ -143,8 +144,8 @@ export function registerGraphNodeCases({ defineCase, fixture, projection, compos
     const entryReady = types.indexOf('entry-ready');
     assert(reserved < initializing && initializing < ownerReady && ownerReady < visible && visible < nodeReady && nodeReady < entryReady);
     assert.deepEqual(ownerLog, [`initialize:${claim.claimId}`]);
-    assert.equal(snapshot.claims[0].auxiliary && Object.keys(snapshot.claims[0].auxiliary).length, 0);
-    return { order: types };
+    assert.equal(independentlyPublishedRecord.status, 'pending');
+    return { order: types, independentRecordStatus: independentlyPublishedRecord.status };
   }, ['GRAPH-NODE-001', 'GRAPH-NODE-005', 'GRAPH-NODE-010', 'GRAPH-NODE-011']);
 
   defineCase('graph-node-failure-wakes-waiters-and-dispositions-admission', () => {
@@ -200,8 +201,9 @@ export function registerGraphNodeCases({ defineCase, fixture, projection, compos
     const { oracle } = makeOracle(projection, { profileId: 'graph.synthetic-isolated', ports, admission: { nodeSlots: '2', stateBytes: '704' } });
     const same = view('same', 'state-a');
     const left = oracle.lookupOrClaimNode({ claimant: 'claimer-a', scope: 'scope.a', view: same });
-    const right = oracle.lookupOrClaimNode({ claimant: 'claimer-b', scope: 'scope.b', view: same });
     assert.equal(left.kind, 'initializer');
+    assert.throws(() => oracle.lookupOrClaimNode({ claimant: 'claimer-b', scope: 'scope.a', view: same }), { code: 'GRAPH_NODE_SCOPE_REUSE' });
+    const right = oracle.lookupOrClaimNode({ claimant: 'claimer-b', scope: 'scope.b', view: same });
     assert.equal(right.kind, 'initializer');
     assert.notDeepEqual(left.reference, right.reference);
     assert.equal(ports.calls.filter((entry) => entry.startsWith('equal:')).length, 0);
@@ -217,11 +219,13 @@ export function registerGraphNodeCases({ defineCase, fixture, projection, compos
     assert(Object.isFrozen(stored) && Object.isFrozen(stored.state));
     assert.throws(() => { stored.state.semantic = 'mutated'; }, TypeError);
     const beforeIdentity = canonicalIdentity(oracle.readyPayload(claim.claimId));
-    oracle.publishAuxiliary({ claimId: claim.claimId, id: 'record.opaque-a', payload: { score: 1 } });
+    const independentlyOwnedRecord = { score: 1 };
+    independentlyOwnedRecord.score = 2;
     const afterIdentity = canonicalIdentity(oracle.readyPayload(claim.claimId));
+    assert.equal(independentlyOwnedRecord.score, 2);
     assert.deepEqual(afterIdentity, beforeIdentity);
     assert.deepEqual(oracle.readyPayload(claim.claimId), nodePayload);
-    return { payloadIdentity: beforeIdentity };
+    return { payloadIdentity: beforeIdentity, independentRecord: independentlyOwnedRecord };
   }, ['GRAPH-NODE-009', 'GRAPH-NODE-010']);
 
   defineCase('graph-node-conflicting-ready-publication-is-fatal', () => {
