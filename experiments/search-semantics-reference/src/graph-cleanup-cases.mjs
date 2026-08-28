@@ -129,44 +129,63 @@ export function registerGraphCleanupCases({
     };
   }, ['GRAPH-CLEANUP-002']);
 
-  defineCase('graph-cleanup-arena-release-reconciles-all-graph-owned-transients-before-native-destruction', () => {
+  defineCase('graph-cleanup-arena-release-reconciles-all-graph-owned-transients-before-resource-destruction', () => {
     const cleanLedger = {
       byteLedgerOutstanding: '0', diagnosticRecords: '0', edgeRecords: '0', expansionRecords: '0', nodeClaims: '0',
       ownerRegionLeases: '0', pathOccurrences: '0', protections: '0', retirementRecords: '0', transpositionEntries: '0',
     };
-    assert.deepEqual(reconcileGraphArenaRelease({ ledger: cleanLedger, nativeResourcesDestroyed: false }), {
-      kind: 'ready-for-native-destruction', graphCleanupComplete: true, nativeResourcesDestroyed: false,
+    assert.deepEqual(reconcileGraphArenaRelease({ ledger: cleanLedger, resourceDestructionStarted: false }), {
+      kind: 'ready-for-resource-destruction', graphCleanupComplete: true, resourceDestructionStarted: false,
     });
     for (const field of Object.keys(cleanLedger)) {
       const dirty = { ...cleanLedger, [field]: '1' };
-      const blocked = reconcileGraphArenaRelease({ ledger: dirty, nativeResourcesDestroyed: false });
+      const blocked = reconcileGraphArenaRelease({ ledger: dirty, resourceDestructionStarted: false });
       assert.equal(blocked.kind, 'blocked');
       assert.deepEqual(blocked.outstanding, [{ field, count: '1' }]);
     }
-    assert.throws(() => reconcileGraphArenaRelease({ ledger: cleanLedger, nativeResourcesDestroyed: true }), { code: 'GRAPH_CLEANUP_ORDER' });
+    assert.throws(() => reconcileGraphArenaRelease({ ledger: cleanLedger, resourceDestructionStarted: true }), { code: 'GRAPH_CLEANUP_ORDER' });
     passed(pathEvidence, 'graph-path-close-abandon-releases-protections-once-before-reuse');
     passed(reclaimEvidence, 'graph-reclaim-retirement-record-reuses-without-capacity-leak');
     passed(advanceOccurrenceEvidence, 'graph-advance-occurrence-retained-borrow-gates-quiescence-and-reuse-is-generation-safe');
-    return { reconciledFields: Object.keys(cleanLedger), nativeDestructionOwnedDownstream: true };
+    return { reconciledFields: Object.keys(cleanLedger), resourceDestructionOwnedDownstream: true };
   }, ['GRAPH-CLEANUP-003']);
 
-  defineCase('graph-cleanup-retained-artifact-provenance-is-explicit-or-absent', () => {
-    assert.deepEqual(validateRetainedGraphArtifacts([]), { kind: 'retained-artifacts-valid', count: '0', artifacts: [] });
-    const artifact = {
-      owner: 'ENGINE-REFERENCE-01',
+  defineCase('graph-cleanup-retained-artifact-provenance-is-explicit-compatible-or-absent', () => {
+    const compatibleWith = {
       profileIdentity: fixture.profileProjection.sha256,
       packageIdentity: fixture.composerEvidence.sha256,
+    };
+    assert.deepEqual(validateRetainedGraphArtifacts({ artifacts: [], compatibleWith }), {
+      kind: 'retained-artifacts-valid', count: '0', artifacts: [],
+    });
+    const artifact = {
+      owner: 'ENGINE-REFERENCE-01',
+      profileIdentity: compatibleWith.profileIdentity,
+      packageIdentity: compatibleWith.packageIdentity,
       recoveryPurpose: 'reproduce-graph-cleanup-reference-evidence',
       cleanupTrigger: 'delete-after-evidence-retention-policy-or-superseding-qualified-packet',
     };
-    const validated = validateRetainedGraphArtifacts([artifact]);
+    const validated = validateRetainedGraphArtifacts({ artifacts: [artifact], compatibleWith });
     assert.equal(validated.kind, 'retained-artifacts-valid');
     assert.equal(validated.count, '1');
     assert.equal(validated.artifacts[0].kind, 'retained-artifact-valid');
     for (const field of Object.keys(artifact)) {
-      assert.throws(() => validateRetainedGraphArtifacts([{ ...artifact, [field]: '' }]), { code: 'GRAPH_CLEANUP_ARTIFACT' });
+      assert.throws(() => validateRetainedGraphArtifacts({ artifacts: [{ ...artifact, [field]: '' }], compatibleWith }), { code: 'GRAPH_CLEANUP_ARTIFACT' });
     }
-    return { zeroRetentionValid: true, explicitRetentionValid: true, requiredFields: Object.keys(artifact).sort() };
+    assert.throws(() => validateRetainedGraphArtifacts({
+      artifacts: [{ ...artifact, profileIdentity: `${artifact.profileIdentity}.other` }],
+      compatibleWith,
+    }), { code: 'GRAPH_CLEANUP_ARTIFACT_COMPATIBILITY' });
+    assert.throws(() => validateRetainedGraphArtifacts({
+      artifacts: [{ ...artifact, packageIdentity: `${artifact.packageIdentity}.other` }],
+      compatibleWith,
+    }), { code: 'GRAPH_CLEANUP_ARTIFACT_COMPATIBILITY' });
+    return {
+      zeroRetentionValid: true,
+      explicitCompatibleRetentionValid: true,
+      incompatibleRetentionRejected: true,
+      requiredFields: Object.keys(artifact).sort(),
+    };
   }, ['GRAPH-CLEANUP-004']);
 
   defineCase('graph-cleanup-requirement-coverage-exact', () => {
