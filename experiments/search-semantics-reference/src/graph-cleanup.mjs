@@ -10,6 +10,11 @@ function decimal(value, code, label) {
   return BigInt(value);
 }
 
+function nonEmptyString(value, code, label) {
+  if (typeof value !== 'string' || value.trim().length === 0) fail(code, `${label} must be an explicit non-empty string`);
+  return value;
+}
+
 const LEDGER_FIELDS = [
   'byteLedgerOutstanding',
   'diagnosticRecords',
@@ -25,11 +30,11 @@ const LEDGER_FIELDS = [
 
 export function reconcileGraphArenaRelease(input) {
   if (!isRecord(input)) fail('GRAPH_CLEANUP_RECONCILE', 'Graph arena release reconciliation input is required');
-  exactKeys(input, ['ledger', 'nativeResourcesDestroyed'], 'GRAPH_CLEANUP_RECONCILE', 'Graph arena release reconciliation');
+  exactKeys(input, ['ledger', 'resourceDestructionStarted'], 'GRAPH_CLEANUP_RECONCILE', 'Graph arena release reconciliation');
   if (!isRecord(input.ledger)) fail('GRAPH_CLEANUP_RECONCILE', 'Graph cleanup ledger is required');
   exactKeys(input.ledger, LEDGER_FIELDS, 'GRAPH_CLEANUP_RECONCILE', 'Graph cleanup ledger');
-  if (typeof input.nativeResourcesDestroyed !== 'boolean') fail('GRAPH_CLEANUP_RECONCILE', 'nativeResourcesDestroyed must be boolean');
-  if (input.nativeResourcesDestroyed) fail('GRAPH_CLEANUP_ORDER', 'CUDA-JS/native resources cannot be destroyed before Graph cleanup reconciliation succeeds');
+  if (typeof input.resourceDestructionStarted !== 'boolean') fail('GRAPH_CLEANUP_RECONCILE', 'resourceDestructionStarted must be boolean');
+  if (input.resourceDestructionStarted) fail('GRAPH_CLEANUP_ORDER', 'resource destruction cannot precede Graph cleanup reconciliation');
 
   const outstanding = [];
   for (const field of LEDGER_FIELDS) {
@@ -40,26 +45,41 @@ export function reconcileGraphArenaRelease(input) {
     return freeze({ kind: 'blocked', code: 'graph-cleanup-incomplete', outstanding }, 'Graph cleanup blocked result');
   }
   return freeze({
-    kind: 'ready-for-native-destruction',
+    kind: 'ready-for-resource-destruction',
     graphCleanupComplete: true,
-    nativeResourcesDestroyed: false,
+    resourceDestructionStarted: false,
   }, 'Graph cleanup reconciliation success');
 }
 
-export function validateRetainedGraphArtifact(input) {
-  if (!isRecord(input)) fail('GRAPH_CLEANUP_ARTIFACT', 'retained Graph artifact metadata is required');
-  exactKeys(input, ['cleanupTrigger', 'owner', 'packageIdentity', 'profileIdentity', 'recoveryPurpose'], 'GRAPH_CLEANUP_ARTIFACT', 'retained Graph artifact');
-  for (const field of ['cleanupTrigger', 'owner', 'packageIdentity', 'profileIdentity', 'recoveryPurpose']) {
-    if (typeof input[field] !== 'string' || input[field].trim().length === 0) fail('GRAPH_CLEANUP_ARTIFACT', `${field} must be an explicit non-empty string`);
-  }
-  return freeze({ kind: 'retained-artifact-valid', ...input }, 'retained Graph artifact validation');
+function validateCompatibility(compatibleWith) {
+  if (!isRecord(compatibleWith)) fail('GRAPH_CLEANUP_ARTIFACT', 'compatible retained-artifact identities are required');
+  exactKeys(compatibleWith, ['packageIdentity', 'profileIdentity'], 'GRAPH_CLEANUP_ARTIFACT', 'compatible retained-artifact identities');
+  return {
+    packageIdentity: nonEmptyString(compatibleWith.packageIdentity, 'GRAPH_CLEANUP_ARTIFACT', 'compatible packageIdentity'),
+    profileIdentity: nonEmptyString(compatibleWith.profileIdentity, 'GRAPH_CLEANUP_ARTIFACT', 'compatible profileIdentity'),
+  };
 }
 
-export function validateRetainedGraphArtifacts(inputs) {
-  if (!Array.isArray(inputs)) fail('GRAPH_CLEANUP_ARTIFACT', 'retained Graph artifacts must be an array');
+function validateRetainedGraphArtifact(artifact, compatibleWith) {
+  if (!isRecord(artifact)) fail('GRAPH_CLEANUP_ARTIFACT', 'retained Graph artifact metadata is required');
+  exactKeys(artifact, ['cleanupTrigger', 'owner', 'packageIdentity', 'profileIdentity', 'recoveryPurpose'], 'GRAPH_CLEANUP_ARTIFACT', 'retained Graph artifact');
+  for (const field of ['cleanupTrigger', 'owner', 'packageIdentity', 'profileIdentity', 'recoveryPurpose']) {
+    nonEmptyString(artifact[field], 'GRAPH_CLEANUP_ARTIFACT', field);
+  }
+  if (artifact.profileIdentity !== compatibleWith.profileIdentity || artifact.packageIdentity !== compatibleWith.packageIdentity) {
+    fail('GRAPH_CLEANUP_ARTIFACT_COMPATIBILITY', 'retained Graph artifact identities are not compatible with the active profile/package identities');
+  }
+  return freeze({ kind: 'retained-artifact-valid', ...artifact }, 'retained Graph artifact validation');
+}
+
+export function validateRetainedGraphArtifacts(input) {
+  if (!isRecord(input)) fail('GRAPH_CLEANUP_ARTIFACT', 'retained Graph artifact set input is required');
+  exactKeys(input, ['artifacts', 'compatibleWith'], 'GRAPH_CLEANUP_ARTIFACT', 'retained Graph artifact set');
+  if (!Array.isArray(input.artifacts)) fail('GRAPH_CLEANUP_ARTIFACT', 'retained Graph artifacts must be an array');
+  const compatibleWith = validateCompatibility(input.compatibleWith);
   return freeze({
     kind: 'retained-artifacts-valid',
-    count: String(inputs.length),
-    artifacts: inputs.map((input) => validateRetainedGraphArtifact(input)),
+    count: String(input.artifacts.length),
+    artifacts: input.artifacts.map((artifact) => validateRetainedGraphArtifact(artifact, compatibleWith)),
   }, 'retained Graph artifact set validation');
 }
