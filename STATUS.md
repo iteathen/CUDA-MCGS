@@ -4,97 +4,118 @@
 
 **Updated:** 2026-08-27
 
-## Current repository state
+## Protected authority
 
-Protected `main` is currently:
+Protected `main` remains intentionally unchanged during the experimental portfolio:
 
 `ee4434be0ae927c4ae1d5c106f91503d28b1aa01`
 
-This includes PR #138 / integrated Graph ROOT, PR #144 / fail-closed merge-gate aggregation, and PR #145 / post-merge state reconciliation. Protected-main workflow `33115975009` passed under the aggregate `verify` gate.
+It includes Graph ROOT integration, fail-closed merge-gate aggregation, and the post-merge state reconciliation. Protected-main workflow `33115975009` passed under the aggregate `verify` gate.
 
-The underlying protected Graph ROOT semantic packet remains the PR #138 packet first integrated at `5a42d5aed072ae763631790ea4a4dfa871e3e6ce`; later governance changes did not alter its semantic evidence.
-
-CUDA-MCGS remains a public pre-release universal GPU-resident MCGS framework project. No production universal runtime, public stable SDK, native CUDA-MCGS implementation, released compatible CUDA-JS pair or downstream product release is accepted yet.
-
-The portfolio-level continuation is tracked by issue #142. Current branch work is the #44 authority correction on `architecture/44-framework-only-production`: accepted-candidate ADR-0024 narrows ADR-0018 to framework-only production ownership, removes active repository-local product specifications, archives CHESS-0001 provenance, and structurally enforces that boundary. This is not protected authority until its PR merges and protected-main readback succeeds.
-
-## Architectural boundary
-
-Protected authority currently includes ADR-0018/0019/0020/0022/0023. The #44 candidate adds ADR-0024 without rewriting accepted ADR-0018 history.
-
-Candidate ADR-0024 establishes:
-
-- CUDA-MCGS production owns product-neutral MCGS semantics, normalized composition, finite search resources, ordinary Node.js host lifecycle, restricted Device-JS framework/search programs, public integration seams, and removable universal conformance evidence.
-- Production domain/search products own their product semantics, protocol, model interpretation, quality, packaging, release and support lifecycle in independently owned repositories or packages.
-- Concrete chess, Connect Four, planning, optimization or other named instances remain allowed as removable examples/research/conformance falsifiers; naming a consumer does not grant it framework authority.
-- CUDA-JS owns generic CUDA lowering, compiler/ABI/runtime/resource/operation/synchronization/platform mechanisms and may use native/CUDA implementation behind public contracts.
-- An apparent need for native code in CUDA-MCGS or an external product is a library-coverage diagnostic, not permission for a local escape path.
-- Active search remains device-owned after ignition; no host read-decide-write/relaunch loop may advance it.
-- The first usable native engine must perform bounded useful parallel GPU work; a serial GPU loop is diagnostic only.
-
-Root authority remains deliberately separated:
-
-- `root` establishes initial authority;
-- `advance` moves to an already-ready realized successor using existing resources only, with no graph traversal/state copy/transform/reset/resize/reclassification/reclamation/eager cleanup;
-- `reroot` owns general authority replacement, protected pre-mutation admission and owner-declared retained-state reconciliation;
-- `attention` has no root-authority, Graph-work or reclamation effect.
-
-## Protected CUDA-free reference packet
-
-The protected ROOT integration is bound to:
+The protected CUDA-free ROOT packet remains the pre-experimental packet:
 
 - Composer `879/879`, representation/composition `ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529`;
 - Domain `49/49`, direct `47/47`, evidence `f186412a9b8d964c7f92e4c4000942768fa0ae81d62349c2528fd3aba12aa5e7`;
 - Graph projection `89ee04a47d8516ad02e33e884d8f35db9573840f58db140c6cbafe79178e7fd7`;
-- NODE `13/13`, direct `11/11`, evidence `4299dccecd33f6ef38c50f144e84316d00c7046a81ed6206b6e2e645b6683f74`;
-- EDGE `16/16`, direct `10/10`, evidence `54b83935d320e6bd656c740ec2f3d8be062e3932bdf6e748c8315f26245faf58`;
-- REF `14/14`, direct `8/8`, evidence `e3370158d1234dd3642d11c4458c9c390abcc3f62a04a75dd68d00faf6c4676d`;
-- PATH `14/14`, direct `8/8`, evidence `af8f140e45f7c2942ec4b09b7d752f49b3eeb28f1cdc5b8c3b74887d34dd4318`;
-- generated root-control projection `2c71df25fff213f515aae02a01e210292a8e9b76fc84e14ab6cafb251fbbc9f1`;
-- ROOT `14/14`, direct `6/6`, evidence `7e4fe6bf748ec110bebc1798d7742e03b89909df84da709f2fdeb51a42311ed0`.
+- NODE `4299dccecd33f6ef38c50f144e84316d00c7046a81ed6206b6e2e645b6683f74`;
+- EDGE `54b83935d320e6bd656c740ec2f3d8be062e3932bdf6e748c8315f26245faf58`;
+- REF `e3370158d1234dd3642d11c4458c9c390abcc3f62a04a75dd68d00faf6c4676d`;
+- PATH `af8f140e45f7c2942ec4b09b7d752f49b3eeb28f1cdc5b8c3b74887d34dd4318`;
+- root-control projection `2c71df25fff213f515aae02a01e210292a8e9b76fc84e14ab6cafb251fbbc9f1`;
+- ROOT `7e4fe6bf748ec110bebc1798d7742e03b89909df84da709f2fdeb51a42311ed0`.
 
-See [`experiments/search-semantics-reference/RESULTS.md`](experiments/search-semantics-reference/RESULTS.md) for the exact identities and claim limits.
+No experimental result below is a protected-main support or release claim.
 
-## Merge enforcement
+## Experimental integration line
 
-PR #144 preserves every owner-local CI job as an independently diagnosable LEGO and makes the stable branch-protected `verify` context an aggregate verdict over all current merge-gate jobs.
+Per owner direction, current portfolio implementation is isolated on:
 
-Falsifier run `33115416321` deliberately failed Graph ROOT on a temporary branch head and proved final `verify` also failed while unrelated jobs remained independently visible. The temporary mutation was restored before merge; final PR run `33115492658` and protected run `33115610091` were green.
+`experimental/portfolio`
 
-Adding a new required semantic/reference lane requires adding it to the aggregate dependency/result set in the same coherent change.
+The branch was created from protected `main@ee4434be0ae927c4ae1d5c106f91503d28b1aa01`.
 
-## Current critical path
+PR #146 / issue #44 was retargeted and squash-merged only to the experimental branch as:
 
-Issue #142 governs portfolio ordering without replacing semantic owners.
+`a1be8a596bb5ccc97736365dfbc49419ec0f76aa`
 
-Immediate sequence:
+That experimental integration adds ADR-0024 and reconciles active authority so CUDA-MCGS production owns only the reusable product-neutral framework, composition/integration substrate and removable conformance evidence. Production domain/search products remain independently owned downstream consumers. CHESS-0001 is archived provenance rather than active product authority, and active files under `docs/specs/products/` are structurally rejected.
 
-1. qualify the #44 framework-only ownership candidate on one exact PR head and protected-main readback;
-2. disposition stale competing PRs #126/#132 without deleting unique research evidence;
-3. reassess #47 against protected ADR-0024 and close it `not planned` if the requested in-repository Connect Four product remains invalid, preserving only useful removable conformance intent under #36;
-4. close the bounded sanity record #141 once every finding has durable owner/disposition;
-5. return to #24 / `REF-GRAPH-01`, correct/falsify the RECLAIM representation gaps, then implement `GRAPH-RECLAIM-001..009` and remaining occurrence/lifecycle closure;
-6. continue issue #36 owner-by-owner toward #122 atomic semantic acceptance.
+Issue #47 was then reassessed against that boundary. Its useful requirements are already owned by Graph/reference/Policy/Evaluator/Output/Session work; its only unique premise was an in-repository Connect Four product. It was closed **not planned** rather than implemented.
 
-The RECLAIM preflight has already found that the reclaiming profile declares retirement-record storage and `maxScratchBytes` without corresponding finite storage/scratch resource contributions, and that the retirement-record lifecycle lacks explicit generation-safe reuse. These are representation blockers to truthful RECLAIM evidence; they are not permission to select a native reclamation algorithm.
+## Current experimental candidate — Graph RECLAIM representation preflight
 
-Production lowering and `ENGINE-CONTRACT-ACCEPTANCE-01` remain blocked until the complete behavioral/reference packet is integrated on one exact protected revision.
+Issue #24 remains the active semantic owner. PR #147 targets `experimental/portfolio` from `ref/graph-reclaim-preflight-01`.
 
-## Claim limits / blockers
+The candidate does **not** choose a reclamation table, queue, traversal algorithm, scheduler, native mechanism or CUDA topology. It closes representation prerequisites required before `GRAPH-RECLAIM-*` behavior can be truthful:
 
-- ROOT is protected-main integrated and its readback is green.
-- required `verify` is fail-closed over every current merge-gate job.
-- ADR-0024 and the framework-only product boundary are branch candidate authority until protected integration; do not cite them as protected yet.
-- `GRAPH-RECLAIM-*` and remaining Graph lifecycle closure are unfinished; the RECLAIM representation preflight has unresolved finite-resource/lifecycle gaps.
-- Policy/Evaluator/Resource/Progress/Output and terminal integration leaves remain after Graph.
-- no production universal engine is accepted;
-- no native Linux compatible pair is qualified;
-- no performance, public SDK or release claim follows from the CUDA-free reference packet.
+- reclamation-enabled profiles fund retirement-record count and byte pool explicitly;
+- reclamation scratch bytes and work units are explicitly finite;
+- the Graph normalizer proves those resources cover the declared retirement layout, `maxScratchBytes` and `maxWorkUnits`;
+- retirement records have a terminal release plus private terminal-to-free reuse path;
+- reclaim-only failures/resources exist iff reclamation is selected;
+- the `reclamation: none` specialization proves zero reclaim/retirement resource, failure and lifecycle residue;
+- independent falsifiers underfund record count, byte pool, scratch and work, and remove retirement reuse.
 
-## Cleanup / handoff
+The Composer capsule expanded from 879 to 881 cases to cover these additional falsifiers.
 
-The portfolio continuation is issue #142; Graph semantics remain issue #24 / #36. The historical ROOT handoff is superseded.
+### Exact candidate representation packet
 
-Remote recovery ref `checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f` remains bounded cleanup debt because the available connector exposes no safe delete-ref operation. Its handoff content is already preserved on protected main and no open PR depends on it.
+One-shot preflight migration run `33143185480` passed and self-removed before publishing the durable branch state:
 
-PR #126 and PR #132 are pre-existing stale/unmergeable authority candidates. #44 owns their reassessment/disposition; neither may be merged as a shortcut around current protected authority.
+- requirements: `989/989` classified;
+- Composer: `881/881`;
+- contract set: `b4c91a46e4fe304f3bcfc4602e23e5f4e68a30869da223deab3978289ca6b4a1`;
+- framework selection: `bcfcba073c44f6c019dc800241414e8a67b4006786b8898042b2ffdd38a3e56d`;
+- representation/composition: `2e2cde00d9e1eac864541cd7bd5d4d43873cfb20bfb2304aa0bc5c2647bce1af`.
+
+Graph projection was then rebound to the 881-case Composer packet:
+
+- Graph projection: `72d91b75336a2745830a3c0d8d7d7d3ed26259ea2f56b619f9de311c82d21068`.
+
+A second self-cleaning migration (`33143600784`) regenerated the unchanged Graph behavioral chain in dependency order and passed:
+
+- NODE `13/13`: `103cd77904f0c1f5650fe52e7884b8a791615a17d340e13f4b5184d262a126df`;
+- EDGE `16/16`: `96ce6c83125566ffec250e825b09ed66ab9050c6f091ee178d789aa5d0fdc127`;
+- REF `14/14`: `633910c7531409737a92d041874ab608d9fbda0331ff7f5ea38eaf9c2e9a1d3d`;
+- PATH `14/14`: `cecaad55c6ceeeacedb24b40ed7a4b185d5ec2b7c15c443e46cb9b5608310ae9`;
+- generated root-control projection: `be35ed803ea82498950c454acb6955087543c2a7a974745077c4c53158bca475`;
+- ROOT `14/14`: `2fc9a4770b2f0244178876ab5742d8d9043f4278aff2040c488a018ebfa94280`.
+
+These Graph results prove the representation correction did not change existing NODE/EDGE/REF/PATH/ROOT behavior. They do **not** implement or accept `GRAPH-RECLAIM-*` behavior.
+
+## Current qualification boundary
+
+PR #147 still requires a normal author-head, full ordinary PR workflow against `experimental/portfolio`.
+
+The Graph rebind commit was produced by a self-cleaning GitHub Actions migration, so GitHub correctly did not treat its bot-authored pull-request synchronization as the final merge gate. This status checkpoint provides a normal author revision and intentionally leaves the remaining evidence check fail-closed.
+
+The representation/composition identity changed, so the neutral Domain/governance evidence may also require an explicit frozen-input rebind. That rebind is not assumed complete until the ordinary workflow proves it. Any such rebind must preserve the existing Domain behavior/case bank; drift checks will not be weakened.
+
+## Architecture and merge rules
+
+- CUDA-MCGS remains JavaScript only: ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts.
+- Generic CUDA/native mechanisms belong in CUDA-JS; generic dense tensor math belongs in CUDA-JS-Tensor; product semantics remain downstream.
+- After ignition, no host read-decide-write/relaunch loop may advance active search.
+- Every concrete profile has explicit finite resources and typed pressure/exhaustion behavior.
+- Owner-local reference jobs remain independently diagnosable; aggregate `verify` is only the fail-closed status coordinator.
+- Experimental branches do not weaken exact-head validation merely because they are not protected main.
+- No native, performance, stable SDK, compatible-pair or release claim follows from CUDA-free experimental evidence.
+
+## Immediate sequence
+
+1. Run the ordinary full PR #147 workflow on this author checkpoint.
+2. Classify any remaining red lane from exact logs; rebind only frozen evidence identities whose upstream packet legitimately changed.
+3. Require every ordinary PR lane and final aggregate `verify` green on one exact author head.
+4. Review and squash-merge #147 only into `experimental/portfolio`; read back that exact experimental integration.
+5. Reassess actual `GRAPH-RECLAIM-001..009` behavior from the new experimental base before implementation.
+6. Continue issue #36 owner-by-owner toward #122 atomic semantic acceptance.
+
+## Cleanup / coordination
+
+Portfolio coordination remains issue #142; Graph meaning remains issue #24 and reference integration remains issue #36.
+
+All task-created migration workflows used for #44 and the RECLAIM preflight are self-cleaning and are not retained as production machinery.
+
+Remote recovery ref `checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f` remains bounded cleanup debt because the available connector has not exposed a safe delete-ref operation; its handoff is already preserved.
+
+Stale pre-existing authority PRs #126/#132 remain separately owned cleanup/disposition under #44. Neither is a shortcut around the current experimental or protected authority.
