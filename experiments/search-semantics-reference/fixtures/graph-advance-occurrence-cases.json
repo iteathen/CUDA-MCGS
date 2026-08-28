@@ -13,8 +13,8 @@
   },
   "nodeEvidence": {
     "algorithm": "sha256",
-    "byteLength": 10123,
-    "sha256": "103cd77904f0c1f5650fe52e7884b8a791615a17d340e13f4b5184d262a126df"
+    "byteLength": 10047,
+    "sha256": "158125969d1d82c7608053dff5b461736390237bac02ef51e0855202600e8ac8"
   },
   "edgeEvidence": {
     "algorithm": "sha256",
