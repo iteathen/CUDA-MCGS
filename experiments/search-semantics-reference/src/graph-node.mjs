@@ -114,11 +114,25 @@ export function createGraphNodeOracle({
 
   const claims = [];
   const events = [];
+  const equalityDecisions = new Map();
   const ledger = { nodeSlots: 0n, stateBytes: 0n, transpositionSlots: 0n };
   let sequence = 0n;
+  let arenaQuarantine = null;
 
   const emit = (type, claim, detail = null) => {
     events.push(freeze({ sequence: toDecimal(sequence++), type, claim: claim?.id ?? null, detail }, 'Graph NODE event'));
+  };
+
+  const quarantineArena = (code, claim, detail = null) => {
+    if (arenaQuarantine === null) {
+      arenaQuarantine = freeze({ code, claimId: claim?.id ?? null, detail, evidenceValid: false }, 'Graph NODE arena quarantine');
+      emit('arena-quarantined', claim, arenaQuarantine);
+    }
+    return arenaQuarantine;
+  };
+
+  const requireArenaAvailable = () => {
+    if (arenaQuarantine !== null) fail('GRAPH_NODE_ARENA_QUARANTINED', `Graph NODE arena is quarantined: ${arenaQuarantine.code}`);
   };
 
   const findClaim = (id) => {
@@ -164,7 +178,23 @@ export function createGraphNodeOracle({
     return { kind: 'initializer', claimId: claim.id, reference: canonicalClone(claim.reference) };
   };
 
+  const verifiedEqual = (leftView, rightView, claim) => {
+    if (mutations.skipCollisionVerification === true) return true;
+    const left = freeze(leftView, 'Graph equality view');
+    const right = freeze(rightView, 'Graph stored equality view');
+    const identities = [canonicalIdentity(left).sha256, canonicalIdentity(right).sha256].sort();
+    const decisionKey = `${identities[0]}\0${identities[1]}`;
+    const equal = Boolean(equalState(left, right));
+    if (equalityDecisions.has(decisionKey) && equalityDecisions.get(decisionKey) !== equal) {
+      quarantineArena('equality-inconsistency', claim, { decisionKey });
+      fail('GRAPH_NODE_EQUALITY_INCONSISTENCY', 'Domain equality produced contradictory results for the same verification pair');
+    }
+    equalityDecisions.set(decisionKey, equal);
+    return equal;
+  };
+
   function lookupOrClaimNode(input) {
+    requireArenaAvailable();
     exactKeys(input, ['claimant', 'scope', 'view'], 'GRAPH_NODE_LOOKUP_FIELDS', 'lookupOrClaimNode input');
     if (typeof input.claimant !== 'string' || input.claimant.length === 0 || typeof input.scope !== 'string' || input.scope.length === 0) fail('GRAPH_NODE_LOOKUP', 'claimant and scope are required');
     const key = freeze(identityKey(freeze(input.view, 'Graph lookup view')), 'Graph node identity key');
@@ -183,7 +213,7 @@ export function createGraphNodeOracle({
       probes += 1n;
       if (probes > limits.maxCollisionProbes) return { kind: 'pressure', code: 'transposition-probe-exhausted' };
       emit('collision-verify', candidate, { claimant: input.claimant });
-      const equal = mutations.skipCollisionVerification === true ? true : equalState(freeze(input.view, 'Graph equality view'), candidate.verificationView);
+      const equal = verifiedEqual(input.view, candidate.verificationView, candidate);
       if (!equal) continue;
       if (candidate.state === 'ready' && candidate.entryState === 'ready') {
         return { kind: 'ready', claimId: candidate.id, reference: canonicalClone(candidate.reference) };
@@ -199,6 +229,7 @@ export function createGraphNodeOracle({
   }
 
   function beginInitialization(input) {
+    requireArenaAvailable();
     exactKeys(input, ['claimId', 'payload'], 'GRAPH_NODE_INITIALIZE_FIELDS', 'beginInitialization input');
     const claim = findClaim(input.claimId);
     if (claim.state !== 'reserved') fail('GRAPH_NODE_STATE', `${claim.id} is not reserved`);
@@ -218,15 +249,22 @@ export function createGraphNodeOracle({
   }
 
   function publishNode(input) {
+    requireArenaAvailable();
     exactKeys(input, ['claimId', 'payload'], 'GRAPH_NODE_PUBLISH_FIELDS', 'publishNode input');
     const claim = findClaim(input.claimId);
     const identity = canonicalIdentity(input.payload, 'Graph publication payload');
     if (claim.state === 'ready') {
-      if (claim.payloadIdentity.sha256 !== identity.sha256) fail('GRAPH_NODE_PUBLICATION_CONFLICT', `${claim.id} already published a different payload`);
+      if (claim.payloadIdentity.sha256 !== identity.sha256) {
+        quarantineArena('publication-conflict', claim, { retainedPayload: claim.payloadIdentity.sha256, conflictingPayload: identity.sha256 });
+        fail('GRAPH_NODE_PUBLICATION_CONFLICT', `${claim.id} already published a different payload`);
+      }
       return { kind: 'ready', claimId: claim.id, reference: canonicalClone(claim.reference) };
     }
     if (claim.state !== 'initializing' || claim.ownerInitialization !== 'complete') fail('GRAPH_NODE_PUBLICATION_ORDER', `${claim.id} is not ready to publish`);
-    if (claim.payloadIdentity.sha256 !== identity.sha256) fail('GRAPH_NODE_PUBLICATION_CONFLICT', `${claim.id} publication payload differs from initialized payload`);
+    if (claim.payloadIdentity.sha256 !== identity.sha256) {
+      quarantineArena('publication-conflict', claim, { initializedPayload: claim.payloadIdentity.sha256, conflictingPayload: identity.sha256 });
+      fail('GRAPH_NODE_PUBLICATION_CONFLICT', `${claim.id} publication payload differs from initialized payload`);
+    }
     claim.payloadVisible = true;
     emit('payload-visible', claim);
     if (mutations.entryReadyBeforeNode === true && claim.entryState === 'claimed') {
@@ -243,6 +281,7 @@ export function createGraphNodeOracle({
   }
 
   function failNode(input) {
+    requireArenaAvailable();
     exactKeys(input, ['claimId', 'code'], 'GRAPH_NODE_FAIL_FIELDS', 'failNode input');
     const claim = findClaim(input.claimId);
     if (!['reserved', 'initializing'].includes(claim.state)) fail('GRAPH_NODE_STATE', `${claim.id} cannot fail from ${claim.state}`);
@@ -262,12 +301,14 @@ export function createGraphNodeOracle({
 
   function observeClaim(claimId) {
     const claim = findClaim(claimId);
+    if (arenaQuarantine !== null) return { kind: 'quarantined', code: arenaQuarantine.code, evidenceValid: false };
     if (claim.state === 'ready' && (claim.entryState === null || claim.entryState === 'ready')) return { kind: 'ready', reference: canonicalClone(claim.reference) };
     if (claim.state === 'failed' || claim.entryState === 'failed' || claim.entryState === 'tombstone') return { kind: 'failed', code: claim.failure };
     return { kind: 'pending', reference: canonicalClone(claim.reference) };
   }
 
   function readyPayload(claimId) {
+    requireArenaAvailable();
     const claim = findClaim(claimId);
     if (claim.state !== 'ready' || claim.payloadVisible !== true) fail('GRAPH_NODE_NOT_READY', `${claim.id} payload is not ready`);
     return claim.payload;
@@ -278,6 +319,7 @@ export function createGraphNodeOracle({
       profileId: profile.id,
       limits: Object.fromEntries(Object.entries(limits).map(([key, value]) => [key, toDecimal(value)])),
       ledger: Object.fromEntries(Object.entries(ledger).map(([key, value]) => [key, toDecimal(value)])),
+      arena: arenaQuarantine === null ? { status: 'active', evidenceValid: true } : { status: 'quarantined', ...arenaQuarantine },
       claims: claims.map(claimPublic),
       events,
     });
