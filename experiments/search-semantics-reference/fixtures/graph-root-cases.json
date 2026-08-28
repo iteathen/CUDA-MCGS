@@ -19,12 +19,12 @@
   "refEvidence": {
     "algorithm": "sha256",
     "byteLength": 9139,
-    "sha256": "633910c7531409737a92d041874ab608d9fbda0331ff7f5ea38eaf9c2e9a1d3d"
+    "sha256": "def51477f25c40d11f5f61fbf928264753a95d3979397e573f389f91cd02808b"
   },
   "pathEvidence": {
     "algorithm": "sha256",
     "byteLength": 9530,
-    "sha256": "cecaad55c6ceeeacedb24b40ed7a4b185d5ec2b7c15c443e46cb9b5608310ae9"
+    "sha256": "74e05276492db9f928a83bbca0739ebec4b5d0d9bc7564b3a6510ca243134a4b"
   },
   "rootControlProjection": {
     "algorithm": "sha256",

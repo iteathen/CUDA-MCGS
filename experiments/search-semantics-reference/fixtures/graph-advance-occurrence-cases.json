@@ -1,5 +1,5 @@
 {
-  "schema": "cuda-mcgs.reference-graph-reclaim-fixtures/0.1.0",
+  "schema": "cuda-mcgs.reference-graph-advance-occurrence-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
     "byteLength": 719629,
@@ -41,23 +41,16 @@
     "byteLength": 10008,
     "sha256": "5b1cfb36d9b743a65ee0233964c254a56296ae5be82b84fb358db98387a16bdd"
   },
+  "reclaimEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 12127,
+    "sha256": "a010c88de1bb97ec0ea83a08fe0e2ef608c047ed4412c01e8f68b942eb572058"
+  },
   "expectedCases": [
-    "graph-reclaim-profile-and-upstream-evidence-exact",
-    "graph-reclaim-none-zero-semantic-residue",
-    "graph-reclaim-enabled-profile-declares-complete-finite-contract",
-    "graph-reclaim-retirement-preserves-old-protection-and-blocks-new-access",
-    "graph-reclaim-retirement-capacity-fails-atomically",
-    "graph-reclaim-quiescence-rejects-each-declared-protection-source",
-    "graph-reclaim-incremental-proof-is-finite-device-owned-and-resumable",
-    "graph-reclaim-quiescence-proof-restarts-after-protection-epoch-change",
-    "graph-reclaim-transposition-tombstone-precedes-reuse",
-    "graph-reclaim-owner-cleanup-precedes-storage-release",
-    "graph-reclaim-generation-advances-before-slot-reuse",
-    "graph-reclaim-retirement-record-reuses-without-capacity-leak",
-    "graph-reclaim-cancellation-leaves-valid-quarantine-and-resumes",
-    "graph-reclaim-owner-failure-quarantines-without-half-reuse",
-    "graph-reclaim-shared-transposed-node-remains-blocked-by-retained-borrow",
-    "graph-reclaim-semantic-reference-does-not-qualify-native-mechanism",
-    "graph-reclaim-requirement-coverage-exact"
+    "graph-advance-occurrence-upstream-evidence-and-control-exact",
+    "graph-advance-occurrence-authority-commit-has-zero-eager-cleanup",
+    "graph-advance-occurrence-lazy-checkpoint-releases-only-sibling-occurrence",
+    "graph-advance-occurrence-retirement-order-blocks-new-protection-while-old-work-drains",
+    "graph-advance-occurrence-retained-borrow-gates-quiescence-and-reuse-is-generation-safe"
   ]
 }
