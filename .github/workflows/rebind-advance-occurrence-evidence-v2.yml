@@ -1,0 +1,155 @@
+name: rebind-advance-occurrence-evidence-v2
+
+on:
+  push:
+    branches:
+      - ref/graph-advance-occurrence-01
+    paths:
+      - .github/workflows/rebind-advance-occurrence-evidence-v2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  rebind:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ref/graph-advance-occurrence-01
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 26.7.0
+      - name: Rebind REF through advance occurrence closure and self-remove
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = 'experiments/search-semantics-reference/src/graph-ref-cases.mjs';
+          let text = fs.readFileSync(path, 'utf8');
+          const anchor = `    assert.equal(oracle.observeRetirementBarrier(reference), false);\n`;
+          const insertion = `    assert.deepEqual(\n      oracle.acquireProtection({ expectedKind: 'state-node', owner: 'late-after-retirement-intent', reference }),\n      { kind: 'invalid', code: 'invalid-reference' },\n    );\n`;
+          const count = text.split(anchor).length - 1;
+          if (count !== 1) throw new Error(`expected one REF protection-before-retirement anchor; found ${count}`);
+          text = text.replace(anchor, anchor + insertion);
+          fs.writeFileSync(path, text);
+          NODE
+
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-graph-profiles.mjs
+          node scripts/run-graph-node-reference.mjs
+          node scripts/run-graph-edge-reference.mjs
+          node scripts/run-graph-ref-reference.mjs
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const composer = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/graph-profiles.json', 'utf8'));
+          const node = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-node-evidence.json', 'utf8'));
+          const ref = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-ref-evidence.json', 'utf8'));
+          const path = 'experiments/search-semantics-reference/fixtures/graph-path-cases.json';
+          const fixture = JSON.parse(fs.readFileSync(path, 'utf8'));
+          fixture.composerEvidence = composer.representationCompositionEvidenceKey;
+          fixture.profileProjection = { schema: projection.schema, ...projection.projectionIdentity };
+          fixture.nodeEvidence = node.evidenceIdentity;
+          fixture.refEvidence = ref.evidenceIdentity;
+          fs.writeFileSync(path, `${JSON.stringify(fixture, null, 2)}\n`);
+          NODE
+
+          node scripts/run-graph-path-reference.mjs
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const composer = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/graph-profiles.json', 'utf8'));
+          const rootControl = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/root-control.json', 'utf8'));
+          const node = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-node-evidence.json', 'utf8'));
+          const ref = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-ref-evidence.json', 'utf8'));
+          const pathEvidence = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-path-evidence.json', 'utf8'));
+          const path = 'experiments/search-semantics-reference/fixtures/graph-root-cases.json';
+          const fixture = JSON.parse(fs.readFileSync(path, 'utf8'));
+          fixture.composerEvidence = composer.representationCompositionEvidenceKey;
+          fixture.profileProjection = { schema: projection.schema, ...projection.projectionIdentity };
+          fixture.nodeEvidence = node.evidenceIdentity;
+          fixture.refEvidence = ref.evidenceIdentity;
+          fixture.pathEvidence = pathEvidence.evidenceIdentity;
+          fixture.rootControlProjection = rootControl.identity;
+          fs.writeFileSync(path, `${JSON.stringify(fixture, null, 2)}\n`);
+          NODE
+
+          node scripts/run-graph-root-reference.mjs
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const composer = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/graph-profiles.json', 'utf8'));
+          const rootControl = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/root-control.json', 'utf8'));
+          const node = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-node-evidence.json', 'utf8'));
+          const edge = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-edge-evidence.json', 'utf8'));
+          const ref = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-ref-evidence.json', 'utf8'));
+          const pathEvidence = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-path-evidence.json', 'utf8'));
+          const root = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-root-evidence.json', 'utf8'));
+          const path = 'experiments/search-semantics-reference/fixtures/graph-reclaim-cases.json';
+          const fixture = JSON.parse(fs.readFileSync(path, 'utf8'));
+          fixture.composerEvidence = composer.representationCompositionEvidenceKey;
+          fixture.profileProjection = { schema: projection.schema, ...projection.projectionIdentity };
+          fixture.nodeEvidence = node.evidenceIdentity;
+          fixture.edgeEvidence = edge.evidenceIdentity;
+          fixture.refEvidence = ref.evidenceIdentity;
+          fixture.pathEvidence = pathEvidence.evidenceIdentity;
+          fixture.rootControlProjection = rootControl.identity;
+          fixture.rootEvidence = root.evidenceIdentity;
+          fs.writeFileSync(path, `${JSON.stringify(fixture, null, 2)}\n`);
+          NODE
+
+          node scripts/run-graph-reclaim-reference.mjs
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const composer = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/evidence.json', 'utf8'));
+          const projection = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/graph-profiles.json', 'utf8'));
+          const rootControl = JSON.parse(fs.readFileSync('experiments/search-ir-composer-reference/build/root-control.json', 'utf8'));
+          const node = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-node-evidence.json', 'utf8'));
+          const edge = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-edge-evidence.json', 'utf8'));
+          const ref = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-ref-evidence.json', 'utf8'));
+          const pathEvidence = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-path-evidence.json', 'utf8'));
+          const root = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-root-evidence.json', 'utf8'));
+          const reclaim = JSON.parse(fs.readFileSync('experiments/search-semantics-reference/build/graph-reclaim-evidence.json', 'utf8'));
+          const fixture = {
+            schema: 'cuda-mcgs.reference-graph-advance-occurrence-fixtures/0.1.0',
+            composerEvidence: composer.representationCompositionEvidenceKey,
+            profileProjection: { schema: projection.schema, ...projection.projectionIdentity },
+            nodeEvidence: node.evidenceIdentity,
+            edgeEvidence: edge.evidenceIdentity,
+            refEvidence: ref.evidenceIdentity,
+            pathEvidence: pathEvidence.evidenceIdentity,
+            rootControlProjection: rootControl.identity,
+            rootEvidence: root.evidenceIdentity,
+            reclaimEvidence: reclaim.evidenceIdentity,
+            expectedCases: [
+              'graph-advance-occurrence-upstream-evidence-and-control-exact',
+              'graph-advance-occurrence-authority-commit-has-zero-eager-cleanup',
+              'graph-advance-occurrence-lazy-checkpoint-releases-only-sibling-occurrence',
+              'graph-advance-occurrence-retirement-order-blocks-new-protection-while-old-work-drains',
+              'graph-advance-occurrence-retained-borrow-gates-quiescence-and-reuse-is-generation-safe'
+            ]
+          };
+          fs.writeFileSync('experiments/search-semantics-reference/fixtures/graph-advance-occurrence-cases.json', `${JSON.stringify(fixture, null, 2)}\n`);
+          NODE
+
+          node scripts/run-graph-advance-occurrence-reference.mjs
+          git diff --check
+
+          git rm .github/workflows/rebind-advance-occurrence-evidence.yml .github/workflows/rebind-advance-occurrence-evidence-v2.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add experiments/search-semantics-reference/src/graph-ref-cases.mjs \
+                  experiments/search-semantics-reference/fixtures/graph-path-cases.json \
+                  experiments/search-semantics-reference/fixtures/graph-root-cases.json \
+                  experiments/search-semantics-reference/fixtures/graph-reclaim-cases.json \
+                  experiments/search-semantics-reference/fixtures/graph-advance-occurrence-cases.json
+          git commit -m 'test: rebind Graph lifetime evidence to retirement ordering fix'
+          git push origin HEAD:ref/graph-advance-occurrence-01
