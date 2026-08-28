@@ -1,0 +1,109 @@
+name: one-shot Graph RECLAIM preflight migration
+
+on:
+  push:
+    branches: [ref/graph-reclaim-preflight-01]
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ref/graph-reclaim-preflight-01
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26.7.0
+      - name: Patch RECLAIM representation preflight
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function patch(path, edits) {
+            let text = fs.readFileSync(path, 'utf8');
+            for (const [from, to, label] of edits) {
+              const count = text.split(from).length - 1;
+              if (count !== 1) throw new Error(`${path}: expected one ${label}, found ${count}`);
+              text = text.replace(from, to);
+            }
+            fs.writeFileSync(path, text);
+          }
+
+          patch('experiments/search-ir-composer-reference/src/graph-fixtures.mjs', [
+            [
+              "  } else if (role === 'root-anchor' || role === 'protection-record') {",
+              "  } else if (role === 'retirement-record') {\n    states = ['free', 'ready', 'released', 'failed'];\n    transitions = [\n      transition('free', 'ready', 'release-publication'),\n      transition('ready', 'released', 'terminal-publication'),\n      transition('free', 'failed', 'terminal-publication'),\n      transition('released', 'free', 'private'),\n      transition('failed', 'free', 'private'),\n    ];\n    readyStates = ['ready']; terminalStates = ['failed', 'released'];\n  } else if (role === 'root-anchor' || role === 'protection-record') {",
+              'retirement-record lifecycle insertion',
+            ],
+            ["function failures() {", "function failures({ reclamation = false } = {}) {", 'failure selector signature'],
+            [" 'publication-conflict': 'publication', 'reclamation-not-quiescent': 'quiescence', 'reference-kind-mismatch': 'input'", " 'publication-conflict': 'publication', 'reference-kind-mismatch': 'input'", 'base reclamation failure removal'],
+            [
+              "  return Object.entries(kinds).map(([code, kind]) => ({ code, kind, diagnostic: true }));",
+              "  if (reclamation) Object.assign(kinds, {\n    'reclamation-not-quiescent': 'quiescence',\n    'reclamation-scratch-capacity': 'capacity',\n    'retirement-capacity': 'capacity',\n  });\n  return Object.entries(kinds).map(([code, kind]) => ({ code, kind, diagnostic: true }));",
+              'reclamation failure insertion',
+            ],
+            [
+              "  if (reclamation) result.push({ id: `graph.${profile}.resource-reclaim-work`, unit: 'work-units', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'reclamation-not-quiescent' });",
+              "  if (reclamation) result.push(\n    { id: `graph.${profile}.resource-retirement-records`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'retirement-capacity' },\n    { id: `graph.${profile}.resource-retirement-bytes`, unit: 'bytes', minimum: '1', maximum: '262144', alignment: '8', scope: 'per-engine', pressureOutcome: 'retirement-capacity' },\n    { id: `graph.${profile}.resource-reclaim-scratch`, unit: 'bytes', minimum: '1', maximum: '65536', alignment: '8', scope: 'per-engine', pressureOutcome: 'reclamation-scratch-capacity' },\n    { id: `graph.${profile}.resource-reclaim-work`, unit: 'work-units', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'reclamation-not-quiescent' },\n  );",
+              'reclamation resources',
+            ],
+            ["    failures: failures(),", "    failures: failures({ reclamation }),", 'selected failures'],
+          ]);
+
+          patch('experiments/search-ir-composer-reference/src/graph.mjs', [
+            ["  'invalid-graph-profile', 'invalid-reference', 'node-capacity', 'owner-lifecycle-failure', 'path-capacity', 'path-depth', 'protection-capacity', 'publication-conflict',\n  'reclamation-not-quiescent', 'reference-kind-mismatch', 'stale-reference', 'state-byte-capacity', 'transposition-capacity', 'transposition-probe-exhausted',\n];\nconst REGION_CONTRACT", "  'invalid-graph-profile', 'invalid-reference', 'node-capacity', 'owner-lifecycle-failure', 'path-capacity', 'path-depth', 'protection-capacity', 'publication-conflict',\n  'reference-kind-mismatch', 'stale-reference', 'state-byte-capacity', 'transposition-capacity', 'transposition-probe-exhausted',\n];\nconst REQUIRED_RECLAIM_FAILURES = ['reclamation-not-quiescent', 'reclamation-scratch-capacity', 'retirement-capacity'];\nconst REGION_CONTRACT", 'reclamation failure split'],
+            [
+              "  if (objectById.get(input.retirementObject)?.role !== 'retirement-record') fail('GRAPH_RECLAIM_OBJECT', 'reclamation retirementObject has the wrong role');\n  const protectionSources",
+              "  if (objectById.get(input.retirementObject)?.role !== 'retirement-record') fail('GRAPH_RECLAIM_OBJECT', 'reclamation retirementObject has the wrong role');\n  const retirementObject = objectById.get(input.retirementObject);\n  const hasPrivateReset = (from) => retirementObject.lifecycle.transitions.some((transition) =>\n    transition.from === from && transition.to === retirementObject.lifecycle.initialState && transition.visibility === 'private');\n  for (const ready of retirementObject.lifecycle.readyStates) {\n    if (!retirementObject.lifecycle.transitions.some((transition) => transition.from === ready\n      && retirementObject.lifecycle.terminalStates.includes(transition.to) && transition.visibility === 'terminal-publication')) {\n      fail('GRAPH_RECLAIM_LIFECYCLE', `retirement-record ready state ${ready} has no terminal release`);\n    }\n  }\n  for (const terminal of retirementObject.lifecycle.terminalStates) {\n    if (!hasPrivateReset(terminal)) fail('GRAPH_RECLAIM_LIFECYCLE', `retirement-record terminal state ${terminal} cannot return to free`);\n  }\n  const protectionSources",
+              'retirement lifecycle validation',
+            ],
+            [
+              "    for (const required of REQUIRED_FAILURES) if (!failureCodes.has(required)) fail('GRAPH_FAILURE_REQUIRED', `required failure ${required} is absent`);\n    const portIds",
+              "    for (const required of REQUIRED_FAILURES) if (!failureCodes.has(required)) fail('GRAPH_FAILURE_REQUIRED', `required failure ${required} is absent`);\n    for (const required of REQUIRED_RECLAIM_FAILURES) {\n      if (failureCodes.has(required) !== (reclamation.kind === 'enabled')) fail('GRAPH_RECLAIM_RESIDUE', `failure ${required} presence differs from reclamation selection`);\n    }\n    const portIds",
+              'selected failure validation',
+            ],
+            [
+              "    if (pressureOutcomes.has('reclamation-not-quiescent') !== (reclamation.kind === 'enabled')) fail('GRAPH_RECLAIM_RESIDUE', 'reclamation resource presence differs from reclamation selection');\n    const roleObject",
+              "    for (const required of ['reclamation-not-quiescent', 'reclamation-scratch-capacity', 'retirement-capacity']) {\n      if (pressureOutcomes.has(required) !== (reclamation.kind === 'enabled')) fail('GRAPH_RECLAIM_RESIDUE', `reclamation resource ${required} presence differs from reclamation selection`);\n    }\n    const roleObject",
+              'selected resource validation',
+            ],
+            [
+              "    const edgeSlotCapacity = resources",
+              "    if (reclamation.kind === 'enabled') {\n      const retirementLayout = layoutByObject.get(roleObject.get('retirement-record'));\n      const retirementRecordCapacity = resources\n        .filter(({ unit, pressureOutcome, scope }) => unit === 'records' && pressureOutcome === 'retirement-capacity' && scope === 'per-engine')\n        .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');\n      const retirementByteCapacity = resources\n        .filter(({ unit, pressureOutcome, scope }) => unit === 'bytes' && pressureOutcome === 'retirement-capacity' && scope === 'per-engine')\n        .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');\n      const reclaimScratchCapacity = resources\n        .filter(({ unit, pressureOutcome, scope }) => unit === 'bytes' && pressureOutcome === 'reclamation-scratch-capacity' && scope === 'per-engine')\n        .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');\n      const reclaimWorkCapacity = resources\n        .filter(({ unit, pressureOutcome, scope }) => unit === 'work-units' && pressureOutcome === 'reclamation-not-quiescent' && scope === 'per-engine')\n        .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');\n      if (compareDecimalUint(retirementRecordCapacity, retirementLayout.capacity) < 0\n          || compareDecimalUint(retirementByteCapacity, retirementLayout.bytePool) < 0) {\n        fail('GRAPH_RESOURCE_CAPACITY', 'retirement-capacity resources cannot cover retirement-record layout capacity/bytePool');\n      }\n      if (compareDecimalUint(reclaimScratchCapacity, reclamation.maxScratchBytes) < 0) {\n        fail('GRAPH_RESOURCE_CAPACITY', 'reclamation scratch resources cannot cover maxScratchBytes');\n      }\n      if (compareDecimalUint(reclaimWorkCapacity, reclamation.maxWorkUnits) < 0) {\n        fail('GRAPH_RESOURCE_CAPACITY', 'reclamation work resources cannot cover maxWorkUnits');\n      }\n    }\n    const edgeSlotCapacity = resources",
+              'reclamation capacity proof',
+            ],
+            ["  requiredFailures: Object.freeze([...REQUIRED_FAILURES]),", "  requiredFailures: Object.freeze([...REQUIRED_FAILURES]),\n  requiredReclaimFailures: Object.freeze([...REQUIRED_RECLAIM_FAILURES]),", 'reclamation constants export'],
+          ]);
+
+          patch('experiments/search-ir-composer-reference/run.mjs', [
+            [
+              "  assert(!normalized.resources.some(({ id }) => id.includes('reclaim')));\n  assert(!normalized.objectKinds.some(({ lifecycle }) => lifecycle.states.some((stateName) => /-(?:retiring|reclaimable)$/.test(stateName))));",
+              "  assert(!normalized.resources.some(({ id }) => id.includes('reclaim') || id.includes('retirement')));\n  assert(!normalized.failures.some(({ code }) => ['reclamation-not-quiescent', 'reclamation-scratch-capacity', 'retirement-capacity'].includes(code)));\n  assert(!normalized.objectKinds.some(({ lifecycle }) => lifecycle.states.some((stateName) => /-(?:retiring|reclaimable)$/.test(stateName))));",
+              'zero reclamation residue assertion',
+            ],
+            [
+              "await runCase('reject-graph-reclamation-generation-order', () => {\n  const mutated = clone(graphProfileInputs[1]);\n  mutated.reclamation.generationAdvance = 'after-slot-reuse';\n  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[1].domain), { code: 'GRAPH_RECLAIM_KIND' });\n});",
+              "await runCase('reject-graph-reclamation-generation-order', () => {\n  const mutated = clone(graphProfileInputs[1]);\n  mutated.reclamation.generationAdvance = 'after-slot-reuse';\n  assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[1].domain), { code: 'GRAPH_RECLAIM_KIND' });\n});\n\nawait runCase('reject-graph-reclamation-capacity', () => {\n  const underfundedRecords = clone(graphProfileInputs[1]);\n  underfundedRecords.resources.find(({ id }) => id.endsWith('resource-retirement-records')).maximum = '4095';\n  assert.throws(() => normalizeGraphProfile(underfundedRecords, inspected, graphFixtures[1].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });\n  const underfundedBytes = clone(graphProfileInputs[1]);\n  underfundedBytes.resources.find(({ id }) => id.endsWith('resource-retirement-bytes')).maximum = '262143';\n  assert.throws(() => normalizeGraphProfile(underfundedBytes, inspected, graphFixtures[1].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });\n  const underfundedScratch = clone(graphProfileInputs[1]);\n  underfundedScratch.resources.find(({ id }) => id.endsWith('resource-reclaim-scratch')).maximum = '65535';\n  assert.throws(() => normalizeGraphProfile(underfundedScratch, inspected, graphFixtures[1].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });\n  const underfundedWork = clone(graphProfileInputs[1]);\n  underfundedWork.resources.find(({ id }) => id.endsWith('resource-reclaim-work')).maximum = '4095';\n  assert.throws(() => normalizeGraphProfile(underfundedWork, inspected, graphFixtures[1].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });\n});\n\nawait runCase('reject-graph-reclamation-lifecycle', () => {\n  const nonReleasable = clone(graphProfileInputs[1]);\n  const retirement = nonReleasable.objectKinds.find(({ role }) => role === 'retirement-record');\n  retirement.lifecycle.transitions = retirement.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-ready') && to.endsWith('state-released')));\n  assert.throws(() => normalizeGraphProfile(nonReleasable, inspected, graphFixtures[1].domain), { code: 'GRAPH_RECLAIM_LIFECYCLE' });\n  const nonReusable = clone(graphProfileInputs[1]);\n  const reusableRetirement = nonReusable.objectKinds.find(({ role }) => role === 'retirement-record');\n  reusableRetirement.lifecycle.transitions = reusableRetirement.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-released') && to.endsWith('state-free')));\n  assert.throws(() => normalizeGraphProfile(nonReusable, inspected, graphFixtures[1].domain), { code: 'GRAPH_RECLAIM_LIFECYCLE' });\n});",
+              'reclamation preflight falsifiers',
+            ],
+          ]);
+          NODE
+
+          node scripts/run-search-ir-composer-reference.mjs
+          git diff --check
+          test ! -e .github/workflows/rebind-framework-authority.yml
+          test ! -e .github/workflows/rebind-graph-evidence.yml
+          test ! -e .github/workflows/rebind-domain-evidence.yml
+
+          git rm .github/workflows/reclaim-preflight-migration.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add experiments/search-ir-composer-reference/src/graph-fixtures.mjs experiments/search-ir-composer-reference/src/graph.mjs experiments/search-ir-composer-reference/run.mjs
+          git commit -m 'test: close Graph RECLAIM representation preflight'
+          git push origin HEAD:ref/graph-reclaim-preflight-01
