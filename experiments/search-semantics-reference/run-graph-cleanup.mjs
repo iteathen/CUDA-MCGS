@@ -207,10 +207,10 @@ const evidence = {
   summary,
   cases,
   claimLimits: [
-    'GRAPH-CLEANUP-001..004 semantic/reference cleanup evidence only. Native CUDA resource destruction and teardown realization remain downstream qualification concerns.',
-    'Arena release reconciliation authorizes only the semantic boundary ready-for-native-destruction; it does not destroy or prescribe CUDA-JS resources.',
-    'Publication/equality inconsistency uses an oracle-private arena quarantine and invalidates dependent reference evidence without adding a public Search IR lifecycle state.',
-    'Retained artifact provenance is reference-level ownership/recovery/cleanup metadata; no persistence format or storage mechanism is selected.',
+    'GRAPH-CLEANUP-001..004 semantic/reference cleanup evidence only; native CUDA resource destruction and concrete teardown integration remain downstream qualification concerns.',
+    'Arena release reconciliation proves only the Graph-owned semantic precondition ready-for-resource-destruction; it neither destroys resources nor prescribes Resource/CUDA-JS realization.',
+    'GRAPH-CLEANUP-002 directly models publication/equality quarantine; generation alias and uncertain owner cleanup are supported by qualified REF/RECLAIM prevention/quarantine evidence, not by a native corruption detector.',
+    'Retained artifact provenance proves exact active profile/package identity compatibility for this reference packet only; no persistence format, storage mechanism, or general compatibility authority is selected.',
   ],
 };
 
