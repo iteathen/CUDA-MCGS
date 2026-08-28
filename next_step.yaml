@@ -1,8 +1,8 @@
 {
-  "schema_version": 80,
+  "schema_version": 81,
   "updated": "2026-08-28",
   "status": "experimental_graph_cleanup_candidate_review_gate",
-  "objective": "Preserve the qualified bounded Graph cleanup/reference candidate for GRAPH-CLEANUP-001..004, qualify the final state-only reconciliation head, and stop at the documented independent-review or explicit exact-head repository-owner exception gate before integration.",
+  "objective": "Preserve the qualified bounded Graph cleanup/reference candidate for GRAPH-CLEANUP-001..004 and stop at the documented independent-review or explicit exact-head repository-owner authorization gate before integration.",
   "ownership_boundary": "CUDA-MCGS Graph owns reusable product-neutral graph/storage/reference/lifetime/cleanup semantics. Session retains current-root/root-epoch/advance/reroot/attention and supersession-reason authority. Resource retains global admission/watermark/pressure policy; Progress retains scheduling/fairness/device-progress policy. CUDA-JS owns generic native/CUDA realization mechanisms and CUDA-JS-Tensor owns generic tensor math. Production domain/search products remain downstream.",
   "protected_base": {
     "branch": "main",
@@ -30,13 +30,14 @@
     "base_sha": "422fe99bf51c1f48cda480a6a6d98f641fb2599d",
     "frozen_semantic_review_head": "c901e880de9183868c0d0e773d27c3e2f484acdd",
     "qualified_implementation_head": "142ee0c0d161965876f08b741e24922caa432904",
-    "qualification_run": "33219963955",
-    "state_reconciliation_parent_head": "f6fac08c749aa63ab3380ce22aaa9af9d1da272b",
+    "implementation_qualification_run": "33219963955",
+    "qualified_state_reconciliation_head": "8d5f18e78ace2da71e91d2f61655d16d7fa6216f",
+    "state_reconciliation_qualification_run": "33221311272",
     "owner_issue": 24,
     "reference_tracker": 36,
     "target": "experimental/portfolio",
-    "author_review": "complete and clean at the qualified implementation/evidence head; later changes are state-only",
-    "state": "Graph cleanup semantic/reference implementation and partial structured coverage are qualified but not integrated. This state reconciliation creates the final docs-only candidate head, which must itself pass exact-head CI. Independent review or an explicit repository-owner exact-head exception remains required before leaving draft or merging."
+    "author_review": "complete and clean; post-implementation changes are state-only",
+    "state": "Graph cleanup semantic/reference implementation and partial structured coverage are qualified but not integrated. The remaining substantive gate is independent review or a repository-owner exact-head authorization satisfying policy. Any later metadata-only head must still satisfy the ordinary current-head required-check rule before merge."
   },
   "candidate_evidence": {
     "requirements": "989/989 classified at catalog level",
@@ -89,11 +90,13 @@
       "At frozen semantic head c901e880de9183868c0d0e773d27c3e2f484acdd, exact-head CI exposed only a stale Composer disposition-count expectation.",
       "The expectation was repaired to truthful totals {deferred:52, partial:908, pending:29} without downgrading coverage.",
       "Composer identity changes were rebound through the declared semantic/reference evidence chain in owner order without changing semantic case content.",
-      "Qualified implementation/evidence head 142ee0c0d161965876f08b741e24922caa432904 passed full workflow 33219963955 including Graph CLEANUP and aggregate verify."
+      "Qualified implementation/evidence head 142ee0c0d161965876f08b741e24922caa432904 passed full workflow 33219963955 including Graph CLEANUP and aggregate verify.",
+      "State-only head 8d5f18e78ace2da71e91d2f61655d16d7fa6216f passed full workflow 33221311272; its delta from 142ee0c0d161965876f08b741e24922caa432904 is exactly STATUS.md plus next_step.yaml."
     ],
-    "last_qualification_head": "142ee0c0d161965876f08b741e24922caa432904",
-    "last_qualification_run": "33219963955",
-    "last_integration_sha": "422fe99bf51c1f48cda480a6a6d98f641fb2599d"
+    "last_qualification_head": "8d5f18e78ace2da71e91d2f61655d16d7fa6216f",
+    "last_qualification_run": "33221311272",
+    "last_integration_sha": "422fe99bf51c1f48cda480a6a6d98f641fb2599d",
+    "recording_rule": "This file records the most recent completed exact-head qualification known before the metadata commit containing it. Merge readiness must always be re-read from GitHub for the current PR head; do not create self-referential SHA churn merely to write the current commit SHA into this file."
   },
   "authority": [
     "AGENTS.md",
@@ -117,9 +120,8 @@
     "https://github.com/iteathen/CUDA-MCGS/pull/150"
   ],
   "deliverables": [
-    "qualify the final state-only PR head through the complete fail-closed workflow including Graph CLEANUP",
-    "confirm the final state-only delta from qualified implementation head 142ee0c0d161965876f08b741e24922caa432904 contains only STATUS.md and next_step.yaml",
-    "obtain independent review for publication/reclamation/recovery semantics or an explicit repository-owner exact-head exception satisfying policy",
+    "re-read the current PR head and required current-head checks before any authorization or merge transaction",
+    "obtain independent review for publication/reclamation/recovery semantics or an explicit repository-owner exact-head authorization satisfying policy",
     "merge only into experimental/portfolio with an expected-head fence after all gates and authorization are satisfied",
     "perform post-merge experimental/protected ref readback and reconcile issues #24/#36/#142",
     "leave GRAPH-RESOURCE-* with IR-RESOURCE-01 and native-dominant GRAPH-LIFE-* qualification with ENGINE-NATIVE-01"
@@ -131,15 +133,25 @@
     "pr": "https://github.com/iteathen/CUDA-MCGS/pull/150",
     "historical_handoff": "docs/handoffs/2026-08-28-experimental-graph-cleanup-acceptance-resume.md",
     "recovery_checkpoint": "checkpoint/graph-cleanup-falsifier-handoff-20260828@28132a53471526ad355d8cfea96bb92d1ec076df",
-    "next_action": "Qualify the current state-only PR head under the complete fail-closed workflow. If green, verify the delta from 142ee0c0d161965876f08b741e24922caa432904 is state-only, update PR/issue checkpoint metadata without changing source authority, and stop at the independent-review or explicit exact-head owner-exception gate unless valid authorization exists.",
-    "after_green_ci": "Do not leave draft or merge until independent review or a valid explicit repository-owner exact-head exception is present. Once authorized, merge only into experimental/portfolio using expected-head fencing and perform post-merge experimental/protected ref readback.",
-    "exit": "Graph cleanup/reference candidate is exact-head green, independently reviewed or explicitly excepted for that exact head, merged only to experimental/portfolio under an expected-head fence, and post-merge readback proves protected main unchanged with remaining Resource/native obligations explicit."
+    "next_action": "Confirm the current PR head still has the required exact-head verify success, then obtain independent review or a policy-valid repository-owner authorization that names that exact head. Do not mark ready or merge otherwise.",
+    "after_authorization": "Re-read PR head/base, reviews, discussion, mergeability and current-head checks; if unchanged and satisfied, merge only into experimental/portfolio with an expected-head guard, then perform post-merge experimental/protected ref readback before selecting the next portfolio leaf.",
+    "exit": "Graph cleanup/reference candidate is exact-head green, independently reviewed or explicitly owner-authorized for that exact head, merged only to experimental/portfolio under an expected-head fence, and post-merge readback proves protected main unchanged with remaining Resource/native obligations explicit."
   },
   "merge_gate": {
     "required_context": "verify",
     "implementation": "fail-closed aggregate over Governance, both Search IR cells, Graph NODE, EDGE, REF, PATH, ROOT, RECLAIM, ADVANCE occurrence and CLEANUP",
-    "review_requirement": "Independent review is required for difficult publication/reclamation/recovery semantics unless the repository owner explicitly grants an exact-head exception satisfying the documented review policy.",
-    "authorization_rule": "A generic instruction to continue is not an exact-head review exception and must not be treated as merge authorization.",
+    "current_head_check_rule": "Immediately before authorization/merge, current PR head checks must be re-read from GitHub and must be green; a prior recorded head does not authorize a changed head.",
+    "review_requirement": "Independent review is required for difficult publication/reclamation/recovery semantics unless independent GitHub approval is structurally unavailable and the repository owner grants an exact-head authorization satisfying the documented review policy.",
+    "owner_authorization_requirements": [
+      "state that independent approval is unavailable for this repository/change",
+      "name the exact PR head SHA",
+      "state why the exception is allowed at the current phase and risk",
+      "state decisive checks and checks not run",
+      "state known claim limits",
+      "confirm no blocking finding remains",
+      "explicitly authorize merge of that exact head"
+    ],
+    "authorization_rule": "A generic instruction to continue is not an exact-head authorization and must not be treated as merge authorization. Any head change invalidates an authorization.",
     "evolution_rule": "Every newly required semantic/reference owner or integration falsifier joins the aggregate needs/result set without weakening independent diagnosability."
   },
   "semantic_focus": {
@@ -148,12 +160,11 @@
     "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/24",
     "last_integrated_leaf": "REF-GRAPH-01/ADVANCE-OCCURRENCE-CLOSURE",
     "current_candidate_leaf": "REF-GRAPH-01/GRAPH-CLEANUP-ACCEPTANCE",
-    "dependency_state": "NODE/EDGE/REF/PATH/ROOT/RECLAIM and ADR-0022 occurrence closure are integrated on experimental/portfolio; Graph cleanup/reference candidate is fully qualified at implementation/evidence head 142ee0c0d161965876f08b741e24922caa432904 and now awaits final state-only exact-head qualification plus review authorization.",
+    "dependency_state": "NODE/EDGE/REF/PATH/ROOT/RECLAIM and ADR-0022 occurrence closure are integrated on experimental/portfolio; Graph cleanup/reference candidate is qualified and stopped at review authorization before integration.",
     "claim_limit": "semantic/reference evidence only; native ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains deferred to exact CUDA-MCGS/CUDA-JS compatible-pair/device evidence"
   },
   "blockers": [
-    "The final state-only PR head created by live state reconciliation must itself pass exact-head CI before merge readiness can be claimed.",
-    "No independent approval or explicit repository-owner exact-head review exception has been found for the difficult publication/reclamation/recovery slice.",
+    "No independent approval or policy-valid repository-owner exact-head authorization has been found for the difficult publication/reclamation/recovery slice.",
     "Native lifecycle/ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains a later ENGINE-NATIVE-01/CUDA-JS compatible-pair gate, not a reason to add more Graph semantics."
   ],
   "validation": [
