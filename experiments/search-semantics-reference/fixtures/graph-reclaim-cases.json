@@ -39,7 +39,7 @@
   "rootEvidence": {
     "algorithm": "sha256",
     "byteLength": 10008,
-    "sha256": "5b1cfb36d9b743a65ee0233964c254a56296ae5be82b84fb358db98387a16bdd"
+    "sha256": "74b680f1894e07cf5b3ba35a44116badcad0e5999c0c97eaf92a82df54bc307f"
   },
   "expectedCases": [
     "graph-reclaim-profile-and-upstream-evidence-exact",
