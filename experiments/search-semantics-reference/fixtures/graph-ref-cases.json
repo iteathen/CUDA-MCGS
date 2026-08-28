@@ -2,19 +2,19 @@
   "schema": "cuda-mcgs.reference-graph-ref-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 719629,
-    "sha256": "2e2cde00d9e1eac864541cd7bd5d4d43873cfb20bfb2304aa0bc5c2647bce1af"
+    "byteLength": 721157,
+    "sha256": "fd58bd6a5ae99dfb8534ab802f9aca9c12c0a110a793760645cec71d3a385042"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 140331,
-    "sha256": "72d91b75336a2745830a3c0d8d7d7d3ed26259ea2f56b619f9de311c82d21068"
+    "sha256": "a525b51634582f0f6d862d1d93b4ec68d8171230a01c3bf31743482f49d86af6"
   },
   "nodeEvidence": {
     "algorithm": "sha256",
     "byteLength": 10047,
-    "sha256": "158125969d1d82c7608053dff5b461736390237bac02ef51e0855202600e8ac8"
+    "sha256": "51599ce27d2a8b3b61046b1f98f677a64604ed8d89480730076a49997c279d61"
   },
   "expectedCases": [
     "graph-ref-profile-projection-and-node-evidence-exact",

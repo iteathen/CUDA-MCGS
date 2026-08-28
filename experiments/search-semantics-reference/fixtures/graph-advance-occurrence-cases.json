@@ -2,34 +2,34 @@
   "schema": "cuda-mcgs.reference-graph-advance-occurrence-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 719629,
-    "sha256": "2e2cde00d9e1eac864541cd7bd5d4d43873cfb20bfb2304aa0bc5c2647bce1af"
+    "byteLength": 721157,
+    "sha256": "fd58bd6a5ae99dfb8534ab802f9aca9c12c0a110a793760645cec71d3a385042"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 140331,
-    "sha256": "72d91b75336a2745830a3c0d8d7d7d3ed26259ea2f56b619f9de311c82d21068"
+    "sha256": "a525b51634582f0f6d862d1d93b4ec68d8171230a01c3bf31743482f49d86af6"
   },
   "nodeEvidence": {
     "algorithm": "sha256",
     "byteLength": 10047,
-    "sha256": "158125969d1d82c7608053dff5b461736390237bac02ef51e0855202600e8ac8"
+    "sha256": "51599ce27d2a8b3b61046b1f98f677a64604ed8d89480730076a49997c279d61"
   },
   "edgeEvidence": {
     "algorithm": "sha256",
     "byteLength": 11661,
-    "sha256": "73dd312fb24f3132ee46c9c4ea927317f8ebf158989f44ed87156d84796ee8df"
+    "sha256": "77a27487b37e0b2906aef4a115199e0eb1e5b0ea88c34ba0110b1061695604c7"
   },
   "refEvidence": {
     "algorithm": "sha256",
     "byteLength": 9139,
-    "sha256": "8558f34b7ff21c64734695cb33489447dfaa31d465fe284222eb613613f3cf1d"
+    "sha256": "07557450fc72cc6c2fea95f8d77ce2a6703358e50b974ec27d14dd75ba5b1cd0"
   },
   "pathEvidence": {
     "algorithm": "sha256",
     "byteLength": 9530,
-    "sha256": "3bd534248f035b2fe2ba4b6c41021e96e6903d6fa7ec945c40175c47babea530"
+    "sha256": "057da30298ff2c76ee5400d2b45ddf5fcbd969885910e078709e67b9cc673c72"
   },
   "rootControlProjection": {
     "algorithm": "sha256",
@@ -39,12 +39,12 @@
   "rootEvidence": {
     "algorithm": "sha256",
     "byteLength": 10008,
-    "sha256": "74b680f1894e07cf5b3ba35a44116badcad0e5999c0c97eaf92a82df54bc307f"
+    "sha256": "d66ce77bcd362865382e4ab15d4db70f79f7e7a34b49e6c19c5873f193129e2b"
   },
   "reclaimEvidence": {
     "algorithm": "sha256",
     "byteLength": 12127,
-    "sha256": "45bf8330812cb8351f195f7bdf8c29fc748ad75af7d88554db31403c14e0613f"
+    "sha256": "42d2c94e6387b72e17d891dfdfc53c6e7c65795dc15169085b70df65f5be34cf"
   },
   "expectedCases": [
     "graph-advance-occurrence-upstream-evidence-and-control-exact",
