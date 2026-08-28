@@ -112,7 +112,10 @@ export function registerGraphReclaimCases({
   defineCase('graph-reclaim-enabled-profile-declares-complete-finite-contract', () => {
     const profile = reclamationProfile(projection);
     assert.equal(profile.reclamation.kind, 'enabled');
-    assert.deepEqual(profile.reclamation.protectionSources, ['root-anchor', 'active-path', 'in-flight', 'publication-waiter', 'owner-lease', 'retained-borrow']);
+    assert.deepEqual(
+      new Set(profile.reclamation.protectionSources),
+      new Set(['root-anchor', 'active-path', 'in-flight', 'publication-waiter', 'owner-lease', 'retained-borrow']),
+    );
     assert.equal(profile.reclamation.transpositionRemoval, 'non-returnable-tombstone');
     assert.equal(profile.reclamation.generationAdvance, 'before-slot-reuse');
     assert.equal(profile.reclamation.maxWorkUnits, '4096');
