@@ -50,8 +50,8 @@
     "graph-cleanup-upstream-evidence-exact",
     "graph-cleanup-terminal-dispositions-have-no-abandoned-owner-local-obligation",
     "graph-cleanup-semantic-inconsistency-quarantines-and-invalidates-dependent-node-evidence",
-    "graph-cleanup-arena-release-reconciles-all-graph-owned-transients-before-native-destruction",
-    "graph-cleanup-retained-artifact-provenance-is-explicit-or-absent",
+    "graph-cleanup-arena-release-reconciles-all-graph-owned-transients-before-resource-destruction",
+    "graph-cleanup-retained-artifact-provenance-is-explicit-compatible-or-absent",
     "graph-cleanup-requirement-coverage-exact"
   ]
 }
