@@ -1,8 +1,8 @@
 {
-  "schema_version": 79,
+  "schema_version": 80,
   "updated": "2026-08-28",
-  "status": "experimental_graph_cleanup_candidate_qualifying",
-  "objective": "Qualify the existing bounded Graph cleanup/reference candidate for GRAPH-CLEANUP-001..004, repair only the stale Composer disposition-count expectation exposed by exact-head CI, and preserve all LEGO ownership and protected-main boundaries.",
+  "status": "experimental_graph_cleanup_candidate_review_gate",
+  "objective": "Preserve the qualified bounded Graph cleanup/reference candidate for GRAPH-CLEANUP-001..004, qualify the final state-only reconciliation head, and stop at the documented independent-review or explicit exact-head repository-owner exception gate before integration.",
   "ownership_boundary": "CUDA-MCGS Graph owns reusable product-neutral graph/storage/reference/lifetime/cleanup semantics. Session retains current-root/root-epoch/advance/reroot/attention and supersession-reason authority. Resource retains global admission/watermark/pressure policy; Progress retains scheduling/fairness/device-progress policy. CUDA-JS owns generic native/CUDA realization mechanisms and CUDA-JS-Tensor owns generic tensor math. Production domain/search products remain downstream.",
   "protected_base": {
     "branch": "main",
@@ -28,11 +28,15 @@
     "draft": true,
     "branch": "ref/graph-cleanup-acceptance-01",
     "base_sha": "422fe99bf51c1f48cda480a6a6d98f641fb2599d",
-    "reviewed_source_head": "c901e880de9183868c0d0e773d27c3e2f484acdd",
+    "frozen_semantic_review_head": "c901e880de9183868c0d0e773d27c3e2f484acdd",
+    "qualified_implementation_head": "142ee0c0d161965876f08b741e24922caa432904",
+    "qualification_run": "33219963955",
+    "state_reconciliation_parent_head": "f6fac08c749aa63ab3380ce22aaa9af9d1da272b",
     "owner_issue": 24,
     "reference_tracker": 36,
     "target": "experimental/portfolio",
-    "state": "Graph cleanup semantic/reference implementation and partial structured coverage are present but not integrated; exact-head qualification and required review authorization remain open."
+    "author_review": "complete and clean at the qualified implementation/evidence head; later changes are state-only",
+    "state": "Graph cleanup semantic/reference implementation and partial structured coverage are qualified but not integrated. This state reconciliation creates the final docs-only candidate head, which must itself pass exact-head CI. Independent review or an explicit repository-owner exact-head exception remains required before leaving draft or merging."
   },
   "candidate_evidence": {
     "requirements": "989/989 classified at catalog level",
@@ -48,6 +52,32 @@
       "partial": 908,
       "pending": 29
     },
+    "qualified_packet": {
+      "composer_representation_composition": "fd58bd6a5ae99dfb8534ab802f9aca9c12c0a110a793760645cec71d3a385042",
+      "composer_canonical_bytes": 721157,
+      "graph_projection": "a525b51634582f0f6d862d1d93b4ec68d8171230a01c3bf31743482f49d86af6",
+      "graph_projection_canonical_bytes": 140331,
+      "node": "51599ce27d2a8b3b61046b1f98f677a64604ed8d89480730076a49997c279d61",
+      "node_cases": "13/13",
+      "edge": "77a27487b37e0b2906aef4a115199e0eb1e5b0ea88c34ba0110b1061695604c7",
+      "edge_cases": "16/16",
+      "ref": "07557450fc72cc6c2fea95f8d77ce2a6703358e50b974ec27d14dd75ba5b1cd0",
+      "ref_cases": "14/14",
+      "path": "057da30298ff2c76ee5400d2b45ddf5fcbd969885910e078709e67b9cc673c72",
+      "path_cases": "14/14",
+      "root_control": "be35ed803ea82498950c454acb6955087543c2a7a974745077c4c53158bca475",
+      "root": "d66ce77bcd362865382e4ab15d4db70f79f7e7a34b49e6c19c5873f193129e2b",
+      "root_cases": "14/14",
+      "reclaim": "42d2c94e6387b72e17d891dfdfc53c6e7c65795dc15169085b70df65f5be34cf",
+      "reclaim_cases": "17/17",
+      "advance_occurrence": "53b2437c4f0221515f89cd6b16aeaa74f61d8d934680d0284ee83a5611fb1a87",
+      "advance_occurrence_cases": "5/5",
+      "cleanup": "a0da64926d2ebb2352a18f318d6c0e0b108ddcdf773b9e68f42e64a5e280e38b",
+      "cleanup_cases": "6/6",
+      "cleanup_canonical_bytes": 5466,
+      "cleanup_artifact_id": 9704784670,
+      "cleanup_artifact_zip_sha256": "ba241e63d6ffcf22f394afe0d313e4c3840ce1a73b31ac3cd81fe43e228d860c"
+    },
     "reviewed_source_semantics": [
       "conflicting ready NODE publication quarantines the affected observation, invalidates payload/evidence access and rejects later lookup",
       "equality/publication contradictions quarantine rather than guess authority",
@@ -55,12 +85,14 @@
       "retained artifacts require explicit owner plus exact compatible package/profile identity and cleanup trigger",
       "stale generation aliasing and silent generation wrap are prevented by the Graph REF contract; no native ABA detector is claimed"
     ],
-    "qualification_defect_at_reviewed_source_head": "Shared Composer integration-requirement-disposition-handoff asserted stale pre-cleanup totals {deferred:52, partial:904, pending:33}; truthful candidate totals are {deferred:52, partial:908, pending:29}.",
-    "qualification_repair_scope": "Change only the stale executable Composer count expectation; do not downgrade or falsify cleanup coverage.",
-    "last_integrated_composer": "881/881",
-    "last_integrated_requirements": "989/989",
-    "last_qualification_head": "2175592e164b9eb9770225ef2808e405a52af4fa",
-    "last_qualification_run": "33148044466",
+    "qualification_history": [
+      "At frozen semantic head c901e880de9183868c0d0e773d27c3e2f484acdd, exact-head CI exposed only a stale Composer disposition-count expectation.",
+      "The expectation was repaired to truthful totals {deferred:52, partial:908, pending:29} without downgrading coverage.",
+      "Composer identity changes were rebound through the declared semantic/reference evidence chain in owner order without changing semantic case content.",
+      "Qualified implementation/evidence head 142ee0c0d161965876f08b741e24922caa432904 passed full workflow 33219963955 including Graph CLEANUP and aggregate verify."
+    ],
+    "last_qualification_head": "142ee0c0d161965876f08b741e24922caa432904",
+    "last_qualification_run": "33219963955",
     "last_integration_sha": "422fe99bf51c1f48cda480a6a6d98f641fb2599d"
   },
   "authority": [
@@ -85,9 +117,8 @@
     "https://github.com/iteathen/CUDA-MCGS/pull/150"
   ],
   "deliverables": [
-    "promote only the verified one-line Composer disposition-count repair after re-reading focus/base/protected refs for drift",
-    "qualify the resulting exact PR head through the complete fail-closed workflow including Graph CLEANUP",
-    "perform exact-head author review over the complete experimental-base-to-candidate diff",
+    "qualify the final state-only PR head through the complete fail-closed workflow including Graph CLEANUP",
+    "confirm the final state-only delta from qualified implementation head 142ee0c0d161965876f08b741e24922caa432904 contains only STATUS.md and next_step.yaml",
     "obtain independent review for publication/reclamation/recovery semantics or an explicit repository-owner exact-head exception satisfying policy",
     "merge only into experimental/portfolio with an expected-head fence after all gates and authorization are satisfied",
     "perform post-merge experimental/protected ref readback and reconcile issues #24/#36/#142",
@@ -100,9 +131,9 @@
     "pr": "https://github.com/iteathen/CUDA-MCGS/pull/150",
     "historical_handoff": "docs/handoffs/2026-08-28-experimental-graph-cleanup-acceptance-resume.md",
     "recovery_checkpoint": "checkpoint/graph-cleanup-falsifier-handoff-20260828@28132a53471526ad355d8cfea96bb92d1ec076df",
-    "next_action": "Verify the staged qualification repair has a net one-line run.mjs diff plus these live state reconciliations, re-read PR/base/protected refs for drift, then fast-forward the focus branch without force and let exact-head CI qualify the complete candidate.",
-    "after_green_ci": "Perform exact-head author review and stop at the independent-review/explicit-owner-exception gate unless valid exact-head authorization is present.",
-    "exit": "Graph cleanup/reference candidate is green, reviewed and authorized; PR #150 is merged only to experimental/portfolio under an expected-head fence; post-merge readback proves protected main unchanged and remaining Resource/native obligations are explicit."
+    "next_action": "Qualify the current state-only PR head under the complete fail-closed workflow. If green, verify the delta from 142ee0c0d161965876f08b741e24922caa432904 is state-only, update PR/issue checkpoint metadata without changing source authority, and stop at the independent-review or explicit exact-head owner-exception gate unless valid authorization exists.",
+    "after_green_ci": "Do not leave draft or merge until independent review or a valid explicit repository-owner exact-head exception is present. Once authorized, merge only into experimental/portfolio using expected-head fencing and perform post-merge experimental/protected ref readback.",
+    "exit": "Graph cleanup/reference candidate is exact-head green, independently reviewed or explicitly excepted for that exact head, merged only to experimental/portfolio under an expected-head fence, and post-merge readback proves protected main unchanged with remaining Resource/native obligations explicit."
   },
   "merge_gate": {
     "required_context": "verify",
@@ -117,11 +148,11 @@
     "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/24",
     "last_integrated_leaf": "REF-GRAPH-01/ADVANCE-OCCURRENCE-CLOSURE",
     "current_candidate_leaf": "REF-GRAPH-01/GRAPH-CLEANUP-ACCEPTANCE",
-    "dependency_state": "NODE/EDGE/REF/PATH/ROOT/RECLAIM and ADR-0022 occurrence closure are integrated on experimental/portfolio; Graph cleanup/reference candidate exists on PR #150 and is awaiting qualification/review/authorization.",
+    "dependency_state": "NODE/EDGE/REF/PATH/ROOT/RECLAIM and ADR-0022 occurrence closure are integrated on experimental/portfolio; Graph cleanup/reference candidate is fully qualified at implementation/evidence head 142ee0c0d161965876f08b741e24922caa432904 and now awaits final state-only exact-head qualification plus review authorization.",
     "claim_limit": "semantic/reference evidence only; native ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains deferred to exact CUDA-MCGS/CUDA-JS compatible-pair/device evidence"
   },
   "blockers": [
-    "PR #150 exact-head CI is not yet green after the Composer count repair and live-state reconciliation.",
+    "The final state-only PR head created by live state reconciliation must itself pass exact-head CI before merge readiness can be claimed.",
     "No independent approval or explicit repository-owner exact-head review exception has been found for the difficult publication/reclamation/recovery slice.",
     "Native lifecycle/ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains a later ENGINE-NATIVE-01/CUDA-JS compatible-pair gate, not a reason to add more Graph semantics."
   ],
@@ -157,6 +188,7 @@
   "cleanup_debt": [
     "checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f remains redundant recovery state because no safe delete-ref action has been exposed.",
     "checkpoint/graph-cleanup-falsifier-handoff-20260828@28132a53471526ad355d8cfea96bb92d1ec076df is retained intentionally as the recovery/falsifier checkpoint until the candidate is safely integrated or superseded.",
+    "tmp/graph-cleanup-qualification-repair-20260828 is bounded temporary-branch cleanup debt because no safe delete-ref action has been exposed; no temporary qualification workflow remains in the candidate tree.",
     "PR #126 and PR #132 remain stale/unmergeable product-boundary cleanup/disposition debt under issue #44."
   ]
 }
