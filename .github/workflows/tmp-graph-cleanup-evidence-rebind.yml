@@ -43,7 +43,7 @@ jobs:
           const composer = read('experiments/search-ir-composer-reference/build/evidence.json').representationCompositionEvidenceKey;
           const domainProjection = read('experiments/search-ir-composer-reference/build/domain-profiles.json').projectionIdentity;
           const graphProjection = read('experiments/search-ir-composer-reference/build/graph-profiles.json').projectionIdentity;
-          const rootControl = read('experiments/search-ir-composer-reference/build/root-control.json').projectionIdentity;
+          const rootControl = read('experiments/search-ir-composer-reference/build/root-control.json').identity;
 
           const neutralPath = `${fixtureRoot}/neutral-schedules.json`;
           const neutral = read(neutralPath);
