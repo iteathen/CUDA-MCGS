@@ -1,0 +1,57 @@
+{
+  "schema": "cuda-mcgs.reference-graph-cleanup-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 719629,
+    "sha256": "2e2cde00d9e1eac864541cd7bd5d4d43873cfb20bfb2304aa0bc5c2647bce1af"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 140331,
+    "sha256": "72d91b75336a2745830a3c0d8d7d7d3ed26259ea2f56b619f9de311c82d21068"
+  },
+  "nodeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10123,
+    "sha256": "103cd77904f0c1f5650fe52e7884b8a791615a17d340e13f4b5184d262a126df"
+  },
+  "edgeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 11661,
+    "sha256": "96ce6c83125566ffec250e825b09ed66ab9050c6f091ee178d789aa5d0fdc127"
+  },
+  "refEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10781,
+    "sha256": "def51477f25c40d11f5f61fbf928264753a95d3979397e573f389f91cd02808b"
+  },
+  "pathEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9530,
+    "sha256": "74e05276492db9f928a83bbca0739ebec4b5d0d9bc7564b3a6510ca243134a4b"
+  },
+  "rootEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10008,
+    "sha256": "5b1cfb36d9b743a65ee0233964c254a56296ae5be82b84fb358db98387a16bdd"
+  },
+  "reclaimEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 12127,
+    "sha256": "a010c88de1bb97ec0ea83a08fe0e2ef608c047ed4412c01e8f68b942eb572058"
+  },
+  "advanceOccurrenceEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 4195,
+    "sha256": "c67014dac6396221b121dd35b0bb51626bac12d116e5e534c310b1a7809754a3"
+  },
+  "expectedCases": [
+    "graph-cleanup-upstream-evidence-exact",
+    "graph-cleanup-terminal-dispositions-have-no-abandoned-owner-local-obligation",
+    "graph-cleanup-semantic-inconsistency-quarantines-and-invalidates-dependent-node-evidence",
+    "graph-cleanup-arena-release-reconciles-all-graph-owned-transients-before-native-destruction",
+    "graph-cleanup-retained-artifact-provenance-is-explicit-or-absent",
+    "graph-cleanup-requirement-coverage-exact"
+  ]
+}
