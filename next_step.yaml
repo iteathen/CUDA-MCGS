@@ -92,11 +92,19 @@
     "https://github.com/iteathen/CUDA-MCGS/issues/36",
     "https://github.com/iteathen/CUDA-MCGS/issues/142"
   ],
+  "deliverables": [
+    "one exact experimental Graph RECLAIM representation/resource/lifecycle preflight integrated only after full author-head qualification",
+    "explicit finite retirement-record count and byte storage, reclaim scratch bytes and reclaim work units with independent underfunding falsifiers",
+    "explicit reusable retirement-record lifecycle and zero reclaim-only residue when reclamation is unselected",
+    "rebound Domain and Graph semantic evidence that consumes the 881-case representation without weakened identity checks",
+    "a subsequent independent GRAPH-RECLAIM-001..009 semantic/reference owner with its own fail-closed workflow lane",
+    "no production/native reclamation mechanism claim until the later CUDA-JS compatible-pair evidence gate"
+  ],
   "current_focus": {
     "id": "GRAPH-RECLAIM-PREFLIGHT-01",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/24",
     "active_pr": "https://github.com/iteathen/CUDA-MCGS/pull/147",
-    "next_action": "Create one normal author-authored truth checkpoint on the rebound candidate, run the complete ordinary PR workflow, require Governance, both Search IR cells, Graph NODE/EDGE/REF/PATH/ROOT and aggregate verify all green on that exact head, then squash-merge only into experimental/portfolio and read back the exact experimental integration.",
+    "next_action": "Run the complete ordinary PR workflow on this exact author-authored truth checkpoint, require Governance, both Search IR cells, Graph NODE/EDGE/REF/PATH/ROOT and aggregate verify all green, then squash-merge only into experimental/portfolio and read back the exact experimental integration.",
     "after_integration": "Reassess and implement the independent GRAPH-RECLAIM-001..009 semantic/reference leaf from the exact experimental integration. Keep reclamation optional, device-progress compatible, finite, generation-safe and product-neutral; do not select a CUDA/native realization mechanism.",
     "exit": "The RECLAIM representation/resource/lifecycle prerequisites are integrated on experimental/portfolio with exact full-gate evidence and no protected-main mutation."
   },
