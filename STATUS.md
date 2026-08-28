@@ -68,7 +68,13 @@ One-shot preflight migration run `33143185480` passed and self-removed before pu
 - framework selection: `bcfcba073c44f6c019dc800241414e8a67b4006786b8898042b2ffdd38a3e56d`;
 - representation/composition: `2e2cde00d9e1eac864541cd7bd5d4d43873cfb20bfb2304aa0bc5c2647bce1af`.
 
-Graph projection was then rebound to the 881-case Composer packet:
+The neutral Domain projection/evidence was explicitly rebound to that representation by self-cleaning run `33145283563`, which passed before publishing durable commit `c5926d28e0b42cf0f27b2c474ef7b3d9f043df36`:
+
+- Domain projection: `4335a21e1225b7705da5242053fd055986384a02d4d9c772fab1c4bbb286a0b1`;
+- Domain harness: `49/49`, direct semantic cases `47/47`;
+- Domain harness evidence: `10d188344e91c077fa47be192e5fec0f1310cc193ca180e3a9493fd8395ec51c`.
+
+Graph projection was rebound to the 881-case Composer packet:
 
 - Graph projection: `72d91b75336a2745830a3c0d8d7d7d3ed26259ea2f56b619f9de311c82d21068`.
 
@@ -81,15 +87,15 @@ A second self-cleaning migration (`33143600784`) regenerated the unchanged Graph
 - generated root-control projection: `be35ed803ea82498950c454acb6955087543c2a7a974745077c4c53158bca475`;
 - ROOT `14/14`: `2fc9a4770b2f0244178876ab5742d8d9043f4278aff2040c488a018ebfa94280`.
 
-These Graph results prove the representation correction did not change existing NODE/EDGE/REF/PATH/ROOT behavior. They do **not** implement or accept `GRAPH-RECLAIM-*` behavior.
+These Domain and Graph results prove the representation correction can be consumed by the existing semantic/reference chain without weakening frozen identity checks. They do **not** implement or accept `GRAPH-RECLAIM-*` behavior.
 
 ## Current qualification boundary
 
-PR #147 still requires a normal author-head, full ordinary PR workflow against `experimental/portfolio`.
+All known frozen-input rebinds caused by the 881-case representation packet are complete. The temporary migrations were fail-closed and self-removed; none remains as production machinery.
 
-The Graph rebind commit was produced by a self-cleaning GitHub Actions migration, so GitHub correctly did not treat its bot-authored pull-request synchronization as the final merge gate. This status checkpoint provides a normal author revision and intentionally leaves the remaining evidence check fail-closed.
+PR #147 now requires one normal author-head, full ordinary PR workflow against `experimental/portfolio`. That run must independently prove Governance verification, both portable Search IR cells, Graph NODE/EDGE/REF/PATH/ROOT, and the final aggregate `verify` green on the same exact author revision. Bot-authored migration synchronization is not merge authority.
 
-The representation/composition identity changed, so the neutral Domain/governance evidence may also require an explicit frozen-input rebind. That rebind is not assumed complete until the ordinary workflow proves it. Any such rebind must preserve the existing Domain behavior/case bank; drift checks will not be weakened.
+If the ordinary run exposes another stale identity, only the named frozen input may be rebound; behavioral assertions and drift checks must not be weakened.
 
 ## Architecture and merge rules
 
@@ -103,12 +109,13 @@ The representation/composition identity changed, so the neutral Domain/governanc
 
 ## Immediate sequence
 
-1. Run the ordinary full PR #147 workflow on this author checkpoint.
-2. Classify any remaining red lane from exact logs; rebind only frozen evidence identities whose upstream packet legitimately changed.
-3. Require every ordinary PR lane and final aggregate `verify` green on one exact author head.
-4. Review and squash-merge #147 only into `experimental/portfolio`; read back that exact experimental integration.
-5. Reassess actual `GRAPH-RECLAIM-001..009` behavior from the new experimental base before implementation.
-6. Continue issue #36 owner-by-owner toward #122 atomic semantic acceptance.
+1. Run the ordinary full PR #147 workflow on this author truth checkpoint.
+2. Require every ordinary PR lane and final aggregate `verify` green on the exact author head; repair only a precisely proven stale frozen input if one remains.
+3. Review and squash-merge #147 only into `experimental/portfolio`; read back that exact experimental integration and confirm protected `main` is unchanged.
+4. Record the exact preflight integration evidence on issue #24/#36.
+5. From the exact experimental integration, create the independent `GRAPH-RECLAIM-001..009` semantic/reference leaf.
+6. Add the new RECLAIM owner job to the fail-closed aggregate in the same coherent change; do not select a CUDA/native reclamation mechanism.
+7. Continue issue #36 owner-by-owner toward #122 atomic semantic acceptance.
 
 ## Cleanup / coordination
 
