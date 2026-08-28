@@ -1,32 +1,61 @@
 {
-  "schema_version": 74,
+  "schema_version": 75,
   "updated": "2026-08-27",
-  "status": "framework_only_production_authority_rebound_pending_full_qualification",
-  "objective": "Resolve the complete CUDA-MCGS open-issue portfolio by assessed dependency and consequence order, preserving one exact protected semantic/reference packet before production lowering and implementing production only through ordinary Node.js/restricted Device-JS over public CUDA-JS contracts.",
-  "ownership_boundary": "Protected authority keeps CUDA-MCGS universal and JavaScript/restricted-Device-JS only. The current #44 candidate ADR-0024 narrows ADR-0018 further: CUDA-MCGS production owns reusable MCGS framework semantics, composition, integration seams and removable conformance; production domain/search products own their product semantics, protocol, model interpretation, quality, packaging, release and support lifecycle in independently owned repositories or packages. Concrete named domains remain allowed as removable evidence. CUDA-JS owns generic CUDA lowering/compiler/ABI/runtime/resource/operation/synchronization/platform mechanisms; missing generic GPU mechanisms route there rather than to a CUDA-MCGS native escape path.",
+  "status": "experimental_graph_reclaim_preflight_rebound_pending_final_author_qualification",
+  "objective": "Advance CUDA-MCGS on the isolated experimental portfolio while protected main remains unchanged: integrate only fully qualified universal framework work, then implement Graph RECLAIM semantics owner-locally without selecting a CUDA/native mechanism.",
+  "ownership_boundary": "CUDA-MCGS production owns reusable product-neutral MCGS semantics, composition/integration substrate and removable conformance evidence. Production domain/search products remain independently owned downstream consumers. CUDA-JS owns generic CUDA lowering/compiler/ABI/runtime/resource/operation/synchronization/platform mechanisms; CUDA-JS-Tensor owns generic dense tensor math. CUDA-MCGS remains ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts and does not acquire a native escape path.",
   "protected_base": {
-    "cuda_mcgs_main": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
-    "meaning": "Protected Graph ROOT semantic packet plus fail-closed verify aggregation and post-merge state reconciliation; protected workflow 33115975009 succeeded."
+    "branch": "main",
+    "sha": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
+    "workflow": "33115975009",
+    "meaning": "Protected Graph ROOT semantic packet plus fail-closed verify aggregation and post-merge state reconciliation. Intentionally unchanged during the experimental portfolio."
+  },
+  "experimental_base": {
+    "branch": "experimental/portfolio",
+    "sha": "a1be8a596bb5ccc97736365dfbc49419ec0f76aa",
+    "integrated": [
+      "PR #146 / issue #44 framework-only production ownership correction"
+    ],
+    "portfolio_disposition": [
+      "Issue #47 closed not planned after its useful universal obligations were routed to existing owners"
+    ]
   },
   "candidate": {
-    "branch": "architecture/44-framework-only-production",
-    "qualified_semantic_checkpoint": "5a42d5aed072ae763631790ea4a4dfa871e3e6ce",
-    "current_protected_head": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
-    "root_status": "protected-integrated",
-    "merge_gate_status": "fail-closed-aggregate-integrated",
-    "product_boundary_status": "ADR-0024-framework-catalog-rebound-composer-qualified-pending-full-pr-and-protected-readback"
+    "pr": 147,
+    "branch": "ref/graph-reclaim-preflight-01",
+    "durable_rebound_head": "c5926d28e0b42cf0f27b2c474ef7b3d9f043df36",
+    "owner_issue": 24,
+    "target": "experimental/portfolio",
+    "state": "representation-resource-lifecycle-preflight-complete; Domain and Graph frozen evidence rebound; final ordinary author-head qualification pending"
   },
-  "framework_rebind_candidate": {
-    "spec_0000_sha256": "e933e119f7a5d8d6f0bce6a67296166f7326dbd8bc99e7920bcb0358161b6b99",
+  "candidate_evidence": {
     "contract_set_sha256": "b4c91a46e4fe304f3bcfc4602e23e5f4e68a30869da223deab3978289ca6b4a1",
     "coverage_sha256": "fe510fb69890b070ae6e7dfc60bd3e113a3f7e6354fa6bfcd8e48a6336c6c07a",
     "expanded_requirements_sha256": "32fc66ca775046121146f3afc621e3407bab69711355e283b769d947fd185e0a",
-    "framework_selection_sha256": "6beb8565fa42cf8bd89209bf025a361057d1a5ef119e5d3ccaa299a55e3d53c1",
-    "representation_composition_sha256": "8f91cfa8b13fb1424ba6be22f1a6cc33517a0ec6830b1f240d925bb971697186",
-    "composer": "879/879",
+    "framework_selection_sha256": "bcfcba073c44f6c019dc800241414e8a67b4006786b8898042b2ffdd38a3e56d",
+    "representation_composition_sha256": "2e2cde00d9e1eac864541cd7bd5d4d43873cfb20bfb2304aa0bc5c2647bce1af",
+    "composer": "881/881",
     "requirements": "989/989 classified, 0 pending",
-    "qualification_run": "33117864822",
-    "temporary_migration_state": "self-removed before durable branch commit"
+    "domain_projection_sha256": "4335a21e1225b7705da5242053fd055986384a02d4d9c772fab1c4bbb286a0b1",
+    "domain_harness_evidence_sha256": "10d188344e91c077fa47be192e5fec0f1310cc193ca180e3a9493fd8395ec51c",
+    "domain": "49/49, direct semantic cases 47/47",
+    "graph_projection_sha256": "72d91b75336a2745830a3c0d8d7d7d3ed26259ea2f56b619f9de311c82d21068",
+    "graph_node_evidence_sha256": "103cd77904f0c1f5650fe52e7884b8a791615a17d340e13f4b5184d262a126df",
+    "graph_edge_evidence_sha256": "96ce6c83125566ffec250e825b09ed66ab9050c6f091ee178d789aa5d0fdc127",
+    "graph_ref_evidence_sha256": "633910c7531409737a92d041874ab608d9fbda0331ff7f5ea38eaf9c2e9a1d3d",
+    "graph_path_evidence_sha256": "cecaad55c6ceeeacedb24b40ed7a4b185d5ec2b7c15c443e46cb9b5608310ae9",
+    "root_control_projection_sha256": "be35ed803ea82498950c454acb6955087543c2a7a974745077c4c53158bca475",
+    "graph_root_evidence_sha256": "2fc9a4770b2f0244178876ab5742d8d9043f4278aff2040c488a018ebfa94280",
+    "counts": {
+      "node": "13/13",
+      "edge": "16/16",
+      "ref": "14/14",
+      "path": "14/14",
+      "root": "14/14"
+    },
+    "preflight_migration_run": "33143185480 success; self-removed",
+    "graph_rebind_run": "33143600784 success; self-removed",
+    "domain_rebind_run": "33145283563 success; self-removed"
   },
   "protected_root_evidence": {
     "representation_composition": "ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529",
@@ -42,11 +71,11 @@
     "counts": {
       "composer": "879/879",
       "domain": "49/49 direct 47/47",
-      "node": "13/13 direct 11/11",
-      "edge": "16/16 direct 10/10",
-      "ref": "14/14 direct 8/8",
-      "path": "14/14 direct 8/8",
-      "root": "14/14 direct 6/6"
+      "node": "13/13",
+      "edge": "16/16",
+      "ref": "14/14",
+      "path": "14/14",
+      "root": "14/14"
     }
   },
   "authority": [
@@ -57,40 +86,24 @@
     "docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md",
     "docs/decisions/ADR-0022-distinguish-root-advance-reroot-and-attention.md",
     "docs/decisions/ADR-0023-parallel-first-native-execution.md",
-    "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
+    "docs/decisions/ADR-0024-framework-only-production-ownership.md",
     "docs/specs/SPEC-0010-graph-storage-and-reclamation.md",
+    "https://github.com/iteathen/CUDA-MCGS/issues/24",
+    "https://github.com/iteathen/CUDA-MCGS/issues/36",
     "https://github.com/iteathen/CUDA-MCGS/issues/142"
   ],
-  "candidate_authority": [
-    "docs/decisions/ADR-0024-framework-only-production-ownership.md"
-  ],
-  "deliverables": [
-    "one exact protected CUDA-free universal semantic/reference packet before production lowering",
-    "independently replaceable Domain, Graph, Policy, Evaluator, Output, Resource, Progress, Session and extension reference owners",
-    "Graph NODE, EDGE, REF, PATH, ROOT and later RECLAIM evidence with direct requirement coverage and cross-owner falsifiers",
-    "normalized Search IR/Composer products with exact finite resources, lifecycle, failure, identity and provenance",
-    "production CUDA-MCGS implemented only as ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts",
-    "one bounded parallel native framework and exact CUDA-MCGS/CUDA-JS compatible-pair qualification only after semantic acceptance",
-    "external-consumer embedding evidence without importing product-specific meaning or product lifecycle into CUDA-MCGS",
-    "every open issue assessed, researched, reassessed and either completed, transferred, blocked by exact external evidence, or closed not planned/duplicate with documentation"
-  ],
   "current_focus": {
-    "id": "PORTFOLIO-GOVERNANCE-02",
-    "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/142",
-    "active_leaf": "ISSUE-44-AUTHORITY",
-    "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/44",
-    "next_action": "Run the complete fail-closed PR workflow on the exact rebound authority head. All Graph owner lanes must regenerate naturally against the rebound 989-requirement catalog; any stale identity failure must be corrected at its owning frozen input rather than by weakening identity checks. Then complete exact-head review, guarded squash merge and protected-main readback.",
-    "after_integration": "Reassess issue #47 against protected ADR-0024. Preserve any useful Connect Four-like case only as #36-owned removable conformance evidence; close the in-repository product request not planned if invalid. Then close #141 once all audit findings have durable disposition and return to #24 RECLAIM preflight.",
-    "exit": "Repository current-state truth, merge enforcement and production-product ownership are unambiguous enough that semantic work cannot be merged or routed from stale/conflicting instructions."
+    "id": "GRAPH-RECLAIM-PREFLIGHT-01",
+    "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/24",
+    "active_pr": "https://github.com/iteathen/CUDA-MCGS/pull/147",
+    "next_action": "Create one normal author-authored truth checkpoint on the rebound candidate, run the complete ordinary PR workflow, require Governance, both Search IR cells, Graph NODE/EDGE/REF/PATH/ROOT and aggregate verify all green on that exact head, then squash-merge only into experimental/portfolio and read back the exact experimental integration.",
+    "after_integration": "Reassess and implement the independent GRAPH-RECLAIM-001..009 semantic/reference leaf from the exact experimental integration. Keep reclamation optional, device-progress compatible, finite, generation-safe and product-neutral; do not select a CUDA/native realization mechanism.",
+    "exit": "The RECLAIM representation/resource/lifecycle prerequisites are integrated on experimental/portfolio with exact full-gate evidence and no protected-main mutation."
   },
   "merge_gate": {
     "required_context": "verify",
     "implementation": "final aggregate job over governance verification, both Search IR cells, Graph NODE, EDGE, REF, PATH and ROOT",
-    "falsifier_run": "33115416321",
-    "falsifier_result": "intentional Graph ROOT failure caused final verify failure while unrelated jobs remained independently visible",
-    "final_pr_run": "33115492658",
-    "protected_run": "33115610091",
-    "evolution_rule": "Any newly required semantic/reference job must be added to the aggregate needs/result set in the same coherent change before it is considered a merge gate."
+    "evolution_rule": "Any newly required semantic/reference job, including Graph RECLAIM when added, must be added to the aggregate needs/result set in the same coherent change before it is considered a merge gate."
   },
   "semantic_focus": {
     "id": "ENGINE-REFERENCE-01",
@@ -98,22 +111,28 @@
     "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/24",
     "last_integrated_leaf": "REF-GRAPH-01/GRAPH-ROOT",
     "next_candidate_leaf": "REF-GRAPH-01/GRAPH-RECLAIM",
-    "dependency_state": "blocked-on-representation-preflight",
-    "preflight_findings": [
-      "reclamation-enabled profile declares retirement-record storage without a matching finite storage resource contribution",
-      "reclamation maxScratchBytes is declared without a matching finite scratch-byte resource contribution",
-      "retirement-record lifecycle lacks an explicit terminal-to-free generation-safe reuse transition"
+    "dependency_state": "representation-preflight-complete-pending-experimental-integration",
+    "preflight_closed": [
+      "retirement-record count is explicitly funded",
+      "retirement-record bytes are explicitly funded",
+      "reclamation scratch bytes are explicitly funded",
+      "reclamation work units are explicitly finite",
+      "retirement-record terminal-to-free reuse is explicit",
+      "reclamation:none leaves zero reclaim-only resource/failure/lifecycle residue",
+      "independent falsifiers reject underfunding and reuse omission"
     ],
-    "next_semantic_action": "Correct and falsify the RECLAIM representation/resource/lifecycle preflight before implementing GRAPH-RECLAIM-001..009."
+    "next_semantic_action": "After #147 integrates on experimental/portfolio, create a separate Graph RECLAIM reference owner covering GRAPH-RECLAIM-001..009 without importing resource policy, scheduler authority, product meaning or a CUDA implementation mechanism."
   },
   "blockers": [
-    "Issue #44 candidate ADR-0024 and its rebound catalog/archive/registry enforcement are not protected until exact-head full PR validation and protected-main readback succeed.",
-    "Graph RECLAIM representation/resource/lifecycle preflight is incomplete; production lowering and ENGINE-CONTRACT-ACCEPTANCE-01 remain blocked.",
-    "CUDA-JS native Linux qualification and the exact CUDA-MCGS/CUDA-JS compatible pair remain downstream evidence gates."
+    "PR #147 still needs one ordinary full PR workflow green on an exact author-authored truth checkpoint before experimental integration.",
+    "GRAPH-RECLAIM-001..009 semantic behavior is not yet implemented or accepted; #147 closes representation prerequisites only.",
+    "CUDA-JS native Linux qualification and the exact CUDA-MCGS/CUDA-JS compatible pair remain downstream evidence gates and are not implied by CUDA-free reference evidence."
   ],
   "validation": [
     "./scripts/verify-docs.sh",
     "node scripts/run-search-ir-composer-reference.mjs",
+    "node scripts/export-search-ir-composer-domain-profiles.mjs",
+    "node scripts/run-search-semantics-reference.mjs",
     "node scripts/export-search-ir-composer-graph-profiles.mjs",
     "node scripts/run-graph-node-reference.mjs",
     "node scripts/run-graph-edge-reference.mjs",
@@ -121,10 +140,11 @@
     "node scripts/run-graph-path-reference.mjs",
     "node scripts/run-graph-root-reference.mjs",
     "final aggregate verify job",
-    "protected target read-back after merge"
+    "experimental target read-back after merge"
   ],
   "do_not": [
-    "begin GRAPH-RECLAIM behavior before its retirement-storage, scratch-resource and reusable-lifecycle representation is corrected and falsified",
+    "mutate protected main while the experimental portfolio is active",
+    "claim GRAPH-RECLAIM behavior from representation preflight evidence",
     "move current-root/epoch/operation authority into Graph",
     "make advance traverse, copy, transform, reset, resize, reclassify, reclaim or eagerly clean graph state",
     "invalidate a shared transposed node merely because one occurrence is superseded",
@@ -132,14 +152,10 @@
     "select a production/native graph table, arena, reclamation algorithm, scheduler or CUDA mechanism in the CUDA-free reference leaf",
     "add C/C++, CUDA C++, native addons/FFI, hand-written PTX, embedded CUDA source or direct CUDA-JS private access to CUDA-MCGS production",
     "require host-produced intermediate decisions for active search progress",
-    "implement an issue merely because its current title/body asks for a mechanism before reassessing its authority and dependency state",
-    "edit an accepted ADR in place when a successor decision is required",
-    "ban concrete named domains merely because production products are externally owned; removable conformance examples remain allowed",
-    "treat an external product's current branch/PR state as CUDA-MCGS authority merely because the product is named as a consumer",
-    "weaken frozen-source or identity-drift checks to make an authority correction pass"
+    "weaken frozen-source or identity-drift checks to make a candidate pass"
   ],
   "cleanup_debt": [
     "checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f is redundant recovery state preserved because the available connector exposes no safe delete-ref action.",
-    "PR #126 and PR #132 are stale/unmergeable pre-existing product-boundary remediation packets; #44 must disposition them after a protected successor exists, preserving any unique non-product research before branch cleanup."
+    "PR #126 and PR #132 are stale/unmergeable pre-existing product-boundary remediation packets and remain cleanup/disposition debt under issue #44."
   ]
 }
