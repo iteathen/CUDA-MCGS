@@ -1,0 +1,71 @@
+name: rebind-domain-evidence
+
+on:
+  push:
+    branches:
+      - ref/graph-reclaim-preflight-01
+    paths:
+      - .github/workflows/rebind-domain-evidence.yml
+
+permissions:
+  contents: write
+
+jobs:
+  rebind:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ref/graph-reclaim-preflight-01
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 26.7.0
+      - name: Rebind exact Domain evidence and self-remove
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function rewrite(path, replacements) {
+            let text = fs.readFileSync(path, 'utf8');
+            for (const [from, to, expectedCount] of replacements) {
+              const count = text.split(from).length - 1;
+              if (count !== expectedCount) {
+                throw new Error(`${path}: expected ${expectedCount} occurrences of ${JSON.stringify(from)}, found ${count}`);
+              }
+              text = text.split(from).join(to);
+            }
+            fs.writeFileSync(path, text);
+          }
+
+          rewrite('experiments/search-semantics-reference/run.mjs', [
+            ['expected: 879,\n    discovered: 879,\n    executed: 879,\n    passed: 879,', 'expected: 881,\n    discovered: 881,\n    executed: 881,\n    passed: 881,', 1],
+          ]);
+
+          rewrite('experiments/search-semantics-reference/fixtures/neutral-schedules.json', [
+            ['"byteLength": 719510', '"byteLength": 719629', 1],
+            ['8f91cfa8b13fb1424ba6be22f1a6cc33517a0ec6830b1f240d925bb971697186', '2e2cde00d9e1eac864541cd7bd5d4d43873cfb20bfb2304aa0bc5c2647bce1af', 4],
+          ]);
+
+          rewrite('experiments/search-semantics-reference/fixtures/domain-cases.json', [
+            ['"byteLength": 719510', '"byteLength": 719629', 1],
+            ['8f91cfa8b13fb1424ba6be22f1a6cc33517a0ec6830b1f240d925bb971697186', '2e2cde00d9e1eac864541cd7bd5d4d43873cfb20bfb2304aa0bc5c2647bce1af', 1],
+            ['ade9f27a16cf7c728a2a5007ca3ee7d9017629dc065f47a03a0a72348fd9ac86', '4335a21e1225b7705da5242053fd055986384a02d4d9c772fab1c4bbb286a0b1', 1],
+          ]);
+          NODE
+
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-domain-profiles.mjs
+          node scripts/run-search-semantics-reference.mjs
+          git diff --check
+
+          git rm .github/workflows/rebind-domain-evidence.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add experiments/search-semantics-reference/run.mjs \
+                  experiments/search-semantics-reference/fixtures/neutral-schedules.json \
+                  experiments/search-semantics-reference/fixtures/domain-cases.json
+          git commit -m 'test: rebind Domain evidence to RECLAIM preflight representation'
+          git push origin HEAD:ref/graph-reclaim-preflight-01
