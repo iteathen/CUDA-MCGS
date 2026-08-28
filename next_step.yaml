@@ -1,34 +1,35 @@
 {
-  "schema_version": 76,
+  "schema_version": 77,
   "updated": "2026-08-27",
-  "status": "experimental_graph_reclaim_semantics_qualified_pending_final_author_gate",
-  "objective": "Integrate the qualified product-neutral Graph RECLAIM semantic/reference brick on the isolated experimental portfolio, then reassess the remaining Graph/occurrence-lifecycle obligations before leaving the Graph owner.",
-  "ownership_boundary": "CUDA-MCGS owns reusable product-neutral MCGS semantics and composition evidence. Graph RECLAIM owns retirement, quiescence, non-returnability, owner-cleanup ordering and generation-safe reuse meaning only. Resource and Progress retain global admission/scheduling authority; Session retains current-root/epoch/advance/reroot/attention authority. CUDA-JS owns generic CUDA/native realization mechanisms and CUDA-JS-Tensor owns generic dense tensor math. Production domain/search products remain downstream.",
+  "status": "experimental_graph_advance_occurrence_closure_qualified_pending_final_author_gate",
+  "objective": "Integrate the bounded ADR-0022 Graph advance/occurrence lifetime closure on the isolated experimental portfolio, preserving Session authority while proving lazy sibling supersession composes safely with PATH, ROOT, REF and RECLAIM.",
+  "ownership_boundary": "Session retains current-root, root-epoch, advance/reroot/attention authority and the selected-descendant/sibling-supersession classification. Graph owns occurrence protections, root-anchor protections, reference retirement ordering and reclamation lifetime semantics. Resource and Progress retain global admission/scheduling/fairness authority. CUDA-JS owns any generic native/CUDA ordering primitive or realization mechanism; production domain/search products remain downstream.",
   "protected_base": {
     "branch": "main",
     "sha": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
     "workflow": "33115975009",
-    "meaning": "Protected Graph ROOT packet and fail-closed pre-RECLAIM merge gate. Intentionally unchanged by the experimental portfolio."
+    "meaning": "Protected Graph ROOT packet and fail-closed pre-experimental merge gate. Intentionally unchanged during the experimental portfolio."
   },
   "experimental_base": {
     "branch": "experimental/portfolio",
-    "sha": "7d9c607c8844ce297086e78cc19b9b6e73519748",
+    "sha": "9de8b139ffcc6407a3571fceb55f7b94d8f825ab",
     "integrated": [
       "PR #146 / issue #44 framework-only production ownership correction",
-      "PR #147 / issue #24 Graph RECLAIM finite representation/resource/lifecycle preflight"
+      "PR #147 / issue #24 Graph RECLAIM finite representation/resource/lifecycle preflight",
+      "PR #148 / issues #24/#36 GRAPH-RECLAIM-001..009 semantic/reference owner"
     ],
     "portfolio_disposition": [
       "Issue #47 closed not planned after useful obligations were routed to universal owners"
     ]
   },
   "candidate": {
-    "pr": 148,
-    "branch": "ref/graph-reclaim-01",
-    "hosted_qualified_head": "4b1b13672a9b2dd93f4d18ba650087020412f868",
+    "pr": 149,
+    "branch": "ref/graph-advance-occurrence-01",
+    "hosted_qualified_head": "c64d1fbe2be722741dcd2350999dabc1dc4e36a0",
     "owner_issue": 24,
     "reference_tracker": 36,
     "target": "experimental/portfolio",
-    "state": "GRAPH-RECLAIM-001..009 semantic/reference capsule 17/17 and full ordinary workflow green; final truthful author checkpoint and exact-head rerun required before merge"
+    "state": "retirement-ordering correction plus five-case Session/PATH/ROOT/REF/RECLAIM occurrence closure; full ordinary workflow green; final truthful author checkpoint and exact-head rerun required before merge"
   },
   "candidate_evidence": {
     "composer": "881/881",
@@ -37,30 +38,33 @@
     "domain": "49/49, direct 47/47",
     "domain_evidence_sha256": "10d188344e91c077fa47be192e5fec0f1310cc193ca180e3a9493fd8395ec51c",
     "graph_projection_sha256": "72d91b75336a2745830a3c0d8d7d7d3ed26259ea2f56b619f9de311c82d21068",
+    "graph_node": "13/13",
     "graph_node_evidence_sha256": "103cd77904f0c1f5650fe52e7884b8a791615a17d340e13f4b5184d262a126df",
+    "graph_edge": "16/16",
     "graph_edge_evidence_sha256": "96ce6c83125566ffec250e825b09ed66ab9050c6f091ee178d789aa5d0fdc127",
-    "graph_ref_evidence_sha256": "633910c7531409737a92d041874ab608d9fbda0331ff7f5ea38eaf9c2e9a1d3d",
-    "graph_path_evidence_sha256": "cecaad55c6ceeeacedb24b40ed7a4b185d5ec2b7c15c443e46cb9b5608310ae9",
+    "graph_ref": "14/14",
+    "graph_ref_evidence_sha256": "def51477f25c40d11f5f61fbf928264753a95d3979397e573f389f91cd02808b",
+    "graph_path": "14/14",
+    "graph_path_evidence_sha256": "74e05276492db9f928a83bbca0739ebec4b5d0d9bc7564b3a6510ca243134a4b",
     "root_control_projection_sha256": "be35ed803ea82498950c454acb6955087543c2a7a974745077c4c53158bca475",
-    "graph_root_evidence_sha256": "2fc9a4770b2f0244178876ab5742d8d9043f4278aff2040c488a018ebfa94280",
+    "graph_root": "14/14",
+    "graph_root_evidence_sha256": "5b1cfb36d9b743a65ee0233964c254a56296ae5be82b84fb358db98387a16bdd",
     "graph_reclaim": "17/17",
-    "graph_reclaim_evidence_sha256": "d046e13211f36c95c964d556ae89d5d0d456b7084d7b5d8c86e7448c34ccd119",
-    "graph_reclaim_evidence_bytes": 12127,
-    "qualification_run": "33146437040",
-    "qualification_result": "Governance, Windows/Ubuntu Search IR, Graph NODE/EDGE/REF/PATH/ROOT/RECLAIM and aggregate verify all success",
-    "artifact_id": 9675947062,
-    "artifact_zip_sha256": "7e2b94be87eba3d2629a4a705cf1e3a7fba301b842a5256aa95569446209e21e"
+    "graph_reclaim_evidence_sha256": "a010c88de1bb97ec0ea83a08fe0e2ef608c047ed4412c01e8f68b942eb572058",
+    "graph_advance_occurrence": "5/5",
+    "graph_advance_occurrence_evidence_sha256": "c67014dac6396221b121dd35b0bb51626bac12d116e5e534c310b1a7809754a3",
+    "graph_advance_occurrence_evidence_bytes": 4195,
+    "qualification_run": "33147798290",
+    "qualification_result": "Governance, Windows/Ubuntu Search IR, Graph NODE/EDGE/REF/PATH/ROOT/RECLAIM/ADVANCE occurrence and aggregate verify all success",
+    "artifact_id": 9676453116,
+    "artifact_zip_sha256": "957445e8d6337d3e9294785c0d4e70036a51b8ba0c193504bbad3f5b1c8d1933"
   },
-  "protected_root_evidence": {
-    "composer": "879/879",
-    "representation_composition": "ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529",
-    "domain_evidence": "f186412a9b8d964c7f92e4c4000942768fa0ae81d62349c2528fd3aba12aa5e7",
-    "graph_projection": "89ee04a47d8516ad02e33e884d8f35db9573840f58db140c6cbafe79178e7fd7",
-    "graph_node_evidence": "4299dccecd33f6ef38c50f144e84316d00c7046a81ed6206b6e2e645b6683f74",
-    "graph_edge_evidence": "54b83935d320e6bd656c740ec2f3d8be062e3932bdf6e748c8315f26245faf58",
-    "graph_ref_evidence": "e3370158d1234dd3642d11c4458c9c390abcc3f62a04a75dd68d00faf6c4676d",
-    "graph_path_evidence": "af8f140e45f7c2942ec4b09b7d752f49b3eeb28f1cdc5b8c3b74887d34dd4318",
-    "graph_root_evidence": "7e4fe6bf748ec110bebc1798d7742e03b89909df84da709f2fdeb51a42311ed0"
+  "defect_closed": {
+    "summary": "REF retirement previously became visible only after held protections drained, leaving a check-then-pin window where retirement could report blocked and a new protection could still acquire before the next retirement attempt.",
+    "requirements": ["GRAPH-REF-008", "GRAPH-RECLAIM-003"],
+    "correction": "The first retirement attempt establishes a private retirement-order intent. Existing held protections remain valid and drain normally; new protections fail while the intent is active; the public retirement barrier becomes observable only after holders reach zero.",
+    "public_schema_change": false,
+    "native_mechanism_selected": false
   },
   "authority": [
     "AGENTS.md",
@@ -74,39 +78,40 @@
     "https://github.com/iteathen/CUDA-MCGS/issues/142"
   ],
   "deliverables": [
-    "independent GRAPH-RECLAIM-001..009 semantic oracle and exact nine-requirement coverage",
-    "17-case adversarial capsule covering optional zero residue, finite retirement admission, all declared blocker classes, resumable quiescence, stale-proof restart, tombstone ordering, owner cleanup, generation-safe reuse, finite retirement-record reuse, cancellation/failure quarantine and shared-borrow safety",
-    "independent Graph RECLAIM CI lane added to aggregate fail-closed verify",
-    "explicit semantic-only native claim limit requiring later CUDA-JS compatible-pair/device qualification",
-    "no reclamation queue/table/traversal/atomic/scheduler/CUDA topology selected by this leaf"
+    "owner-local REF retirement-order correction that closes the protection-versus-retirement check-then-pin window without changing the public Search IR",
+    "strengthened existing REF case proving an already-held protection may drain while a late post-retirement protection is rejected",
+    "rebound PATH, ROOT and RECLAIM frozen evidence consuming the corrected REF semantics",
+    "five-case advance-occurrence integration capsule proving minimum-work advance, lazy sibling occurrence supersession, selected-descendant preservation, shared-node lifetime protection, retained-borrow quiescence gating and generation-safe reuse",
+    "independent Graph ADVANCE occurrence peer CI lane added to aggregate fail-closed verify",
+    "no new Session authority, public schema, native atomic primitive, retirement data structure, scheduler topology or CUDA realization mechanism"
   ],
   "current_focus": {
-    "id": "REF-GRAPH-01/GRAPH-RECLAIM",
+    "id": "REF-GRAPH-01/ADVANCE-OCCURRENCE-CLOSURE",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/24",
-    "active_pr": "https://github.com/iteathen/CUDA-MCGS/pull/148",
-    "next_action": "Run the complete ordinary PR workflow on the exact author-authored state checkpoint created by the STATUS/next_step reconciliation. If every lane and aggregate verify remain green, mark #148 ready and squash-merge only into experimental/portfolio with an expected-head fence, then read back experimental and protected refs.",
-    "after_integration": "Record the exact RECLAIM integration on issues #24/#36, then reassess the remaining Graph owner obligations including ADR-0022 occurrence-supersession/lifecycle closure before selecting the next independent leaf.",
-    "exit": "GRAPH-RECLAIM-001..009 semantics are integrated on experimental/portfolio with exact full-gate evidence, the new RECLAIM job is fail-closed, and protected main remains unchanged."
+    "active_pr": "https://github.com/iteathen/CUDA-MCGS/pull/149",
+    "next_action": "Run the complete ordinary PR workflow on the exact author-authored STATUS/next_step checkpoint. Require Governance, both Search IR cells, NODE/EDGE/REF/PATH/ROOT/RECLAIM/ADVANCE occurrence and aggregate verify all green. If green, mark #149 ready and squash-merge only into experimental/portfolio with an expected-head fence, then read back both experimental and protected refs.",
+    "after_integration": "Record the exact closure integration on issues #24/#36, then reassess issue #24 acceptance against SPEC-0010 and ADR-0022. Do not assume the Graph owner is complete until remaining semantic versus deferred-native obligations are explicitly classified.",
+    "exit": "ADR-0022 advance occurrence lifetime closure is integrated on experimental/portfolio with exact full-gate evidence, the peer closure job is fail-closed, and protected main remains unchanged."
   },
   "merge_gate": {
     "required_context": "verify",
-    "implementation": "final aggregate job over Governance, both Search IR cells, Graph NODE, EDGE, REF, PATH, ROOT and RECLAIM",
-    "evolution_rule": "Every newly required semantic/reference owner must join the aggregate needs/result set in the same coherent change."
+    "implementation": "final aggregate job over Governance, both Search IR cells, Graph NODE, EDGE, REF, PATH, ROOT, RECLAIM and ADVANCE occurrence closure",
+    "evolution_rule": "Every newly required semantic/reference owner or integration falsifier must join the aggregate needs/result set in the same coherent change."
   },
   "semantic_focus": {
     "id": "ENGINE-REFERENCE-01",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36",
     "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/24",
-    "last_integrated_leaf": "REF-GRAPH-01/GRAPH-ROOT",
-    "current_candidate_leaf": "REF-GRAPH-01/GRAPH-RECLAIM",
-    "dependency_state": "representation preflight integrated; semantic capsule hosted-qualified pending final author-head qualification",
-    "requirement_scope": "GRAPH-RECLAIM-001..009 exactly",
-    "claim_limit": "semantic/reference evidence only; native CUDA mechanism qualification remains deferred to compatible-pair/device evidence"
+    "last_integrated_leaf": "REF-GRAPH-01/GRAPH-RECLAIM",
+    "current_candidate_leaf": "REF-GRAPH-01/ADVANCE-OCCURRENCE-CLOSURE",
+    "dependency_state": "ROOT and RECLAIM integrated; retirement-order correction and occurrence closure hosted-qualified pending final author-head qualification",
+    "classification_source": "Session root-control already declares selectedDescendantWork=preserve-compatible, siblingOccurrenceWork=superseded-by-advance-lazy, sharedTransposedNode=occurrence-supersession-does-not-invalidate-node",
+    "claim_limit": "integration/semantic evidence only; native ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains deferred to exact CUDA-MCGS/CUDA-JS compatible-pair/device evidence"
   },
   "blockers": [
-    "PR #148 still requires one full ordinary workflow green on the final author-authored state checkpoint before experimental integration.",
-    "Native ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains a later CUDA-JS compatible-pair/device evidence gate.",
-    "Remaining Graph occurrence-supersession/lifecycle closure must be reassessed after RECLAIM integration rather than assumed complete."
+    "PR #149 still requires one full ordinary workflow green on the final author-authored state checkpoint before experimental integration.",
+    "Native lifetime ordering/ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains a later CUDA-JS compatible-pair/device evidence gate.",
+    "Issue #24 acceptance must be reassessed after #149 integrates; remaining deferred-native evidence must not be confused with missing framework semantics."
   ],
   "validation": [
     "./scripts/verify-docs.sh",
@@ -118,18 +123,20 @@
     "node scripts/run-graph-path-reference.mjs",
     "node scripts/run-graph-root-reference.mjs",
     "node scripts/run-graph-reclaim-reference.mjs",
+    "node scripts/run-graph-advance-occurrence-reference.mjs",
     "final aggregate verify job",
     "experimental and protected ref readback after merge"
   ],
   "do_not": [
     "mutate protected main while the experimental portfolio is active",
-    "claim native/GPU reclamation qualification from the CUDA-free semantic oracle",
-    "move current-root/epoch/advance/reroot/attention authority into Graph",
-    "invalidate shared transposed nodes merely because one occurrence is superseded",
-    "import Resource admission policy or Progress scheduling/fairness policy into Graph RECLAIM",
-    "select a retirement queue/table/traversal algorithm, atomic primitive, scheduler topology, warp/block topology or CUDA data structure in this semantic leaf",
+    "move Session current-root/epoch/advance/reroot/attention or supersession-classification authority into Graph",
+    "perform sibling cleanup as part of advance itself",
+    "invalidate a shared transposed node merely because one occurrence is superseded",
+    "treat retirement intent as permission to invalidate already-held protections",
+    "claim a native atomic/ABA/publication implementation from the private semantic retirement-order intent",
+    "select a retirement queue/table/traversal algorithm, scheduler topology, warp/block topology or CUDA data structure in this closure",
     "add C/C++, CUDA C++, native addons/FFI, hand-written PTX, embedded CUDA source or direct CUDA-JS private access",
-    "weaken frozen identity or requirement-coverage checks"
+    "weaken frozen identity, case-bank, owner-boundary or aggregate merge-gate checks"
   ],
   "cleanup_debt": [
     "checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f remains redundant recovery state because no safe delete-ref action is exposed.",
