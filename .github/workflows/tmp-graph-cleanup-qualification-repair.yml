@@ -3,14 +3,13 @@ name: Temporary Graph cleanup qualification repair
 on:
   push:
     branches:
-      - tmp/graph-cleanup-qualification-repair-20260828
+      - 'tmp/graph-cleanup-qualification-repair-20260828'
 
 permissions:
   contents: write
 
 jobs:
   repair-composer-count:
-    if: github.event.head_commit.message == 'chore: stage graph cleanup qualification repair helper'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,19 +25,25 @@ jobs:
           const from = '  assert.deepEqual(countByStatus, { deferred: 52, partial: 904, pending: 33 });';
           const to = '  assert.deepEqual(countByStatus, { deferred: 52, partial: 908, pending: 29 });';
           const before = fs.readFileSync(file, 'utf8');
-          const occurrences = before.split(from).length - 1;
-          if (occurrences !== 1) {
-            throw new Error(`expected exactly one stale coverage-count assertion; found ${occurrences}`);
+          const oldOccurrences = before.split(from).length - 1;
+          const newOccurrences = before.split(to).length - 1;
+          if (oldOccurrences === 0 && newOccurrences === 1) {
+            console.log('composer count assertion is already repaired');
+            process.exit(0);
           }
-          const after = before.replace(from, to);
-          if (after === before) {
-            throw new Error('guarded replacement produced no change');
+          if (oldOccurrences !== 1 || newOccurrences !== 0) {
+            throw new Error(`expected one stale assertion and no repaired assertion; found old=${oldOccurrences} new=${newOccurrences}`);
           }
-          fs.writeFileSync(file, after);
+          fs.writeFileSync(file, before.replace(from, to));
           NODE
 
-          git diff --check
           file='experiments/search-ir-composer-reference/run.mjs'
+          if git diff --quiet -- "${file}"; then
+            echo 'No commit required; guarded repair already present.'
+            exit 0
+          fi
+
+          git diff --check
           expected=$'1\t1\t'"${file}"
           actual="$(git diff --numstat -- "${file}")"
           test "${actual}" = "${expected}"
