@@ -30,7 +30,7 @@ PR #149 final author head `2175592e164b9eb9770225ef2808e405a52af4fa` passed full
 
 Post-merge readback proved the experimental ref at `422fe99b...` and protected `main` still at `ee4434be...`.
 
-## Exact experimental Graph packet
+## Exact integrated experimental Graph packet
 
 - Composer `881/881`, requirements `989/989`, representation/composition `2e2cde00d9e1eac864541cd7bd5d4d43873cfb20bfb2304aa0bc5c2647bce1af`;
 - Domain `49/49`, direct `47/47`, evidence `10d188344e91c077fa47be192e5fec0f1310cc193ca180e3a9493fd8395ec51c`;
@@ -46,33 +46,40 @@ Post-merge readback proved the experimental ref at `422fe99b...` and protected `
 
 Ordinary retained closure artifact: ID `9676453116`, ZIP SHA-256 `957445e8d6337d3e9294785c0d4e70036a51b8ba0c193504bbad3f5b1c8d1933`.
 
-## Current handoff branch
+## Current Graph cleanup candidate
 
-Next-session branch:
+PR #150 is the active draft candidate on:
 
 `ref/graph-cleanup-acceptance-01`
 
-It was created from exact `experimental/portfolio@422fe99bf51c1f48cda480a6a6d98f641fb2599d`.
+Target remains **only** `experimental/portfolio`; neither `experimental/portfolio` nor protected `main` has been advanced by this candidate.
 
-At the handoff boundary, no Graph cleanup semantic/source change has been made on that branch. The branch contains only the state reconciliation and handoff checkpoint.
+The branch now contains a bounded Graph-owned cleanup/reference slice for `GRAPH-CLEANUP-001..004`. The earlier handoff statement that the branch contains no Graph cleanup semantic/source change is historical and no longer describes current branch state.
 
-Canonical handoff:
+Exact source head independently reviewed before qualification repair:
+
+`c901e880de9183868c0d0e773d27c3e2f484acdd`
+
+Review of that frozen source established:
+
+- conflicting ready NODE publication now quarantines the affected observation, invalidates payload access/evidence and rejects later lookup instead of leaving a contradictory ready object;
+- equality/publication contradictions fail closed through quarantine rather than guessing authority;
+- Graph arena release remains owner-neutral and stops at `ready-for-resource-destruction`; concrete downstream/native destruction remains outside Graph;
+- retained-artifact cleanup uses explicit owner and exact compatible package/profile identity rather than arbitrary nonempty identifiers;
+- stale-generation aliasing and silent generation wrap remain prevented by the Graph REF contract; cleanup evidence is therefore intentionally only `partial`, not a native detector/ABA qualification claim;
+- structured coverage for the four `GRAPH-CLEANUP-*` requirements moved truthfully from `pending` to `partial`.
+
+The frozen `c901e880...` CI run exposed one non-semantic qualification defect before the cleanup capsule ran: the shared Composer still asserted the pre-cleanup disposition totals `{ deferred: 52, partial: 904, pending: 33 }`. The actual truthful candidate totals are `{ deferred: 52, partial: 908, pending: 29 }`. Qualification repair is limited to aligning that stale executable expectation; coverage is not being downgraded to satisfy the old count.
+
+Historical handoff retained on the branch:
 
 `docs/handoffs/2026-08-28-experimental-graph-cleanup-acceptance-resume.md`
 
-## Next semantic seam — Graph cleanup/reference acceptance
+Recovery/falsifier checkpoint retained separately:
 
-Issue #24 remains open. NODE/EDGE/REF/PATH/ROOT/RECLAIM and the ADR-0022 occurrence closure are integrated, but structured requirement coverage still records `GRAPH-CLEANUP-*` as `evidenceStatus: pending`.
+`checkpoint/graph-cleanup-falsifier-handoff-20260828@28132a53471526ad355d8cfea96bb92d1ec076df`
 
-Do not invent a reclamation mechanism or move Resource/Lifecycle ownership into Graph:
-
-- `GRAPH-RESOURCE-*` remains primarily `IR-RESOURCE-01` deterministic-composition work;
-- `GRAPH-LIFE-*` remains primarily native-compatible-pair qualification with semantic/reference support;
-- `GRAPH-CLEANUP-*` is the current Graph-owned reference-evidence seam.
-
-The first falsifier is `GRAPH-CLEANUP-002`. Current case `graph-node-conflicting-ready-publication-is-fatal` detects conflicting re-publication but also asserts the previously ready payload remains observable. The next session must inspect the exact NODE oracle conflict path and determine whether fatal conflict also quarantines affected semantic state and invalidates dependent evidence as required. This is a candidate gap, not yet a confirmed defect.
-
-If confirmed, make the smallest Graph-owned semantic correction, rebind only genuinely invalidated evidence, and add direct `GRAPH-CLEANUP-001..004` reference evidence without creating a monolithic second Graph model.
+The checkpoint remains recovery evidence, not current implementation authority.
 
 ## Claim limits
 
@@ -82,14 +89,17 @@ No native ABA/publication/progress/occupancy/concurrency/cancellation/teardown m
 
 Session retains current-root, root-epoch, advance, reroot, attention and supersession-reason authority. Resource retains admission/watermark/pressure policy. Progress retains scheduling/fairness/device-progress policy. CUDA-JS owns generic native/CUDA realization mechanisms.
 
+`GRAPH-RESOURCE-*` remains primarily `IR-RESOURCE-01` deterministic-composition work. Native-dominant `GRAPH-LIFE-*` qualification remains a later exact CUDA-MCGS/CUDA-JS compatible-pair gate. Neither belongs in this Graph cleanup reference slice.
+
 ## Immediate sequence
 
-1. Resume from the handoff commit on `ref/graph-cleanup-acceptance-01`.
-2. Verify `experimental/portfolio` is still `422fe99bf51c1f48cda480a6a6d98f641fb2599d` and protected `main` is still `ee4434be0ae927c4ae1d5c106f91503d28b1aa01`.
-3. Inspect `graph-node.mjs` conflicting-publication handling against `GRAPH-CLEANUP-002` before changing semantics.
-4. If the candidate gap is real, fix only the owner-local cleanup meaning and add exact cleanup evidence/coverage.
-5. Qualify through the complete fail-closed workflow and merge only into `experimental/portfolio` with an expected-head fence.
-6. Read back experimental and protected refs, update #24/#36/#142, then reassess Graph semantic closure versus transferred Resource/native obligations.
+1. Finish the one-line Composer disposition-count repair without changing the cleanup coverage classification.
+2. Re-read `ref/graph-cleanup-acceptance-01`, PR #150, `experimental/portfolio` and protected `main` before promotion of any staged repair.
+3. Run the complete fail-closed exact-head workflow, including Composer, Graph profile export, NODE/EDGE/REF/PATH/ROOT/RECLAIM/ADVANCE and Graph CLEANUP.
+4. Perform exact-head author review over the complete base-to-head diff and record limitations explicitly.
+5. Obtain the independent review required for publication/reclamation/recovery semantics, or an explicit repository-owner exact-head exception satisfying the review policy. Do not infer that authorization from a generic instruction to continue.
+6. Only after all gates are green and authorization exists, merge PR #150 into `experimental/portfolio` with an expected-head fence.
+7. Read back experimental and protected refs, update #24/#36/#142, and then reassess Graph semantic closure versus transferred Resource/native obligations.
 
 ## Cleanup / coordination
 
