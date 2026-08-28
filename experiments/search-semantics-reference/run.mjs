@@ -122,10 +122,10 @@ defineCase('composer-evidence-input-exact', () => {
   assert.equal(composerEvidence.capsule, 'cuda-mcgs-search-ir-composer-reference-v0.2.0');
   assert.equal(composerEvidence.status, 'pass');
   assert.deepEqual(composerEvidence.summary, {
-    expected: 879,
-    discovered: 879,
-    executed: 879,
-    passed: 879,
+    expected: 881,
+    discovered: 881,
+    executed: 881,
+    passed: 881,
     failed: 0,
     requiredSkipped: 0,
     conditionalSkipped: 0,
