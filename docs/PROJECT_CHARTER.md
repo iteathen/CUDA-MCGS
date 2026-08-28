@@ -12,7 +12,7 @@ Under [`decisions/ADR-0020-complete-library-and-resolved-defaults.md`](decisions
 
 ## Product boundary
 
-CUDA-MCGS owns three deliberately separated semantic layers under [`decisions/ADR-0018-universal-core-extension-product-layering.md`](decisions/ADR-0018-universal-core-extension-product-layering.md).
+[`ADR-0018`](decisions/ADR-0018-universal-core-extension-product-layering.md) defines three semantic layers: universal MCGS meaning, the universal extension/composition substrate, and downstream product meaning. [`ADR-0024`](decisions/ADR-0024-framework-only-production-ownership.md) narrows repository ownership: CUDA-MCGS owns the reusable framework/integration/conformance boundary, while production domain/search products own their source, semantics, quality, packaging, release, and support lifecycle in independently owned repositories or packages.
 
 ### Universal MCGS semantic core
 
@@ -22,13 +22,13 @@ The universal core owns reusable search contracts and search-specific runtime be
 - state, action, transition, identity, node-role, terminal, history, and cycle semantics;
 - graph storage, transpositions, paths, and selected Search Session root/advance/reroot/attention/reclamation semantics;
 - selection, reservation, expansion, widening, evaluation batching, backup, stopping, and generic bounded result/observation semantics;
-- resident evaluator/model composition and search-specific generated device programs;
+- resident evaluator/model composition and search-specific generated device programs without owning one product model's meaning;
 - finite GPU-memory planning, capacities, pressure, exhaustion, cancellation, and result behavior;
-- specialization for a concrete domain, policy, evaluator, extension-capability set, CUDA capability profile, and hardware/resource profile;
-- deterministic reference interpretation and synthetic search conformance;
+- specialization for a consumer-supplied domain, policy, evaluator, extension-capability set, CUDA capability profile, and hardware/resource profile;
+- deterministic reference interpretation and synthetic/removable search conformance; and
 - the adapter and execution-package contract through which CUDA-MCGS consumes the generic CUDA-JS runtime.
 
-The universal core does **not** require a ranked root-action list, best-move output, top-k output, board, player, game, scalar value, policy prior, or another first-product output convention. Those meanings belong to selected policy/output contracts, extension capabilities, or domain/search products.
+The universal core does **not** require a ranked root-action list, best-move output, top-k output, board, player, game, scalar value, policy prior, or another first-product output convention. Those meanings belong to selected policy/output contracts or external product owners.
 
 ### Universal extension and composition substrate
 
@@ -36,13 +36,15 @@ CUDA-MCGS owns a universal schema-backed extension substrate consisting of seman
 
 Stability belongs to the extension contract/schema, not to unconditional runtime presence. Concrete attachment points are materialized only for capabilities selected into a specialization; unused capabilities contribute no extension hook/port, dispatch, context, channel, storage, synchronization, or other solely extension-owned runtime residue.
 
-The substrate is universal; one capability's semantic payload is not automatically universal core meaning. Product-specific capabilities remain namespaced and versioned and must not redefine core invariants through an extension back door.
+The substrate is universal; one capability's semantic payload is not automatically universal core meaning. Product-specific capabilities remain externally owned or consumer-supplied, namespaced and versioned, and must not redefine core invariants through an extension back door.
 
-### Domain/search products
+### External domain/search products
 
-A domain/search product selects the universal core contracts and extension substrate and then owns its domain-specific semantics, required capabilities, output schemas, support profile, and product-level quality evidence.
+A production domain/search product selects the universal core contracts and extension substrate and owns its domain-specific semantics, policy/evaluator interpretation, output/protocol semantics, required capabilities, support profile, product-level quality evidence, packaging, release, and operational lifecycle outside the CUDA-MCGS production source tree.
 
-Chess search is a separately specified product layer. Chess legal-move ranking, board/history identity, chess evaluator meaning, multi-PV/best-move output, and chess-specific reuse policy do not shape the universal CUDA-MCGS core.
+CUDA-MCGS may name or model concrete consumers such as chess, Connect Four, planning, or other workloads when they are serving as removable examples, research probes, second-instance tests, compatibility fixtures, or conformance falsifiers. Those examples do not create a repository-local production product specification or implementation authority.
+
+A consumer may supply restricted Device-JS domain/policy/evaluator/output behavior to the CUDA-MCGS composition boundary. Compiling that supplied behavior into a Search Image does not transfer its semantic ownership to CUDA-MCGS.
 
 CUDA-MCGS does **not** own generic Node.js/CUDA Driver bindings, CPU-call ABI generation, native/JIT packaging, generic memory primitives, NVRTC/link/load plumbing, event-loop delivery, or generic CUDA resource handles. Those responsibilities belong to the independent `iteathen/CUDA-JS` repository under ADR-0014.
 
@@ -62,7 +64,7 @@ The framework defines universal search contracts, a universal extension/composit
 
 A behavior belongs in universal core meaning only when it is required to state correctness, lifecycle, finite resources, or composition across the intended MCGS equivalence class. Reuse by one product or several products does not automatically promote it. The second-instance and first-consumer-deletion tests apply before promotion.
 
-The external CUDA runtime contract must not become a back door for embedding one domain, graph, search policy, evaluator, product output, or model into CUDA-MCGS foundations.
+The external CUDA runtime contract and external-product boundary must not become back doors for embedding one domain, graph, search policy, evaluator, product output, or model into CUDA-MCGS foundations.
 
 ## Device-residency rule
 
@@ -80,7 +82,9 @@ CUDA-MCGS uses an existing CUDA-JS public contract only when it expresses the ne
 
 The inclination to reach for native code in CUDA-MCGS is enough to trigger this classification before implementation. It is evidence that CUDA-JS may be incomplete, not permission to create the native path and not by itself proof that the capability belongs in CUDA-JS.
 
-A promoted CUDA-JS capability must be consumer-neutral, independently qualified, and explicit about ownership, exclusions, resources, synchronization, failure, cancellation, teardown, compatibility and first-consumer deletion. CUDA-MCGS retains all search/domain/evaluator/product policy; if the need cannot be described without that policy, the CUDA-MCGS design is reconsidered instead of exporting it.
+A promoted CUDA-JS capability must be consumer-neutral, independently qualified, and explicit about ownership, exclusions, resources, synchronization, failure, cancellation, teardown, compatibility and first-consumer deletion. CUDA-MCGS retains universal search semantics and framework lifecycle; external products retain product policy/protocol/model/output meaning. If a need cannot be separated from product policy naturally, it remains downstream instead of being exported to CUDA-JS or promoted into CUDA-MCGS by convenience.
+
+Generic dense tensor mathematics belongs to CUDA-JS-Tensor or another natural mathematical owner when selected; evaluator/search meaning remains with its owning CUDA-MCGS contract or external product.
 
 ## Resource rule
 
@@ -92,12 +96,12 @@ Resource exhaustion is specified behavior, not an undefined failure discovered m
 
 ## Initial exclusions
 
-The universal core must not assume a board, two players, alternating turns, zero-sum values, deterministic transitions, finite exhaustive actions, scalar evaluation, neural evaluator, tree/DAG, fixed-size state/output, ranked moves, unlimited growth, one CUDA execution mechanism, or one Node/CUDA binding backend unless a selected adapter/profile/product explicitly supplies that contract.
+The universal core must not assume a board, two players, alternating turns, zero-sum values, deterministic transitions, finite exhaustive actions, scalar evaluation, neural evaluator, tree/DAG, fixed-size state/output, ranked moves, unlimited growth, one CUDA execution mechanism, or one Node/CUDA binding backend unless a selected consumer/profile explicitly supplies that contract.
 
 The extension substrate must not assume that one current capability category, first product, or first domain is the permanent extension vocabulary.
 
 ## First milestone
 
-Define the development method, versioned universal search contracts, universal extension/composition contracts, Search IR, memory-planning model, CUDA-MCGS-to-CUDA-JS execution-package contract, consolidated conformance architecture, and synthetic domains before implementing a production domain product.
+Define and accept the development method, versioned universal search contracts, universal extension/composition contracts, Search IR, memory-planning model, CUDA-MCGS-to-CUDA-JS execution-package contract, consolidated conformance architecture, and materially varied synthetic/removable domains before production lowering.
 
-Chess search may be specified in parallel as a downstream product profile, but its implementation must not become a prerequisite for completing the universal framework.
+Then prove that an independently owned external product can compose and operate the framework entirely through public contracts without repository-local product source, private imports, or a product-local native escape path. External product implementation may proceed in its own repository as dependencies become stable, but it is never a prerequisite for defining universal framework meaning and never becomes CUDA-MCGS production ownership merely because it is the first consumer.
