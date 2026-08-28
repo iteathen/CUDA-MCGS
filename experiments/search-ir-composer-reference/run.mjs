@@ -901,7 +901,8 @@ await runCase('graph-no-reclamation-zero-residue', () => {
   assert.equal(normalized.reclamation.kind, 'none');
   assert(!normalized.objectKinds.some(({ role }) => role === 'retirement-record'));
   assert(!normalized.ports.some(({ id }) => ['retire', 'prove-quiescent', 'reclaim'].includes(id)));
-  assert(!normalized.resources.some(({ id }) => id.includes('reclaim')));
+  assert(!normalized.resources.some(({ id }) => id.includes('reclaim') || id.includes('retirement')));
+  assert(!normalized.failures.some(({ code }) => ['reclamation-not-quiescent', 'reclamation-scratch-capacity', 'retirement-capacity'].includes(code)));
   assert(!normalized.objectKinds.some(({ lifecycle }) => lifecycle.states.some((stateName) => /-(?:retiring|reclaimable)$/.test(stateName))));
 });
 
@@ -1141,6 +1142,32 @@ await runCase('reject-graph-reclamation-generation-order', () => {
   const mutated = clone(graphProfileInputs[1]);
   mutated.reclamation.generationAdvance = 'after-slot-reuse';
   assert.throws(() => normalizeGraphProfile(mutated, inspected, graphFixtures[1].domain), { code: 'GRAPH_RECLAIM_KIND' });
+});
+
+await runCase('reject-graph-reclamation-capacity', () => {
+  const underfundedRecords = clone(graphProfileInputs[1]);
+  underfundedRecords.resources.find(({ id }) => id.endsWith('resource-retirement-records')).maximum = '4095';
+  assert.throws(() => normalizeGraphProfile(underfundedRecords, inspected, graphFixtures[1].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
+  const underfundedBytes = clone(graphProfileInputs[1]);
+  underfundedBytes.resources.find(({ id }) => id.endsWith('resource-retirement-bytes')).maximum = '262143';
+  assert.throws(() => normalizeGraphProfile(underfundedBytes, inspected, graphFixtures[1].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
+  const underfundedScratch = clone(graphProfileInputs[1]);
+  underfundedScratch.resources.find(({ id }) => id.endsWith('resource-reclaim-scratch')).maximum = '65535';
+  assert.throws(() => normalizeGraphProfile(underfundedScratch, inspected, graphFixtures[1].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
+  const underfundedWork = clone(graphProfileInputs[1]);
+  underfundedWork.resources.find(({ id }) => id.endsWith('resource-reclaim-work')).maximum = '4095';
+  assert.throws(() => normalizeGraphProfile(underfundedWork, inspected, graphFixtures[1].domain), { code: 'GRAPH_RESOURCE_CAPACITY' });
+});
+
+await runCase('reject-graph-reclamation-lifecycle', () => {
+  const nonReleasable = clone(graphProfileInputs[1]);
+  const retirement = nonReleasable.objectKinds.find(({ role }) => role === 'retirement-record');
+  retirement.lifecycle.transitions = retirement.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-ready') && to.endsWith('state-released')));
+  assert.throws(() => normalizeGraphProfile(nonReleasable, inspected, graphFixtures[1].domain), { code: 'GRAPH_LIFECYCLE_PUBLICATION' });
+  const nonReusable = clone(graphProfileInputs[1]);
+  const reusableRetirement = nonReusable.objectKinds.find(({ role }) => role === 'retirement-record');
+  reusableRetirement.lifecycle.transitions = reusableRetirement.lifecycle.transitions.filter(({ from, to }) => !(from.endsWith('state-released') && to.endsWith('state-free')));
+  assert.throws(() => normalizeGraphProfile(nonReusable, inspected, graphFixtures[1].domain), { code: 'GRAPH_RECLAIM_LIFECYCLE' });
 });
 
 await runCase('reject-graph-publication-ready-state', () => {
@@ -6256,7 +6283,7 @@ await runCase('integration-requirement-disposition-handoff', () => {
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 879,
+  expected: 881,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -6264,7 +6291,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 879 - cases.length,
+  notDiscovered: 881 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
