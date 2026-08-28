@@ -258,9 +258,14 @@ export function createGraphReferenceOracle({
     const validated = validateReference(input);
     if (validated.kind !== 'valid') return validated;
     const key = referenceKey(validated.reference);
-    const held = activeProtectionCount(key);
-    if (held > 0) return freeze({ kind: 'blocked', protections: held }, 'Graph retirement barrier blocked');
+    const firstBarrier = !retirementBarriers.has(key);
     retirementBarriers.add(key);
+    if (firstBarrier) emit('retirement-barrier-established', { reference: validated.reference });
+    const held = activeProtectionCount(key);
+    if (held > 0) {
+      emit('retirement-barrier-waiting', { reference: validated.reference, protections: held });
+      return freeze({ kind: 'blocked', protections: held }, 'Graph retirement barrier blocked');
+    }
     emit('retirement-barrier-passed', { reference: validated.reference });
     return freeze({ kind: 'retirement-barrier', reference: validated.reference }, 'Graph retirement barrier');
   }
