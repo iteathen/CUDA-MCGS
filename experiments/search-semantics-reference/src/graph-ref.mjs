@@ -89,6 +89,7 @@ export function createGraphReferenceOracle({
 
   const events = [];
   const protections = [];
+  const retirementIntents = new Set();
   const retirementBarriers = new Set();
   let sequence = 0n;
 
@@ -217,7 +218,7 @@ export function createGraphReferenceOracle({
     const validated = validateReference({ expectedKind: input.expectedKind, reference: input.reference });
     if (validated.kind !== 'valid') return validated;
     const key = referenceKey(validated.reference);
-    if (retirementBarriers.has(key) && mutations.allowProtectionAfterRetirement !== true) return invalid('invalid-reference');
+    if ((retirementIntents.has(key) || retirementBarriers.has(key)) && mutations.allowProtectionAfterRetirement !== true) return invalid('invalid-reference');
     let entry = protections.find((candidate) => candidate.state === 'released'
       && decimal(candidate.token.generation, 'GRAPH_REF_PROTECTION', 'protection generation') < ranges.generation);
     if (entry) {
@@ -258,14 +259,17 @@ export function createGraphReferenceOracle({
     const validated = validateReference(input);
     if (validated.kind !== 'valid') return validated;
     const key = referenceKey(validated.reference);
-    const firstBarrier = !retirementBarriers.has(key);
-    retirementBarriers.add(key);
-    if (firstBarrier) emit('retirement-barrier-established', { reference: validated.reference });
+    if (!retirementIntents.has(key) && !retirementBarriers.has(key)) {
+      retirementIntents.add(key);
+      emit('retirement-order-established', { reference: validated.reference });
+    }
     const held = activeProtectionCount(key);
     if (held > 0) {
-      emit('retirement-barrier-waiting', { reference: validated.reference, protections: held });
+      emit('retirement-waiting-for-protections', { reference: validated.reference, protections: held });
       return freeze({ kind: 'blocked', protections: held }, 'Graph retirement barrier blocked');
     }
+    retirementIntents.delete(key);
+    retirementBarriers.add(key);
     emit('retirement-barrier-passed', { reference: validated.reference });
     return freeze({ kind: 'retirement-barrier', reference: validated.reference }, 'Graph retirement barrier');
   }
