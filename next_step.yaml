@@ -1,44 +1,41 @@
 {
-  "schema_version": 75,
+  "schema_version": 76,
   "updated": "2026-08-27",
-  "status": "experimental_graph_reclaim_preflight_rebound_pending_final_author_qualification",
-  "objective": "Advance CUDA-MCGS on the isolated experimental portfolio while protected main remains unchanged: integrate only fully qualified universal framework work, then implement Graph RECLAIM semantics owner-locally without selecting a CUDA/native mechanism.",
-  "ownership_boundary": "CUDA-MCGS production owns reusable product-neutral MCGS semantics, composition/integration substrate and removable conformance evidence. Production domain/search products remain independently owned downstream consumers. CUDA-JS owns generic CUDA lowering/compiler/ABI/runtime/resource/operation/synchronization/platform mechanisms; CUDA-JS-Tensor owns generic dense tensor math. CUDA-MCGS remains ordinary Node.js plus restricted Device-JS through public CUDA-JS contracts and does not acquire a native escape path.",
+  "status": "experimental_graph_reclaim_semantics_qualified_pending_final_author_gate",
+  "objective": "Integrate the qualified product-neutral Graph RECLAIM semantic/reference brick on the isolated experimental portfolio, then reassess the remaining Graph/occurrence-lifecycle obligations before leaving the Graph owner.",
+  "ownership_boundary": "CUDA-MCGS owns reusable product-neutral MCGS semantics and composition evidence. Graph RECLAIM owns retirement, quiescence, non-returnability, owner-cleanup ordering and generation-safe reuse meaning only. Resource and Progress retain global admission/scheduling authority; Session retains current-root/epoch/advance/reroot/attention authority. CUDA-JS owns generic CUDA/native realization mechanisms and CUDA-JS-Tensor owns generic dense tensor math. Production domain/search products remain downstream.",
   "protected_base": {
     "branch": "main",
     "sha": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
     "workflow": "33115975009",
-    "meaning": "Protected Graph ROOT semantic packet plus fail-closed verify aggregation and post-merge state reconciliation. Intentionally unchanged during the experimental portfolio."
+    "meaning": "Protected Graph ROOT packet and fail-closed pre-RECLAIM merge gate. Intentionally unchanged by the experimental portfolio."
   },
   "experimental_base": {
     "branch": "experimental/portfolio",
-    "sha": "a1be8a596bb5ccc97736365dfbc49419ec0f76aa",
+    "sha": "7d9c607c8844ce297086e78cc19b9b6e73519748",
     "integrated": [
-      "PR #146 / issue #44 framework-only production ownership correction"
+      "PR #146 / issue #44 framework-only production ownership correction",
+      "PR #147 / issue #24 Graph RECLAIM finite representation/resource/lifecycle preflight"
     ],
     "portfolio_disposition": [
-      "Issue #47 closed not planned after its useful universal obligations were routed to existing owners"
+      "Issue #47 closed not planned after useful obligations were routed to universal owners"
     ]
   },
   "candidate": {
-    "pr": 147,
-    "branch": "ref/graph-reclaim-preflight-01",
-    "durable_rebound_head": "c5926d28e0b42cf0f27b2c474ef7b3d9f043df36",
+    "pr": 148,
+    "branch": "ref/graph-reclaim-01",
+    "hosted_qualified_head": "4b1b13672a9b2dd93f4d18ba650087020412f868",
     "owner_issue": 24,
+    "reference_tracker": 36,
     "target": "experimental/portfolio",
-    "state": "representation-resource-lifecycle-preflight-complete; Domain and Graph frozen evidence rebound; final ordinary author-head qualification pending"
+    "state": "GRAPH-RECLAIM-001..009 semantic/reference capsule 17/17 and full ordinary workflow green; final truthful author checkpoint and exact-head rerun required before merge"
   },
   "candidate_evidence": {
-    "contract_set_sha256": "b4c91a46e4fe304f3bcfc4602e23e5f4e68a30869da223deab3978289ca6b4a1",
-    "coverage_sha256": "fe510fb69890b070ae6e7dfc60bd3e113a3f7e6354fa6bfcd8e48a6336c6c07a",
-    "expanded_requirements_sha256": "32fc66ca775046121146f3afc621e3407bab69711355e283b769d947fd185e0a",
-    "framework_selection_sha256": "bcfcba073c44f6c019dc800241414e8a67b4006786b8898042b2ffdd38a3e56d",
-    "representation_composition_sha256": "2e2cde00d9e1eac864541cd7bd5d4d43873cfb20bfb2304aa0bc5c2647bce1af",
     "composer": "881/881",
     "requirements": "989/989 classified, 0 pending",
-    "domain_projection_sha256": "4335a21e1225b7705da5242053fd055986384a02d4d9c772fab1c4bbb286a0b1",
-    "domain_harness_evidence_sha256": "10d188344e91c077fa47be192e5fec0f1310cc193ca180e3a9493fd8395ec51c",
-    "domain": "49/49, direct semantic cases 47/47",
+    "representation_composition_sha256": "2e2cde00d9e1eac864541cd7bd5d4d43873cfb20bfb2304aa0bc5c2647bce1af",
+    "domain": "49/49, direct 47/47",
+    "domain_evidence_sha256": "10d188344e91c077fa47be192e5fec0f1310cc193ca180e3a9493fd8395ec51c",
     "graph_projection_sha256": "72d91b75336a2745830a3c0d8d7d7d3ed26259ea2f56b619f9de311c82d21068",
     "graph_node_evidence_sha256": "103cd77904f0c1f5650fe52e7884b8a791615a17d340e13f4b5184d262a126df",
     "graph_edge_evidence_sha256": "96ce6c83125566ffec250e825b09ed66ab9050c6f091ee178d789aa5d0fdc127",
@@ -46,46 +43,30 @@
     "graph_path_evidence_sha256": "cecaad55c6ceeeacedb24b40ed7a4b185d5ec2b7c15c443e46cb9b5608310ae9",
     "root_control_projection_sha256": "be35ed803ea82498950c454acb6955087543c2a7a974745077c4c53158bca475",
     "graph_root_evidence_sha256": "2fc9a4770b2f0244178876ab5742d8d9043f4278aff2040c488a018ebfa94280",
-    "counts": {
-      "node": "13/13",
-      "edge": "16/16",
-      "ref": "14/14",
-      "path": "14/14",
-      "root": "14/14"
-    },
-    "preflight_migration_run": "33143185480 success; self-removed",
-    "graph_rebind_run": "33143600784 success; self-removed",
-    "domain_rebind_run": "33145283563 success; self-removed"
+    "graph_reclaim": "17/17",
+    "graph_reclaim_evidence_sha256": "d046e13211f36c95c964d556ae89d5d0d456b7084d7b5d8c86e7448c34ccd119",
+    "graph_reclaim_evidence_bytes": 12127,
+    "qualification_run": "33146437040",
+    "qualification_result": "Governance, Windows/Ubuntu Search IR, Graph NODE/EDGE/REF/PATH/ROOT/RECLAIM and aggregate verify all success",
+    "artifact_id": 9675947062,
+    "artifact_zip_sha256": "7e2b94be87eba3d2629a4a705cf1e3a7fba301b842a5256aa95569446209e21e"
   },
   "protected_root_evidence": {
+    "composer": "879/879",
     "representation_composition": "ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529",
-    "domain_projection": "e9df2902e6edaad40c6abf0b85eeecb06e94b4d5598d9c0b9c7238fa20c3edaa",
     "domain_evidence": "f186412a9b8d964c7f92e4c4000942768fa0ae81d62349c2528fd3aba12aa5e7",
     "graph_projection": "89ee04a47d8516ad02e33e884d8f35db9573840f58db140c6cbafe79178e7fd7",
     "graph_node_evidence": "4299dccecd33f6ef38c50f144e84316d00c7046a81ed6206b6e2e645b6683f74",
     "graph_edge_evidence": "54b83935d320e6bd656c740ec2f3d8be062e3932bdf6e748c8315f26245faf58",
     "graph_ref_evidence": "e3370158d1234dd3642d11c4458c9c390abcc3f62a04a75dd68d00faf6c4676d",
     "graph_path_evidence": "af8f140e45f7c2942ec4b09b7d752f49b3eeb28f1cdc5b8c3b74887d34dd4318",
-    "root_control_projection": "2c71df25fff213f515aae02a01e210292a8e9b76fc84e14ab6cafb251fbbc9f1",
-    "graph_root_evidence": "7e4fe6bf748ec110bebc1798d7742e03b89909df84da709f2fdeb51a42311ed0",
-    "counts": {
-      "composer": "879/879",
-      "domain": "49/49 direct 47/47",
-      "node": "13/13",
-      "edge": "16/16",
-      "ref": "14/14",
-      "path": "14/14",
-      "root": "14/14"
-    }
+    "graph_root_evidence": "7e4fe6bf748ec110bebc1798d7742e03b89909df84da709f2fdeb51a42311ed0"
   },
   "authority": [
     "AGENTS.md",
     "docs/PROJECT_CHARTER.md",
-    "docs/decisions/ADR-0018-universal-core-extension-product-layering.md",
     "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
-    "docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md",
     "docs/decisions/ADR-0022-distinguish-root-advance-reroot-and-attention.md",
-    "docs/decisions/ADR-0023-parallel-first-native-execution.md",
     "docs/decisions/ADR-0024-framework-only-production-ownership.md",
     "docs/specs/SPEC-0010-graph-storage-and-reclamation.md",
     "https://github.com/iteathen/CUDA-MCGS/issues/24",
@@ -93,77 +74,65 @@
     "https://github.com/iteathen/CUDA-MCGS/issues/142"
   ],
   "deliverables": [
-    "one exact experimental Graph RECLAIM representation/resource/lifecycle preflight integrated only after full author-head qualification",
-    "explicit finite retirement-record count and byte storage, reclaim scratch bytes and reclaim work units with independent underfunding falsifiers",
-    "explicit reusable retirement-record lifecycle and zero reclaim-only residue when reclamation is unselected",
-    "rebound Domain and Graph semantic evidence that consumes the 881-case representation without weakened identity checks",
-    "a subsequent independent GRAPH-RECLAIM-001..009 semantic/reference owner with its own fail-closed workflow lane",
-    "no production/native reclamation mechanism claim until the later CUDA-JS compatible-pair evidence gate"
+    "independent GRAPH-RECLAIM-001..009 semantic oracle and exact nine-requirement coverage",
+    "17-case adversarial capsule covering optional zero residue, finite retirement admission, all declared blocker classes, resumable quiescence, stale-proof restart, tombstone ordering, owner cleanup, generation-safe reuse, finite retirement-record reuse, cancellation/failure quarantine and shared-borrow safety",
+    "independent Graph RECLAIM CI lane added to aggregate fail-closed verify",
+    "explicit semantic-only native claim limit requiring later CUDA-JS compatible-pair/device qualification",
+    "no reclamation queue/table/traversal/atomic/scheduler/CUDA topology selected by this leaf"
   ],
   "current_focus": {
-    "id": "GRAPH-RECLAIM-PREFLIGHT-01",
+    "id": "REF-GRAPH-01/GRAPH-RECLAIM",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/24",
-    "active_pr": "https://github.com/iteathen/CUDA-MCGS/pull/147",
-    "next_action": "Run the complete ordinary PR workflow on this exact author-authored truth checkpoint, require Governance, both Search IR cells, Graph NODE/EDGE/REF/PATH/ROOT and aggregate verify all green, then squash-merge only into experimental/portfolio and read back the exact experimental integration.",
-    "after_integration": "Reassess and implement the independent GRAPH-RECLAIM-001..009 semantic/reference leaf from the exact experimental integration. Keep reclamation optional, device-progress compatible, finite, generation-safe and product-neutral; do not select a CUDA/native realization mechanism.",
-    "exit": "The RECLAIM representation/resource/lifecycle prerequisites are integrated on experimental/portfolio with exact full-gate evidence and no protected-main mutation."
+    "active_pr": "https://github.com/iteathen/CUDA-MCGS/pull/148",
+    "next_action": "Run the complete ordinary PR workflow on the exact author-authored state checkpoint created by the STATUS/next_step reconciliation. If every lane and aggregate verify remain green, mark #148 ready and squash-merge only into experimental/portfolio with an expected-head fence, then read back experimental and protected refs.",
+    "after_integration": "Record the exact RECLAIM integration on issues #24/#36, then reassess the remaining Graph owner obligations including ADR-0022 occurrence-supersession/lifecycle closure before selecting the next independent leaf.",
+    "exit": "GRAPH-RECLAIM-001..009 semantics are integrated on experimental/portfolio with exact full-gate evidence, the new RECLAIM job is fail-closed, and protected main remains unchanged."
   },
   "merge_gate": {
     "required_context": "verify",
-    "implementation": "final aggregate job over governance verification, both Search IR cells, Graph NODE, EDGE, REF, PATH and ROOT",
-    "evolution_rule": "Any newly required semantic/reference job, including Graph RECLAIM when added, must be added to the aggregate needs/result set in the same coherent change before it is considered a merge gate."
+    "implementation": "final aggregate job over Governance, both Search IR cells, Graph NODE, EDGE, REF, PATH, ROOT and RECLAIM",
+    "evolution_rule": "Every newly required semantic/reference owner must join the aggregate needs/result set in the same coherent change."
   },
   "semantic_focus": {
     "id": "ENGINE-REFERENCE-01",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36",
     "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/24",
     "last_integrated_leaf": "REF-GRAPH-01/GRAPH-ROOT",
-    "next_candidate_leaf": "REF-GRAPH-01/GRAPH-RECLAIM",
-    "dependency_state": "representation-preflight-complete-pending-experimental-integration",
-    "preflight_closed": [
-      "retirement-record count is explicitly funded",
-      "retirement-record bytes are explicitly funded",
-      "reclamation scratch bytes are explicitly funded",
-      "reclamation work units are explicitly finite",
-      "retirement-record terminal-to-free reuse is explicit",
-      "reclamation:none leaves zero reclaim-only resource/failure/lifecycle residue",
-      "independent falsifiers reject underfunding and reuse omission"
-    ],
-    "next_semantic_action": "After #147 integrates on experimental/portfolio, create a separate Graph RECLAIM reference owner covering GRAPH-RECLAIM-001..009 without importing resource policy, scheduler authority, product meaning or a CUDA implementation mechanism."
+    "current_candidate_leaf": "REF-GRAPH-01/GRAPH-RECLAIM",
+    "dependency_state": "representation preflight integrated; semantic capsule hosted-qualified pending final author-head qualification",
+    "requirement_scope": "GRAPH-RECLAIM-001..009 exactly",
+    "claim_limit": "semantic/reference evidence only; native CUDA mechanism qualification remains deferred to compatible-pair/device evidence"
   },
   "blockers": [
-    "PR #147 still needs one ordinary full PR workflow green on an exact author-authored truth checkpoint before experimental integration.",
-    "GRAPH-RECLAIM-001..009 semantic behavior is not yet implemented or accepted; #147 closes representation prerequisites only.",
-    "CUDA-JS native Linux qualification and the exact CUDA-MCGS/CUDA-JS compatible pair remain downstream evidence gates and are not implied by CUDA-free reference evidence."
+    "PR #148 still requires one full ordinary workflow green on the final author-authored state checkpoint before experimental integration.",
+    "Native ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains a later CUDA-JS compatible-pair/device evidence gate.",
+    "Remaining Graph occurrence-supersession/lifecycle closure must be reassessed after RECLAIM integration rather than assumed complete."
   ],
   "validation": [
     "./scripts/verify-docs.sh",
     "node scripts/run-search-ir-composer-reference.mjs",
-    "node scripts/export-search-ir-composer-domain-profiles.mjs",
-    "node scripts/run-search-semantics-reference.mjs",
     "node scripts/export-search-ir-composer-graph-profiles.mjs",
     "node scripts/run-graph-node-reference.mjs",
     "node scripts/run-graph-edge-reference.mjs",
     "node scripts/run-graph-ref-reference.mjs",
     "node scripts/run-graph-path-reference.mjs",
     "node scripts/run-graph-root-reference.mjs",
+    "node scripts/run-graph-reclaim-reference.mjs",
     "final aggregate verify job",
-    "experimental target read-back after merge"
+    "experimental and protected ref readback after merge"
   ],
   "do_not": [
     "mutate protected main while the experimental portfolio is active",
-    "claim GRAPH-RECLAIM behavior from representation preflight evidence",
-    "move current-root/epoch/operation authority into Graph",
-    "make advance traverse, copy, transform, reset, resize, reclassify, reclaim or eagerly clean graph state",
-    "invalidate a shared transposed node merely because one occurrence is superseded",
-    "invent retained-state classification in Graph",
-    "select a production/native graph table, arena, reclamation algorithm, scheduler or CUDA mechanism in the CUDA-free reference leaf",
-    "add C/C++, CUDA C++, native addons/FFI, hand-written PTX, embedded CUDA source or direct CUDA-JS private access to CUDA-MCGS production",
-    "require host-produced intermediate decisions for active search progress",
-    "weaken frozen-source or identity-drift checks to make a candidate pass"
+    "claim native/GPU reclamation qualification from the CUDA-free semantic oracle",
+    "move current-root/epoch/advance/reroot/attention authority into Graph",
+    "invalidate shared transposed nodes merely because one occurrence is superseded",
+    "import Resource admission policy or Progress scheduling/fairness policy into Graph RECLAIM",
+    "select a retirement queue/table/traversal algorithm, atomic primitive, scheduler topology, warp/block topology or CUDA data structure in this semantic leaf",
+    "add C/C++, CUDA C++, native addons/FFI, hand-written PTX, embedded CUDA source or direct CUDA-JS private access",
+    "weaken frozen identity or requirement-coverage checks"
   ],
   "cleanup_debt": [
-    "checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f is redundant recovery state preserved because the available connector exposes no safe delete-ref action.",
-    "PR #126 and PR #132 are stale/unmergeable pre-existing product-boundary remediation packets and remain cleanup/disposition debt under issue #44."
+    "checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f remains redundant recovery state because no safe delete-ref action is exposed.",
+    "PR #126 and PR #132 remain stale/unmergeable product-boundary cleanup/disposition debt under issue #44."
   ]
 }
