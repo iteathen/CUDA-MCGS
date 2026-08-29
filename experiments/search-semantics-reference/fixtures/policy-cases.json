@@ -8,8 +8,8 @@
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-policy-profile-projection/0.2.0",
     "algorithm": "sha256",
-    "byteLength": 0,
-    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    "byteLength": 123882,
+    "sha256": "3d4ae916d19413d6dbb26db6f611ea389b2d0aff56daea764a2af9533354b835"
   },
   "expectedCases": [
     "policy-profile-matrix",
