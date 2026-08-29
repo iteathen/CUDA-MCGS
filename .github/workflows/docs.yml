@@ -285,6 +285,28 @@ jobs:
             experiments/search-ir-composer-reference/build/policy-profiles.json
             experiments/search-semantics-reference/build/policy-evidence.json
 
+  evaluator-reference:
+    name: Evaluator reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Composer and Evaluator reference
+        # Evaluator consumes exact normalized profiles plus injected owner facts. Resource, Progress, Session, Output and native/CUDA realization remain separate owners.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-evaluator-profiles.mjs
+          node scripts/run-evaluator-reference.mjs
+      - name: Retain Evaluator evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: evaluator-reference
+          path: |
+            experiments/search-ir-composer-reference/build/evaluator-profiles.json
+            experiments/search-semantics-reference/build/evaluator-evidence.json
+
   verify:
     name: verify
     if: ${{ always() }}
@@ -300,6 +322,7 @@ jobs:
       - graph-advance-occurrence-reference
       - graph-cleanup-reference
       - policy-reference
+      - evaluator-reference
     runs-on: ubuntu-latest
     steps:
       - name: Require every merge-gate job to succeed
@@ -315,9 +338,10 @@ jobs:
           GRAPH_ADVANCE_OCCURRENCE_RESULT: ${{ needs.graph-advance-occurrence-reference.result }}
           GRAPH_CLEANUP_RESULT: ${{ needs.graph-cleanup-reference.result }}
           POLICY_RESULT: ${{ needs.policy-reference.result }}
+          EVALUATOR_RESULT: ${{ needs.evaluator-reference.result }}
         run: |
           set -euo pipefail
-          names=(GOVERNANCE SEARCH_IR GRAPH_NODE GRAPH_EDGE GRAPH_REF GRAPH_PATH GRAPH_ROOT GRAPH_RECLAIM GRAPH_ADVANCE_OCCURRENCE GRAPH_CLEANUP POLICY)
+          names=(GOVERNANCE SEARCH_IR GRAPH_NODE GRAPH_EDGE GRAPH_REF GRAPH_PATH GRAPH_ROOT GRAPH_RECLAIM GRAPH_ADVANCE_OCCURRENCE GRAPH_CLEANUP POLICY EVALUATOR)
           results=(
             "$GOVERNANCE_RESULT"
             "$SEARCH_IR_RESULT"
@@ -330,6 +354,7 @@ jobs:
             "$GRAPH_ADVANCE_OCCURRENCE_RESULT"
             "$GRAPH_CLEANUP_RESULT"
             "$POLICY_RESULT"
+            "$EVALUATOR_RESULT"
           )
           failed=0
           for index in "${!results[@]}"; do
