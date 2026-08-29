@@ -78,6 +78,33 @@
     "session": "current-root/root-epoch/advance/reroot/attention/supersession reason remain Session-owned.",
     "progress": "scheduling/fairness/device-progress policy remains Progress-owned."
   },
+  "authority": [
+    "AGENTS.md",
+    "agent_files/AGENTS.md",
+    "agent_files/AI_RULES.md",
+    "agent_files/DESIGN_ALIGNMENT_CARD.md",
+    "agent_files/general_foundation/LEGO_ARCHITECTURE.md",
+    "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
+    "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
+    "docs/PROJECT_CHARTER.md",
+    "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
+    "docs/decisions/ADR-0022-distinguish-root-advance-reroot-and-attention.md",
+    "docs/decisions/ADR-0024-framework-only-production-ownership.md",
+    "docs/specs/SPEC-0010-graph-storage-and-reclamation.md",
+    "https://github.com/iteathen/CUDA-MCGS/issues/24",
+    "https://github.com/iteathen/CUDA-MCGS/issues/36",
+    "https://github.com/iteathen/CUDA-MCGS/issues/122",
+    "https://github.com/iteathen/CUDA-MCGS/issues/142",
+    "https://github.com/iteathen/CUDA-MCGS/pull/151"
+  ],
+  "deliverables": [
+    "integrate the exact qualified Graph cleanup semantic/reference slice on experimental/portfolio only",
+    "prove post-merge protected-main immutability and experimental target identity",
+    "close draft PR #150 as superseded without losing its exact-head authorization/evidence record",
+    "reconcile STATUS.md and next_step.yaml to the integrated state through a state-only qualified PR",
+    "update issues #24/#36/#142 with the integrated revision, claim limits and transferred Resource/native obligations",
+    "assess the next dependency-ready non-Graph semantic/reference owner before implementation"
+  ],
   "current_focus": {
     "id": "ENGINE-REFERENCE-01/NEXT-OWNER-ASSESSMENT",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36",
