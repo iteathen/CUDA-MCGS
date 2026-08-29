@@ -346,6 +346,38 @@ export function registerPolicyCases({ defineCase, projection }) {
       if (declaration.disposition === 'retain-if-key-valid') assert.equal(entry.action, 'retain');
       if (declaration.disposition === 'reset') assert.equal(entry.action, 'reset');
     }
+
+    const mutableReuseIndex = scalar.reuse.findIndex(({ disposition }) => disposition === 'reset');
+    assert.notEqual(mutableReuseIndex, -1, 'Policy fixture needs one reset record for transform/invalidate sensitivity');
+    for (const disposition of ['transform', 'invalidate']) {
+      const variantProfile = canonicalClone(scalar);
+      variantProfile.reuse[mutableReuseIndex].disposition = disposition;
+      const variant = numericOracle(variantProfile);
+      for (const record of variantProfile.records) {
+        variant.initializeRecord({ recordId: record.id, storageKey: `key-${record.id}`, generation: '0', value: { marker: record.scope } });
+      }
+      variant.setRootEpoch({ rootEpoch: '20' });
+      const validDispositions = rerootDispositions(variantProfile, true);
+      const invalidDispositions = canonicalClone(validDispositions);
+      invalidDispositions[mutableReuseIndex].action = disposition === 'transform' ? 'reset' : 'retain';
+      const beforeInvalid = variant.snapshot();
+      assert.throws(
+        () => variant.reroot({ fromEpoch: '20', toEpoch: '21', dispositions: invalidDispositions }),
+        { code: 'POLICY_REFERENCE_REUSE' },
+      );
+      assert.deepEqual(variant.snapshot(), beforeInvalid, 'invalid reroot must not publish partial Policy reuse state');
+
+      const variantResult = variant.reroot({ fromEpoch: '20', toEpoch: '21', dispositions: validDispositions });
+      assert.equal(variantResult.reuseClassifications, String(variantProfile.reuse.length));
+      const targetRecord = variantProfile.records.find(({ id }) => id === variantProfile.reuse[mutableReuseIndex].record);
+      assert(targetRecord);
+      const targetKey = `key-${targetRecord.id}`;
+      if (disposition === 'transform') {
+        assert.deepEqual(variant.readRecord({ recordId: targetRecord.id, storageKey: targetKey }), { transformedFrom: { marker: targetRecord.scope } });
+      } else {
+        assert.throws(() => variant.readRecord({ recordId: targetRecord.id, storageKey: targetKey }), { code: 'POLICY_REFERENCE_RECORD' });
+      }
+    }
     return result;
   }, ['POLICY-REUSE-001', 'POLICY-REUSE-002', 'POLICY-REUSE-004']);
 

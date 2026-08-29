@@ -512,18 +512,19 @@ export function createPolicyOracle({
       const declared = reuseByRecord.get(entry.recordId);
       if (!declared) fail('POLICY_REFERENCE_REUSE', `unknown reuse record ${entry.recordId}`);
       if (!['retain', 'retain-if-key-valid', 'transform', 'reset', 'invalidate'].includes(entry.action)) fail('POLICY_REFERENCE_REUSE', `invalid reuse action ${entry.action}`);
-      if (declared.disposition === 'retain' && entry.action !== 'retain') fail('POLICY_REFERENCE_REUSE', `${entry.recordId} contradicts declared retain`);
       if (declared.disposition === 'retain-if-key-valid') {
         const expected = entry.keyValid === true ? 'retain' : 'invalidate';
         if (entry.action !== expected) fail('POLICY_REFERENCE_REUSE', `${entry.recordId} key-valid reuse action must be ${expected}`);
+      } else if (entry.action !== declared.disposition) {
+        fail('POLICY_REFERENCE_REUSE', `${entry.recordId} contradicts declared ${declared.disposition}`);
       }
-      if (declared.disposition === 'reset' && entry.action !== 'reset') fail('POLICY_REFERENCE_REUSE', `${entry.recordId} contradicts declared reset`);
       byRecord.set(entry.recordId, entry);
-      reuseClassifications += 1n;
-      emit('reuse-classified', { recordId: entry.recordId, action: entry.action });
     }
     if (byRecord.size !== reuseByRecord.size) fail('POLICY_REFERENCE_REUSE', 'reroot must classify every persistent policy record');
-    currentRootEpoch = to;
+    for (const [recordId, entry] of byRecord) {
+      reuseClassifications += 1n;
+      emit('reuse-classified', { recordId, action: entry.action });
+    }
     for (const [recordId, entry] of byRecord) {
       if (entry.action === 'retain') continue;
       for (const key of [...recordValues.keys()].filter((candidate) => candidate.startsWith(`${recordId}\0`))) {
@@ -539,6 +540,7 @@ export function createPolicyOracle({
         }
       }
     }
+    currentRootEpoch = to;
     emit('root-rerooted', { fromEpoch: input.fromEpoch, toEpoch: input.toEpoch, classifications: String(byRecord.size) });
     return { kind: 'rerooted', reuseClassifications: toDecimal(reuseClassifications) };
   }
