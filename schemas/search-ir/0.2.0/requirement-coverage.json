@@ -114,10 +114,15 @@
       "requirementPrefix": "FRAMEWORK-AUTH-",
       "requirementCount": 4,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer"],
+      "supportingDispositions": [
+        "semantic-normalizer"
+      ],
       "plannedEvidenceOwner": "IR-FOUNDATION-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:framework-contract-selection", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
+      "evidenceRefs": [
+        "normalizer:framework-contract-selection",
+        "planned:ENGINE-CONTRACT-ACCEPTANCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -125,10 +130,15 @@
       "requirementPrefix": "FRAMEWORK-CLEANUP-",
       "requirementCount": 4,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -136,10 +146,16 @@
       "requirementPrefix": "FRAMEWORK-COMPAT-",
       "requirementCount": 5,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:framework-selection-identity-content-sensitive", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:framework-selection-identity-content-sensitive",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -147,10 +163,15 @@
       "requirementPrefix": "FRAMEWORK-DEVICE-",
       "requirementCount": 6,
       "primaryDisposition": "native-compatible-pair-qualification",
-      "supportingDispositions": ["cross-specification-proof"],
+      "supportingDispositions": [
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["proof:adr-0019-source-boundary", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "proof:adr-0019-source-boundary",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -158,10 +179,20 @@
       "requirementPrefix": "FRAMEWORK-EXT-",
       "requirementCount": 6,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:stage-zero-capability-complete-absence", "case:channel-absence-zero-residue", "case:canonical-composer-stage-substrate-deletion", "case:canonical-composer-async-channel-deletion", "case:canonical-composer-capability-product-deletion", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "case:stage-zero-capability-complete-absence",
+        "case:channel-absence-zero-residue",
+        "case:canonical-composer-stage-substrate-deletion",
+        "case:canonical-composer-async-channel-deletion",
+        "case:canonical-composer-capability-product-deletion",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -169,10 +200,17 @@
       "requirementPrefix": "FRAMEWORK-IR-",
       "requirementCount": 8,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-COMPOSER-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:framework-selection.schema.json", "normalizer:framework-selection", "planned:IR-COMPOSER-01"],
+      "evidenceRefs": [
+        "schema:framework-selection.schema.json",
+        "normalizer:framework-selection",
+        "planned:IR-COMPOSER-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -180,10 +218,17 @@
       "requirementPrefix": "FRAMEWORK-LAYER-",
       "requirementCount": 4,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["cross-specification-proof"],
+      "supportingDispositions": [
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:materially-different-composer-engines-cannot-collide", "case:deletion-matrix-product-assumption-absence", "case:canonical-composer-namespaced-product-deletion", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
+      "evidenceRefs": [
+        "case:materially-different-composer-engines-cannot-collide",
+        "case:deletion-matrix-product-assumption-absence",
+        "case:canonical-composer-namespaced-product-deletion",
+        "planned:ENGINE-CONTRACT-ACCEPTANCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -191,10 +236,15 @@
       "requirementPrefix": "FRAMEWORK-LIFE-",
       "requirementCount": 9,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -202,10 +252,17 @@
       "requirementPrefix": "FRAMEWORK-OWNER-",
       "requirementCount": 9,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-FOUNDATION-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:framework-selection", "case:reject-dependency-cycle", "case:reject-role-contract-mismatch", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "normalizer:framework-selection",
+        "case:reject-dependency-cycle",
+        "case:reject-role-contract-mismatch",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -213,10 +270,20 @@
       "requirementPrefix": "FRAMEWORK-PACKAGE-",
       "requirementCount": 3,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:program-package-profile.schema.json", "schema:search-program.schema.json", "schema:execution-package.schema.json", "case:compose-canonical-search-programs", "case:build-canonical-execution-packages", "case:deletion-matrix-public-cuda-js-contract-only", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "schema:program-package-profile.schema.json",
+        "schema:search-program.schema.json",
+        "schema:execution-package.schema.json",
+        "case:compose-canonical-search-programs",
+        "case:build-canonical-execution-packages",
+        "case:deletion-matrix-public-cuda-js-contract-only",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -224,10 +291,15 @@
       "requirementPrefix": "FRAMEWORK-PERSIST-",
       "requirementCount": 2,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["cross-specification-proof"],
+      "supportingDispositions": [
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
+      "evidenceRefs": [
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-CONTRACT-ACCEPTANCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -235,10 +307,15 @@
       "requirementPrefix": "FRAMEWORK-PRODUCT-",
       "requirementCount": 4,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["cross-specification-proof"],
+      "supportingDispositions": [
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:namespaced-product-second-instance-and-deletion", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:namespaced-product-second-instance-and-deletion",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -246,10 +323,17 @@
       "requirementPrefix": "FRAMEWORK-PROFILE-",
       "requirementCount": 8,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-FOUNDATION-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:primitives.schema.json", "schema:framework-selection.schema.json", "normalizer:framework-selection", "case:framework-selection-order-independent"],
+      "evidenceRefs": [
+        "schema:primitives.schema.json",
+        "schema:framework-selection.schema.json",
+        "normalizer:framework-selection",
+        "case:framework-selection-order-independent"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -257,10 +341,19 @@
       "requirementPrefix": "FRAMEWORK-RESOURCE-",
       "requirementCount": 5,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["engine-reference-oracle"],
+      "supportingDispositions": [
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:resource-profile.schema.json", "normalizer:resource-profile", "case:normalize-resource-profiles", "case:public-resource-projection-is-generic-subset", "case:canonical-composer-evaluator-deletion", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "schema:resource-profile.schema.json",
+        "normalizer:resource-profile",
+        "case:normalize-resource-profiles",
+        "case:public-resource-projection-is-generic-subset",
+        "case:canonical-composer-evaluator-deletion",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -268,10 +361,16 @@
       "requirementPrefix": "FRAMEWORK-SEC-",
       "requirementCount": 3,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["engine-reference-oracle"],
+      "supportingDispositions": [
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-FOUNDATION-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-framework-selection-unknown-field", "case:reject-profile-contract-digest-drift", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "case:reject-framework-selection-unknown-field",
+        "case:reject-profile-contract-digest-drift",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -279,10 +378,18 @@
       "requirementPrefix": "DOMAIN-ACTION-",
       "requirementCount": 11,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:domain-profile", "case:normalize-domain-profiles", "case:reject-domain-source-hidden-randomness", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:domain-profile",
+        "case:normalize-domain-profiles",
+        "case:reject-domain-source-hidden-randomness",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -290,10 +397,15 @@
       "requirementPrefix": "DOMAIN-CLEANUP-",
       "requirementCount": 4,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -301,10 +413,19 @@
       "requirementPrefix": "DOMAIN-COMPAT-",
       "requirementCount": 6,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:domain-identity-content-sensitive", "case:domain-product-data-deletion", "case:reject-domain-persistence-scope", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:domain-identity-content-sensitive",
+        "case:domain-product-data-deletion",
+        "case:reject-domain-persistence-scope",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -312,10 +433,18 @@
       "requirementPrefix": "DOMAIN-HISTORY-",
       "requirementCount": 6,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:domain-profile", "case:reject-domain-history-participation", "case:reject-domain-history-unbounded", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:domain-profile",
+        "case:reject-domain-history-participation",
+        "case:reject-domain-history-unbounded",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -323,10 +452,18 @@
       "requirementPrefix": "DOMAIN-IR-",
       "requirementCount": 5,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-DOMAIN-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:domain-profile.schema.json", "normalizer:domain-profile", "case:domain-profile-order-independent", "planned:IR-COMPOSER-01"],
+      "evidenceRefs": [
+        "schema:domain-profile.schema.json",
+        "normalizer:domain-profile",
+        "case:domain-profile-order-independent",
+        "planned:IR-COMPOSER-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -334,10 +471,17 @@
       "requirementPrefix": "DOMAIN-LIFE-",
       "requirementCount": 7,
       "primaryDisposition": "native-compatible-pair-qualification",
-      "supportingDispositions": ["engine-reference-oracle", "cross-specification-proof"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["proof:adr-0019-source-boundary", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "proof:adr-0019-source-boundary",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -345,10 +489,18 @@
       "requirementPrefix": "DOMAIN-PROFILE-",
       "requirementCount": 6,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["structural-schema", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "structural-schema",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DOMAIN-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:domain-profile.schema.json", "normalizer:domain-profile", "case:normalize-domain-profiles", "case:reject-domain-native-program-language"],
+      "evidenceRefs": [
+        "schema:domain-profile.schema.json",
+        "normalizer:domain-profile",
+        "case:normalize-domain-profiles",
+        "case:reject-domain-native-program-language"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -356,10 +508,18 @@
       "requirementPrefix": "DOMAIN-RESOURCE-",
       "requirementCount": 8,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:domain-profile", "case:domain-arbitrary-width-bounds", "case:reject-domain-resource-range", "planned:IR-RESOURCE-01"],
+      "evidenceRefs": [
+        "normalizer:domain-profile",
+        "case:domain-arbitrary-width-bounds",
+        "case:reject-domain-resource-range",
+        "planned:IR-RESOURCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -367,10 +527,17 @@
       "requirementPrefix": "DOMAIN-ROLE-",
       "requirementCount": 6,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer"],
+      "supportingDispositions": [
+        "semantic-normalizer"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:domain-profile", "case:domain-profile-second-instances-distinct", "case:reject-domain-role-successor", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:domain-profile",
+        "case:domain-profile-second-instances-distinct",
+        "case:reject-domain-role-successor",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -378,10 +545,18 @@
       "requirementPrefix": "DOMAIN-ROOT-",
       "requirementCount": 4,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:domain-profile", "case:reject-domain-root-value-role", "planned:IR-SESSION-01", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:domain-profile",
+        "case:reject-domain-root-value-role",
+        "planned:IR-SESSION-01",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -389,10 +564,18 @@
       "requirementPrefix": "DOMAIN-SEC-",
       "requirementCount": 5,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DOMAIN-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-domain-unknown-field", "case:reject-domain-contract-drift", "case:reject-domain-native-program-language", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:reject-domain-unknown-field",
+        "case:reject-domain-contract-drift",
+        "case:reject-domain-native-program-language",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -400,10 +583,18 @@
       "requirementPrefix": "DOMAIN-STATE-",
       "requirementCount": 8,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:domain-profile", "case:domain-identity-content-sensitive", "case:reject-domain-identity-key-role", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:domain-profile",
+        "case:domain-identity-content-sensitive",
+        "case:reject-domain-identity-key-role",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -411,10 +602,18 @@
       "requirementPrefix": "DOMAIN-TRANSITION-",
       "requirementCount": 8,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:domain-profile", "case:domain-profile-second-instances-distinct", "case:reject-domain-cancellation-bound", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:domain-profile",
+        "case:domain-profile-second-instances-distinct",
+        "case:reject-domain-cancellation-bound",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -422,10 +621,18 @@
       "requirementPrefix": "POLICY-PROFILE-",
       "requirementCount": 6,
       "primaryDisposition": "structural-schema",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-POLICY-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:policy-profile.schema.json", "normalizer:policy-profile", "case:normalize-policy-profiles", "case:reject-policy-native-program-language"],
+      "evidenceRefs": [
+        "schema:policy-profile.schema.json",
+        "normalizer:policy-profile",
+        "case:normalize-policy-profiles",
+        "case:reject-policy-native-program-language"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -433,10 +640,24 @@
       "requirementPrefix": "POLICY-RECORD-",
       "requirementCount": 8,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-record-storage-scope", "case:reject-policy-accounting-without-numeric-rules", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:policy-profile",
+        "case:reject-policy-record-storage-scope",
+        "case:reject-policy-accounting-without-numeric-rules",
+        "planned:ENGINE-REFERENCE-01",
+        "case:policy-profile-matrix",
+        "case:policy-transposition-edge-local-records",
+        "case:policy-reservation-not-completed",
+        "case:policy-vector-non-zero-sum-perspective",
+        "case:policy-evaluator-mode-matrix",
+        "case:policy-statistics-overflow"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -444,10 +665,18 @@
       "requirementPrefix": "POLICY-SELECT-",
       "requirementCount": 7,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-POLICY-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-role-selection-mode", "case:reject-policy-selection-randomness", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:policy-profile",
+        "case:reject-policy-role-selection-mode",
+        "case:reject-policy-selection-randomness",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -455,10 +684,21 @@
       "requirementPrefix": "POLICY-RESERVE-",
       "requirementCount": 6,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-reservation-port-residue", "case:reject-policy-reservation-without-record", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:policy-profile",
+        "case:reject-policy-reservation-port-residue",
+        "case:reject-policy-reservation-without-record",
+        "planned:ENGINE-NATIVE-01",
+        "case:policy-reservation-not-completed",
+        "case:policy-reservation-failure-conservation",
+        "case:policy-reservation-pressure"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -466,10 +706,18 @@
       "requirementPrefix": "POLICY-WIDEN-",
       "requirementCount": 7,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["cross-specification-proof", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "cross-specification-proof",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-POLICY-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-domain-source-drift", "case:reject-policy-intrinsic-only-fallback-without-source", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:policy-profile",
+        "case:reject-policy-domain-source-drift",
+        "case:reject-policy-intrinsic-only-fallback-without-source",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -477,10 +725,18 @@
       "requirementPrefix": "POLICY-VALUE-",
       "requirementCount": 7,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["engine-reference-oracle", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-POLICY-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:policy-evaluator-mode-matrix", "case:reject-policy-scalar-coordinate-count", "case:reject-policy-vector-coordinate-count", "case:policy-stateless-zero-residue"],
+      "evidenceRefs": [
+        "case:policy-evaluator-mode-matrix",
+        "case:reject-policy-scalar-coordinate-count",
+        "case:reject-policy-vector-coordinate-count",
+        "case:policy-stateless-zero-residue"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -488,10 +744,20 @@
       "requirementPrefix": "POLICY-CYCLE-",
       "requirementCount": 4,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-cycle-domain-port-drift", "case:policy-stateless-zero-residue", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:policy-profile",
+        "case:reject-policy-cycle-domain-port-drift",
+        "case:policy-stateless-zero-residue",
+        "planned:ENGINE-REFERENCE-01",
+        "case:policy-path-relation-after-identity",
+        "case:policy-chance-custom-role"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -499,10 +765,24 @@
       "requirementPrefix": "POLICY-BACKUP-",
       "requirementCount": 11,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:policy-profile-second-instances-distinct", "case:reject-policy-backup-order", "case:reject-policy-backup-idempotence", "case:reject-policy-backup-without-visible-record", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:policy-profile-second-instances-distinct",
+        "case:reject-policy-backup-order",
+        "case:reject-policy-backup-idempotence",
+        "case:reject-policy-backup-without-visible-record",
+        "planned:ENGINE-NATIVE-01",
+        "case:policy-ordered-noncommutative-backup",
+        "case:policy-repeated-node-occurrence-backup",
+        "case:policy-backup-prefix-must-drain",
+        "case:policy-stale-epoch-publication",
+        "case:policy-oracle-sensitivity-backup"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -510,10 +790,22 @@
       "requirementPrefix": "POLICY-STOP-",
       "requirementCount": 7,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:policy-arbitrary-width-bounds", "case:reject-policy-stop-budget-range", "case:reject-policy-undeclared-stop-cause", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:policy-profile",
+        "case:policy-arbitrary-width-bounds",
+        "case:reject-policy-stop-budget-range",
+        "case:reject-policy-undeclared-stop-cause",
+        "planned:ENGINE-REFERENCE-01",
+        "case:policy-first-stop-cause-drain",
+        "case:policy-schedule-bounded-overshoot",
+        "case:policy-no-ranked-output"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -521,10 +813,21 @@
       "requirementPrefix": "POLICY-REUSE-",
       "requirementCount": 5,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-reuse-unknown-record", "case:reject-policy-reuse-coverage", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:policy-profile",
+        "case:reject-policy-reuse-unknown-record",
+        "case:reject-policy-reuse-coverage",
+        "planned:ENGINE-REFERENCE-01",
+        "case:policy-advance-no-reclassification",
+        "case:policy-reroot-explicit-reuse",
+        "case:policy-generation-exhaustion"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -532,10 +835,19 @@
       "requirementPrefix": "POLICY-LIFE-",
       "requirementCount": 8,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-required-status", "case:reject-policy-required-resource-pressure", "planned:IR-RESOURCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:policy-profile",
+        "case:reject-policy-required-status",
+        "case:reject-policy-required-resource-pressure",
+        "planned:IR-RESOURCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -543,10 +855,18 @@
       "requirementPrefix": "POLICY-SEC-",
       "requirementCount": 5,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-POLICY-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-policy-unknown-field", "case:reject-policy-program-input-identity-drift", "case:reject-policy-incomplete-persistence", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:reject-policy-unknown-field",
+        "case:reject-policy-program-input-identity-drift",
+        "case:reject-policy-incomplete-persistence",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -554,10 +874,19 @@
       "requirementPrefix": "POLICY-CLEANUP-",
       "requirementCount": 2,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
-      "evidenceStatus": "pending",
-      "evidenceRefs": ["case:reject-policy-backup-without-visible-record", "case:reject-policy-reservation-without-record", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceStatus": "partial",
+      "evidenceRefs": [
+        "case:reject-policy-backup-without-visible-record",
+        "case:reject-policy-reservation-without-record",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01",
+        "case:policy-cleanup-complete-disposition",
+        "case:policy-cleanup-quarantine"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -565,10 +894,19 @@
       "requirementPrefix": "POLICY-COMPAT-",
       "requirementCount": 3,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:policy-identity-content-sensitive", "case:policy-product-data-deletion", "case:reject-policy-program-input-identity-drift", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:policy-identity-content-sensitive",
+        "case:policy-product-data-deletion",
+        "case:reject-policy-program-input-identity-drift",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -576,10 +914,18 @@
       "requirementPrefix": "POLICY-IR-",
       "requirementCount": 5,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-POLICY-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:policy-profile.schema.json", "normalizer:policy-profile", "case:policy-profile-order-independent", "case:policy-framework-selection-link"],
+      "evidenceRefs": [
+        "schema:policy-profile.schema.json",
+        "normalizer:policy-profile",
+        "case:policy-profile-order-independent",
+        "case:policy-framework-selection-link"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -587,10 +933,18 @@
       "requirementPrefix": "EVAL-PROFILE-",
       "requirementCount": 8,
       "primaryDisposition": "structural-schema",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-EVALUATOR-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:evaluator-profile.schema.json", "normalizer:evaluator-profile", "case:normalize-evaluator-profiles", "case:reject-evaluator-native-program-language"],
+      "evidenceRefs": [
+        "schema:evaluator-profile.schema.json",
+        "normalizer:evaluator-profile",
+        "case:normalize-evaluator-profiles",
+        "case:reject-evaluator-native-program-language"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -598,10 +952,18 @@
       "requirementPrefix": "EVAL-MODE-",
       "requirementCount": 6,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["semantic-normalizer", "deterministic-composition"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "deterministic-composition"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:evaluator-mode-matrix", "case:evaluator-absent-zero-residue", "case:evaluator-capability-deletion", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:evaluator-mode-matrix",
+        "case:evaluator-absent-zero-residue",
+        "case:evaluator-capability-deletion",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -609,10 +971,20 @@
       "requirementPrefix": "EVAL-INPUT-",
       "requirementCount": 7,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-EVALUATOR-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:evaluator-profile", "case:evaluator-history-cache-full-key", "case:reject-evaluator-history-input-key", "case:reject-evaluator-input-randomness-key", "case:reject-evaluator-stateless-borrow", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:evaluator-profile",
+        "case:evaluator-history-cache-full-key",
+        "case:reject-evaluator-history-input-key",
+        "case:reject-evaluator-input-randomness-key",
+        "case:reject-evaluator-stateless-borrow",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -620,10 +992,19 @@
       "requirementPrefix": "EVAL-REQUEST-",
       "requirementCount": 10,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:evaluator-profile", "case:reject-evaluator-request-capability-coverage", "case:reject-evaluator-required-capability-fallback", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:evaluator-profile",
+        "case:reject-evaluator-request-capability-coverage",
+        "case:reject-evaluator-required-capability-fallback",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -631,10 +1012,18 @@
       "requirementPrefix": "EVAL-PROPOSAL-",
       "requirementCount": 6,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-EVALUATOR-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:evaluator-proposal-ownership-link", "case:evaluator-policy-profile-linkage", "case:evaluator-capability-deletion", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "case:evaluator-proposal-ownership-link",
+        "case:evaluator-policy-profile-linkage",
+        "case:evaluator-capability-deletion",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -642,10 +1031,18 @@
       "requirementPrefix": "EVAL-OUTPUT-",
       "requirementCount": 8,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["engine-reference-oracle", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-EVALUATOR-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:evaluator-mode-matrix", "case:reject-evaluator-scalar-coordinate-count", "case:reject-evaluator-vector-coordinate-count", "case:reject-evaluator-publication-completeness"],
+      "evidenceRefs": [
+        "case:evaluator-mode-matrix",
+        "case:reject-evaluator-scalar-coordinate-count",
+        "case:reject-evaluator-vector-coordinate-count",
+        "case:reject-evaluator-publication-completeness"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -653,10 +1050,19 @@
       "requirementPrefix": "EVAL-BATCH-",
       "requirementCount": 10,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:evaluator-batch-one-progress", "case:evaluator-batch-semantics-matrix", "case:evaluator-resumable-workspace-closure", "case:reject-evaluator-batch-sensitive-order-identity", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:evaluator-batch-one-progress",
+        "case:evaluator-batch-semantics-matrix",
+        "case:evaluator-resumable-workspace-closure",
+        "case:reject-evaluator-batch-sensitive-order-identity",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -664,10 +1070,19 @@
       "requirementPrefix": "EVAL-PUB-",
       "requirementCount": 8,
       "primaryDisposition": "native-compatible-pair-qualification",
-      "supportingDispositions": ["engine-reference-oracle", "semantic-normalizer"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "semantic-normalizer"
+      ],
       "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["normalizer:evaluator-profile", "case:reject-evaluator-publication-terminal-state", "case:reject-evaluator-publication-authority", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:evaluator-profile",
+        "case:reject-evaluator-publication-terminal-state",
+        "case:reject-evaluator-publication-authority",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -675,10 +1090,19 @@
       "requirementPrefix": "EVAL-CACHE-",
       "requirementCount": 8,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:evaluator-history-cache-full-key", "case:reject-evaluator-cache-incomplete-key", "case:reject-evaluator-cache-hash-only", "case:reject-evaluator-cache-resource-residue", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:evaluator-history-cache-full-key",
+        "case:reject-evaluator-cache-incomplete-key",
+        "case:reject-evaluator-cache-hash-only",
+        "case:reject-evaluator-cache-resource-residue",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -686,10 +1110,19 @@
       "requirementPrefix": "EVAL-RESIDENT-",
       "requirementCount": 8,
       "primaryDisposition": "native-compatible-pair-qualification",
-      "supportingDispositions": ["semantic-normalizer", "deterministic-composition"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "deterministic-composition"
+      ],
       "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["case:evaluator-resident-artifact-boundary", "case:reject-evaluator-artifact-post-ignition-residence", "case:reject-evaluator-host-progress-loop", "case:reject-evaluator-native-program-language", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:evaluator-resident-artifact-boundary",
+        "case:reject-evaluator-artifact-post-ignition-residence",
+        "case:reject-evaluator-host-progress-loop",
+        "case:reject-evaluator-native-program-language",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -697,10 +1130,18 @@
       "requirementPrefix": "EVAL-PROGRESS-",
       "requirementCount": 7,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-PROGRESS-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:evaluator-batch-one-progress", "case:evaluator-resumable-workspace-closure", "case:reject-evaluator-host-progress-loop", "planned:IR-PROGRESS-01"],
+      "evidenceRefs": [
+        "case:evaluator-batch-one-progress",
+        "case:evaluator-resumable-workspace-closure",
+        "case:reject-evaluator-host-progress-loop",
+        "planned:IR-PROGRESS-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -708,10 +1149,18 @@
       "requirementPrefix": "EVAL-REUSE-",
       "requirementCount": 6,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:evaluator-profile", "case:evaluator-history-cache-full-key", "case:reject-evaluator-reuse-coverage", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:evaluator-profile",
+        "case:evaluator-history-cache-full-key",
+        "case:reject-evaluator-reuse-coverage",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -719,10 +1168,21 @@
       "requirementPrefix": "EVAL-LIFE-",
       "requirementCount": 10,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:evaluator-profile", "case:reject-evaluator-lifecycle-state-gap", "case:reject-evaluator-required-status", "case:reject-evaluator-required-resource-class", "case:reject-evaluator-workspace-resource-residue", "case:reject-evaluator-randomness-resource-residue", "planned:IR-RESOURCE-01"],
+      "evidenceRefs": [
+        "normalizer:evaluator-profile",
+        "case:reject-evaluator-lifecycle-state-gap",
+        "case:reject-evaluator-required-status",
+        "case:reject-evaluator-required-resource-class",
+        "case:reject-evaluator-workspace-resource-residue",
+        "case:reject-evaluator-randomness-resource-residue",
+        "planned:IR-RESOURCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -730,10 +1190,19 @@
       "requirementPrefix": "EVAL-SEC-",
       "requirementCount": 6,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-EVALUATOR-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-evaluator-artifact-provenance", "case:reject-evaluator-program-input-drift", "case:reject-evaluator-diagnostic-payload-authority", "case:reject-evaluator-incomplete-persistence", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:reject-evaluator-artifact-provenance",
+        "case:reject-evaluator-program-input-drift",
+        "case:reject-evaluator-diagnostic-payload-authority",
+        "case:reject-evaluator-incomplete-persistence",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -741,10 +1210,20 @@
       "requirementPrefix": "EVAL-CLEANUP-",
       "requirementCount": 3,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["native-compatible-pair-qualification", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "native-compatible-pair-qualification",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["case:evaluator-absent-zero-residue", "case:evaluator-capability-deletion", "case:reject-evaluator-cleanup-coverage", "case:reject-evaluator-reuse-coverage", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:evaluator-absent-zero-residue",
+        "case:evaluator-capability-deletion",
+        "case:reject-evaluator-cleanup-coverage",
+        "case:reject-evaluator-reuse-coverage",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -752,10 +1231,20 @@
       "requirementPrefix": "EVAL-COMPAT-",
       "requirementCount": 4,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:evaluator-policy-profile-linkage", "case:evaluator-identity-content-sensitive", "case:evaluator-product-data-deletion", "case:reject-evaluator-program-input-drift", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:evaluator-policy-profile-linkage",
+        "case:evaluator-identity-content-sensitive",
+        "case:evaluator-product-data-deletion",
+        "case:reject-evaluator-program-input-drift",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -763,10 +1252,19 @@
       "requirementPrefix": "EVAL-IR-",
       "requirementCount": 6,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-EVALUATOR-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:evaluator-profile.schema.json", "normalizer:evaluator-profile", "case:evaluator-profile-order-independent", "case:evaluator-absent-zero-residue", "case:evaluator-capability-deletion"],
+      "evidenceRefs": [
+        "schema:evaluator-profile.schema.json",
+        "normalizer:evaluator-profile",
+        "case:evaluator-profile-order-independent",
+        "case:evaluator-absent-zero-residue",
+        "case:evaluator-capability-deletion"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -774,10 +1272,18 @@
       "requirementPrefix": "GRAPH-PROFILE-",
       "requirementCount": 6,
       "primaryDisposition": "structural-schema",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-GRAPH-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:graph-profile.schema.json", "normalizer:graph-profile", "case:normalize-graph-profiles", "case:reject-graph-native-program-language"],
+      "evidenceRefs": [
+        "schema:graph-profile.schema.json",
+        "normalizer:graph-profile",
+        "case:normalize-graph-profiles",
+        "case:reject-graph-native-program-language"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -785,10 +1291,18 @@
       "requirementPrefix": "GRAPH-REF-",
       "requirementCount": 8,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-GRAPH-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:graph-profile", "case:graph-arbitrary-width-ranges", "case:reject-graph-arena-reference-range", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:graph-profile",
+        "case:graph-arbitrary-width-ranges",
+        "case:reject-graph-arena-reference-range",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -796,10 +1310,18 @@
       "requirementPrefix": "GRAPH-NODE-",
       "requirementCount": 11,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:graph-profile", "case:reject-graph-lifecycle-missing-release", "case:reject-graph-required-port", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:graph-profile",
+        "case:reject-graph-lifecycle-missing-release",
+        "case:reject-graph-required-port",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -807,10 +1329,18 @@
       "requirementPrefix": "GRAPH-EDGE-",
       "requirementCount": 10,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:graph-profile", "case:normalize-graph-profiles", "case:reject-graph-publication-host-wait", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:graph-profile",
+        "case:normalize-graph-profiles",
+        "case:reject-graph-publication-host-wait",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -818,10 +1348,18 @@
       "requirementPrefix": "GRAPH-PATH-",
       "requirementCount": 8,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:graph-profile", "case:reject-graph-path-domain-port", "case:reject-graph-path-capacity", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:graph-profile",
+        "case:reject-graph-path-domain-port",
+        "case:reject-graph-path-capacity",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -829,10 +1367,18 @@
       "requirementPrefix": "GRAPH-ROOT-",
       "requirementCount": 6,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:graph-profile", "case:reject-graph-root-reserve", "case:reject-graph-reclamation-protection-gap", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:graph-profile",
+        "case:reject-graph-root-reserve",
+        "case:reject-graph-reclamation-protection-gap",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -840,10 +1386,18 @@
       "requirementPrefix": "GRAPH-RECLAIM-",
       "requirementCount": 9,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:graph-profile", "case:graph-no-reclamation-zero-residue", "case:reject-graph-reclamation-generation-order", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:graph-profile",
+        "case:graph-no-reclamation-zero-residue",
+        "case:reject-graph-reclamation-generation-order",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -851,10 +1405,18 @@
       "requirementPrefix": "GRAPH-LIFE-",
       "requirementCount": 7,
       "primaryDisposition": "native-compatible-pair-qualification",
-      "supportingDispositions": ["engine-reference-oracle", "semantic-normalizer"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "semantic-normalizer"
+      ],
       "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["normalizer:graph-profile", "case:reject-graph-lifecycle-unreachable-terminal", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:graph-profile",
+        "case:reject-graph-lifecycle-unreachable-terminal",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -862,10 +1424,18 @@
       "requirementPrefix": "GRAPH-RESOURCE-",
       "requirementCount": 8,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:graph-profile", "case:graph-arbitrary-width-ranges", "case:reject-graph-resource-range", "planned:IR-RESOURCE-01"],
+      "evidenceRefs": [
+        "normalizer:graph-profile",
+        "case:graph-arbitrary-width-ranges",
+        "case:reject-graph-resource-range",
+        "planned:IR-RESOURCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -873,7 +1443,9 @@
       "requirementPrefix": "GRAPH-CLEANUP-",
       "requirementCount": 4,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
       "evidenceRefs": [
@@ -892,10 +1464,18 @@
       "requirementPrefix": "GRAPH-SEC-",
       "requirementCount": 5,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-GRAPH-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-graph-unknown-field", "case:reject-graph-owner-contract-crossing", "case:reject-graph-native-program-language", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:reject-graph-unknown-field",
+        "case:reject-graph-owner-contract-crossing",
+        "case:reject-graph-native-program-language",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -903,10 +1483,19 @@
       "requirementPrefix": "GRAPH-COMPAT-",
       "requirementCount": 6,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:graph-identity-content-sensitive", "case:graph-owner-region-product-deletion", "case:reject-graph-persistence-scope", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:graph-identity-content-sensitive",
+        "case:graph-owner-region-product-deletion",
+        "case:reject-graph-persistence-scope",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -914,10 +1503,18 @@
       "requirementPrefix": "GRAPH-IR-",
       "requirementCount": 5,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-GRAPH-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:graph-profile.schema.json", "normalizer:graph-profile", "case:graph-profile-order-independent", "case:graph-framework-selection-link"],
+      "evidenceRefs": [
+        "schema:graph-profile.schema.json",
+        "normalizer:graph-profile",
+        "case:graph-profile-order-independent",
+        "case:graph-framework-selection-link"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -925,10 +1522,20 @@
       "requirementPrefix": "RESOURCE-PROFILE-",
       "requirementCount": 7,
       "primaryDisposition": "structural-schema",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:resource-profile.schema.json", "normalizer:resource-profile", "case:resource-profile-matrix", "case:resource-arbitrary-width-checked-formula", "case:reject-resource-native-program-language", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "schema:resource-profile.schema.json",
+        "normalizer:resource-profile",
+        "case:resource-profile-matrix",
+        "case:resource-arbitrary-width-checked-formula",
+        "case:reject-resource-native-program-language",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -936,10 +1543,20 @@
       "requirementPrefix": "RESOURCE-COMPOSE-",
       "requirementCount": 8,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:resource-profile", "case:resource-evaluator-absent-zero-residue", "case:resource-upstream-exact-coverage", "case:resource-safe-alias-proof", "case:reject-resource-partition-overlap", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:resource-profile",
+        "case:resource-evaluator-absent-zero-residue",
+        "case:resource-upstream-exact-coverage",
+        "case:resource-safe-alias-proof",
+        "case:reject-resource-partition-overlap",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -947,10 +1564,20 @@
       "requirementPrefix": "RESOURCE-PLAN-",
       "requirementCount": 6,
       "primaryDisposition": "native-compatible-pair-qualification",
-      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["normalizer:resource-profile", "case:resource-provider-projection-neutral", "case:reject-resource-host-growth", "case:reject-resource-provider-coverage", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:resource-profile",
+        "case:resource-provider-projection-neutral",
+        "case:reject-resource-host-growth",
+        "case:reject-resource-provider-coverage",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -958,10 +1585,21 @@
       "requirementPrefix": "RESOURCE-ADMIT-",
       "requirementCount": 11,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:resource-profile", "case:resource-meaningful-admission-order-sensitive", "case:resource-core-compound-and-reserves", "case:reject-resource-admission-order", "case:reject-resource-ledger-states", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:resource-profile",
+        "case:resource-meaningful-admission-order-sensitive",
+        "case:resource-core-compound-and-reserves",
+        "case:reject-resource-admission-order",
+        "case:reject-resource-ledger-states",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -969,10 +1607,22 @@
       "requirementPrefix": "RESOURCE-RESERVE-",
       "requirementCount": 6,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["engine-reference-oracle", "cross-specification-proof"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:resource-profile", "case:resource-core-compound-and-reserves", "case:resource-live-session-root-reserve", "case:resource-live-output-terminal-isolation", "case:reject-resource-terminal-reserve-missing", "case:reject-resource-root-reserve-missing", "case:reject-resource-borrow-incomplete", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:resource-profile",
+        "case:resource-core-compound-and-reserves",
+        "case:resource-live-session-root-reserve",
+        "case:resource-live-output-terminal-isolation",
+        "case:reject-resource-terminal-reserve-missing",
+        "case:reject-resource-root-reserve-missing",
+        "case:reject-resource-borrow-incomplete",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -980,10 +1630,22 @@
       "requirementPrefix": "RESOURCE-PRESSURE-",
       "requirementCount": 7,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:resource-profile", "case:resource-pressure-owner-separation", "case:reject-resource-response-owner", "case:reject-resource-response-reserve", "case:reject-resource-watermark-range", "planned:IR-PROGRESS-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:resource-profile",
+        "case:resource-pressure-owner-separation",
+        "case:reject-resource-response-owner",
+        "case:reject-resource-response-reserve",
+        "case:reject-resource-watermark-range",
+        "planned:IR-PROGRESS-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -991,10 +1653,22 @@
       "requirementPrefix": "RESOURCE-EXHAUST-",
       "requirementCount": 8,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:resource-profile", "case:reject-resource-exhaustion-cause-gap", "case:reject-resource-first-cause-mutable", "case:reject-resource-counter-wrap", "case:reject-resource-host-growth", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:resource-profile",
+        "case:reject-resource-exhaustion-cause-gap",
+        "case:reject-resource-first-cause-mutable",
+        "case:reject-resource-counter-wrap",
+        "case:reject-resource-host-growth",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1002,10 +1676,21 @@
       "requirementPrefix": "RESOURCE-LIFE-",
       "requirementCount": 6,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:resource-profile", "case:resource-lifecycle-cleanup-closure", "case:reject-resource-lifecycle-state-gap", "case:reject-resource-required-status", "case:reject-resource-required-port", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:resource-profile",
+        "case:resource-lifecycle-cleanup-closure",
+        "case:reject-resource-lifecycle-state-gap",
+        "case:reject-resource-required-status",
+        "case:reject-resource-required-port",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1013,10 +1698,20 @@
       "requirementPrefix": "RESOURCE-SEC-",
       "requirementCount": 5,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-resource-unknown-field", "case:reject-resource-class-range", "case:reject-resource-identity-range", "case:reject-resource-diagnostic-authority", "case:reject-resource-incomplete-persistence", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:reject-resource-unknown-field",
+        "case:reject-resource-class-range",
+        "case:reject-resource-identity-range",
+        "case:reject-resource-diagnostic-authority",
+        "case:reject-resource-incomplete-persistence",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1024,10 +1719,21 @@
       "requirementPrefix": "RESOURCE-CLEANUP-",
       "requirementCount": 2,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["case:resource-evaluator-absent-zero-residue", "case:resource-zero-source-elimination", "case:reject-resource-cleanup-coverage", "planned:IR-DELETION-ID-01", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:resource-evaluator-absent-zero-residue",
+        "case:resource-zero-source-elimination",
+        "case:reject-resource-cleanup-coverage",
+        "planned:IR-DELETION-ID-01",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1035,10 +1741,21 @@
       "requirementPrefix": "RESOURCE-COMPAT-",
       "requirementCount": 3,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:resource-identity-content-sensitive", "case:resource-profile-order-independent", "case:reject-resource-provider-drift", "case:reject-resource-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:resource-identity-content-sensitive",
+        "case:resource-profile-order-independent",
+        "case:reject-resource-provider-drift",
+        "case:reject-resource-program-input-drift",
+        "planned:IR-DELETION-ID-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1046,10 +1763,20 @@
       "requirementPrefix": "RESOURCE-IR-",
       "requirementCount": 5,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-RESOURCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:resource-profile.schema.json", "normalizer:resource-profile", "case:resource-profile-order-independent", "case:resource-provider-projection-neutral", "case:resource-program-input-closure", "case:resource-evaluator-absent-zero-residue"],
+      "evidenceRefs": [
+        "schema:resource-profile.schema.json",
+        "normalizer:resource-profile",
+        "case:resource-profile-order-independent",
+        "case:resource-provider-projection-neutral",
+        "case:resource-program-input-closure",
+        "case:resource-evaluator-absent-zero-residue"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1057,10 +1784,21 @@
       "requirementPrefix": "PROGRESS-PROFILE-",
       "requirementCount": 5,
       "primaryDisposition": "structural-schema",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-PROGRESS-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:progress-profile.schema.json", "normalizer:progress-profile", "case:normalize-progress-profiles", "case:progress-profile-order-independent", "case:reject-progress-unknown-field", "case:reject-progress-native-program-language", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "schema:progress-profile.schema.json",
+        "normalizer:progress-profile",
+        "case:normalize-progress-profiles",
+        "case:progress-profile-order-independent",
+        "case:reject-progress-unknown-field",
+        "case:reject-progress-native-program-language",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1068,10 +1806,21 @@
       "requirementPrefix": "PROGRESS-GRAPH-",
       "requirementCount": 5,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["engine-reference-oracle", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-PROGRESS-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-work-graph-owner-and-resource-closure", "case:progress-reserved-closure-paths", "case:reject-progress-required-self-dependency", "case:reject-progress-mandatory-wait-cycle", "case:reject-progress-dependency-escape", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:progress-profile",
+        "case:progress-work-graph-owner-and-resource-closure",
+        "case:progress-reserved-closure-paths",
+        "case:reject-progress-required-self-dependency",
+        "case:reject-progress-mandatory-wait-cycle",
+        "case:reject-progress-dependency-escape",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1079,10 +1828,23 @@
       "requirementPrefix": "PROGRESS-WORK-",
       "requirementCount": 7,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-work-graph-owner-and-resource-closure", "case:reject-progress-work-owner", "case:reject-progress-cross-owner-resource", "case:reject-progress-readiness-source", "case:reject-progress-held-worker-wait", "case:reject-progress-retry-not-stale-safe", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:progress-profile",
+        "case:progress-work-graph-owner-and-resource-closure",
+        "case:reject-progress-work-owner",
+        "case:reject-progress-cross-owner-resource",
+        "case:reject-progress-readiness-source",
+        "case:reject-progress-held-worker-wait",
+        "case:reject-progress-retry-not-stale-safe",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1090,10 +1852,22 @@
       "requirementPrefix": "PROGRESS-FAIR-",
       "requirementCount": 6,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-batch-device-visible-flush", "case:reject-progress-batch-host-timeout", "case:reject-progress-fairness-coverage", "case:reject-progress-fairness-priority-escape", "case:reject-progress-fairness-closure-priority", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:progress-profile",
+        "case:progress-batch-device-visible-flush",
+        "case:reject-progress-batch-host-timeout",
+        "case:reject-progress-fairness-coverage",
+        "case:reject-progress-fairness-priority-escape",
+        "case:reject-progress-fairness-closure-priority",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1101,10 +1875,23 @@
       "requirementPrefix": "PROGRESS-NOPROGRESS-",
       "requirementCount": 7,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-no-progress-outcome-closure", "case:progress-live-session-bounded-external-wait", "case:reject-progress-no-progress-outcome-gap", "case:reject-progress-host-no-progress-source", "case:reject-progress-session-external-wait-omission", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:progress-profile",
+        "case:progress-no-progress-outcome-closure",
+        "case:progress-live-session-bounded-external-wait",
+        "case:reject-progress-no-progress-outcome-gap",
+        "case:reject-progress-host-no-progress-source",
+        "case:reject-progress-session-external-wait-omission",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1112,10 +1899,23 @@
       "requirementPrefix": "PROGRESS-STOP-",
       "requirementCount": 7,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-stop-drain-closure-contract", "case:progress-reserved-closure-paths", "case:reject-progress-stop-state-gap", "case:reject-progress-stop-drain-kind-gap", "case:reject-progress-observation-dependent-closure", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:progress-profile",
+        "case:progress-stop-drain-closure-contract",
+        "case:progress-reserved-closure-paths",
+        "case:reject-progress-stop-state-gap",
+        "case:reject-progress-stop-drain-kind-gap",
+        "case:reject-progress-observation-dependent-closure",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1123,10 +1923,21 @@
       "requirementPrefix": "PROGRESS-RESOURCE-",
       "requirementCount": 2,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-PROGRESS-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-reserved-closure-paths", "case:reject-progress-resource-plan-drift", "case:reject-progress-cross-owner-resource", "case:reject-progress-missing-closure-reserve", "case:reject-progress-resource-less-recovery", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:progress-profile",
+        "case:progress-reserved-closure-paths",
+        "case:reject-progress-resource-plan-drift",
+        "case:reject-progress-cross-owner-resource",
+        "case:reject-progress-missing-closure-reserve",
+        "case:reject-progress-resource-less-recovery",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1134,10 +1945,22 @@
       "requirementPrefix": "PROGRESS-LIFE-",
       "requirementCount": 4,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:progress-profile", "case:progress-arbitrary-width-bounds", "case:progress-device-active-public-ports", "case:reject-progress-lifecycle-state-gap", "case:reject-progress-required-status", "case:reject-progress-required-port", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:progress-profile",
+        "case:progress-arbitrary-width-bounds",
+        "case:progress-device-active-public-ports",
+        "case:reject-progress-lifecycle-state-gap",
+        "case:reject-progress-required-status",
+        "case:reject-progress-required-port",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1145,10 +1968,20 @@
       "requirementPrefix": "PROGRESS-SEC-",
       "requirementCount": 2,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-PROGRESS-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-progress-unknown-field", "case:reject-progress-contributor-relabel", "case:reject-progress-cross-owner-resource", "case:reject-progress-diagnostic-authority", "case:reject-progress-incomplete-persistence", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:reject-progress-unknown-field",
+        "case:reject-progress-contributor-relabel",
+        "case:reject-progress-cross-owner-resource",
+        "case:reject-progress-diagnostic-authority",
+        "case:reject-progress-incomplete-persistence",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1156,10 +1989,22 @@
       "requirementPrefix": "PROGRESS-COMPAT-",
       "requirementCount": 2,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:progress-profile-order-independent", "case:progress-identity-content-sensitive", "case:progress-program-input-exactness", "case:reject-progress-scheduler-compatibility", "case:reject-progress-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:progress-profile-order-independent",
+        "case:progress-identity-content-sensitive",
+        "case:progress-program-input-exactness",
+        "case:reject-progress-scheduler-compatibility",
+        "case:reject-progress-program-input-drift",
+        "planned:IR-DELETION-ID-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1167,10 +2012,22 @@
       "requirementPrefix": "PROGRESS-IR-",
       "requirementCount": 4,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-PROGRESS-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:progress-profile.schema.json", "normalizer:progress-profile", "case:progress-evaluator-absence-zero-residue", "case:progress-session-absence-zero-residue", "case:progress-work-graph-owner-and-resource-closure", "case:progress-program-input-exactness", "case:reject-progress-host-control-gates-internal-work", "case:reject-progress-native-program-language"],
+      "evidenceRefs": [
+        "schema:progress-profile.schema.json",
+        "normalizer:progress-profile",
+        "case:progress-evaluator-absence-zero-residue",
+        "case:progress-session-absence-zero-residue",
+        "case:progress-work-graph-owner-and-resource-closure",
+        "case:progress-program-input-exactness",
+        "case:reject-progress-host-control-gates-internal-work",
+        "case:reject-progress-native-program-language"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1178,10 +2035,22 @@
       "requirementPrefix": "OUTPUT-PROFILE-",
       "requirementCount": 6,
       "primaryDisposition": "structural-schema",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-OUTPUT-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:output-profile.schema.json", "normalizer:output-profile", "case:normalize-output-profiles", "case:output-profile-order-independent", "case:reject-output-unknown-field", "case:reject-output-workspace-host-spill", "case:reject-output-private-native-mechanism", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "schema:output-profile.schema.json",
+        "normalizer:output-profile",
+        "case:normalize-output-profiles",
+        "case:output-profile-order-independent",
+        "case:reject-output-unknown-field",
+        "case:reject-output-workspace-host-spill",
+        "case:reject-output-private-native-mechanism",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1189,10 +2058,25 @@
       "requirementPrefix": "OUTPUT-SCHEMA-",
       "requirementCount": 7,
       "primaryDisposition": "structural-schema",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-OUTPUT-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:output-profile.schema.json", "normalizer:output-profile", "case:output-structured-terminal-owner-preservation", "case:output-meaningful-field-order-sensitive", "case:reject-output-field-owner", "case:reject-output-private-field-source", "case:reject-output-terminal-field-not-terminal-ready", "case:reject-output-product-field-catalog-owner", "case:reject-output-ranking-without-policy-owner", "case:reject-output-physical-serialization-alignment", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "schema:output-profile.schema.json",
+        "normalizer:output-profile",
+        "case:output-structured-terminal-owner-preservation",
+        "case:output-meaningful-field-order-sensitive",
+        "case:reject-output-field-owner",
+        "case:reject-output-private-field-source",
+        "case:reject-output-terminal-field-not-terminal-ready",
+        "case:reject-output-product-field-catalog-owner",
+        "case:reject-output-ranking-without-policy-owner",
+        "case:reject-output-physical-serialization-alignment",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1200,10 +2084,25 @@
       "requirementPrefix": "OUTPUT-TERMINAL-",
       "requirementCount": 10,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:output-profile", "case:output-envelope-only-terminal-valid", "case:output-terminal-reserve-exactness", "case:output-publication-release-acquire-contract", "case:reject-output-terminal-completion-class-gap", "case:reject-output-terminal-capacity-overflow", "case:reject-output-terminal-cut", "case:reject-output-terminal-session-required", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:output-profile",
+        "case:output-envelope-only-terminal-valid",
+        "case:output-terminal-reserve-exactness",
+        "case:output-publication-release-acquire-contract",
+        "case:reject-output-terminal-completion-class-gap",
+        "case:reject-output-terminal-capacity-overflow",
+        "case:reject-output-terminal-cut",
+        "case:reject-output-terminal-session-required",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1211,10 +2110,25 @@
       "requirementPrefix": "OUTPUT-OBS-",
       "requirementCount": 11,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:output-profile", "case:output-live-observation-isolated-bounded-read", "case:output-terminal-only-zero-live-residue", "case:reject-output-observation-residue-when-absent", "case:reject-output-observation-duplicate-schema-assignment", "case:reject-output-observation-host-progress", "case:reject-output-observation-pressure-affects-search", "case:reject-output-observation-freshness-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:output-profile",
+        "case:output-live-observation-isolated-bounded-read",
+        "case:output-terminal-only-zero-live-residue",
+        "case:reject-output-observation-residue-when-absent",
+        "case:reject-output-observation-duplicate-schema-assignment",
+        "case:reject-output-observation-host-progress",
+        "case:reject-output-observation-pressure-affects-search",
+        "case:reject-output-observation-freshness-gap",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1222,10 +2136,23 @@
       "requirementPrefix": "OUTPUT-SNAPSHOT-",
       "requirementCount": 8,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:output-profile", "case:output-live-observation-isolated-bounded-read", "case:output-publication-release-acquire-contract", "case:reject-output-snapshot-version-proof-gap", "case:reject-output-observation-capacity", "case:reject-output-observation-counter-range", "case:reject-output-observation-runtime-schema", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:output-profile",
+        "case:output-live-observation-isolated-bounded-read",
+        "case:output-publication-release-acquire-contract",
+        "case:reject-output-snapshot-version-proof-gap",
+        "case:reject-output-observation-capacity",
+        "case:reject-output-observation-counter-range",
+        "case:reject-output-observation-runtime-schema",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1233,10 +2160,25 @@
       "requirementPrefix": "OUTPUT-PUB-",
       "requirementCount": 11,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:output-profile", "case:output-publication-release-acquire-contract", "case:reject-output-publication-state-order", "case:reject-output-publication-before-full", "case:reject-output-zero-borrow-capacity", "case:reject-output-publication-workspace-overflow", "case:reject-output-host-read-advances-search", "case:reject-output-host-terminal-capture", "case:reject-output-device-host-acquire", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:output-profile",
+        "case:output-publication-release-acquire-contract",
+        "case:reject-output-publication-state-order",
+        "case:reject-output-publication-before-full",
+        "case:reject-output-zero-borrow-capacity",
+        "case:reject-output-publication-workspace-overflow",
+        "case:reject-output-host-read-advances-search",
+        "case:reject-output-host-terminal-capture",
+        "case:reject-output-device-host-acquire",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1244,10 +2186,26 @@
       "requirementPrefix": "OUTPUT-RESOURCE-",
       "requirementCount": 8,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-OUTPUT-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:resource-profile", "normalizer:output-profile", "case:resource-live-output-terminal-isolation", "case:resource-output-working-capacity-isolation", "case:output-terminal-reserve-exactness", "case:output-live-observation-isolated-bounded-read", "case:reject-output-terminal-reserve-drift", "case:reject-output-workspace-resource-drift", "case:reject-output-workspace-capacity", "case:reject-output-terminal-only-live-counter-residue", "case:reject-output-diagnostic-workspace-overflow", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:resource-profile",
+        "normalizer:output-profile",
+        "case:resource-live-output-terminal-isolation",
+        "case:resource-output-working-capacity-isolation",
+        "case:output-terminal-reserve-exactness",
+        "case:output-live-observation-isolated-bounded-read",
+        "case:reject-output-terminal-reserve-drift",
+        "case:reject-output-workspace-resource-drift",
+        "case:reject-output-workspace-capacity",
+        "case:reject-output-terminal-only-live-counter-residue",
+        "case:reject-output-diagnostic-workspace-overflow",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1255,10 +2213,24 @@
       "requirementPrefix": "OUTPUT-LIFE-",
       "requirementCount": 8,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:output-profile", "case:output-terminal-only-zero-live-residue", "case:output-publication-release-acquire-contract", "case:reject-output-lifecycle-state-gap", "case:reject-output-lifecycle-disposition-gap", "case:reject-output-terminal-only-live-disposition-residue", "case:reject-output-terminal-only-live-elision-drift", "case:reject-output-cleanup-coverage", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:output-profile",
+        "case:output-terminal-only-zero-live-residue",
+        "case:output-publication-release-acquire-contract",
+        "case:reject-output-lifecycle-state-gap",
+        "case:reject-output-lifecycle-disposition-gap",
+        "case:reject-output-terminal-only-live-disposition-residue",
+        "case:reject-output-terminal-only-live-elision-drift",
+        "case:reject-output-cleanup-coverage",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1266,10 +2238,23 @@
       "requirementPrefix": "OUTPUT-SEC-",
       "requirementCount": 6,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-OUTPUT-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:reject-output-contributor-private-fact", "case:reject-output-private-field-port", "case:reject-output-source-mutating-projection", "case:reject-output-observation-write-authority", "case:reject-output-port-source-mutation", "case:reject-output-consumer-permission-drift", "case:reject-output-diagnostic-memory-dump", "case:reject-output-private-native-mechanism", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:reject-output-contributor-private-fact",
+        "case:reject-output-private-field-port",
+        "case:reject-output-source-mutating-projection",
+        "case:reject-output-observation-write-authority",
+        "case:reject-output-port-source-mutation",
+        "case:reject-output-consumer-permission-drift",
+        "case:reject-output-diagnostic-memory-dump",
+        "case:reject-output-private-native-mechanism",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1277,10 +2262,20 @@
       "requirementPrefix": "OUTPUT-CLEANUP-",
       "requirementCount": 3,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer"],
+      "supportingDispositions": [
+        "semantic-normalizer"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:output-profile", "case:output-terminal-only-zero-live-residue", "case:output-persistence-cleanup-selection", "case:reject-output-cleanup-coverage", "case:reject-output-live-cleanup-residue", "case:reject-output-persistence-cleanup-gap", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:output-profile",
+        "case:output-terminal-only-zero-live-residue",
+        "case:output-persistence-cleanup-selection",
+        "case:reject-output-cleanup-coverage",
+        "case:reject-output-live-cleanup-residue",
+        "case:reject-output-persistence-cleanup-gap",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1288,10 +2283,24 @@
       "requirementPrefix": "OUTPUT-COMPAT-",
       "requirementCount": 4,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:output-profile-order-independent", "case:output-identity-content-sensitive", "case:output-product-data-deletion", "case:output-persistence-cleanup-selection", "case:reject-output-native-transfer-identity-semantics", "case:reject-output-incomplete-persistence", "case:reject-output-persistence-cleanup-gap", "case:reject-output-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:output-profile-order-independent",
+        "case:output-identity-content-sensitive",
+        "case:output-product-data-deletion",
+        "case:output-persistence-cleanup-selection",
+        "case:reject-output-native-transfer-identity-semantics",
+        "case:reject-output-incomplete-persistence",
+        "case:reject-output-persistence-cleanup-gap",
+        "case:reject-output-program-input-drift",
+        "planned:IR-DELETION-ID-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1299,10 +2308,22 @@
       "requirementPrefix": "OUTPUT-IR-",
       "requirementCount": 6,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-OUTPUT-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:output-profile.schema.json", "normalizer:output-profile", "case:normalize-output-profiles", "case:output-envelope-only-terminal-valid", "case:output-terminal-only-zero-live-residue", "case:output-framework-selection-link", "case:output-program-input-exactness", "case:reject-output-native-program-language"],
+      "evidenceRefs": [
+        "schema:output-profile.schema.json",
+        "normalizer:output-profile",
+        "case:normalize-output-profiles",
+        "case:output-envelope-only-terminal-valid",
+        "case:output-terminal-only-zero-live-residue",
+        "case:output-framework-selection-link",
+        "case:output-program-input-exactness",
+        "case:reject-output-native-program-language"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1310,10 +2331,24 @@
       "requirementPrefix": "SESSION-PROFILE-",
       "requirementCount": 5,
       "primaryDisposition": "structural-schema",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-SESSION-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:session-profile.schema.json", "normalizer:session-profile", "case:normalize-session-profiles", "case:session-profile-second-instances-distinct", "case:session-profile-order-independent", "case:session-absence-zero-residue", "case:reject-session-unknown-field", "case:reject-session-native-program-language", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "schema:session-profile.schema.json",
+        "normalizer:session-profile",
+        "case:normalize-session-profiles",
+        "case:session-profile-second-instances-distinct",
+        "case:session-profile-order-independent",
+        "case:session-absence-zero-residue",
+        "case:reject-session-unknown-field",
+        "case:reject-session-native-program-language",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1321,10 +2356,24 @@
       "requirementPrefix": "SESSION-",
       "requirementCount": 7,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-SESSION-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-device-owned-progress-boundary", "case:session-observation-output-binding", "case:session-selected-attention-deletion", "case:reject-session-host-progress-loop", "case:reject-session-attention-host-progress", "case:reject-session-lifecycle-host-progress", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:session-profile",
+        "case:session-device-owned-progress-boundary",
+        "case:session-observation-output-binding",
+        "case:session-selected-attention-deletion",
+        "case:reject-session-host-progress-loop",
+        "case:reject-session-attention-host-progress",
+        "case:reject-session-lifecycle-host-progress",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1332,10 +2381,25 @@
       "requirementPrefix": "SESSION-ROOT-",
       "requirementCount": 9,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-root-transaction-admission-before-mutation", "case:session-root-work-epoch-closure", "case:reject-session-root-input-gap", "case:reject-session-root-application-gap", "case:reject-session-root-transaction-mutation-before-admission", "case:reject-session-root-transaction-owner-gap", "case:reject-session-root-transaction-abort-order", "case:reject-session-root-compound-admission-drift", "case:reject-session-root-authority-gap", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:session-profile",
+        "case:session-root-transaction-admission-before-mutation",
+        "case:session-root-work-epoch-closure",
+        "case:reject-session-root-input-gap",
+        "case:reject-session-root-application-gap",
+        "case:reject-session-root-transaction-mutation-before-admission",
+        "case:reject-session-root-transaction-owner-gap",
+        "case:reject-session-root-transaction-abort-order",
+        "case:reject-session-root-compound-admission-drift",
+        "case:reject-session-root-authority-gap",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1343,10 +2407,24 @@
       "requirementPrefix": "SESSION-CONTROL-",
       "requirementCount": 5,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-selected-attention-deletion", "case:session-attention-root-and-reclamation-separation", "case:session-attention-lazy-multidevice-safe-point", "case:session-attention-selected-owner-flexibility", "case:session-device-owned-progress-boundary", "case:reject-session-attention-host-progress", "case:reject-session-attention-application-drift", "case:reject-session-unselected-attention-port", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:session-profile",
+        "case:session-selected-attention-deletion",
+        "case:session-attention-root-and-reclamation-separation",
+        "case:session-attention-lazy-multidevice-safe-point",
+        "case:session-attention-selected-owner-flexibility",
+        "case:session-device-owned-progress-boundary",
+        "case:reject-session-attention-host-progress",
+        "case:reject-session-attention-application-drift",
+        "case:reject-session-unselected-attention-port",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1354,10 +2432,21 @@
       "requirementPrefix": "SESSION-EPOCH-",
       "requirementCount": 5,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-root-work-epoch-closure", "case:session-finite-counter-closure", "case:reject-session-work-scope-gap", "case:reject-session-old-epoch-disposition-gap", "case:reject-session-root-counter-width", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:session-profile",
+        "case:session-root-work-epoch-closure",
+        "case:session-finite-counter-closure",
+        "case:reject-session-work-scope-gap",
+        "case:reject-session-old-epoch-disposition-gap",
+        "case:reject-session-root-counter-width",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1365,10 +2454,21 @@
       "requirementPrefix": "SESSION-RECLAIM-",
       "requirementCount": 5,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-cleanup-lifecycle-closure", "case:session-finite-counter-closure", "case:reject-session-synchronous-full-reclamation", "case:reject-session-counter-rollover", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:session-profile",
+        "case:session-cleanup-lifecycle-closure",
+        "case:session-finite-counter-closure",
+        "case:reject-session-synchronous-full-reclamation",
+        "case:reject-session-counter-rollover",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1376,10 +2476,25 @@
       "requirementPrefix": "SESSION-OBS-",
       "requirementCount": 8,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-observation-output-binding", "case:session-device-owned-progress-boundary", "case:reject-session-observation-read-authority", "case:reject-session-observation-capacity", "case:reject-session-observation-request-permission", "case:reject-session-observation-epoch-relabel", "case:reject-session-observation-residue-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:session-profile",
+        "case:session-observation-output-binding",
+        "case:session-device-owned-progress-boundary",
+        "case:reject-session-observation-read-authority",
+        "case:reject-session-observation-capacity",
+        "case:reject-session-observation-request-permission",
+        "case:reject-session-observation-epoch-relabel",
+        "case:reject-session-observation-residue-gap",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1387,10 +2502,24 @@
       "requirementPrefix": "SESSION-LIFE-",
       "requirementCount": 6,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "deterministic-composition", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "deterministic-composition",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:session-profile", "case:session-cleanup-lifecycle-closure", "case:session-root-transaction-admission-before-mutation", "case:reject-session-completion-binding", "case:reject-session-port-host-progress", "case:reject-session-status-gap", "case:reject-session-cleanup-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:session-profile",
+        "case:session-cleanup-lifecycle-closure",
+        "case:session-root-transaction-admission-before-mutation",
+        "case:reject-session-completion-binding",
+        "case:reject-session-port-host-progress",
+        "case:reject-session-status-gap",
+        "case:reject-session-cleanup-gap",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1398,10 +2527,22 @@
       "requirementPrefix": "SESSION-SEC-",
       "requirementCount": 3,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-SESSION-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:session-profile.schema.json", "normalizer:session-profile", "case:session-program-public-js-boundary", "case:reject-session-runtime-code-input", "case:reject-session-security-native-handle", "case:reject-session-private-program-requirement", "case:reject-session-product-owner", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "schema:session-profile.schema.json",
+        "normalizer:session-profile",
+        "case:session-program-public-js-boundary",
+        "case:reject-session-runtime-code-input",
+        "case:reject-session-security-native-handle",
+        "case:reject-session-private-program-requirement",
+        "case:reject-session-product-owner",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1409,10 +2550,24 @@
       "requirementPrefix": "SESSION-COMPAT-",
       "requirementCount": 2,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:session-profile-second-instances-distinct", "case:session-profile-order-independent", "case:session-selected-attention-deletion", "case:session-absence-zero-residue", "case:reject-session-plan-drift", "case:reject-session-contribution-drift", "case:reject-session-persistence-without-owner", "case:reject-session-program-input-drift", "planned:IR-DELETION-ID-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:session-profile-second-instances-distinct",
+        "case:session-profile-order-independent",
+        "case:session-selected-attention-deletion",
+        "case:session-absence-zero-residue",
+        "case:reject-session-plan-drift",
+        "case:reject-session-contribution-drift",
+        "case:reject-session-persistence-without-owner",
+        "case:reject-session-program-input-drift",
+        "planned:IR-DELETION-ID-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1420,10 +2575,22 @@
       "requirementPrefix": "SESSION-IR-",
       "requirementCount": 4,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-SESSION-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:session-profile.schema.json", "normalizer:session-profile", "case:normalize-session-profiles", "case:session-owner-boundary-exact", "case:session-absence-zero-residue", "case:session-program-public-js-boundary", "case:reject-session-owner-gap", "case:reject-session-private-program-requirement"],
+      "evidenceRefs": [
+        "schema:session-profile.schema.json",
+        "normalizer:session-profile",
+        "case:normalize-session-profiles",
+        "case:session-owner-boundary-exact",
+        "case:session-absence-zero-residue",
+        "case:session-program-public-js-boundary",
+        "case:reject-session-owner-gap",
+        "case:reject-session-private-program-requirement"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1431,10 +2598,18 @@
       "requirementPrefix": "EXT-AUTH-",
       "requirementCount": 3,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:stage-profile", "case:stage-zero-capability-complete-absence", "case:stage-owner-boundary-exact", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
+      "evidenceRefs": [
+        "normalizer:stage-profile",
+        "case:stage-zero-capability-complete-absence",
+        "case:stage-owner-boundary-exact",
+        "planned:ENGINE-CONTRACT-ACCEPTANCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1442,10 +2617,17 @@
       "requirementPrefix": "EXT-SCOPE-",
       "requirementCount": 3,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer"],
+      "supportingDispositions": [
+        "semantic-normalizer"
+      ],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:stage-profile", "case:stage-owner-boundary-exact", "case:stage-per-item-scheduler-neutral-graph", "case:stage-materially-different-nongame-profile"],
+      "evidenceRefs": [
+        "normalizer:stage-profile",
+        "case:stage-owner-boundary-exact",
+        "case:stage-per-item-scheduler-neutral-graph",
+        "case:stage-materially-different-nongame-profile"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1453,10 +2635,21 @@
       "requirementPrefix": "EXT-LEGO-",
       "requirementCount": 6,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:stage-first-product-deletion-base-context-stable", "case:stage-first-product-deletion-zero-owned-residue", "case:stage-materially-different-nongame-profile", "case:stage-source-owner-port-closure", "case:reject-stage-known-source-profile-port-crossing", "case:reject-stage-channel-permission-outside-capability-surface", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:stage-first-product-deletion-base-context-stable",
+        "case:stage-first-product-deletion-zero-owned-residue",
+        "case:stage-materially-different-nongame-profile",
+        "case:stage-source-owner-port-closure",
+        "case:reject-stage-known-source-profile-port-crossing",
+        "case:reject-stage-channel-permission-outside-capability-surface",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1464,10 +2657,17 @@
       "requirementPrefix": "EXT-TERM-",
       "requirementCount": 2,
       "primaryDisposition": "structural-schema",
-      "supportingDispositions": ["semantic-normalizer"],
+      "supportingDispositions": [
+        "semantic-normalizer"
+      ],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-entry-exit-surface-matrix", "case:reject-stage-runtime-discovery"],
+      "evidenceRefs": [
+        "schema:stage-profile.schema.json",
+        "normalizer:stage-profile",
+        "case:stage-entry-exit-surface-matrix",
+        "case:reject-stage-runtime-discovery"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1475,10 +2675,22 @@
       "requirementPrefix": "EXT-PROFILE-",
       "requirementCount": 8,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["structural-schema", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "structural-schema",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-profile-order-independent", "case:stage-zero-capability-complete-absence", "case:stage-channel-requirement-avoids-profile-identity-cycle", "case:stage-program-public-js-boundary", "case:reject-stage-unknown-field", "case:reject-stage-private-cuda-js-requirement"],
+      "evidenceRefs": [
+        "schema:stage-profile.schema.json",
+        "normalizer:stage-profile",
+        "case:stage-profile-order-independent",
+        "case:stage-zero-capability-complete-absence",
+        "case:stage-channel-requirement-avoids-profile-identity-cycle",
+        "case:stage-program-public-js-boundary",
+        "case:reject-stage-unknown-field",
+        "case:reject-stage-private-cuda-js-requirement"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1486,10 +2698,24 @@
       "requirementPrefix": "EXT-STAGE-",
       "requirementCount": 11,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-per-item-scheduler-neutral-graph", "case:stage-resource-progress-binding", "case:reject-stage-unreachable-state", "case:reject-stage-unknown-target", "case:reject-stage-missing-terminal-disposition", "case:reject-stage-global-barrier-topology", "case:reject-stage-pending-worker-retention", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "schema:stage-profile.schema.json",
+        "normalizer:stage-profile",
+        "case:stage-per-item-scheduler-neutral-graph",
+        "case:stage-resource-progress-binding",
+        "case:reject-stage-unreachable-state",
+        "case:reject-stage-unknown-target",
+        "case:reject-stage-missing-terminal-disposition",
+        "case:reject-stage-global-barrier-topology",
+        "case:reject-stage-pending-worker-retention",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1497,10 +2723,23 @@
       "requirementPrefix": "EXT-SURFACE-",
       "requirementCount": 10,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["ir-identity-deletion-rejection", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "ir-identity-deletion-rejection",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-entry-exit-surface-matrix", "case:stage-shared-surface-deterministic-order", "case:stage-least-authority-permission-closure", "case:reject-stage-mid-stage-surface", "case:reject-stage-context-overlap", "case:reject-stage-unused-context", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "schema:stage-profile.schema.json",
+        "normalizer:stage-profile",
+        "case:stage-entry-exit-surface-matrix",
+        "case:stage-shared-surface-deterministic-order",
+        "case:stage-least-authority-permission-closure",
+        "case:reject-stage-mid-stage-surface",
+        "case:reject-stage-context-overlap",
+        "case:reject-stage-unused-context",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1508,10 +2747,23 @@
       "requirementPrefix": "EXT-CAP-",
       "requirementCount": 11,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["ir-identity-deletion-rejection", "deterministic-composition"],
+      "supportingDispositions": [
+        "ir-identity-deletion-rejection",
+        "deterministic-composition"
+      ],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:stage-first-product-deletion-zero-owned-residue", "case:stage-shared-surface-deterministic-order", "case:reject-stage-capability-owner-gap", "case:reject-stage-unordered-noncommuting-capabilities", "case:reject-stage-contribution-capacity", "case:reject-stage-effect-owner-port-crossing", "case:reject-stage-runtime-resource-activation"],
+      "evidenceRefs": [
+        "schema:stage-profile.schema.json",
+        "normalizer:stage-profile",
+        "case:stage-first-product-deletion-zero-owned-residue",
+        "case:stage-shared-surface-deterministic-order",
+        "case:reject-stage-capability-owner-gap",
+        "case:reject-stage-unordered-noncommuting-capabilities",
+        "case:reject-stage-contribution-capacity",
+        "case:reject-stage-effect-owner-port-crossing",
+        "case:reject-stage-runtime-resource-activation"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1519,10 +2771,19 @@
       "requirementPrefix": "EXT-OUTCOME-",
       "requirementCount": 5,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:stage-profile", "case:stage-pending-releases-worker-and-lease", "case:stage-resource-progress-binding", "case:reject-stage-pending-worker-retention", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:stage-profile",
+        "case:stage-pending-releases-worker-and-lease",
+        "case:stage-resource-progress-binding",
+        "case:reject-stage-pending-worker-retention",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1530,10 +2791,20 @@
       "requirementPrefix": "EXT-BOUNDARY-",
       "requirementCount": 4,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:stage-upstream-optional-evaluator-session-absence", "case:stage-device-owned-lifecycle", "case:stage-program-public-js-boundary", "case:reject-stage-surface-host-progress", "case:reject-stage-lifecycle-host-progress", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:stage-upstream-optional-evaluator-session-absence",
+        "case:stage-device-owned-lifecycle",
+        "case:stage-program-public-js-boundary",
+        "case:reject-stage-surface-host-progress",
+        "case:reject-stage-lifecycle-host-progress",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1541,10 +2812,21 @@
       "requirementPrefix": "EXT-IDENTITY-",
       "requirementCount": 4,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:stage-profile-second-instance-distinct", "case:stage-profile-order-independent", "case:stage-first-product-deletion-base-context-stable", "case:stage-first-product-deletion-zero-owned-residue", "case:reject-stage-plan-drift", "case:reject-stage-migration-without-contract", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:stage-profile-second-instance-distinct",
+        "case:stage-profile-order-independent",
+        "case:stage-first-product-deletion-base-context-stable",
+        "case:stage-first-product-deletion-zero-owned-residue",
+        "case:reject-stage-plan-drift",
+        "case:reject-stage-migration-without-contract",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1552,10 +2834,23 @@
       "requirementPrefix": "EXT-LIFE-",
       "requirementCount": 6,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:stage-profile", "case:stage-finite-counter-closure", "case:stage-cleanup-selected-only-closure", "case:reject-stage-counter-wrap", "case:reject-stage-cleanup-gap", "case:reject-stage-diagnostic-native-state", "case:reject-stage-native-program-language", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:stage-profile",
+        "case:stage-finite-counter-closure",
+        "case:stage-cleanup-selected-only-closure",
+        "case:reject-stage-counter-wrap",
+        "case:reject-stage-cleanup-gap",
+        "case:reject-stage-diagnostic-native-state",
+        "case:reject-stage-native-program-language",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1563,10 +2858,22 @@
       "requirementPrefix": "EXT-IR-",
       "requirementCount": 4,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["structural-schema", "deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "structural-schema",
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-STAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:stage-profile.schema.json", "normalizer:stage-profile", "case:normalize-stage-profiles", "case:stage-zero-capability-complete-absence", "case:stage-owner-boundary-exact", "case:stage-program-public-js-boundary", "case:reject-stage-program-input-drift"],
+      "evidenceRefs": [
+        "schema:stage-profile.schema.json",
+        "normalizer:stage-profile",
+        "case:normalize-stage-profiles",
+        "case:stage-zero-capability-complete-absence",
+        "case:stage-owner-boundary-exact",
+        "case:stage-program-public-js-boundary",
+        "case:reject-stage-program-input-drift"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1574,10 +2881,19 @@
       "requirementPrefix": "EXT-CONFORMANCE-",
       "requirementCount": 3,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "pending",
-      "evidenceRefs": ["case:normalize-stage-profiles", "case:stage-materially-different-nongame-profile", "case:reject-stage-unordered-noncommuting-capabilities", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:normalize-stage-profiles",
+        "case:stage-materially-different-nongame-profile",
+        "case:reject-stage-unordered-noncommuting-capabilities",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1585,10 +2901,19 @@
       "requirementPrefix": "CHANNEL-AUTH-",
       "requirementCount": 3,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:channel-profile", "case:channel-absence-zero-residue", "case:channel-first-product-deletion-zero-owned-residue", "case:channel-program-public-js-boundary", "planned:ENGINE-CONTRACT-ACCEPTANCE-01"],
+      "evidenceRefs": [
+        "normalizer:channel-profile",
+        "case:channel-absence-zero-residue",
+        "case:channel-first-product-deletion-zero-owned-residue",
+        "case:channel-program-public-js-boundary",
+        "planned:ENGINE-CONTRACT-ACCEPTANCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1596,10 +2921,18 @@
       "requirementPrefix": "CHANNEL-SCOPE-",
       "requirementCount": 3,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer"],
+      "supportingDispositions": [
+        "semantic-normalizer"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:channel-profile", "case:channel-resource-progress-stage-binding", "case:channel-device-owned-boundary", "case:reject-channel-progress-work-drift", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "normalizer:channel-profile",
+        "case:channel-resource-progress-stage-binding",
+        "case:channel-device-owned-boundary",
+        "case:reject-channel-progress-work-drift",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1607,10 +2940,21 @@
       "requirementPrefix": "CHANNEL-LEGO-",
       "requirementCount": 7,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-stage-grants-consumed-exactly", "case:channel-profile-second-instance-distinct", "case:channel-first-product-deletion-zero-owned-residue", "case:reject-channel-stage-permission-widening", "case:reject-channel-stage-permission-omission", "case:reject-channel-owner-residue", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:channel-stage-grants-consumed-exactly",
+        "case:channel-profile-second-instance-distinct",
+        "case:channel-first-product-deletion-zero-owned-residue",
+        "case:reject-channel-stage-permission-widening",
+        "case:reject-channel-stage-permission-omission",
+        "case:reject-channel-owner-residue",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1618,10 +2962,23 @@
       "requirementPrefix": "CHANNEL-PROFILE-",
       "requirementCount": 8,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["structural-schema", "ir-identity-deletion-rejection", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "structural-schema",
+        "ir-identity-deletion-rejection",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:channel-profile.schema.json", "normalizer:channel-profile", "case:normalize-channel-profiles", "case:channel-profile-order-independent", "case:channel-program-public-js-boundary", "case:reject-channel-unknown-field", "case:reject-channel-private-program-requirement", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "schema:channel-profile.schema.json",
+        "normalizer:channel-profile",
+        "case:normalize-channel-profiles",
+        "case:channel-profile-order-independent",
+        "case:channel-program-public-js-boundary",
+        "case:reject-channel-unknown-field",
+        "case:reject-channel-private-program-requirement",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1629,10 +2986,22 @@
       "requirementPrefix": "CHANNEL-ITEM-",
       "requirementCount": 10,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:channel-profile", "case:channel-state-graph-terminal-and-reuse-closure", "case:channel-reference-serial-publication", "case:channel-reference-multiborrow-accounting", "case:channel-reference-stale-generation-rejected", "case:reject-channel-claim-mode-mismatch", "case:reject-channel-reference-borrow-bound", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:channel-profile",
+        "case:channel-state-graph-terminal-and-reuse-closure",
+        "case:channel-reference-serial-publication",
+        "case:channel-reference-multiborrow-accounting",
+        "case:channel-reference-stale-generation-rejected",
+        "case:reject-channel-claim-mode-mismatch",
+        "case:reject-channel-reference-borrow-bound",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1640,10 +3009,20 @@
       "requirementPrefix": "CHANNEL-PRODUCER-",
       "requirementCount": 7,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-reference-serial-publication", "case:channel-reference-capacity-pressure-zero-publication", "case:channel-reference-producer-service-while-pending", "case:reject-channel-hidden-growth", "case:reject-channel-reference-uninitialized-publication", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "case:channel-reference-serial-publication",
+        "case:channel-reference-capacity-pressure-zero-publication",
+        "case:channel-reference-producer-service-while-pending",
+        "case:reject-channel-hidden-growth",
+        "case:reject-channel-reference-uninitialized-publication",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1651,10 +3030,21 @@
       "requirementPrefix": "CHANNEL-CONSUMER-",
       "requirementCount": 7,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-evaluator-request-result-required", "case:channel-secondary-work-advisory-multiborrow", "case:channel-reference-required-pending-releases-worker", "case:channel-reference-stale-generation-rejected", "case:reject-channel-consumption-timeout-switching", "case:reject-channel-pending-holds-worker", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "case:channel-evaluator-request-result-required",
+        "case:channel-secondary-work-advisory-multiborrow",
+        "case:channel-reference-required-pending-releases-worker",
+        "case:channel-reference-stale-generation-rejected",
+        "case:reject-channel-consumption-timeout-switching",
+        "case:reject-channel-pending-holds-worker",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1662,10 +3052,24 @@
       "requirementPrefix": "CHANNEL-PUBLISH-",
       "requirementCount": 7,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-logical-release-acquire-publication", "case:channel-reference-serial-publication", "case:reject-channel-publication-release-gap", "case:reject-channel-publication-scope-gap", "case:reject-channel-publication-private-recipe", "case:reject-channel-reference-missing-release", "case:reject-channel-reference-missing-acquire", "case:reject-channel-reference-uninitialized-publication", "proof:cuda-js-release-acquire-public-contract", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:channel-logical-release-acquire-publication",
+        "case:channel-reference-serial-publication",
+        "case:reject-channel-publication-release-gap",
+        "case:reject-channel-publication-scope-gap",
+        "case:reject-channel-publication-private-recipe",
+        "case:reject-channel-reference-missing-release",
+        "case:reject-channel-reference-missing-acquire",
+        "case:reject-channel-reference-uninitialized-publication",
+        "proof:cuda-js-release-acquire-public-contract",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1673,10 +3077,21 @@
       "requirementPrefix": "CHANNEL-PROGRESS-",
       "requirementCount": 7,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-resource-progress-stage-binding", "case:channel-reference-producer-service-while-pending", "case:channel-reference-typed-no-progress", "case:reject-channel-progress-descriptor-gap", "case:reject-channel-required-escape-gap", "case:reject-channel-required-dependency-cycle", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "case:channel-resource-progress-stage-binding",
+        "case:channel-reference-producer-service-while-pending",
+        "case:channel-reference-typed-no-progress",
+        "case:reject-channel-progress-descriptor-gap",
+        "case:reject-channel-required-escape-gap",
+        "case:reject-channel-required-dependency-cycle",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1684,10 +3099,21 @@
       "requirementPrefix": "CHANNEL-RESOURCE-",
       "requirementCount": 6,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-resource-progress-stage-binding", "case:channel-finite-capacity-watermark-closure", "case:channel-reference-capacity-pressure-zero-publication", "case:reject-channel-resource-class-crossing", "case:reject-channel-resource-overcommit", "case:reject-channel-hidden-growth", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "case:channel-resource-progress-stage-binding",
+        "case:channel-finite-capacity-watermark-closure",
+        "case:channel-reference-capacity-pressure-zero-publication",
+        "case:reject-channel-resource-class-crossing",
+        "case:reject-channel-resource-overcommit",
+        "case:reject-channel-hidden-growth",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1695,10 +3121,22 @@
       "requirementPrefix": "CHANNEL-CANCEL-",
       "requirementCount": 7,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-cleanup-lifecycle-closure", "case:channel-reference-cancel-late-completion-no-resurrection", "case:channel-reference-expiry-terminal", "case:channel-reference-stale-generation-rejected", "case:reject-channel-cancellation-state-gap", "case:reject-channel-reclamation-reference-gap", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:channel-cleanup-lifecycle-closure",
+        "case:channel-reference-cancel-late-completion-no-resurrection",
+        "case:channel-reference-expiry-terminal",
+        "case:channel-reference-stale-generation-rejected",
+        "case:reject-channel-cancellation-state-gap",
+        "case:reject-channel-reclamation-reference-gap",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1706,10 +3144,20 @@
       "requirementPrefix": "CHANNEL-BOUNDARY-",
       "requirementCount": 4,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-device-owned-boundary", "case:channel-program-public-js-boundary", "case:reject-channel-host-progress-loop", "case:reject-channel-native-program-language", "case:reject-channel-runtime-registry", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:channel-device-owned-boundary",
+        "case:channel-program-public-js-boundary",
+        "case:reject-channel-host-progress-loop",
+        "case:reject-channel-native-program-language",
+        "case:reject-channel-runtime-registry",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1717,10 +3165,22 @@
       "requirementPrefix": "CHANNEL-IDENTITY-",
       "requirementCount": 3,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-profile-second-instance-distinct", "case:channel-profile-order-independent", "case:channel-first-product-deletion-zero-owned-residue", "case:channel-identity-content-sensitive", "case:reject-channel-plan-drift", "case:reject-channel-counter-wrap", "planned:IR-DELETION-ID-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:channel-profile-second-instance-distinct",
+        "case:channel-profile-order-independent",
+        "case:channel-first-product-deletion-zero-owned-residue",
+        "case:channel-identity-content-sensitive",
+        "case:reject-channel-plan-drift",
+        "case:reject-channel-counter-wrap",
+        "planned:IR-DELETION-ID-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1728,10 +3188,22 @@
       "requirementPrefix": "CHANNEL-LIFE-",
       "requirementCount": 4,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:channel-profile", "case:channel-cleanup-lifecycle-closure", "case:reject-channel-owner-profile-drift", "case:reject-channel-status-gap", "case:reject-channel-cleanup-gap", "case:reject-channel-native-program-language", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "normalizer:channel-profile",
+        "case:channel-cleanup-lifecycle-closure",
+        "case:reject-channel-owner-profile-drift",
+        "case:reject-channel-status-gap",
+        "case:reject-channel-cleanup-gap",
+        "case:reject-channel-native-program-language",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1739,10 +3211,23 @@
       "requirementPrefix": "CHANNEL-IR-",
       "requirementCount": 4,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["structural-schema", "deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "structural-schema",
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:channel-profile.schema.json", "normalizer:channel-profile", "case:normalize-channel-profiles", "case:channel-absence-zero-residue", "case:channel-stage-grants-consumed-exactly", "case:channel-program-public-js-boundary", "case:reject-channel-stage-requirement-drift", "case:reject-channel-required-dependency-cycle"],
+      "evidenceRefs": [
+        "schema:channel-profile.schema.json",
+        "normalizer:channel-profile",
+        "case:normalize-channel-profiles",
+        "case:channel-absence-zero-residue",
+        "case:channel-stage-grants-consumed-exactly",
+        "case:channel-program-public-js-boundary",
+        "case:reject-channel-stage-requirement-drift",
+        "case:reject-channel-required-dependency-cycle"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1750,10 +3235,23 @@
       "requirementPrefix": "CHANNEL-CONFORMANCE-",
       "requirementCount": 3,
       "primaryDisposition": "engine-reference-oracle",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-CHANNEL-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:channel-reference-serial-publication", "case:channel-reference-multiborrow-accounting", "case:channel-reference-producer-service-while-pending", "case:channel-reference-typed-no-progress", "case:reject-channel-reference-missing-release", "case:reject-channel-reference-missing-acquire", "case:reject-channel-reference-borrow-bound", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:channel-reference-serial-publication",
+        "case:channel-reference-multiborrow-accounting",
+        "case:channel-reference-producer-service-while-pending",
+        "case:channel-reference-typed-no-progress",
+        "case:reject-channel-reference-missing-release",
+        "case:reject-channel-reference-missing-acquire",
+        "case:reject-channel-reference-borrow-bound",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1761,10 +3259,19 @@
       "requirementPrefix": "COMPOSE-AUTH-",
       "requirementCount": 3,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["structural-schema", "semantic-normalizer"],
+      "supportingDispositions": [
+        "structural-schema",
+        "semantic-normalizer"
+      ],
       "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:program-package-profile.schema.json", "normalizer:program-package-profile", "case:program-package-schemas-closed", "case:reject-program-package-unknown-field", "case:reject-program-package-native-option"],
+      "evidenceRefs": [
+        "schema:program-package-profile.schema.json",
+        "normalizer:program-package-profile",
+        "case:program-package-schemas-closed",
+        "case:reject-program-package-unknown-field",
+        "case:reject-program-package-native-option"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1772,10 +3279,20 @@
       "requirementPrefix": "COMPOSE-SOURCE-",
       "requirementCount": 4,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-COMPOSER-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:program-package-profile", "normalizer:search-program-composer", "case:search-program-byte-repeatability", "case:program-source-content-sensitive", "case:reject-native-or-cuda-source", "case:reject-source-digest-mismatch"],
+      "evidenceRefs": [
+        "normalizer:program-package-profile",
+        "normalizer:search-program-composer",
+        "case:search-program-byte-repeatability",
+        "case:program-source-content-sensitive",
+        "case:reject-native-or-cuda-source",
+        "case:reject-source-digest-mismatch"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1783,10 +3300,21 @@
       "requirementPrefix": "COMPOSE-LEGO-",
       "requirementCount": 6,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:core-only-extension-absence", "case:selected-extension-source-and-requirement-presence", "case:complete-function-source-owner-mapping", "case:stage-program-unit-declared-order", "case:reject-unselected-source-owner", "case:first-consumer-deletion-zero-owned-source-residue"],
+      "evidenceRefs": [
+        "case:core-only-extension-absence",
+        "case:selected-extension-source-and-requirement-presence",
+        "case:complete-function-source-owner-mapping",
+        "case:stage-program-unit-declared-order",
+        "case:reject-unselected-source-owner",
+        "case:first-consumer-deletion-zero-owned-source-residue"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1794,10 +3322,20 @@
       "requirementPrefix": "COMPOSE-PROFILE-",
       "requirementCount": 6,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["structural-schema", "deterministic-composition"],
+      "supportingDispositions": [
+        "structural-schema",
+        "deterministic-composition"
+      ],
       "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:program-package-profile.schema.json", "normalizer:program-package-profile", "case:normalize-program-package-profiles", "case:program-package-order-independent", "case:complete-function-source-owner-mapping", "case:reject-executable-provenance-gap"],
+      "evidenceRefs": [
+        "schema:program-package-profile.schema.json",
+        "normalizer:program-package-profile",
+        "case:normalize-program-package-profiles",
+        "case:program-package-order-independent",
+        "case:complete-function-source-owner-mapping",
+        "case:reject-executable-provenance-gap"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1805,10 +3343,20 @@
       "requirementPrefix": "COMPOSE-CAP-",
       "requirementCount": 6,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:public-requirement-selected-only-closure", "case:selected-extension-source-and-requirement-presence", "case:reject-helper-without-public-requirement", "case:reject-unavailable-public-capability-before-ignition", "case:reject-public-requirement-owner-gap", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:public-requirement-selected-only-closure",
+        "case:selected-extension-source-and-requirement-presence",
+        "case:reject-helper-without-public-requirement",
+        "case:reject-unavailable-public-capability-before-ignition",
+        "case:reject-public-requirement-owner-gap",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1816,10 +3364,24 @@
       "requirementPrefix": "COMPOSE-PROGRAM-",
       "requirementCount": 10,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["semantic-normalizer", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-COMPOSER-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:search-program.schema.json", "normalizer:search-program-composer", "case:compose-canonical-search-programs", "case:complete-function-source-owner-mapping", "case:stage-program-unit-declared-order", "case:reject-function-call-cycle", "case:reject-kernel-call-target", "case:reject-stage-effect-order-mutation", "case:reject-program-unit-function-duplication", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "schema:search-program.schema.json",
+        "normalizer:search-program-composer",
+        "case:compose-canonical-search-programs",
+        "case:complete-function-source-owner-mapping",
+        "case:stage-program-unit-declared-order",
+        "case:reject-function-call-cycle",
+        "case:reject-kernel-call-target",
+        "case:reject-stage-effect-order-mutation",
+        "case:reject-program-unit-function-duplication",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1827,10 +3389,20 @@
       "requirementPrefix": "COMPOSE-DELETE-",
       "requirementCount": 6,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "cross-specification-proof"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:core-only-extension-absence", "case:first-consumer-deletion-zero-owned-source-residue", "case:first-consumer-deletion-zero-package-residue", "case:reject-deletion-owner-omission", "case:reject-deletion-source-coverage-gap", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:core-only-extension-absence",
+        "case:first-consumer-deletion-zero-owned-source-residue",
+        "case:first-consumer-deletion-zero-package-residue",
+        "case:reject-deletion-owner-omission",
+        "case:reject-deletion-source-coverage-gap",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1838,10 +3410,22 @@
       "requirementPrefix": "COMPOSE-PACKAGE-",
       "requirementCount": 7,
       "primaryDisposition": "deterministic-composition",
-      "supportingDispositions": ["structural-schema", "cross-specification-proof", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "structural-schema",
+        "cross-specification-proof",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:execution-package.schema.json", "normalizer:execution-package-builder", "case:build-canonical-execution-packages", "case:public-resource-projection-is-generic-subset", "case:public-operation-projection-is-generic", "case:package-lifecycle-is-pre-ignition-closed", "case:opaque-cuda-js-failure-is-not-package-success"],
+      "evidenceRefs": [
+        "schema:execution-package.schema.json",
+        "normalizer:execution-package-builder",
+        "case:build-canonical-execution-packages",
+        "case:public-resource-projection-is-generic-subset",
+        "case:public-operation-projection-is-generic",
+        "case:package-lifecycle-is-pre-ignition-closed",
+        "case:opaque-cuda-js-failure-is-not-package-success"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1849,10 +3433,21 @@
       "requirementPrefix": "COMPOSE-IDENTITY-",
       "requirementCount": 6,
       "primaryDisposition": "ir-identity-deletion-rejection",
-      "supportingDispositions": ["deterministic-composition", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-DELETION-ID-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:program-package-order-independent", "case:search-program-byte-repeatability", "case:execution-package-byte-repeatability", "case:program-source-content-sensitive", "case:program-metadata-content-sensitive", "case:materially-different-capability-package-distinct", "planned:IR-DELETION-ID-01"],
+      "evidenceRefs": [
+        "case:program-package-order-independent",
+        "case:search-program-byte-repeatability",
+        "case:execution-package-byte-repeatability",
+        "case:program-source-content-sensitive",
+        "case:program-metadata-content-sensitive",
+        "case:materially-different-capability-package-distinct",
+        "planned:IR-DELETION-ID-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1860,10 +3455,20 @@
       "requirementPrefix": "COMPOSE-RUNTIME-",
       "requirementCount": 7,
       "primaryDisposition": "native-compatible-pair-qualification",
-      "supportingDispositions": ["deterministic-composition", "cross-specification-proof"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "cross-specification-proof"
+      ],
       "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["case:cuda-js-projection-has-no-semantic-metadata-keys", "case:cuda-js-projection-matches-public-device-js-request", "case:opaque-cuda-js-single-artifact-success", "case:opaque-cuda-js-multiple-artifact-success", "case:reject-private-cuda-js-realization-field", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:cuda-js-projection-has-no-semantic-metadata-keys",
+        "case:cuda-js-projection-matches-public-device-js-request",
+        "case:opaque-cuda-js-single-artifact-success",
+        "case:opaque-cuda-js-multiple-artifact-success",
+        "case:reject-private-cuda-js-realization-field",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1871,10 +3476,22 @@
       "requirementPrefix": "COMPOSE-LIFE-",
       "requirementCount": 6,
       "primaryDisposition": "cross-specification-proof",
-      "supportingDispositions": ["deterministic-composition", "engine-reference-oracle", "native-compatible-pair-qualification"],
+      "supportingDispositions": [
+        "deterministic-composition",
+        "engine-reference-oracle",
+        "native-compatible-pair-qualification"
+      ],
       "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:package-lifecycle-is-pre-ignition-closed", "case:opaque-cuda-js-single-artifact-success", "case:opaque-cuda-js-failure-is-not-package-success", "case:reject-incomplete-cuda-js-realization-resources", "case:reject-package-profile-program-mismatch", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "case:package-lifecycle-is-pre-ignition-closed",
+        "case:opaque-cuda-js-single-artifact-success",
+        "case:opaque-cuda-js-failure-is-not-package-success",
+        "case:reject-incomplete-cuda-js-realization-resources",
+        "case:reject-package-profile-program-mismatch",
+        "planned:ENGINE-REFERENCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1882,10 +3499,21 @@
       "requirementPrefix": "COMPOSE-COST-",
       "requirementCount": 4,
       "primaryDisposition": "semantic-normalizer",
-      "supportingDispositions": ["cross-specification-proof", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "cross-specification-proof",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:program-package-profile.schema.json", "normalizer:program-package-profile", "case:public-resource-projection-is-generic-subset", "case:public-operation-projection-is-generic", "case:reject-resource-provider-mismatch", "case:reject-operation-binding-omission", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": [
+        "schema:program-package-profile.schema.json",
+        "normalizer:program-package-profile",
+        "case:public-resource-projection-is-generic-subset",
+        "case:public-operation-projection-is-generic",
+        "case:reject-resource-provider-mismatch",
+        "case:reject-operation-binding-omission",
+        "planned:ENGINE-REFERENCE-01"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1893,10 +3521,22 @@
       "requirementPrefix": "COMPOSE-IR-",
       "requirementCount": 4,
       "primaryDisposition": "structural-schema",
-      "supportingDispositions": ["semantic-normalizer", "deterministic-composition", "ir-identity-deletion-rejection"],
+      "supportingDispositions": [
+        "semantic-normalizer",
+        "deterministic-composition",
+        "ir-identity-deletion-rejection"
+      ],
       "plannedEvidenceOwner": "IR-PROGRAM-PACKAGE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["schema:program-package-profile.schema.json", "schema:search-program.schema.json", "schema:execution-package.schema.json", "schema:compatible-pair-record.schema.json", "case:program-package-schemas-closed", "case:compose-canonical-search-programs", "case:build-canonical-execution-packages"],
+      "evidenceRefs": [
+        "schema:program-package-profile.schema.json",
+        "schema:search-program.schema.json",
+        "schema:execution-package.schema.json",
+        "schema:compatible-pair-record.schema.json",
+        "case:program-package-schemas-closed",
+        "case:compose-canonical-search-programs",
+        "case:build-canonical-execution-packages"
+      ],
       "classificationStatus": "classified"
     },
     {
@@ -1904,10 +3544,22 @@
       "requirementPrefix": "COMPOSE-CONFORMANCE-",
       "requirementCount": 3,
       "primaryDisposition": "native-compatible-pair-qualification",
-      "supportingDispositions": ["cross-specification-proof", "engine-reference-oracle"],
+      "supportingDispositions": [
+        "cross-specification-proof",
+        "engine-reference-oracle"
+      ],
       "plannedEvidenceOwner": "ENGINE-NATIVE-01",
       "evidenceStatus": "deferred",
-      "evidenceRefs": ["schema:compatible-pair-record.schema.json", "case:complete-compatible-pair-reference-record", "case:compatible-pair-content-sensitive", "case:reject-compatible-pair-package-mismatch", "case:reject-compatible-pair-capability-mismatch", "case:reject-reference-pair-native-qualification-claim", "planned:ENGINE-CONTRACT-ACCEPTANCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": [
+        "schema:compatible-pair-record.schema.json",
+        "case:complete-compatible-pair-reference-record",
+        "case:compatible-pair-content-sensitive",
+        "case:reject-compatible-pair-package-mismatch",
+        "case:reject-compatible-pair-capability-mismatch",
+        "case:reject-reference-pair-native-qualification-claim",
+        "planned:ENGINE-CONTRACT-ACCEPTANCE-01",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     }
   ],
