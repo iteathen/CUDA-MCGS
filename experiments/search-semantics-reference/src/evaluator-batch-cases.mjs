@@ -12,19 +12,23 @@ export function registerEvaluatorBatchCases({ defineCase, projection }) {
     const input = requestInput(vector, 'batch-one');
     oracle.admitRequest(input);
     assert(BigInt(vector.batching.maximumItems) > 1n, 'fixture must have a nontrivial maximum batch size');
-    const formed = form(oracle, vector, 'batch-one', [input], { serviceOpportunity: false });
-    assert.equal(formed.kind, 'formed', 'a ready one-item partial batch must not wait for host flush');
+    const formed = form(oracle, vector, 'batch-one', [input], { serviceOpportunity: true });
+    assert.equal(formed.kind, 'formed', 'a ready one-item partial batch must advance from an explicit device-visible service opportunity without host flush');
     assert.equal(formed.items, 1);
+    assert.equal(formed.serviceOpportunity, true);
+    assert.equal(oracle.assertAccounting().stateCounts.batched, 1);
     executeComplete(oracle, vector, 'batch-one', [input]);
+    assert.equal(oracle.observeRequest(ref(input)).state, 'publishing', 'executed output is not ready until stale-safe scatter/publication completes');
     const scattered = oracle.scatterBatch({ batchId: 'batch-one' });
     assert.equal(scattered.dispositions[0].kind, 'scattered');
     assert.equal(oracle.observeRequest(ref(input)).state, 'ready');
     const accounting = oracle.assertAccounting();
     assert.equal(accounting.activeWorkspaces, 0);
     assert.equal(accounting.liveBatches, 0);
+    assert(BigInt(accounting.workspaceHighWaterBytes) > 0n, 'workspace high-water accounting must observe the admitted batch workspace');
     assert.equal(oracle.cleanup().runtimeResidue, 0);
-    return { maximumItems: vector.batching.maximumItems, progressedItems: 1 };
-  }, ['EVAL-BATCH-001', 'EVAL-BATCH-002', 'EVAL-BATCH-003']);
+    return { maximumItems: vector.batching.maximumItems, progressedItems: 1, serviceOpportunity: true };
+  }, ['EVAL-BATCH-001', 'EVAL-BATCH-002', 'EVAL-BATCH-003', 'EVAL-BATCH-009', 'EVAL-REQUEST-009']);
   defineCase('evaluator-batch-independent-equivalence', () => {
     const left = createEvaluatorOracle({ profile: vector });
     const right = createEvaluatorOracle({ profile: vector });
@@ -39,9 +43,7 @@ export function registerEvaluatorBatchCases({ defineCase, projection }) {
     executeComplete(right, vector, 'independent-right', [b, a], { payload });
     left.scatterBatch({ batchId: 'independent-left' });
     right.scatterBatch({ batchId: 'independent-right' });
-    for (const input of [a, b]) {
-      assert.deepEqual(left.observeRequest(ref(input)).capabilities, right.observeRequest(ref(input)).capabilities);
-    }
+    for (const input of [a, b]) assert.deepEqual(left.observeRequest(ref(input)).capabilities, right.observeRequest(ref(input)).capabilities);
     assert.equal(left.cleanup().runtimeResidue, 0);
     assert.equal(right.cleanup().runtimeResidue, 0);
     return { groupingOrderInvariant: true, inactivePaddingInvariant: true };
@@ -76,15 +78,26 @@ export function registerEvaluatorBatchCases({ defineCase, projection }) {
       results: [],
     });
     assert.equal(pending.kind, 'pending');
+    assert.equal(oracle.observeRequest(ref(a)).state, 'executing');
     assert.equal(oracle.assertAccounting().activeWorkspaces, 2);
-    const completed = oracle.resumeBatch({ batchId: 'resume-a', continuationId: pending.continuationId, continuation: { kind: 'complete' }, results: resultsFor(sensitive, [a]) });
+    const resume = {
+      batchId: 'resume-a', continuationId: pending.continuationId, resumeId: 'resume-operation-1',
+      continuation: { kind: 'complete' }, results: resultsFor(sensitive, [a]),
+    };
+    const completed = oracle.resumeBatch(resume);
     assert.equal(completed.kind, 'executed');
+    assert.equal(oracle.observeRequest(ref(a)).state, 'publishing');
+    assert.deepEqual(oracle.resumeBatch(resume), completed, 'an exact continuation retry must be idempotent and consume no second resume');
+    assert.throws(() => oracle.resumeBatch({ ...resume, results: resultsFor(sensitive, [a], { suffix: 'conflicting-retry' }) }), { code: 'EVALUATOR_REFERENCE_CONTINUATION_RETRY' });
     assert.equal(oracle.commitMutableState({ batchId: 'resume-a', certain: true, expectedGeneration: '0', nextGeneration: '1', updateIdentity: 'update-1' }).kind, 'committed');
     oracle.scatterBatch({ batchId: 'resume-a' });
-    assert.equal(oracle.assertAccounting().activeWorkspaces, 0, 'batch and continuation workspaces must release exactly once');
+    const accounting = oracle.assertAccounting();
+    assert.equal(accounting.activeWorkspaces, 0, 'batch and continuation workspaces must release exactly once');
+    assert.equal(accounting.activeWorkspaceBytes, '0');
+    assert(BigInt(accounting.workspaceHighWaterBytes) > 0n);
     oracle.cancelRequest({ ...ref(b), reason: 'pressure-case-end' });
     assert.equal(oracle.cleanup().runtimeResidue, 0);
-    return { isolatedExclusiveWorkspace: true, continuationBound: sensitive.batching.continuation.maxResumes };
+    return { isolatedExclusiveWorkspace: true, continuationBound: sensitive.batching.continuation.maxResumes, retryIdempotent: true };
   }, ['EVAL-BATCH-006', 'EVAL-BATCH-009', 'EVAL-BATCH-010', 'EVAL-REQUEST-009']);
   defineCase('evaluator-batch-failure-domains', () => {
     const independent = createEvaluatorOracle({ profile: vector });
@@ -117,6 +130,7 @@ export function registerEvaluatorBatchCases({ defineCase, projection }) {
     oracle.admitRequest(oldRequest);
     form(oracle, vector, 'stale-batch', [oldRequest]);
     executeComplete(oracle, vector, 'stale-batch', [oldRequest]);
+    assert.equal(oracle.observeRequest(ref(oldRequest)).state, 'publishing');
     oracle.cancelRequest({ ...ref(oldRequest), reason: 'superseded-before-scatter' });
     const replacement = requestInput(vector, 'replacement', { slotId: 'reuse-slot', requestId: 'request-new', incarnation: '2' });
     oracle.admitRequest(replacement);
