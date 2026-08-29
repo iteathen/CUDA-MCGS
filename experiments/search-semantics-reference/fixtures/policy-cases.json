@@ -2,14 +2,14 @@
   "schema": "cuda-mcgs.reference-policy-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 721157,
-    "sha256": "fd58bd6a5ae99dfb8534ab802f9aca9c12c0a110a793760645cec71d3a385042"
+    "byteLength": 727811,
+    "sha256": "115cceb16db3e4a99944c7228e1d5dff7047f342ddbe63a3e695c027d33e85c8"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-policy-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 123882,
-    "sha256": "3d4ae916d19413d6dbb26db6f611ea389b2d0aff56daea764a2af9533354b835"
+    "sha256": "6662d8101bbffee0e322ef7e2172f5980d69a09aec8ec565c9425578751310c2"
   },
   "expectedCases": [
     "policy-profile-matrix",
