@@ -78,6 +78,14 @@
     "https://github.com/iteathen/CUDA-MCGS/issues/142",
     "https://github.com/iteathen/CUDA-MCGS/pull/153"
   ],
+  "deliverables": [
+    "preserve the exact qualified Policy semantic/evidence head and packet without further semantic mutation",
+    "reconcile STATUS.md and next_step.yaml to the Policy review-gate state",
+    "qualify the final state-only head under the permanent workflow including aggregate verify",
+    "record the exact final state head, workflow, Policy evidence and author-review result on PR #153 and issue #36",
+    "hold experimental integration until independent review or an explicit exact-head repository-owner exception is recorded",
+    "leave experimental/portfolio and protected main unchanged while the review gate is open"
+  ],
   "current_focus": {
     "id": "REF-POLICY-01/REVIEW-GATE",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36",
