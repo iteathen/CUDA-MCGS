@@ -2,7 +2,7 @@
 
 **Status:** Informational
 
-**Updated:** 2026-08-28
+**Updated:** 2026-08-29
 
 ## Protected authority
 
@@ -10,87 +10,126 @@ Protected `main` remains intentionally unchanged:
 
 `ee4434be0ae927c4ae1d5c106f91503d28b1aa01`
 
-Nothing below is a protected-main support, release, native, compatible-pair, performance or production claim. The open-PR cleanup described here was completed on the isolated experimental portfolio only.
+Nothing below is a protected-main support, release, native, compatible-pair, performance, proposal-acceptance or production claim.
 
 ## Experimental integration line
 
-The live `experimental/portfolio` ref is the current experimental authority. The last non-state changes before this reconciliation are:
+The remaining-owner assessment was performed against exact:
 
-- Policy semantic/reference integration PR #153: `eace1d4c80f677763ec4a86773f4011a5f5553b5`;
-- Policy state reconciliation PR #154 and durable next-owner transition PR #155;
-- GitHub Actions v7 maintenance consolidation PR #156: `daaafcacbf9d104d287c923cd3143800f623a005`;
-- superseded Tensor/evaluator research preservation PR #157: `5defa0f31bf4c93f76b2e77b6e5ed09b3d43705d`.
+`experimental/portfolio@e629210bde91484235bf0feb266507d95042b90e`
 
-This status reconciliation is state-only and therefore intentionally does not encode its own eventual merge SHA as a forever-current branch identity. Read the live `experimental/portfolio` ref for current authority.
+That line contains the qualified Domain/Graph/Policy semantic/reference packet, the current v7 GitHub Actions maintenance pins, preserved non-authoritative superseded research, and completed open-PR audit reconciliation. This state change is assessment/routing only; read the live `experimental/portfolio` ref after integration for current authority.
 
-## Integrated Policy semantic/reference packet
-
-`REF-POLICY-01` remains integrated on the experimental portfolio. The bounded CUDA-free reference owns Policy meaning only: records, bounded reservations, cycle response, normalized selection/admission meaning, normalized value/perspective handling, transactional backup semantics, stop/drain accounting, reuse classification and Policy cleanup/quarantine.
-
-Exact integrated evidence packet remains:
+The integrated Policy packet remains unchanged:
 
 - semantic/evidence head `104cb8356417f95cc3783144b306f7b7725f9726`, workflow `33231519393` — success;
 - owner-authorized final Policy source/state head `877765e7fadafd9459bf13c1024c002edd279427`, workflow `33233026019` — success;
-- Composer `881/881`, representation/composition `115cceb16db3e4a99944c7228e1d5dff7047f342ddbe63a3e695c027d33e85c8`, canonical bytes `727811`;
-- Policy projection `6662d8101bbffee0e322ef7e2172f5980d69a09aec8ec565c9425578751310c2`, canonical bytes `123882`;
-- Policy reference `e58a5d2f1d49bab77c8b2176750ac764bc6f5295907bbffb708308b5ca35c116`, `24/24`, canonical bytes `13104`;
-- retained Policy artifact ID `9708629102`, ZIP SHA-256 `a33e7a4725f6f011737bc280c7f3f721874c4ee9c807a46e550e3c125167b747`;
+- Composer `881/881`, representation/composition `115cceb16db3e4a99944c7228e1d5dff7047f342ddbe63a3e695c027d33e85c8`;
+- Policy projection `6662d8101bbffee0e322ef7e2172f5980d69a09aec8ec565c9425578751310c2`;
+- Policy reference `e58a5d2f1d49bab77c8b2176750ac764bc6f5295907bbffb708308b5ca35c116`, `24/24`;
 - truthful requirement disposition summary `52 deferred / 910 partial / 27 pending`.
 
-The coverage/provenance migration changed evidence identities only; semantic cases, schedules, owner declarations and normative specifications were unchanged and fully requalified.
+## Remaining-owner assessment — complete
 
-## Ownership and claim limits
+Issue #36 now carries the exact owner-by-owner reassessment. The result is:
 
-Policy integration does **not** absorb neighboring owners:
+**`REF-EVALUATOR-01` is the smallest dependency-ready remaining semantic/reference leaf.**
 
-- Graph owns storage/reference/lifetime/reclamation meaning;
-- Evaluator owns execution, batching, cache/workspace and evaluator publication meaning;
-- Resource owns resource composition, admission, watermark and pressure policy;
-- Progress owns scheduling, fairness and device-progress policy;
-- Output owns terminal/live external result and publication meaning;
-- Session owns current-root, root-epoch, advance, reroot, attention and supersession authority;
-- CUDA-JS owns generic native/CUDA realization mechanisms;
-- CUDA-JS-Tensor owns generic tensor math.
+This selection is based on dependency truth, not historical ordering or raw requirement count.
 
-No UCT/PUCT formula, scheduler topology, atomic primitive, warp/block topology, allocator, CUDA data structure, native addon/FFI or production persistence format is selected by the Policy slice or this cleanup.
+### Why Evaluator is ready
 
-## Open-PR audit and disposition
+SPEC-0009 and the live Composer normalizer require the already integrated Domain and Graph normalized profiles plus the frozen Policy contract semantics. The Evaluator boundary owns finite request/incarnation lifecycle, input/key validity, batching, evaluator-owned workspace and continuation state, cache meaning, internal result readiness/publication/scatter, evaluator reroot reuse classification, cancellation/failure and cleanup.
 
-The repository-wide open-PR audit found five pre-existing PRs: #126, #129, #130, #131 and #132. Each need was fulfilled before disposition:
+Its remaining Resource, Progress and Session interactions can be represented as explicit immutable injected facts in the reference cases—such as admission granted/denied, one service opportunity, or the current root/work epoch. The Evaluator oracle may consume those facts but may not implement the owners that publish them.
 
-- **#129 checkout**, **#130 setup-node**, and **#131 upload-artifact** were real maintenance needs, but their old `main`-based diffs covered only an earlier workflow. PR #156 applied the exact Dependabot-selected v7 full SHAs to every current job on the experimental workflow. Exact successor head `5d92d5b66672e8cde8eb090c218a5fb2b8f1c1cd` passed workflow `33235801001` and merged as `daaafcacbf9d104d287c923cd3143800f623a005`. #129–#131 were then closed as fulfilled/superseded, not rejected.
-- **#132** attempted a broad product-boundary correction but edited accepted ADR-0018 in place, carried stale state authority, and imposed a broader prohibition than the current LEGO boundary permits. Its valid need is already fulfilled by the narrower accepted/current ownership path represented by PR #146 and current ADR authority. #132 contained no unique research that required preservation and was closed superseded. Issue #44 remains open because protected-main disposition is a separate authorization/acceptance question.
-- **#126** mixed stale ADR numbering/control state with one unique high-value Tensor/evaluator/batching/prospective-search research note. PR #157 preserved that note byte-for-byte under `docs/archive/research/` with explicit informational/non-authoritative labeling, requalified exact rebased head `495791ff3a53d576bc6dc903006246cca46724ae` under workflow `33236002396`, and merged as `5defa0f31bf4c93f76b2e77b6e5ed09b3d43705d`. #126 was then closed superseded without losing the useful evidence.
+ENGINE-REFERENCE-01 assigns **37 direct behavioral requirements** to Evaluator.
 
-A final repository-wide search after those dispositions returned **zero open pull requests**.
+### Why the smaller-looking leaves are not next
 
-## Workflow maintenance result
+- **Resource / SPEC-0011 (34 direct behavioral requirements)** composes selected owner resource contributions and validates classes against owner profile resource/pressure semantics. Starting it before the remaining owner contributions are behaviorally qualified would either guess their meaning or turn Resource into a surrogate semantic owner.
+- **Progress / SPEC-0012 (31)** covers every selected work class and explicitly consumes Evaluator, Resource and Output readiness/closure facts. Placeholder work semantics would violate LEGO ownership.
+- **Output / SPEC-0013 (51)** consumes ready Evaluator facts plus Resource/Progress terminal facts; it cannot precede Evaluator readiness evidence.
+- **Session / SPEC-0006 (38)** coordinates Policy/Evaluator/Output reuse, Resource admission, Progress stale-work disposition and Output observation. The reference plan deliberately places it after the complete session-absent terminal core slice.
+- **Stage / SPEC-0003 (8 direct ENGINE-REFERENCE routes)** is optional composition over stable source-owner transitions. Core owners never depend on Stage for their semantic completeness.
+- **Channel / SPEC-0004 (41 existing owner-evidence routes)** is downstream of Stage and already has a logical oracle in the Composer experiment. Later work must gap-audit/reuse that evidence, not copy it into another interpreter.
 
-The current experimental workflow now uses the exact Dependabot-selected full pins everywhere they apply:
+## Selected Evaluator falsifier
 
-- `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` — v7.0.1;
-- `actions/setup-node@820762786026740c76f36085b0efc47a31fe5020` — v7.0.0;
-- `actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a` — v7.0.1.
+The first decisive case is intentionally small and adversarial:
 
-PR #156 changed only those pins/version comments; workflow topology, matrices, commands, evidence paths, permissions and aggregate `verify` semantics were unchanged.
+1. admit two compatible evaluator request incarnations using explicit public Domain/Graph/Policy inputs and injected admission facts;
+2. form one finite evaluator batch/workspace lease;
+3. cancel or supersede one request and reuse its logical slot with a new incarnation before the old batch completes;
+4. complete the old batch;
+5. require the still-current result to publish exactly once, reject the stale old result before scatter/ready-result mutation, and terminate every evaluator-owned request/workspace disposition exactly once.
 
-## Preserved superseded research
+Replay the case as a partial batch under an explicit device-side service-opportunity fact. No host timeout, callback, poll/relaunch loop or host-produced intermediate may be required for progress.
 
-`docs/archive/research/2026-08-25-tensor-math-in-mcgs-assessment.md.txt` is evidence/provenance only. It preserves useful analysis from PR #126 concerning neural Evaluator direction, CUDA-JS-Tensor ownership, demand-driven batching, grouped execution and prospective/speculative techniques. It is not active specification, ADR, state or implementation authority.
+A paired `evaluator-absent` case must prove exact zero evaluator residue. An oracle-sensitivity mutation that removes the incarnation fence or complete-publication fence must fail.
+
+This falsifier crosses the highest-risk evaluator invariants without importing Resource/Progress implementation: request identity, finite batching, workspace ownership, stale isolation, scatter, publication and cleanup.
+
+## Required profile breadth
+
+The Evaluator reference cannot be a neural/scalar happy path. The selected leaf must cover materially different product-neutral families, including:
+
+- proposal-only capability production;
+- evaluation-only structured/vector or proof/table-like outputs;
+- a combined capability profile;
+- history/root-sensitive cache and key behavior;
+- full and partial finite batches;
+- partial capability readiness and failure/cancellation;
+- stale request/incarnation/reuse behavior; and
+- exact evaluator absence/deletion.
+
+CUDA-JS-Tensor is an optional later mathematical mechanism for selected consumers. It is not a universal Evaluator dependency or semantic authority.
+
+## LEGO and claim limits
+
+The selected Evaluator leaf must not own or implement:
+
+- Domain state/action/history/transition semantics;
+- Graph storage/reference/reclamation;
+- Policy value conversion, statistics, backup, ranking or stopping;
+- Resource global plan/admission/watermark/pressure policy;
+- Progress scheduling, fairness, no-progress or closure;
+- Output terminal/live external publication;
+- Session root/advance/reroot/attention authority;
+- neural/model/chess/UCI/product-head semantics;
+- CUDA-JS-Tensor as mandatory evaluator meaning; or
+- CUDA/native mechanisms, compatible-pair qualification, performance or production lowering.
+
+No C/C++, CUDA C++, native addon/FFI, hand-written PTX, embedded CUDA source, private CUDA-JS access or Python belongs in this reference leaf.
+
+## Exact validation target for REF-EVALUATOR-01
+
+Before any Evaluator integration claim:
+
+- add an owner-local Composer Evaluator projection/export that proves exact normalized Evaluator identities;
+- make the semantic Evaluator oracle consume only that generated public normalized projection, not Composer private state;
+- cover all 37 direct evaluator behavioral obligations with named cases and no promotion of native-deferred requirements;
+- include the stale-incarnation/publication mutation-sensitivity proof and evaluator-absence deletion proof;
+- retain materially varied profile families and bounded declared schedules;
+- add a permanent Evaluator peer CI job only with the complete semantic slice, wired into fail-closed aggregate `verify`;
+- run all existing Composer, Graph, Policy and repository regressions on the exact head;
+- perform complete whole-diff author review and cleanup; and
+- keep experimental integration separate from any later protected-main semantic-acceptance/native authorization.
 
 ## Next semantic seam
 
-The open-PR cleanup does not choose or begin the next semantic owner.
+The assessment gate is closed. `REF-EVALUATOR-01` is selected but **not yet implemented**.
 
-Issue #36 remains the deterministic reference/conformance parent. The next action remains a fresh dependency assessment of the remaining semantic owners against the integrated Domain/Graph/Policy packet. `REF-EVALUATOR-01` is only the leading candidate until that assessment explicitly compares Evaluator, Resource, Progress, Output, optional Session and Stage/Channel obligations and defines the smallest dependency-ready leaf, cheapest falsifier, non-goals and exact validation.
+After this state-only selection record is integrated and read back, the next operation may create one short-lived Evaluator focus branch from that exact experimental head. The first implementation work is the owner-local Evaluator profile projection plus the stale-incarnation/partial-batch/absence falsifiers above.
 
-Issue #122 remains the later atomic semantic acceptance gate. Issue #142 remains portfolio coordination only. Issue #44 remains open for the product-boundary/protected-main disposition still not authorized by this experimental work.
+Do not begin Resource in parallel. Resource becomes the next reassessment candidate only after Evaluator semantic/reference evidence is integrated and reconciled.
+
+Issue #122 remains the later atomic semantic-acceptance gate. Issue #142 remains coordination only. Protected `main` remains outside this experimental routing change.
 
 ## Cleanup / coordination
 
-- All five pre-existing open PRs reviewed in this task are now closed or fulfilled through qualified current-tree successors; repository-wide open-PR search is empty.
-- Temporary transport/repair workflows and scripts were not introduced by this audit.
-- The source branches created for merged PRs #156 and #157, plus this state reconciliation branch after merge, are eligible for deletion. The available GitHub connector exposes branch search/create/update but no safe delete-ref/delete-branch operation, so they remain bounded cleanup debt rather than being falsely reported deleted.
-- Existing stale Graph/Policy source and recovery refs remain previously recorded cleanup debt for the same tooling/recovery-disposition reasons.
+- No Evaluator implementation branch existed at assessment time; `ref/evaluator-reference-01` was not pre-created.
+- This assessment introduced no semantic code, temporary workflow, generated evidence or native artifact.
+- `state/evaluator-owner-selection-20260829` is the state-only reconciliation branch and becomes deletion-eligible after merge.
+- Previously recorded stale Graph/Policy source/recovery refs remain bounded cleanup debt pending safe recovery disposition/deletion support.
 
-No authorization was given to move or modify protected `main`.
