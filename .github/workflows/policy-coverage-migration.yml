@@ -1,0 +1,106 @@
+name: policy-coverage-migration
+
+on:
+  push:
+    branches: [ref/policy-reference-01]
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26.7.0
+      - name: Advance only direct Policy behavioral coverage
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const coveragePath = 'schemas/search-ir/0.2.0/requirement-coverage.json';
+          const runPath = 'experiments/search-ir-composer-reference/run.mjs';
+          const coverage = JSON.parse(fs.readFileSync(coveragePath, 'utf8'));
+          const plans = new Map([
+            ['POLICY-RECORD-', { status: 'partial', prior: 'partial', refs: [
+              'case:policy-profile-matrix',
+              'case:policy-transposition-edge-local-records',
+              'case:policy-reservation-not-completed',
+              'case:policy-vector-non-zero-sum-perspective',
+              'case:policy-evaluator-mode-matrix',
+              'case:policy-statistics-overflow'
+            ] }],
+            ['POLICY-RESERVE-', { status: 'partial', prior: 'partial', refs: [
+              'case:policy-reservation-not-completed',
+              'case:policy-reservation-failure-conservation',
+              'case:policy-reservation-pressure'
+            ] }],
+            ['POLICY-CYCLE-', { status: 'partial', prior: 'partial', refs: [
+              'case:policy-path-relation-after-identity',
+              'case:policy-chance-custom-role'
+            ] }],
+            ['POLICY-BACKUP-', { status: 'partial', prior: 'partial', refs: [
+              'case:policy-ordered-noncommutative-backup',
+              'case:policy-repeated-node-occurrence-backup',
+              'case:policy-backup-prefix-must-drain',
+              'case:policy-stale-epoch-publication',
+              'case:policy-oracle-sensitivity-backup'
+            ] }],
+            ['POLICY-STOP-', { status: 'partial', prior: 'partial', refs: [
+              'case:policy-first-stop-cause-drain',
+              'case:policy-schedule-bounded-overshoot',
+              'case:policy-no-ranked-output'
+            ] }],
+            ['POLICY-REUSE-', { status: 'partial', prior: 'partial', refs: [
+              'case:policy-advance-no-reclassification',
+              'case:policy-reroot-explicit-reuse',
+              'case:policy-generation-exhaustion'
+            ] }],
+            ['POLICY-CLEANUP-', { status: 'partial', prior: 'pending', refs: [
+              'case:policy-cleanup-complete-disposition',
+              'case:policy-cleanup-quarantine'
+            ] }]
+          ]);
+          const seen = new Set();
+          for (const entry of coverage.classifications) {
+            if (entry.contract !== 'SPEC-0008' || !plans.has(entry.requirementPrefix)) continue;
+            const plan = plans.get(entry.requirementPrefix);
+            seen.add(entry.requirementPrefix);
+            const alreadyMigrated = entry.evidenceStatus === plan.status && plan.refs.every((ref) => entry.evidenceRefs.includes(ref));
+            if (!alreadyMigrated && entry.evidenceStatus !== plan.prior) {
+              throw new Error(`${entry.requirementPrefix} expected ${plan.prior}, found ${entry.evidenceStatus}`);
+            }
+            entry.evidenceStatus = plan.status;
+            for (const ref of plan.refs) if (!entry.evidenceRefs.includes(ref)) entry.evidenceRefs.push(ref);
+          }
+          if (seen.size !== plans.size) throw new Error(`expected ${plans.size} Policy groups, found ${seen.size}`);
+          fs.writeFileSync(coveragePath, `${JSON.stringify(coverage, null, 2)}\n`);
+
+          let source = fs.readFileSync(runPath, 'utf8');
+          const oldText = 'assert.deepEqual(countByStatus, { deferred: 52, partial: 908, pending: 29 });';
+          const newText = 'assert.deepEqual(countByStatus, { deferred: 52, partial: 910, pending: 27 });';
+          const oldCount = source.split(oldText).length - 1;
+          const newCount = source.split(newText).length - 1;
+          if (oldCount === 1 && newCount === 0) source = source.replace(oldText, newText);
+          else if (!(oldCount === 0 && newCount === 1)) throw new Error(`unexpected Composer disposition assertion old=${oldCount} new=${newCount}`);
+          fs.writeFileSync(runPath, source);
+          NODE
+          git diff --check
+          changed="$(git diff --name-only)"
+          printf '%s\n' "$changed"
+          test "$changed" = $'experiments/search-ir-composer-reference/run.mjs\nschemas/search-ir/0.2.0/requirement-coverage.json'
+          node scripts/run-search-ir-composer-reference.mjs
+          if git diff --quiet; then
+            echo 'Policy coverage already migrated.'
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add experiments/search-ir-composer-reference/run.mjs schemas/search-ir/0.2.0/requirement-coverage.json
+          git commit -m 'test: advance Policy behavioral coverage'
+          git push origin HEAD:ref/policy-reference-01
