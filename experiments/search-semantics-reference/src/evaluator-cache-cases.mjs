@@ -1,0 +1,66 @@
+import assert from 'node:assert/strict';
+
+import { createEvaluatorOracle } from './evaluator.mjs';
+import { cacheKey, getProfile, ref, requestInput, resultsFor } from './evaluator-case-support.mjs';
+
+export function registerEvaluatorCacheCases({ defineCase, projection }) {
+  const vector = getProfile(projection, 'evaluator.synthetic-vector-combined');
+
+  defineCase('evaluator-cache-full-key-collision', () => {
+    const oracle = createEvaluatorOracle({ profile: vector });
+    const keyA = cacheKey(vector, 'cache-a');
+    const keyB = cacheKey(vector, 'cache-b');
+    const fixedHash = 'forced-collision';
+    oracle.claimCacheEntry({ entryId: 'entry-a', generation: '1', hash: fixedHash, keyFacts: keyA });
+    oracle.publishCacheEntry({ entryId: 'entry-a', generation: '1', results: resultsFor(vector, [requestInput(vector, 'cache-payload-a', { inputKey: keyA })])[0].capabilities });
+    oracle.claimCacheEntry({ entryId: 'entry-b', generation: '1', hash: fixedHash, keyFacts: keyB });
+    oracle.publishCacheEntry({ entryId: 'entry-b', generation: '1', results: resultsFor(vector, [requestInput(vector, 'cache-payload-b', { inputKey: keyB })])[0].capabilities });
+    assert.equal(oracle.lookupCache({ hash: fixedHash, keyFacts: keyA }).entryId, 'entry-a');
+    assert.equal(oracle.lookupCache({ hash: fixedHash, keyFacts: keyB }).entryId, 'entry-b');
+    const keyC = cacheKey(vector, 'cache-c');
+    assert.equal(oracle.lookupCache({ hash: fixedHash, keyFacts: keyC }).kind, 'miss');
+
+    const request = requestInput(vector, 'cache-request', { inputKey: keyA, purpose: keyA.purpose });
+    oracle.admitRequest(request);
+    assert.deepEqual(oracle.completeFromCache({ entryId: 'entry-a', ...ref(request) }), { kind: 'ready', source: 'cache', entryId: 'entry-a' });
+    assert(oracle.observeRequest(ref(request)).capabilities.every(({ source }) => source === 'cache'));
+    assert.equal(oracle.cleanup().runtimeResidue, 0);
+    return { collisionVerifiedByFullKey: true, cacheFreshSchemaEquivalent: true };
+  }, ['EVAL-CACHE-001', 'EVAL-CACHE-002', 'EVAL-CACHE-003', 'EVAL-CACHE-004', 'EVAL-CACHE-005', 'EVAL-REQUEST-006']);
+  defineCase('evaluator-cache-failure-pressure-protection', () => {
+    const oracle = createEvaluatorOracle({ profile: vector, admission: { maxCacheEntries: '1' } });
+    const keyA = cacheKey(vector, 'pressure-a');
+    const keyB = cacheKey(vector, 'pressure-b');
+    oracle.claimCacheEntry({ entryId: 'pressure-a', generation: '1', hash: 'a', keyFacts: keyA });
+    oracle.failCacheEntry({ entryId: 'pressure-a', generation: '1', code: 'evaluation-failed' });
+    assert.equal(oracle.lookupCache({ hash: 'a', keyFacts: keyA }).kind, 'miss', 'failed cache entries must never be ready hits');
+    assert.deepEqual(oracle.claimCacheEntry({ entryId: 'pressure-b', generation: '1', hash: 'b', keyFacts: keyB }), { kind: 'pressure', code: 'evaluator-cache-capacity' });
+    oracle.retireCacheEntry({ entryId: 'pressure-a', reason: 'make-capacity' });
+    oracle.claimCacheEntry({ entryId: 'pressure-b', generation: '1', hash: 'b', keyFacts: keyB });
+    oracle.publishCacheEntry({ entryId: 'pressure-b', generation: '1', results: resultsFor(vector, [requestInput(vector, 'pressure-payload', { inputKey: keyB })])[0].capabilities });
+    oracle.protectCacheEntry({ entryId: 'pressure-b', protected: true });
+    oracle.invalidateCacheFact({ fact: 'history', nextValue: { digest: 'new-history' } });
+    assert.equal(oracle.lookupCache({ hash: 'b', keyFacts: keyB }).kind, 'miss', 'protected invalid entry must become non-hittable before reclamation');
+    assert.deepEqual(oracle.retireCacheEntry({ entryId: 'pressure-b', reason: 'evict' }), { kind: 'pending', code: 'cache-entry-protected' });
+    oracle.protectCacheEntry({ entryId: 'pressure-b', protected: false });
+    assert.equal(oracle.retireCacheEntry({ entryId: 'pressure-b', reason: 'evict' }).kind, 'retired');
+    assert.equal(oracle.cleanup().runtimeResidue, 0);
+    return { typedPressure: true, protectedInvalidationSafe: true };
+  }, ['EVAL-CACHE-006', 'EVAL-CACHE-007']);
+  defineCase('evaluator-cache-generation-invalidation', () => {
+    const oracle = createEvaluatorOracle({ profile: vector });
+    const key = cacheKey(vector, 'generation');
+    const huge = '18446744073709551616';
+    oracle.claimCacheEntry({ entryId: 'generation-entry', generation: huge, hash: 'g', keyFacts: key });
+    oracle.publishCacheEntry({ entryId: 'generation-entry', generation: huge, results: resultsFor(vector, [requestInput(vector, 'generation-payload', { inputKey: key })])[0].capabilities });
+    oracle.retireCacheEntry({ entryId: 'generation-entry', reason: 'recycle' });
+    assert.throws(() => oracle.claimCacheEntry({ entryId: 'generation-entry', generation: huge, hash: 'g', keyFacts: key }), { code: 'EVALUATOR_REFERENCE_CACHE_GENERATION' });
+    const next = (BigInt(huge) + 1n).toString();
+    oracle.claimCacheEntry({ entryId: 'generation-entry', generation: next, hash: 'g', keyFacts: key });
+    oracle.publishCacheEntry({ entryId: 'generation-entry', generation: next, results: resultsFor(vector, [requestInput(vector, 'generation-payload-2', { inputKey: key })])[0].capabilities });
+    assert.equal(oracle.invalidateCacheFact({ fact: 'artifact-generation', nextValue: 'new-artifact' }).retired, 1);
+    assert.equal(oracle.lookupCache({ hash: 'g', keyFacts: key }).kind, 'miss');
+    assert.equal(oracle.cleanup().runtimeResidue, 0);
+    return { generationBeyondUint64Exact: next };
+  }, ['EVAL-CACHE-008', 'EVAL-REUSE-006']);
+}

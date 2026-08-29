@@ -1,0 +1,37 @@
+{
+  "schema": "cuda-mcgs.reference-evaluator-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 727811,
+    "sha256": "115cceb16db3e4a99944c7228e1d5dff7047f342ddbe63a3e695c027d33e85c8"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-evaluator-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 151720,
+    "sha256": "705f8357a2edfbbbc84f9daae42e601b089778ef5f09b2284a2d2079d4b797a1"
+  },
+  "expectedCases": [
+    "evaluator-absent-zero-residue",
+    "evaluator-request-admission-atomicity",
+    "evaluator-request-coalescing-cancel",
+    "evaluator-request-readiness-completeness",
+    "evaluator-batch-one-progress",
+    "evaluator-batch-independent-equivalence",
+    "evaluator-batch-sensitive-identity",
+    "evaluator-resumable-workspace-isolation",
+    "evaluator-batch-failure-domains",
+    "evaluator-scatter-incarnation",
+    "evaluator-cache-full-key-collision",
+    "evaluator-cache-failure-pressure-protection",
+    "evaluator-cache-generation-invalidation",
+    "evaluator-reroot-reuse-transaction",
+    "evaluator-advance-history-provenance",
+    "evaluator-cleanup-complete-disposition",
+    "evaluator-cleanup-quarantine",
+    "evaluator-uncertain-mutable-state-quarantine",
+    "evaluator-oracle-sensitivity-incarnation",
+    "evaluator-oracle-sensitivity-readiness",
+    "evaluator-oracle-sensitivity-cache-key"
+  ]
+}
