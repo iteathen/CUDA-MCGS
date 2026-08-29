@@ -875,8 +875,16 @@
       "primaryDisposition": "engine-reference-oracle",
       "supportingDispositions": ["native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
-      "evidenceStatus": "pending",
-      "evidenceRefs": ["case:graph-no-reclamation-zero-residue", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceStatus": "partial",
+      "evidenceRefs": [
+        "case:graph-no-reclamation-zero-residue",
+        "case:graph-cleanup-terminal-dispositions-have-no-abandoned-owner-local-obligation",
+        "case:graph-cleanup-semantic-inconsistency-quarantines-and-invalidates-dependent-node-evidence",
+        "case:graph-cleanup-arena-release-reconciles-all-graph-owned-transients-before-resource-destruction",
+        "case:graph-cleanup-retained-artifact-provenance-is-explicit-compatible-or-absent",
+        "case:graph-cleanup-requirement-coverage-exact",
+        "planned:ENGINE-NATIVE-01"
+      ],
       "classificationStatus": "classified"
     },
     {

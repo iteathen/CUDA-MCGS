@@ -1,5 +1,5 @@
 {
-  "schema": "cuda-mcgs.reference-graph-advance-occurrence-fixtures/0.1.0",
+  "schema": "cuda-mcgs.reference-graph-cleanup-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
     "byteLength": 721157,
@@ -31,11 +31,6 @@
     "byteLength": 9530,
     "sha256": "057da30298ff2c76ee5400d2b45ddf5fcbd969885910e078709e67b9cc673c72"
   },
-  "rootControlProjection": {
-    "algorithm": "sha256",
-    "byteLength": 10489,
-    "sha256": "be35ed803ea82498950c454acb6955087543c2a7a974745077c4c53158bca475"
-  },
   "rootEvidence": {
     "algorithm": "sha256",
     "byteLength": 10008,
@@ -46,11 +41,17 @@
     "byteLength": 12127,
     "sha256": "42d2c94e6387b72e17d891dfdfc53c6e7c65795dc15169085b70df65f5be34cf"
   },
+  "advanceOccurrenceEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 4195,
+    "sha256": "53b2437c4f0221515f89cd6b16aeaa74f61d8d934680d0284ee83a5611fb1a87"
+  },
   "expectedCases": [
-    "graph-advance-occurrence-upstream-evidence-and-control-exact",
-    "graph-advance-occurrence-authority-commit-has-zero-eager-cleanup",
-    "graph-advance-occurrence-lazy-checkpoint-releases-only-sibling-occurrence",
-    "graph-advance-occurrence-retirement-order-blocks-new-protection-while-old-work-drains",
-    "graph-advance-occurrence-retained-borrow-gates-quiescence-and-reuse-is-generation-safe"
+    "graph-cleanup-upstream-evidence-exact",
+    "graph-cleanup-terminal-dispositions-have-no-abandoned-owner-local-obligation",
+    "graph-cleanup-semantic-inconsistency-quarantines-and-invalidates-dependent-node-evidence",
+    "graph-cleanup-arena-release-reconciles-all-graph-owned-transients-before-resource-destruction",
+    "graph-cleanup-retained-artifact-provenance-is-explicit-compatible-or-absent",
+    "graph-cleanup-requirement-coverage-exact"
   ]
 }
