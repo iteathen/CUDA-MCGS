@@ -17,107 +17,11 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26.7.0
-      - name: Repair reroot validation and fail-before-mutation falsifier
+      - name: Apply guarded reroot review repair
         shell: bash
         run: |
           set -euo pipefail
-          node <<'NODE'
-          const fs = require('node:fs');
-
-          const policyPath = 'experiments/search-semantics-reference/src/policy.mjs';
-          let policy = fs.readFileSync(policyPath, 'utf8');
-          const oldPolicy = `      if (declared.disposition === 'retain' && entry.action !== 'retain') fail('POLICY_REFERENCE_REUSE', \`${'${entry.recordId}'} contradicts declared retain\`);
-      if (declared.disposition === 'retain-if-key-valid') {
-        const expected = entry.keyValid === true ? 'retain' : 'invalidate';
-        if (entry.action !== expected) fail('POLICY_REFERENCE_REUSE', \`${'${entry.recordId}'} key-valid reuse action must be ${'${expected}'}\`);
-      }
-      if (declared.disposition === 'reset' && entry.action !== 'reset') fail('POLICY_REFERENCE_REUSE', \`${'${entry.recordId}'} contradicts declared reset\`);
-      byRecord.set(entry.recordId, entry);
-      reuseClassifications += 1n;
-      emit('reuse-classified', { recordId: entry.recordId, action: entry.action });
-    }
-    if (byRecord.size !== reuseByRecord.size) fail('POLICY_REFERENCE_REUSE', 'reroot must classify every persistent policy record');
-    currentRootEpoch = to;
-    for (const [recordId, entry] of byRecord) {`;
-          const newPolicy = `      if (declared.disposition === 'retain-if-key-valid') {
-        const expected = entry.keyValid === true ? 'retain' : 'invalidate';
-        if (entry.action !== expected) fail('POLICY_REFERENCE_REUSE', \`${'${entry.recordId}'} key-valid reuse action must be ${'${expected}'}\`);
-      } else if (entry.action !== declared.disposition) {
-        fail('POLICY_REFERENCE_REUSE', \`${'${entry.recordId}'} contradicts declared ${'${declared.disposition}'}\`);
-      }
-      byRecord.set(entry.recordId, entry);
-    }
-    if (byRecord.size !== reuseByRecord.size) fail('POLICY_REFERENCE_REUSE', 'reroot must classify every persistent policy record');
-    for (const [recordId, entry] of byRecord) {
-      reuseClassifications += 1n;
-      emit('reuse-classified', { recordId, action: entry.action });
-    }
-    for (const [recordId, entry] of byRecord) {`;
-          if ((policy.split(oldPolicy).length - 1) !== 1) throw new Error('unexpected reroot validation source');
-          policy = policy.replace(oldPolicy, newPolicy);
-          const oldCommit = `    }
-    emit('root-rerooted', { fromEpoch: input.fromEpoch, toEpoch: input.toEpoch, classifications: String(byRecord.size) });`;
-          const newCommit = `    }
-    currentRootEpoch = to;
-    emit('root-rerooted', { fromEpoch: input.fromEpoch, toEpoch: input.toEpoch, classifications: String(byRecord.size) });`;
-          if ((policy.split(oldCommit).length - 1) !== 1) throw new Error('unexpected reroot commit source');
-          policy = policy.replace(oldCommit, newCommit);
-          fs.writeFileSync(policyPath, policy);
-
-          const casesPath = 'experiments/search-semantics-reference/src/policy-cases.mjs';
-          let cases = fs.readFileSync(casesPath, 'utf8');
-          const oldCase = `    for (const declaration of scalar.reuse) {
-      const entry = rerootDispositions(scalar, true).find(({ recordId }) => recordId === declaration.record);
-      assert(entry);
-      if (declaration.disposition === 'retain') assert.equal(entry.action, 'retain');
-      if (declaration.disposition === 'retain-if-key-valid') assert.equal(entry.action, 'retain');
-      if (declaration.disposition === 'reset') assert.equal(entry.action, 'reset');
-    }
-    return result;`;
-          const newCase = `    for (const declaration of scalar.reuse) {
-      const entry = rerootDispositions(scalar, true).find(({ recordId }) => recordId === declaration.record);
-      assert(entry);
-      if (declaration.disposition === 'retain') assert.equal(entry.action, 'retain');
-      if (declaration.disposition === 'retain-if-key-valid') assert.equal(entry.action, 'retain');
-      if (declaration.disposition === 'reset') assert.equal(entry.action, 'reset');
-    }
-+
-+    const mutableReuseIndex = scalar.reuse.findIndex(({ disposition }) => disposition === 'reset');
-+    assert.notEqual(mutableReuseIndex, -1, 'Policy fixture needs one reset record for transform/invalidate sensitivity');
-+    for (const disposition of ['transform', 'invalidate']) {
-+      const variantProfile = canonicalClone(scalar);
-+      variantProfile.reuse[mutableReuseIndex].disposition = disposition;
-+      const variant = numericOracle(variantProfile);
-+      for (const record of variantProfile.records) {
-+        variant.initializeRecord({ recordId: record.id, storageKey: \`key-${'${record.id}'}\`, generation: '0', value: { marker: record.scope } });
-+      }
-+      variant.setRootEpoch({ rootEpoch: '20' });
-+      const validDispositions = rerootDispositions(variantProfile, true);
-+      const invalidDispositions = canonicalClone(validDispositions);
-+      invalidDispositions[mutableReuseIndex].action = disposition === 'transform' ? 'reset' : 'retain';
-+      const beforeInvalid = variant.snapshot();
-+      assert.throws(
-+        () => variant.reroot({ fromEpoch: '20', toEpoch: '21', dispositions: invalidDispositions }),
-+        { code: 'POLICY_REFERENCE_REUSE' },
-+      );
-+      assert.deepEqual(variant.snapshot(), beforeInvalid, 'invalid reroot must not publish partial Policy reuse state');
-+
-+      const variantResult = variant.reroot({ fromEpoch: '20', toEpoch: '21', dispositions: validDispositions });
-+      assert.equal(variantResult.reuseClassifications, String(variantProfile.reuse.length));
-+      const targetRecord = variantProfile.records.find(({ id }) => id === variantProfile.reuse[mutableReuseIndex].record);
-+      assert(targetRecord);
-+      const targetKey = \`key-${'${targetRecord.id}'}\`;
-+      if (disposition === 'transform') {
-+        assert.deepEqual(variant.readRecord({ recordId: targetRecord.id, storageKey: targetKey }), { transformedFrom: { marker: targetRecord.scope } });
-+      } else {
-+        assert.throws(() => variant.readRecord({ recordId: targetRecord.id, storageKey: targetKey }), { code: 'POLICY_REFERENCE_RECORD' });
-+      }
-+    }
-+    return result;`.replace(/^\+/gm, '');
-          if ((cases.split(oldCase).length - 1) !== 1) throw new Error('unexpected reroot case source');
-          cases = cases.replace(oldCase, newCase);
-          fs.writeFileSync(casesPath, cases);
-          NODE
+          node scripts/tmp-policy-reroot-review-repair.mjs
           git diff --check
           node --check experiments/search-semantics-reference/src/policy.mjs
           node --check experiments/search-semantics-reference/src/policy-cases.mjs
