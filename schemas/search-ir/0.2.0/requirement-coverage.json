@@ -436,7 +436,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-record-storage-scope", "case:reject-policy-accounting-without-numeric-rules", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-record-storage-scope", "case:reject-policy-accounting-without-numeric-rules", "planned:ENGINE-REFERENCE-01", "case:policy-profile-matrix", "case:policy-transposition-edge-local-records", "case:policy-reservation-not-completed", "case:policy-vector-non-zero-sum-perspective", "case:policy-evaluator-mode-matrix", "case:policy-statistics-overflow"],
       "classificationStatus": "classified"
     },
     {
@@ -458,7 +458,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-reservation-port-residue", "case:reject-policy-reservation-without-record", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-reservation-port-residue", "case:reject-policy-reservation-without-record", "planned:ENGINE-NATIVE-01", "case:policy-reservation-not-completed", "case:policy-reservation-failure-conservation", "case:policy-reservation-pressure"],
       "classificationStatus": "classified"
     },
     {
@@ -491,7 +491,7 @@
       "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-cycle-domain-port-drift", "case:policy-stateless-zero-residue", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-cycle-domain-port-drift", "case:policy-stateless-zero-residue", "planned:ENGINE-REFERENCE-01", "case:policy-path-relation-after-identity", "case:policy-chance-custom-role"],
       "classificationStatus": "classified"
     },
     {
@@ -502,7 +502,7 @@
       "supportingDispositions": ["semantic-normalizer", "native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["case:policy-profile-second-instances-distinct", "case:reject-policy-backup-order", "case:reject-policy-backup-idempotence", "case:reject-policy-backup-without-visible-record", "planned:ENGINE-NATIVE-01"],
+      "evidenceRefs": ["case:policy-profile-second-instances-distinct", "case:reject-policy-backup-order", "case:reject-policy-backup-idempotence", "case:reject-policy-backup-without-visible-record", "planned:ENGINE-NATIVE-01", "case:policy-ordered-noncommutative-backup", "case:policy-repeated-node-occurrence-backup", "case:policy-backup-prefix-must-drain", "case:policy-stale-epoch-publication", "case:policy-oracle-sensitivity-backup"],
       "classificationStatus": "classified"
     },
     {
@@ -513,7 +513,7 @@
       "supportingDispositions": ["semantic-normalizer", "cross-specification-proof"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:policy-arbitrary-width-bounds", "case:reject-policy-stop-budget-range", "case:reject-policy-undeclared-stop-cause", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": ["normalizer:policy-profile", "case:policy-arbitrary-width-bounds", "case:reject-policy-stop-budget-range", "case:reject-policy-undeclared-stop-cause", "planned:ENGINE-REFERENCE-01", "case:policy-first-stop-cause-drain", "case:policy-schedule-bounded-overshoot", "case:policy-no-ranked-output"],
       "classificationStatus": "classified"
     },
     {
@@ -524,7 +524,7 @@
       "supportingDispositions": ["semantic-normalizer", "ir-identity-deletion-rejection"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
       "evidenceStatus": "partial",
-      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-reuse-unknown-record", "case:reject-policy-reuse-coverage", "planned:ENGINE-REFERENCE-01"],
+      "evidenceRefs": ["normalizer:policy-profile", "case:reject-policy-reuse-unknown-record", "case:reject-policy-reuse-coverage", "planned:ENGINE-REFERENCE-01", "case:policy-advance-no-reclassification", "case:policy-reroot-explicit-reuse", "case:policy-generation-exhaustion"],
       "classificationStatus": "classified"
     },
     {
@@ -556,8 +556,8 @@
       "primaryDisposition": "engine-reference-oracle",
       "supportingDispositions": ["native-compatible-pair-qualification"],
       "plannedEvidenceOwner": "ENGINE-REFERENCE-01",
-      "evidenceStatus": "pending",
-      "evidenceRefs": ["case:reject-policy-backup-without-visible-record", "case:reject-policy-reservation-without-record", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01"],
+      "evidenceStatus": "partial",
+      "evidenceRefs": ["case:reject-policy-backup-without-visible-record", "case:reject-policy-reservation-without-record", "planned:ENGINE-REFERENCE-01", "planned:ENGINE-NATIVE-01", "case:policy-cleanup-complete-disposition", "case:policy-cleanup-quarantine"],
       "classificationStatus": "classified"
     },
     {

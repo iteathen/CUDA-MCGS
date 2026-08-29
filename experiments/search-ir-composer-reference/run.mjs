@@ -6265,7 +6265,7 @@ await runCase('integration-requirement-disposition-handoff', () => {
     status,
     inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === status).length,
   ]));
-  assert.deepEqual(countByStatus, { deferred: 52, partial: 908, pending: 29 });
+  assert.deepEqual(countByStatus, { deferred: 52, partial: 910, pending: 27 });
 
   const pending = inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === 'pending');
   assert(pending.every(({ currentDisposition, plannedEvidenceOwner }) => (
