@@ -25,41 +25,63 @@ export function registerEvaluatorRequestCases({ defineCase, projection }) {
     assert.deepEqual(oracle.admitRequest(denied), { kind: 'pressure', code: 'evaluator-request-capacity' });
     assert.equal(oracle.assertAccounting().admitted, 0, 'failed admission must consume no live request capacity');
 
+    const malformedOracle = createEvaluatorOracle({ profile: analytic });
+    const malformed = requestInput(analytic, 'malformed');
+    malformed.compatibilityKey = { ...malformed.compatibilityKey, executionVariant: { equivalenceClass: 'wrong', determinism: 'wrong' } };
+    assert.throws(() => malformedOracle.admitRequest(malformed), { code: 'EVALUATOR_REFERENCE_BATCH_COMPATIBILITY_KEY' });
+    assert.equal(malformedOracle.assertAccounting().admitted, 0, 'invalid compatibility identity must not publish or reserve a request');
+
     const accepted = requestInput(analytic, 'accepted', { rootEpoch: '3', workEpoch: '9' });
     assert.equal(oracle.admitRequest(accepted).kind, 'queued');
-    assert.deepEqual(oracle.observeRequest(ref(accepted)), {
-      slotId: accepted.slotId,
-      requestId: accepted.requestId,
-      incarnation: '1',
-      state: 'queued',
-      resultDisposition: 'claimed',
-      inputLease: 'held',
-      capabilities: analytic.capabilities.map(({ id }) => ({ id, state: 'pending', source: null, payload: null, validity: null })),
-      waiters: 0,
-    });
+    const observed = oracle.observeRequest(ref(accepted));
+    assert.equal(observed.state, 'queued');
+    assert.equal(observed.resultDisposition, 'claimed');
+    assert.equal(observed.inputLease, 'held');
+    assert.equal(observed.bindings.profileId, analytic.id);
+    assert.equal(observed.bindings.requesterId, accepted.requesterId);
+    assert.equal(observed.bindings.resultSlotId, accepted.resultSlotId);
+    assert.equal(observed.bindings.inputLeaseId, accepted.inputLeaseId);
+    assert.equal(observed.bindings.rootEpoch, '3');
+    assert.equal(observed.bindings.workEpoch, '9');
+    assert.deepEqual(observed.bindings.graphReference, accepted.graphReference);
+    assert.deepEqual(observed.bindings.admissionReservation, accepted.admission);
+    assert.deepEqual(observed.capabilities, analytic.capabilities.map(({ id }) => ({ id, state: 'pending', source: null, payload: null, validity: null })));
+    assert.equal(oracle.assertAccounting().stateCounts.queued, 1);
     const blocked = requestInput(analytic, 'blocked');
     assert.deepEqual(oracle.admitRequest(blocked), { kind: 'pressure', code: 'evaluator-request-capacity' });
     assert.equal(oracle.assertAccounting().admitted, 1);
     oracle.cancelRequest({ ...ref(accepted), reason: 'done' });
     assert.equal(oracle.cleanup().runtimeResidue, 0);
-    return { admitted: 1, deniedWithoutResidue: true };
-  }, ['EVAL-REQUEST-001', 'EVAL-REQUEST-002', 'EVAL-REQUEST-003', 'EVAL-REQUEST-004']);
+    return { admitted: 1, deniedWithoutResidue: true, exactBindings: true, compatibilityValidatedBeforePublication: true };
+  }, ['EVAL-REQUEST-001', 'EVAL-REQUEST-002', 'EVAL-REQUEST-003', 'EVAL-REQUEST-004', 'EVAL-BATCH-003']);
   defineCase('evaluator-request-coalescing-cancel', () => {
     const oracle = createEvaluatorOracle({ profile: analytic });
-    const input = requestInput(analytic, 'coalesce', { rootEpoch: '5' });
+    const input = requestInput(analytic, 'coalesce', { rootEpoch: '5', workEpoch: '7' });
     oracle.admitRequest(input);
-    const waiter = (waiterId) => ({ coalescingKey: input.coalescingKey, incarnation: input.incarnation, purpose: input.purpose, requestId: input.requestId, rootEpoch: input.rootEpoch, slotId: input.slotId, waiterId });
+    const waiter = (waiterId) => ({
+      capabilities: input.capabilities,
+      coalescingKey: input.coalescingKey,
+      incarnation: input.incarnation,
+      purpose: input.purpose,
+      requestId: input.requestId,
+      rootEpoch: input.rootEpoch,
+      slotId: input.slotId,
+      waiterId,
+      workEpoch: input.workEpoch,
+    });
     assert.equal(oracle.attachWaiter(waiter('waiter-a')).kind, 'attached');
     assert.equal(oracle.attachWaiter(waiter('waiter-b')).kind, 'attached');
-    assert.throws(() => oracle.attachWaiter({ ...waiter('bad'), purpose: 'other-purpose' }), { code: 'EVALUATOR_REFERENCE_COALESCE' });
+    assert.throws(() => oracle.attachWaiter({ ...waiter('bad-purpose'), purpose: 'other-purpose' }), { code: 'EVALUATOR_REFERENCE_COALESCE' });
+    assert.throws(() => oracle.attachWaiter({ ...waiter('bad-work'), workEpoch: '8' }), { code: 'EVALUATOR_REFERENCE_COALESCE' });
+    assert.throws(() => oracle.attachWaiter({ ...waiter('bad-capabilities'), capabilities: [] }), { code: 'EVALUATOR_REFERENCE_COALESCE' });
     assert.deepEqual(oracle.cancelWaiter({ ...ref(input), waiterId: 'waiter-a' }), { kind: 'cancelled', remainingWaiters: 1 });
     assert.equal(oracle.observeRequest(ref(input)).state, 'queued', 'one waiter cancellation must not cancel shared request');
     assert.equal(oracle.cancelRequest({ ...ref(input), reason: 'request-cancelled' }).kind, 'cancelled');
-    const terminal = oracle.observeRequest(ref(input));
-    assert.equal(terminal.waiters, 0, 'terminal request must dispose all coalesced waiters exactly once');
-    assert.equal(terminal.inputLease, 'released');
+    const finished = oracle.observeRequest(ref(input));
+    assert.equal(finished.waiters, 0, 'terminal request must dispose all coalesced waiters exactly once');
+    assert.equal(finished.inputLease, 'released');
     assert.equal(oracle.cleanup().runtimeResidue, 0);
-    return { independentWaiterCancellation: true };
+    return { independentWaiterCancellation: true, epochAndCapabilityFence: true };
   }, ['EVAL-REQUEST-005', 'EVAL-REQUEST-008', 'EVAL-REQUEST-009']);
   defineCase('evaluator-request-readiness-completeness', () => {
     const oracle = createEvaluatorOracle({ profile: vector });

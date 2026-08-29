@@ -10,37 +10,95 @@ export function caps(profile) {
   return profile.request.capabilities.map(({ capability, requirement, fallback }) => ({ capability, requirement, fallback }));
 }
 
-export function cacheKey(profile, suffix = 'a', overrides = {}) {
-  assert.equal(profile.cache.kind, 'selected');
+function keyFactsFor(profile) {
+  return [...new Set(profile.inputs.flatMap(({ keyFacts }) => keyFacts))];
+}
+
+export function evaluatorKey(profile, suffix = 'a', overrides = {}) {
   const values = {
-    'artifact-generation': `artifact-${suffix}`,
+    'artifact-generation': `artifact-generation-${profile.id}`,
+    'batch-context': { class: profile.batching.semantics },
     'capability-set': profile.capabilities.map(({ id }) => id),
     'encoded-input': { state: `state-${suffix}`, history: `history-${suffix}` },
     'evaluator-profile': profile.id,
     history: { digest: `history-${suffix}` },
     'precision-execution': { class: profile.execution.equivalenceClass },
     purpose: `purpose-${suffix}`,
-    root: { epoch: suffix },
+    randomness: { counter: `random-${suffix}` },
+    root: { epoch: '0' },
+    'state-generation': `state-generation-${profile.id}`,
     ...overrides,
   };
-  return Object.fromEntries(profile.cache.keyFacts.map((fact) => [fact, values[fact]]));
+  return Object.fromEntries(keyFactsFor(profile).map((fact) => {
+    assert.notEqual(values[fact], undefined, `Evaluator fixture has no value for key fact ${fact}`);
+    return [fact, values[fact]];
+  }));
+}
+
+export function cacheKey(profile, suffix = 'a', overrides = {}) {
+  assert.equal(profile.cache.kind, 'selected');
+  const values = evaluatorKey(profile, suffix, overrides);
+  return Object.fromEntries(profile.cache.keyFacts.map((fact) => {
+    assert.notEqual(values[fact], undefined, `Evaluator fixture has no cache value for key fact ${fact}`);
+    return [fact, values[fact]];
+  }));
+}
+
+export function batchCompatibilityKey(profile, capabilities, inputKey) {
+  const selectedIds = capabilities.map(({ capability }) => capability);
+  const selectedProfiles = selectedIds.map((id) => {
+    const selected = profile.capabilities.find(({ id: capabilityId }) => capabilityId === id);
+    assert(selected, `unknown selected capability ${id}`);
+    return selected;
+  });
+  const inputIds = [...new Set(selectedProfiles.flatMap(({ inputs }) => inputs))];
+  const outputIds = [...new Set(selectedProfiles.flatMap(({ outputs }) => outputs))];
+  const shapeById = new Map(profile.inputs.map(({ id, shape }) => [id, {
+    id,
+    axes: shape.axes,
+    maxElements: shape.maxElements,
+    maxBytes: shape.maxBytes,
+    variable: shape.variable,
+  }]));
+  return {
+    evaluatorProfile: profile.id,
+    capabilitySet: selectedIds,
+    outputSet: outputIds,
+    inputShapeClass: inputIds.map((id) => shapeById.get(id)),
+    artifactGeneration: inputKey['artifact-generation'] ?? null,
+    stateGeneration: inputKey['state-generation'] ?? null,
+    precisionExecution: inputKey['precision-execution'] ?? null,
+    executionVariant: { equivalenceClass: profile.execution.equivalenceClass, determinism: profile.batching.determinism },
+    batchSensitiveContext: profile.batching.semantics === 'batch-sensitive' ? (inputKey['batch-context'] ?? null) : null,
+    resourceClass: profile.workspaces.map(({ scope, ownership, maxBytes }) => ({ scope, ownership, maxBytes })),
+  };
 }
 
 export function requestInput(profile, id, options = {}) {
   const slotId = options.slotId ?? `slot-${id}`;
   const incarnation = options.incarnation ?? '1';
-  const purpose = options.purpose ?? `purpose-${id}`;
-  const inputKey = options.inputKey ?? (profile.cache.kind === 'selected' ? cacheKey(profile, id) : { encoded: `input-${id}` });
+  const capabilities = options.capabilities ?? caps(profile);
+  const suppliedInputKey = options.inputKey ?? null;
+  const purpose = options.purpose ?? suppliedInputKey?.purpose ?? `purpose-${id}`;
+  const rootEpoch = options.rootEpoch ?? suppliedInputKey?.root?.epoch ?? '0';
+  const workEpoch = options.workEpoch ?? '0';
+  const inputKey = suppliedInputKey ?? evaluatorKey(profile, id, {
+    'capability-set': capabilities.map(({ capability }) => capability),
+    purpose,
+    root: { epoch: rootEpoch },
+  });
+  const compatibilityKey = options.compatibilityKey ?? batchCompatibilityKey(profile, capabilities, inputKey);
+  const coalescingKey = options.coalescingKey ?? { inputKey, purpose, rootEpoch, workEpoch, capabilities };
   return {
     admission: options.admission ?? { approved: true, token: `request-admission-${id}-${incarnation}` },
-    capabilities: options.capabilities ?? caps(profile),
-    coalescingKey: options.coalescingKey ?? { inputKey, purpose },
-    compatibilityKey: options.compatibilityKey ?? { profile: profile.id, shape: 'fixture-a', execution: profile.execution.equivalenceClass },
+    capabilities,
+    coalescingKey,
+    compatibilityKey,
     graphReference: options.graphReference ?? { arena: '0', slot: id, generation: '1' },
     incarnation, inputKey, inputLeaseId: options.inputLeaseId ?? `input-lease-${id}-${incarnation}`, purpose,
     requestId: options.requestId ?? `request-${id}`, requesterId: options.requesterId ?? `requester-${id}`,
-    resultSlotId: options.resultSlotId ?? `result-slot-${slotId}`, rootEpoch: options.rootEpoch ?? '0',
-    rootIndependent: options.rootIndependent ?? false, slotId, workEpoch: options.workEpoch ?? '0',
+    resultSlotId: options.resultSlotId ?? `result-slot-${slotId}`, rootEpoch,
+    rootIndependent: options.rootIndependent ?? false, slotId, workEpoch,
   };
 }
 
