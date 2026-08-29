@@ -19,10 +19,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          if ! compgen -G '.policy-bootstrap/chunk-*' >/dev/null; then
+            echo 'Policy payload chunks already consumed; no bootstrap mutation needed.'
+            exit 0
+          fi
           cat .policy-bootstrap/chunk-* | base64 -d | tar -xzf -
           rm -rf .policy-bootstrap
-          rm .github/workflows/policy-reference-bootstrap.yml
-          allowed='^(\.github/workflows/policy-reference-focused\.yml|experiments/search-ir-composer-reference/export-policy-profiles\.mjs|experiments/search-semantics-reference/(fixtures/policy-cases\.json|run-policy\.mjs|src/policy(-cases)?\.mjs)|scripts/(export-search-ir-composer-policy-profiles|run-policy-reference)\.mjs|\.github/workflows/policy-reference-bootstrap\.yml|\.policy-bootstrap/.*)$'
+          rm -f .github/workflows/policy-reference-focused.yml
+          allowed='^(experiments/search-ir-composer-reference/export-policy-profiles\.mjs|experiments/search-semantics-reference/(fixtures/policy-cases\.json|run-policy\.mjs|src/policy(-cases)?\.mjs)|scripts/(export-search-ir-composer-policy-profiles|run-policy-reference)\.mjs|\.policy-bootstrap/.*)$'
           bad="$(git status --short | awk '{print $2}' | grep -Ev "$allowed" || true)"
           if [[ -n "$bad" ]]; then
             printf 'unexpected Policy bootstrap paths:\n%s\n' "$bad" >&2
