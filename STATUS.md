@@ -6,45 +6,43 @@
 
 ## Protected authority
 
-Protected `main` remains intentionally unchanged during the isolated experimental portfolio:
+Protected `main` remains intentionally unchanged:
 
 `ee4434be0ae927c4ae1d5c106f91503d28b1aa01`
 
-Protected-main workflow `33115975009` passed under the fail-closed aggregate `verify` gate. Nothing below is a protected-main support, release, native, compatible-pair, performance or production claim.
+Nothing below is a protected-main support, release, native, compatible-pair, performance or production claim.
 
 ## Experimental integration line
 
 Current experimental integration authority is:
 
-`experimental/portfolio@b18fb338a43145d9ac3df67dd76d63d0a2ea4aa5`
+`experimental/portfolio@eace1d4c80f677763ec4a86773f4011a5f5553b5`
 
-That revision contains the reconciled Graph cleanup/reference integration and state. Protected `main` remains unchanged.
+PR #153 squash-merged the repository-owner-authorized exact Policy source head:
 
-The active Policy semantic/reference candidate is PR #153:
+`877765e7fadafd9459bf13c1024c002edd279427`
 
-`ref/policy-reference-01@104cb8356417f95cc3783144b306f7b7725f9726`
+into `experimental/portfolio` only. Its prior experimental parent was:
 
-Base authority is exactly `experimental/portfolio@b18fb338a43145d9ac3df67dd76d63d0a2ea4aa5`.
+`b18fb338a43145d9ac3df67dd76d63d0a2ea4aa5`
 
-PR #153 is **not integrated**. Its semantic/evidence head is qualified and author-reviewed, but merge remains blocked on an independent review or an explicit repository-owner exception naming the exact current head. A generic continuation instruction is not merge authorization.
-
-## Policy semantic/reference candidate
-
-`REF-POLICY-01` is the next dependency-ready `ENGINE-REFERENCE-01` owner brick after Graph. It consumes normalized public Domain/Graph facts and owns only Policy meaning: local records, bounded reservations, cycle response, action-admission/widening semantics represented by the normalized profile, value/perspective handling represented by the normalized profile, ordered/idempotent backup, stop/drain accounting, reroot reuse classification and Policy cleanup/quarantine.
-
-The candidate does **not** absorb Evaluator execution, Resource admission/watermark/pressure policy, Progress scheduling/fairness/device progress, Output publication/ranking, Session root authority, Graph storage/reclamation, native/CUDA realization or production lowering.
-
-Exact qualified semantic/evidence head:
+The exact semantic/evidence head was:
 
 `104cb8356417f95cc3783144b306f7b7725f9726`
 
-Exact qualification workflow:
+Qualification history:
 
-`33231519393` — success
+- semantic/evidence head `104cb835...`: workflow `33231519393` — success;
+- final state-only authorized head `877765e7...`: workflow `33233026019` — success, including aggregate `verify`;
+- guarded squash integration: `eace1d4c80f677763ec4a86773f4011a5f5553b5`.
 
-The permanent fail-closed workflow passed Governance, Search IR on Ubuntu and Windows, every existing Graph lane, Policy reference and aggregate `verify`.
+Post-merge readback proved protected `main` remained exactly `ee4434be...`.
 
-Final Policy packet:
+## Integrated Policy semantic/reference packet
+
+`REF-POLICY-01` is now integrated on the isolated experimental portfolio. The bounded CUDA-free reference owns Policy meaning only: records, bounded reservations, cycle response, normalized selection/admission meaning, normalized value/perspective handling, transactional backup semantics, stop/drain accounting, reuse classification and Policy cleanup/quarantine.
+
+Exact integrated evidence packet:
 
 - Composer `881/881`, requirements `989/989`, representation/composition `115cceb16db3e4a99944c7228e1d5dff7047f342ddbe63a3e695c027d33e85c8`, canonical bytes `727811`;
 - Policy projection `6662d8101bbffee0e322ef7e2172f5980d69a09aec8ec565c9425578751310c2`, canonical bytes `123882`;
@@ -53,55 +51,55 @@ Final Policy packet:
 - artifact ZIP SHA-256 `a33e7a4725f6f011737bc280c7f3f721874c4ee9c807a46e550e3c125167b747`;
 - truthful requirement disposition summary: `52 deferred / 910 partial / 27 pending`.
 
-The two `POLICY-CLEANUP-*` requirements moved from pending to partial because they now have direct CUDA-free behavioral evidence. Existing Policy behavioral groups gained direct case evidence without being promoted beyond `partial`; native/supporting obligations remain deferred or owned elsewhere.
+The coverage migration changed Composer evidence identity, so dependent Domain/Graph/Policy fixture provenance was rebound in owner order. That migration changed evidence identities only; semantic cases, schedules, owner declarations and normative specifications were unchanged and the full permanent gate requalified the resulting packet.
 
-The Composer coverage truth change necessarily changed Composer evidence identity. The dependent Domain/Graph/Policy fixture identities were rebound in owner order. The rebinding changed provenance identities only; semantic cases, schedules, ownership declarations and normative specifications were not changed. The full permanent gate re-proved the rebound chain.
+## Author-review corrections incorporated before integration
 
-## Author review result
+Whole-diff review found and repaired concrete SPEC-0008 defects before the qualified head, including:
 
-The exact Policy candidate received a whole-diff author review after initial qualification. That review did not merely accept green CI; it produced concrete counterexamples and repaired them before the final qualified head.
+- reroot fail-before-mutation and exact `transform`/`invalidate` handling;
+- atomic backup staging and commit fencing across root/generation/reservation state;
+- distinction between prefix-visible mutation and result-visible must-drain state;
+- stop terminalization with explicit disposition of admitted work;
+- unreadable quarantined Policy evidence;
+- normalized-profile authority for reservation scopes, backup targets and root-independent stale handling;
+- deterministic-sequence occurrence ordering;
+- correction of old tests that asserted caller authority the selected Policy profile did not grant.
 
-The repaired defects included:
+No unresolved author-review finding remained at the qualified merge head.
 
-- reroot validation previously could publish partial Policy reuse bookkeeping before a later invalid disposition failed;
-- normalized `transform` and `invalidate` reuse declarations were not enforced exactly;
-- atomic backup staging could be confused with visible-prefix mutation and commit preconditions were not fully fenced;
-- reservation conversion/generation/root-epoch failures could permit incorrect completion or stale publication behavior;
-- stop terminalization could strand accepted work instead of requiring completion/explicit abandonment;
-- quarantined Policy evidence could still be read through `readRecord`;
-- reservation scopes, backup target sets and root-independent backup authority were insufficiently constrained to the normalized Policy profile;
-- deterministic-sequence backup did not reject out-of-order occurrence application;
-- prefix-visible target mutation could be treated as harmless stale discard even when mutation had already begun.
+## Ownership and claim limits
 
-The strengthened existing 24-case Policy bank now falsifies those paths while staying within the same requirement IDs and owner boundary. Final workflow `33231519393` passed after all repairs and after all temporary repair/bootstrap/migration workflows and scripts were removed.
+Policy integration does **not** absorb neighboring owners:
 
-## Integrated Graph history
+- Graph owns storage/reference/lifetime/reclamation meaning;
+- Evaluator owns execution, batching, cache/workspace and evaluator publication meaning;
+- Resource owns resource composition, admission, watermark and pressure policy;
+- Progress owns scheduling, fairness and device-progress policy;
+- Output owns terminal/live external result and publication meaning;
+- Session owns current-root, root-epoch, advance, reroot, attention and supersession authority;
+- CUDA-JS owns generic native/CUDA realization mechanisms;
+- CUDA-JS-Tensor owns generic tensor math.
 
-The Graph cleanup/reference slice remains integrated on the experimental portfolio. Its earlier accepted packet is historical evidence for that integration; the Policy coverage migration subsequently rebound dependent fixture provenance to the new Composer coverage identity without changing Graph semantics.
+No UCT/PUCT formula, scheduler topology, atomic primitive, warp/block topology, allocator, CUDA data structure, native addon/FFI or production persistence format is selected by this slice.
 
-Graph still owns reusable product-neutral graph/storage/reference/lifetime/cleanup meaning only. Session retains current-root/root-epoch/advance/reroot/attention and supersession-reason authority. Resource retains admission/watermark/pressure policy. Progress retains scheduling/fairness/device-progress policy. CUDA-JS owns generic native/CUDA realization mechanisms. CUDA-JS-Tensor owns generic tensor math. Production domain/search products remain downstream.
+Native concurrency/atomic/publication/progress/occupancy/cancellation/teardown qualification remains later exact compatible-pair/device work.
 
-No retirement queue/table/traversal algorithm, atomic primitive, scheduler topology, warp/block topology, CUDA data structure, allocator, native addon/FFI or production persistence format is selected by the Policy slice.
+## Next semantic seam
 
-Native ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains deferred to an exact CUDA-MCGS/CUDA-JS compatible-pair/device gate.
+The Policy leaf is closed on the experimental line. Do not continue adding Policy behavior merely because downstream/native obligations remain.
 
-## Current gate and next seam
+Issue #36 remains the deterministic reference/conformance parent. The next action is a fresh dependency assessment of the remaining semantic owners against exact `experimental/portfolio@eace1d4c...`.
 
-The implementation/review work for this Policy leaf is complete on the candidate branch. The remaining Policy-specific gate is procedural but mandatory:
+The canonical reference map makes `REF-EVALUATOR-01` the leading candidate because Domain, Graph and Policy are now integrated prerequisites, but implementation must not begin until that live assessment confirms it is still the smallest dependency-ready leaf. Resource, Progress, Output, optional Session and Stage/Channel obligations remain separate owners and must not be folded into Evaluator merely to accelerate the portfolio.
 
-1. qualify the state-only `STATUS.md` / `next_step.yaml` reconciliation head under the same permanent aggregate workflow;
-2. record the exact state head and workflow on PR #153 / issue #36;
-3. obtain independent review, or an explicit repository-owner exception naming the exact current head, before merge/integration;
-4. do not merge, advance `experimental/portfolio`, or begin the next semantic owner before that gate is satisfied.
-
-If Policy later integrates, the canonical dependency map makes `REF-EVALUATOR-01` the next immediate semantic owner dependent on Domain/Graph/Policy, while Resource/Progress/Output remain separate owners and must still be reassessed against the exact integrated packet before implementation.
-
-Issue #36 remains the deterministic reference/conformance parent. Issue #122 remains the later atomic semantic acceptance gate. Issue #142 remains portfolio coordination only.
+Issue #122 remains the later atomic semantic acceptance gate. Issue #142 remains portfolio coordination only.
 
 ## Cleanup / coordination
 
-- PR #153 contains only the intended Policy/coverage/permanent-CI/provenance surface; temporary focused/bootstrap/rebind/review-repair workflows and scripts are absent from the final tree.
-- `ref/graph-cleanup-acceptance-01`, `integration/graph-cleanup-acceptance-01`, `checkpoint/graph-cleanup-falsifier-handoff-20260828`, `checkpoint/graph-path-01-handoff` and the older temporary Graph qualification branch remain bounded stale/recovery ref cleanup debt where safe delete-ref tooling or recovery disposition is still required.
+- PR #153 is merged and its source branch is now stale integration-source state.
+- Temporary Policy focused/bootstrap/provenance/review-repair workflows and scripts are absent from the integrated tree.
+- Existing stale Graph recovery/source refs remain bounded cleanup debt pending safe deletion/recovery disposition.
 - stale PRs #126/#132 remain separate product-boundary disposition debt under issue #44.
 
 No authorization was given to move or modify protected `main`.
