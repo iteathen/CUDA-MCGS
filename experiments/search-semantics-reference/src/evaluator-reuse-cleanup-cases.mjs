@@ -18,11 +18,14 @@ export function registerEvaluatorReuseCleanupCases({ defineCase, projection }) {
     const blocked = oracle.applyRerootAction({ action: 'invalidate', admission: { approved: false, token: null }, classId: 'evaluator.request', keyValid: false, operationId: 'reroot-blocked' });
     assert.deepEqual(blocked, { kind: 'pressure', code: 'reroot-action-capacity' });
     assert.equal(oracle.observeRequest(ref(input)).state, 'queued', 'failed new-root admission must preserve current evaluator state');
+    const beforeApply = oracle.snapshot().reuseClassifications;
     const applied = oracle.applyRerootAction({ action: 'invalidate', admission: { approved: true, token: 'reroot-token' }, classId: 'evaluator.request', keyValid: false, operationId: 'reroot-applied' });
     assert.equal(applied.kind, 'terminal');
     assert.equal(oracle.observeRequest(ref(input)).state, 'stale');
+    assert.throws(() => oracle.applyRerootAction({ action: 'invalidate', admission: { approved: true, token: 'reroot-token' }, classId: 'evaluator.request', keyValid: false, operationId: 'reroot-applied' }), { code: 'EVALUATOR_REFERENCE_REUSE_ACTION' });
+    assert.equal(BigInt(oracle.snapshot().reuseClassifications), BigInt(beforeApply) + 1n, 'a rejected duplicate reroot operation must not reclassify reuse');
     assert.equal(oracle.cleanup().runtimeResidue, 0);
-    return { explicitReuseOwner: true, admissionAtomic: true };
+    return { explicitReuseOwner: true, admissionAtomic: true, duplicateOperationNoSideEffect: true };
   }, ['EVAL-REUSE-001', 'EVAL-REUSE-004', 'EVAL-REUSE-005']);
   defineCase('evaluator-advance-history-provenance', () => {
     const historyOracle = createEvaluatorOracle({ profile: vector });
@@ -56,9 +59,12 @@ export function registerEvaluatorReuseCleanupCases({ defineCase, projection }) {
     assert.equal(cleanup.runtimeResidue, 0);
     assert.deepEqual(cleanup.dispositions.map(({ classId }) => classId), proof.cleanup.classes);
     assert(cleanup.dispositions.every(({ disposition }) => disposition === 'released'));
-    assert.equal(oracle.removeEvaluator({ retainEvidence: true }).runtimeResidue, 0);
+    const removed = oracle.removeCapability({ capabilityId: proof.capabilities[0].id, retainEvidence: true });
+    assert.equal(removed.kind, 'capability-removed');
+    assert.equal(removed.runtimeResidue, 0);
+    assert.equal(removed.capabilityId, proof.capabilities[0].id);
     assert.equal(oracle.snapshot().selection, 'removed');
-    return { dispositions: cleanup.dispositions.length, capabilityDeletionZeroResidue: true };
+    return { dispositions: cleanup.dispositions.length, soleCapabilityDeletionZeroResidue: true };
   }, ['EVAL-CLEANUP-001', 'EVAL-CLEANUP-003']);
   defineCase('evaluator-cleanup-quarantine', () => {
     const oracle = createEvaluatorOracle({ profile: vector });
