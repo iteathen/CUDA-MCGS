@@ -153,6 +153,7 @@ export function createPolicyOracle({
   }
 
   function readRecord(input) {
+    requireAvailable();
     exactKeys(input, ['recordId', 'storageKey'], 'POLICY_REFERENCE_RECORD_FIELDS', 'readRecord input');
     const key = `${input.recordId}\0${input.storageKey}`;
     if (!recordValues.has(key)) fail('POLICY_REFERENCE_RECORD', `record ${key} is not initialized`);
@@ -325,10 +326,11 @@ export function createPolicyOracle({
     exactKeys(input, ['transactionId', 'occurrenceId', 'rootEpoch'], 'POLICY_REFERENCE_BACKUP_STEP_FIELDS', 'applyBackupStep input');
     const transaction = findTransaction(input.transactionId);
     if (!['prepared', 'applying'].includes(transaction.state)) fail('POLICY_REFERENCE_BACKUP', `${transaction.id} is not applicable`);
+    const atomicCommit = profile.backup.prefixVisibility === 'atomic-commit';
     const epoch = decimal(input.rootEpoch, 'POLICY_REFERENCE_BACKUP', 'rootEpoch');
     if (!transaction.rootIndependent && (transaction.rootEpoch !== epoch || currentRootEpoch !== epoch)) {
-      if (transaction.applied.size === 0) {
-        emit('backup-stale-before-mutation', { transactionId: transaction.id, captured: toDecimal(transaction.rootEpoch), current: toDecimal(currentRootEpoch) });
+      if (atomicCommit || transaction.applied.size === 0) {
+        emit('backup-stale-before-target-mutation', { transactionId: transaction.id, captured: toDecimal(transaction.rootEpoch), current: toDecimal(currentRootEpoch) });
         return { kind: 'stale', code: 'backup-target-stale' };
       }
       quarantineEvidence('stale-epoch-after-visible-prefix', { transactionId: transaction.id });
@@ -342,7 +344,7 @@ export function createPolicyOracle({
     }
     const expectedGeneration = decimal(occurrence.targetGeneration, 'POLICY_REFERENCE_BACKUP', 'target generation');
     if (recordGenerations.get(occurrence.recordKey) !== expectedGeneration) {
-      if (transaction.applied.size === 0) return { kind: 'stale', code: 'backup-target-stale' };
+      if (atomicCommit || transaction.applied.size === 0) return { kind: 'stale', code: 'backup-target-stale' };
       quarantineEvidence('target-generation-changed-after-visible-prefix', { transactionId: transaction.id, occurrenceId: occurrence.occurrenceId });
       fail('POLICY_REFERENCE_PARTIAL_BACKUP', 'target generation changed after backup mutation began');
     }
@@ -352,7 +354,6 @@ export function createPolicyOracle({
       sequence: transaction.applied.size,
       algebra: profile.backup.algebra,
     }), 'Policy transformed contribution');
-    const atomicCommit = profile.backup.prefixVisibility === 'atomic-commit';
     const previous = atomicCommit && transaction.shadowValues.has(occurrence.recordKey)
       ? transaction.shadowValues.get(occurrence.recordKey)
       : recordValues.get(occurrence.recordKey);
@@ -394,15 +395,30 @@ export function createPolicyOracle({
       return { kind: 'stale', code: 'backup-target-stale' };
     }
     const work = findWork(transaction.workId);
-    if (profile.backup.prefixVisibility === 'atomic-commit') {
+    const atomicCommit = profile.backup.prefixVisibility === 'atomic-commit';
+    let reservation = null;
+    if (work.reservationId !== null) {
+      reservation = findReservation(work.reservationId);
+      if (reservation.state !== 'acquired') {
+        if (!atomicCommit && transaction.applied.size > 0) {
+          quarantineEvidence('reservation-disposition-after-prefix-mutation', { transactionId: transaction.id, reservationId: reservation.id, state: reservation.state });
+          fail('POLICY_REFERENCE_PARTIAL_BACKUP', 'reservation disposition changed after backup target mutation began');
+        }
+        fail('POLICY_REFERENCE_RESERVATION_IMBALANCE', 'reservation was dispositioned before backup completion');
+      }
+    }
+    if (atomicCommit) {
+      for (const occurrence of transaction.occurrences) {
+        const expectedGeneration = decimal(occurrence.targetGeneration, 'POLICY_REFERENCE_BACKUP', 'target generation');
+        if (recordGenerations.get(occurrence.recordKey) !== expectedGeneration) {
+          emit('backup-stale-before-commit', { transactionId: transaction.id, occurrenceId: occurrence.occurrenceId });
+          return { kind: 'stale', code: 'backup-target-stale' };
+        }
+      }
       for (const [recordKey, value] of transaction.shadowValues) recordValues.set(recordKey, value);
       emit('backup-atomic-commit', { transactionId: transaction.id, targets: transaction.shadowValues.size });
     }
-    if (work.reservationId !== null) {
-      const reservation = findReservation(work.reservationId);
-      if (reservation.state !== 'acquired') fail('POLICY_REFERENCE_RESERVATION_IMBALANCE', 'reservation was dispositioned before backup completion');
-      if (mutations.skipReservationDispositionOnComplete !== true) dispositionReservation(reservation, 'converted');
-    }
+    if (reservation !== null && mutations.skipReservationDispositionOnComplete !== true) dispositionReservation(reservation, 'converted');
     transaction.state = 'complete';
     work.state = 'complete';
     accounting.backupInProgress -= 1n;
@@ -481,6 +497,12 @@ export function createPolicyOracle({
     if (stop.phase !== 'draining') fail('POLICY_REFERENCE_STOP', `cannot terminalize from ${stop.phase}`);
     const mustDrain = [...transactions.values()].some(({ state, mustDrain }) => mustDrain && state !== 'complete');
     if (mustDrain) return { kind: 'must-drain' };
+    const liveWorks = [...works.values()].filter(({ state }) => ['active', 'backup'].includes(state));
+    const unfinishedBackups = [...transactions.values()].filter(({ state }) => !['complete', 'failed'].includes(state));
+    const heldReservations = [...reservations.values()].filter(({ state }) => state === 'acquired');
+    if (liveWorks.length !== 0 || unfinishedBackups.length !== 0 || heldReservations.length !== 0) {
+      return { kind: 'pending', code: 'drain-obligation' };
+    }
     stop.phase = 'terminal';
     emit('stop-terminal', { cause: stop.firstCause, classification: input.classification });
     return { kind: 'terminal', cause: stop.firstCause, classification: input.classification };
