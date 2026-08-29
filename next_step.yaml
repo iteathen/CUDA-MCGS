@@ -1,205 +1,124 @@
 {
-  "schema_version": 81,
+  "schema_version": 82,
   "updated": "2026-08-28",
-  "status": "experimental_graph_cleanup_candidate_review_gate",
-  "objective": "Preserve the qualified bounded Graph cleanup/reference candidate for GRAPH-CLEANUP-001..004 and stop at the documented independent-review or explicit exact-head repository-owner authorization gate before integration.",
+  "status": "experimental_graph_cleanup_integrated_next_owner_assessment",
+  "objective": "Reconcile the integrated Graph cleanup/reference slice on the isolated experimental portfolio, then assess the next dependency-ready non-Graph semantic/reference owner without moving protected main or importing Resource/native policy into Graph.",
   "ownership_boundary": "CUDA-MCGS Graph owns reusable product-neutral graph/storage/reference/lifetime/cleanup semantics. Session retains current-root/root-epoch/advance/reroot/attention and supersession-reason authority. Resource retains global admission/watermark/pressure policy; Progress retains scheduling/fairness/device-progress policy. CUDA-JS owns generic native/CUDA realization mechanisms and CUDA-JS-Tensor owns generic tensor math. Production domain/search products remain downstream.",
   "protected_base": {
     "branch": "main",
     "sha": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
     "workflow": "33115975009",
-    "meaning": "Protected authority intentionally unchanged while the experimental portfolio remains isolated."
+    "meaning": "Protected authority remains intentionally unchanged; owner authorization covered experimental/portfolio only."
   },
   "experimental_base": {
     "branch": "experimental/portfolio",
-    "sha": "422fe99bf51c1f48cda480a6a6d98f641fb2599d",
-    "integrated": [
-      "PR #146 / issue #44 framework-only production ownership correction",
-      "PR #147 / issue #24 Graph RECLAIM finite representation/resource/lifecycle preflight",
-      "PR #148 / issues #24/#36 GRAPH-RECLAIM-001..009 semantic/reference owner",
-      "PR #149 / issues #24/#36 ADR-0022 advance-occurrence lifetime closure and REF retirement-order correction"
-    ],
-    "portfolio_disposition": [
-      "Issue #47 closed not planned after its product-local premise was routed to universal owners"
-    ]
+    "integration_sha": "61b86e08c781046594cf812cc4691d9f07c45ff6",
+    "previous_sha": "422fe99bf51c1f48cda480a6a6d98f641fb2599d",
+    "integration_pr": 151,
+    "authorized_source_head": "234d4b7f3403979d08bc9bef3e1d0da090a8bbe9",
+    "source_pr_superseded": 150,
+    "integration_state": "Graph cleanup semantic/reference slice integrated on the isolated experimental portfolio; protected main unchanged."
   },
-  "candidate": {
-    "pr": 150,
-    "draft": true,
-    "branch": "ref/graph-cleanup-acceptance-01",
-    "base_sha": "422fe99bf51c1f48cda480a6a6d98f641fb2599d",
-    "frozen_semantic_review_head": "c901e880de9183868c0d0e773d27c3e2f484acdd",
-    "qualified_implementation_head": "142ee0c0d161965876f08b741e24922caa432904",
-    "implementation_qualification_run": "33219963955",
-    "qualified_state_reconciliation_head": "8d5f18e78ace2da71e91d2f61655d16d7fa6216f",
-    "state_reconciliation_qualification_run": "33221311272",
+  "completed_slice": {
+    "id": "REF-GRAPH-01/GRAPH-CLEANUP-ACCEPTANCE",
     "owner_issue": 24,
     "reference_tracker": 36,
-    "target": "experimental/portfolio",
-    "author_review": "complete and clean; post-implementation changes are state-only",
-    "state": "Graph cleanup semantic/reference implementation and partial structured coverage are qualified but not integrated. The remaining substantive gate is independent review or a repository-owner exact-head authorization satisfying policy. Any later metadata-only head must still satisfy the ordinary current-head required-check rule before merge."
-  },
-  "candidate_evidence": {
-    "requirements": "989/989 classified at catalog level",
-    "graph_cleanup_requirements": [
+    "requirements": [
       "GRAPH-CLEANUP-001",
       "GRAPH-CLEANUP-002",
       "GRAPH-CLEANUP-003",
       "GRAPH-CLEANUP-004"
     ],
-    "graph_cleanup_evidence_status": "partial",
+    "coverage_status": "partial",
+    "frozen_semantic_review_head": "c901e880de9183868c0d0e773d27c3e2f484acdd",
+    "qualified_implementation_head": "142ee0c0d161965876f08b741e24922caa432904",
+    "implementation_qualification_run": "33219963955",
+    "authorized_source_head": "234d4b7f3403979d08bc9bef3e1d0da090a8bbe9",
+    "authorized_head_qualification_run": "33221459966",
+    "replacement_pr_qualification_run": "33227042328",
+    "integration_sha": "61b86e08c781046594cf812cc4691d9f07c45ff6",
+    "review": "author review clean; repository-owner exact-head authorization recorded for experimental integration only",
+    "administrative_note": "PR #150 was closed superseded after the ready-for-review connector mutation failed; non-draft PR #151 used the identical authorized source commit and passed fresh exact-head CI before guarded merge."
+  },
+  "integrated_evidence": {
+    "requirements": "989/989 classified at catalog level",
     "disposition_summary": {
       "deferred": 52,
       "partial": 908,
       "pending": 29
     },
-    "qualified_packet": {
-      "composer_representation_composition": "fd58bd6a5ae99dfb8534ab802f9aca9c12c0a110a793760645cec71d3a385042",
-      "composer_canonical_bytes": 721157,
-      "graph_projection": "a525b51634582f0f6d862d1d93b4ec68d8171230a01c3bf31743482f49d86af6",
-      "graph_projection_canonical_bytes": 140331,
-      "node": "51599ce27d2a8b3b61046b1f98f677a64604ed8d89480730076a49997c279d61",
-      "node_cases": "13/13",
-      "edge": "77a27487b37e0b2906aef4a115199e0eb1e5b0ea88c34ba0110b1061695604c7",
-      "edge_cases": "16/16",
-      "ref": "07557450fc72cc6c2fea95f8d77ce2a6703358e50b974ec27d14dd75ba5b1cd0",
-      "ref_cases": "14/14",
-      "path": "057da30298ff2c76ee5400d2b45ddf5fcbd969885910e078709e67b9cc673c72",
-      "path_cases": "14/14",
-      "root_control": "be35ed803ea82498950c454acb6955087543c2a7a974745077c4c53158bca475",
-      "root": "d66ce77bcd362865382e4ab15d4db70f79f7e7a34b49e6c19c5873f193129e2b",
-      "root_cases": "14/14",
-      "reclaim": "42d2c94e6387b72e17d891dfdfc53c6e7c65795dc15169085b70df65f5be34cf",
-      "reclaim_cases": "17/17",
-      "advance_occurrence": "53b2437c4f0221515f89cd6b16aeaa74f61d8d934680d0284ee83a5611fb1a87",
-      "advance_occurrence_cases": "5/5",
-      "cleanup": "a0da64926d2ebb2352a18f318d6c0e0b108ddcdf773b9e68f42e64a5e280e38b",
-      "cleanup_cases": "6/6",
-      "cleanup_canonical_bytes": 5466,
-      "cleanup_artifact_id": 9704784670,
-      "cleanup_artifact_zip_sha256": "ba241e63d6ffcf22f394afe0d313e4c3840ce1a73b31ac3cd81fe43e228d860c"
-    },
-    "reviewed_source_semantics": [
-      "conflicting ready NODE publication quarantines the affected observation, invalidates payload/evidence access and rejects later lookup",
-      "equality/publication contradictions quarantine rather than guess authority",
-      "Graph arena release is owner-neutral and stops at ready-for-resource-destruction",
-      "retained artifacts require explicit owner plus exact compatible package/profile identity and cleanup trigger",
-      "stale generation aliasing and silent generation wrap are prevented by the Graph REF contract; no native ABA detector is claimed"
-    ],
-    "qualification_history": [
-      "At frozen semantic head c901e880de9183868c0d0e773d27c3e2f484acdd, exact-head CI exposed only a stale Composer disposition-count expectation.",
-      "The expectation was repaired to truthful totals {deferred:52, partial:908, pending:29} without downgrading coverage.",
-      "Composer identity changes were rebound through the declared semantic/reference evidence chain in owner order without changing semantic case content.",
-      "Qualified implementation/evidence head 142ee0c0d161965876f08b741e24922caa432904 passed full workflow 33219963955 including Graph CLEANUP and aggregate verify.",
-      "State-only head 8d5f18e78ace2da71e91d2f61655d16d7fa6216f passed full workflow 33221311272; its delta from 142ee0c0d161965876f08b741e24922caa432904 is exactly STATUS.md plus next_step.yaml."
-    ],
-    "last_qualification_head": "8d5f18e78ace2da71e91d2f61655d16d7fa6216f",
-    "last_qualification_run": "33221311272",
-    "last_integration_sha": "422fe99bf51c1f48cda480a6a6d98f641fb2599d",
-    "recording_rule": "This file records the most recent completed exact-head qualification known before the metadata commit containing it. Merge readiness must always be re-read from GitHub for the current PR head; do not create self-referential SHA churn merely to write the current commit SHA into this file."
+    "composer_representation_composition": "fd58bd6a5ae99dfb8534ab802f9aca9c12c0a110a793760645cec71d3a385042",
+    "composer_canonical_bytes": 721157,
+    "graph_projection": "a525b51634582f0f6d862d1d93b4ec68d8171230a01c3bf31743482f49d86af6",
+    "graph_projection_canonical_bytes": 140331,
+    "node": "51599ce27d2a8b3b61046b1f98f677a64604ed8d89480730076a49997c279d61",
+    "node_cases": "13/13",
+    "edge": "77a27487b37e0b2906aef4a115199e0eb1e5b0ea88c34ba0110b1061695604c7",
+    "edge_cases": "16/16",
+    "ref": "07557450fc72cc6c2fea95f8d77ce2a6703358e50b974ec27d14dd75ba5b1cd0",
+    "ref_cases": "14/14",
+    "path": "057da30298ff2c76ee5400d2b45ddf5fcbd969885910e078709e67b9cc673c72",
+    "path_cases": "14/14",
+    "root_control": "be35ed803ea82498950c454acb6955087543c2a7a974745077c4c53158bca475",
+    "root": "d66ce77bcd362865382e4ab15d4db70f79f7e7a34b49e6c19c5873f193129e2b",
+    "root_cases": "14/14",
+    "reclaim": "42d2c94e6387b72e17d891dfdfc53c6e7c65795dc15169085b70df65f5be34cf",
+    "reclaim_cases": "17/17",
+    "advance_occurrence": "53b2437c4f0221515f89cd6b16aeaa74f61d8d934680d0284ee83a5611fb1a87",
+    "advance_occurrence_cases": "5/5",
+    "cleanup": "a0da64926d2ebb2352a18f318d6c0e0b108ddcdf773b9e68f42e64a5e280e38b",
+    "cleanup_cases": "6/6",
+    "cleanup_canonical_bytes": 5466,
+    "cleanup_artifact_id": 9704784670,
+    "cleanup_artifact_zip_sha256": "ba241e63d6ffcf22f394afe0d313e4c3840ce1a73b31ac3cd81fe43e228d860c"
   },
-  "authority": [
-    "AGENTS.md",
-    "agent_files/AGENTS.md",
-    "agent_files/AI_RULES.md",
-    "agent_files/DESIGN_ALIGNMENT_CARD.md",
-    "agent_files/general_foundation/LEGO_ARCHITECTURE.md",
-    "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
-    "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
-    "docs/PROJECT_CHARTER.md",
-    "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
-    "docs/decisions/ADR-0022-distinguish-root-advance-reroot-and-attention.md",
-    "docs/decisions/ADR-0024-framework-only-production-ownership.md",
-    "docs/specs/SPEC-0010-graph-storage-and-reclamation.md",
-    "docs/handoffs/2026-08-28-experimental-graph-cleanup-acceptance-resume.md",
-    "checkpoint/graph-cleanup-falsifier-handoff-20260828@28132a53471526ad355d8cfea96bb92d1ec076df",
-    "https://github.com/iteathen/CUDA-MCGS/issues/24",
-    "https://github.com/iteathen/CUDA-MCGS/issues/36",
-    "https://github.com/iteathen/CUDA-MCGS/issues/122",
-    "https://github.com/iteathen/CUDA-MCGS/issues/142",
-    "https://github.com/iteathen/CUDA-MCGS/pull/150"
-  ],
-  "deliverables": [
-    "re-read the current PR head and required current-head checks before any authorization or merge transaction",
-    "obtain independent review for publication/reclamation/recovery semantics or an explicit repository-owner exact-head authorization satisfying policy",
-    "merge only into experimental/portfolio with an expected-head fence after all gates and authorization are satisfied",
-    "perform post-merge experimental/protected ref readback and reconcile issues #24/#36/#142",
-    "leave GRAPH-RESOURCE-* with IR-RESOURCE-01 and native-dominant GRAPH-LIFE-* qualification with ENGINE-NATIVE-01"
-  ],
+  "semantic_transfers": {
+    "graph_resource": "GRAPH-RESOURCE-* obligations that concern deterministic resource composition/admission/watermark/pressure belong with IR-RESOURCE-01/Resource rather than Graph cleanup policy.",
+    "graph_native_lifecycle": "Native-dominant GRAPH-LIFE-* ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains later ENGINE-NATIVE-01 work on one exact CUDA-MCGS/CUDA-JS compatible pair/device.",
+    "session": "current-root/root-epoch/advance/reroot/attention/supersession reason remain Session-owned.",
+    "progress": "scheduling/fairness/device-progress policy remains Progress-owned."
+  },
   "current_focus": {
-    "id": "REF-GRAPH-01/GRAPH-CLEANUP-ACCEPTANCE",
-    "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/24",
-    "active_branch": "ref/graph-cleanup-acceptance-01",
-    "pr": "https://github.com/iteathen/CUDA-MCGS/pull/150",
-    "historical_handoff": "docs/handoffs/2026-08-28-experimental-graph-cleanup-acceptance-resume.md",
-    "recovery_checkpoint": "checkpoint/graph-cleanup-falsifier-handoff-20260828@28132a53471526ad355d8cfea96bb92d1ec076df",
-    "next_action": "Confirm the current PR head still has the required exact-head verify success, then obtain independent review or a policy-valid repository-owner authorization that names that exact head. Do not mark ready or merge otherwise.",
-    "after_authorization": "Re-read PR head/base, reviews, discussion, mergeability and current-head checks; if unchanged and satisfied, merge only into experimental/portfolio with an expected-head guard, then perform post-merge experimental/protected ref readback before selecting the next portfolio leaf.",
-    "exit": "Graph cleanup/reference candidate is exact-head green, independently reviewed or explicitly owner-authorized for that exact head, merged only to experimental/portfolio under an expected-head fence, and post-merge readback proves protected main unchanged with remaining Resource/native obligations explicit."
-  },
-  "merge_gate": {
-    "required_context": "verify",
-    "implementation": "fail-closed aggregate over Governance, both Search IR cells, Graph NODE, EDGE, REF, PATH, ROOT, RECLAIM, ADVANCE occurrence and CLEANUP",
-    "current_head_check_rule": "Immediately before authorization/merge, current PR head checks must be re-read from GitHub and must be green; a prior recorded head does not authorize a changed head.",
-    "review_requirement": "Independent review is required for difficult publication/reclamation/recovery semantics unless independent GitHub approval is structurally unavailable and the repository owner grants an exact-head authorization satisfying the documented review policy.",
-    "owner_authorization_requirements": [
-      "state that independent approval is unavailable for this repository/change",
-      "name the exact PR head SHA",
-      "state why the exception is allowed at the current phase and risk",
-      "state decisive checks and checks not run",
-      "state known claim limits",
-      "confirm no blocking finding remains",
-      "explicitly authorize merge of that exact head"
-    ],
-    "authorization_rule": "A generic instruction to continue is not an exact-head authorization and must not be treated as merge authorization. Any head change invalidates an authorization.",
-    "evolution_rule": "Every newly required semantic/reference owner or integration falsifier joins the aggregate needs/result set without weakening independent diagnosability."
-  },
-  "semantic_focus": {
-    "id": "ENGINE-REFERENCE-01",
+    "id": "ENGINE-REFERENCE-01/NEXT-OWNER-ASSESSMENT",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36",
-    "owner_issue": "https://github.com/iteathen/CUDA-MCGS/issues/24",
-    "last_integrated_leaf": "REF-GRAPH-01/ADVANCE-OCCURRENCE-CLOSURE",
-    "current_candidate_leaf": "REF-GRAPH-01/GRAPH-CLEANUP-ACCEPTANCE",
-    "dependency_state": "NODE/EDGE/REF/PATH/ROOT/RECLAIM and ADR-0022 occurrence closure are integrated on experimental/portfolio; Graph cleanup/reference candidate is qualified and stopped at review authorization before integration.",
-    "claim_limit": "semantic/reference evidence only; native ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains deferred to exact CUDA-MCGS/CUDA-JS compatible-pair/device evidence"
+    "graph_owner": "https://github.com/iteathen/CUDA-MCGS/issues/24",
+    "portfolio": "https://github.com/iteathen/CUDA-MCGS/issues/142",
+    "active_branch": "state/graph-cleanup-integration-reconcile",
+    "next_action": "After this state-only reconciliation is integrated, reassess issue #36 against the exact experimental Graph packet and current owner dependencies. Select the smallest dependency-ready non-Graph semantic/reference leaf by evidence, not historical ordering; explicitly compare Policy, Evaluator, Resource, Progress, Output, optional Session and Stage/Channel obligations before implementation.",
+    "exit": "One next semantic/reference owner is selected with authority, dependency state, cheapest falsifier, non-goals and exact validation defined; no Graph cleanup duplication or premature native lowering is introduced."
   },
+  "portfolio_rules": [
+    "issue #24 remains open while Graph closure/transfers and later portfolio/protected disposition are explicit; do not add policy/native mechanism to Graph merely to close it",
+    "issue #36 remains the deterministic reference/conformance parent and owns selection/integration of the next semantic owner leaf",
+    "issue #122 remains the later atomic semantic acceptance gate; do not begin production lowering merely because experimental Graph evidence is green",
+    "issue #142 remains coordination only and does not become technical authority"
+  ],
   "blockers": [
-    "No independent approval or policy-valid repository-owner exact-head authorization has been found for the difficult publication/reclamation/recovery slice.",
-    "Native lifecycle/ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification remains a later ENGINE-NATIVE-01/CUDA-JS compatible-pair gate, not a reason to add more Graph semantics."
+    "No blocker prevents assessment of the next semantic/reference owner on the experimental line.",
+    "Protected-main promotion is not authorized by the Graph cleanup experimental authorization.",
+    "Native lifecycle/ABA/publication/progress/occupancy/concurrency/cancellation/teardown qualification still requires later exact compatible-pair/device evidence."
   ],
   "validation": [
-    "./scripts/verify-docs.sh",
-    "node scripts/run-search-ir-composer-reference.mjs",
-    "node scripts/export-search-ir-composer-graph-profiles.mjs",
-    "node scripts/run-graph-node-reference.mjs",
-    "node scripts/run-graph-edge-reference.mjs",
-    "node scripts/run-graph-ref-reference.mjs",
-    "node scripts/run-graph-path-reference.mjs",
-    "node scripts/run-graph-root-reference.mjs",
-    "node scripts/run-graph-reclaim-reference.mjs",
-    "node scripts/run-graph-advance-occurrence-reference.mjs",
-    "node scripts/run-graph-cleanup-reference.mjs",
-    "final aggregate verify job",
-    "experimental and protected ref readback after merge"
+    "state-only reconciliation PR exact-head workflow including aggregate verify",
+    "post-merge experimental ref readback",
+    "protected main readback proving ee4434be0ae927c4ae1d5c106f91503d28b1aa01 unchanged",
+    "issue #24/#36/#142 checkpoint reconciliation"
   ],
   "do_not": [
-    "mutate protected main while the experimental portfolio is active",
-    "advance experimental/portfolio before PR #150 exact-head qualification, review and authorization are complete",
-    "close issue #24 before Graph cleanup/reference evidence and obligation transfer are explicit",
+    "mutate or promote protected main under the experimental-only authorization",
+    "continue adding Graph cleanup semantics for obligations already transferred to Resource/native owners",
     "move Session current-root/epoch/advance/reroot/attention or supersession-reason authority into Graph",
     "move Resource admission/watermark/pressure or Progress scheduling/fairness policy into Graph cleanup",
-    "paper over a cleanup semantic defect by changing coverage metadata only",
-    "downgrade truthful GRAPH-CLEANUP partial coverage to satisfy a stale aggregate count assertion",
     "claim native mechanism qualification from CUDA-free semantic/reference evidence",
     "select a retirement queue/table/traversal algorithm, atomic primitive, scheduler topology, warp/block topology or CUDA data structure",
     "add C/C++, CUDA C++, native addons/FFI, hand-written PTX, embedded CUDA source, direct CUDA-JS private access or Python",
-    "weaken frozen identity, requirement-coverage, owner-boundary or aggregate merge-gate checks",
-    "treat a generic continuation instruction as independent review or exact-head merge authorization"
+    "weaken identity, requirement-coverage, owner-boundary or aggregate merge-gate checks"
   ],
   "cleanup_debt": [
-    "checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f remains redundant recovery state because no safe delete-ref action has been exposed.",
-    "checkpoint/graph-cleanup-falsifier-handoff-20260828@28132a53471526ad355d8cfea96bb92d1ec076df is retained intentionally as the recovery/falsifier checkpoint until the candidate is safely integrated or superseded.",
-    "tmp/graph-cleanup-qualification-repair-20260828 is bounded temporary-branch cleanup debt because no safe delete-ref action has been exposed; no temporary qualification workflow remains in the candidate tree.",
-    "PR #126 and PR #132 remain stale/unmergeable product-boundary cleanup/disposition debt under issue #44."
+    "ref/graph-cleanup-acceptance-01 is stale after PR #150 was superseded; delete when safe delete-ref capability is available and recovery dependencies are cleared.",
+    "integration/graph-cleanup-acceptance-01 is stale after PR #151 merge; delete when safe delete-ref capability is available.",
+    "checkpoint/graph-cleanup-falsifier-handoff-20260828@28132a53471526ad355d8cfea96bb92d1ec076df is eligible for recovery cleanup after this integrated-state reconciliation is durable.",
+    "checkpoint/graph-path-01-handoff@a697ea8bf54e1db2a50f3466e0e69c8ea25fb02f remains older bounded cleanup debt for the same tooling reason.",
+    "PR #126 and PR #132 remain separate product-boundary cleanup/disposition debt under issue #44."
   ]
 }
