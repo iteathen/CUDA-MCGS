@@ -179,6 +179,8 @@ export function createPolicyOracle({
     requireAvailable();
     if (!reservationSelected) fail('POLICY_REFERENCE_RESERVATION', 'profile selects no reservation');
     exactKeys(input, ['reservationId', 'workId', 'scope', 'magnitude', 'generation'], 'POLICY_REFERENCE_RESERVATION_FIELDS', 'reserveInFlight input');
+    const scopeKind = input.scope?.kind;
+    if (!profile.reservation.scopes.includes(scopeKind)) fail('POLICY_REFERENCE_RESERVATION', `reservation scope ${scopeKind ?? "<missing>"} is not selected by the profile`);
     const work = findWork(input.workId);
     if (work.state !== 'active') fail('POLICY_REFERENCE_RESERVATION', `${work.id} is not active`);
     if (work.reservationId !== null) fail('POLICY_REFERENCE_RESERVATION', `${work.id} already has a reservation`);
@@ -266,6 +268,10 @@ export function createPolicyOracle({
     exactKeys(input, ['transactionId', 'workId', 'rootEpoch', 'sourceIdentity', 'contribution', 'occurrences', 'rootIndependent'], 'POLICY_REFERENCE_BACKUP_FIELDS', 'prepareBackup input');
     const work = findWork(input.workId);
     if (work.state !== 'active') fail('POLICY_REFERENCE_BACKUP', `${work.id} is not active`);
+    if (typeof input.rootIndependent !== 'boolean') fail('POLICY_REFERENCE_BACKUP_STALE', 'rootIndependent must be boolean');
+    if (input.rootIndependent && profile.backup.staleEpoch !== 'root-independent-only') {
+      fail('POLICY_REFERENCE_BACKUP_STALE', 'root-independent backup is not selected by the normalized Policy profile');
+    }
     const capturedEpoch = decimal(input.rootEpoch, 'POLICY_REFERENCE_BACKUP', 'rootEpoch');
     if (!input.rootIndependent && (work.rootEpoch !== capturedEpoch || currentRootEpoch !== capturedEpoch)) {
       fail('POLICY_REFERENCE_BACKUP_STALE', 'backup root epoch does not match admitted work/current root');
@@ -283,6 +289,7 @@ export function createPolicyOracle({
       occurrenceIds.add(occurrenceId);
       const record = recordsById.get(occurrence.recordId);
       if (!record) fail('POLICY_REFERENCE_BACKUP', `unknown target record ${occurrence.recordId}`);
+      if (!profile.backup.targets.includes(occurrence.recordId)) fail('POLICY_REFERENCE_BACKUP', `target record ${occurrence.recordId} is not selected by the normalized backup target set`);
       const storageKey = requireString(occurrence.storageKey, 'POLICY_REFERENCE_BACKUP', 'storageKey');
       const recordKey = `${occurrence.recordId}\0${storageKey}`;
       if (!recordValues.has(recordKey)) fail('POLICY_REFERENCE_BACKUP', `target ${recordKey} is not initialized`);
@@ -342,6 +349,12 @@ export function createPolicyOracle({
       emit('backup-step-idempotent', { transactionId: transaction.id, occurrenceId: occurrence.occurrenceId });
       return { kind: 'already-applied', occurrenceId: occurrence.occurrenceId };
     }
+    if (profile.backup.concurrencyOrder === 'deterministic-sequence') {
+      const expectedOccurrence = transaction.occurrences[transaction.applied.size]?.occurrenceId;
+      if (occurrence.occurrenceId !== expectedOccurrence) {
+        fail('POLICY_REFERENCE_BACKUP_ORDER', `expected occurrence ${expectedOccurrence} before ${occurrence.occurrenceId}`);
+      }
+    }
     const expectedGeneration = decimal(occurrence.targetGeneration, 'POLICY_REFERENCE_BACKUP', 'target generation');
     if (recordGenerations.get(occurrence.recordKey) !== expectedGeneration) {
       if (atomicCommit || transaction.applied.size === 0) return { kind: 'stale', code: 'backup-target-stale' };
@@ -386,16 +399,17 @@ export function createPolicyOracle({
     const transaction = findTransaction(input.transactionId);
     if (!['prepared', 'applying'].includes(transaction.state)) fail('POLICY_REFERENCE_BACKUP', `${transaction.id} cannot complete from ${transaction.state}`);
     if (transaction.applied.size !== transaction.occurrences.length) fail('POLICY_REFERENCE_BACKUP_INCOMPLETE', `${transaction.id} has unapplied occurrences`);
+    const atomicCommit = profile.backup.prefixVisibility === 'atomic-commit';
+    const prefixMutationBegan = !atomicCommit && transaction.applied.size > 0;
     if (!transaction.rootIndependent && transaction.rootEpoch !== currentRootEpoch) {
-      if (transaction.mustDrain) {
-        quarantineEvidence('stale-epoch-after-visible-prefix', { transactionId: transaction.id });
-        fail('POLICY_REFERENCE_PARTIAL_BACKUP', 'root epoch changed after backup mutation began');
+      if (prefixMutationBegan) {
+        quarantineEvidence('stale-epoch-after-prefix-mutation', { transactionId: transaction.id });
+        fail('POLICY_REFERENCE_PARTIAL_BACKUP', 'root epoch changed after backup target mutation began');
       }
       emit('backup-stale-before-commit', { transactionId: transaction.id, captured: toDecimal(transaction.rootEpoch), current: toDecimal(currentRootEpoch) });
       return { kind: 'stale', code: 'backup-target-stale' };
     }
     const work = findWork(transaction.workId);
-    const atomicCommit = profile.backup.prefixVisibility === 'atomic-commit';
     let reservation = null;
     if (work.reservationId !== null) {
       reservation = findReservation(work.reservationId);
@@ -407,14 +421,18 @@ export function createPolicyOracle({
         fail('POLICY_REFERENCE_RESERVATION_IMBALANCE', 'reservation was dispositioned before backup completion');
       }
     }
-    if (atomicCommit) {
-      for (const occurrence of transaction.occurrences) {
-        const expectedGeneration = decimal(occurrence.targetGeneration, 'POLICY_REFERENCE_BACKUP', 'target generation');
-        if (recordGenerations.get(occurrence.recordKey) !== expectedGeneration) {
-          emit('backup-stale-before-commit', { transactionId: transaction.id, occurrenceId: occurrence.occurrenceId });
-          return { kind: 'stale', code: 'backup-target-stale' };
+    for (const occurrence of transaction.occurrences) {
+      const expectedGeneration = decimal(occurrence.targetGeneration, 'POLICY_REFERENCE_BACKUP', 'target generation');
+      if (recordGenerations.get(occurrence.recordKey) !== expectedGeneration) {
+        if (prefixMutationBegan) {
+          quarantineEvidence('target-generation-changed-after-prefix-mutation', { transactionId: transaction.id, occurrenceId: occurrence.occurrenceId });
+          fail('POLICY_REFERENCE_PARTIAL_BACKUP', 'target generation changed after backup target mutation began');
         }
+        emit('backup-stale-before-commit', { transactionId: transaction.id, occurrenceId: occurrence.occurrenceId });
+        return { kind: 'stale', code: 'backup-target-stale' };
       }
+    }
+    if (atomicCommit) {
       for (const [recordKey, value] of transaction.shadowValues) recordValues.set(recordKey, value);
       emit('backup-atomic-commit', { transactionId: transaction.id, targets: transaction.shadowValues.size });
     }
