@@ -11,7 +11,7 @@ const textId = (value, label) => {
   return value;
 };
 const terminal = (state) => ['ready', 'failed', 'cancelled', 'stale'].includes(state);
-const refKey = ({ slotId, requestId, incarnation }) => `${slotId}\0${requestId}\0${incarnation}`;
+const refKey = ({ slotId, requestId, incarnation, resultSlotId }) => `${slotId}\0${requestId}\0${incarnation}\0${resultSlotId}`;
 const requestKey = (slotId, requestId, incarnation) => `${slotId}\0${requestId}\0${incarnation}`;
 const sameCanonical = (left, right, label = 'Evaluator comparison') => canonicalBytes(left, `${label} left`).equals(canonicalBytes(right, `${label} right`));
 
@@ -66,6 +66,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
   const find = (ref) => {
     const request = requests.get(requestKey(ref.slotId, ref.requestId, ref.incarnation));
     if (!request) fail('EVALUATOR_REFERENCE_REQUEST', `unknown request ${ref.slotId}/${ref.requestId}/${ref.incarnation}`);
+    if (textId(ref.resultSlotId, 'resultSlotId') !== request.resultSlotId) fail('EVALUATOR_REFERENCE_RESULT_SLOT', 'request reference does not bind the admitted result slot');
     return request;
   };
   const current = (slotId) => {
@@ -73,9 +74,23 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     return key === undefined ? null : requests.get(key) ?? null;
   };
   const releaseInput = (request) => { request.inputLease = 'released'; };
+  const capabilitySnapshot = (request) => [...request.capabilities].map(([id, value]) => ({
+    id,
+    state: value.state,
+    source: value.source,
+    payload: canonicalClone(value.payload),
+    validity: canonicalClone(value.validity),
+  }));
+  const settleWaiters = (request, state, reason) => {
+    const outcome = freeze({ state, reason: reason ?? null, capabilities: capabilitySnapshot(request) }, 'Evaluator waiter outcome');
+    for (const waiterId of request.waiters) request.waiterOutcomes.set(waiterId, outcome);
+    request.waiters.clear();
+  };
   const endRequest = (request, state, reason) => {
     if (terminal(request.state)) return;
-    request.state = state; request.reason = reason; request.resultDisposition = state; request.waiters.clear();
+    request.state = state; request.reason = reason; request.resultDisposition = state;
+    for (const capability of request.capabilities.values()) if (capability.state === 'pending') capability.state = state;
+    settleWaiters(request, state, reason);
     const batch = request.batchId === null ? null : batches.get(request.batchId);
     if (!batch || !['formed', 'continuation', 'executed'].includes(batch.state)) releaseInput(request);
   };
@@ -151,6 +166,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     const required = requiredInputFacts(selectedProfiles);
     for (const fact of required.facts) if (input.inputKey?.[fact] === undefined || input.inputKey[fact] === null) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', `missing request input-key fact ${fact}`);
     if (Object.keys(input.inputKey).length !== required.facts.length) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', 'request input key contains undeclared facts');
+    if (input.rootIndependent === true && required.facts.includes('root')) fail('EVALUATOR_REFERENCE_REUSE_KEY', 'root-dependent evaluator input cannot be declared root-independent');
     if (input.inputKey['capability-set'] !== undefined && !sameCanonical(input.inputKey['capability-set'], selectedProfiles.map(({ id }) => id), 'request capability-set key')) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', 'capability-set key disagrees with selected capabilities');
     if (input.inputKey['evaluator-profile'] !== undefined && input.inputKey['evaluator-profile'] !== profile.id) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', 'evaluator-profile key disagrees with selected profile');
     if (input.inputKey.purpose !== undefined && input.inputKey.purpose !== purpose) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', 'purpose key disagrees with request purpose');
@@ -166,7 +182,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
       admissionReservation: freeze(input.admission), inputKey: freeze(input.inputKey),
       cacheKeyIdentity: profile.cache.kind === 'selected' ? cacheIdentity(input.inputKey) : null,
       graphReference: freeze(input.graphReference), compatibilityKey: freeze(input.compatibilityKey), coalescingKey: freeze(input.coalescingKey),
-      state: 'queued', reason: null, batchId: null, waiters: new Set(), inputLease: 'held', resultDisposition: 'claimed', capabilities,
+      state: 'queued', reason: null, batchId: null, waiters: new Set(), waiterOutcomes: new Map(), inputLease: 'held', resultDisposition: 'claimed', capabilities,
     };
     requests.set(key, request); currentBySlot.set(slotId, key);
     return { kind: 'queued', slotId, requestId, incarnation: input.incarnation };
@@ -174,6 +190,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
 
   function attachWaiter(input) {
     available(); const request = find(input);
+    const waiterId = textId(input.waiterId, 'waiterId');
     const selected = [...request.capabilities.values()].map(({ capability, requirement, fallback }) => ({ capability, requirement, fallback }));
     if (
       terminal(request.state)
@@ -183,13 +200,14 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
       || dec(input.workEpoch, 'waiter workEpoch') !== request.workEpoch
       || !sameCanonical(input.capabilities, selected, 'waiter capability set')
     ) fail('EVALUATOR_REFERENCE_COALESCE', 'waiter does not match authoritative request');
-    if (request.waiters.has(input.waiterId)) fail('EVALUATOR_REFERENCE_WAITER', 'duplicate waiter');
+    if (request.waiters.has(waiterId) || request.waiterOutcomes.has(waiterId)) fail('EVALUATOR_REFERENCE_WAITER', 'duplicate waiter identity');
     if (BigInt(request.waiters.size) >= dec(profile.request.maxWaiters)) return { kind: 'pressure', code: 'evaluator-request-capacity' };
-    request.waiters.add(input.waiterId); return { kind: 'attached', waiterId: input.waiterId };
+    request.waiters.add(waiterId); return { kind: 'attached', waiterId };
   }
   function cancelWaiter(input) {
-    available(); const request = find(input);
-    if (!request.waiters.delete(input.waiterId)) fail('EVALUATOR_REFERENCE_WAITER', 'unknown waiter');
+    available(); const request = find(input); const waiterId = textId(input.waiterId, 'waiterId');
+    if (!request.waiters.delete(waiterId)) fail('EVALUATOR_REFERENCE_WAITER', 'unknown waiter');
+    request.waiterOutcomes.set(waiterId, freeze({ state: 'cancelled', reason: 'waiter-cancelled', capabilities: capabilitySnapshot(request) }, 'Evaluator waiter cancellation'));
     return { kind: 'cancelled', remainingWaiters: request.waiters.size };
   }
   function observeRequest(input) {
@@ -203,8 +221,9 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
         admissionReservation: canonicalClone(request.admissionReservation), graphReference: canonicalClone(request.graphReference),
         inputKey: canonicalClone(request.inputKey), compatibilityKey: canonicalClone(request.compatibilityKey), coalescingKey: canonicalClone(request.coalescingKey),
       },
-      capabilities: [...request.capabilities].map(([id, value]) => ({ id, state: value.state, source: value.source, payload: canonicalClone(value.payload), validity: canonicalClone(value.validity) })),
+      capabilities: capabilitySnapshot(request),
       waiters: request.waiters.size,
+      waiterOutcomes: [...request.waiterOutcomes].map(([waiterId, outcome]) => ({ waiterId, ...canonicalClone(outcome) })),
     };
   }
   function cancelRequest(input) { available(); const request = find(input); if (request.state === 'ready') return { kind: 'already-ready', requestId: request.id, incarnation: request.incarnationText }; endRequest(request, 'cancelled', input.reason); return { kind: 'cancelled', requestId: request.id, incarnation: request.incarnationText }; }
@@ -215,8 +234,11 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     const rule = workspaceRule(scope);
     if (!rule) { if (fact !== null) fail('EVALUATOR_REFERENCE_WORKSPACE', `profile has no ${scope} workspace`); return null; }
     if (!fact || fact.approved !== true) return { pressure: true, code: 'evaluator-workspace-capacity' };
+    textId(fact.token, `${scope} workspace token`);
+    textId(fact.leaseId, `${scope} workspace leaseId`);
     const bytes = dec(fact.bytes, `${scope} workspace bytes`);
     if (bytes > dec(rule.maxBytes)) fail('EVALUATOR_REFERENCE_WORKSPACE', 'workspace exceeds normalized bound');
+    if (scope === 'per-continuation' && profile.batching.continuation.kind === 'bounded' && bytes > dec(profile.batching.continuation.maxRetainedBytes)) fail('EVALUATOR_REFERENCE_WORKSPACE', 'continuation workspace exceeds retained-state bound');
     if (workspaces.get(fact.leaseId)?.state === 'acquired') return { pressure: true, code: 'evaluator-workspace-capacity' };
     const lease = { id: fact.leaseId, scope, owner, bytes, state: 'acquired' }; workspaces.set(lease.id, lease);
     activeWorkspaceBytes += bytes;
@@ -236,6 +258,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
 
   function formBatch(input) {
     available();
+    textId(input.batchId, 'batchId');
     if (batches.has(input.batchId) || input.itemRefs.length === 0 || BigInt(input.itemRefs.length) > dec(profile.batching.maximumItems)) fail('EVALUATOR_REFERENCE_BATCH', 'invalid batch identity or size');
     if (BigInt(input.itemRefs.length) < dec(profile.batching.minimumReadyItems) && input.serviceOpportunity !== true) return { kind: 'pending', code: 'evaluator-batch-pending' };
     const refs = input.itemRefs.map((ref) => freeze(ref));
@@ -245,14 +268,17 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
       if (request.state !== 'queued' || !sameCanonical(request.compatibilityKey, input.compatibilityKey, 'batch compatibility key')) fail('EVALUATOR_REFERENCE_BATCH_INCOMPATIBLE', 'batch item is not queued/compatible');
     }
     if (profile.batching.semantics === 'batch-sensitive' ? input.batchContext === null : input.batchContext !== null) fail('EVALUATOR_REFERENCE_BATCH_CONTEXT', 'batch context does not match normalized semantics');
-    const workspace = acquireWorkspace('per-batch', input.workspaceAdmission, input.batchId); if (workspace?.pressure) return { kind: 'pressure', code: workspace.code };
+    const paddingCount = dec(input.paddingCount, 'batch padding count');
+    if (BigInt(refs.length) + paddingCount > dec(profile.batching.maximumItems)) fail('EVALUATOR_REFERENCE_BATCH', 'batch items plus inactive padding exceed normalized capacity');
     const subject = profile.batching.semantics === 'batch-sensitive'
       ? { profile: profile.id, compatibilityKey: input.compatibilityKey, batchContext: input.batchContext, itemOrder: refs, paddingCount: input.paddingCount }
       : { profile: profile.id, compatibilityKey: input.compatibilityKey };
+    const semanticIdentity = canonicalIdentity(subject);
+    const workspace = acquireWorkspace('per-batch', input.workspaceAdmission, input.batchId); if (workspace?.pressure) return { kind: 'pressure', code: workspace.code };
     const batch = {
-      id: input.batchId, state: 'formed', terminalDisposition: null, refs, refSet: new Set(refs.map(refKey)), semanticIdentity: canonicalIdentity(subject),
+      id: input.batchId, state: 'formed', terminalDisposition: null, refs, refSet: new Set(refs.map(refKey)), semanticIdentity,
       capabilitySet: freeze(input.compatibilityKey.capabilitySet), executionProfile: freeze(input.compatibilityKey.executionVariant), capacity: profile.batching.maximumItems,
-      workspace: workspace?.id ?? null, continuationWorkspace: null, continuationId: null, resumes: 0n,
+      workspace: workspace?.id ?? null, continuationWorkspace: null, continuationId: null, continuationProgressToken: null, resumes: 0n,
       resumeOperations: new Map(), results: new Map(), failed: new Set(),
     };
     batches.set(batch.id, batch); for (const ref of refs) { const request = find(ref); request.state = 'batched'; request.batchId = batch.id; }
@@ -266,21 +292,38 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     const out = new Map();
     for (const item of results) {
       const key = refKey(item.ref); if (!batch.refSet.has(key) || out.has(key) || item.capabilities.length === 0) fail('EVALUATOR_REFERENCE_BATCH_RESULT', 'result does not identify exactly one active batch item');
+      const request = find(item.ref);
       const seen = new Set();
-      for (const result of item.capabilities) { if (!capabilityRules.has(result.capabilityId) || seen.has(result.capabilityId)) fail('EVALUATOR_REFERENCE_CAPABILITY_RESULT', 'invalid/duplicate capability result'); seen.add(result.capabilityId); }
+      for (const result of item.capabilities) { if (!request.capabilities.has(result.capabilityId) || seen.has(result.capabilityId)) fail('EVALUATOR_REFERENCE_CAPABILITY_RESULT', 'invalid/duplicate/unrequested capability result'); seen.add(result.capabilityId); }
       out.set(key, { ref: freeze(item.ref), capabilities: item.capabilities.map((result) => freeze(result)) });
     }
     return out;
+  }
+  function mergeBatchResults(existing, incoming) {
+    const merged = new Map([...existing].map(([key, value]) => [key, { ref: value.ref, capabilities: [...value.capabilities] }]));
+    for (const [key, value] of incoming) {
+      const currentResult = merged.get(key);
+      if (!currentResult) { merged.set(key, value); continue; }
+      const capabilities = new Map(currentResult.capabilities.map((capability) => [capability.capabilityId, capability]));
+      for (const capability of value.capabilities) {
+        const prior = capabilities.get(capability.capabilityId);
+        if (prior && !sameCanonical(prior, capability, 'continuation capability result')) fail('EVALUATOR_REFERENCE_CONTINUATION_RESULT_CONFLICT', 'continuation attempted to replace a complete capability result');
+        if (!prior) capabilities.set(capability.capabilityId, capability);
+      }
+      merged.set(key, { ref: currentResult.ref, capabilities: [...capabilities.values()] });
+    }
+    return merged;
   }
   function executeBatch(input) {
     available(); const batch = batches.get(input.batchId); if (!batch || batch.state !== 'formed') fail('EVALUATOR_REFERENCE_BATCH', 'batch is not formed');
     const results = normalizeResults(batch, input.results);
     if (input.continuation.kind === 'pending') {
-      if (profile.batching.continuation.kind !== 'bounded' || !input.continuation.progressToken) fail('EVALUATOR_REFERENCE_CONTINUATION', 'invalid continuation');
+      if (profile.batching.continuation.kind !== 'bounded') fail('EVALUATOR_REFERENCE_CONTINUATION', 'profile has no bounded continuation');
+      const progressToken = textId(input.continuation.progressToken, 'continuation progress token');
       const workspace = acquireWorkspace('per-continuation', input.continuation.workspaceAdmission, batch.id); if (workspace?.pressure) return { kind: 'pressure', code: workspace.code };
-      batch.results = results; batch.continuationWorkspace = workspace?.id ?? null; batch.continuationId = `${batch.id}:continuation`; batch.state = 'continuation';
+      batch.results = results; batch.continuationWorkspace = workspace?.id ?? null; batch.continuationId = `${batch.id}:continuation`; batch.continuationProgressToken = progressToken; batch.state = 'continuation';
       transitionBatchRequests(batch, 'executing');
-      return { kind: 'pending', continuationId: batch.continuationId, progressToken: input.continuation.progressToken };
+      return { kind: 'pending', continuationId: batch.continuationId, progressToken };
     }
     if (input.continuation.kind !== 'complete') fail('EVALUATOR_REFERENCE_CONTINUATION', 'invalid continuation completion');
     batch.results = results; batch.state = 'executed'; transitionBatchRequests(batch, 'publishing');
@@ -299,18 +342,24 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     }
     if (batch.state !== 'continuation' || batch.continuationId !== input.continuationId) fail('EVALUATOR_REFERENCE_CONTINUATION', 'inactive continuation');
     if (batch.resumes >= dec(profile.batching.continuation.maxResumes)) fail('EVALUATOR_REFERENCE_CONTINUATION', 'continuation resume bound exhausted');
-    batch.resumes += 1n;
-    for (const [key, value] of normalizeResults(batch, input.results)) batch.results.set(key, value);
-    let output;
+    let nextProgressToken = batch.continuationProgressToken;
     if (input.continuation.kind === 'pending') {
-      if (!input.continuation.progressToken) fail('EVALUATOR_REFERENCE_CONTINUATION', 'pending continuation needs progress token');
-      transitionBatchRequests(batch, 'executing');
-      output = { kind: 'pending', continuationId: batch.continuationId, resumeCount: batch.resumes.toString() };
-    } else {
-      if (input.continuation.kind !== 'complete') fail('EVALUATOR_REFERENCE_CONTINUATION', 'invalid continuation completion');
-      batch.state = 'executed'; transitionBatchRequests(batch, 'publishing');
-      output = { kind: 'executed', batchId: batch.id, resumeCount: batch.resumes.toString() };
+      nextProgressToken = textId(input.continuation.progressToken, 'continuation progress token');
+      if (sameCanonical(nextProgressToken, batch.continuationProgressToken, 'continuation progress token')) fail('EVALUATOR_REFERENCE_CONTINUATION_PROGRESS', 'new continuation resume must publish a new progress token');
+    } else if (input.continuation.kind !== 'complete') {
+      fail('EVALUATOR_REFERENCE_CONTINUATION', 'invalid continuation completion');
     }
+    const normalizedResults = normalizeResults(batch, input.results);
+    const mergedResults = mergeBatchResults(batch.results, normalizedResults);
+    const nextResumeCount = batch.resumes + 1n;
+    let output;
+    if (input.continuation.kind === 'pending') output = { kind: 'pending', continuationId: batch.continuationId, resumeCount: nextResumeCount.toString(), progressToken: nextProgressToken };
+    else output = { kind: 'executed', batchId: batch.id, resumeCount: nextResumeCount.toString() };
+
+    batch.resumes = nextResumeCount;
+    batch.results = mergedResults;
+    if (input.continuation.kind === 'pending') { batch.continuationProgressToken = nextProgressToken; transitionBatchRequests(batch, 'executing'); }
+    else { batch.state = 'executed'; transitionBatchRequests(batch, 'publishing'); }
     batch.resumeOperations.set(input.resumeId, { operation, output: freeze(output) });
     return output;
   }
@@ -321,10 +370,12 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
   }
   function failBatch(input) {
     available(); const batch = batches.get(input.batchId); if (!batch || batch.state === 'terminal') fail('EVALUATOR_REFERENCE_BATCH', 'batch cannot fail');
-    const affected = new Set(input.affectedItemRefs.map(refKey));
+    const affectedKeys = input.affectedItemRefs.map(refKey);
+    const affected = new Set(affectedKeys);
+    if (affected.size === 0 || affected.size !== affectedKeys.length || [...affected].some((key) => !batch.refSet.has(key))) fail('EVALUATOR_REFERENCE_BATCH_FAIL', 'affected failure items must be unique members of the batch');
     if (profile.batching.failureDomain !== 'item-independent' && affected.size !== batch.refSet.size) fail('EVALUATOR_REFERENCE_BATCH_FAIL', 'whole-batch failure must affect every item');
     for (const ref of batch.refs) if (affected.has(refKey(ref))) { batch.failed.add(refKey(ref)); endRequest(find(ref), 'failed', input.code); }
-    if (profile.batching.failureDomain !== 'item-independent') finishBatch(batch);
+    if (profile.batching.failureDomain !== 'item-independent' || batch.failed.size === batch.refSet.size) finishBatch(batch);
     return { kind: profile.batching.failureDomain === 'item-independent' ? 'item-failure' : 'batch-failure', affected: affected.size };
   }
   function publishInto(request, result, source) {
@@ -336,6 +387,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
       }
       return;
     }
+    if (capability.state !== 'pending') fail('EVALUATOR_REFERENCE_PUBLICATION_TERMINAL', 'capability publication is already terminal');
     capability.state = 'ready'; capability.source = source; capability.payload = freeze(result.payload); capability.validity = freeze(result.validity);
   }
   function finalize(request) {
@@ -344,20 +396,25 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     const requiredReady = required.filter((capability) => capability.state === 'ready').length;
     const complete = mutations.allowIncompleteReady === true ? requiredReady > 0 : requiredReady === required.length;
     const othersTerminal = selected.filter((capability) => capability.requirement !== 'required').every((capability) => ['ready','failed','cancelled','detached'].includes(capability.state));
-    if (complete && othersTerminal) { request.state = 'ready'; request.resultDisposition = 'ready'; request.waiters.clear(); releaseInput(request); }
+    if (complete && othersTerminal) {
+      request.state = 'ready'; request.resultDisposition = 'ready';
+      settleWaiters(request, 'ready', null);
+      releaseInput(request);
+    }
   }
   function scatterBatch(input) {
     available(); const batch = batches.get(input.batchId); if (!batch || batch.state !== 'executed') fail('EVALUATOR_REFERENCE_BATCH', 'batch is not executed'); const dispositions = [];
     for (const ref of batch.refs) {
       const key = refKey(ref); if (batch.failed.has(key)) { dispositions.push({ ref: canonicalClone(ref), kind: 'failed' }); continue; }
       const result = batch.results.get(key); if (!result) { const request = find(ref); if (!terminal(request.state)) endRequest(request, 'failed', 'evaluator-output-missing'); dispositions.push({ ref: canonicalClone(ref), kind: 'missing-failed' }); continue; }
-      const active = current(ref.slotId); const incarnationMatches = active && active.id === ref.requestId && active.incarnationText === ref.incarnation;
+      const active = current(ref.slotId);
+      const incarnationMatches = active && active.id === ref.requestId && active.incarnationText === ref.incarnation && active.resultSlotId === ref.resultSlotId;
       if (mutations.skipScatterIncarnationCheck !== true && !incarnationMatches) { dispositions.push({ ref: canonicalClone(ref), kind: 'stale-rejected' }); continue; }
       const target = mutations.skipScatterIncarnationCheck === true ? active : find(ref);
       if (!target || terminal(target.state)) { dispositions.push({ ref: canonicalClone(ref), kind: 'terminal-rejected' }); continue; }
       for (const capability of result.capabilities) publishInto(target, capability, 'fresh-execution'); finalize(target);
       if (!terminal(target.state)) { target.state = 'queued'; target.batchId = null; }
-      dispositions.push({ ref: canonicalClone(ref), kind: 'scattered', targetRequestId: target.id, targetIncarnation: target.incarnationText });
+      dispositions.push({ ref: canonicalClone(ref), kind: 'scattered', targetRequestId: target.id, targetIncarnation: target.incarnationText, targetResultSlotId: target.resultSlotId });
     }
     finishBatch(batch); return { kind: 'scattered', dispositions };
   }
@@ -388,7 +445,10 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
   }
   function publishCacheEntry(input) {
     available(); const entry = cache.get(input.entryId); if (!entry || entry.state !== 'claimed' || entry.generationText !== input.generation) fail('EVALUATOR_REFERENCE_CACHE', 'cache generation is not claimed');
-    const ids = new Set(input.results.map((result) => result.capabilityId)); if (ids.size !== capabilityRules.size || [...ids].some((id) => !capabilityRules.has(id))) fail('EVALUATOR_REFERENCE_CACHE_PARTIAL', 'fixture cache entry must contain a complete result set');
+    const expected = entry.keyFacts['capability-set'];
+    if (!Array.isArray(expected) || expected.length === 0 || new Set(expected).size !== expected.length || expected.some((id) => !capabilityRules.has(id))) fail('EVALUATOR_REFERENCE_CACHE_PARTIAL', 'cache key has an invalid capability set');
+    const ids = new Set(input.results.map((result) => result.capabilityId));
+    if (input.results.length !== expected.length || ids.size !== expected.length || expected.some((id) => !ids.has(id))) fail('EVALUATOR_REFERENCE_CACHE_PARTIAL', 'cache entry must contain exactly the keyed capability result set');
     const waitersReleased = entry.waiters.size; entry.waiters.clear(); entry.results = input.results.map((result) => freeze(result)); entry.state = 'ready';
     return { kind: 'ready', entryId: entry.id, waitersReleased };
   }
@@ -431,29 +491,38 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
   }
 
   function classifyReuse(input) {
-    available(); const rule = reuseRules.get(input.classId); if (!rule) fail('EVALUATOR_REFERENCE_REUSE', 'unknown reuse class'); reuseClassifications += 1n;
+    available();
+    const rule = reuseRules.get(input.classId); if (!rule) fail('EVALUATOR_REFERENCE_REUSE', 'unknown reuse class');
+    if (typeof input.keyValid !== 'boolean') fail('EVALUATOR_REFERENCE_REUSE', 'reuse key validity must be boolean');
+    reuseClassifications += 1n;
     const action = rule.disposition === 'retain-if-key-valid' ? (input.keyValid ? 'retain' : 'invalidate') : rule.disposition;
     return { kind: 'classification', classId: input.classId, disposition: rule.disposition, action };
   }
   function applyRerootAction(input) {
     available(); if (input.admission?.approved !== true) return { kind: 'pressure', code: 'reroot-action-capacity' };
-    if (rerootOps.has(input.operationId)) fail('EVALUATOR_REFERENCE_REUSE_ACTION', 'duplicate reroot operation');
+    textId(input.admission.token, 'reroot admission token');
+    const operationId = textId(input.operationId, 'reroot operationId');
+    if (rerootOps.has(operationId)) fail('EVALUATOR_REFERENCE_REUSE_ACTION', 'duplicate reroot operation');
     const classification = classifyReuse(input); if (classification.action !== input.action) fail('EVALUATOR_REFERENCE_REUSE_ACTION', 'reroot action disagrees with classification');
     if (input.action === 'invalidate' && input.classId === 'evaluator.request') for (const request of requests.values()) if (!terminal(request.state)) endRequest(request, 'stale', 'reroot-invalidate');
     if (input.action === 'invalidate' && input.classId === 'evaluator.cache') for (const entry of cache.values()) if (entry.state !== 'retired') { entry.waiters.clear(); entry.state = entry.protected ? 'retiring' : 'retired'; }
-    rerootOps.add(input.operationId); return { kind: 'terminal', operationId: input.operationId, action: input.action };
+    rerootOps.add(operationId); return { kind: 'terminal', operationId, action: input.action };
   }
   function applyAdvanceFacts(input) {
     available(); const epoch = dec(input.newRootEpoch); const before = reuseClassifications;
+    for (const fact of input.retainedValidity) {
+      if (!reuseRules.has(fact.classId) || typeof fact.keyValid !== 'boolean') fail('EVALUATOR_REFERENCE_ADVANCE_FACT', 'advance retained-validity fact is not declared by this evaluator profile');
+    }
     for (const request of requests.values()) if (!terminal(request.state) && !request.rootIndependent && request.rootEpoch !== epoch) endRequest(request, 'stale', 'root-advance');
-    const retained = input.retainedValidity.map((fact) => ({ classId: fact.classId, keyValid: fact.keyValid === true, usable: fact.keyValid === true }));
+    const retained = input.retainedValidity.map((fact) => ({ classId: fact.classId, keyValid: fact.keyValid, usable: fact.keyValid }));
     if (reuseClassifications !== before) fail('EVALUATOR_REFERENCE_ADVANCE_RECLASSIFICATION', 'advance reclassified reroot reuse');
     return { kind: 'applied', newRootEpoch: input.newRootEpoch, retained, reuseClassifications: reuseClassifications.toString() };
   }
   function commitMutableState(input) {
     available(); if (profile.mutableState.kind !== 'selected') fail('EVALUATOR_REFERENCE_MUTABLE_STATE', 'profile has no mutable state'); const batch = batches.get(input.batchId); if (!batch || !['continuation','executed'].includes(batch.state)) fail('EVALUATOR_REFERENCE_MUTABLE_STATE', 'mutable update needs active batch');
+    textId(input.updateIdentity, 'mutable updateIdentity');
     if (input.certain !== true) { quarantineEvidence('uncertain-mutable-state-update', { batchId: input.batchId }); for (const ref of batch.refs) if (!terminal(find(ref).state)) endRequest(find(ref), 'failed', 'uncertain-mutable-state-update'); finishBatch(batch); fail('EVALUATOR_REFERENCE_MUTABLE_STATE_QUARANTINE', 'uncertain mutable update quarantined evidence'); }
-    const expected = dec(input.expectedGeneration), next = dec(input.nextGeneration); if (expected !== mutableGeneration || next <= expected) fail('EVALUATOR_REFERENCE_MUTABLE_STATE_ORDER', 'mutable generation must advance exactly'); mutableGeneration = next; return { kind: 'committed', generation: input.nextGeneration };
+    const expected = dec(input.expectedGeneration), next = dec(input.nextGeneration); if (expected !== mutableGeneration || next <= expected) fail('EVALUATOR_REFERENCE_MUTABLE_STATE_ORDER', 'mutable generation must advance monotonically from the current generation'); mutableGeneration = next; return { kind: 'committed', generation: input.nextGeneration, updateIdentity: input.updateIdentity };
   }
 
   function assertAccounting() {
@@ -475,10 +544,10 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
   function cleanup() {
     const state = assertAccounting(); const protectedCache = [...cache.values()].filter((e) => e.state !== 'retired' && e.protected).length;
     if (state.live || state.liveBatches || state.activeWorkspaces || protectedCache) return { kind: 'pending', pendingRequests: state.live, liveBatches: state.liveBatches, activeWorkspaces: state.activeWorkspaces, protectedCache, evidenceValid: quarantine === null };
-    for (const request of requests.values()) { releaseInput(request); request.resultDisposition = 'released'; request.waiters.clear(); }
+    for (const request of requests.values()) { releaseInput(request); request.resultDisposition = 'released'; request.waiters.clear(); request.waiterOutcomes.clear(); }
     for (const entry of cache.values()) { entry.waiters.clear(); entry.state = 'retired'; }
     for (const lease of workspaces.values()) { if (lease.state === 'acquired') releaseWorkspace(lease.id); else lease.state = 'released'; }
-    const dispositions = profile.cleanup.classes.map((classId) => ({ classId, disposition: quarantine ? 'quarantined-or-released' : 'released' }));
+    const dispositions = profile.cleanup.classes.map((classId) => ({ classId, disposition: 'released' }));
     requests.clear(); currentBySlot.clear(); batches.clear(); workspaces.clear(); cache.clear(); cacheBuckets.clear(); rerootOps.clear();
     return { kind: quarantine ? 'quarantined' : 'complete', evidenceValid: quarantine === null, quarantine: quarantine ? canonicalClone(quarantine) : null, dispositions, runtimeResidue: 0 };
   }

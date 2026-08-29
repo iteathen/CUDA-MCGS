@@ -102,7 +102,9 @@ export function requestInput(profile, id, options = {}) {
   };
 }
 
-export function ref(input) { return { slotId: input.slotId, requestId: input.requestId, incarnation: input.incarnation }; }
+export function ref(input) {
+  return { slotId: input.slotId, requestId: input.requestId, incarnation: input.incarnation, resultSlotId: input.resultSlotId };
+}
 
 export function workspaceAdmission(profile, scope, suffix, options = {}) {
   const descriptor = profile.workspaces.find((entry) => entry.scope === scope);
@@ -129,6 +131,9 @@ export function executeComplete(oracle, profile, batchId, inputs, options = {}) 
 }
 
 export function cancelAndClean(oracle, inputs) {
-  for (const input of inputs) { const observed = oracle.observeRequest(ref(input)); if (!['ready', 'failed', 'cancelled', 'stale'].includes(observed.state)) oracle.cancelRequest({ ...ref(input), reason: 'case-cleanup' }); }
+  for (const input of inputs) {
+    const observed = oracle.observeRequest(ref(input));
+    if (!['ready', 'failed', 'cancelled', 'stale'].includes(observed.state)) oracle.cancelRequest({ ...ref(input), reason: 'case-cleanup' });
+  }
   return oracle.cleanup();
 }
