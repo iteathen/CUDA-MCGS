@@ -19,6 +19,7 @@ export function registerEvaluatorRequestCases({ defineCase, projection }) {
     assert.equal(proposalOnly.cache.kind, 'none');
     return { zeroResidue: true };
   }, ['EVAL-CACHE-001', 'EVAL-CLEANUP-001', 'EVAL-CLEANUP-003']);
+
   defineCase('evaluator-request-admission-atomicity', () => {
     const oracle = createEvaluatorOracle({ profile: analytic, admission: { maxActive: '1' } });
     const denied = requestInput(analytic, 'denied', { admission: { approved: false, token: null } });
@@ -54,6 +55,7 @@ export function registerEvaluatorRequestCases({ defineCase, projection }) {
     assert.equal(oracle.cleanup().runtimeResidue, 0);
     return { admitted: 1, deniedWithoutResidue: true, exactBindings: true, compatibilityValidatedBeforePublication: true };
   }, ['EVAL-REQUEST-001', 'EVAL-REQUEST-002', 'EVAL-REQUEST-003', 'EVAL-REQUEST-004', 'EVAL-BATCH-003']);
+
   defineCase('evaluator-request-coalescing-cancel', () => {
     const oracle = createEvaluatorOracle({ profile: analytic });
     const input = requestInput(analytic, 'coalesce', { rootEpoch: '5', workEpoch: '7' });
@@ -64,6 +66,7 @@ export function registerEvaluatorRequestCases({ defineCase, projection }) {
       incarnation: input.incarnation,
       purpose: input.purpose,
       requestId: input.requestId,
+      resultSlotId: input.resultSlotId,
       rootEpoch: input.rootEpoch,
       slotId: input.slotId,
       waiterId,
@@ -76,13 +79,51 @@ export function registerEvaluatorRequestCases({ defineCase, projection }) {
     assert.throws(() => oracle.attachWaiter({ ...waiter('bad-capabilities'), capabilities: [] }), { code: 'EVALUATOR_REFERENCE_COALESCE' });
     assert.deepEqual(oracle.cancelWaiter({ ...ref(input), waiterId: 'waiter-a' }), { kind: 'cancelled', remainingWaiters: 1 });
     assert.equal(oracle.observeRequest(ref(input)).state, 'queued', 'one waiter cancellation must not cancel shared request');
-    assert.equal(oracle.cancelRequest({ ...ref(input), reason: 'request-cancelled' }).kind, 'cancelled');
+
+    const capabilityId = analytic.capabilities[0].id;
+    const readyPayload = { token: 'coalesced-ready' };
+    oracle.publishCapability({ ...ref(input), capabilityId, payload: readyPayload, validity: { complete: true }, source: 'fresh-execution' });
     const finished = oracle.observeRequest(ref(input));
-    assert.equal(finished.waiters, 0, 'terminal request must dispose all coalesced waiters exactly once');
+    assert.equal(finished.state, 'ready');
+    assert.equal(finished.waiters, 0, 'terminal request must fan out and retire all live coalesced waiters exactly once');
     assert.equal(finished.inputLease, 'released');
+    const cancelledOutcome = finished.waiterOutcomes.find(({ waiterId }) => waiterId === 'waiter-a');
+    const readyOutcome = finished.waiterOutcomes.find(({ waiterId }) => waiterId === 'waiter-b');
+    assert.equal(cancelledOutcome.state, 'cancelled');
+    assert.equal(cancelledOutcome.reason, 'waiter-cancelled');
+    assert.equal(readyOutcome.state, 'ready');
+    assert.equal(readyOutcome.reason, null);
+    assert.deepEqual(readyOutcome.capabilities[0].payload, readyPayload, 'ready waiter fan-out must observe the exact authoritative capability publication');
+    assert.equal(readyOutcome.capabilities[0].state, 'ready');
     assert.equal(oracle.cleanup().runtimeResidue, 0);
-    return { independentWaiterCancellation: true, epochAndCapabilityFence: true };
+
+    const failedOracle = createEvaluatorOracle({ profile: analytic });
+    const failedInput = requestInput(analytic, 'coalesce-failure');
+    failedOracle.admitRequest(failedInput);
+    const failedWaiter = {
+      capabilities: failedInput.capabilities,
+      coalescingKey: failedInput.coalescingKey,
+      incarnation: failedInput.incarnation,
+      purpose: failedInput.purpose,
+      requestId: failedInput.requestId,
+      resultSlotId: failedInput.resultSlotId,
+      rootEpoch: failedInput.rootEpoch,
+      slotId: failedInput.slotId,
+      waiterId: 'waiter-failure',
+      workEpoch: failedInput.workEpoch,
+    };
+    failedOracle.attachWaiter(failedWaiter);
+    assert.equal(failedOracle.failRequest({ ...ref(failedInput), code: 'synthetic-failure' }).kind, 'failed');
+    const failedObserved = failedOracle.observeRequest(ref(failedInput));
+    const failedOutcome = failedObserved.waiterOutcomes.find(({ waiterId }) => waiterId === 'waiter-failure');
+    assert.equal(failedOutcome.state, 'failed');
+    assert.equal(failedOutcome.reason, 'synthetic-failure');
+    assert(failedOutcome.capabilities.every(({ state }) => state === 'failed'), 'failure fan-out must carry exact terminal capability dispositions');
+    assert.equal(failedOracle.cleanup().runtimeResidue, 0);
+
+    return { independentWaiterCancellation: true, epochAndCapabilityFence: true, resultAndFailureFanout: true };
   }, ['EVAL-REQUEST-005', 'EVAL-REQUEST-008', 'EVAL-REQUEST-009']);
+
   defineCase('evaluator-request-readiness-completeness', () => {
     const oracle = createEvaluatorOracle({ profile: vector });
     const input = requestInput(vector, 'readiness');
@@ -96,6 +137,18 @@ export function registerEvaluatorRequestCases({ defineCase, projection }) {
     assert.equal(ready.inputLease, 'released');
     assert(ready.capabilities.every(({ state }) => state === 'ready'));
     assert.equal(oracle.cleanup().runtimeResidue, 0);
-    return { requiredCapabilities: ready.capabilities.length };
-  }, ['EVAL-REQUEST-004', 'EVAL-REQUEST-006', 'EVAL-REQUEST-007', 'EVAL-REQUEST-010']);
+
+    const cancelled = createEvaluatorOracle({ profile: vector });
+    const cancelledInput = requestInput(vector, 'readiness-cancelled');
+    cancelled.admitRequest(cancelledInput);
+    cancelled.publishCapability({ ...ref(cancelledInput), capabilityId: first, payload: { token: 'surviving-ready-capability' }, validity: { complete: true }, source: 'fresh-execution' });
+    assert.equal(cancelled.cancelRequest({ ...ref(cancelledInput), reason: 'stop-before-second-capability' }).kind, 'cancelled');
+    const cancelledState = cancelled.observeRequest(ref(cancelledInput));
+    assert.equal(cancelledState.state, 'cancelled');
+    assert.equal(cancelledState.inputLease, 'released');
+    assert.equal(cancelledState.capabilities.find(({ id }) => id === first).state, 'ready', 'already-authoritative ready capability remains ready');
+    assert.equal(cancelledState.capabilities.find(({ id }) => id === second).state, 'cancelled', 'unready capability must receive an explicit terminal disposition');
+    assert.equal(cancelled.cleanup().runtimeResidue, 0);
+    return { requiredCapabilities: ready.capabilities.length, partialCancellationTerminal: true };
+  }, ['EVAL-REQUEST-004', 'EVAL-REQUEST-006', 'EVAL-REQUEST-007', 'EVAL-REQUEST-008', 'EVAL-REQUEST-009', 'EVAL-REQUEST-010']);
 }

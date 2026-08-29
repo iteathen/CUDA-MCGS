@@ -27,8 +27,12 @@ export function registerEvaluatorReuseCleanupCases({ defineCase, projection }) {
     assert.equal(oracle.cleanup().runtimeResidue, 0);
     return { explicitReuseOwner: true, admissionAtomic: true, duplicateOperationNoSideEffect: true };
   }, ['EVAL-REUSE-001', 'EVAL-REUSE-004', 'EVAL-REUSE-005']);
+
   defineCase('evaluator-advance-history-provenance', () => {
     const historyOracle = createEvaluatorOracle({ profile: vector });
+    const forgedIndependent = requestInput(vector, 'advance-forged-independent', { rootEpoch: '0', rootIndependent: true });
+    assert.throws(() => historyOracle.admitRequest(forgedIndependent), { code: 'EVALUATOR_REFERENCE_REUSE_KEY' });
+    assert.equal(historyOracle.assertAccounting().admitted, 0, 'root-dependent work cannot self-authorize root-independent reuse');
     const historyRequest = requestInput(vector, 'advance-history', { rootEpoch: '0', rootIndependent: false });
     historyOracle.admitRequest(historyRequest);
     const before = historyOracle.snapshot().reuseClassifications;
@@ -45,8 +49,9 @@ export function registerEvaluatorReuseCleanupCases({ defineCase, projection }) {
     assert.equal(rootIndependentOracle.observeRequest(ref(rootIndependent)).state, 'queued', 'root-independent exact-key work may survive advance');
     rootIndependentOracle.cancelRequest({ ...ref(rootIndependent), reason: 'case-end' });
     assert.equal(rootIndependentOracle.cleanup().runtimeResidue, 0);
-    return { historyKeyRequired: true, advanceReclassificationCount: before, arbitraryWidthEpoch: true };
+    return { historyKeyRequired: true, forgedRootIndependenceRejected: true, advanceReclassificationCount: before, arbitraryWidthEpoch: true };
   }, ['EVAL-REUSE-002', 'EVAL-REUSE-003', 'EVAL-REUSE-004', 'EVAL-REUSE-006']);
+
   defineCase('evaluator-cleanup-complete-disposition', () => {
     const oracle = createEvaluatorOracle({ profile: proof });
     const input = requestInput(proof, 'cleanup');
@@ -66,6 +71,7 @@ export function registerEvaluatorReuseCleanupCases({ defineCase, projection }) {
     assert.equal(oracle.snapshot().selection, 'removed');
     return { dispositions: cleanup.dispositions.length, soleCapabilityDeletionZeroResidue: true };
   }, ['EVAL-CLEANUP-001', 'EVAL-CLEANUP-003']);
+
   defineCase('evaluator-cleanup-quarantine', () => {
     const oracle = createEvaluatorOracle({ profile: vector });
     const input = requestInput(vector, 'quarantine');
@@ -81,8 +87,11 @@ export function registerEvaluatorReuseCleanupCases({ defineCase, projection }) {
     assert.equal(cleanup.kind, 'quarantined');
     assert.equal(cleanup.runtimeResidue, 0);
     assert.equal(cleanup.evidenceValid, false);
-    return { quarantined: snapshot.quarantine.code };
-  }, ['EVAL-CLEANUP-002']);
+    assert.equal(cleanup.quarantine.code, 'conflicting-publication');
+    assert(cleanup.dispositions.every(({ disposition }) => disposition === 'released'), 'runtime resources need an exact release disposition even when semantic evidence remains quarantined');
+    return { quarantined: snapshot.quarantine.code, runtimeDispositionsExact: true };
+  }, ['EVAL-CLEANUP-001', 'EVAL-CLEANUP-002']);
+
   defineCase('evaluator-uncertain-mutable-state-quarantine', () => {
     const oracle = createEvaluatorOracle({ profile: sensitive });
     const input = requestInput(sensitive, 'mutable-quarantine');
@@ -96,6 +105,7 @@ export function registerEvaluatorReuseCleanupCases({ defineCase, projection }) {
     const cleanup = oracle.cleanup();
     assert.equal(cleanup.kind, 'quarantined');
     assert.equal(cleanup.runtimeResidue, 0);
+    assert(cleanup.dispositions.every(({ disposition }) => disposition === 'released'));
     return { uncertainStateCannotBecomeEvidence: true };
-  }, ['EVAL-BATCH-010', 'EVAL-CLEANUP-002']);
+  }, ['EVAL-BATCH-010', 'EVAL-CLEANUP-001', 'EVAL-CLEANUP-002']);
 }

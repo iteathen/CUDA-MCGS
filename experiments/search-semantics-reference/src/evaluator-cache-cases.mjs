@@ -36,6 +36,25 @@ export function registerEvaluatorCacheCases({ defineCase, projection }) {
     oracle.admitRequest(request);
     assert.deepEqual(oracle.completeFromCache({ entryId: 'entry-a', ...ref(request) }), { kind: 'ready', source: 'cache', entryId: 'entry-a' });
     assert(oracle.observeRequest(ref(request)).capabilities.every(({ source }) => source === 'cache'));
+
+    const subsetCapabilities = [vector.request.capabilities[0]];
+    const subsetIds = subsetCapabilities.map(({ capability }) => capability);
+    const subsetKey = cacheKey(vector, 'cache-subset', { 'capability-set': subsetIds });
+    const subsetRequest = requestInput(vector, 'cache-subset', { capabilities: subsetCapabilities, inputKey: subsetKey, purpose: subsetKey.purpose });
+    oracle.claimCacheEntry({ entryId: 'subset-entry', generation: '1', hash: 'subset', keyFacts: subsetKey });
+    assert.throws(
+      () => oracle.publishCacheEntry({ entryId: 'subset-entry', generation: '1', results: resultsFor(vector, [subsetRequest])[0].capabilities }),
+      { code: 'EVALUATOR_REFERENCE_CACHE_PARTIAL' },
+      'cache publication cannot include profile capabilities omitted by the keyed request',
+    );
+    assert.equal(oracle.publishCacheEntry({
+      entryId: 'subset-entry', generation: '1', results: resultsFor(vector, [subsetRequest], { capabilityIds: subsetIds })[0].capabilities,
+    }).kind, 'ready');
+    oracle.admitRequest(subsetRequest);
+    assert.deepEqual(oracle.completeFromCache({ entryId: 'subset-entry', ...ref(subsetRequest) }), { kind: 'ready', source: 'cache', entryId: 'subset-entry' });
+    const subsetReady = oracle.observeRequest(ref(subsetRequest));
+    assert.equal(subsetReady.capabilities.length, 1);
+    assert.equal(subsetReady.capabilities[0].source, 'cache');
     assert.equal(oracle.cleanup().runtimeResidue, 0);
 
     const mismatch = createEvaluatorOracle({ profile: vector });
@@ -47,8 +66,9 @@ export function registerEvaluatorCacheCases({ defineCase, projection }) {
     assert.equal(mismatch.snapshot().quarantine.code, 'cache-key-inconsistency');
     assert.equal(mismatch.observeRequest(ref(mismatchedRequest)).state, 'failed');
     assert.equal(mismatch.cleanup().kind, 'quarantined');
-    return { collisionVerifiedByExactFullKey: true, cacheFreshSchemaEquivalent: true, waiterBound: maxWaiters, inconsistentCompletionQuarantined: true };
-  }, ['EVAL-CACHE-001', 'EVAL-CACHE-002', 'EVAL-CACHE-003', 'EVAL-CACHE-004', 'EVAL-CACHE-005', 'EVAL-REQUEST-006', 'EVAL-CLEANUP-002']);
+    return { collisionVerifiedByExactFullKey: true, cacheFreshSchemaEquivalent: true, subsetCapabilitySetExact: true, waiterBound: maxWaiters, inconsistentCompletionQuarantined: true };
+  }, ['EVAL-CACHE-001', 'EVAL-CACHE-002', 'EVAL-CACHE-003', 'EVAL-CACHE-004', 'EVAL-CACHE-005', 'EVAL-CACHE-006', 'EVAL-REQUEST-006', 'EVAL-CLEANUP-002']);
+
   defineCase('evaluator-cache-failure-pressure-protection', () => {
     const oracle = createEvaluatorOracle({ profile: vector, admission: { maxCacheEntries: '1' } });
     const keyA = cacheKey(vector, 'pressure-a');
@@ -70,6 +90,7 @@ export function registerEvaluatorCacheCases({ defineCase, projection }) {
     assert.equal(oracle.cleanup().runtimeResidue, 0);
     return { typedPressure: true, protectedInvalidationSafe: true, failedWaiterReleased: true };
   }, ['EVAL-CACHE-004', 'EVAL-CACHE-006', 'EVAL-CACHE-007']);
+
   defineCase('evaluator-cache-generation-invalidation', () => {
     const oracle = createEvaluatorOracle({ profile: vector });
     const key = cacheKey(vector, 'generation');
