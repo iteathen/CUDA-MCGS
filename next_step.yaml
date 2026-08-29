@@ -1,42 +1,46 @@
 {
-  "schema_version": 85,
+  "schema_version": 86,
   "updated": "2026-08-28",
   "status": "experimental_next_owner_assessment_ready",
-  "objective": "Assess the remaining ENGINE-REFERENCE-01 semantic owner graph against the integrated Domain/Graph/Policy packet and select the smallest dependency-ready leaf with explicit authority, cheapest falsifier, non-goals and exact validation before implementation.",
-  "ownership_boundary": "Policy owns product-neutral policy records, selection/admission meaning, reservations, cycle response, value/perspective mapping, backup transaction semantics, stop/drain accounting, reuse classification and Policy cleanup/quarantine. Graph retains storage/reference/lifetime/reclamation meaning; Evaluator retains execution/batching/cache/workspace meaning; Resource retains resource composition/admission/watermark/pressure policy; Progress retains scheduling/fairness/device-progress policy; Output retains external result/publication meaning; Session retains current-root/root-epoch/advance/reroot/attention/supersession authority. CUDA-JS owns generic native/CUDA realization and CUDA-JS-Tensor owns generic tensor math.",
+  "objective": "Assess the remaining ENGINE-REFERENCE-01 semantic owner graph against the integrated Domain/Graph/Policy packet and select the smallest dependency-ready leaf with explicit authority, cheapest falsifier, non-goals and exact validation before implementation. The prior open-PR maintenance/product-boundary queue has been reviewed and dispositioned without moving protected main.",
+  "ownership_boundary": "Policy owns product-neutral policy records, selection/admission meaning, reservations, cycle response, value/perspective mapping, backup transaction semantics, stop/drain accounting, reuse classification and Policy cleanup/quarantine. Graph retains storage/reference/lifetime/reclamation meaning; Evaluator retains execution/batching/cache/workspace meaning; Resource retains resource composition/admission/watermark/pressure policy; Progress retains scheduling/fairness/device-progress policy; Output retains external result/publication meaning; Session retains current-root/root-epoch/advance/reroot/attention/supersession authority. CUDA-JS owns generic native/CUDA realization and CUDA-JS-Tensor owns generic tensor math. Product/domain policy remains downstream.",
   "protected_base": {
     "branch": "main",
     "sha": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
     "workflow": "33115975009",
-    "meaning": "Protected authority remains intentionally unchanged; experimental Policy authorization does not authorize protected-main mutation or promotion."
+    "meaning": "Protected authority remains intentionally unchanged; no action in the open-PR audit authorized protected-main mutation or promotion."
   },
   "experimental_base": {
     "branch": "experimental/portfolio",
-    "policy_integration_sha": "eace1d4c80f677763ec4a86773f4011a5f5553b5",
-    "policy_integration_pr": 153,
-    "authorized_source_head": "877765e7fadafd9459bf13c1024c002edd279427",
-    "semantic_evidence_head": "104cb8356417f95cc3783144b306f7b7725f9726",
-    "post_integration_reconciliation": {
+    "policy_integration": {
+      "pr": 153,
+      "merge_sha": "eace1d4c80f677763ec4a86773f4011a5f5553b5",
+      "authorized_source_head": "877765e7fadafd9459bf13c1024c002edd279427",
+      "semantic_evidence_head": "104cb8356417f95cc3783144b306f7b7725f9726"
+    },
+    "policy_state_reconciliation": {
       "pr": 154,
-      "source_head": "68e541b6535d0be7b9789abb062a32df062c89b9",
       "qualification_run": "33233456601",
       "merge_sha": "8b8ce390e78f89d1287f6ccf7b9a4ff30a5f59e4"
     },
-    "meaning": "The experimental branch contains the qualified Policy semantic/reference integration plus post-integration state reconciliation. This file intentionally does not encode a self-invalidating claim that a particular state-only commit is the forever-current branch head."
-  },
-  "completed_slice": {
-    "id": "REF-POLICY-01",
-    "owner_spec": "SPEC-0008",
-    "reference_tracker": 36,
-    "portfolio_tracker": 142,
-    "direct_behavior_requirement_count": 43,
-    "coverage_status": "partial",
-    "qualified_semantic_evidence_head": "104cb8356417f95cc3783144b306f7b7725f9726",
-    "semantic_qualification_run": "33231519393",
-    "authorized_source_head": "877765e7fadafd9459bf13c1024c002edd279427",
-    "authorized_head_qualification_run": "33233026019",
-    "integration_sha": "eace1d4c80f677763ec4a86773f4011a5f5553b5",
-    "review": "whole-diff author review found and closed transactional/reroot/stop/quarantine/normalized-profile authority defects; repository-owner exact-head authorization covered experimental integration only"
+    "post_policy_transition": {
+      "pr": 155,
+      "qualification_run": "33233613069",
+      "merge_sha": "9a784e85c45f1a4253a77ff92cb2a0bdf82b7b83"
+    },
+    "workflow_maintenance": {
+      "pr": 156,
+      "source_head": "5d92d5b66672e8cde8eb090c218a5fb2b8f1c1cd",
+      "qualification_run": "33235801001",
+      "merge_sha": "daaafcacbf9d104d287c923cd3143800f623a005"
+    },
+    "research_preservation": {
+      "pr": 157,
+      "source_head": "495791ff3a53d576bc6dc903006246cca46724ae",
+      "qualification_run": "33236002396",
+      "merge_sha": "5defa0f31bf4c93f76b2e77b6e5ed09b3d43705d"
+    },
+    "meaning": "The experimental line contains the qualified Policy reference, current v7 GitHub Actions pins, and explicitly non-authoritative preservation of useful superseded Tensor/evaluator research. Live branch readback remains the authority; this state file avoids self-invalidating claims about its own eventual merge SHA."
   },
   "integrated_evidence": {
     "composer_cases": "881/881",
@@ -47,14 +51,29 @@
       "pending": 27
     },
     "composer_representation_composition": "115cceb16db3e4a99944c7228e1d5dff7047f342ddbe63a3e695c027d33e85c8",
-    "composer_canonical_bytes": 727811,
     "policy_projection": "6662d8101bbffee0e322ef7e2172f5980d69a09aec8ec565c9425578751310c2",
-    "policy_projection_canonical_bytes": 123882,
     "policy_reference": "e58a5d2f1d49bab77c8b2176750ac764bc6f5295907bbffb708308b5ca35c116",
     "policy_cases": "24/24",
-    "policy_canonical_bytes": 13104,
     "policy_artifact_id": 9708629102,
     "policy_artifact_zip_sha256": "a33e7a4725f6f011737bc280c7f3f721874c4ee9c807a46e550e3c125167b747"
+  },
+  "open_pr_audit": {
+    "result": "complete",
+    "remaining_open_pull_requests": 0,
+    "dispositions": [
+      "PR #129 checkout upgrade fulfilled by current-tree PR #156 and closed superseded",
+      "PR #130 setup-node upgrade fulfilled by current-tree PR #156 and closed superseded",
+      "PR #131 upload-artifact upgrade fulfilled by current-tree PR #156 and closed superseded",
+      "PR #132 broad product-boundary branch closed superseded because current PR #146/ADR path carries the narrower LEGO-correct authority and #132 had no unique evidence to preserve",
+      "PR #126 closed superseded only after unique Tensor/evaluator/batching/prospective-search research was preserved as informational archive evidence through PR #157"
+    ],
+    "product_boundary_note": "Issue #44 remains open. Closing stale PRs #126/#132 does not authorize or complete protected-main product-boundary disposition."
+  },
+  "workflow_maintenance": {
+    "checkout": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1",
+    "setup_node": "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0",
+    "upload_artifact": "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1",
+    "claim_limit": "PR #156 changed pins/version comments only; workflow topology, permissions, commands, matrices, evidence paths and aggregate verify semantics were unchanged."
   },
   "authority": [
     "AGENTS.md",
@@ -63,20 +82,23 @@
     "agent_files/DESIGN_ALIGNMENT_CARD.md",
     "agent_files/general_foundation/LEGO_ARCHITECTURE.md",
     "agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md",
+    "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
     "agent_files/general_foundation/SEMANTIC_INTERROGATION.md",
     "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
     "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
     "docs/specs/SPEC-0008-search-policy-and-backup.md",
     "https://github.com/iteathen/CUDA-MCGS/issues/36",
+    "https://github.com/iteathen/CUDA-MCGS/issues/44",
     "https://github.com/iteathen/CUDA-MCGS/issues/122",
     "https://github.com/iteathen/CUDA-MCGS/issues/142"
   ],
   "deliverables": [
-    "read the exact integrated owner/dependency state on experimental/portfolio",
-    "compare Evaluator, Resource, Progress, Output, optional Session and Stage/Channel remaining obligations without collapsing owner boundaries",
-    "select one smallest dependency-ready semantic/reference leaf by evidence rather than historical ordering",
-    "define that leaf's authority, dependency inputs, cheapest falsifier, non-goals, claim limits and exact qualification before implementation",
-    "leave protected main and native/production lowering untouched during the assessment"
+    "keep the completed open-PR audit and dispositions truthful without restoring stale PR authority",
+    "preserve only unique useful superseded research as explicitly non-authoritative archive evidence",
+    "keep the current workflow maintenance pins qualified on the present experimental job set",
+    "perform the remaining semantic-owner dependency assessment before creating another focus branch",
+    "compare Evaluator, Resource, Progress, Output, optional Session and Stage/Channel obligations without collapsing LEGO ownership",
+    "leave protected main and native/production lowering untouched"
   ],
   "current_focus": {
     "id": "ENGINE-REFERENCE-01/NEXT-OWNER-ASSESSMENT",
@@ -84,42 +106,38 @@
     "portfolio": "https://github.com/iteathen/CUDA-MCGS/issues/142",
     "active_branch": "experimental/portfolio",
     "leading_candidate": "REF-EVALUATOR-01",
-    "next_action": "Perform the remaining-owner dependency assessment now against the integrated Domain/Graph/Policy packet. Confirm or falsify REF-EVALUATOR-01 as the smallest dependency-ready leaf by explicitly comparing Evaluator, Resource, Progress, Output, optional Session and Stage/Channel obligations; then define the selected leaf's cheapest falsifier and validation before creating a focus branch.",
+    "next_action": "Perform the remaining-owner dependency assessment now against the integrated Domain/Graph/Policy packet. Confirm or falsify REF-EVALUATOR-01 as the smallest dependency-ready leaf by explicitly comparing Evaluator, Resource, Progress, Output, optional Session and Stage/Channel obligations; define the selected leaf's cheapest falsifier, non-goals, claim limits and exact validation before creating a focus branch.",
     "exit": "One next semantic/reference owner is selected from current evidence with explicit authority, dependency state, cheapest falsifier, non-goals and exact validation; no implementation begins before that assessment record is complete."
   },
-  "portfolio_rules": [
-    "issue #36 remains the deterministic reference/conformance parent and owns selection/integration of the next semantic owner leaf",
-    "issue #122 remains the later atomic semantic acceptance gate; do not begin production lowering merely because experimental Policy evidence is green",
-    "issue #142 remains coordination only and does not become technical authority",
-    "Policy integration does not transfer Graph, Evaluator, Resource, Progress, Output or Session authority into Policy"
-  ],
   "blockers": [
-    "No blocker prevents the next-owner assessment on the experimental line.",
-    "Implementation of the next owner is blocked until the assessment selects and bounds one dependency-ready leaf.",
-    "Protected-main promotion is not authorized.",
+    "No open pull request currently blocks the portfolio.",
+    "Implementation of the next semantic owner remains blocked until the owner assessment selects and bounds one dependency-ready leaf.",
+    "Protected-main promotion/product-boundary disposition remains unauthorized in this experimental work.",
     "Native concurrency/atomic/publication/progress/occupancy/cancellation/teardown qualification remains later exact compatible-pair/device work."
   ],
   "validation": [
-    "governance/structured-data validation of this post-merge authority transition",
-    "readback that experimental/portfolio contains PR #153 Policy integration and PR #154 state reconciliation",
-    "protected main readback proving ee4434be0ae927c4ae1d5c106f91503d28b1aa01 unchanged",
-    "next-owner assessment record under issue #36 before implementation"
+    "repository-wide open-PR search returns zero results",
+    "PR #156 exact head workflow 33235801001 succeeded before maintenance integration",
+    "PR #157 exact rebased head workflow 33236002396 succeeded before archive integration",
+    "this state-only reconciliation must pass Governance, Search IR on both platforms, all Graph lanes, Policy reference and aggregate verify",
+    "protected main readback remains ee4434be0ae927c4ae1d5c106f91503d28b1aa01"
   ],
   "do_not": [
-    "mutate or promote protected main under the experimental-only authorization",
-    "continue adding Policy semantics for obligations owned by Evaluator, Resource, Progress, Output, Session, Graph or native layers",
+    "reopen or replay stale PR #126/#132 authority merely because their branches still exist",
+    "merge old Dependabot branches after their exact needs were fulfilled on the current workflow",
+    "mutate or promote protected main",
     "create a next-owner focus branch before the dependency assessment selects and bounds that owner",
     "assume REF-EVALUATOR-01 solely because it is next in historical ordering",
+    "move Graph, Resource, Progress, Output or Session authority into Evaluator",
     "claim native/CUDA mechanism qualification from CUDA-free semantic/reference evidence",
-    "select an atomic primitive, scheduler topology, warp/block topology, allocator, CUDA data structure or production persistence mechanism in the assessment",
     "add C/C++, CUDA C++, native addons/FFI, hand-written PTX, embedded CUDA source, direct CUDA-JS private access or Python",
-    "weaken identity, coverage, normalized-profile authority, owner-boundary or aggregate merge-gate checks"
+    "weaken identity, coverage, owner-boundary or aggregate merge-gate checks"
   ],
   "cleanup_debt": [
-    "ref/policy-reference-01 is stale after PR #153 integration and may be deleted after recovery disposition when safe delete-ref capability is used.",
-    "state/policy-integration-reconcile-20260828 is stale after PR #154 integration and may be deleted when safe branch-deletion capability is used.",
-    "Temporary Policy focused/bootstrap/provenance/review-repair workflows and scripts are absent from the integrated tree.",
-    "Existing stale Graph source/recovery refs remain bounded cleanup debt pending safe deletion/recovery disposition.",
-    "PR #126 and PR #132 remain separate product-boundary cleanup/disposition debt under issue #44."
+    "maintenance/actions-v7-20260828 is a merged source branch from PR #156 and is eligible for deletion.",
+    "docs/archive-pr126-research-20260828 is a merged source branch from PR #157 and is eligible for deletion.",
+    "state/open-pr-audit-reconcile-20260828 becomes eligible for deletion after this reconciliation merges.",
+    "The available GitHub connector exposes branch search/create/update but no safe delete-ref/delete-branch operation, so these branches cannot be truthfully deleted in this session.",
+    "Previously recorded stale Graph/Policy source and recovery refs remain bounded cleanup debt pending safe deletion/recovery disposition."
   ]
 }
