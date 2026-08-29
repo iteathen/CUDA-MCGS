@@ -22,6 +22,7 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/tmp-policy-authority-review-repair.mjs
+          node scripts/tmp-policy-authority-review-test-fix.mjs
           git diff --check
           node --check experiments/search-semantics-reference/src/policy.mjs
           node --check experiments/search-semantics-reference/src/policy-cases.mjs
