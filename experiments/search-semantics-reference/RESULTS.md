@@ -2,83 +2,95 @@
 
 **Status:** Informational
 
-**Updated:** 2026-08-27
+**Updated:** 2026-08-29
 
 ## Current candidate
 
-`ref/graph-root-01` extends `REF-GRAPH-01` through `GRAPH-ROOT-001..006`. ROOT is hosted-qualified but is **not** protected-main integrated until its PR is squash-merged and the exact squash SHA passes protected-main readback.
+`REF-EVALUATOR-01` extends the isolated `ENGINE-REFERENCE-01` portfolio with the deterministic Evaluator semantic owner. It is based on exact `experimental/portfolio@9d87a0004565041cac3c476afef8cde5c6f34eb0`; protected `main` is not part of this candidate.
 
-Protected base for this candidate is `main@e4069458ece47bbea0c2770204fa21fffbde6bb6` (PATH integration, PR #137).
+Semantic checkpoint: `ref/evaluator-01@96984afb1ea34dd09cecbd62bc0bc623895da33e`.
 
-Hosted ROOT qualification run `33107176873` passed the complete Composer → Domain → NODE → EDGE → REF → PATH → ROOT chain plus `./scripts/verify-docs.sh`, then removed all temporary migration/correction tooling before publishing durable semantic commit `d6b091e7c1afc6c09eb7e562cd7f72eb2773874d`.
+Exact qualification:
 
-## Exact candidate evidence
+- Evaluator reference workflow run `33257574891`: success;
+- ordinary documentation/reference workflow run `33257574895`: success;
+- Node `26.7.0` on `ubuntu-latest` for the Evaluator reference job;
+- `21/21` expected/discovered/executed/passed cases;
+- `0` failed, required-skipped, conditional-skipped, optional-skipped, undiscovered or selection-skipped cases;
+- all `37/37` direct `SPEC-0009` `ENGINE-REFERENCE-01` obligations exercised.
 
-Composer:
+## Exact evidence identities
 
-- `879/879` cases;
-- framework selection `de3b9a89f0570752230a6914bcb3c5374f73e5e59c424752819c0892e1f21ea5` (`10422` canonical bytes);
-- representation/composition `ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529` (`719510` canonical bytes).
+Upstream Composer representation/composition evidence:
 
-Domain:
+- SHA-256 `115cceb16db3e4a99944c7228e1d5dff7047f342ddbe63a3e695c027d33e85c8`;
+- `727811` canonical bytes.
 
-- projection `e9df2902e6edaad40c6abf0b85eeecb06e94b4d5598d9c0b9c7238fa20c3edaa` (`69524` canonical bytes);
-- evidence `f186412a9b8d964c7f92e4c4000942768fa0ae81d62349c2528fd3aba12aa5e7` (`30372` canonical bytes);
-- `49/49`, direct `47/47`.
+Evaluator normalized-profile projection:
 
-Graph projection:
+- schema `cuda-mcgs.search-ir-composer-evaluator-profile-projection/0.2.0`;
+- SHA-256 `705f8357a2edfbbbc84f9daae42e601b089778ef5f09b2284a2d2079d4b797a1`;
+- `151720` canonical bytes;
+- five exact Composer-normalized Evaluator profiles.
 
-- `89ee04a47d8516ad02e33e884d8f35db9573840f58db140c6cbafe79178e7fd7` (`139099` canonical bytes).
+Evaluator semantic evidence:
 
-Graph owner evidence:
+- capsule `cuda-mcgs-evaluator-reference-v0.2.0`;
+- scope `full-evaluator-reference`;
+- SHA-256 `71320ee94aa0b1eafb8fe403750caffce10046ad3f688fb57c657406e0df2314`;
+- `11956` canonical bytes;
+- status `pass`.
 
-- NODE `4299dccecd33f6ef38c50f144e84316d00c7046a81ed6206b6e2e645b6683f74`, `13/13`, direct `11/11`;
-- EDGE `54b83935d320e6bd656c740ec2f3d8be062e3932bdf6e748c8315f26245faf58`, `16/16`, direct `10/10`;
-- REF `e3370158d1234dd3642d11c4458c9c390abcc3f62a04a75dd68d00faf6c4676d`, `14/14`, direct `8/8`;
-- PATH `af8f140e45f7c2942ec4b09b7d752f49b3eeb28f1cdc5b8c3b74887d34dd4318`, `14/14`, direct `8/8`;
-- generated root-control projection `2c71df25fff213f515aae02a01e210292a8e9b76fc84e14ab6cafb251fbbc9f1`;
-- ROOT `7e4fe6bf748ec110bebc1798d7742e03b89909df84da709f2fdeb51a42311ed0` (`10008` canonical bytes), `14/14`, direct `6/6`.
+Retained workflow artifact: `evaluator-reference-evidence`, artifact `9716273696`, artifact digest `sha256:295ed141cc0df530a5c12d78a7c4839233a6703238eb486f7c3ba0b9fdb0e01b`.
 
-Selected normalized profile identities:
+## Direct requirement coverage
 
-- Graph `450fd5f79d4c0f2ee98f5854008c4c58f57a6c6424e144aa4ae2ad34fdcbcd61`;
-- Policy `1f4097bde39f3f072ace983ba99fc3167625b2ff5db841f6a7792cf9aec37aaf`;
-- Resource `8a722bcd7ae6b0ec86f4d589ea0ee3df8291c64a6d95b10e3dde2a3defe66481`;
-- Progress `7f3fcb4229bb7694b60469d3edba6302e5584bf87ef1284856a73f1b677ce8e8`;
-- Output `3bdc5d9c8fc63fb1bd34a6d93d7fc034518d4e7abb2b41f49406aaf8641b98a5`.
+The evidence registry derives the owned requirement IDs directly from `SPEC-0009` and cross-checks them against `schemas/search-ir/0.2.0/requirement-coverage.json`:
 
-## ROOT behavior proved
+- `EVAL-REQUEST-*`: `10/10`;
+- `EVAL-BATCH-*`: `10/10`;
+- `EVAL-CACHE-*`: `8/8`;
+- `EVAL-REUSE-*`: `6/6`;
+- `EVAL-CLEANUP-*`: `3/3`.
 
-The ROOT capsule proves only Graph-owned root storage/protection behavior:
+Any direct requirement missing a mapped case makes the reference fail before execution evidence can be accepted.
 
-- root anchors are finite typed references and are protected before publication;
-- Session/current-root/epoch authority remains outside Graph;
-- released anchor slots reuse only through explicit terminal-to-free lifecycle plus REF generation advancement;
-- a ready successor may be anchored for `advance` without retained-state reclassification, reclamation or eager cleanup;
-- `reroot` resolves/protects the replacement before Session authority commit and leaves the old anchor valid until commit;
-- replacement pressure cannot mutate the prior accepted root;
-- owner retain/retain-if-key-valid/transform/reset/invalidate disposition is delegated over opaque owner records;
-- old-epoch work may retain an independent protection after root authority changes;
-- superseding one occurrence cannot invalidate a still-valid shared transposed node;
-- `attention` changes have zero Graph ROOT effect;
-- publication-before-protection and eager-old-root-release mutations are detected.
+## Important falsifiers passed
 
-## Graph profile corrections discovered by ROOT
+The case bank includes the originally selected cross-cutting falsifier:
 
-ROOT falsification closed three Graph-owned representation gaps:
+- a request slot is superseded/reused before an old batch result scatters;
+- the stale result is rejected before it can mutate the replacement incarnation;
+- a ready one-item partial batch progresses without a host flush despite a larger maximum batch size;
+- batch and continuation workspace leases release exactly once;
+- old request input/result ownership reaches terminal disposition without residue.
 
-1. materialized root-anchor storage has explicit finite `resource-root-anchor-slots` funding using the existing `protection-capacity` pressure family;
-2. aggregate protection-capacity slot resources must cover both protection-record and root-anchor layouts;
-3. root-anchor and protection-record terminal states have explicit private reset-to-free transitions. Ready protection records still require their normal release transition before reset; ROOT does not bypass REF lifecycle authority.
+Additional correctness checks include:
 
-These changes intentionally rebound all proposal-derived Composer/Graph/downstream evidence identities above.
+- combined requests remain non-ready until every required capability is ready;
+- batch-independent grouping/order/inactive padding is semantically invariant;
+- batch-sensitive padding/context enters semantic identity;
+- item-independent and whole-batch failure domains remain distinct;
+- cache hash collisions are resolved by the complete normalized key;
+- failed/protected/invalidated cache entries cannot masquerade as ready hits;
+- cache and epoch generations remain exact beyond 64-bit ranges rather than wrapping into stale aliases;
+- reroot reuse actions are explicitly classified and admission failure preserves prior accepted state;
+- root advance consumes retained-validity facts without secretly rerunning reroot classification;
+- conflicting publication and uncertain mutable-state updates quarantine evidence rather than manufacturing ready state;
+- evaluator removal leaves zero runtime residue once owned state is terminal.
 
-## Permanent qualification path
+## Mutation sensitivity
 
-The branch adds a permanent `Graph ROOT reference` job to `.github/workflows/docs.yml`. It replays Composer → Graph projection → NODE → REF → PATH → ROOT and retains `root-control.json` plus the owner evidence artifacts. EDGE remains an independent regression job.
+Three deliberate mutants are required to diverge from the qualified behavior:
 
-Before integration, the final documentation-bearing PR head must pass the complete ordinary workflow: verify, Windows/Ubuntu Search IR, NODE, EDGE, REF, PATH and ROOT.
+1. remove the request-incarnation fence before scatter — stale output mutates the replacement request;
+2. allow incomplete required-capability readiness — a combined request becomes ready after one required capability;
+3. trust a cache hash without full-key verification — a forced collision returns the wrong entry.
 
-## Claim limits
+All three mutants are detected by the checked-in case bank.
 
-This candidate does **not** prove `GRAPH-RECLAIM-*`, a reclamation mechanism, native/CUDA execution, physical scheduling, production implementation, performance, contract acceptance, SDK/release readiness or multi-GPU support. RECLAIM remains blocked until ROOT is squash-merged and reproduced on protected main.
+## Ownership / claim limits
+
+This evidence is intentionally narrower than a production evaluator. It proves only Evaluator-owned request/incarnation, finite batch/workspace, cache, reroot-reuse and cleanup semantics for the 37 direct `ENGINE-REFERENCE-01` obligations.
+
+Domain/Graph identity and ready-input facts, Resource admission/pressure, Progress service opportunity, Session advance facts and Policy consumption are injected immutable facts. Output publication/ranking, native release/acquire and atomic realization, CUDA-JS mechanisms, CUDA-JS-Tensor math, physical scheduling, performance, search strength, production lowering, protected-main acceptance and multi-GPU behavior remain downstream.
