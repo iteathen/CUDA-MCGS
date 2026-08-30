@@ -50,7 +50,7 @@ export function cacheKey(profile, suffix = 'a', overrides = {}) {
   }));
 }
 
-export function batchCompatibilityKey(profile, capabilities, inputKey, requestCacheKey = null) {
+export function batchCompatibilityKey(profile, capabilities, inputKey) {
   const selectedIds = capabilities.map(({ capability }) => capability);
   const selectedProfiles = selectedIds.map((id) => {
     const selected = profile.capabilities.find(({ id: capabilityId }) => capabilityId === id);
@@ -76,7 +76,6 @@ export function batchCompatibilityKey(profile, capabilities, inputKey, requestCa
     precisionExecution: inputKey['precision-execution'] ?? null,
     executionVariant: { equivalenceClass: profile.execution.equivalenceClass, determinism: profile.batching.determinism },
     batchSensitiveContext: profile.batching.semantics === 'batch-sensitive' ? (inputKey['batch-context'] ?? null) : null,
-    cacheKey: requestCacheKey,
     resourceClass: profile.workspaces.map(({ scope, ownership, maxBytes }) => ({ scope, ownership, maxBytes })),
   };
 }
@@ -98,7 +97,7 @@ export function requestInput(profile, id, options = {}) {
   const requestCacheKey = profile.cache.kind === 'selected'
     ? (options.cacheKey ?? cacheKey(profile, id, { ...commonOverrides, ...inputKey }))
     : null;
-  const compatibilityKey = options.compatibilityKey ?? batchCompatibilityKey(profile, capabilities, inputKey, requestCacheKey);
+  const compatibilityKey = options.compatibilityKey ?? batchCompatibilityKey(profile, capabilities, inputKey);
   const coalescingKey = options.coalescingKey ?? { inputKey, cacheKey: requestCacheKey, purpose, rootEpoch, workEpoch, capabilities };
   return {
     admission: options.admission ?? { approved: true, token: `request-admission-${id}-${incarnation}` },

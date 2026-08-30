@@ -140,7 +140,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     });
     return { inputIds, inputs, facts: [...new Set(inputs.flatMap(({ keyFacts }) => keyFacts))] };
   };
-  const expectedBatchCompatibility = (selectedProfiles, inputKey, requestCacheKey) => {
+  const expectedBatchCompatibility = (selectedProfiles, inputKey) => {
     const { inputIds } = requiredInputFacts(selectedProfiles);
     const outputIds = [...new Set(selectedProfiles.flatMap(({ outputs }) => outputs))];
     return {
@@ -156,7 +156,6 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
       precisionExecution: inputKey['precision-execution'] ?? null,
       executionVariant: { equivalenceClass: profile.execution.equivalenceClass, determinism: profile.batching.determinism },
       batchSensitiveContext: profile.batching.semantics === 'batch-sensitive' ? (inputKey['batch-context'] ?? null) : null,
-      cacheKey: requestCacheKey,
       resourceClass: profile.workspaces.map(({ scope, ownership, maxBytes }) => ({ scope, ownership, maxBytes })),
     };
   };
@@ -214,7 +213,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
       fail('EVALUATOR_REFERENCE_CACHE_ABSENT', 'cache-free profile cannot bind a cache key');
     }
 
-    const expectedCompatibility = expectedBatchCompatibility(selectedProfiles, input.inputKey, requestCacheKey);
+    const expectedCompatibility = expectedBatchCompatibility(selectedProfiles, input.inputKey);
     if (!sameCanonical(input.compatibilityKey, expectedCompatibility, 'batch compatibility declaration')) fail('EVALUATOR_REFERENCE_BATCH_COMPATIBILITY_KEY', 'request batch compatibility key omits or changes required compatibility facts');
     const expectedCoalescing = { inputKey: input.inputKey, cacheKey: requestCacheKey, purpose, rootEpoch: input.rootEpoch, workEpoch: input.workEpoch, capabilities: input.capabilities };
     if (!sameCanonical(input.coalescingKey, expectedCoalescing, 'request coalescing declaration')) fail('EVALUATOR_REFERENCE_COALESCE', 'request coalescing key omits validity-affecting request facts');
