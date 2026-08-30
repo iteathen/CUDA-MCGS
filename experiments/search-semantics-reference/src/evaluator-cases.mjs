@@ -1,5 +1,6 @@
 import { registerEvaluatorBatchCases } from './evaluator-batch-cases.mjs';
 import { registerEvaluatorCacheCases } from './evaluator-cache-cases.mjs';
+import { registerEvaluatorLifecycleCases } from './evaluator-lifecycle-cases.mjs';
 import { registerEvaluatorRequestCases } from './evaluator-request-cases.mjs';
 import { registerEvaluatorReuseCleanupCases } from './evaluator-reuse-cleanup-cases.mjs';
 import { registerEvaluatorSensitivityCases } from './evaluator-sensitivity-cases.mjs';
@@ -19,5 +20,6 @@ export function registerEvaluatorCases(context) {
   registerEvaluatorBatchCases(context);
   registerEvaluatorCacheCases(context);
   registerEvaluatorReuseCleanupCases(context);
+  registerEvaluatorLifecycleCases(context);
   registerEvaluatorSensitivityCases(context);
 }

@@ -14,21 +14,27 @@ function keyFactsFor(profile) {
   return [...new Set(profile.inputs.flatMap(({ keyFacts }) => keyFacts))];
 }
 
-export function evaluatorKey(profile, suffix = 'a', overrides = {}) {
-  const values = {
+function factValues(profile, suffix, overrides = {}) {
+  return {
     'artifact-generation': `artifact-generation-${profile.id}`,
     'batch-context': { class: profile.batching.semantics },
     'capability-set': profile.capabilities.map(({ id }) => id),
     'encoded-input': { state: `state-${suffix}`, history: `history-${suffix}` },
     'evaluator-profile': profile.id,
     history: { digest: `history-${suffix}` },
+    observation: { generation: `observation-${suffix}` },
     'precision-execution': { class: profile.execution.equivalenceClass },
+    product: { identity: `product-${suffix}` },
     purpose: `purpose-${suffix}`,
     randomness: { counter: `random-${suffix}` },
     root: { epoch: '0' },
     'state-generation': `state-generation-${profile.id}`,
     ...overrides,
   };
+}
+
+export function evaluatorKey(profile, suffix = 'a', overrides = {}) {
+  const values = factValues(profile, suffix, overrides);
   return Object.fromEntries(keyFactsFor(profile).map((fact) => {
     assert.notEqual(values[fact], undefined, `Evaluator fixture has no value for key fact ${fact}`);
     return [fact, values[fact]];
@@ -37,14 +43,14 @@ export function evaluatorKey(profile, suffix = 'a', overrides = {}) {
 
 export function cacheKey(profile, suffix = 'a', overrides = {}) {
   assert.equal(profile.cache.kind, 'selected');
-  const values = evaluatorKey(profile, suffix, overrides);
+  const values = factValues(profile, suffix, overrides);
   return Object.fromEntries(profile.cache.keyFacts.map((fact) => {
     assert.notEqual(values[fact], undefined, `Evaluator fixture has no cache value for key fact ${fact}`);
     return [fact, values[fact]];
   }));
 }
 
-export function batchCompatibilityKey(profile, capabilities, inputKey) {
+export function batchCompatibilityKey(profile, capabilities, inputKey, requestCacheKey = null) {
   const selectedIds = capabilities.map(({ capability }) => capability);
   const selectedProfiles = selectedIds.map((id) => {
     const selected = profile.capabilities.find(({ id: capabilityId }) => capabilityId === id);
@@ -70,6 +76,7 @@ export function batchCompatibilityKey(profile, capabilities, inputKey) {
     precisionExecution: inputKey['precision-execution'] ?? null,
     executionVariant: { equivalenceClass: profile.execution.equivalenceClass, determinism: profile.batching.determinism },
     batchSensitiveContext: profile.batching.semantics === 'batch-sensitive' ? (inputKey['batch-context'] ?? null) : null,
+    cacheKey: requestCacheKey,
     resourceClass: profile.workspaces.map(({ scope, ownership, maxBytes }) => ({ scope, ownership, maxBytes })),
   };
 }
@@ -82,15 +89,20 @@ export function requestInput(profile, id, options = {}) {
   const purpose = options.purpose ?? suppliedInputKey?.purpose ?? `purpose-${id}`;
   const rootEpoch = options.rootEpoch ?? suppliedInputKey?.root?.epoch ?? '0';
   const workEpoch = options.workEpoch ?? '0';
-  const inputKey = suppliedInputKey ?? evaluatorKey(profile, id, {
+  const commonOverrides = {
     'capability-set': capabilities.map(({ capability }) => capability),
     purpose,
     root: { epoch: rootEpoch },
-  });
-  const compatibilityKey = options.compatibilityKey ?? batchCompatibilityKey(profile, capabilities, inputKey);
-  const coalescingKey = options.coalescingKey ?? { inputKey, purpose, rootEpoch, workEpoch, capabilities };
+  };
+  const inputKey = suppliedInputKey ?? evaluatorKey(profile, id, commonOverrides);
+  const requestCacheKey = profile.cache.kind === 'selected'
+    ? (options.cacheKey ?? cacheKey(profile, id, { ...commonOverrides, ...inputKey }))
+    : null;
+  const compatibilityKey = options.compatibilityKey ?? batchCompatibilityKey(profile, capabilities, inputKey, requestCacheKey);
+  const coalescingKey = options.coalescingKey ?? { inputKey, cacheKey: requestCacheKey, purpose, rootEpoch, workEpoch, capabilities };
   return {
     admission: options.admission ?? { approved: true, token: `request-admission-${id}-${incarnation}` },
+    cacheKey: requestCacheKey,
     capabilities,
     coalescingKey,
     compatibilityKey,
