@@ -4,7 +4,7 @@
 
 Stop at the clean ownership seam between the qualified `REF-EVALUATOR-01` implementation candidate and a newly discovered upstream Composer/conformance-fixture defect.
 
-Do **not** merge either active PR from this checkpoint. Do **not** start Resource/Progress/Output work. Protected `main` remains out of scope.
+Do **not** merge either active PR from this checkpoint. Do **not** start Resource/Progress/Output work. Protected `main` remains out of scope for this work.
 
 ## Frozen repository state
 
@@ -12,7 +12,7 @@ Do **not** merge either active PR from this checkpoint. Do **not** start Resourc
 - Evaluator implementation PR: #160, draft, branch `ref/evaluator-01@f7501ec5d2921523cc7bdda89029a439f502f6c8`.
 - Upstream fixture correction PR: #162, draft, branch `fix/evaluator-required-fixture-matrix-20260829@ec6aa4585636defb87fc1fa6d11a9b1816b47b2e`.
 - Checkpoint branch: `checkpoint/evaluator-review-fixture-blocker-handoff-20260829`.
-- Protected `main` was not changed.
+- Protected `main` readback at stop: `3744cb09a0056eff696c8efc60e1630243301d1e`, advanced concurrently by docs-only PR #161 (`docs: define recursive LEGO composition and scale`). This session did not modify protected `main`, and that concurrent main advance did not move `experimental/portfolio` or either task branch.
 
 ## Qualified Evaluator head
 
