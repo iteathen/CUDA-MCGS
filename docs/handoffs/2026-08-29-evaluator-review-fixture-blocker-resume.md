@@ -113,10 +113,12 @@ No attempt was made to continue fixing #162 after this classification; that is t
 
 No local worktree or host mutation exists from this session; all substantive work is on GitHub.
 
-Retain exactly these task branches because they remain active evidence/work branches:
+Retain these active task branches:
 
 - `ref/evaluator-01` — qualified Evaluator implementation candidate, blocked by upstream fixture truth.
 - `fix/evaluator-required-fixture-matrix-20260829` — one-line upstream correction plus the known red invalidation probe.
-- `checkpoint/evaluator-review-fixture-blocker-handoff-20260829` — immutable resume checkpoint containing this handoff.
+- `checkpoint/evaluator-review-fixture-blocker-handoff-20260829` — final resume checkpoint containing this handoff.
 
-No branch should be deleted until its active PR/invalidation purpose is resolved. No merge was performed.
+One older recovery branch also exists: `checkpoint/evaluator-author-review-remediation-20260829@40e5bfe46ebbd12fb672297de8bf48608298b830`. It has no PR and contains recovery-only candidate snapshots with known defects from an earlier author-review stage. Those intended corrections are superseded by the qualified `ref/evaluator-01@f7501ec5...` implementation and this newer checkpoint. The available GitHub connector does not expose branch deletion, so this is bounded cleanup debt rather than active authority. When branch deletion is available, verify #160 still points to `f7501ec5...` or a reviewed descendant and this newer checkpoint still exists, then delete `checkpoint/evaluator-author-review-remediation-20260829`; do not resume from it.
+
+No merge was performed.
