@@ -57,6 +57,27 @@ LEGO is not:
 
 Inside a valid component, simple direct code is preferred.
 
+## Recursive composition and LEGO scale
+
+A LEGO is **encapsulated composition**, not necessarily an atomic leaf. A larger brick may be composed recursively from smaller internal bricks, and those children may themselves contain smaller bricks. The parent owns the externally visible semantic responsibility and contract; child bricks own narrower local invariants, state machines, lifecycles, resources, or substitution boundaries behind that parent contract.
+
+For example, an Evaluator may be one external owner while internally composing request-lifecycle, batch/workspace, cache, publication, and reuse bricks. That internal decomposition does not authorize Policy, Graph, Output, or another neighbor to deep-import those children. If outsiders must understand or wire private children directly, the parent has become a directory or namespace rather than a real LEGO boundary.
+
+Choose LEGO seams primarily by meaning, not size. Use this ordering when deciding whether something deserves a brick boundary:
+
+1. semantic/ontological ownership — one authoritative truth or invariant;
+2. lifecycle cohesion — creation, mutation, publication, failure, cancellation, and disposition that belong together;
+3. functional cohesion — operations that jointly maintain that owned truth;
+4. stable dependency/substitution boundary — a meaningful contract across independently changing responsibilities;
+5. failure/resource boundary — independently owned pressure, reservation, cleanup, recovery, or resource lifetime;
+6. cognitive/context size — a diagnostic that may reveal hidden responsibilities but does not create architecture by itself.
+
+File count, line count, method count, class count, or agent context size are not primary architectural criteria. Context pressure is evidence to investigate: if understanding one supposed brick requires holding several unrelated state machines, lifecycles, dependency sets, and failure domains simultaneously, the brick may hide real child LEGOs. If the responsibility is genuinely indivisible, keep the authority intact and split analysis or implementation support rather than inventing false public boundaries.
+
+A very large function follows the same rule. Split it when its regions own independently meaningful invariants, state transitions, resources, failure domains, or reasons to change. Do not split merely because it is long. One mechanically large algorithm with one coherent state machine may remain one semantic unit while using private pure helpers, explicit phases, tables, or a private state object for readability. Passing a giant shared `context` object through arbitrary helper functions is not LEGO decomposition; it usually preserves the original coupling under different names.
+
+Stop recursive decomposition when another split would protect no independent ownership, lifecycle, substitution, failure/resource boundary, testing value, or change boundary. LEGO architecture rejects both monoliths and abstraction confetti.
+
 ## Universal versus generic
 
 Universal means free of accidental caller assumptions. Generic means parameterized. A component may be universal while owning a specific domain invariant.
