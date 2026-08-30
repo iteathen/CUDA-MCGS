@@ -154,6 +154,7 @@ const sourcePaths = [
   'experiments/search-semantics-reference/src/evaluator-batch-cases.mjs',
   'experiments/search-semantics-reference/src/evaluator-cache-cases.mjs',
   'experiments/search-semantics-reference/src/evaluator-reuse-cleanup-cases.mjs',
+  'experiments/search-semantics-reference/src/evaluator-lifecycle-cases.mjs',
   'experiments/search-semantics-reference/src/evaluator-sensitivity-cases.mjs',
   'experiments/search-semantics-reference/src/evaluator-cases.mjs',
   'experiments/search-semantics-reference/run-evaluator.mjs',

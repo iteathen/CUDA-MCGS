@@ -11,15 +11,16 @@ const textId = (value, label) => {
   return value;
 };
 const terminal = (state) => ['ready', 'failed', 'cancelled', 'stale'].includes(state);
-const refKey = ({ slotId, requestId, incarnation, resultSlotId }) => `${slotId}\0${requestId}\0${incarnation}\0${resultSlotId}`;
-const requestKey = (slotId, requestId, incarnation) => `${slotId}\0${requestId}\0${incarnation}`;
+const tupleKey = (...values) => JSON.stringify(values);
+const refKey = ({ slotId, requestId, incarnation, resultSlotId }) => tupleKey(slotId, requestId, incarnation, resultSlotId);
+const requestKey = (slotId, requestId, incarnation) => tupleKey(slotId, requestId, incarnation);
 const sameCanonical = (left, right, label = 'Evaluator comparison') => canonicalBytes(left, `${label} left`).equals(canonicalBytes(right, `${label} right`));
 
 function absentOracle() {
   let removed = false;
   const reject = () => fail('EVALUATOR_REFERENCE_ABSENT', 'evaluator selection is absent');
   return Object.freeze({
-    selection: 'absent', admitRequest: reject, formBatch: reject, claimCacheEntry: reject, classifyReuse: reject,
+    selection: 'absent', admitRequest: reject, formBatch: reject, classifyReuse: reject,
     snapshot: () => ({ selection: removed ? 'removed' : 'absent', requests: 0, batches: 0, workspaces: 0, cacheEntries: 0, quarantine: null, evidenceValid: true }),
     cleanup: () => ({ kind: 'complete', selection: 'absent', runtimeResidue: 0, evidenceValid: true }),
     removeEvaluator: () => { removed = true; return { kind: 'removed', selection: 'absent', runtimeResidue: 0 }; },
@@ -34,10 +35,11 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
   const profileCapabilities = new Map(profile.capabilities.map((entry) => [entry.id, entry]));
   const profileInputs = new Map(profile.inputs.map((entry) => [entry.id, entry]));
   const reuseRules = new Map(profile.reuse.map((entry) => [entry.classId, entry]));
+  const cacheSelected = profile.cache.kind === 'selected';
   const maxActive = admission.maxActive === undefined ? dec(profile.request.maxActive) : dec(admission.maxActive);
-  const maxCache = profile.cache.kind === 'selected'
+  const maxCache = cacheSelected
     ? (admission.maxCacheEntries === undefined ? dec(profile.cache.maxEntries) : dec(admission.maxCacheEntries)) : 0n;
-  if (maxActive > dec(profile.request.maxActive) || (profile.cache.kind === 'selected' && maxCache > dec(profile.cache.maxEntries))) {
+  if (maxActive > dec(profile.request.maxActive) || (cacheSelected && maxCache > dec(profile.cache.maxEntries))) {
     fail('EVALUATOR_REFERENCE_ADMISSION', 'injected admission exceeds normalized profile bounds');
   }
 
@@ -45,9 +47,10 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
   const currentBySlot = new Map();
   const batches = new Map();
   const workspaces = new Map();
-  const cache = new Map();
-  const cacheBuckets = new Map();
+  const cache = cacheSelected ? new Map() : null;
+  const cacheBuckets = cacheSelected ? new Map() : null;
   const rerootOps = new Set();
+  const mutableUpdates = new Map();
   let quarantine = null;
   let reuseClassifications = 0n;
   let mutableGeneration = 0n;
@@ -55,8 +58,11 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
   let workspaceHighWaterBytes = 0n;
   let removed = false;
 
-  const available = () => {
+  const dispositionAvailable = () => {
     if (removed) fail('EVALUATOR_REFERENCE_REMOVED', 'evaluator was removed');
+  };
+  const available = () => {
+    dispositionAvailable();
     if (quarantine) fail('EVALUATOR_REFERENCE_QUARANTINED', `evaluator evidence is quarantined: ${quarantine.code}`);
   };
   const quarantineEvidence = (code, detail = null) => {
@@ -73,7 +79,18 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     const key = currentBySlot.get(slotId);
     return key === undefined ? null : requests.get(key) ?? null;
   };
-  const releaseInput = (request) => { request.inputLease = 'released'; };
+  const inputOwnedByLiveBatch = (request) => {
+    if (request.batchId === null) return false;
+    const batch = batches.get(request.batchId);
+    return Boolean(batch && ['formed', 'continuation', 'executed'].includes(batch.state));
+  };
+  const releaseInput = (request) => {
+    if (request.inputLease !== 'held') fail('EVALUATOR_REFERENCE_INPUT_LEASE_IMBALANCE', 'input lease is not held');
+    request.inputLease = 'released';
+  };
+  const releaseInputIfSafe = (request) => {
+    if (request.inputLease === 'held' && !inputOwnedByLiveBatch(request)) releaseInput(request);
+  };
   const capabilitySnapshot = (request) => [...request.capabilities].map(([id, value]) => ({
     id,
     state: value.state,
@@ -87,18 +104,27 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     request.waiters.clear();
   };
   const endRequest = (request, state, reason) => {
-    if (terminal(request.state)) return;
+    if (terminal(request.state)) return false;
     request.state = state; request.reason = reason; request.resultDisposition = state;
     for (const capability of request.capabilities.values()) if (capability.state === 'pending') capability.state = state;
     settleWaiters(request, state, reason);
-    const batch = request.batchId === null ? null : batches.get(request.batchId);
-    if (!batch || !['formed', 'continuation', 'executed'].includes(batch.state)) releaseInput(request);
+    releaseInputIfSafe(request);
+    return true;
   };
   const cacheIdentity = (facts) => {
-    if (profile.cache.kind !== 'selected') fail('EVALUATOR_REFERENCE_CACHE_ABSENT', 'profile selects no cache');
-    for (const fact of profile.cache.keyFacts) if (facts?.[fact] === undefined || facts[fact] === null) fail('EVALUATOR_REFERENCE_CACHE_KEY', `missing cache fact ${fact}`);
+    if (!cacheSelected) fail('EVALUATOR_REFERENCE_CACHE_ABSENT', 'profile selects no cache');
+    if (!facts || typeof facts !== 'object' || Array.isArray(facts)) fail('EVALUATOR_REFERENCE_CACHE_KEY', 'cache key must be an object');
+    for (const fact of profile.cache.keyFacts) if (facts[fact] === undefined || facts[fact] === null) fail('EVALUATOR_REFERENCE_CACHE_KEY', `missing cache fact ${fact}`);
     if (Object.keys(facts).length !== profile.cache.keyFacts.length) fail('EVALUATOR_REFERENCE_CACHE_KEY', 'cache key contains undeclared facts');
     return canonicalIdentity(facts, 'Evaluator cache key');
+  };
+  const unlinkCacheBucket = (entry) => {
+    if (!cacheSelected || !entry) return;
+    const bucket = cacheBuckets.get(entry.hash);
+    if (!bucket) return;
+    const next = bucket.filter((id) => id !== entry.id);
+    if (next.length === 0) cacheBuckets.delete(entry.hash);
+    else cacheBuckets.set(entry.hash, next);
   };
   const selectedCapabilityProfiles = (selected) => selected.map(({ capability: capabilityId }) => {
     const capability = profileCapabilities.get(capabilityId);
@@ -114,7 +140,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     });
     return { inputIds, inputs, facts: [...new Set(inputs.flatMap(({ keyFacts }) => keyFacts))] };
   };
-  const expectedBatchCompatibility = (selectedProfiles, inputKey) => {
+  const expectedBatchCompatibility = (selectedProfiles, inputKey, requestCacheKey) => {
     const { inputIds } = requiredInputFacts(selectedProfiles);
     const outputIds = [...new Set(selectedProfiles.flatMap(({ outputs }) => outputs))];
     return {
@@ -130,6 +156,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
       precisionExecution: inputKey['precision-execution'] ?? null,
       executionVariant: { equivalenceClass: profile.execution.equivalenceClass, determinism: profile.batching.determinism },
       batchSensitiveContext: profile.batching.semantics === 'batch-sensitive' ? (inputKey['batch-context'] ?? null) : null,
+      cacheKey: requestCacheKey,
       resourceClass: profile.workspaces.map(({ scope, ownership, maxBytes }) => ({ scope, ownership, maxBytes })),
     };
   };
@@ -164,23 +191,38 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     if (capabilities.size === 0) fail('EVALUATOR_REFERENCE_REQUEST_CAPABILITIES', 'request must select at least one capability');
     const selectedProfiles = selectedCapabilityProfiles(input.capabilities);
     const required = requiredInputFacts(selectedProfiles);
-    for (const fact of required.facts) if (input.inputKey?.[fact] === undefined || input.inputKey[fact] === null) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', `missing request input-key fact ${fact}`);
+    if (!input.inputKey || typeof input.inputKey !== 'object' || Array.isArray(input.inputKey)) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', 'request input key must be an object');
+    for (const fact of required.facts) if (input.inputKey[fact] === undefined || input.inputKey[fact] === null) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', `missing request input-key fact ${fact}`);
     if (Object.keys(input.inputKey).length !== required.facts.length) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', 'request input key contains undeclared facts');
     if (input.rootIndependent === true && required.facts.includes('root')) fail('EVALUATOR_REFERENCE_REUSE_KEY', 'root-dependent evaluator input cannot be declared root-independent');
     if (input.inputKey['capability-set'] !== undefined && !sameCanonical(input.inputKey['capability-set'], selectedProfiles.map(({ id }) => id), 'request capability-set key')) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', 'capability-set key disagrees with selected capabilities');
     if (input.inputKey['evaluator-profile'] !== undefined && input.inputKey['evaluator-profile'] !== profile.id) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', 'evaluator-profile key disagrees with selected profile');
     if (input.inputKey.purpose !== undefined && input.inputKey.purpose !== purpose) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', 'purpose key disagrees with request purpose');
     if (input.inputKey.root !== undefined && !sameCanonical(input.inputKey.root, { epoch: input.rootEpoch }, 'request root key')) fail('EVALUATOR_REFERENCE_REQUEST_INPUT_KEY', 'root key disagrees with request root epoch');
-    const expectedCompatibility = expectedBatchCompatibility(selectedProfiles, input.inputKey);
+
+    let requestCacheKey = null;
+    let cacheKeyIdentity = null;
+    if (cacheSelected) {
+      cacheKeyIdentity = cacheIdentity(input.cacheKey);
+      for (const fact of required.facts) {
+        if (!profile.cache.keyFacts.includes(fact) || !sameCanonical(input.cacheKey[fact], input.inputKey[fact], `request cache/input fact ${fact}`)) {
+          fail('EVALUATOR_REFERENCE_REQUEST_CACHE_KEY', `cache key disagrees with request input fact ${fact}`);
+        }
+      }
+      requestCacheKey = freeze(input.cacheKey, 'Evaluator request cache key');
+    } else if (input.cacheKey !== null && input.cacheKey !== undefined) {
+      fail('EVALUATOR_REFERENCE_CACHE_ABSENT', 'cache-free profile cannot bind a cache key');
+    }
+
+    const expectedCompatibility = expectedBatchCompatibility(selectedProfiles, input.inputKey, requestCacheKey);
     if (!sameCanonical(input.compatibilityKey, expectedCompatibility, 'batch compatibility declaration')) fail('EVALUATOR_REFERENCE_BATCH_COMPATIBILITY_KEY', 'request batch compatibility key omits or changes required compatibility facts');
-    const expectedCoalescing = { inputKey: input.inputKey, purpose, rootEpoch: input.rootEpoch, workEpoch: input.workEpoch, capabilities: input.capabilities };
+    const expectedCoalescing = { inputKey: input.inputKey, cacheKey: requestCacheKey, purpose, rootEpoch: input.rootEpoch, workEpoch: input.workEpoch, capabilities: input.capabilities };
     if (!sameCanonical(input.coalescingKey, expectedCoalescing, 'request coalescing declaration')) fail('EVALUATOR_REFERENCE_COALESCE', 'request coalescing key omits validity-affecting request facts');
 
     const request = {
       key, slotId, id: requestId, requesterId, resultSlotId, inputLeaseId, profileId: profile.id,
       incarnation, incarnationText: input.incarnation, purpose, rootEpoch, workEpoch, rootIndependent: input.rootIndependent === true,
-      admissionReservation: freeze(input.admission), inputKey: freeze(input.inputKey),
-      cacheKeyIdentity: profile.cache.kind === 'selected' ? cacheIdentity(input.inputKey) : null,
+      admissionReservation: freeze(input.admission), inputKey: freeze(input.inputKey), cacheKey: requestCacheKey, cacheKeyIdentity,
       graphReference: freeze(input.graphReference), compatibilityKey: freeze(input.compatibilityKey), coalescingKey: freeze(input.coalescingKey),
       state: 'queued', reason: null, batchId: null, waiters: new Set(), waiterOutcomes: new Map(), inputLease: 'held', resultDisposition: 'claimed', capabilities,
     };
@@ -205,7 +247,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     request.waiters.add(waiterId); return { kind: 'attached', waiterId };
   }
   function cancelWaiter(input) {
-    available(); const request = find(input); const waiterId = textId(input.waiterId, 'waiterId');
+    dispositionAvailable(); const request = find(input); const waiterId = textId(input.waiterId, 'waiterId');
     if (!request.waiters.delete(waiterId)) fail('EVALUATOR_REFERENCE_WAITER', 'unknown waiter');
     request.waiterOutcomes.set(waiterId, freeze({ state: 'cancelled', reason: 'waiter-cancelled', capabilities: capabilitySnapshot(request) }, 'Evaluator waiter cancellation'));
     return { kind: 'cancelled', remainingWaiters: request.waiters.size };
@@ -219,15 +261,27 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
         profileId: request.profileId, purpose: request.purpose, requesterId: request.requesterId, resultSlotId: request.resultSlotId,
         inputLeaseId: request.inputLeaseId, rootEpoch: request.rootEpoch.toString(), workEpoch: request.workEpoch.toString(),
         admissionReservation: canonicalClone(request.admissionReservation), graphReference: canonicalClone(request.graphReference),
-        inputKey: canonicalClone(request.inputKey), compatibilityKey: canonicalClone(request.compatibilityKey), coalescingKey: canonicalClone(request.coalescingKey),
+        inputKey: canonicalClone(request.inputKey), cacheKey: canonicalClone(request.cacheKey),
+        compatibilityKey: canonicalClone(request.compatibilityKey), coalescingKey: canonicalClone(request.coalescingKey),
       },
       capabilities: capabilitySnapshot(request),
       waiters: request.waiters.size,
       waiterOutcomes: [...request.waiterOutcomes].map(([waiterId, outcome]) => ({ waiterId, ...canonicalClone(outcome) })),
     };
   }
-  function cancelRequest(input) { available(); const request = find(input); if (request.state === 'ready') return { kind: 'already-ready', requestId: request.id, incarnation: request.incarnationText }; endRequest(request, 'cancelled', input.reason); return { kind: 'cancelled', requestId: request.id, incarnation: request.incarnationText }; }
-  function failRequest(input) { available(); const request = find(input); endRequest(request, 'failed', input.code); return { kind: 'failed', requestId: request.id, incarnation: request.incarnationText }; }
+  const alreadyTerminal = (request) => ({ kind: `already-${request.state}`, requestId: request.id, incarnation: request.incarnationText });
+  function cancelRequest(input) {
+    dispositionAvailable(); const request = find(input);
+    if (terminal(request.state)) return alreadyTerminal(request);
+    endRequest(request, 'cancelled', input.reason);
+    return { kind: 'cancelled', requestId: request.id, incarnation: request.incarnationText };
+  }
+  function failRequest(input) {
+    dispositionAvailable(); const request = find(input);
+    if (terminal(request.state)) return alreadyTerminal(request);
+    endRequest(request, 'failed', input.code);
+    return { kind: 'failed', requestId: request.id, incarnation: request.incarnationText };
+  }
 
   const workspaceRule = (scope) => profile.workspaces.find((entry) => entry.scope === scope) ?? null;
   function acquireWorkspace(scope, fact, owner) {
@@ -369,7 +423,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     for (const ref of batch.refs) { const request = find(ref); if (terminal(request.state) && request.inputLease === 'held') releaseInput(request); }
   }
   function failBatch(input) {
-    available(); const batch = batches.get(input.batchId); if (!batch || batch.state === 'terminal') fail('EVALUATOR_REFERENCE_BATCH', 'batch cannot fail');
+    dispositionAvailable(); const batch = batches.get(input.batchId); if (!batch || batch.state === 'terminal') fail('EVALUATOR_REFERENCE_BATCH', 'batch cannot fail');
     const affectedKeys = input.affectedItemRefs.map(refKey);
     const affected = new Set(affectedKeys);
     if (affected.size === 0 || affected.size !== affectedKeys.length || [...affected].some((key) => !batch.refSet.has(key))) fail('EVALUATOR_REFERENCE_BATCH_FAIL', 'affected failure items must be unique members of the batch');
@@ -399,7 +453,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     if (complete && othersTerminal) {
       request.state = 'ready'; request.resultDisposition = 'ready';
       settleWaiters(request, 'ready', null);
-      releaseInput(request);
+      releaseInputIfSafe(request);
     }
   }
   function scatterBatch(input) {
@@ -421,17 +475,18 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
   function publishCapability(input) { available(); const request = find(input); if (terminal(request.state)) fail('EVALUATOR_REFERENCE_PUBLICATION_TERMINAL', 'request is terminal'); publishInto(request, input, input.source); finalize(request); return { kind: request.state, capabilityId: input.capabilityId }; }
 
   function claimCacheEntry(input) {
-    available(); if (profile.cache.kind !== 'selected') fail('EVALUATOR_REFERENCE_CACHE_ABSENT', 'profile selects no cache');
+    available();
     if (BigInt([...cache.values()].filter((entry) => entry.state !== 'retired').length) >= maxCache) return { kind: 'pressure', code: profile.cache.pressureStatus };
     const previous = cache.get(input.entryId); const generation = dec(input.generation);
     if (previous && (previous.state !== 'retired' || generation <= previous.generation)) fail('EVALUATOR_REFERENCE_CACHE_GENERATION', 'cache generation must advance after retirement');
+    if (previous) unlinkCacheBucket(previous);
     const keyIdentity = cacheIdentity(input.keyFacts);
     const entry = { id: input.entryId, generation, generationText: input.generation, hash: input.hash, keyFacts: freeze(input.keyFacts), keyIdentity, state: 'claimed', results: null, protected: false, waiters: new Set() };
     cache.set(entry.id, entry); const bucket = cacheBuckets.get(entry.hash) ?? []; if (!bucket.includes(entry.id)) bucket.push(entry.id); cacheBuckets.set(entry.hash, bucket);
     return { kind: 'claimed', entryId: entry.id, keyIdentity };
   }
   function attachCacheWaiter(input) {
-    available(); if (profile.cache.kind !== 'selected') fail('EVALUATOR_REFERENCE_CACHE_ABSENT', 'profile selects no cache');
+    available();
     const entry = cache.get(input.entryId);
     if (!entry || entry.state !== 'claimed' || entry.generationText !== input.generation || !sameCanonical(entry.keyFacts, input.keyFacts, 'cache waiter key')) fail('EVALUATOR_REFERENCE_CACHE_WAITER', 'cache waiter target is not the exact claimed entry');
     if (entry.waiters.has(input.waiterId)) fail('EVALUATOR_REFERENCE_CACHE_WAITER', 'duplicate cache waiter');
@@ -439,7 +494,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     entry.waiters.add(input.waiterId); return { kind: 'attached', waiterId: input.waiterId, entryId: entry.id };
   }
   function cancelCacheWaiter(input) {
-    available(); const entry = cache.get(input.entryId);
+    dispositionAvailable(); const entry = cache.get(input.entryId);
     if (!entry || entry.generationText !== input.generation || !entry.waiters.delete(input.waiterId)) fail('EVALUATOR_REFERENCE_CACHE_WAITER', 'unknown cache waiter');
     return { kind: 'cancelled', remainingWaiters: entry.waiters.size };
   }
@@ -453,7 +508,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     return { kind: 'ready', entryId: entry.id, waitersReleased };
   }
   function failCacheEntry(input) {
-    available(); const entry = cache.get(input.entryId); if (!entry || entry.state !== 'claimed' || entry.generationText !== input.generation) fail('EVALUATOR_REFERENCE_CACHE', 'cache generation is not claimed');
+    dispositionAvailable(); const entry = cache.get(input.entryId); if (!entry || entry.state !== 'claimed' || entry.generationText !== input.generation) fail('EVALUATOR_REFERENCE_CACHE', 'cache generation is not claimed');
     const waitersReleased = entry.waiters.size; entry.waiters.clear(); entry.state = 'failed'; return { kind: 'failed', entryId: entry.id, waitersReleased };
   }
   function lookupCache(input) {
@@ -465,16 +520,20 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     }
     return { kind: 'miss', code: 'evaluator-cache-miss', keyIdentity: identity };
   }
-  function protectCacheEntry(input) { available(); const entry = cache.get(input.entryId); if (!entry || entry.state === 'retired') fail('EVALUATOR_REFERENCE_CACHE', 'cache entry is absent'); entry.protected = input.protected === true; return { kind: 'updated', protected: entry.protected }; }
+  function protectCacheEntry(input) {
+    dispositionAvailable();
+    if (quarantine && input.protected === true) fail('EVALUATOR_REFERENCE_QUARANTINED', 'quarantined evaluator cannot acquire new cache protection');
+    const entry = cache.get(input.entryId); if (!entry || entry.state === 'retired') fail('EVALUATOR_REFERENCE_CACHE', 'cache entry is absent'); entry.protected = input.protected === true; return { kind: 'updated', protected: entry.protected };
+  }
   function retireCacheEntry(input) {
-    available(); const entry = cache.get(input.entryId); if (!entry || entry.state === 'retired') fail('EVALUATOR_REFERENCE_CACHE', 'cache entry is absent');
+    dispositionAvailable(); const entry = cache.get(input.entryId); if (!entry || entry.state === 'retired') fail('EVALUATOR_REFERENCE_CACHE', 'cache entry is absent');
     if (entry.protected) { if (entry.state === 'ready') entry.state = 'retiring'; return { kind: 'pending', code: 'cache-entry-protected' }; }
-    entry.waiters.clear(); entry.state = 'retired'; return { kind: 'retired', entryId: entry.id };
+    entry.waiters.clear(); entry.state = 'retired'; unlinkCacheBucket(entry); return { kind: 'retired', entryId: entry.id };
   }
   function invalidateCacheFact(input) {
     available(); if (!profile.cache.keyFacts.includes(input.fact)) fail('EVALUATOR_REFERENCE_CACHE_KEY', 'fact is not part of cache identity'); let retired = 0;
     for (const entry of cache.values()) if (entry.state !== 'retired' && !sameCanonical(entry.keyFacts[input.fact], input.nextValue, 'cache invalidation fact')) {
-      if (entry.protected) entry.state = 'retiring'; else { entry.waiters.clear(); entry.state = 'retired'; retired += 1; }
+      if (entry.protected) entry.state = 'retiring'; else { entry.waiters.clear(); entry.state = 'retired'; unlinkCacheBucket(entry); retired += 1; }
     }
     return { kind: 'invalidated', retired };
   }
@@ -482,7 +541,7 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     available(); const request = find(input); const active = current(input.slotId); const entry = cache.get(input.entryId);
     if (terminal(request.state) || active !== request) fail('EVALUATOR_REFERENCE_CACHE_STALE', 'cache completion target is stale');
     if (!entry || entry.state !== 'ready') fail('EVALUATOR_REFERENCE_CACHE', 'cache entry is not ready');
-    if (!sameCanonical(entry.keyFacts, request.inputKey, 'cache completion key')) {
+    if (!sameCanonical(entry.keyFacts, request.cacheKey, 'cache completion key')) {
       quarantineEvidence('cache-key-inconsistency', { requestId: request.id, entryId: input.entryId });
       endRequest(request, 'failed', 'cache-key-inconsistency');
       fail('EVALUATOR_REFERENCE_CACHE_KEY_QUARANTINE', 'cache completion key disagrees with the admitted request');
@@ -505,7 +564,11 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     if (rerootOps.has(operationId)) fail('EVALUATOR_REFERENCE_REUSE_ACTION', 'duplicate reroot operation');
     const classification = classifyReuse(input); if (classification.action !== input.action) fail('EVALUATOR_REFERENCE_REUSE_ACTION', 'reroot action disagrees with classification');
     if (input.action === 'invalidate' && input.classId === 'evaluator.request') for (const request of requests.values()) if (!terminal(request.state)) endRequest(request, 'stale', 'reroot-invalidate');
-    if (input.action === 'invalidate' && input.classId === 'evaluator.cache') for (const entry of cache.values()) if (entry.state !== 'retired') { entry.waiters.clear(); entry.state = entry.protected ? 'retiring' : 'retired'; }
+    if (input.action === 'invalidate' && input.classId === 'evaluator.cache') for (const entry of cache.values()) if (entry.state !== 'retired') {
+      entry.waiters.clear();
+      if (entry.protected) entry.state = 'retiring';
+      else { entry.state = 'retired'; unlinkCacheBucket(entry); }
+    }
     rerootOps.add(operationId); return { kind: 'terminal', operationId, action: input.action };
   }
   function applyAdvanceFacts(input) {
@@ -519,10 +582,38 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     return { kind: 'applied', newRootEpoch: input.newRootEpoch, retained, reuseClassifications: reuseClassifications.toString() };
   }
   function commitMutableState(input) {
-    available(); if (profile.mutableState.kind !== 'selected') fail('EVALUATOR_REFERENCE_MUTABLE_STATE', 'profile has no mutable state'); const batch = batches.get(input.batchId); if (!batch || !['continuation','executed'].includes(batch.state)) fail('EVALUATOR_REFERENCE_MUTABLE_STATE', 'mutable update needs active batch');
-    textId(input.updateIdentity, 'mutable updateIdentity');
-    if (input.certain !== true) { quarantineEvidence('uncertain-mutable-state-update', { batchId: input.batchId }); for (const ref of batch.refs) if (!terminal(find(ref).state)) endRequest(find(ref), 'failed', 'uncertain-mutable-state-update'); finishBatch(batch); fail('EVALUATOR_REFERENCE_MUTABLE_STATE_QUARANTINE', 'uncertain mutable update quarantined evidence'); }
-    const expected = dec(input.expectedGeneration), next = dec(input.nextGeneration); if (expected !== mutableGeneration || next <= expected) fail('EVALUATOR_REFERENCE_MUTABLE_STATE_ORDER', 'mutable generation must advance monotonically from the current generation'); mutableGeneration = next; return { kind: 'committed', generation: input.nextGeneration, updateIdentity: input.updateIdentity };
+    available();
+    if (profile.mutableState.kind !== 'selected') fail('EVALUATOR_REFERENCE_MUTABLE_STATE', 'profile has no mutable state');
+    const updateIdentity = textId(input.updateIdentity, 'mutable updateIdentity');
+    const operation = freeze({ batchId: input.batchId, certain: input.certain, expectedGeneration: input.expectedGeneration, nextGeneration: input.nextGeneration }, 'Evaluator mutable-state operation');
+    const prior = mutableUpdates.get(updateIdentity);
+    if (prior) {
+      if (!sameCanonical(prior.operation, operation, 'mutable-state retry')) fail('EVALUATOR_REFERENCE_MUTABLE_STATE_RETRY', 'updateIdentity was reused for a different mutable-state operation');
+      return canonicalClone(prior.output);
+    }
+    const batch = batches.get(input.batchId);
+    if (!batch || !['continuation','executed'].includes(batch.state)) fail('EVALUATOR_REFERENCE_MUTABLE_STATE', 'mutable update needs active batch');
+    const stale = batch.refs.some((ref) => {
+      const request = find(ref);
+      return terminal(request.state) || current(ref.slotId) !== request || request.resultSlotId !== ref.resultSlotId;
+    });
+    if (stale) {
+      for (const ref of batch.refs) { const request = find(ref); if (!terminal(request.state)) endRequest(request, 'stale', 'mutable-state-stale-work'); }
+      finishBatch(batch);
+      fail('EVALUATOR_REFERENCE_MUTABLE_STATE_STALE', 'stale or cancelled batch cannot mutate evaluator state');
+    }
+    if (input.certain !== true) {
+      quarantineEvidence('uncertain-mutable-state-update', { batchId: input.batchId });
+      for (const ref of batch.refs) if (!terminal(find(ref).state)) endRequest(find(ref), 'failed', 'uncertain-mutable-state-update');
+      finishBatch(batch);
+      fail('EVALUATOR_REFERENCE_MUTABLE_STATE_QUARANTINE', 'uncertain mutable update quarantined evidence');
+    }
+    const expected = dec(input.expectedGeneration), next = dec(input.nextGeneration);
+    if (expected !== mutableGeneration || next <= expected) fail('EVALUATOR_REFERENCE_MUTABLE_STATE_ORDER', 'mutable generation must advance monotonically from the current generation');
+    mutableGeneration = next;
+    const output = freeze({ kind: 'committed', generation: input.nextGeneration, updateIdentity }, 'Evaluator mutable-state result');
+    mutableUpdates.set(updateIdentity, { operation, output });
+    return canonicalClone(output);
   }
 
   function assertAccounting() {
@@ -536,19 +627,27 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
       activeWorkspaces: [...workspaces.values()].filter((w) => w.state === 'acquired').length,
       activeWorkspaceBytes: activeWorkspaceBytes.toString(), workspaceHighWaterBytes: workspaceHighWaterBytes.toString(),
       liveBatches: [...batches.values()].filter((b) => b.state !== 'terminal').length,
-      cacheEntries: [...cache.values()].filter((e) => e.state !== 'retired').length,
-      cacheWaiters: [...cache.values()].reduce((sum, entry) => sum + entry.waiters.size, 0),
+      cacheEntries: cacheSelected ? [...cache.values()].filter((e) => e.state !== 'retired').length : 0,
+      cacheWaiters: cacheSelected ? [...cache.values()].reduce((sum, entry) => sum + entry.waiters.size, 0) : 0,
     };
   }
   function snapshot() { return { selection: removed ? 'removed' : profile.id, quarantine: quarantine ? canonicalClone(quarantine) : null, evidenceValid: quarantine === null, reuseClassifications: reuseClassifications.toString(), mutableStateGeneration: mutableGeneration.toString(), accounting: assertAccounting(), currentSlots: [...currentBySlot].map(([slotId, request]) => ({ slotId, request })) }; }
   function cleanup() {
-    const state = assertAccounting(); const protectedCache = [...cache.values()].filter((e) => e.state !== 'retired' && e.protected).length;
+    if (quarantine) for (const request of requests.values()) if (!terminal(request.state)) endRequest(request, 'failed', `quarantine:${quarantine.code}`);
+    for (const batch of batches.values()) {
+      if (batch.state === 'terminal') continue;
+      if (quarantine || batch.refs.every((ref) => terminal(find(ref).state))) finishBatch(batch);
+    }
+    const state = assertAccounting();
+    const protectedCache = cacheSelected ? [...cache.values()].filter((e) => e.state !== 'retired' && e.protected).length : 0;
     if (state.live || state.liveBatches || state.activeWorkspaces || protectedCache) return { kind: 'pending', pendingRequests: state.live, liveBatches: state.liveBatches, activeWorkspaces: state.activeWorkspaces, protectedCache, evidenceValid: quarantine === null };
-    for (const request of requests.values()) { releaseInput(request); request.resultDisposition = 'released'; request.waiters.clear(); request.waiterOutcomes.clear(); }
-    for (const entry of cache.values()) { entry.waiters.clear(); entry.state = 'retired'; }
+    for (const request of requests.values()) { if (request.inputLease === 'held') releaseInput(request); request.resultDisposition = 'released'; request.waiters.clear(); request.waiterOutcomes.clear(); }
+    if (cacheSelected) for (const entry of cache.values()) { entry.waiters.clear(); entry.state = 'retired'; }
     for (const lease of workspaces.values()) { if (lease.state === 'acquired') releaseWorkspace(lease.id); else lease.state = 'released'; }
     const dispositions = profile.cleanup.classes.map((classId) => ({ classId, disposition: 'released' }));
-    requests.clear(); currentBySlot.clear(); batches.clear(); workspaces.clear(); cache.clear(); cacheBuckets.clear(); rerootOps.clear();
+    requests.clear(); currentBySlot.clear(); batches.clear(); workspaces.clear();
+    if (cacheSelected) { cache.clear(); cacheBuckets.clear(); }
+    rerootOps.clear(); mutableUpdates.clear();
     return { kind: quarantine ? 'quarantined' : 'complete', evidenceValid: quarantine === null, quarantine: quarantine ? canonicalClone(quarantine) : null, dispositions, runtimeResidue: 0 };
   }
   function removeEvaluator(input = { retainEvidence: false }) {
@@ -563,12 +662,15 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     return { ...result, kind: 'capability-removed', capabilityId: input.capabilityId };
   }
 
-  return Object.freeze({
+  const oracle = {
     selection: profile.id, profile,
     admitRequest, attachWaiter, cancelWaiter, observeRequest, cancelRequest, failRequest,
     formBatch, executeBatch, resumeBatch, failBatch, scatterBatch, publishCapability,
-    claimCacheEntry, attachCacheWaiter, cancelCacheWaiter, publishCacheEntry, failCacheEntry, lookupCache, protectCacheEntry, retireCacheEntry, invalidateCacheFact, completeFromCache,
     classifyReuse, applyRerootAction, applyAdvanceFacts, commitMutableState,
     assertAccounting, snapshot, cleanup, removeEvaluator, removeCapability,
+  };
+  if (cacheSelected) Object.assign(oracle, {
+    claimCacheEntry, attachCacheWaiter, cancelCacheWaiter, publishCacheEntry, failCacheEntry, lookupCache, protectCacheEntry, retireCacheEntry, invalidateCacheFact, completeFromCache,
   });
+  return Object.freeze(oracle);
 }
