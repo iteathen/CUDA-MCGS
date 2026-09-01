@@ -227,7 +227,8 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
       return { kind: 'claimed', claimId, workId: item.workId, incarnation: item.incarnationText, cooperative: true };
     }
     if (item.state !== 'ready') fail('PROGRESS_REFERENCE_CLAIM', 'work is not ready');
-    if (starvationEvidence && mutations.skipFairness !== true) fail('PROGRESS_REFERENCE_STARVATION', 'selected fairness contract was violated before claim');
+    const mandatoryService = profile.stop.mustDrainKinds.includes(cls.kind);
+    if (starvationEvidence && mutations.skipFairness !== true && !mandatoryService) fail('PROGRESS_REFERENCE_STARVATION', 'selected fairness contract was violated before ordinary claim');
     if (cls.batch.kind === 'device-flush') {
       const readyItems = dec(input.batchReadyItems ?? '1', 'batch ready items');
       if (readyItems < dec(cls.batch.minimumItems) || readyItems > dec(cls.batch.maximumItems)) fail('PROGRESS_REFERENCE_BATCH', 'batch ready count is outside normalized bounds');
@@ -286,7 +287,19 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
   function failWork(input) {
     const item = find(input);
     if (terminal(item.state)) return { kind: `already-${item.state}`, workId: item.workId };
-    transitionTerminal(item, 'failed', text(input.code, 'owner failure code'), input.ownerFailure ?? { code: input.code });
+    const ownerFailureCode = text(input.code, 'owner failure code');
+    const ownerFailure = input.ownerFailure ?? { code: input.code };
+    if (item.irreversibleResultVisible) {
+      transitionTerminal(item, 'quarantined', ownerFailureCode, ownerFailure);
+      requestStop({ cause: 'progress-internal-failure' });
+      return {
+        kind: 'quarantined',
+        code: 'progress-internal-failure',
+        workId: item.workId,
+        ownerFailure: canonicalClone(item.ownerFailure),
+      };
+    }
+    transitionTerminal(item, 'failed', ownerFailureCode, ownerFailure);
     return { kind: 'failed', workId: item.workId, ownerFailure: canonicalClone(item.ownerFailure) };
   }
 
@@ -382,7 +395,7 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
   }
 
   function publishClosure(input) {
-    if (!['stop-requested', 'draining'].includes(lifecycle)) fail('PROGRESS_REFERENCE_CLOSURE', 'closure requires stop/drain lifecycle');
+    if (lifecycle !== 'draining') fail('PROGRESS_REFERENCE_CLOSURE', 'closure requires draining lifecycle');
     if (mutations.skipClosureCheck !== true) {
       const live = [...work.values()].filter((item) => !terminal(item.state));
       if (live.length !== 0) fail('PROGRESS_REFERENCE_CLOSURE_WORK', 'closure cannot publish with live work');
