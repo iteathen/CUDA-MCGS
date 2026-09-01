@@ -1,0 +1,33 @@
+name: temporary ready PR 162
+
+on:
+  push:
+    branches:
+      - fix/evaluator-required-fixture-matrix-20260829
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  ready-and-self-clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/evaluator-required-fixture-matrix-20260829
+          fetch-depth: 0
+      - name: Mark PR ready through GitHub CLI
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr ready 162 --repo iteathen/CUDA-MCGS
+      - name: Self-clean transport workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/temp-ready-pr-162.yml
+          git diff --check
+          git config user.name 'iteathen'
+          git config user.email 'josh.oshiro@gmail.com'
+          git commit -m 'chore: remove temporary PR-ready workflow'
+          git push origin HEAD:fix/evaluator-required-fixture-matrix-20260829
