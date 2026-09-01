@@ -4,68 +4,20 @@ on:
   pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   progress-stop-disposition-authority-probe:
-    name: Progress projection authority rebind construction
+    name: Progress stop disposition authority repair probe
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: fix/36-progress-stop-disposition-authority
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Rebind Domain Graph Policy projection authorities
-        shell: bash
-        run: |
-          node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          import path from 'node:path';
-
-          const root = 'experiments/search-semantics-reference/fixtures';
-          const replacements = new Map([
-            ['2969026db4ff676c105379c86ccf49efdaae79237e598d0d3b88c03cb7c65d40', '9f7b13d6f0d4deb503fa6382ae05ee2e906a2837d3a036e39e9a8ce6369ec0a2'],
-            ['df32692fbb7220586a4a050858abd19bdf74f86a63705a8f5b8b33994814e6d6', 'e1cd400a8f23f67ca823cace5bd3a19f26fa58f7b1e63cb3617269744e7ea9b0'],
-            ['685b1c21acf378ce781c0345c15dc32143063c85861836bb213ad87a58bd0da4', '4fa39b14bcdfd89c30f3de80822a1be2b5402c0c163b575fca080834cb5af0e2'],
-          ]);
-          const expected = new Map([
-            ['domain-cases.json', 1],
-            ['graph-advance-occurrence-cases.json', 1],
-            ['graph-cleanup-cases.json', 1],
-            ['graph-edge-cases.json', 1],
-            ['graph-node-cases.json', 1],
-            ['graph-path-cases.json', 1],
-            ['graph-reclaim-cases.json', 1],
-            ['graph-ref-cases.json', 1],
-            ['graph-root-cases.json', 1],
-            ['policy-cases.json', 1],
-          ]);
-          const actual = new Map();
-          for (const name of fs.readdirSync(root).sort()) {
-            const full = path.join(root, name);
-            if (!fs.statSync(full).isFile()) continue;
-            const text = fs.readFileSync(full, 'utf8');
-            let count = 0;
-            for (const before of replacements.keys()) count += text.split(before).length - 1;
-            if (count > 0) actual.set(name, count);
-          }
-          if (JSON.stringify([...actual]) !== JSON.stringify([...expected])) {
-            throw new Error(`stale projection occurrence set drifted: ${JSON.stringify([...actual])}`);
-          }
-          for (const [name] of actual) {
-            const full = path.join(root, name);
-            let text = fs.readFileSync(full, 'utf8');
-            for (const [before, after] of replacements) text = text.split(before).join(after);
-            fs.writeFileSync(full, text);
-          }
-          console.log(`projection_authority_rebind files=${actual.size} occurrences=${[...actual.values()].reduce((sum, count) => sum + count, 0)}`);
-          NODE
-          git diff --check
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add experiments/search-semantics-reference/fixtures
-          git diff --cached --quiet && { echo 'expected projection authority rebind diff is empty' >&2; exit 1; }
-          git commit -m "test(search-semantics): rebind projection authorities"
-          git push origin HEAD:fix/36-progress-stop-disposition-authority
+      - name: Run legacy 881-case Composer directly
+        run: node experiments/search-ir-composer-reference/run.mjs
+      - name: Verify stop-disposition normalizer authority
+        run: node experiments/search-ir-composer-reference/verify-progress-stop-disposition-authority.mjs
+      - name: Verify production Composer wrapper
+        run: node scripts/run-search-ir-composer-reference.mjs
