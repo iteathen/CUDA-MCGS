@@ -1,4 +1,4 @@
-import { canonicalClone, frozenCanonicalClone } from './canonical.mjs';
+import { canonicalBytes, canonicalClone, frozenCanonicalClone } from './canonical.mjs';
 import { fail } from './errors.mjs';
 
 const freeze = (value, label = 'Resource value') => frozenCanonicalClone(value, label);
@@ -9,6 +9,13 @@ const dec = (value, label = 'decimal') => {
 const text = (value, label) => {
   if (typeof value !== 'string' || value.length === 0) fail('RESOURCE_REFERENCE_ID', `${label} must be a non-empty string`);
   return value;
+};
+const epochKeys = ['engine', 'session', 'root', 'work'];
+const normalizeEpochs = (input) => {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) fail('RESOURCE_REFERENCE_EPOCHS', 'lease epochs must be an object');
+  const keys = Object.keys(input).sort();
+  if (keys.length !== epochKeys.length || epochKeys.some((key) => !keys.includes(key))) fail('RESOURCE_REFERENCE_EPOCHS', 'lease epochs must contain exactly engine/session/root/work');
+  return freeze(Object.fromEntries(epochKeys.map((key) => [key, dec(input[key], `${key} epoch`).toString()])), 'Resource lease epochs');
 };
 const leaseKey = ({ leaseId, generation }) => JSON.stringify([leaseId, generation]);
 const liveStates = new Set(['claimed', 'published', 'retired-unreclaimed', 'quarantined']);
@@ -75,11 +82,11 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
   const findLease = (reference) => {
     const lease = leases.get(leaseKey(reference));
     if (!lease) fail('RESOURCE_REFERENCE_LEASE', `unknown lease ${reference.leaseId}/${reference.generation}`);
+    const referenceEpochs = normalizeEpochs(reference.epochs);
     if (
       reference.classId !== lease.classId
       || reference.owner !== lease.owner
-      || reference.epochs === undefined
-      || JSON.stringify(reference.epochs) !== JSON.stringify(lease.epochs)
+      || !canonicalBytes(referenceEpochs, 'lease reference epochs').equals(canonicalBytes(lease.epochs, 'authoritative lease epochs'))
     ) fail('RESOURCE_REFERENCE_LEASE_IDENTITY', 'lease reference does not match its authoritative class, owner, and epochs');
     return lease;
   };
@@ -180,6 +187,7 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
     if (quantity <= 0n) fail('RESOURCE_REFERENCE_QUANTITY', 'reservation quantity must be positive');
     const leaseId = text(input.leaseId, 'leaseId');
     const generation = dec(input.generation, 'lease generation');
+    const epochs = normalizeEpochs(input.epochs);
     if (generation > dec(entry.range.generationMaximum)) return { failure: countFailure ? failAdmission(entry, quantity, 'generation-space') : { cause: 'generation-space' } };
     const previous = latestGeneration.get(leaseId);
     if (previous !== undefined && generation <= previous) fail('RESOURCE_REFERENCE_GENERATION', 'lease generation must advance for a reused lease id');
@@ -199,7 +207,7 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
     const free = dec(accounting(entry.id).available);
     const available = reserve === null ? free - protectedOrdinaryUnits(entry.id) : free;
     if (quantity > available) return { failure: countFailure ? failAdmission(entry, quantity, 'capacity') : { cause: 'capacity' } };
-    return { entry, quantity, leaseId, generation, owner, reserve };
+    return { entry, quantity, leaseId, generation, owner, reserve, epochs };
   }
 
   function commitReservation(plan, input) {
@@ -214,7 +222,7 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
       owner: plan.owner,
       reserveId: plan.reserve?.id ?? null,
       transition: input.transition ?? null,
-      epochs: freeze(input.epochs ?? { engine: '0', session: '0', root: '0', work: '0' }, 'Resource lease epochs'),
+      epochs: plan.epochs,
       state: 'claimed',
       terminalReason: null,
     };
