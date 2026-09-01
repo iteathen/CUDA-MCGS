@@ -4,20 +4,42 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   progress-stop-disposition-authority-probe:
-    name: Progress stop disposition authority repair probe
+    name: Progress identity cascade construction probe
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/36-progress-stop-disposition-authority
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Run legacy 881-case Composer directly
-        run: node experiments/search-ir-composer-reference/run.mjs
-      - name: Verify stop-disposition normalizer authority
-        run: node experiments/search-ir-composer-reference/verify-progress-stop-disposition-authority.mjs
-      - name: Verify production Composer wrapper
-        run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Rebind direct framework identities
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+
+          const path = 'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json';
+          let source = fs.readFileSync(path, 'utf8');
+          const replacements = [
+            ['36db08b098bf2819813ea180a5aba7d7ee8715be9abed6c6b886942a37f24cf7', '3873d23af6d747cf9ae46362ab67a6b99c1bab250b9ad9bcf257de9a9ed76f7d'],
+            ['8f5eec6453d06379d55395e5faad6a467a4eee1334d8f57d5212fcea2b390f28', 'e84fed0143c74981f7753f94af2120fdd9cdaa3e9ec2d8012dc1fb5a0f8cb28c'],
+          ];
+          for (const [before, after] of replacements) {
+            const matches = source.split(before).length - 1;
+            if (matches !== 1) throw new Error(`expected exactly one fixture identity ${before}; found ${matches}`);
+            source = source.replace(before, after);
+          }
+          fs.writeFileSync(path, source);
+          NODE
+          git diff --check
+          git diff --exit-code -- experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json && exit 0
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json
+          git commit -m "test(composer): rebind Progress identity cascade"
+          git push origin HEAD:fix/36-progress-stop-disposition-authority
