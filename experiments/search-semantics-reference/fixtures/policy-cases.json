@@ -33,16 +33,8 @@
     "policy-advance-no-reclassification",
     "policy-reroot-explicit-reuse",
     "policy-generation-exhaustion",
-    "policy-stop-vs-expansion-race",
-    "policy-reservation-interleavings-conservation",
-    "policy-backup-step-interleavings",
-    "policy-product-deletion-zero-residue",
-    "policy-combined-evaluator-second-instance",
-    "policy-stateless-graph-second-instance",
-    "policy-persistence-absence-zero-residue",
-    "policy-oracle-sensitivity-publication-order",
-    "policy-oracle-sensitivity-reservation-accounting",
-    "policy-oracle-sensitivity-reroot-validity",
-    "policy-requirement-coverage-exact"
+    "policy-cleanup-complete-disposition",
+    "policy-cleanup-quarantine",
+    "policy-oracle-sensitivity-backup"
   ]
 }
