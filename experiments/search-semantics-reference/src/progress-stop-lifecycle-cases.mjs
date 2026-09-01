@@ -56,10 +56,10 @@ export function registerProgressStopLifecycleCases({ defineCase, projection }) {
     const oracle = activeProgressOracle(profile);
     const input = admitAndReady(oracle, profile, workClass, 'closure-live');
     oracle.requestStop({ cause: 'progress-cancelled' });
-    expectCode(() => oracle.publishClosure({ channelsTerminal: true, ownerTransitionsReady: true, resourcesConserved: true, terminalOutputPublishable: true }), 'PROGRESS_REFERENCE_CLOSURE_WORK');
-    assert.equal(oracle.failWork({ ...workRef(input), code: 'owner-drain-failure', ownerFailure: { code: 'owner-drain-failure' } }).kind, 'failed');
     expectCode(() => oracle.publishClosure({ channelsTerminal: true, ownerTransitionsReady: true, resourcesConserved: true, terminalOutputPublishable: true }), 'PROGRESS_REFERENCE_CLOSURE');
     assert.equal(oracle.beginDraining().kind, 'draining');
+    expectCode(() => oracle.publishClosure({ channelsTerminal: true, ownerTransitionsReady: true, resourcesConserved: true, terminalOutputPublishable: true }), 'PROGRESS_REFERENCE_CLOSURE_WORK');
+    assert.equal(oracle.failWork({ ...workRef(input), code: 'owner-drain-failure', ownerFailure: { code: 'owner-drain-failure' } }).kind, 'failed');
     expectCode(() => oracle.publishClosure({ channelsTerminal: false, ownerTransitionsReady: true, resourcesConserved: true, terminalOutputPublishable: true }), 'PROGRESS_REFERENCE_CLOSURE_DEPENDENCY');
     const closure = oracle.publishClosure({ channelsTerminal: true, ownerTransitionsReady: true, resourcesConserved: true, terminalOutputPublishable: true });
     assert.equal(closure.kind, 'terminal');
