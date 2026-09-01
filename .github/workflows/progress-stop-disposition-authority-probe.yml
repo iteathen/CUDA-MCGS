@@ -4,51 +4,66 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   progress-stop-disposition-authority-probe:
-    name: Progress authority binding inventory
+    name: Progress Composer evidence rebind construction
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/36-progress-stop-disposition-authority
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Inventory stale Composer authority bindings
+      - name: Rebind shared search-semantics Composer evidence
         shell: bash
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           import path from 'node:path';
 
-          const needles = new Map([
-            ['old_composer_evidence', '1285fa9abdf70ba6902aae0d0f86a14b9a23b2c56b2aa8f5168970c0003124f2'],
-            ['old_framework_selection', 'bcfcba073c44f6c019dc800241414e8a67b4006786b8898042b2ffdd38a3e56d'],
-            ['new_composer_evidence', '00045fcb77d8690bfc44bcb5b8d46d55f92db7a924203fff5c8e12b1c8710eb0'],
-            ['new_framework_selection', 'a2327a36c921e856a5d9751c2e2bf22c9b6f6500802dd84ebbca60dd15ecdf56'],
+          const root = 'experiments/search-semantics-reference/fixtures';
+          const before = '1285fa9abdf70ba6902aae0d0f86a14b9a23b2c56b2aa8f5168970c0003124f2';
+          const after = '00045fcb77d8690bfc44bcb5b8d46d55f92db7a924203fff5c8e12b1c8710eb0';
+          const expected = new Map([
+            ['domain-cases.json', 1],
+            ['graph-advance-occurrence-cases.json', 1],
+            ['graph-cleanup-cases.json', 1],
+            ['graph-edge-cases.json', 1],
+            ['graph-node-cases.json', 1],
+            ['graph-path-cases.json', 1],
+            ['graph-reclaim-cases.json', 1],
+            ['graph-ref-cases.json', 1],
+            ['graph-root-cases.json', 1],
+            ['neutral-schedules.json', 4],
+            ['policy-cases.json', 1],
           ]);
-          const ignored = new Set(['.git', 'node_modules', 'build', 'dist']);
-          const hits = new Map([...needles.keys()].map((key) => [key, []]));
-          function walk(dir) {
-            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-              if (ignored.has(entry.name)) continue;
-              const full = path.join(dir, entry.name);
-              if (entry.isDirectory()) { walk(full); continue; }
-              if (!entry.isFile()) continue;
-              let text;
-              try { text = fs.readFileSync(full, 'utf8'); } catch { continue; }
-              if (text.includes('\u0000')) continue;
-              for (const [label, needle] of needles) {
-                const count = text.split(needle).length - 1;
-                if (count > 0) hits.get(label).push([full.replaceAll('\\', '/'), count]);
-              }
-            }
+          const actual = new Map();
+          for (const name of fs.readdirSync(root).sort()) {
+            const full = path.join(root, name);
+            if (!fs.statSync(full).isFile()) continue;
+            const text = fs.readFileSync(full, 'utf8');
+            const count = text.split(before).length - 1;
+            if (count > 0) actual.set(name, count);
           }
-          walk('.');
-          for (const [label, rows] of hits) {
-            console.log(`AUTHORITY_BINDING ${label} files=${rows.length} occurrences=${rows.reduce((sum, [, count]) => sum + count, 0)}`);
-            for (const [file, count] of rows) console.log(`AUTHORITY_BINDING_FILE ${label} ${file} occurrences=${count}`);
+          if (JSON.stringify([...actual]) !== JSON.stringify([...expected])) {
+            throw new Error(`stale Composer evidence occurrence set drifted: ${JSON.stringify([...actual])}`);
           }
-          if (hits.get('old_composer_evidence').length === 0) throw new Error('old Composer evidence binding was not found');
+          for (const [name, count] of actual) {
+            const full = path.join(root, name);
+            const text = fs.readFileSync(full, 'utf8');
+            const replaced = text.split(before).join(after);
+            if (replaced.split(after).length - 1 < count) throw new Error(`replacement failed for ${name}`);
+            fs.writeFileSync(full, replaced);
+          }
+          console.log(`composer_evidence_rebind files=${actual.size} occurrences=${[...actual.values()].reduce((sum, count) => sum + count, 0)}`);
           NODE
+          git diff --check
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add experiments/search-semantics-reference/fixtures
+          git diff --cached --quiet && { echo 'expected Composer evidence rebind diff is empty' >&2; exit 1; }
+          git commit -m "test(search-semantics): rebind Composer evidence authority"
+          git push origin HEAD:fix/36-progress-stop-disposition-authority
