@@ -8,16 +8,45 @@ permissions:
 
 jobs:
   progress-stop-disposition-authority-probe:
-    name: Progress stop disposition authority repair probe
+    name: Graph REF evidence binding inventory
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Run legacy 881-case Composer directly
-        run: node experiments/search-ir-composer-reference/run.mjs
-      - name: Verify stop-disposition normalizer authority
-        run: node experiments/search-ir-composer-reference/verify-progress-stop-disposition-authority.mjs
-      - name: Verify production Composer wrapper
-        run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Inventory stale Graph REF evidence bindings
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+
+          const needles = new Map([
+            ['old_graph_ref_evidence', '0f91b1ee1584b1e71e84948624c3c861974b03814d0e9accac7426b5794f9449'],
+            ['new_graph_ref_evidence', '4baeaf489b8165a8e6ef3171e47a99970f4962d877b96131d16f308e650586f8'],
+          ]);
+          const ignored = new Set(['.git', 'node_modules', 'build', 'dist']);
+          const hits = new Map([...needles.keys()].map((key) => [key, []]));
+          function walk(dir) {
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              if (ignored.has(entry.name)) continue;
+              const full = path.join(dir, entry.name);
+              if (entry.isDirectory()) { walk(full); continue; }
+              if (!entry.isFile()) continue;
+              let text;
+              try { text = fs.readFileSync(full, 'utf8'); } catch { continue; }
+              if (text.includes('\u0000')) continue;
+              for (const [label, needle] of needles) {
+                const count = text.split(needle).length - 1;
+                if (count > 0) hits.get(label).push([full.replaceAll('\\', '/'), count]);
+              }
+            }
+          }
+          walk('.');
+          for (const [label, rows] of hits) {
+            console.log(`REF_BINDING ${label} files=${rows.length} occurrences=${rows.reduce((sum, [, count]) => sum + count, 0)}`);
+            for (const [file, count] of rows) console.log(`REF_BINDING_FILE ${label} ${file} occurrences=${count}`);
+          }
+          if (hits.get('old_graph_ref_evidence').length === 0) throw new Error('old Graph REF evidence binding was not found');
+          NODE
