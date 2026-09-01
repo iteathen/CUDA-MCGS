@@ -19,5 +19,5 @@ jobs:
         run: node experiments/search-ir-composer-reference/run.mjs
       - name: Verify stop-disposition normalizer authority
         run: node experiments/search-ir-composer-reference/verify-progress-stop-disposition-authority.mjs
-      - name: Re-run original fixture-level falsifier
-        run: node experiments/search-ir-composer-reference/probe-progress-stop-disposition-authority.mjs
+      - name: Verify production Composer wrapper
+        run: node scripts/run-search-ir-composer-reference.mjs
