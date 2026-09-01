@@ -21,6 +21,11 @@ const REPRESENTATION = 'cuda-mcgs.search-ir/0.2.0';
 const PROGRESS_CONTRACT = 'SPEC-0012';
 const WORK_KINDS = ['ordinary', 'producer-unblocking', 'must-drain', 'terminal-output', 'external-control', 'resource-recovery'];
 const TERMINAL_STATES = ['completed', 'failed', 'cancelled', 'abandoned', 'stale-disposed', 'quarantined'];
+const STOP_TERMINAL_STATES = new Map([
+  ['abandon', 'abandoned'],
+  ['cancel', 'cancelled'],
+  ['stale-dispose', 'stale-disposed'],
+]);
 const NO_PROGRESS_OUTCOMES = [
   'terminal-quiescent', 'legitimate-external-wait', 'recoverable-resource-wait', 'producer-pending', 'deadlock',
   'livelock', 'starvation', 'orphaned-work', 'stale-only', 'counter-exhausted',
@@ -39,6 +44,14 @@ const CLEANUP_KINDS = [
 function assertEnum(value, allowed, code, label) {
   if (!allowed.includes(value)) fail(code, `${label} is invalid`);
   return value;
+}
+
+export function assertProgressStopDispositionTerminalState(stopDisposition, terminalStates, label = 'progress work class') {
+  const requiredTerminal = STOP_TERMINAL_STATES.get(stopDisposition) ?? null;
+  if (requiredTerminal && !terminalStates.includes(requiredTerminal)) {
+    fail('PROGRESS_WORK_TERMINAL', `${label} stop disposition ${stopDisposition} requires ${requiredTerminal} terminal state`);
+  }
+  return requiredTerminal;
 }
 
 function positiveDecimal(value, code, label) {
@@ -209,6 +222,7 @@ function normalizeWorkClass(input, index, contributorById, resourceClassById, re
   const terminalStates = enumSet(input.terminalStates, TERMINAL_STATES, 'PROGRESS_WORK_TERMINAL', `${input.id} terminalStates`, 3);
   for (const required of ['failed', 'cancelled']) if (!terminalStates.includes(required)) fail('PROGRESS_WORK_TERMINAL', `${input.id} omits ${required} terminal disposition`);
   const stopDisposition = assertEnum(input.stopDisposition, ['service', 'drain', 'abandon', 'cancel', 'stale-dispose'], 'PROGRESS_WORK_STOP', `${input.id} stopDisposition`);
+  assertProgressStopDispositionTerminalState(stopDisposition, terminalStates, input.id);
   const requiredStopDisposition = ['must-drain', 'terminal-output'].includes(input.kind) ? 'drain'
     : (['producer-unblocking', 'resource-recovery'].includes(input.kind) ? 'service' : null);
   if (requiredStopDisposition && stopDisposition !== requiredStopDisposition) fail('PROGRESS_WORK_STOP', `${input.id} must use ${requiredStopDisposition} after stop`);
