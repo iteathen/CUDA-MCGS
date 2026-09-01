@@ -48,6 +48,30 @@ The first product is the generic framework, not a chess engine. Chess, Go, text 
 
 `main` is the current integration trunk. Short-lived `feature/*` and `agent/*` Git branches target `main`; one coherent PR normally uses squash merge. A semantic focus branch is not automatically a Git branch. A different phase/branch model requires an explicit policy transition.
 
+## Portfolio readiness gate
+
+Before selecting, expanding, reviewing, or closing meaningful work, ask: **what is the highest-risk unproven boundary currently preventing the next real composed capability?**
+
+Unless accepted CUDA-MCGS authority or the actual dependency graph requires a different order, prioritize:
+
+1. security/correctness boundary defects;
+2. missing foundational capability required by dependency-ready downstream work;
+3. missing qualification/evidence/infrastructure for an implemented required capability;
+4. missing thin vertical composition proof through the real CUDA-MCGS/CUDA-JS/public-adapter contracts;
+5. measured performance/concurrency bottlenecks required by a real consumer;
+6. convenience/API expansion;
+7. community/presentation polish.
+
+Keep architectural disposition, implementation status, qualification/support status, and priority separate. A missing physical GPU, Linux host, CI runner, or compatible-pair environment is an evidence/qualification-infrastructure gap unless code is independently falsified; do not manufacture a runtime change to compensate for absent evidence. Qualification infrastructure is product infrastructure when a support or compatibility claim depends on it.
+
+Cross-repository dependencies are public capability edges. CUDA-MCGS states the consumer requirement and acceptance criteria; CUDA-JS or another producer owns the consumer-neutral capability and its qualification. Do not deep-import sibling internals, export MCGS policy into CUDA-JS, or build a native/local workaround around a missing generic primitive. The urge to do so is a capability-ownership diagnostic and a stop condition until classified.
+
+Specifications are valuable when they protect a real ownership boundary or authorize the next executable step. Once a boundary is sufficiently specified, prefer the thinnest meaningful end-to-end falsifier through all intended public layers over more speculative layering. If existing abstractions remain materially unexercised, freeze architecture expansion and pressure-test them before adding more universal machinery.
+
+Do not promote multi-streaming, concurrency, optimization, scheduler sophistication, or API breadth merely because a theoretical ceiling exists. Require a dependency-ready consumer, a vertical-slice need, or measured evidence. A thin vertical slice may be toy-sized, but it must use the same public contracts and ownership boundaries intended for real products; it is a falsification tool, not permission to collapse layers.
+
+PR/closure evidence must state which blocker class changed, the exact evidence supporting that transition, what remains unproven, and which downstream composed capability is newly unblocked.
+
 ## Non-negotiable project invariants
 
 - Assess substantial and critical work before planning; use a strong adversary to expose hidden assumptions, unsound simplicity, and unnecessary machinery.
