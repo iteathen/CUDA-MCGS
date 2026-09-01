@@ -1,0 +1,66 @@
+name: temporary Resource cleanup authority fix
+
+on:
+  push:
+    branches: [ref/resource-01]
+
+permissions:
+  contents: write
+
+jobs:
+  patch-test-clean:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ref/resource-01
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Tighten teardown authority
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const resourcePath = 'experiments/search-semantics-reference/src/resource.mjs';
+          let source = readFileSync(resourcePath, 'utf8');
+          const before = "  function cleanup({ quarantineReleaseAuthorized = false, retainLedgerEvidence = false } = {}) {\n    if (!['draining', 'terminal'].includes(lifecycle)) {\n      if (lifecycle === 'active') lifecycle = 'draining';\n      else if (lifecycle !== 'released') fail('RESOURCE_REFERENCE_CLEANUP', `cleanup cannot begin from ${lifecycle}`);\n    }\n    for (const lease of leases.values()) {\n      if (!liveStates.has(lease.state)) continue;\n      if (lease.state === 'quarantined' && quarantineReleaseAuthorized !== true) fail('RESOURCE_REFERENCE_CLEANUP_QUARANTINE', 'quarantined capacity requires explicit teardown recovery authority');\n      lease.state = 'released';\n      diagnostics.get(lease.classId).releases += 1n;\n    }";
+          const after = "  function cleanup({ ownerWorkDisposed = false, retiredReleaseAuthorized = false, quarantineReleaseAuthorized = false, retainLedgerEvidence = false } = {}) {\n    if (!['draining', 'terminal'].includes(lifecycle)) {\n      if (lifecycle === 'active') lifecycle = 'draining';\n      else if (lifecycle !== 'released') fail('RESOURCE_REFERENCE_CLEANUP', `cleanup cannot begin from ${lifecycle}`);\n    }\n    for (const lease of leases.values()) {\n      if (!liveStates.has(lease.state)) continue;\n      if (['claimed', 'published'].includes(lease.state) && ownerWorkDisposed !== true) fail('RESOURCE_REFERENCE_CLEANUP_OWNER', 'live owner work requires explicit teardown disposition before Resource releases its lease');\n      if (lease.state === 'retired-unreclaimed' && retiredReleaseAuthorized !== true) fail('RESOURCE_REFERENCE_CLEANUP_RETIRED', 'retired capacity requires explicit owner quiescence/release authority at teardown');\n      if (lease.state === 'quarantined' && quarantineReleaseAuthorized !== true) fail('RESOURCE_REFERENCE_CLEANUP_QUARANTINE', 'quarantined capacity requires explicit teardown recovery authority');\n      lease.state = 'released';\n      diagnostics.get(lease.classId).releases += 1n;\n    }";
+          if (source.split(before).length - 1 !== 1) throw new Error('expected one Resource cleanup block');
+          writeFileSync(resourcePath, source.replace(before, after));
+
+          const lifecyclePath = 'experiments/search-semantics-reference/src/resource-lifecycle-cases.mjs';
+          let lifecycleCases = readFileSync(lifecyclePath, 'utf8');
+          const lifecycleBefore = "    assert.throws(() => oracle.cleanup(), { code: 'RESOURCE_REFERENCE_CLEANUP_QUARANTINE' }, 'quarantined capacity cannot disappear during teardown');\n    const result = oracle.cleanup({ quarantineReleaseAuthorized: true, retainLedgerEvidence: true });";
+          const lifecycleAfter = "    assert.throws(() => oracle.cleanup(), { code: 'RESOURCE_REFERENCE_CLEANUP_OWNER' }, 'Resource teardown cannot silently abandon claimed/published owner work');\n    assert.throws(() => oracle.cleanup({ ownerWorkDisposed: true }), { code: 'RESOURCE_REFERENCE_CLEANUP_RETIRED' }, 'retired capacity cannot become free without owner quiescence/release authority');\n    assert.throws(() => oracle.cleanup({ ownerWorkDisposed: true, retiredReleaseAuthorized: true }), { code: 'RESOURCE_REFERENCE_CLEANUP_QUARANTINE' }, 'quarantined capacity cannot disappear during teardown');\n    const result = oracle.cleanup({ ownerWorkDisposed: true, retiredReleaseAuthorized: true, quarantineReleaseAuthorized: true, retainLedgerEvidence: true });";
+          if (lifecycleCases.split(lifecycleBefore).length - 1 !== 1) throw new Error('expected one Resource teardown case assertion');
+          lifecycleCases = lifecycleCases.replace(lifecycleBefore, lifecycleAfter);
+          writeFileSync(lifecyclePath, lifecycleCases);
+
+          const sensitivityPath = 'experiments/search-semantics-reference/src/resource-sensitivity-cases.mjs';
+          let sensitivityCases = readFileSync(sensitivityPath, 'utf8');
+          const sensitivityBefore = "    correct.reclaimResourceAccounting({ ...leaseRef(input), ownerQuiescent: true });\n    assert.equal(correct.cleanup().runtimeResidue, 0);\n    assert.equal(freeRetiredMutant.cleanup().runtimeResidue, 0);";
+          const sensitivityAfter = "    correct.reclaimResourceAccounting({ ...leaseRef(input), ownerQuiescent: true });\n    freeRetiredMutant.reclaimResourceAccounting({ ...leaseRef(input), ownerQuiescent: true });\n    assert.equal(correct.cleanup().runtimeResidue, 0);\n    assert.equal(freeRetiredMutant.cleanup().runtimeResidue, 0);";
+          if (sensitivityCases.split(sensitivityBefore).length - 1 !== 1) throw new Error('expected one Resource sensitivity cleanup block');
+          sensitivityCases = sensitivityCases.replace(sensitivityBefore, sensitivityAfter);
+          writeFileSync(sensitivityPath, sensitivityCases);
+          NODE
+          git diff --check
+      - name: Run teardown falsifier and full Resource reference
+        shell: bash
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-resource-profiles.mjs
+          node scripts/run-resource-reference.mjs --case resource-teardown-ledger-zero-or-retained
+          node scripts/run-resource-reference.mjs
+      - name: Commit cleanup authority repair and self-clean
+        shell: bash
+        run: |
+          rm .github/workflows/temp-resource-cleanup-authority-fix.yml
+          git diff --check
+          git config user.name iteathen
+          git config user.email josh.oshiro@gmail.com
+          git add experiments/search-semantics-reference/src/resource.mjs experiments/search-semantics-reference/src/resource-lifecycle-cases.mjs experiments/search-semantics-reference/src/resource-sensitivity-cases.mjs .github/workflows/temp-resource-cleanup-authority-fix.yml
+          git commit -m "fix(resource): require owner authority for teardown release"
+          git push origin HEAD:ref/resource-01
