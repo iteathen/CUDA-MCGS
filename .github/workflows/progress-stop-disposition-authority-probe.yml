@@ -8,16 +8,51 @@ permissions:
 
 jobs:
   progress-stop-disposition-authority-probe:
-    name: Progress stop disposition authority repair probe
+    name: Progress projection identity inventory
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Run legacy 881-case Composer directly
-        run: node experiments/search-ir-composer-reference/run.mjs
-      - name: Verify stop-disposition normalizer authority
-        run: node experiments/search-ir-composer-reference/verify-progress-stop-disposition-authority.mjs
-      - name: Verify production Composer wrapper
-        run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Inventory stale projection authority bindings
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+
+          const needles = new Map([
+            ['old_domain_projection', '2969026db4ff676c105379c86ccf49efdaae79237e598d0d3b88c03cb7c65d40'],
+            ['old_graph_projection', 'df32692fbb7220586a4a050858abd19bdf74f86a63705a8f5b8b33994814e6d6'],
+            ['old_policy_projection', '685b1c21acf378ce781c0345c15dc32143063c85861836bb213ad87a58bd0da4'],
+            ['new_domain_projection', '9f7b13d6f0d4deb503fa6382ae05ee2e906a2837d3a036e39e9a8ce6369ec0a2'],
+            ['new_graph_projection', 'e1cd400a8f23f67ca823cace5bd3a19f26fa58f7b1e63cb3617269744e7ea9b0'],
+            ['new_policy_projection', '4fa39b14bcdfd89c30f3de80822a1be2b5402c0c163b575fca080834cb5af0e2'],
+          ]);
+          const ignored = new Set(['.git', 'node_modules', 'build', 'dist']);
+          const hits = new Map([...needles.keys()].map((key) => [key, []]));
+          function walk(dir) {
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              if (ignored.has(entry.name)) continue;
+              const full = path.join(dir, entry.name);
+              if (entry.isDirectory()) { walk(full); continue; }
+              if (!entry.isFile()) continue;
+              let text;
+              try { text = fs.readFileSync(full, 'utf8'); } catch { continue; }
+              if (text.includes('\u0000')) continue;
+              for (const [label, needle] of needles) {
+                const count = text.split(needle).length - 1;
+                if (count > 0) hits.get(label).push([full.replaceAll('\\', '/'), count]);
+              }
+            }
+          }
+          walk('.');
+          for (const [label, rows] of hits) {
+            console.log(`PROJECTION_BINDING ${label} files=${rows.length} occurrences=${rows.reduce((sum, [, count]) => sum + count, 0)}`);
+            for (const [file, count] of rows) console.log(`PROJECTION_BINDING_FILE ${label} ${file} occurrences=${count}`);
+          }
+          for (const label of ['old_domain_projection', 'old_graph_projection', 'old_policy_projection']) {
+            if (hits.get(label).length === 0) throw new Error(`${label} binding was not found`);
+          }
+          NODE
