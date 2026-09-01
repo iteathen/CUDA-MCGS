@@ -22,21 +22,22 @@ jobs:
           node scripts/export-search-ir-composer-progress-profiles.mjs
           node scripts/run-progress-reference.mjs
       - name: Red includes cooperative-claim falsifier
-        continue-on-error: true
+        if: ${{ always() }}
         run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); if(!e.cases.some(({id,status})=>id==='progress-ready-after-publication'&&status==='fail')) process.exit(1);"
       - name: Red includes continuation-bound falsifier
-        continue-on-error: true
+        if: ${{ always() }}
         run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); if(!e.cases.some(({id,status})=>id==='progress-pending-yields-worker'&&status==='fail')) process.exit(1);"
       - name: Red includes starvation-classification falsifier
-        continue-on-error: true
+        if: ${{ always() }}
         run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); if(!e.cases.some(({id,status})=>id==='progress-starvation-contract'&&status==='fail')) process.exit(1);"
       - name: Red includes sensitivity falsifier
-        continue-on-error: true
+        if: ${{ always() }}
         run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); if(!e.cases.some(({id,status})=>id==='progress-oracle-sensitivity'&&status==='fail')) process.exit(1);"
       - name: Red has no unexpected cases outside hypothesized set
-        continue-on-error: true
+        if: ${{ always() }}
         run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); const allowed=new Set(['progress-ready-after-publication','progress-pending-yields-worker','progress-starvation-contract','progress-oracle-sensitivity']); const unexpected=e.cases.filter(({status})=>status==='fail').map(({id})=>id).filter((id)=>!allowed.has(id)); if(unexpected.length){console.error(unexpected.join(','));process.exit(1);}" 
-      - name: First-red evidence exists
+      - name: First semantic red evidence exists
+        if: ${{ always() }}
         run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); if(e.status!=='fail') process.exit(1);"
       - name: Retain Progress probe evidence
         if: ${{ always() }}
