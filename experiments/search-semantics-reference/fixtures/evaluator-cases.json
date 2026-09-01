@@ -3,7 +3,7 @@
   "composerEvidence": {
     "algorithm": "sha256",
     "byteLength": 727811,
-    "sha256": "115cceb16db3e4a99944c7228e1d5dff7047f342ddbe63a3e695c027d33e85c8"
+    "sha256": "1285fa9abdf70ba6902aae0d0f86a14b9a23b2c56b2aa8f5168970c0003124f2"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-evaluator-profile-projection/0.2.0",
@@ -25,6 +25,7 @@
     "evaluator-cache-full-key-collision",
     "evaluator-cache-failure-pressure-protection",
     "evaluator-cache-generation-invalidation",
+    "evaluator-cache-mutable-state-invalidation",
     "evaluator-reroot-reuse-transaction",
     "evaluator-advance-history-provenance",
     "evaluator-cleanup-complete-disposition",
