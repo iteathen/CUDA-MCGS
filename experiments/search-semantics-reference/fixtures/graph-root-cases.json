@@ -14,17 +14,17 @@
   "nodeEvidence": {
     "algorithm": "sha256",
     "byteLength": 10047,
-    "sha256": "9c814f4d2560fe43cae105c36872be52d245a370a57885ade09e11509c53f9dc"
+    "sha256": "27c0d5d25526bc98990ad997c5d83c944af352fbd4b6a2b005f22fcee08ab275"
   },
   "refEvidence": {
     "algorithm": "sha256",
     "byteLength": 9139,
-    "sha256": "0f91b1ee1584b1e71e84948624c3c861974b03814d0e9accac7426b5794f9449"
+    "sha256": "4baeaf489b8165a8e6ef3171e47a99970f4962d877b96131d16f308e650586f8"
   },
   "pathEvidence": {
     "algorithm": "sha256",
     "byteLength": 9530,
-    "sha256": "a25137cedfd849fb2d7e4ac44cceb2935358f88a91af26f10b38caf6b2f67cc3"
+    "sha256": "e32ef93d78de0c3563ba4cd98271566efb11b3cf0a48d9992cac54f0c81f5cac"
   },
   "rootControlProjection": {
     "algorithm": "sha256",
