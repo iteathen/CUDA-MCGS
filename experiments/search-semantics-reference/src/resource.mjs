@@ -196,6 +196,8 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
 
   function failAdmission(entry, quantity, cause = entry.exhaustion, code = causeCodes.get(cause) ?? null) {
     const state = accounting(entry.id);
+    const partition = partitionByClass.get(entry.id);
+    if (!partition) fail('RESOURCE_REFERENCE_PARTITION', `Resource class ${entry.id} has no normalized partition`);
     diagnostics.get(entry.id).failedAdmissions += 1n;
     const terminal = terminalCauses.has(cause);
     if (terminal) recordExhaustion({ cause, classId: entry.id, terminal: true, recoverable: false, requested: quantity.toString(), available: state.available });
@@ -204,6 +206,9 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
       code,
       cause,
       classId: entry.id,
+      owner: entry.contributor,
+      partitionId: partition.id,
+      poolId: partition.pool,
       requested: quantity.toString(),
       available: state.available,
       watermark: watermarkState(entry.id).state,
