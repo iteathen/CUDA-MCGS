@@ -55,18 +55,36 @@ export function registerResourcePressureExhaustionCases({ defineCase, projection
   defineCase('resource-exhaustion-diagnostics', () => {
     const oracle = activeResourceOracle(base);
     const working = classBySuffix(base, 'class-output-working');
+    const partition = base.partitions.find(({ class: classId }) => classId === working.id);
+    assert(partition, 'working Resource class must have its normalized partition');
     const event = oracle.recordExhaustion({
       cause: 'fragmentation-fit', classId: working.id, terminal: false, recoverable: true, requested: '4096', available: '8192', readyFacts: [{ id: 'ready-fact', state: 'ready' }],
     });
     assert.equal(event.code, 'resource-fragmentation');
     assert.equal(event.cause, 'fragmentation-fit');
+    assert.equal(event.classId, working.id);
+    assert.equal(event.owner, working.contributor);
+    assert.equal(event.partitionId, partition.id);
+    assert.equal(event.poolId, partition.pool);
+    assert.equal(event.requested, '4096');
+    assert.equal(event.available, '8192');
     assert.equal(event.readyFacts.length, 1);
     assert.equal(Object.hasOwn(event, 'value'), false, 'Resource exhaustion must not fabricate a semantic value');
+    assert.throws(
+      () => oracle.recordExhaustion({ cause: 'capacity', classId: 'resource.unknown.class', terminal: false, recoverable: true }),
+      { code: 'RESOURCE_REFERENCE_CLASS' },
+      'Resource exhaustion cannot publish a class that is not in the immutable normalized plan',
+    );
+    assert.throws(
+      () => oracle.recordExhaustion({ cause: 'capacity', classId: working.id, terminal: false, recoverable: true, requested: '-1' }),
+      { code: 'RESOURCE_REFERENCE_DECIMAL' },
+      'Resource exhaustion quantities must retain canonical unsigned Resource units',
+    );
     const policyBudget = oracle.recordExhaustion({ cause: 'policy-budget', terminal: false, recoverable: true });
     assert.equal(policyBudget.cause, 'policy-budget');
     assert.equal(policyBudget.code, null, 'Resource must not invent a Resource-owned status for Policy-owned budget satisfaction');
     assert.equal(oracle.cleanup().runtimeResidue, 0);
-    return { exactCauseRetained: true, semanticValueAbsent: true, policyBudgetCauseWithoutInventedStatus: true };
+    return { exactCauseRetained: true, planCoordinatesBound: true, semanticValueAbsent: true, policyBudgetCauseWithoutInventedStatus: true };
   }, ['RESOURCE-EXHAUST-001', 'RESOURCE-EXHAUST-005']);
 
   defineCase('resource-first-exhaustion-cause', () => {
