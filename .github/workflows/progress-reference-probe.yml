@@ -16,10 +16,17 @@ jobs:
         with:
           node-version: 26.7.0
       - name: Run exact Composer, Progress projection, and Progress reference
+        continue-on-error: true
         run: |
           node scripts/run-search-ir-composer-reference.mjs
           node scripts/export-search-ir-composer-progress-profiles.mjs
           node scripts/run-progress-reference.mjs
+      - name: Confirm expected first-red falsifiers only
+        run: |
+          node --input-type=module -e "import { readFile } from 'node:fs/promises'; const evidence=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); const actual=evidence.cases.filter(({status})=>status==='fail').map(({id})=>id).sort(); const expected=['progress-oracle-sensitivity','progress-pending-yields-worker','progress-ready-after-publication','progress-starvation-contract'].sort(); console.log('failed_cases='+actual.join(',')); if (JSON.stringify(actual)!==JSON.stringify(expected)) process.exit(1);"
+      - name: Require the first-red probe to remain red
+        run: |
+          node --input-type=module -e "import { readFile } from 'node:fs/promises'; const evidence=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); if (evidence.status!=='fail') process.exit(1);"
       - name: Retain Progress probe evidence
         if: ${{ always() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
