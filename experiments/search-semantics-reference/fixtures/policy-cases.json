@@ -3,13 +3,13 @@
   "composerEvidence": {
     "algorithm": "sha256",
     "byteLength": 727811,
-    "sha256": "115cceb16db3e4a99944c7228e1d5dff7047f342ddbe63a3e695c027d33e85c8"
+    "sha256": "1285fa9abdf70ba6902aae0d0f86a14b9a23b2c56b2aa8f5168970c0003124f2"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-policy-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 123882,
-    "sha256": "6662d8101bbffee0e322ef7e2172f5980d69a09aec8ec565c9425578751310c2"
+    "sha256": "685b1c21acf378ce781c0345c15dc32143063c85861836bb213ad87a58bd0da4"
   },
   "expectedCases": [
     "policy-profile-matrix",
@@ -33,8 +33,16 @@
     "policy-advance-no-reclassification",
     "policy-reroot-explicit-reuse",
     "policy-generation-exhaustion",
-    "policy-cleanup-complete-disposition",
-    "policy-cleanup-quarantine",
-    "policy-oracle-sensitivity-backup"
+    "policy-stop-vs-expansion-race",
+    "policy-reservation-interleavings-conservation",
+    "policy-backup-step-interleavings",
+    "policy-product-deletion-zero-residue",
+    "policy-combined-evaluator-second-instance",
+    "policy-stateless-graph-second-instance",
+    "policy-persistence-absence-zero-residue",
+    "policy-oracle-sensitivity-publication-order",
+    "policy-oracle-sensitivity-reservation-accounting",
+    "policy-oracle-sensitivity-reroot-validity",
+    "policy-requirement-coverage-exact"
   ]
 }
