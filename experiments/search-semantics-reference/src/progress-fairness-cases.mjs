@@ -54,7 +54,19 @@ export function registerProgressFairnessCases({ defineCase, projection }) {
     assert.throws(() => oracle.cancelWork({ ...workRef(input), reason: 'should-not-cancel' }), /irreversible result-visible work cannot be cancelled/);
     assert.throws(() => oracle.admitWork(workInput(ordinary, 'ordinary-after-stop')), /ordinary work admission is closed after stop/);
     assert.equal(oracle.completeWork({ ...workRef(input), operationId: 'must-drain-complete', resultVisible: true }).kind, 'completed');
-    return { preservedThroughStop: true, ordinaryAdmissionClosed: true };
+
+    const failureOracle = activeProgressOracle(profile);
+    const failureInput = admitAndReady(failureOracle, profile, mustDrain, 'must-drain-failure');
+    assert.equal(failureOracle.claimReady({ ...workRef(failureInput), claimId: 'must-drain-failure-claim' }).kind, 'claimed');
+    assert.equal(failureOracle.beginResultVisibleTransition(workRef(failureInput)).kind, 'must-drain');
+    const ownerFailure = { code: 'owner-result-visible-failure', detail: 'opaque-owner-detail' };
+    const quarantined = failureOracle.failWork({ ...workRef(failureInput), code: ownerFailure.code, ownerFailure });
+    assert.equal(quarantined.kind, 'quarantined');
+    assert.equal(quarantined.code, 'progress-internal-failure');
+    assert.deepEqual(quarantined.ownerFailure, ownerFailure);
+    assert.equal(failureOracle.observeProgress().work.find(({ workId }) => workId === failureInput.workId).state, 'quarantined');
+    assert.deepEqual(failureOracle.observeProgress().firstStopCause, { cause: 'progress-internal-failure' });
+    return { preservedThroughStop: true, ordinaryAdmissionClosed: true, irreversibleFailureQuarantined: true };
   }, ['PROGRESS-FAIR-002', 'PROGRESS-STOP-002', 'PROGRESS-STOP-003']);
 
   defineCase('progress-starvation-contract', () => {
@@ -67,8 +79,11 @@ export function registerProgressFairnessCases({ defineCase, projection }) {
     const classified = oracle.classifyNoProgress();
     assert.equal(classified.outcome, 'starvation');
     assert.deepEqual(classified.stopCause, { cause: 'progress-starvation' });
-    return { fairnessClass: fairness.id, gap: oracle.observeProgress().starvation.gap };
-  }, ['PROGRESS-FAIR-001', 'PROGRESS-NOPROGRESS-006', 'PROGRESS-NOPROGRESS-007']);
+    const mustDrain = workClassByKind(profile, 'must-drain');
+    const drainInput = admitAndReady(oracle, profile, mustDrain, 'starvation-drain');
+    assert.equal(oracle.claimReady({ ...workRef(drainInput), claimId: 'starvation-drain-claim' }).kind, 'claimed');
+    return { fairnessClass: fairness.id, gap: oracle.observeProgress().starvation.gap, mandatoryDrainServiceable: true };
+  }, ['PROGRESS-FAIR-001', 'PROGRESS-FAIR-002', 'PROGRESS-NOPROGRESS-006', 'PROGRESS-NOPROGRESS-007', 'PROGRESS-STOP-002']);
 
   defineCase('progress-resource-recovery-reserve', () => {
     const profile = getProgressProfile(projection, 'progress.synthetic-evaluator-absent');

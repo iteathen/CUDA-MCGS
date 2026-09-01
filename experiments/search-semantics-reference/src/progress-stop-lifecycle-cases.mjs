@@ -58,6 +58,7 @@ export function registerProgressStopLifecycleCases({ defineCase, projection }) {
     oracle.requestStop({ cause: 'progress-cancelled' });
     expectCode(() => oracle.publishClosure({ channelsTerminal: true, ownerTransitionsReady: true, resourcesConserved: true, terminalOutputPublishable: true }), 'PROGRESS_REFERENCE_CLOSURE_WORK');
     assert.equal(oracle.failWork({ ...workRef(input), code: 'owner-drain-failure', ownerFailure: { code: 'owner-drain-failure' } }).kind, 'failed');
+    expectCode(() => oracle.publishClosure({ channelsTerminal: true, ownerTransitionsReady: true, resourcesConserved: true, terminalOutputPublishable: true }), 'PROGRESS_REFERENCE_CLOSURE');
     assert.equal(oracle.beginDraining().kind, 'draining');
     expectCode(() => oracle.publishClosure({ channelsTerminal: false, ownerTransitionsReady: true, resourcesConserved: true, terminalOutputPublishable: true }), 'PROGRESS_REFERENCE_CLOSURE_DEPENDENCY');
     const closure = oracle.publishClosure({ channelsTerminal: true, ownerTransitionsReady: true, resourcesConserved: true, terminalOutputPublishable: true });
@@ -66,8 +67,8 @@ export function registerProgressStopLifecycleCases({ defineCase, projection }) {
     const released = oracle.cleanup();
     assert.equal(released.kind, 'released');
     assert.equal(released.runtimeResidue, 0);
-    return { closure: closure.kind, released: true };
-  }, ['PROGRESS-STOP-005', 'PROGRESS-STOP-006', 'PROGRESS-LIFE-001', 'PROGRESS-LIFE-002']);
+    return { closure: closure.kind, released: true, drainingRequired: true };
+  }, ['PROGRESS-STOP-001', 'PROGRESS-STOP-005', 'PROGRESS-STOP-006', 'PROGRESS-LIFE-001', 'PROGRESS-LIFE-002']);
 
   defineCase('progress-owner-deletion-zero-residue', () => {
     const profile = getProgressProfile(projection, 'progress.synthetic-evaluator-absent');

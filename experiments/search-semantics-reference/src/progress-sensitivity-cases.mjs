@@ -44,6 +44,7 @@ export function registerProgressSensitivityCases({ defineCase, projection }) {
     const closureMutant = activeProgressOracle(profile, { mutations: { skipClosureCheck: true } });
     admitAndReady(closureMutant, profile, closureClass, 'sensitivity-closure-mutant');
     closureMutant.requestStop({ cause: 'progress-cancelled' });
+    closureMutant.beginDraining();
     assert.equal(closureMutant.publishClosure({ channelsTerminal: false, ownerTransitionsReady: false, resourcesConserved: false, terminalOutputPublishable: false }).kind, 'terminal');
 
     return { killedMutants: ['allowIncompleteReady', 'skipFairness', 'skipClosureCheck'] };
