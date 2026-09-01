@@ -1,0 +1,72 @@
+name: temporary Resource terminal drain fix
+
+on:
+  push:
+    branches: [ref/resource-01]
+
+permissions:
+  contents: write
+
+jobs:
+  patch-test-clean:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ref/resource-01
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Apply owner-local terminal drain repair
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+
+          const sourcePath = 'experiments/search-semantics-reference/src/resource.mjs';
+          let source = readFileSync(sourcePath, 'utf8');
+          const admissionBefore = "  const requireActiveAdmission = () => {\n    if (lifecycle !== 'active') fail('RESOURCE_REFERENCE_ADMISSION_CLOSED', `Resource admission is closed in lifecycle state ${lifecycle}`);\n  };";
+          const admissionAfter = "  const requireActiveAdmission = (input = null) => {\n    if (lifecycle === 'active') return;\n    if (lifecycle === 'draining' && input?.reserveId !== null && input?.reserveId !== undefined) {\n      const reserve = reserveById.get(input.reserveId);\n      if (reserve && ['terminal-result', 'progress-cleanup'].includes(reserve.purpose)) return;\n    }\n    fail('RESOURCE_REFERENCE_ADMISSION_CLOSED', `Resource admission is closed in lifecycle state ${lifecycle}`);\n  };";
+          if (source.split(admissionBefore).length - 1 !== 1) throw new Error('expected one Resource admission gate');
+          source = source.replace(admissionBefore, admissionAfter);
+
+          const exhaustionBefore = "    exhaustionEvents.push(event);\n    if (terminal === true && firstTerminalCause === null) firstTerminalCause = event;";
+          const exhaustionAfter = "    exhaustionEvents.push(event);\n    if (terminal === true) {\n      if (firstTerminalCause === null) firstTerminalCause = event;\n      if (lifecycle === 'active') lifecycle = 'draining';\n    }";
+          if (source.split(exhaustionBefore).length - 1 !== 1) throw new Error('expected one terminal exhaustion transition');
+          source = source.replace(exhaustionBefore, exhaustionAfter);
+
+          const planBefore = "  function planReservation(input, { countFailure = true } = {}) {\n    requireActiveAdmission();";
+          const planAfter = "  function planReservation(input, { countFailure = true } = {}) {\n    requireActiveAdmission(input);";
+          if (source.split(planBefore).length - 1 !== 1) throw new Error('expected one planReservation admission check');
+          source = source.replace(planBefore, planAfter);
+          writeFileSync(sourcePath, source);
+
+          const casePath = 'experiments/search-semantics-reference/src/resource-pressure-exhaustion-cases.mjs';
+          let cases = readFileSync(casePath, 'utf8');
+          const caseBefore = "    assert.throws(\n      () => oracle.reserveResource(leaseInput(working, 'new-after-stop')),\n      { code: 'RESOURCE_REFERENCE_ADMISSION_CLOSED' },\n      'terminal resource exhaustion must close new admission without a host decision',\n    );\n    oracle.releaseResource(leaseRef(existing));\n    oracle.markTerminal();";
+          const caseAfter = "    assert.throws(\n      () => oracle.reserveResource(leaseInput(working, 'new-after-stop')),\n      { code: 'RESOURCE_REFERENCE_ADMISSION_CLOSED' },\n      'terminal resource exhaustion must close new admission without a host decision',\n    );\n    const terminalReserve = reserveByPurpose(base, 'terminal-result');\n    const terminalLease = reservedLeaseInput(base, terminalReserve, 'terminal-after-stop', { quantity: terminalReserve.minimum });\n    assert.equal(oracle.reserveResource(terminalLease).kind, 'claimed', 'draining must preserve the predeclared terminal publication reserve');\n    oracle.releaseResource(leaseRef(terminalLease));\n    oracle.releaseResource(leaseRef(existing));\n    oracle.markTerminal();";
+          if (cases.split(caseBefore).length - 1 !== 1) throw new Error('expected one terminal exhaustion case block');
+          cases = cases.replace(caseBefore, caseAfter);
+          writeFileSync(casePath, cases);
+          NODE
+          git diff --check
+      - name: Run focused terminal exhaustion falsifier
+        shell: bash
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-resource-profiles.mjs
+          node scripts/run-resource-reference.mjs --case resource-terminal-exhaustion-drain
+      - name: Run full Resource reference
+        shell: bash
+        run: node scripts/run-resource-reference.mjs
+      - name: Commit successful semantic repair and self-clean
+        shell: bash
+        run: |
+          rm .github/workflows/temp-resource-terminal-drain-fix.yml
+          git diff --check
+          git config user.name iteathen
+          git config user.email josh.oshiro@gmail.com
+          git add experiments/search-semantics-reference/src/resource.mjs experiments/search-semantics-reference/src/resource-pressure-exhaustion-cases.mjs .github/workflows/temp-resource-terminal-drain-fix.yml
+          git commit -m "fix(resource): close ordinary admission on terminal exhaustion"
+          git push origin HEAD:ref/resource-01
