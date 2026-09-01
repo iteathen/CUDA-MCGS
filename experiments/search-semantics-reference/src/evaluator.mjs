@@ -609,6 +609,9 @@ export function createEvaluatorOracle({ profile = null, admission = {}, mutation
     }
     const expected = dec(input.expectedGeneration), next = dec(input.nextGeneration);
     if (expected !== mutableGeneration || next <= expected) fail('EVALUATOR_REFERENCE_MUTABLE_STATE_ORDER', 'mutable generation must advance monotonically from the current generation');
+    if (cacheSelected && profile.cache.keyFacts.includes('state-generation')) {
+      invalidateCacheFact({ fact: 'state-generation', nextValue: input.nextGeneration });
+    }
     mutableGeneration = next;
     const output = freeze({ kind: 'committed', generation: input.nextGeneration, updateIdentity }, 'Evaluator mutable-state result');
     mutableUpdates.set(updateIdentity, { operation, output });
