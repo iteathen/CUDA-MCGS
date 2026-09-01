@@ -1,0 +1,74 @@
+name: temporary Resource lease authority fix
+
+on:
+  push:
+    branches: [ref/resource-01]
+
+permissions:
+  contents: write
+
+jobs:
+  patch-test-clean:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ref/resource-01
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Add full lease authority fence
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          function replaceOnce(source, before, after, label) {
+            const count = source.split(before).length - 1;
+            if (count !== 1) throw new Error(`${label}: expected one match, found ${count}`);
+            return source.replace(before, after);
+          }
+          const resourcePath = 'experiments/search-semantics-reference/src/resource.mjs';
+          let source = readFileSync(resourcePath, 'utf8');
+          source = replaceOnce(
+            source,
+            "import { canonicalClone, frozenCanonicalClone } from './canonical.mjs';",
+            "import { canonicalBytes, canonicalClone, frozenCanonicalClone } from './canonical.mjs';",
+            'canonicalBytes import',
+          );
+          source = replaceOnce(
+            source,
+            "  const findLease = (reference) => {\n    const lease = leases.get(leaseKey(reference));\n    if (!lease) fail('RESOURCE_REFERENCE_LEASE', `unknown lease ${reference.leaseId}/${reference.generation}`);\n    return lease;\n  };",
+            "  const findLease = (reference) => {\n    const lease = leases.get(leaseKey(reference));\n    if (!lease) fail('RESOURCE_REFERENCE_LEASE', `unknown lease ${reference.leaseId}/${reference.generation}`);\n    const epochsMatch = reference.epochs !== undefined && canonicalBytes(reference.epochs, 'Resource lease reference epochs').equals(canonicalBytes(lease.epochs, 'Resource lease epochs'));\n    if (reference.classId !== lease.classId || reference.owner !== lease.owner || !epochsMatch) {\n      fail('RESOURCE_REFERENCE_LEASE_AUTHORITY', 'lease reference does not match the admitted class, owner, and epoch identity');\n    }\n    return lease;\n  };",
+            'full lease reference fence',
+          );
+          writeFileSync(resourcePath, source);
+
+          const casesPath = 'experiments/search-semantics-reference/src/resource-admission-cases.mjs';
+          let cases = readFileSync(casesPath, 'utf8');
+          cases = replaceOnce(
+            cases,
+            "    const observed = oracle.snapshot().leases.find(({ leaseId }) => leaseId === first.leaseId);\n    assert.deepEqual(observed.epochs, epochs, 'lease identity must preserve arbitrary-width owner epochs exactly');\n    oracle.releaseResource(leaseRef(first));",
+            "    const observed = oracle.snapshot().leases.find(({ leaseId }) => leaseId === first.leaseId);\n    assert.deepEqual(observed.epochs, epochs, 'lease identity must preserve arbitrary-width owner epochs exactly');\n    assert.throws(() => oracle.releaseResource({ ...leaseRef(first), owner: 'owner.forged' }), { code: 'RESOURCE_REFERENCE_LEASE_AUTHORITY' });\n    assert.throws(() => oracle.releaseResource({ ...leaseRef(first), classId: working.id + '.forged' }), { code: 'RESOURCE_REFERENCE_LEASE_AUTHORITY' });\n    assert.throws(() => oracle.releaseResource({ ...leaseRef(first), epochs: { ...epochs, root: '999' } }), { code: 'RESOURCE_REFERENCE_LEASE_AUTHORITY' });\n    assert.equal(oracle.observeResourceState(working.id).claimed, '1', 'forged lease references must fail before accounting mutation');\n    oracle.releaseResource(leaseRef(first));",
+            'forged lease reference falsifiers',
+          );
+          writeFileSync(casesPath, cases);
+          NODE
+          git diff --check
+      - name: Run focused and full Resource reference
+        shell: bash
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-resource-profiles.mjs
+          node scripts/run-resource-reference.mjs --case resource-lease-epoch-and-generation-identity
+          node scripts/run-resource-reference.mjs
+      - name: Commit identity fence and self-clean
+        shell: bash
+        run: |
+          rm .github/workflows/temp-resource-lease-authority-fix.yml
+          git diff --check
+          git config user.name iteathen
+          git config user.email josh.oshiro@gmail.com
+          git add experiments/search-semantics-reference/src/resource.mjs experiments/search-semantics-reference/src/resource-admission-cases.mjs .github/workflows/temp-resource-lease-authority-fix.yml
+          git commit -m "fix(resource): validate full lease reference authority"
+          git push origin HEAD:ref/resource-01
