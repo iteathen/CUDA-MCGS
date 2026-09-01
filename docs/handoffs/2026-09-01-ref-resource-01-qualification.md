@@ -33,6 +33,7 @@ The requirement-coverage registry classified 34 requirements directly to `ENGINE
 - retired is not free until the semantic owner proves quiescence/disposition;
 - pressure is a typed fact and never chooses Graph/Evaluator/Output/Policy response;
 - Resource exhaustion diagnostics are bound to the immutable normalized class/owner/pool/partition plan rather than accepting invented runtime coordinates;
+- failed admission exposes those same normalized coordinates rather than a weaker parallel error shape;
 - first terminal Resource exhaustion cause is immutable;
 - counter/identity/generation exhaustion never wraps into aliases;
 - terminal exhaustion closes ordinary admission while preserving predeclared terminal/progress closure reserves;
@@ -138,13 +139,21 @@ The owner-local repair at `f8d2dc994bd3faaa3da3a943e63aa4d44470c864`:
 
 No allocator placement, physical address, CUDA provider detail or semantic response policy was introduced.
 
+### 7. Failed admission still exposed a weaker exhaustion shape
+
+The clause-level pass then traced `RESOURCE-EXHAUST-001` through the real reservation failure path rather than only through explicit `recordExhaustion()` calls. `failAdmission()` still returned class/requested/available/watermark/recoverability but omitted the immutable owner/partition/pool coordinates now required from Resource exhaustion facts.
+
+A test-only change at `d867f9c23e24fbd9782bd0c64e37cf61e3c49bf3` extended `resource-single-admission-atomicity` to require the real over-capacity reservation outcome to contain the exact normalized class, owner, partition and pool plus requested/available quantities. Permanent workflow `33557782673` reached that falsifier with every other Resource case green and failed `22/23` because `owner` was `undefined` instead of `owner.output.synthetic-evaluator-absent`.
+
+The owner-local repair at `faac7776c11d4f6f77f8b94059ab063a67d992b7` makes `failAdmission()` derive its diagnostic coordinates from the same immutable class/partition authority used by `recordExhaustion()`. It adds no alternate error schema and no physical layout authority; both explicit exhaustion and failed reservation now expose one consistent semantic coordinate set.
+
 ## Qualified semantic evidence
 
 Qualified semantic head:
 
-`ref/resource-01@f8d2dc994bd3faaa3da3a943e63aa4d44470c864`.
+`ref/resource-01@faac7776c11d4f6f77f8b94059ab063a67d992b7`.
 
-Permanent workflow run `33557464475` passed completely on that exact head, including:
+Permanent workflow run `33557945030` passed completely on that exact head, including:
 
 - governance verification;
 - Windows and Ubuntu Search IR reference;
@@ -153,15 +162,15 @@ Permanent workflow run `33557464475` passed completely on that exact head, inclu
 - Resource reference; and
 - aggregate fail-closed `verify`.
 
-Resource job `100021675823` recorded:
+Resource job `100023251557` recorded:
 
 - expected/discovered/executed/passed: `23/23/23/23`;
 - failed/not-discovered/not-executed: `0/0/0`;
 - all `34/34` direct Resource reference obligations mapped to checked cases;
-- Resource evidence SHA-256 `3464117c62959fd95620b0ac4c5e45198e2d5dc9a8cc321e556178a52b2789f2`;
-- Resource evidence canonical bytes `12402`.
+- Resource evidence SHA-256 `68ba1f464574a253144d9bae78729bfb425037adbe49234237a9d2a2de2fe2fb`;
+- Resource evidence canonical bytes `12512`.
 
-The case bank covers single/compound admission, claim/publish/release, retired-not-free, quarantine visibility, complete stale-safe lease identity, exact arbitrary-width generations/epochs, closure reserves, pressure ownership/recovery, plan-bound exact exhaustion diagnostics, first-cause immutability, counter-vs-capacity exhaustion, ready-only partial facts, terminal draining, no host growth, schedule-invariant conservation, lifecycle closure, root-update reject/no-mutation, explicit teardown authority, arbitrary-width counters, evaluator-absent zero residue, and sensitivity mutants.
+The case bank covers single/compound admission, exact failed-admission coordinates, claim/publish/release, retired-not-free, quarantine visibility, complete stale-safe lease identity, exact arbitrary-width generations/epochs, closure reserves, pressure ownership/recovery, plan-bound exact exhaustion diagnostics, first-cause immutability, counter-vs-capacity exhaustion, ready-only partial facts, terminal draining, no host growth, schedule-invariant conservation, lifecycle closure, root-update reject/no-mutation, explicit teardown authority, arbitrary-width counters, evaluator-absent zero residue, and sensitivity mutants.
 
 ## Permanent gate
 
