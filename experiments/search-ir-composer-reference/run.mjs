@@ -2806,9 +2806,13 @@ await runCase('evaluator-absent-zero-residue', () => {
 
 await runCase('evaluator-profile-second-instances-distinct', () => {
   assert.equal(new Set(evaluatorProfiles.map(({ identity }) => identity.sha256)).size, evaluatorProfiles.length);
-  assert.deepEqual(evaluatorProfiles.map(({ normalized }) => normalized.cache.kind), ['selected', 'none', 'none', 'none', 'none']);
+  assert.deepEqual(evaluatorProfiles.map(({ normalized }) => normalized.cache.kind), ['selected', 'none', 'none', 'none', 'selected']);
   assert.deepEqual(evaluatorProfiles.map(({ normalized }) => normalized.artifacts.length), [1, 0, 1, 0, 1]);
-  assert.equal(evaluatorProfiles[4].normalized.mutableState.kind, 'selected');
+  const resumable = evaluatorProfiles[4].normalized;
+  assert.equal(resumable.mutableState.kind, 'selected');
+  assert.equal(resumable.batching.continuation.kind, 'bounded');
+  assert.equal(resumable.cache.kind, 'selected');
+  assert(resumable.cache.keyFacts.includes('state-generation'));
 });
 
 await runCase('evaluator-policy-profile-linkage', () => {
