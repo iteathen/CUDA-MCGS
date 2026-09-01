@@ -1,6 +1,8 @@
 # REF-PROGRESS-01 construction checkpoint / resume — 2026-09-01
 
-**Status:** secured construction checkpoint; Progress semantics are not yet qualified.
+**Status:** Informational
+
+**Checkpoint state:** secured construction checkpoint; Progress semantics were not yet qualified at this historical seam.
 
 ## Purpose
 
@@ -39,229 +41,205 @@ Two sibling `ENGINE-REFERENCE-01` leaves are author-side ready but remain unmerg
 
 ### Evaluator
 
-PR #160 — `REF-EVALUATOR-01: deterministic evaluator reference`
-
-- open, non-draft, mergeable;
-- reviewed head: `ref/evaluator-01@d340e1dc6bae1c7cb556c28636786353640e404c`;
-- base: `experimental/portfolio@95fdda77d002cc899a6534f02a6c2af0580303af`;
-- final permanent workflow: `33553072545` green;
-- Evaluator reference: `30/30`;
-- still requires independent exact-head review or explicit repository-owner exact-head authorization under repository policy before integration.
+- issue: `#160`
+- branch: `ref/evaluator-01`
+- PR: `#161`
+- author-review head at checkpoint: `a352314752ab1371634248f38e7dd3b1e3404208`
+- latest author-review run recorded before this checkpoint: `33543571057`
+- disposition: author-side ready, unmerged
 
 ### Resource
 
-PR #166 — `REF-RESOURCE-01: finite Resource reference`
+- issue: `#166`
+- branch: `ref/resource-01`
+- PR: `#165`
+- author-review head at checkpoint: `4a6116e9581bdc33f31f7328945e51ee93069790`
+- latest author-review run recorded before this checkpoint: `33555561872`
+- disposition: author-side ready, unmerged
 
-- open, non-draft, mergeable;
-- reviewed head: `ref/resource-01@4a6116e9581bdc33f31f7328945e51ee93069790`;
-- qualified semantic source: `faac7776c11d4f6f77f8b94059ab063a67d992b7`;
-- base: `experimental/portfolio@95fdda77d002cc899a6534f02a6c2af0580303af`;
-- final permanent workflow: `33558158145` green;
-- Resource reference: `23/23`, with `34/34` direct Resource obligations mapped;
-- still requires independent exact-head review or explicit repository-owner exact-head authorization under repository policy before integration.
+Progress must continue from the common frozen base and may inspect those leaves only as patterns/evidence. Do not merge or cherry-pick them into `ref/progress-01` merely for convenience.
 
-Progress was deliberately started from the common frozen portfolio base, not from either unmerged PR branch. Their implementation structure may be consulted as a pattern, but their source is not part of the Progress authority unless separately integrated and rebound.
+## Governing Progress authority
 
-## Progress scope established before checkpoint
+The semantic authority is `docs/specs/SPEC-0012-device-owned-search-progress.md` plus the accepted Search IR/composer contract surface on the frozen base.
 
-`SPEC-0012` assigns the following **31 direct requirements** to `ENGINE-REFERENCE-01`:
+The current construction also relies on the frozen Composer output as an input contract. The expected representation-composition evidence key is:
 
-- `PROGRESS-WORK-001..007` — 7;
-- `PROGRESS-FAIR-001..006` — 6;
-- `PROGRESS-NOPROGRESS-001..007` — 7;
-- `PROGRESS-STOP-001..007` — 7;
-- `PROGRESS-LIFE-001..004` — 4.
+```json
+{
+  "algorithm": "sha256",
+  "byteLength": 727811,
+  "sha256": "1285fa9abdf70ba6902aae0d0f86a14b9a23b2c56b2aa8f5168970c0003124f2"
+}
+```
 
-The following remain with their declared structural, normalization, cross-specification, deletion/identity, or native owners and must not be opportunistically absorbed into this leaf:
+The three exact Progress profiles to project are:
 
-- `PROGRESS-PROFILE-*`;
-- `PROGRESS-GRAPH-*`;
-- `PROGRESS-RESOURCE-*`;
-- `PROGRESS-SEC-*`;
-- `PROGRESS-COMPAT-*`;
-- `PROGRESS-IR-*`.
+1. `progress.synthetic-evaluator-absent`
+2. `progress.synthetic-evaluator-workspace`
+3. `progress.synthetic-live-session`
 
-The authoritative SPEC-0012 conformance table requires these mechanism-neutral cases:
+## Direct ENGINE-REFERENCE obligations
 
-- `progress-profile-strict-normalization`;
-- `progress-ready-after-publication`;
-- `progress-pending-yields-worker`;
-- `progress-accounting-conservation`;
-- `progress-mandatory-wait-cycle`;
-- `progress-producer-unblocking-fairness`;
-- `progress-partial-batch-device-flush`;
-- `progress-must-drain-priority`;
-- `progress-deadlock-vs-quiescence`;
-- `progress-livelock-potential`;
-- `progress-starvation-contract`;
-- `progress-resource-recovery-reserve`;
-- `progress-first-stop-cause`;
-- `progress-stale-epoch-isolation`;
-- `progress-observation-no-progression`;
-- `progress-closure-complete`;
-- `progress-scheduler-semantic-parity`;
-- `progress-owner-deletion-zero-residue`;
-- `progress-oracle-sensitivity`.
+`REF-PROGRESS-01` is directly responsible for exactly 31 requirements from SPEC-0012:
 
-The case bank must cover those required falsifiers and map all 31 direct requirements without claiming ownership of adjacent requirement families.
+- `PROGRESS-WORK-001..007` — 7
+- `PROGRESS-FAIR-001..006` — 6
+- `PROGRESS-NOPROGRESS-001..007` — 7
+- `PROGRESS-STOP-001..007` — 7
+- `PROGRESS-LIFE-001..004` — 4
 
-## Research conclusions already established
+The reference leaf must not silently absorb structural/schema/native ownership such as:
 
-The normalized Progress profile already exists in the Composer and supplies the semantic inputs needed by this reference. The exact frozen base exposes three materially distinct Progress profiles:
+- `PROGRESS-PROFILE-*`
+- `PROGRESS-RESOURCE-*`
+- `PROGRESS-SEC-*`
+- `PROGRESS-COMPAT-*`
+- `PROGRESS-IR-*`
 
-1. `progress.synthetic-evaluator-absent`;
-2. `progress.synthetic-evaluator-workspace`;
-3. `progress.synthetic-live-session`.
+Those obligations are evidence dependencies or downstream owners, not permission to widen this leaf.
 
-The normalized profiles already declare:
+## Required conformance falsifiers
 
-- work classes, owners, kinds, resource claims, finite step/retry/continuation bounds, terminal states and stop dispositions;
-- exact producer/dependency edges, required versus advisory waits, escapes and no-worker-hold constraints;
-- closure-priority and ordinary fairness classes with finite service-opportunity bounds;
-- evaluator device-flush batching with no host timeout;
-- typed no-progress vocabulary and bounded potential/repeated-transition evidence;
-- stop lifecycle `running → stop-requested → draining → terminal`;
-- closure predicates over work, channels, owner transitions, resources and terminal output;
-- Resource-plan identity and predeclared closure reserves; and
-- compatibility that explicitly excludes scheduler identity.
+The complete case bank must contain these 19 named falsifiers:
 
-The correct LEGO boundary is therefore an in-memory deterministic semantic oracle that consumes those immutable normalized facts. No new public schema, production queue, persistent-kernel design, worker topology, CUDA Graph choice, stream topology, work-stealing algorithm, or native primitive is justified by this leaf.
+1. `progress-profile-strict-normalization`
+2. `progress-ready-after-publication`
+3. `progress-pending-yields-worker`
+4. `progress-accounting-conservation`
+5. `progress-mandatory-wait-cycle`
+6. `progress-producer-unblocking-fairness`
+7. `progress-partial-batch-device-flush`
+8. `progress-must-drain-priority`
+9. `progress-deadlock-vs-quiescence`
+10. `progress-livelock-potential`
+11. `progress-starvation-contract`
+12. `progress-resource-recovery-reserve`
+13. `progress-first-stop-cause`
+14. `progress-stale-epoch-isolation`
+15. `progress-observation-no-progression`
+16. `progress-closure-complete`
+17. `progress-scheduler-semantic-parity`
+18. `progress-owner-deletion-zero-residue`
+19. `progress-oracle-sensitivity`
 
-## Construction completed so far
+The runner must discover the exact checked-in case set and fail closed on missing, duplicate, renamed, skipped, or unowned coverage.
 
-### 1. Assessment and plan
+## High-risk semantic falsifiers
 
-Commit `839523c76039a06e01ac303a44319047457de57a` added:
+The next session should pay particular attention to these failure modes before declaring Progress correct:
 
-`docs/development/2026-09-01-ref-progress-01-assessment-and-plan.md`
+- a work item becomes ready before every required payload/resource/dependency write is visible;
+- cooperative evaluator claim replay creates a second service owner rather than an idempotent replay;
+- a continuation can loop or recurse without consuming a declared finite bound;
+- failed Resource admission is accidentally counted as admitted Progress work;
+- exact retry duplicates a completion/publication/release effect;
+- mandatory drain work is cancelled after an irreversible result-visible transition;
+- starvation is measured by host time instead of the selected device-visible service-opportunity contract;
+- partial evaluator batches rely on a host timeout rather than a device-visible opportunity threshold;
+- no-progress classification mistakes pending producers for deadlock or hides a mandatory wait-for cycle;
+- fatal no-progress diagnosis fails to request stop or allows new ordinary admission afterward;
+- epoch advance lets stale work publish into the new epoch;
+- first stop cause is overwritten by a later failure;
+- closure succeeds while admitted work, owner transitions, channels, resource conservation, or terminal output remain unresolved;
+- observation/poll/ack becomes a prerequisite for internal closure;
+- removing an optional owner leaves Progress classes/dependencies/runtime residue behind;
+- scheduler mechanism/order changes alter stable semantic invariants even though the profile excludes scheduler identity;
+- weakened oracle mutations are not caught by the case bank.
 
-It records the 31 direct obligations, ownership exclusions, required conformance themes, immutable-profile approach, two-schedule requirement, red-before-green intent, and claim limits.
+## LEGO ownership boundary
 
-### 2. Exact Progress-profile projection
+Progress owns only framework-neutral progress semantics:
 
-Commit `f9a695ce4adb8b8031b2bdf4cb624d18eb3da313` added:
+- admitted/pending/ready/claimed/terminal accounting;
+- bounded finite step/continuation/yield rules;
+- fairness/service-opportunity contracts;
+- typed no-progress classification;
+- stop/drain/closure lifecycle;
+- stale epoch isolation;
+- Progress-local cleanup records and diagnostics.
 
-`experiments/search-ir-composer-reference/export-progress-profiles.mjs`
+Progress does **not** own:
 
-The exporter rebuilds the frozen Composer chain through Domain → Graph → Evaluator → Policy → Resource → Progress using the existing normalizers/fixtures, then requires the reconstructed Progress identities to match `composerEvidence.progressProfileIdentities` exactly before writing `build/progress-profiles.json`.
+- Domain payload meaning;
+- Graph node/reference/path/reclaim semantics;
+- Policy value or backup meaning;
+- Evaluator value/policy semantics or workspace allocation;
+- Resource capacity/allocation/release implementation;
+- Output payload semantics;
+- Session command/root-control meaning;
+- CUDA/native scheduler selection, worker topology, atomics, launch mode, performance tuning, or device ABI.
 
-This is intended to prevent the Progress reference from inventing a private profile or drifting from Composer authority.
+Those remain injected dependencies or downstream realization owners. The reference must not grow a private CUDA escape path or choose a production scheduling mechanism.
 
-**Important:** this exporter has not yet been executed or qualified on the Progress branch.
+## Current constructed files
 
-### 3. Projection entrypoint
+At the frozen semantic construction head, the new Progress files are:
 
-Commit `17d6e965713405d66584a0768d2659d881b56068` added:
+- `experiments/search-ir-composer-reference/export-progress-profiles.mjs`
+- `scripts/export-search-ir-composer-progress-profiles.mjs`
+- `experiments/search-semantics-reference/src/progress.mjs`
 
-`scripts/export-search-ir-composer-progress-profiles.mjs`
+The assessment/plan is:
 
-It is only the repository entrypoint for the exporter above.
+- `docs/development/2026-09-01-ref-progress-01-assessment-and-plan.md`
 
-### 4. Initial deterministic Progress oracle
+The projection exporter is intentionally a narrow independent seam: it binds the frozen Composer evidence identity and exports only the three Progress profiles listed above.
 
-Commit `889180f13e81bde977c6ad785fb5c735dbd3e5d1` added:
+The oracle is intentionally mechanism-neutral. It models work identity/readiness/accounting, service opportunities, no-progress/stop/epoch/closure, and cleanup only. It contains no CUDA/native scheduling mechanism.
 
-`experiments/search-semantics-reference/src/progress.mjs`
+## Exact next construction sequence
 
-The current oracle is approximately 462 lines and is intentionally owner-local. It currently models, among other things:
+Resume in this order:
 
-- immutable normalized Progress profile authority;
-- canonical arbitrary-width work incarnation and `{root, work}` epoch handling;
-- class/owner/epoch-bound work lookup;
-- admission and class counters;
-- injected Resource-admission facts;
-- pending/ready/claimed/terminal accounting;
-- readiness/dependency state;
-- claim/service ownership;
-- finite continuation/yield/terminal transitions;
-- service-opportunity/fairness accounting;
-- typed fatal no-progress causes;
-- stop request and immutable first stop cause;
-- stale-epoch behavior;
-- closure/lifecycle state; and
-- schedule-neutral state observation.
+1. Re-run/verify the exact Composer baseline and the new Progress profile projection from the frozen base contract.
+2. Build the checked-in 19-case fixture/case bank independently of the current oracle.
+3. Build a focused runner that:
+   - binds exact Composer evidence;
+   - binds exact Progress profile projection identity;
+   - verifies all 31 direct requirement IDs from the authoritative spec/coverage registry;
+   - discovers the exact checked-in case bank;
+   - writes deterministic source-hashed evidence;
+   - supports focused `--case` execution without weakening full discovery.
+4. Build at least two mechanism-neutral schedule drivers/trajectories and compare stable semantic invariants rather than exact service order.
+5. Run the complete case bank **before repairing any failures** and retain red evidence if the current oracle is falsified.
+6. Classify each red as spec misunderstanding, test-construction defect, oracle defect, or ownership-boundary defect before changing code.
+7. Repair the smallest owner-local cause; do not weaken a valid case to get green.
+8. Add permanent CI only after the case bank/runner is coherent and green.
+9. Re-run repository governance plus Composer plus full Progress reference on the exact final head.
+10. Perform whole-diff author review against `experimental/portfolio@95fdda77d002cc899a6534f02a6c2af0580303af`.
+11. Create/update the Progress PR and leave it for independent review; do not merge it merely because author-side qualification passes.
 
-This file has **not yet been tested by a Progress case bank**. Treat every behavior in it as provisional and falsifiable.
+## Qualification contract
 
-## What is deliberately NOT done
+A credible author-side qualification packet must record at least:
 
-Do not infer completion from source volume. At the checkpoint, the following work had not been constructed:
+- exact base and final source SHA;
+- exact Composer evidence identity;
+- exact Progress projection identity;
+- exact Progress evidence identity;
+- 19/19 required cases discovered and executed;
+- 31/31 direct requirements covered;
+- zero required skips/not-discovered cases;
+- two mechanism-neutral schedule models with stable invariant parity;
+- red-before-green history for any real defect found;
+- green permanent CI on the exact final head;
+- repository governance pass on the exact final head;
+- whole-diff author review outcome;
+- cleanup/disposition of temporary workflows/artifacts/branches;
+- explicit statement that this qualifies only the Progress semantic reference leaf, not CUDA/native realization, #36 as a whole, #122 atomic acceptance, #49, #125, #124, Vector integration, or physical NVIDIA qualification.
 
-- checked-in Progress expected-case fixture;
-- Progress case-support helpers;
-- work/readiness cases;
-- fairness/schedule cases;
-- no-progress cases;
-- stop/closure/lifecycle cases;
-- sensitivity mutants;
-- two independent mechanism-neutral schedule drivers with semantic parity assertions;
-- `run-progress.mjs` evidence runner;
-- `scripts/run-progress-reference.mjs` wrapper;
-- source-hash/evidence identity plumbing;
-- focused or full Progress execution;
-- red-before-green defect classification;
-- permanent `Progress reference` CI job;
-- aggregate `verify` dependency on Progress;
-- draft Progress PR;
-- qualification record;
-- whole-spec/whole-diff author review.
+## Current stop seam
 
-No generated `build/` output or temporary workflow was added to the branch before checkpoint.
+Stop state recorded by this handoff:
 
-## Exact safe resume procedure
+- frozen base: `experimental/portfolio@95fdda77d002cc899a6534f02a6c2af0580303af`
+- semantic construction head: `889180f13e81bde977c6ad785fb5c735dbd3e5d1`
+- secured handoff head: `cf6271d92231a6d059708b6342c16d3a71ad4805`
+- working branch: `ref/progress-01`
+- checkpoint branch: `checkpoint/ref-progress-01-construction-handoff-20260901`
+- semantic status: unfinished and unqualified
+- PR status at checkpoint: none
+- local-state dependency: none
 
-1. Fetch the checkpoint branch named in this handoff and verify it still resolves to the handoff commit. Do not begin from protected `main` or from an arbitrary newer branch.
-2. Verify the frozen dependency authority still exists at `experimental/portfolio@95fdda77d002cc899a6534f02a6c2af0580303af` and compare it to the checkpoint before changing source.
-3. Re-read root `AGENTS.md`, SPEC-0012, the requirement-coverage registry and `docs/development/2026-09-01-ref-progress-01-assessment-and-plan.md` before editing.
-4. Inspect `experiments/search-semantics-reference/src/progress.mjs` as untrusted implementation. Do not assume its state machine is correct simply because the design intent is recorded here.
-5. Execute the existing Composer reference first, then execute `scripts/export-search-ir-composer-progress-profiles.mjs`. The projection must fail closed unless all three Progress identities exactly match the Composer evidence.
-6. Construct the independent expected-case fixture and case bank from the SPEC-0012 conformance table and the 31 direct requirement IDs. The case registry must reject uncovered direct requirements and reject mappings to non-owned requirements.
-7. Add at least two mechanism-neutral schedule drivers. Their exact interleavings may differ, but stable semantic/accounting/closure invariants must match. Do not turn either schedule into a production scheduler claim.
-8. Run the first full Progress probe before repairing semantic failures. Preserve any genuine red case as falsification evidence and classify the ownership boundary before changing source.
-9. Fix only Progress-owned defects. If a failure proves the normalized Progress profile is missing a generic representation, stop and route that gap to its true owner rather than patching around it in the oracle.
-10. Only after the case bank is coherent and full Progress evidence is green should the permanent peer `Progress reference` job be added to `.github/workflows/docs.yml` and included in fail-closed aggregate `verify`.
-11. Open a draft PR from `ref/progress-01` to the exact intended portfolio base, run the complete permanent workflow on an exact head, perform whole-spec/whole-diff author review, record repairs/evidence, remove any temporary transport, then mark review-ready without merging unless independent review/owner authorization permits it.
-
-## High-risk semantic questions to falsify early
-
-Prioritize tests that can prove the current oracle wrong in these areas:
-
-- admission conservation under failed/stale/counter-exhausted admission;
-- full stale-safe identity on every mutating work operation, not only lookup;
-- readiness publication only after complete prerequisite publication;
-- pending/yield paths releasing worker/resource authority needed by producers;
-- cooperative claims remaining idempotent and exclusive claims remaining single-owner;
-- continuation/retry not duplicating owner-visible effects;
-- fairness bounds measured in device-visible service opportunities rather than wall time;
-- closure-priority work not starving ordinary work indefinitely and ordinary priority not starving sole producers/releases;
-- partial evaluator batches flushing without a host timeout;
-- deadlock versus terminal quiescence versus legitimate live-session external wait;
-- livelock proof using declared finite potential/repetition bounds rather than search-quality heuristics;
-- starvation classification relative to the selected fairness class only;
-- Resource recovery remaining injected Resource authority and using only declared reserve facts;
-- first fatal/stop cause remaining immutable;
-- old-epoch work never publishing into new-epoch state;
-- host observation/read/ack never advancing internal progress;
-- closure failing closed while any admitted work, required waiter/channel, owner transition, Resource reconciliation or terminal-output obligation remains unresolved;
-- counter exhaustion terminating before alias/wrap;
-- deletion/absence of evaluator/live observation/capability leaving zero solely owned Progress residue; and
-- sensitivity mutants actually turning red when readiness/fairness/closure protections are removed.
-
-## Claim limits
-
-This checkpoint contains construction only. It proves no Progress requirement, no engine-level acceptance, no native/CUDA scheduler behavior, no performance property, no CUDA-JS compatible pair, no product behavior and no release readiness.
-
-Progress must remain scheduler-neutral. A successful serial, round-robin, priority or other deterministic oracle schedule is semantic evidence only, not authority to select a production execution mechanism.
-
-No native code should be introduced to solve a missing generic capability in this leaf. A genuinely missing consumer-neutral GPU primitive should be classified as a CUDA-JS library gap with bounded requirements and separate qualification.
-
-## Cleanup state at checkpoint
-
-- protected `main` was not modified by this Progress construction;
-- `experimental/portfolio` was not modified by this Progress construction;
-- PR #160 and PR #166 were not modified by this Progress construction;
-- no temporary Progress workflow branch is required to resume;
-- no Progress PR exists yet;
-- no generated evidence is relied on outside GitHub source history.
-
-The handoff/checkpoint branch is the durable resume authority for this unfinished Progress leaf.
+The first safe next command/operation is the exact Composer + Progress projection qualification gate. Do not infer green Progress semantics from the existence of the current source alone.
