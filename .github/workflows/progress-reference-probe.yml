@@ -15,30 +15,70 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Run exact Composer, Progress projection, and Progress reference
-        continue-on-error: true
+      - name: Build exact Composer and Progress projection
         run: |
           node scripts/run-search-ir-composer-reference.mjs
           node scripts/export-search-ir-composer-progress-profiles.mjs
-          node scripts/run-progress-reference.mjs
-      - name: Red includes cooperative-claim falsifier
+      - name: Full Progress reference red probe
+        continue-on-error: true
+        run: node scripts/run-progress-reference.mjs
+      - name: Focused profile strict normalization
         if: ${{ always() }}
-        run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); if(!e.cases.some(({id,status})=>id==='progress-ready-after-publication'&&status==='fail')) process.exit(1);"
-      - name: Red includes continuation-bound falsifier
+        run: node scripts/run-progress-reference.mjs --case progress-profile-strict-normalization
+      - name: Focused ready after publication
         if: ${{ always() }}
-        run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); if(!e.cases.some(({id,status})=>id==='progress-pending-yields-worker'&&status==='fail')) process.exit(1);"
-      - name: Red includes starvation-classification falsifier
+        run: node scripts/run-progress-reference.mjs --case progress-ready-after-publication
+      - name: Focused pending yields worker
         if: ${{ always() }}
-        run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); if(!e.cases.some(({id,status})=>id==='progress-starvation-contract'&&status==='fail')) process.exit(1);"
-      - name: Red includes sensitivity falsifier
+        run: node scripts/run-progress-reference.mjs --case progress-pending-yields-worker
+      - name: Focused accounting conservation
         if: ${{ always() }}
-        run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); if(!e.cases.some(({id,status})=>id==='progress-oracle-sensitivity'&&status==='fail')) process.exit(1);"
-      - name: Red has no unexpected cases outside hypothesized set
+        run: node scripts/run-progress-reference.mjs --case progress-accounting-conservation
+      - name: Focused producer-unblocking fairness
         if: ${{ always() }}
-        run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); const allowed=new Set(['progress-ready-after-publication','progress-pending-yields-worker','progress-starvation-contract','progress-oracle-sensitivity']); const unexpected=e.cases.filter(({status})=>status==='fail').map(({id})=>id).filter((id)=>!allowed.has(id)); if(unexpected.length){console.error(unexpected.join(','));process.exit(1);}" 
-      - name: First semantic red evidence exists
+        run: node scripts/run-progress-reference.mjs --case progress-producer-unblocking-fairness
+      - name: Focused partial batch device flush
         if: ${{ always() }}
-        run: node --input-type=module -e "import { readFile } from 'node:fs/promises'; const e=JSON.parse(await readFile('experiments/search-semantics-reference/build/progress-evidence.json','utf8')); if(e.status!=='fail') process.exit(1);"
+        run: node scripts/run-progress-reference.mjs --case progress-partial-batch-device-flush
+      - name: Focused must-drain priority
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-must-drain-priority
+      - name: Focused starvation contract
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-starvation-contract
+      - name: Focused resource-recovery reserve
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-resource-recovery-reserve
+      - name: Focused scheduler semantic parity
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-scheduler-semantic-parity
+      - name: Focused mandatory wait cycle
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-mandatory-wait-cycle
+      - name: Focused deadlock vs quiescence
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-deadlock-vs-quiescence
+      - name: Focused livelock potential
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-livelock-potential
+      - name: Focused first stop cause
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-first-stop-cause
+      - name: Focused stale epoch isolation
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-stale-epoch-isolation
+      - name: Focused observation no progression
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-observation-no-progression
+      - name: Focused closure complete
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-closure-complete
+      - name: Focused owner deletion zero residue
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-owner-deletion-zero-residue
+      - name: Focused oracle sensitivity
+        if: ${{ always() }}
+        run: node scripts/run-progress-reference.mjs --case progress-oracle-sensitivity
       - name: Retain Progress probe evidence
         if: ${{ always() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -46,5 +86,5 @@ jobs:
           name: progress-reference-probe
           path: |
             experiments/search-ir-composer-reference/build/progress-profiles.json
-            experiments/search-semantics-reference/build/progress-evidence.json
-          if-no-files-found: warn
+            experiments/search-semantics-reference/build/progress-evidence*.json
+          if-no-files-found: error
