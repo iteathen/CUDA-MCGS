@@ -106,7 +106,10 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
     if (!Array.isArray(readyFacts) || readyFacts.some((fact) => fact?.state !== 'ready')) fail('RESOURCE_REFERENCE_READY_FACT', 'resource exhaustion may expose only already-ready semantic facts');
     const event = freeze({ cause, classId, terminal: terminal === true, recoverable: recoverable === true, requested, available, readyFacts }, 'Resource exhaustion event');
     exhaustionEvents.push(event);
-    if (terminal === true && firstTerminalCause === null) firstTerminalCause = event;
+    if (terminal === true) {
+      if (firstTerminalCause === null) firstTerminalCause = event;
+      if (lifecycle === 'active') lifecycle = 'draining';
+    }
     return {
       kind: terminal === true ? 'terminal-exhaustion' : 'pressure',
       code: causeCodes.get(cause) ?? 'resource-internal-failure',
