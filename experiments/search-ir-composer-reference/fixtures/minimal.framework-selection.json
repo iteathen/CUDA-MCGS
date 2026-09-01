@@ -70,7 +70,7 @@
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "8f5eec6453d06379d55395e5faad6a467a4eee1334d8f57d5212fcea2b390f28"
+        "sha256": "e84fed0143c74981f7753f94af2120fdd9cdaa3e9ec2d8012dc1fb5a0f8cb28c"
       }
     },
     {
@@ -127,7 +127,7 @@
       },
       "identity": {
         "algorithm": "sha256",
-        "sha256": "36db08b098bf2819813ea180a5aba7d7ee8715be9abed6c6b886942a37f24cf7"
+        "sha256": "3873d23af6d747cf9ae46362ab67a6b99c1bab250b9ad9bcf257de9a9ed76f7d"
       }
     },
     {
