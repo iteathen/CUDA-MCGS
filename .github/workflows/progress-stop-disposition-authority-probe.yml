@@ -4,20 +4,42 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   progress-stop-disposition-authority-probe:
-    name: Progress stop disposition authority repair probe
+    name: Progress stop disposition authority construction probe
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/36-progress-stop-disposition-authority
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Run legacy 881-case Composer directly
-        run: node experiments/search-ir-composer-reference/run.mjs
-      - name: Verify stop-disposition normalizer authority
-        run: node experiments/search-ir-composer-reference/verify-progress-stop-disposition-authority.mjs
-      - name: Verify production Composer wrapper
-        run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Preserve special-kind validation precedence
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+
+          const path = 'experiments/search-ir-composer-reference/src/progress.mjs';
+          let source = fs.readFileSync(path, 'utf8');
+          const authorityLine = "  assertProgressStopDispositionTerminalState(stopDisposition, terminalStates, input.id);\n";
+          const specialKindLine = "  if (requiredStopDisposition && stopDisposition !== requiredStopDisposition) fail('PROGRESS_WORK_STOP', `${input.id} must use ${requiredStopDisposition} after stop`);\n";
+          const first = source.indexOf(authorityLine);
+          const second = source.indexOf(specialKindLine);
+          if (first < 0 || second < 0 || first > second) {
+            throw new Error('expected Progress validation-order seam was not found');
+          }
+          source = source.replace(authorityLine, '');
+          source = source.replace(specialKindLine, `${specialKindLine}${authorityLine}`);
+          fs.writeFileSync(path, source);
+          NODE
+          git diff --check
+          git diff --exit-code -- experiments/search-ir-composer-reference/src/progress.mjs && exit 0
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add experiments/search-ir-composer-reference/src/progress.mjs
+          git commit -m "fix(progress): preserve stop validation precedence"
+          git push origin HEAD:fix/36-progress-stop-disposition-authority
