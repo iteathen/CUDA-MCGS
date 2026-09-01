@@ -4,6 +4,12 @@ CUDA-MCGS is a public pre-release, documentation-first project open to public co
 
 Before making a material change, read [`AGENTS.md`](AGENTS.md) and the relevant governance/specification files it routes to. The project is intentionally contract-first: proposals and experiments do not silently authorize production implementation.
 
+## AI-assisted development
+
+CUDA-MCGS may use substantial AI-agent assistance in coding, review, research, and documentation. AI-generated code, prose, analysis, and model review are working material, not authority, validation evidence, or an independent oracle. Contributors and maintainers remain responsible for understanding the change and for every architecture, correctness, lifecycle, provenance, security, compatibility, performance, and qualification claim attached to it.
+
+AI-assisted contributions are welcome under the same specification, review, and evidence bar as any other contribution. Routine AI use does not require a prompt log or tool inventory; disclose material assistance when it affects provenance, licensing, security review, reproducibility, or another repository requirement. Do not cite model agreement or model-to-model review as proof of correctness.
+
 ## Public contribution workflow
 
 Use the normal public GitHub contribution model:
