@@ -78,8 +78,13 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
     if (!lease) fail('RESOURCE_REFERENCE_LEASE', `unknown lease ${reference.leaseId}/${reference.generation}`);
     return lease;
   };
-  const requireActiveAdmission = () => {
-    if (lifecycle !== 'active') fail('RESOURCE_REFERENCE_ADMISSION_CLOSED', `Resource admission is closed in lifecycle state ${lifecycle}`);
+  const requireActiveAdmission = (input = null) => {
+    if (lifecycle === 'active') return;
+    if (lifecycle === 'draining' && input?.reserveId !== null && input?.reserveId !== undefined) {
+      const reserve = reserveById.get(input.reserveId);
+      if (reserve && ['terminal-result', 'progress-cleanup'].includes(reserve.purpose)) return;
+    }
+    fail('RESOURCE_REFERENCE_ADMISSION_CLOSED', `Resource admission is closed in lifecycle state ${lifecycle}`);
   };
   const accounting = (classId) => {
     const entry = resourceClass(classId);
@@ -164,7 +169,7 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
   }
 
   function planReservation(input, { countFailure = true } = {}) {
-    requireActiveAdmission();
+    requireActiveAdmission(input);
     const entry = resourceClass(text(input.classId, 'classId'));
     const quantity = dec(input.quantity, 'reservation quantity');
     if (quantity <= 0n) fail('RESOURCE_REFERENCE_QUANTITY', 'reservation quantity must be positive');

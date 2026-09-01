@@ -119,6 +119,10 @@ export function registerResourcePressureExhaustionCases({ defineCase, projection
       { code: 'RESOURCE_REFERENCE_ADMISSION_CLOSED' },
       'terminal resource exhaustion must close new admission without a host decision',
     );
+    const terminalReserve = reserveByPurpose(base, 'terminal-result');
+    const terminalLease = reservedLeaseInput(base, terminalReserve, 'terminal-after-stop', { quantity: terminalReserve.minimum });
+    assert.equal(oracle.reserveResource(terminalLease).kind, 'claimed', 'draining must preserve the predeclared terminal publication reserve');
+    oracle.releaseResource(leaseRef(terminalLease));
     oracle.releaseResource(leaseRef(existing));
     oracle.markTerminal();
     assert.equal(oracle.cleanup().runtimeResidue, 0);
