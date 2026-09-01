@@ -8,14 +8,16 @@ permissions:
 
 jobs:
   progress-stop-disposition-authority-probe:
-    name: Progress stop disposition authority red probe
+    name: Progress stop disposition authority repair probe
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Prove frozen Composer still accepts the current profiles
-        run: node scripts/run-search-ir-composer-reference.mjs
-      - name: Falsify stop-disposition terminal authority
+      - name: Run legacy 881-case Composer directly
+        run: node experiments/search-ir-composer-reference/run.mjs
+      - name: Verify stop-disposition normalizer authority
+        run: node experiments/search-ir-composer-reference/verify-progress-stop-disposition-authority.mjs
+      - name: Re-run original fixture-level falsifier
         run: node experiments/search-ir-composer-reference/probe-progress-stop-disposition-authority.mjs
