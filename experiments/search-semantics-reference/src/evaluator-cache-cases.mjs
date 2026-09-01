@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 
 import { createEvaluatorOracle } from './evaluator.mjs';
-import { cacheKey, getProfile, ref, requestInput, resultsFor } from './evaluator-case-support.mjs';
+import { cacheKey, evaluatorKey, form, getProfile, ref, requestInput, resultsFor, workspaceAdmission } from './evaluator-case-support.mjs';
 
 export function registerEvaluatorCacheCases({ defineCase, projection }) {
   const vector = getProfile(projection, 'evaluator.synthetic-vector-combined');
+  const sensitive = getProfile(projection, 'evaluator.synthetic-batch-sensitive-resumable');
 
   defineCase('evaluator-cache-full-key-collision', () => {
     const oracle = createEvaluatorOracle({ profile: vector });
@@ -107,4 +108,70 @@ export function registerEvaluatorCacheCases({ defineCase, projection }) {
     assert.equal(oracle.cleanup().runtimeResidue, 0);
     return { generationBeyondUint64Exact: next };
   }, ['EVAL-CACHE-008', 'EVAL-REUSE-006']);
+
+  defineCase('evaluator-cache-mutable-state-invalidation', () => {
+    assert.equal(sensitive.mutableState.kind, 'selected');
+    assert.equal(sensitive.batching.continuation.kind, 'bounded');
+    assert.equal(sensitive.cache.kind, 'selected');
+    assert(sensitive.cache.keyFacts.includes('state-generation'));
+
+    const oracle = createEvaluatorOracle({ profile: sensitive, admission: { maxCacheEntries: '1' } });
+    const oldInputKey = evaluatorKey(sensitive, 'mutable-cache-old', { 'state-generation': '0' });
+    const oldCacheKey = cacheKey(sensitive, 'mutable-cache-old', { 'state-generation': '0' });
+    const oldResultInput = requestInput(sensitive, 'mutable-cache-old', { inputKey: oldInputKey, cacheKey: oldCacheKey });
+    oracle.claimCacheEntry({ entryId: 'mutable-cache-old', generation: '1', hash: 'old-state', keyFacts: oldCacheKey });
+    oracle.publishCacheEntry({ entryId: 'mutable-cache-old', generation: '1', results: resultsFor(sensitive, [oldResultInput])[0].capabilities });
+    oracle.protectCacheEntry({ entryId: 'mutable-cache-old', protected: true });
+
+    const pressureKey = cacheKey(sensitive, 'mutable-cache-pressure', { 'state-generation': '0' });
+    assert.deepEqual(
+      oracle.claimCacheEntry({ entryId: 'mutable-cache-pressure', generation: '1', hash: 'pressure', keyFacts: pressureKey }),
+      { kind: 'pressure', code: sensitive.cache.pressureStatus },
+      'old-state cache occupancy must remain finite and report typed pressure',
+    );
+
+    const updateInputKey = evaluatorKey(sensitive, 'mutable-cache-update', { 'state-generation': '0' });
+    const updateCacheKey = cacheKey(sensitive, 'mutable-cache-update', { 'state-generation': '0' });
+    const updateInput = requestInput(sensitive, 'mutable-cache-update', { inputKey: updateInputKey, cacheKey: updateCacheKey });
+    oracle.admitRequest(updateInput);
+    form(oracle, sensitive, 'mutable-cache-batch', [updateInput]);
+    const pending = oracle.executeBatch({
+      batchId: 'mutable-cache-batch',
+      continuation: { kind: 'pending', progressToken: 'progress-1', workspaceAdmission: workspaceAdmission(sensitive, 'per-continuation', 'mutable-cache') },
+      results: [],
+    });
+    oracle.resumeBatch({
+      batchId: 'mutable-cache-batch', continuationId: pending.continuationId, resumeId: 'finish-mutable-cache',
+      continuation: { kind: 'complete' }, results: resultsFor(sensitive, [updateInput]),
+    });
+    assert.equal(oracle.commitMutableState({
+      batchId: 'mutable-cache-batch', certain: true, expectedGeneration: '0', nextGeneration: '1', updateIdentity: 'mutable-cache-update-1',
+    }).kind, 'committed');
+    assert.equal(oracle.snapshot().mutableStateGeneration, '1');
+    assert.equal(
+      oracle.lookupCache({ hash: 'old-state', keyFacts: oldCacheKey }).kind,
+      'miss',
+      'cache entry bound to state-generation 0 must become non-hittable when mutable state commits generation 1',
+    );
+    assert.deepEqual(
+      oracle.retireCacheEntry({ entryId: 'mutable-cache-old', reason: 'old-state-generation' }),
+      { kind: 'pending', code: 'cache-entry-protected' },
+      'invalidation must preserve protection while removing hit eligibility',
+    );
+    oracle.protectCacheEntry({ entryId: 'mutable-cache-old', protected: false });
+    assert.equal(oracle.retireCacheEntry({ entryId: 'mutable-cache-old', reason: 'old-state-generation' }).kind, 'retired');
+
+    const newInputKey = evaluatorKey(sensitive, 'mutable-cache-new', { 'state-generation': '1' });
+    const newCacheKey = cacheKey(sensitive, 'mutable-cache-new', { 'state-generation': '1' });
+    const newResultInput = requestInput(sensitive, 'mutable-cache-new', { inputKey: newInputKey, cacheKey: newCacheKey });
+    assert.equal(oracle.claimCacheEntry({ entryId: 'mutable-cache-new', generation: '1', hash: 'new-state', keyFacts: newCacheKey }).kind, 'claimed');
+    assert.equal(oracle.publishCacheEntry({
+      entryId: 'mutable-cache-new', generation: '1', results: resultsFor(sensitive, [newResultInput])[0].capabilities,
+    }).kind, 'ready');
+    assert.equal(oracle.lookupCache({ hash: 'new-state', keyFacts: newCacheKey }).kind, 'hit');
+
+    oracle.scatterBatch({ batchId: 'mutable-cache-batch' });
+    assert.equal(oracle.cleanup().runtimeResidue, 0);
+    return { resumable: true, mutableGeneration: '1', oldGenerationMiss: true, typedCachePressure: true, protectedInvalidationSafe: true };
+  }, ['EVAL-BATCH-006', 'EVAL-BATCH-009', 'EVAL-BATCH-010', 'EVAL-CACHE-002', 'EVAL-CACHE-007', 'EVAL-CACHE-008', 'EVAL-CLEANUP-001']);
 }
