@@ -121,6 +121,7 @@ export function registerResourceAdmissionCases({ defineCase, projection }) {
   defineCase('resource-lease-epoch-and-generation-identity', () => {
     const oracle = activeResourceOracle(base);
     const working = classBySuffix(base, 'class-output-working');
+    const otherClass = classBySuffix(base, 'class-terminal-envelope');
     const epochs = {
       engine: '18446744073709551616',
       session: '340282366920938463463374607431768211457',
@@ -131,13 +132,29 @@ export function registerResourceAdmissionCases({ defineCase, projection }) {
     oracle.reserveResource(first);
     const observed = oracle.snapshot().leases.find(({ leaseId }) => leaseId === first.leaseId);
     assert.deepEqual(observed.epochs, epochs, 'lease identity must preserve arbitrary-width owner epochs exactly');
+    assert.throws(
+      () => oracle.releaseResource({ ...leaseRef(first), owner: 'owner.forged' }),
+      { code: 'RESOURCE_REFERENCE_LEASE_IDENTITY' },
+      'matching lease id/generation cannot forge owner authority',
+    );
+    assert.throws(
+      () => oracle.releaseResource({ ...leaseRef(first), classId: otherClass.id }),
+      { code: 'RESOURCE_REFERENCE_LEASE_IDENTITY' },
+      'matching lease id/generation cannot relabel the owned Resource class',
+    );
+    assert.throws(
+      () => oracle.releaseResource({ ...leaseRef(first), epochs: { ...epochs, root: (BigInt(epochs.root) + 1n).toString() } }),
+      { code: 'RESOURCE_REFERENCE_LEASE_IDENTITY' },
+      'matching lease id/generation cannot cross a root/work incarnation boundary',
+    );
+    assert.equal(oracle.snapshot().leases.find(({ leaseId }) => leaseId === first.leaseId).state, 'claimed', 'forged references must not mutate the authoritative lease');
     oracle.releaseResource(leaseRef(first));
     assert.throws(() => oracle.reserveResource(first), { code: 'RESOURCE_REFERENCE_GENERATION' });
     const second = { ...first, generation: '2' };
     assert.equal(oracle.reserveResource(second).kind, 'claimed');
     oracle.releaseResource(leaseRef(second));
     assert.equal(oracle.cleanup().runtimeResidue, 0);
-    return { staleGenerationRejected: true, epochsPreserved: true };
+    return { staleGenerationRejected: true, epochsPreserved: true, forgedReferenceRejected: true };
   }, ['RESOURCE-ADMIT-004', 'RESOURCE-ADMIT-010', 'RESOURCE-LIFE-002']);
 
   defineCase('resource-protected-reserves', () => {
