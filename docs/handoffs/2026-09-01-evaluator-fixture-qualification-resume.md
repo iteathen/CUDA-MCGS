@@ -97,6 +97,16 @@ It passed:
 
 The Composer capsule remained exactly 881 discovered / 881 executed / 881 passed / 0 failed throughout the qualified final Graph chain.
 
+Docs-only head `27f30782a7b664a5d1985e367a0881dc07286a2b` was then independently rerun by ordinary workflow `33549914617`; Windows, Ubuntu, governance, Policy, every Graph owner, and aggregate `verify` all passed again.
+
+## PR-ready transition and cleanup
+
+The connected GitHub ready-for-review mutation failed client-side because its GraphQL selection requested repository field `fullDatabaseId`, which GitHub does not expose. A direct REST merge attempt then correctly returned `405` because PR #162 was still a draft.
+
+To avoid bypassing draft semantics, branch-only temporary workflow `temp-ready-pr-162.yml` used the repository-scoped `GITHUB_TOKEN` with only `contents: write` and `pull-requests: write` to run GitHub CLI `gh pr ready 162`. Workflow run `33550268599` succeeded, GitHub changed PR #162 to non-draft, and the workflow removed itself and pushed self-clean commit `b11e0e55b195fe5bbf2ebce156c6680e314e3fc0`.
+
+The temporary ready workflow is absent from the resulting PR diff. No source, fixture, evidence, specification, or runtime behavior changed in that transition. This documentation commit is the final user-originated branch mutation after the self-cleaning transport and must pass the ordinary permanent gate before merge.
+
 ## Claim limits
 
 This establishes that the required combined resumable + mutable-state + cache fixture is present and that its corrected representation can be propagated through the existing Domain/Policy/Graph reference evidence without a demonstrated semantic regression.
@@ -105,4 +115,4 @@ It does not establish final REF-EVALUATOR-01 behavioral acceptance, native CUDA 
 
 ## Next action
 
-PR #162 is ready for ordinary review/merge into `experimental/portfolio` if repository review policy is satisfied. After it lands, rebase/reassess draft PR #160 against the exact new `experimental/portfolio` head and continue REF-EVALUATOR-01 whole-spec review. Do not move directly to native/runtime construction before evaluator semantic acceptance and the later atomic acceptance gate.
+PR #162 is technically ready to merge into `experimental/portfolio` after this final documentation head passes the ordinary permanent workflow. After it lands, reassess/rebase draft PR #160 against the exact new `experimental/portfolio` head and continue REF-EVALUATOR-01 whole-spec review. Do not move directly to native/runtime construction before evaluator semantic acceptance and the later atomic acceptance gate.
