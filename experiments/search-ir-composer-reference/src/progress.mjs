@@ -222,10 +222,10 @@ function normalizeWorkClass(input, index, contributorById, resourceClassById, re
   const terminalStates = enumSet(input.terminalStates, TERMINAL_STATES, 'PROGRESS_WORK_TERMINAL', `${input.id} terminalStates`, 3);
   for (const required of ['failed', 'cancelled']) if (!terminalStates.includes(required)) fail('PROGRESS_WORK_TERMINAL', `${input.id} omits ${required} terminal disposition`);
   const stopDisposition = assertEnum(input.stopDisposition, ['service', 'drain', 'abandon', 'cancel', 'stale-dispose'], 'PROGRESS_WORK_STOP', `${input.id} stopDisposition`);
-  assertProgressStopDispositionTerminalState(stopDisposition, terminalStates, input.id);
   const requiredStopDisposition = ['must-drain', 'terminal-output'].includes(input.kind) ? 'drain'
     : (['producer-unblocking', 'resource-recovery'].includes(input.kind) ? 'service' : null);
   if (requiredStopDisposition && stopDisposition !== requiredStopDisposition) fail('PROGRESS_WORK_STOP', `${input.id} must use ${requiredStopDisposition} after stop`);
+  assertProgressStopDispositionTerminalState(stopDisposition, terminalStates, input.id);
   return {
     id: input.id, version: input.version, owner: input.owner,
     kind: assertEnum(input.kind, WORK_KINDS, 'PROGRESS_WORK_KIND', `${input.id} kind`),
