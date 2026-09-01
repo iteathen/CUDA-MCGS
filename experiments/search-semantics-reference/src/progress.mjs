@@ -159,6 +159,7 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
       claimId: null,
       readyAtOpportunity: null,
       continuationId: null,
+      continuationDepth: 0n,
       irreversibleResultVisible: input.irreversibleResultVisible === true,
       staleEpoch: false,
     };
@@ -219,9 +220,14 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
 
   function claimReady(input) {
     const item = find(input);
+    const cls = workClass(item.classId);
+    const claimId = text(input.claimId, 'claimId');
+    if (item.state === 'claimed' && cls.claim === 'idempotent-cooperative') {
+      if (item.claimId !== claimId) fail('PROGRESS_REFERENCE_CLAIM', 'cooperative work is already owned by a different claim');
+      return { kind: 'claimed', claimId, workId: item.workId, incarnation: item.incarnationText, cooperative: true };
+    }
     if (item.state !== 'ready') fail('PROGRESS_REFERENCE_CLAIM', 'work is not ready');
     if (starvationEvidence && mutations.skipFairness !== true) fail('PROGRESS_REFERENCE_STARVATION', 'selected fairness contract was violated before claim');
-    const cls = workClass(item.classId);
     if (cls.batch.kind === 'device-flush') {
       const readyItems = dec(input.batchReadyItems ?? '1', 'batch ready items');
       if (readyItems < dec(cls.batch.minimumItems) || readyItems > dec(cls.batch.maximumItems)) fail('PROGRESS_REFERENCE_BATCH', 'batch ready count is outside normalized bounds');
@@ -230,7 +236,6 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
         return { kind: 'pending', code: 'producer-unavailable', opportunitiesUntilFlush: (dec(cls.batch.flushAfterOpportunities) - waited).toString() };
       }
     }
-    const claimId = text(input.claimId, 'claimId');
     item.state = 'claimed';
     item.claimId = claimId;
     item.readyAtOpportunity = null;
@@ -242,10 +247,14 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
     if (item.state !== 'claimed') fail('PROGRESS_REFERENCE_YIELD', 'only claimed work can yield pending');
     const dependencyId = text(input.dependencyId, 'yield dependencyId');
     if (!item.dependencies.has(dependencyId)) fail('PROGRESS_REFERENCE_DEPENDENCY', 'yield dependency is not declared by the work class');
+    const cls = workClass(item.classId);
+    const nextContinuationDepth = item.continuationDepth + 1n;
+    if (nextContinuationDepth > dec(cls.bounds.maxContinuationDepth)) fail('PROGRESS_REFERENCE_CONTINUATION', 'continuation depth exceeds normalized work-class bound');
     item.dependencies.set(dependencyId, 'pending');
     item.state = 'pending';
     item.claimId = null;
     item.continuationId = text(input.continuationId, 'continuationId');
+    item.continuationDepth = nextContinuationDepth;
     return { kind: 'pending', dependencyId, continuationId: item.continuationId, workerReleased: true };
   }
 
@@ -331,37 +340,39 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
   }
 
   function classifyNoProgress(input = {}) {
-    if ([...work.values()].some((item) => ['ready', 'claimed'].includes(item.state))) fail('PROGRESS_REFERENCE_PROGRESS_AVAILABLE', 'no-progress classification cannot run while work is ready/claimed');
     let outcome;
     if (starvationEvidence && mutations.skipFairness !== true) outcome = 'starvation';
-    else if (input.counterExhausted === true) outcome = 'counter-exhausted';
-    else if (input.repeatedTransitions !== undefined && dec(input.repeatedTransitions, 'repeatedTransitions') >= dec(profile.noProgress.maxRepeatedTransitions) && input.potentialChanged !== true) outcome = 'livelock';
     else {
-      const pending = [...work.values()].filter((item) => item.state === 'pending');
-      const waitEdges = input.waitEdges ?? [];
-      if (!Array.isArray(waitEdges) || waitEdges.length > Number(dec(profile.noProgress.maxEvidenceRecords))) fail('PROGRESS_REFERENCE_WAIT_GRAPH', 'wait graph evidence exceeds normalized bound');
-      const pendingIds = new Set(pending.map((item) => item.workId));
-      const normalizedEdges = waitEdges.map((edge) => {
-        const from = text(edge.from, 'wait edge from');
-        const to = text(edge.to, 'wait edge to');
-        if (!pendingIds.has(from) || !pendingIds.has(to)) fail('PROGRESS_REFERENCE_WAIT_GRAPH', 'wait graph edge must reference pending admitted work');
-        return { from, to };
-      });
-      if (normalizedEdges.length > 0 && hasCycle(normalizedEdges)) outcome = 'deadlock';
-      else if (input.orphanedWorkId !== undefined) {
-        const orphaned = text(input.orphanedWorkId, 'orphanedWorkId');
-        if (!pendingIds.has(orphaned)) fail('PROGRESS_REFERENCE_ORPHAN', 'orphaned work must be pending admitted work');
-        outcome = 'orphaned-work';
-      } else if (input.externalWait === true) {
-        if (profile.noProgress.externalWait.kind !== 'session-only') fail('PROGRESS_REFERENCE_EXTERNAL_WAIT', 'profile does not select live Session external wait');
-        const nonExternal = pending.filter((item) => workClass(item.classId).kind !== 'external-control');
-        if (nonExternal.length !== 0) fail('PROGRESS_REFERENCE_EXTERNAL_WAIT', 'external wait cannot hide active internal pending work');
-        outcome = 'legitimate-external-wait';
-      } else if (input.resourceRecoverable === true) outcome = 'recoverable-resource-wait';
-      else if (pending.length !== 0) outcome = 'producer-pending';
+      if ([...work.values()].some((item) => ['ready', 'claimed'].includes(item.state))) fail('PROGRESS_REFERENCE_PROGRESS_AVAILABLE', 'no-progress classification cannot run while work is ready/claimed');
+      if (input.counterExhausted === true) outcome = 'counter-exhausted';
+      else if (input.repeatedTransitions !== undefined && dec(input.repeatedTransitions, 'repeatedTransitions') >= dec(profile.noProgress.maxRepeatedTransitions) && input.potentialChanged !== true) outcome = 'livelock';
       else {
-        const terminalItems = [...work.values()].filter((item) => terminal(item.state));
-        outcome = terminalItems.length > 0 && terminalItems.every((item) => item.state === 'stale-disposed') ? 'stale-only' : 'terminal-quiescent';
+        const pending = [...work.values()].filter((item) => item.state === 'pending');
+        const waitEdges = input.waitEdges ?? [];
+        if (!Array.isArray(waitEdges) || waitEdges.length > Number(dec(profile.noProgress.maxEvidenceRecords))) fail('PROGRESS_REFERENCE_WAIT_GRAPH', 'wait graph evidence exceeds normalized bound');
+        const pendingIds = new Set(pending.map((item) => item.workId));
+        const normalizedEdges = waitEdges.map((edge) => {
+          const from = text(edge.from, 'wait edge from');
+          const to = text(edge.to, 'wait edge to');
+          if (!pendingIds.has(from) || !pendingIds.has(to)) fail('PROGRESS_REFERENCE_WAIT_GRAPH', 'wait graph edge must reference pending admitted work');
+          return { from, to };
+        });
+        if (normalizedEdges.length > 0 && hasCycle(normalizedEdges)) outcome = 'deadlock';
+        else if (input.orphanedWorkId !== undefined) {
+          const orphaned = text(input.orphanedWorkId, 'orphanedWorkId');
+          if (!pendingIds.has(orphaned)) fail('PROGRESS_REFERENCE_ORPHAN', 'orphaned work must be pending admitted work');
+          outcome = 'orphaned-work';
+        } else if (input.externalWait === true) {
+          if (profile.noProgress.externalWait.kind !== 'session-only') fail('PROGRESS_REFERENCE_EXTERNAL_WAIT', 'profile does not select live Session external wait');
+          const nonExternal = pending.filter((item) => workClass(item.classId).kind !== 'external-control');
+          if (nonExternal.length !== 0) fail('PROGRESS_REFERENCE_EXTERNAL_WAIT', 'external wait cannot hide active internal pending work');
+          outcome = 'legitimate-external-wait';
+        } else if (input.resourceRecoverable === true) outcome = 'recoverable-resource-wait';
+        else if (pending.length !== 0) outcome = 'producer-pending';
+        else {
+          const terminalItems = [...work.values()].filter((item) => terminal(item.state));
+          outcome = terminalItems.length > 0 && terminalItems.every((item) => item.state === 'stale-disposed') ? 'stale-only' : 'terminal-quiescent';
+        }
       }
     }
     if (!profile.noProgress.outcomes.includes(outcome)) fail('PROGRESS_REFERENCE_NO_PROGRESS', `undeclared no-progress outcome ${outcome}`);
@@ -419,6 +430,7 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
         reason: item.reason,
         ownerFailure: canonicalClone(item.ownerFailure),
         claimId: item.claimId,
+        continuationDepth: item.continuationDepth.toString(),
         irreversibleResultVisible: item.irreversibleResultVisible,
         staleEpoch: item.staleEpoch,
       })),
