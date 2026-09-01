@@ -2,15 +2,19 @@ import assert from 'node:assert/strict';
 
 import { activeProgressOracle, admitAndReady, stableProgressSnapshot, workRef } from './progress-case-support.mjs';
 
-function independentClasses(profile) {
-  const entries = profile.workClasses.filter((workClass) => workClass.batch.kind === 'none' && workClass.readiness.dependencies.length === 0);
-  assert(entries.length >= 2, 'Progress schedule parity requires at least two independent non-batched work classes');
+function scheduleClasses(profile) {
+  const ordinaryFairness = profile.fairnessClasses.find(({ closurePriority }) => closurePriority === false);
+  assert(ordinaryFairness, 'missing ordinary Progress fairness class');
+  const entries = profile.workClasses.filter((workClass) =>
+    ordinaryFairness.classes.includes(workClass.id)
+    && workClass.batch.kind === 'none');
+  assert(entries.length >= 2, 'Progress schedule parity requires at least two ordinary non-batched work classes');
   return entries.slice(0, 2);
 }
 
 function prepared(profile) {
   const oracle = activeProgressOracle(profile);
-  const [leftClass, rightClass] = independentClasses(profile);
+  const [leftClass, rightClass] = scheduleClasses(profile);
   const left = admitAndReady(oracle, profile, leftClass, 'schedule-left');
   const right = admitAndReady(oracle, profile, rightClass, 'schedule-right');
   return { oracle, left, right };

@@ -42,9 +42,8 @@ export function ordinaryWorkClass(profile) {
   assert(ordinaryFairness, 'missing ordinary Progress fairness class');
   const entry = profile.workClasses.find((workClass) =>
     ordinaryFairness.classes.includes(workClass.id)
-    && workClass.batch.kind === 'none'
-    && workClass.readiness.dependencies.length === 0);
-  assert(entry, 'missing independent ordinary Progress work class');
+    && workClass.batch.kind === 'none');
+  assert(entry, 'missing ordinary non-batched Progress work class');
   return entry;
 }
 
