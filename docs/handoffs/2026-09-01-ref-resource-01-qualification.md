@@ -29,13 +29,15 @@ The requirement-coverage registry classified 34 requirements directly to `ENGINE
 - failed reservations consume no live capacity;
 - compound admission is all-or-none;
 - claimed/published/retired-unreclaimed/quarantined capacity remains conserved;
+- a lease binds owner, class, generation and exact engine/session/root/work incarnation identity;
 - retired is not free until the semantic owner proves quiescence/disposition;
 - pressure is a typed fact and never chooses Graph/Evaluator/Output/Policy response;
 - first terminal Resource exhaustion cause is immutable;
 - counter/identity/generation exhaustion never wraps into aliases;
 - terminal exhaustion closes ordinary admission while preserving predeclared terminal/progress closure reserves;
 - root/session/work epochs remain exact until owner disposition;
-- teardown cannot silently balance ledgers by inventing another owner's disposition.
+- teardown cannot silently balance ledgers by inventing another owner's disposition; and
+- the normalized Resource plan is immutable for one engine incarnation rather than mutated by runtime contributor deletion.
 
 The existing Composer Resource profiles supply exact contributors, classes, pools/partitions, reserves, admission groups, ledgers, watermarks, exhaustion metadata, lifecycle and cleanup contracts. The reference therefore consumes those normalized facts rather than defining an allocator, scheduler or new Resource schema.
 
@@ -43,7 +45,7 @@ The existing Composer Resource profiles supply exact contributors, classes, pool
 
 The smallest sufficient reference is an in-memory deterministic semantic ledger using ordinary JavaScript `Map`, `Set` and `BigInt` as oracle mechanisms only. Production layout, CUDA atomics, memory ordering and allocation remain downstream.
 
-The plan implemented:
+The implemented plan:
 
 1. rebuild Domain -> Graph -> Evaluator -> Policy -> Resource through the existing normalizers;
 2. assert all three Resource identities equal Composer-published identities;
@@ -51,7 +53,8 @@ The plan implemented:
 4. implement one owner-local Resource oracle for leases, compound transactions, accounting, pressure, exhaustion and cleanup;
 5. derive the 34 direct requirement IDs from `SPEC-0011`, cross-check their registry owner/count, and require every one to map to the checked-in case bank;
 6. add explicit sensitivity mutants for retired-capacity/quiescence failures;
-7. add a peer permanent `Resource reference` workflow job and include it in aggregate fail-closed `verify`.
+7. add a peer permanent `Resource reference` workflow job and include it in aggregate fail-closed `verify`; and
+8. perform whole-owner author review after the first green permanent run instead of treating CI as proof.
 
 ## Exact normalized inputs
 
@@ -90,53 +93,83 @@ The repair requires explicit injected teardown facts:
 - `retiredReleaseAuthorized` for retired-unreclaimed capacity after owner quiescence/disposition;
 - `quarantineReleaseAuthorized` for quarantined capacity recovery.
 
-The teardown case now proves each missing authority fails closed before the final fully authorized release.
+The teardown case proves each missing authority fails closed before the final fully authorized release.
 
 ### 3. Resource invented a Policy-owned status
 
 The oracle initially mapped normalized exhaustion cause `policy-budget` to an invented `resource-policy-budget` status that is absent from the Resource status table. Resource owns the exact cause but not Policy's budget-status vocabulary.
 
-The repair preserves `policy-budget` as the exact typed cause and returns no Resource-owned status code for that cause. The focused falsifier asserts this explicitly.
+The repair preserves `policy-budget` as the exact typed cause and returns no Resource-owned status code for that cause. The falsifier asserts this explicitly.
 
-## Current semantic evidence
+### 4. Lease lookup did not authenticate the full stale-safe identity
 
-Semantic checkpoint before this documentation commit:
+Whole-owner author review then found that a lease stored class, owner and engine/session/root/work epochs, but `findLease()` originally authenticated only `leaseId + generation`. A forged reference carrying a valid id/generation pair could therefore attempt to release, retire, reclaim or quarantine another owner's or another epoch's lease.
 
-`ref/resource-01@bcd36f10b94198d0dc5a704326a84a9e9803bec6`.
+That violated `RESOURCE-ADMIT-004` and weakened `RESOURCE-LIFE-002`.
 
-Focused and full qualification on the final semantic sources passed:
+The repair keeps `leaseId + generation` as the lookup coordinate but requires the reference to match the authoritative:
+
+- Resource class;
+- owner; and
+- canonical `{engine, session, root, work}` epoch tuple.
+
+Epoch admission itself is strict: exactly those four fields, each a canonical arbitrary-width decimal. The case bank now proves wrong owner, wrong class and wrong root epoch all fail before accounting mutation. Canonical-byte comparison is used so semantic identity is independent of JavaScript property order.
+
+### 5. Runtime contributor removal contradicted the immutable Resource plan
+
+Author review also found an unused `removeContributor()` runtime API that mutated the active Resource class set. SPEC-0011 requires plan capacity/ownership to remain immutable for one engine incarnation; contributor/capability/product deletion is a specialization/deletion test that produces a different normalized profile, not an in-place runtime reconfiguration port.
+
+The API and its mutable `removedContributors` bookkeeping were deleted. The existing structural `resource-absent-owner-zero-residue` / Composer deletion evidence remains the correct owner for contributor absence. This reduces the reference surface and removes a second source of plan authority rather than adding compatibility machinery around an invalid abstraction.
+
+## Qualified semantic evidence
+
+Qualified semantic head:
+
+`ref/resource-01@92ac028a3808e35f9147f85a4bb720f9510df345`.
+
+Permanent workflow run `33556635607` passed completely on that exact head, including:
+
+- governance verification;
+- Windows and Ubuntu Search IR reference;
+- Policy reference;
+- Graph NODE, EDGE, REF, PATH, ROOT, RECLAIM, ADVANCE occurrence and CLEANUP references;
+- Resource reference; and
+- aggregate fail-closed `verify`.
+
+Resource job `100018954321` recorded:
 
 - expected/discovered/executed/passed: `23/23/23/23`;
-- failed: `0`;
-- all `34/34` direct Resource reference obligations have mapped case coverage;
-- Resource evidence SHA-256 `6501158672c1a54f023947215128e9d00ac4cb7cc2914381ab660f1ca65f1c30`;
-- Resource evidence canonical bytes `12343`.
+- failed/not-discovered/not-executed: `0/0/0`;
+- all `34/34` direct Resource reference obligations mapped to checked cases;
+- Resource evidence SHA-256 `d33d1faf579f758e658459bc0d4066dce22d2a6255477d1e29a9c8309e017b72`;
+- Resource evidence canonical bytes `12374`.
 
-The case bank covers single/compound admission, claim/publish/release, retired-not-free, quarantine visibility, exact lease generations/epochs, closure reserves, pressure ownership/recovery, exact exhaustion causes, first-cause immutability, counter-vs-capacity exhaustion, ready-only partial facts, terminal draining, no host growth, schedule-invariant conservation, lifecycle closure, root-update reject/no-mutation, explicit teardown authority, arbitrary-width counters, evaluator-absent zero residue, and sensitivity mutants.
+The case bank covers single/compound admission, claim/publish/release, retired-not-free, quarantine visibility, complete stale-safe lease identity, exact arbitrary-width generations/epochs, closure reserves, pressure ownership/recovery, exact exhaustion causes, first-cause immutability, counter-vs-capacity exhaustion, ready-only partial facts, terminal draining, no host growth, schedule-invariant conservation, lifecycle closure, root-update reject/no-mutation, explicit teardown authority, arbitrary-width counters, evaluator-absent zero residue, and sensitivity mutants.
 
 ## Permanent gate
 
-`.github/workflows/docs.yml` now contains a peer `Resource reference` job that runs:
+`.github/workflows/docs.yml` contains a peer `Resource reference` job that runs:
 
 ```text
 Composer -> Resource profile projection -> Resource reference
 ```
 
-It retains `resource-profiles.json` and `resource-evidence.json`. Aggregate `verify` now fails closed unless the Resource job succeeds alongside governance, Windows/Ubuntu Search IR, Policy and all integrated Graph peer jobs.
+It retains `resource-profiles.json` and `resource-evidence.json`. Aggregate `verify` fails closed unless the Resource job succeeds alongside governance, Windows/Ubuntu Search IR, Policy and all integrated Graph peer jobs.
 
-This documentation commit is intentionally user-originated so the ordinary PR workflow can qualify one exact final head after the preceding self-cleaning repair workflows, whose `GITHUB_TOKEN` pushes do not constitute the final PR gate.
+This documentation update changes no semantic source. It exists to bind the review record to the final qualified semantic head and evidence. The resulting docs-only PR head must still pass the ordinary permanent workflow before author review is frozen.
 
 ## Cleanup and claim limits
 
 Cleanup performed:
 
-- all temporary Resource probe/repair/wiring workflows removed from the Resource branch;
-- failed disposable automation finalizer branch deleted;
+- all temporary Resource probe/repair/wiring/lease-authority workflows removed from the Resource branch; only permanent `docs.yml` remains under `.github/workflows/`;
+- failed disposable automation/finalizer state removed;
 - generated `build/` artifacts remain disposable and are not checked in;
+- runtime contributor-removal mutation removed rather than retained as dead compatibility surface;
 - protected `main` unchanged;
 - `experimental/portfolio` unchanged until reviewed integration;
 - `ref/evaluator-01`/#160 unchanged by this Resource leaf.
 
 This evidence does **not** establish #122 atomic contract acceptance, physical CUDA allocation feasibility, concurrent native atomics/fences, CUDA-JS compatible-pair qualification, Progress scheduling/fairness, product behavior, performance, release readiness or protected-main acceptance.
 
-The next gate is the complete ordinary permanent PR workflow on the exact user-originated head containing this record, followed by whole-diff author review and the independent-review/owner-authorization requirement appropriate to Resource conservation/exhaustion semantics.
+The next gate is the complete ordinary permanent PR workflow on the exact docs-only head containing this record, followed by final whole-diff author review. Because the leaf owns conservation, exhaustion, lease identity and lifecycle behavior, author review is not independent approval; integration still requires the independent-review or explicit repository-owner exact-head authorization allowed by repository policy.
