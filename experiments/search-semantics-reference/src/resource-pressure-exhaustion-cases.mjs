@@ -62,8 +62,11 @@ export function registerResourcePressureExhaustionCases({ defineCase, projection
     assert.equal(event.cause, 'fragmentation-fit');
     assert.equal(event.readyFacts.length, 1);
     assert.equal(Object.hasOwn(event, 'value'), false, 'Resource exhaustion must not fabricate a semantic value');
+    const policyBudget = oracle.recordExhaustion({ cause: 'policy-budget', terminal: false, recoverable: true });
+    assert.equal(policyBudget.cause, 'policy-budget');
+    assert.equal(policyBudget.code, null, 'Resource must not invent a Resource-owned status for Policy-owned budget satisfaction');
     assert.equal(oracle.cleanup().runtimeResidue, 0);
-    return { exactCauseRetained: true, semanticValueAbsent: true };
+    return { exactCauseRetained: true, semanticValueAbsent: true, policyBudgetCauseWithoutInventedStatus: true };
   }, ['RESOURCE-EXHAUST-001', 'RESOURCE-EXHAUST-005']);
 
   defineCase('resource-first-exhaustion-cause', () => {

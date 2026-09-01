@@ -20,7 +20,6 @@ const causeCodes = new Map([
   ['generation-space', 'resource-generation-exhausted'],
   ['counter-width', 'resource-counter-exhausted'],
   ['provider-failure', 'resource-provider-failure'],
-  ['policy-budget', 'resource-policy-budget'],
 ]);
 
 function classSnapshot(resourceClass, leases, diagnostics, mutation) {
@@ -117,7 +116,7 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
     }
     return {
       kind: terminal === true ? 'terminal-exhaustion' : 'pressure',
-      code: causeCodes.get(cause) ?? 'resource-internal-failure',
+      code: causeCodes.get(cause) ?? null,
       cause,
       firstTerminalCause: canonicalClone(firstTerminalCause),
       readyFacts: canonicalClone(readyFacts),
@@ -151,7 +150,7 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
     };
   }
 
-  function failAdmission(entry, quantity, cause = entry.exhaustion, code = causeCodes.get(cause) ?? 'resource-capacity') {
+  function failAdmission(entry, quantity, cause = entry.exhaustion, code = causeCodes.get(cause) ?? null) {
     const state = accounting(entry.id);
     diagnostics.get(entry.id).failedAdmissions += 1n;
     const terminal = terminalCauses.has(cause);
