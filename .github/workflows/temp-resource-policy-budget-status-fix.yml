@@ -1,0 +1,56 @@
+name: temporary Resource policy-budget status fix
+
+on:
+  push:
+    branches: [ref/resource-01]
+
+permissions:
+  contents: write
+
+jobs:
+  patch-test-clean:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ref/resource-01
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Remove invented Resource status
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          function replaceOnce(source, before, after, label) {
+            const count = source.split(before).length - 1;
+            if (count !== 1) throw new Error(`${label}: expected one match, found ${count}`);
+            return source.replace(before, after);
+          }
+          const resourcePath = 'experiments/search-semantics-reference/src/resource.mjs';
+          let source = readFileSync(resourcePath, 'utf8');
+          source = replaceOnce(source, "  ['provider-failure', 'resource-provider-failure'],\n  ['policy-budget', 'resource-policy-budget'],\n]);", "  ['provider-failure', 'resource-provider-failure'],\n]);", 'policy-budget mapping');
+          source = replaceOnce(source, "      code: causeCodes.get(cause) ?? 'resource-internal-failure',", "      code: causeCodes.get(cause) ?? null,", 'exhaustion fallback');
+          source = replaceOnce(source, "  function failAdmission(entry, quantity, cause = entry.exhaustion, code = causeCodes.get(cause) ?? 'resource-capacity') {", "  function failAdmission(entry, quantity, cause = entry.exhaustion, code = causeCodes.get(cause) ?? null) {", 'admission fallback');
+          writeFileSync(resourcePath, source);
+          const casePath = 'experiments/search-semantics-reference/src/resource-pressure-exhaustion-cases.mjs';
+          let cases = readFileSync(casePath, 'utf8');
+          cases = replaceOnce(cases, "    assert.equal(event.readyFacts.length, 1);\n    assert.equal(Object.hasOwn(event, 'value'), false, 'Resource exhaustion must not fabricate a semantic value');\n    assert.equal(oracle.cleanup().runtimeResidue, 0);\n    return { exactCauseRetained: true, semanticValueAbsent: true };", "    assert.equal(event.readyFacts.length, 1);\n    assert.equal(Object.hasOwn(event, 'value'), false, 'Resource exhaustion must not fabricate a semantic value');\n    const policyBudget = oracle.recordExhaustion({ cause: 'policy-budget', terminal: false, recoverable: true });\n    assert.equal(policyBudget.cause, 'policy-budget');\n    assert.equal(policyBudget.code, null, 'Resource must not invent a Resource-owned status for Policy-owned budget satisfaction');\n    assert.equal(oracle.cleanup().runtimeResidue, 0);\n    return { exactCauseRetained: true, semanticValueAbsent: true, policyBudgetCauseWithoutInventedStatus: true };", 'policy-budget falsifier');
+          writeFileSync(casePath, cases);
+          NODE
+          git diff --check
+      - name: Run focused and full Resource reference
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-resource-profiles.mjs
+          node scripts/run-resource-reference.mjs --case resource-exhaustion-diagnostics
+          node scripts/run-resource-reference.mjs
+      - name: Commit correction and self-clean
+        run: |
+          rm .github/workflows/temp-resource-policy-budget-status-fix.yml
+          git diff --check
+          git config user.name iteathen
+          git config user.email josh.oshiro@gmail.com
+          git add experiments/search-semantics-reference/src/resource.mjs experiments/search-semantics-reference/src/resource-pressure-exhaustion-cases.mjs .github/workflows/temp-resource-policy-budget-status-fix.yml
+          git commit -m "fix(resource): preserve policy budget as foreign cause"
+          git push origin HEAD:ref/resource-01
