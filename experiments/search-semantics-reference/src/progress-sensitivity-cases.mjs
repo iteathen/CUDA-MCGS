@@ -40,6 +40,8 @@ export function registerProgressSensitivityCases({ defineCase, projection }) {
     const closureBaseline = activeProgressOracle(profile);
     admitAndReady(closureBaseline, profile, closureClass, 'sensitivity-closure-baseline');
     closureBaseline.requestStop({ cause: 'progress-cancelled' });
+    expectCode(() => closureBaseline.publishClosure({ channelsTerminal: true, ownerTransitionsReady: true, resourcesConserved: true, terminalOutputPublishable: true }), 'PROGRESS_REFERENCE_CLOSURE');
+    closureBaseline.beginDraining();
     expectCode(() => closureBaseline.publishClosure({ channelsTerminal: true, ownerTransitionsReady: true, resourcesConserved: true, terminalOutputPublishable: true }), 'PROGRESS_REFERENCE_CLOSURE_WORK');
     const closureMutant = activeProgressOracle(profile, { mutations: { skipClosureCheck: true } });
     admitAndReady(closureMutant, profile, closureClass, 'sensitivity-closure-mutant');
