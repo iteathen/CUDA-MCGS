@@ -71,8 +71,10 @@ export function registerResourceLifecycleCases({ defineCase, projection }) {
     oracle.retireResource(leaseRef(retired, 'owner-retired'));
     oracle.publishResourceUse(leaseRef(quarantined));
     oracle.quarantineResource({ ...leaseRef(quarantined), reason: 'ambiguous-ledger' });
-    assert.throws(() => oracle.cleanup(), { code: 'RESOURCE_REFERENCE_CLEANUP_QUARANTINE' }, 'quarantined capacity cannot disappear during teardown');
-    const result = oracle.cleanup({ quarantineReleaseAuthorized: true, retainLedgerEvidence: true });
+    assert.throws(() => oracle.cleanup(), { code: 'RESOURCE_REFERENCE_CLEANUP_OWNER' }, 'Resource teardown cannot silently abandon claimed/published owner work');
+    assert.throws(() => oracle.cleanup({ ownerWorkDisposed: true }), { code: 'RESOURCE_REFERENCE_CLEANUP_RETIRED' }, 'retired capacity cannot become free without owner quiescence/release authority');
+    assert.throws(() => oracle.cleanup({ ownerWorkDisposed: true, retiredReleaseAuthorized: true }), { code: 'RESOURCE_REFERENCE_CLEANUP_QUARANTINE' }, 'quarantined capacity cannot disappear during teardown');
+    const result = oracle.cleanup({ ownerWorkDisposed: true, retiredReleaseAuthorized: true, quarantineReleaseAuthorized: true, retainLedgerEvidence: true });
     assert.equal(result.runtimeResidue, 0);
     assert(result.retainedEvidence !== null, 'explicit retained final ledger evidence is allowed after runtime capacity is disposed');
     assert.equal(oracle.snapshot().lifecycle, 'released');

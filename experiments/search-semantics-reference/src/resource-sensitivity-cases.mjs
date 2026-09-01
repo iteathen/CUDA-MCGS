@@ -31,6 +31,7 @@ export function registerResourceSensitivityCases({ defineCase, projection }) {
     assert.equal(quiescenceMutant.reclaimResourceAccounting({ ...leaseRef(input), ownerQuiescent: false }).kind, 'reclaimed', 'mutant intentionally violates the quiescence fence');
 
     correct.reclaimResourceAccounting({ ...leaseRef(input), ownerQuiescent: true });
+    freeRetiredMutant.reclaimResourceAccounting({ ...leaseRef(input), ownerQuiescent: true });
     assert.equal(correct.cleanup().runtimeResidue, 0);
     assert.equal(freeRetiredMutant.cleanup().runtimeResidue, 0);
     assert.equal(quiescenceMutant.cleanup().runtimeResidue, 0);

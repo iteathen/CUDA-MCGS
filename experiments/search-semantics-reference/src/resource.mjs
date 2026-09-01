@@ -349,13 +349,15 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
     };
   }
 
-  function cleanup({ quarantineReleaseAuthorized = false, retainLedgerEvidence = false } = {}) {
+  function cleanup({ ownerWorkDisposed = false, retiredReleaseAuthorized = false, quarantineReleaseAuthorized = false, retainLedgerEvidence = false } = {}) {
     if (!['draining', 'terminal'].includes(lifecycle)) {
       if (lifecycle === 'active') lifecycle = 'draining';
       else if (lifecycle !== 'released') fail('RESOURCE_REFERENCE_CLEANUP', `cleanup cannot begin from ${lifecycle}`);
     }
     for (const lease of leases.values()) {
       if (!liveStates.has(lease.state)) continue;
+      if (['claimed', 'published'].includes(lease.state) && ownerWorkDisposed !== true) fail('RESOURCE_REFERENCE_CLEANUP_OWNER', 'live owner work requires explicit teardown disposition before Resource releases its lease');
+      if (lease.state === 'retired-unreclaimed' && retiredReleaseAuthorized !== true) fail('RESOURCE_REFERENCE_CLEANUP_RETIRED', 'retired capacity requires explicit owner quiescence/release authority at teardown');
       if (lease.state === 'quarantined' && quarantineReleaseAuthorized !== true) fail('RESOURCE_REFERENCE_CLEANUP_QUARANTINE', 'quarantined capacity requires explicit teardown recovery authority');
       lease.state = 'released';
       diagnostics.get(lease.classId).releases += 1n;
