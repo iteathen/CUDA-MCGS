@@ -75,6 +75,12 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
   const findLease = (reference) => {
     const lease = leases.get(leaseKey(reference));
     if (!lease) fail('RESOURCE_REFERENCE_LEASE', `unknown lease ${reference.leaseId}/${reference.generation}`);
+    if (
+      reference.classId !== lease.classId
+      || reference.owner !== lease.owner
+      || reference.epochs === undefined
+      || JSON.stringify(reference.epochs) !== JSON.stringify(lease.epochs)
+    ) fail('RESOURCE_REFERENCE_LEASE_IDENTITY', 'lease reference does not match its authoritative class, owner, and epochs');
     return lease;
   };
   const requireActiveAdmission = (input = null) => {
