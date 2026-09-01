@@ -18,10 +18,27 @@
     "construction": "Fresh branch from current protected main. Reuses the accepted #146 non-README blobs exactly, deletes the active CHESS-0001 product spec exactly as #146 did, and preserves current main README. Does not merge experimental/portfolio.",
     "authority_status": "candidate-until-protected-readback"
   },
+  "authority": [
+    "AGENTS.md",
+    "docs/PROJECT_CHARTER.md",
+    "docs/decisions/ADR-0018-universal-core-extension-product-layering.md",
+    "docs/decisions/ADR-0024-framework-only-production-ownership.md",
+    "docs/specs/SPEC-0000-framework-requirements.md",
+    "https://github.com/iteathen/CUDA-MCGS/issues/44"
+  ],
+  "deliverables": [
+    "framework-only production ownership present on protected main",
+    "historical repository-local CHESS-0001 specification archived and absent from active specs",
+    "structural project-organization enforcement against active repository-local product specs",
+    "current protected evidence-first README preserved",
+    "normal required workflow green on one exact promotion head",
+    "independent review and guarded merge",
+    "protected-main readback before #44 closure"
+  ],
   "current_focus": {
     "id": "ISSUE-44-PROTECTED-PROMOTION",
     "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/44",
-    "next_action": "Open the current-main promotion PR, run the complete required workflow on one exact head, audit the diff, obtain independent review, perform only a guarded authorized merge, and verify protected-main readback before closing #44.",
+    "next_action": "Run the complete required workflow on the exact promotion PR head, audit the diff, obtain independent review, perform only a guarded authorized merge, and verify protected-main readback before closing #44.",
     "after_integration": "Disposition stale #44 authority candidates #126/#132 without losing unique research evidence, then resume issue #36 semantic/reference integration in dependency order. Production lowering remains blocked on #122.",
     "exit": "ADR-0024 and the framework-only production boundary are present on protected main, required CI is green on the protected revision, protected readback confirms the intended files, and stale competing #44 authority packets have durable disposition."
   },
