@@ -32,6 +32,7 @@ The requirement-coverage registry classified 34 requirements directly to `ENGINE
 - a lease binds owner, class, generation and exact engine/session/root/work incarnation identity;
 - retired is not free until the semantic owner proves quiescence/disposition;
 - pressure is a typed fact and never chooses Graph/Evaluator/Output/Policy response;
+- Resource exhaustion diagnostics are bound to the immutable normalized class/owner/pool/partition plan rather than accepting invented runtime coordinates;
 - first terminal Resource exhaustion cause is immutable;
 - counter/identity/generation exhaustion never wraps into aliases;
 - terminal exhaustion closes ordinary admission while preserving predeclared terminal/progress closure reserves;
@@ -54,7 +55,7 @@ The implemented plan:
 5. derive the 34 direct requirement IDs from `SPEC-0011`, cross-check their registry owner/count, and require every one to map to the checked-in case bank;
 6. add explicit sensitivity mutants for retired-capacity/quiescence failures;
 7. add a peer permanent `Resource reference` workflow job and include it in aggregate fail-closed `verify`; and
-8. perform whole-owner author review after the first green permanent run instead of treating CI as proof.
+8. perform whole-owner author review after green permanent runs instead of treating CI as proof.
 
 ## Exact normalized inputs
 
@@ -113,7 +114,7 @@ The repair keeps `leaseId + generation` as the lookup coordinate but requires th
 - owner; and
 - canonical `{engine, session, root, work}` epoch tuple.
 
-Epoch admission itself is strict: exactly those four fields, each a canonical arbitrary-width decimal. The case bank now proves wrong owner, wrong class and wrong root epoch all fail before accounting mutation. Canonical-byte comparison is used so semantic identity is independent of JavaScript property order.
+Epoch admission itself is strict: exactly those four fields, each a canonical arbitrary-width decimal. The case bank proves wrong owner, wrong class and wrong root epoch all fail before accounting mutation. Canonical-byte comparison is used so semantic identity is independent of JavaScript property order.
 
 ### 5. Runtime contributor removal contradicted the immutable Resource plan
 
@@ -121,13 +122,29 @@ Author review also found an unused `removeContributor()` runtime API that mutate
 
 The API and its mutable `removedContributors` bookkeeping were deleted. The existing structural `resource-absent-owner-zero-residue` / Composer deletion evidence remains the correct owner for contributor absence. This reduces the reference surface and removes a second source of plan authority rather than adding compatibility machinery around an invalid abstraction.
 
+### 6. Exhaustion facts were not bound to the normalized Resource plan
+
+Clause-level author review found that `recordExhaustion()` accepted an arbitrary `classId` and returned only cause/status information. A caller could therefore publish a Resource-looking exhaustion fact for a class not present in the immutable plan, and even valid class failures omitted the normalized owner/pool/partition coordinates required by `RESOURCE-EXHAUST-001` diagnostics.
+
+A test-only change at `1584cbe02599a9156f583cb1cbdb802923db9c10` strengthened `resource-exhaustion-diagnostics`. Permanent workflow `33557190444` reached the new falsifier with all other Resource cases green and failed `22/23` because `classId` was absent from the returned fact (`undefined` instead of `resource.synthetic-evaluator-absent.class-output-working`). The same case also requires unknown classes and negative diagnostic quantities to fail closed.
+
+The owner-local repair at `f8d2dc994bd3faaa3da3a943e63aa4d44470c864`:
+
+- indexes the immutable normalized `partition` by class;
+- validates any non-null exhaustion class through the existing Resource class authority;
+- derives owner, partition and pool from that normalized plan rather than accepting caller-provided ownership/location claims;
+- canonicalizes non-null requested/available quantities as unsigned decimal Resource units; and
+- preserves `null` plan coordinates for genuinely global causes such as Policy-owned budget satisfaction.
+
+No allocator placement, physical address, CUDA provider detail or semantic response policy was introduced.
+
 ## Qualified semantic evidence
 
 Qualified semantic head:
 
-`ref/resource-01@92ac028a3808e35f9147f85a4bb720f9510df345`.
+`ref/resource-01@f8d2dc994bd3faaa3da3a943e63aa4d44470c864`.
 
-Permanent workflow run `33556635607` passed completely on that exact head, including:
+Permanent workflow run `33557464475` passed completely on that exact head, including:
 
 - governance verification;
 - Windows and Ubuntu Search IR reference;
@@ -136,15 +153,15 @@ Permanent workflow run `33556635607` passed completely on that exact head, inclu
 - Resource reference; and
 - aggregate fail-closed `verify`.
 
-Resource job `100018954321` recorded:
+Resource job `100021675823` recorded:
 
 - expected/discovered/executed/passed: `23/23/23/23`;
 - failed/not-discovered/not-executed: `0/0/0`;
 - all `34/34` direct Resource reference obligations mapped to checked cases;
-- Resource evidence SHA-256 `d33d1faf579f758e658459bc0d4066dce22d2a6255477d1e29a9c8309e017b72`;
-- Resource evidence canonical bytes `12374`.
+- Resource evidence SHA-256 `3464117c62959fd95620b0ac4c5e45198e2d5dc9a8cc321e556178a52b2789f2`;
+- Resource evidence canonical bytes `12402`.
 
-The case bank covers single/compound admission, claim/publish/release, retired-not-free, quarantine visibility, complete stale-safe lease identity, exact arbitrary-width generations/epochs, closure reserves, pressure ownership/recovery, exact exhaustion causes, first-cause immutability, counter-vs-capacity exhaustion, ready-only partial facts, terminal draining, no host growth, schedule-invariant conservation, lifecycle closure, root-update reject/no-mutation, explicit teardown authority, arbitrary-width counters, evaluator-absent zero residue, and sensitivity mutants.
+The case bank covers single/compound admission, claim/publish/release, retired-not-free, quarantine visibility, complete stale-safe lease identity, exact arbitrary-width generations/epochs, closure reserves, pressure ownership/recovery, plan-bound exact exhaustion diagnostics, first-cause immutability, counter-vs-capacity exhaustion, ready-only partial facts, terminal draining, no host growth, schedule-invariant conservation, lifecycle closure, root-update reject/no-mutation, explicit teardown authority, arbitrary-width counters, evaluator-absent zero residue, and sensitivity mutants.
 
 ## Permanent gate
 
