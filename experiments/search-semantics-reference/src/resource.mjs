@@ -59,6 +59,7 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
   const reserveById = new Map(profile.reserves.map((entry) => [entry.id, entry]));
   const admissionById = new Map(profile.admissionGroups.map((entry) => [entry.id, entry]));
   const watermarkByClass = new Map(profile.watermarks.map((entry) => [entry.class, entry]));
+  const partitionByClass = new Map(profile.partitions.map((entry) => [entry.class, entry]));
   const leases = new Map();
   const latestGeneration = new Map();
   const transactions = new Map();
@@ -119,7 +120,33 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
   function recordExhaustion({ cause, classId = null, terminal = terminalCauses.has(cause), recoverable = !terminal, requested = null, available = null, readyFacts = [] } = {}) {
     if (!profile.exhaustion.causes.includes(cause)) fail('RESOURCE_REFERENCE_EXHAUSTION', `undeclared exhaustion cause ${cause}`);
     if (!Array.isArray(readyFacts) || readyFacts.some((fact) => fact?.state !== 'ready')) fail('RESOURCE_REFERENCE_READY_FACT', 'resource exhaustion may expose only already-ready semantic facts');
-    const event = freeze({ cause, classId, terminal: terminal === true, recoverable: recoverable === true, requested, available, readyFacts }, 'Resource exhaustion event');
+    let owner = null;
+    let partitionId = null;
+    let poolId = null;
+    let normalizedClassId = null;
+    if (classId !== null) {
+      const entry = resourceClass(text(classId, 'exhaustion classId'));
+      const partition = partitionByClass.get(entry.id);
+      if (!partition) fail('RESOURCE_REFERENCE_PARTITION', `Resource class ${entry.id} has no normalized partition`);
+      normalizedClassId = entry.id;
+      owner = entry.contributor;
+      partitionId = partition.id;
+      poolId = partition.pool;
+    }
+    const normalizedRequested = requested === null ? null : dec(requested, 'exhaustion requested').toString();
+    const normalizedAvailable = available === null ? null : dec(available, 'exhaustion available').toString();
+    const event = freeze({
+      cause,
+      classId: normalizedClassId,
+      owner,
+      partitionId,
+      poolId,
+      terminal: terminal === true,
+      recoverable: recoverable === true,
+      requested: normalizedRequested,
+      available: normalizedAvailable,
+      readyFacts,
+    }, 'Resource exhaustion event');
     exhaustionEvents.push(event);
     if (terminal === true) {
       if (firstTerminalCause === null) firstTerminalCause = event;
@@ -129,6 +156,12 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
       kind: terminal === true ? 'terminal-exhaustion' : 'pressure',
       code: causeCodes.get(cause) ?? null,
       cause,
+      classId: event.classId,
+      owner: event.owner,
+      partitionId: event.partitionId,
+      poolId: event.poolId,
+      requested: event.requested,
+      available: event.available,
       firstTerminalCause: canonicalClone(firstTerminalCause),
       readyFacts: canonicalClone(readyFacts),
     };
@@ -203,8 +236,8 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
       fail('RESOURCE_REFERENCE_OWNER', 'ordinary admission owner must match the Resource class contributor');
     }
     const free = dec(accounting(entry.id).available);
-    const available = reserve === null ? free - protectedOrdinaryUnits(entry.id) : free;
-    if (quantity > available) return { failure: countFailure ? failAdmission(entry, quantity, 'capacity') : { cause: 'capacity' } };
+    const availableForAdmission = reserve === null ? free - protectedOrdinaryUnits(entry.id) : free;
+    if (quantity > availableForAdmission) return { failure: countFailure ? failAdmission(entry, quantity, 'capacity') : { cause: 'capacity' } };
     return { entry, quantity, leaseId, generation, owner, reserve, epochs };
   }
 
