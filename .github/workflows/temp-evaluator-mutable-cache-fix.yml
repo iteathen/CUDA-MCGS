@@ -1,0 +1,50 @@
+name: temporary evaluator mutable cache fix
+
+on:
+  push:
+    branches: [ref/evaluator-01]
+
+permissions:
+  contents: write
+
+jobs:
+  patch-test-clean:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ref/evaluator-01
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Apply exact owner-local repair
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const path = 'experiments/search-semantics-reference/src/evaluator.mjs';
+          const source = readFileSync(path, 'utf8');
+          const before = "    mutableGeneration = next;\n    const output = freeze({ kind: 'committed', generation: input.nextGeneration, updateIdentity }, 'Evaluator mutable-state result');";
+          const after = "    if (cacheSelected && profile.cache.keyFacts.includes('state-generation')) {\n      invalidateCacheFact({ fact: 'state-generation', nextValue: input.nextGeneration });\n    }\n    mutableGeneration = next;\n    const output = freeze({ kind: 'committed', generation: input.nextGeneration, updateIdentity }, 'Evaluator mutable-state result');";
+          const matches = source.split(before).length - 1;
+          if (matches !== 1) throw new Error(`expected one mutable-generation commit block, found ${matches}`);
+          writeFileSync(path, source.replace(before, after));
+          NODE
+          git diff --check
+      - name: Run focused evaluator falsifier
+        shell: bash
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-evaluator-profiles.mjs
+          node experiments/search-semantics-reference/run-evaluator.mjs --case evaluator-cache-mutable-state-invalidation
+      - name: Self-clean and commit semantic repair
+        shell: bash
+        run: |
+          rm .github/workflows/temp-evaluator-mutable-cache-fix.yml
+          git diff --check
+          git config user.name iteathen
+          git config user.email josh.oshiro@gmail.com
+          git add experiments/search-semantics-reference/src/evaluator.mjs .github/workflows/temp-evaluator-mutable-cache-fix.yml
+          git commit -m "fix(evaluator): invalidate cache on mutable state commit"
+          git push origin HEAD:ref/evaluator-01
