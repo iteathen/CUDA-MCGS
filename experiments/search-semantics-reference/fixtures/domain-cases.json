@@ -9,7 +9,7 @@
     "schema": "cuda-mcgs.search-ir-composer-domain-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 69524,
-    "sha256": "2969026db4ff676c105379c86ccf49efdaae79237e598d0d3b88c03cb7c65d40"
+    "sha256": "9f7b13d6f0d4deb503fa6382ae05ee2e906a2837d3a036e39e9a8ce6369ec0a2"
   },
   "expectedCases": [
     "domain-profile-projection-exact",
