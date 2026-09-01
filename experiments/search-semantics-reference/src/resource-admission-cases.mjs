@@ -18,11 +18,19 @@ export function registerResourceAdmissionCases({ defineCase, projection }) {
   defineCase('resource-single-admission-atomicity', () => {
     const oracle = activeResourceOracle(base);
     const working = classBySuffix(base, 'class-output-working');
+    const workingPartition = base.partitions.find(({ class: classId }) => classId === working.id);
+    assert(workingPartition, 'working Resource class must have its normalized partition');
     const before = oracle.observeResourceState(working.id);
     const tooLarge = (BigInt(before.capacity) + 1n).toString();
     const failed = oracle.reserveResource(leaseInput(working, 'too-large', { quantity: tooLarge }));
     assert.equal(failed.kind, 'pressure');
     assert.equal(failed.code, 'resource-capacity');
+    assert.equal(failed.classId, working.id);
+    assert.equal(failed.owner, working.contributor);
+    assert.equal(failed.partitionId, workingPartition.id);
+    assert.equal(failed.poolId, workingPartition.pool);
+    assert.equal(failed.requested, tooLarge);
+    assert.equal(failed.available, before.available);
     const after = oracle.observeResourceState(working.id);
     assert.equal(after.available, before.available, 'failed admission must consume no capacity');
     assert.equal(BigInt(after.failedAdmissions), BigInt(before.failedAdmissions) + 1n);
@@ -34,8 +42,8 @@ export function registerResourceAdmissionCases({ defineCase, projection }) {
     assert.equal(oracle.assertConservation().kind, 'conserved');
     oracle.releaseResource(leaseRef(leaseInput(working, 'ok', { quantity: '7' })));
     assert.equal(oracle.cleanup().runtimeResidue, 0);
-    return { failedAdmissionAtomic: true, wrongOwnerRejected: true, conservationPreserved: true };
-  }, ['RESOURCE-ADMIT-001', 'RESOURCE-ADMIT-002', 'RESOURCE-ADMIT-009', 'RESOURCE-ADMIT-010']);
+    return { failedAdmissionAtomic: true, exactExhaustionCoordinates: true, wrongOwnerRejected: true, conservationPreserved: true };
+  }, ['RESOURCE-ADMIT-001', 'RESOURCE-ADMIT-002', 'RESOURCE-ADMIT-009', 'RESOURCE-ADMIT-010', 'RESOURCE-EXHAUST-001']);
 
   defineCase('resource-compound-admission-rollback', () => {
     const oracle = activeResourceOracle(base);
