@@ -10,3 +10,4 @@ Archived material is evidence of history, not current authority.
 
 - [`plans/README.md`](plans/README.md) records the exact former Connect Four, CUDA-isolation, and schema-18/plan-16 planning artifacts archived during the 2026-08-12 unfinished-plan reconciliation, with replacement paths and reasons.
 - [`experiments/README.md`](experiments/README.md) records non-executable conclusions and provenance from deleted experiments.
+- [`specs/CHESS-0001-search-product.md`](specs/CHESS-0001-search-product.md) records the supersession of the former repository-local chess consumer/product proposal by ADR-0024 framework-only production ownership while preserving its reusable conformance lessons and exact historical blob identity.

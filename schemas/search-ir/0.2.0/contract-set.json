@@ -2,7 +2,7 @@
   "schema": "cuda-mcgs.search-ir.contract-set/0.2.0",
   "representation": "cuda-mcgs.search-ir/0.2.0",
   "status": "proposal-evidence",
-  "authorityBaseline": "173765cf86fc6ab91364d8d52eb6a045dcbe2346",
+  "authorityBaseline": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
   "sourceDigest": "sha256-utf8-lf-v1",
   "foundation": {
     "representation": "cuda-mcgs.search-ir/0.1.0",
@@ -38,7 +38,7 @@
       "status": "Proposal",
       "semanticOwner": "CUDA-MCGS universal framework composition, ownership and conformance map",
       "sourcePath": "docs/specs/SPEC-0000-framework-requirements.md",
-      "sha256": "947e81d316350d6af37d4741a06b1ff87d5ae2a47f4c14b62cdf37f702df4cab",
+      "sha256": "e933e119f7a5d8d6f0bce6a67296166f7326dbd8bc99e7920bcb0358161b6b99",
       "requirementPrefix": "FRAMEWORK-",
       "requirementCount": 80,
       "plannedLeaf": "IR-FOUNDATION-01"
