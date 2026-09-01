@@ -1,0 +1,37 @@
+{
+  "schema": "cuda-mcgs.reference-progress-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 727811,
+    "sha256": "1285fa9abdf70ba6902aae0d0f86a14b9a23b2c56b2aa8f5168970c0003124f2"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-progress-profile-projection/0.2.0",
+    "profileIds": [
+      "progress.synthetic-evaluator-absent",
+      "progress.synthetic-evaluator-workspace",
+      "progress.synthetic-live-session"
+    ]
+  },
+  "expectedCases": [
+    "progress-profile-strict-normalization",
+    "progress-ready-after-publication",
+    "progress-pending-yields-worker",
+    "progress-accounting-conservation",
+    "progress-mandatory-wait-cycle",
+    "progress-producer-unblocking-fairness",
+    "progress-partial-batch-device-flush",
+    "progress-must-drain-priority",
+    "progress-deadlock-vs-quiescence",
+    "progress-livelock-potential",
+    "progress-starvation-contract",
+    "progress-resource-recovery-reserve",
+    "progress-first-stop-cause",
+    "progress-stale-epoch-isolation",
+    "progress-observation-no-progression",
+    "progress-closure-complete",
+    "progress-scheduler-semantic-parity",
+    "progress-owner-deletion-zero-residue",
+    "progress-oracle-sensitivity"
+  ]
+}
