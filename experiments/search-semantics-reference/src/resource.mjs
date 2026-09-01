@@ -59,7 +59,6 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
   const reserveById = new Map(profile.reserves.map((entry) => [entry.id, entry]));
   const admissionById = new Map(profile.admissionGroups.map((entry) => [entry.id, entry]));
   const watermarkByClass = new Map(profile.watermarks.map((entry) => [entry.class, entry]));
-  const contributorById = new Map(profile.contributors.map((entry) => [entry.id, entry]));
   const leases = new Map();
   const latestGeneration = new Map();
   const transactions = new Map();
@@ -72,11 +71,10 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
   const exhaustionEvents = [];
   let firstTerminalCause = null;
   let lifecycle = 'pools-ledgers-initialized';
-  let removedContributors = new Set();
 
   const resourceClass = (classId) => {
     const found = classById.get(classId);
-    if (!found || removedContributors.has(found.contributor)) fail('RESOURCE_REFERENCE_CLASS', `unknown or removed Resource class ${classId}`);
+    if (!found) fail('RESOURCE_REFERENCE_CLASS', `unknown Resource class ${classId}`);
     return found;
   };
   const findLease = (reference) => {
@@ -330,17 +328,8 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
     fail('RESOURCE_REFERENCE_HOST_GROWTH', 'post-ignition host growth/spill is prohibited');
   }
 
-  function removeContributor(contributorId) {
-    if (!contributorById.has(contributorId)) fail('RESOURCE_REFERENCE_CONTRIBUTOR', 'unknown contributor');
-    const live = [...leases.values()].filter((lease) => resourceClass(lease.classId).contributor === contributorId && liveStates.has(lease.state));
-    if (live.length !== 0) fail('RESOURCE_REFERENCE_CONTRIBUTOR_LIVE', 'cannot remove a contributor with live Resource leases');
-    removedContributors = new Set([...removedContributors, contributorId]);
-    return { kind: 'removed', contributorId, classes: profile.classes.filter((entry) => entry.contributor === contributorId).map((entry) => entry.id), runtimeResidue: 0 };
-  }
-
   function assertConservation() {
     for (const entry of profile.classes) {
-      if (removedContributors.has(entry.contributor)) continue;
       const state = accounting(entry.id);
       const total = dec(state.claimed) + dec(state.published) + dec(state.retiredUnreclaimed) + dec(state.quarantined) + dec(state.available);
       if (total !== dec(state.capacity) || dec(state.highWater) > dec(state.capacity) || dec(state.available) < 0n) fail('RESOURCE_REFERENCE_CONSERVATION', `ledger conservation failed for ${entry.id}`);
@@ -353,12 +342,11 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
       lifecycle,
       firstTerminalCause: canonicalClone(firstTerminalCause),
       exhaustionEvents: canonicalClone(exhaustionEvents),
-      classes: profile.classes.filter((entry) => !removedContributors.has(entry.contributor)).map((entry) => accounting(entry.id)),
+      classes: profile.classes.map((entry) => accounting(entry.id)),
       leases: [...leases.values()].map((lease) => ({
         classId: lease.classId, leaseId: lease.leaseId, generation: lease.generation, quantity: lease.quantity.toString(), owner: lease.owner,
         reserveId: lease.reserveId, transition: lease.transition, epochs: canonicalClone(lease.epochs), state: lease.state, terminalReason: lease.terminalReason,
       })),
-      removedContributors: [...removedContributors].sort(),
     };
   }
 
@@ -401,7 +389,6 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
     beginDraining,
     markTerminal,
     requestHostGrowth,
-    removeContributor,
     assertConservation,
     snapshot,
     cleanup,
