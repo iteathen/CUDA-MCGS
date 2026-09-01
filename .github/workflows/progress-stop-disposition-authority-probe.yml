@@ -4,66 +4,20 @@ on:
   pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   progress-stop-disposition-authority-probe:
-    name: Progress Composer evidence rebind construction
+    name: Progress stop disposition authority repair probe
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: fix/36-progress-stop-disposition-authority
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Rebind shared search-semantics Composer evidence
-        shell: bash
-        run: |
-          node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          import path from 'node:path';
-
-          const root = 'experiments/search-semantics-reference/fixtures';
-          const before = '1285fa9abdf70ba6902aae0d0f86a14b9a23b2c56b2aa8f5168970c0003124f2';
-          const after = '00045fcb77d8690bfc44bcb5b8d46d55f92db7a924203fff5c8e12b1c8710eb0';
-          const expected = new Map([
-            ['domain-cases.json', 1],
-            ['graph-advance-occurrence-cases.json', 1],
-            ['graph-cleanup-cases.json', 1],
-            ['graph-edge-cases.json', 1],
-            ['graph-node-cases.json', 1],
-            ['graph-path-cases.json', 1],
-            ['graph-reclaim-cases.json', 1],
-            ['graph-ref-cases.json', 1],
-            ['graph-root-cases.json', 1],
-            ['neutral-schedules.json', 4],
-            ['policy-cases.json', 1],
-          ]);
-          const actual = new Map();
-          for (const name of fs.readdirSync(root).sort()) {
-            const full = path.join(root, name);
-            if (!fs.statSync(full).isFile()) continue;
-            const text = fs.readFileSync(full, 'utf8');
-            const count = text.split(before).length - 1;
-            if (count > 0) actual.set(name, count);
-          }
-          if (JSON.stringify([...actual]) !== JSON.stringify([...expected])) {
-            throw new Error(`stale Composer evidence occurrence set drifted: ${JSON.stringify([...actual])}`);
-          }
-          for (const [name, count] of actual) {
-            const full = path.join(root, name);
-            const text = fs.readFileSync(full, 'utf8');
-            const replaced = text.split(before).join(after);
-            if (replaced.split(after).length - 1 < count) throw new Error(`replacement failed for ${name}`);
-            fs.writeFileSync(full, replaced);
-          }
-          console.log(`composer_evidence_rebind files=${actual.size} occurrences=${[...actual.values()].reduce((sum, count) => sum + count, 0)}`);
-          NODE
-          git diff --check
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add experiments/search-semantics-reference/fixtures
-          git diff --cached --quiet && { echo 'expected Composer evidence rebind diff is empty' >&2; exit 1; }
-          git commit -m "test(search-semantics): rebind Composer evidence authority"
-          git push origin HEAD:fix/36-progress-stop-disposition-authority
+      - name: Run legacy 881-case Composer directly
+        run: node experiments/search-ir-composer-reference/run.mjs
+      - name: Verify stop-disposition normalizer authority
+        run: node experiments/search-ir-composer-reference/verify-progress-stop-disposition-authority.mjs
+      - name: Verify production Composer wrapper
+        run: node scripts/run-search-ir-composer-reference.mjs
