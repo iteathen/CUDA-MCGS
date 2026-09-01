@@ -55,7 +55,14 @@ export function reservedLeaseInput(profile, reserve, id, options = {}) {
 }
 
 export function leaseRef(input, reason = null) {
-  return { leaseId: input.leaseId, generation: input.generation, ...(reason === null ? {} : { reason }) };
+  return {
+    classId: input.classId,
+    leaseId: input.leaseId,
+    generation: input.generation,
+    owner: input.owner,
+    epochs: input.epochs,
+    ...(reason === null ? {} : { reason }),
+  };
 }
 
 export function accountingWithoutDiagnostics(snapshot) {
