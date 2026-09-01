@@ -8,8 +8,8 @@
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-evaluator-profile-projection/0.2.0",
     "algorithm": "sha256",
-    "byteLength": 151720,
-    "sha256": "705f8357a2edfbbbc84f9daae42e601b089778ef5f09b2284a2d2079d4b797a1"
+    "byteLength": 155494,
+    "sha256": "1e3da52e43c498b0e53107383a9ff48345e71d097208ddb7c414cef06e5c7fa1"
   },
   "expectedCases": [
     "evaluator-absent-zero-residue",
