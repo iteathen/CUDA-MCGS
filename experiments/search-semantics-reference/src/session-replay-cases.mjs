@@ -135,4 +135,54 @@ export function registerSessionReplayCases({ defineCase, sessionProjection }) {
       publicStateUnchanged: true,
     };
   }, ['SESSION-', 'SESSION-ROOT-', 'SESSION-CONTROL-', 'SESSION-OBS-', 'SESSION-SEC-', 'SESSION-LIFE-']);
+
+  defineCase('session-rejected-command-replay-ledger-is-bounded', () => {
+    const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
+    const capacity = Number(BigInt(profile.commands.capacity));
+    assert(Number.isSafeInteger(capacity) && capacity > 0 && capacity <= 4096, 'fixture command capacity must be a bounded practical falsifier');
+
+    const session = liveSession(sessionProjection);
+    const before = session.snapshot();
+    const rejectedInputs = [];
+    for (let index = 0; index < capacity; index += 1) {
+      const input = {
+        commandId: `root-replay-ledger-${index}`,
+        rootIdentity: `root.synthetic.replay-ledger-${index}`,
+        occurrenceReference: { slot: `node-replay-ledger-${index}`, generation: '1' },
+        domainReady: true,
+        graphReady: false,
+        resourceReady: true,
+      };
+      rejectedInputs.push(input);
+      const result = session.establishInitialRoot(input);
+      assert.equal(result.kind, 'rejected');
+      assert.equal(result.code, 'session-root-unready');
+      assert.deepEqual(session.snapshot(), before, 'recording a rejected command identity must not mutate public Session state');
+    }
+
+    const overflow = session.establishInitialRoot({
+      commandId: 'root-replay-ledger-overflow',
+      rootIdentity: 'root.synthetic.replay-ledger-overflow',
+      occurrenceReference: { slot: 'node-replay-ledger-overflow', generation: '1' },
+      domainReady: true,
+      graphReady: false,
+      resourceReady: true,
+    });
+    assert.equal(overflow.kind, 'pressure');
+    assert.equal(overflow.code, 'session-command-capacity');
+    assert.deepEqual(session.snapshot(), before, 'command replay-ledger pressure must not mutate public Session state');
+
+    const admittedReplay = session.establishInitialRoot(rejectedInputs[0]);
+    assert.equal(admittedReplay.kind, 'rejected');
+    assert.equal(admittedReplay.code, 'session-root-unready');
+    expectCode(() => session.establishInitialRoot({ ...rejectedInputs[0], graphReady: true }), 'SESSION_REFERENCE_COMMAND_REPLAY');
+
+    return {
+      capacity: profile.commands.capacity,
+      admittedRejectedIdentities: capacity,
+      overflow: overflow.code,
+      admittedReplayAvailableAtCapacity: true,
+      bounded: true,
+    };
+  }, ['SESSION-', 'SESSION-SEC-', 'SESSION-LIFE-']);
 }
