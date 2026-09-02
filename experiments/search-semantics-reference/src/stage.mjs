@@ -107,7 +107,9 @@ export function createStageOracle({ profile } = {}) {
     if (outcome.kind === 'pressure' && owners.get(outcome.sourceOwner)?.contract?.id !== 'SPEC-0011') {
       fail('STAGE_REFERENCE_RESOURCE_BOUNDARY', 'pressure must be a Resource-owner outcome');
     }
-    // RED PROBE: pending release is deliberately not yet enforced here.
+    if (['pending', 'retry'].includes(outcome.kind) && (input.outcome.workerReleased !== true || input.outcome.mutableLeaseReleased !== true || input.outcome.reservationReleased !== true)) {
+      fail('STAGE_REFERENCE_PENDING_RELEASE', 'pending/retry must release worker, mutable lease and reservation before publication');
+    }
 
     const itemIndex = state.items.findIndex(({ id }) => id === workItemId);
     if (itemIndex !== -1 && state.items[itemIndex].generation !== generation) fail('STAGE_REFERENCE_STALE', `${workItemId} generation changed inside one Stage reference lifetime`);
