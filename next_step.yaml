@@ -38,6 +38,7 @@
     "active_branch": "ref/terminal-slice-01",
     "draft_pr": 187,
     "last_semantic_candidate": "3a6ed1691c362da046251e3b01d2ed366b7770c0",
+    "last_fully_qualified_tracking_head": "c681f378ff679f4b5325fe92c7855c7ea9c74be4",
     "qualified_pre_pr_checkpoint": "checkpoint/terminal-slice-qualified-pre-pr-20260902",
     "pre_ignition_red_checkpoint": "checkpoint/terminal-slice-pre-ignition-red-20260902"
   },
@@ -55,16 +56,17 @@
   },
   "terminal_slice_qualification": {
     "semantic_candidate": "3a6ed1691c362da046251e3b01d2ed366b7770c0",
-    "pr_terminal_workflow": 33677919633,
-    "pr_framework_workflow": 33677919582,
-    "pr_full_matrix_workflow": 33677919508,
+    "qualified_tracking_head": "c681f378ff679f4b5325fe92c7855c7ea9c74be4",
+    "pr_terminal_workflow": 33678141931,
+    "pr_framework_workflow": 33678142005,
+    "pr_full_matrix_workflow": 33678141975,
     "composer_cases": "881/881",
     "terminal_slice_cases": "6/6",
     "ignition_order": "pass",
     "terminal_evidence": "c9c0b9b8847c5121bc6cce1ff3707e2c465a4fddd067a400693b235972254388",
     "artifact": 9865069421,
     "archive_sha256": "f7c516b23c45476e46c3b6764c7bc0bb19cb6b63f648e4340a8cfc090a61d016",
-    "pr_matrix": "Terminal slice, Framework lifecycle and the full documentation/owner matrix all passed on semantic source head 3a6ed1691c362da046251e3b01d2ed366b7770c0. This tracking-only reconciliation creates a new PR head and therefore still requires a final exact-head PR requalification before authorization."
+    "pr_matrix": "Terminal slice, Framework lifecycle, Governance, Windows/Ubuntu Search IR, Graph NODE/EDGE/PATH/REF/ROOT/ADVANCE/CLEANUP/RECLAIM, Policy, Evaluator, Resource, Progress, Output and aggregate verify all passed on tracking head c681f378ff679f4b5325fe92c7855c7ea9c74be4. The current branch differs from that qualified head only by this state-only reconciliation; exact-head CI must remain green before any authorization is acted on."
   },
   "red_before_green": [
     "Run 33664488775 failed when the initial integration classified Output before Progress closure; commit 2240d6423c5ea61c94ee0eaf439290c2973e440c repaired the ordering and run 33664588148 passed.",
@@ -89,14 +91,14 @@
     "Run owning and full repository qualification, perform exact-head complete-diff author review, reconcile current-state docs/issues and stop for fresh exact-head owner authorization before integration."
   ],
   "validation": [
-    "The final PR #187 head must pass governance plus all applicable Search IR, Graph, Policy, Evaluator, Resource, Progress, Output, Framework and terminal-slice jobs.",
+    "The current PR #187 head must be read back and remain green in terminal-slice, Framework and full repository/aggregate qualification before merge authorization is acted on.",
     "Terminal-slice evidence must remain 6/6 with Composer 881/881 and ignition-order pass.",
     "The complete PR #187 diff must remain clean for duplicate authority, private owner-state access, first-consumer assumptions, lifecycle/cleanup gaps, stale provenance and unnecessary architecture.",
     "If the PR head or material base changes after review, repeat exact-head review/qualification before any authorization."
   ],
   "blockers": [
-    "No semantic dependency blocker is known.",
-    "Integration/merge remains blocked on final docs-only exact-head PR requalification and the repository-owner/independent authorization required by project policy."
+    "No semantic or qualification blocker is known after the recorded green matrix.",
+    "Integration/merge remains blocked only on the fresh repository-owner/independent exact-head authorization required by project policy."
   ],
   "do_not": [
     "Do not add a second semantic owner, runtime registry or monolithic reference engine.",
