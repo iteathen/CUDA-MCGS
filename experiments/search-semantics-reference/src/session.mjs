@@ -48,6 +48,8 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
     if (start > maximum || start > threshold) fail('SESSION_REFERENCE_COUNTER_START', `${rule.kind} counter start exceeds its admitted range`);
     return [rule.kind, start];
   }));
+  const commandCapacity = dec(profile.commands?.capacity, 'command capacity');
+  if (commandCapacity <= 0n) fail('SESSION_REFERENCE_PROFILE', 'Session command capacity must be positive');
   const commandResults = new Map();
   const observations = new Map();
   let lifecycle = 'initialized';
@@ -92,7 +94,12 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
     const id = text(commandId, 'commandId');
     const signature = commandSignature(kind, input);
     const prior = commandResults.get(id);
-    if (!prior) return null;
+    if (!prior) {
+      if (BigInt(commandResults.size) >= commandCapacity) {
+        return freeze({ kind: 'pressure', code: 'session-command-capacity', authorityUnchanged: true }, 'Session command pressure');
+      }
+      return null;
+    }
     if (!same(prior.signature, signature, 'Session command replay')) {
       fail('SESSION_REFERENCE_COMMAND_REPLAY', `commandId ${id} was reused for a different Session command`);
     }
