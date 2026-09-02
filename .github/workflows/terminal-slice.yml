@@ -1,0 +1,76 @@
+name: Terminal slice reference
+
+on:
+  push:
+    branches:
+      - experimental/portfolio
+      - ref/terminal-slice-01
+    paths:
+      - '.github/workflows/terminal-slice.yml'
+      - 'docs/specs/SPEC-0007-domain-state-action-and-transition.md'
+      - 'docs/specs/SPEC-0008-search-policy-and-backup.md'
+      - 'docs/specs/SPEC-0009-evaluator-contract.md'
+      - 'docs/specs/SPEC-0010-graph-storage-and-reclamation.md'
+      - 'docs/specs/SPEC-0011-finite-search-resources.md'
+      - 'docs/specs/SPEC-0012-device-owned-search-progress.md'
+      - 'docs/specs/SPEC-0013-result-and-observation-publication.md'
+      - 'experiments/search-ir-composer-reference/**'
+      - 'experiments/search-semantics-reference/fixtures/terminal-slice-cases.json'
+      - 'experiments/search-semantics-reference/src/canonical.mjs'
+      - 'experiments/search-semantics-reference/src/errors.mjs'
+      - 'experiments/search-semantics-reference/src/progress.mjs'
+      - 'experiments/search-semantics-reference/src/progress-case-support.mjs'
+      - 'experiments/search-semantics-reference/src/output.mjs'
+      - 'experiments/search-semantics-reference/src/output-case-support.mjs'
+      - 'experiments/search-semantics-reference/src/terminal-slice.mjs'
+      - 'experiments/search-semantics-reference/src/terminal-slice-cases.mjs'
+      - 'experiments/search-semantics-reference/run-terminal-slice.mjs'
+      - 'scripts/run-search-ir-composer-reference.mjs'
+      - 'scripts/export-search-ir-composer-progress-profiles.mjs'
+      - 'scripts/export-search-ir-composer-output-profiles.mjs'
+      - 'scripts/run-terminal-slice-reference.mjs'
+  pull_request:
+    paths:
+      - '.github/workflows/terminal-slice.yml'
+      - 'docs/specs/SPEC-0007-domain-state-action-and-transition.md'
+      - 'docs/specs/SPEC-0008-search-policy-and-backup.md'
+      - 'docs/specs/SPEC-0009-evaluator-contract.md'
+      - 'docs/specs/SPEC-0010-graph-storage-and-reclamation.md'
+      - 'docs/specs/SPEC-0011-finite-search-resources.md'
+      - 'docs/specs/SPEC-0012-device-owned-search-progress.md'
+      - 'docs/specs/SPEC-0013-result-and-observation-publication.md'
+      - 'experiments/search-ir-composer-reference/**'
+      - 'experiments/search-semantics-reference/fixtures/terminal-slice-cases.json'
+      - 'experiments/search-semantics-reference/src/**'
+      - 'experiments/search-semantics-reference/run-terminal-slice.mjs'
+      - 'scripts/run-search-ir-composer-reference.mjs'
+      - 'scripts/export-search-ir-composer-progress-profiles.mjs'
+      - 'scripts/export-search-ir-composer-output-profiles.mjs'
+      - 'scripts/run-terminal-slice-reference.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+      - name: Compose normalized profiles
+        run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Export Progress profiles
+        run: node scripts/export-search-ir-composer-progress-profiles.mjs
+      - name: Export Output profiles
+        run: node scripts/export-search-ir-composer-output-profiles.mjs
+      - name: Run terminal-slice reference
+        run: node scripts/run-terminal-slice-reference.mjs
+      - name: Upload terminal-slice evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terminal-slice-reference-evidence
+          if-no-files-found: warn
+          path: experiments/search-semantics-reference/build/terminal-slice-evidence*.json
