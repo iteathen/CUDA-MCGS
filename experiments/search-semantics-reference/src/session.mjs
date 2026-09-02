@@ -158,9 +158,9 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     if (input.successor?.nodeInvalidated === true) {
       fail('SESSION_REFERENCE_ADVANCE_SHARED_NODE', 'advance cannot invalidate a shared graph node when only one occurrence is superseded');
     }
-    preflightCounters(['command', 'advance-generation', 'root-epoch', 'root-incarnation']);
+    preflightCounters(['command', 'advance-generation', 'root-epoch']);
     const priorAuthority = authority;
-    commitCounters(['command', 'advance-generation', 'root-epoch', 'root-incarnation']);
+    commitCounters(['command', 'advance-generation', 'root-epoch']);
     authority = authorityRecord({
       rootIdentity: input.successor.rootIdentity,
       occurrenceReference: input.successor.occurrenceReference,
