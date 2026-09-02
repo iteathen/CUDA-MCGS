@@ -451,12 +451,13 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     });
   }
 
-  function teardown({ terminalResultBorrowOpen = false, cleanupFacts = [] } = {}) {
+  function teardown({ terminalResultBorrowOpen = false, completedTeardownSteps = [], cleanupFacts = [] } = {}) {
     if (!['terminal', 'quarantined'].includes(lifecycle)) fail('SESSION_REFERENCE_TEARDOWN_PHASE', `Session cannot teardown from ${lifecycle}`);
     const liveObservationBorrows = [...observations.values()].reduce((sum, request) => sum + request.borrows.size, 0);
     if (terminalResultBorrowOpen || liveObservationBorrows > 0) {
       return freeze({ kind: 'pending-borrow', terminalResultBorrowOpen, liveObservationBorrows }, 'Session teardown pending');
     }
+    requireOrder(completedTeardownSteps, profile.lifecycle.teardownOrder, 'SESSION_REFERENCE_TEARDOWN_ORDER', 'Session teardown step order');
     const expectedKinds = [...profile.cleanup.kinds].sort();
     const actualKinds = cleanupFacts.map(({ kind }) => kind).sort();
     if (actualKinds.length !== expectedKinds.length || actualKinds.some((kind, index) => kind !== expectedKinds[index])) {
@@ -468,7 +469,7 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     for (const request of observations.values()) request.released = true;
     cleanupReadback = freeze(cleanupFacts, 'Session cleanup readback');
     lifecycle = 'released';
-    return freeze({ kind: 'released', runtimeResidue: 0, cleanupReadback }, 'Session teardown result');
+    return freeze({ kind: 'released', runtimeResidue: 0, completedTeardownSteps: [...completedTeardownSteps], cleanupReadback }, 'Session teardown result');
   }
 
   function snapshot() {
