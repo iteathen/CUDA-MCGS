@@ -156,6 +156,12 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
     requireActive();
     const replayed = replay(input.commandId, 'advance', input);
     if (replayed) return replayed;
+    if (!input.authority || typeof input.authority !== 'object' || Array.isArray(input.authority)) {
+      fail('SESSION_REFERENCE_ADVANCE_AUTHORITY', 'advance requires current Session root authority provenance');
+    }
+    if (!same(input.authority, authority, 'Session advance authority provenance')) {
+      return freeze({ kind: 'rejected', code: 'session-command-stale', authorityUnchanged: true }, 'Session stale advance rejection');
+    }
     const requestedWork = input.requestedWork ?? {};
     if (ADVANCE_REROOT_ONLY.some((key) => requestedWork[key] === true)) {
       fail('SESSION_REFERENCE_ADVANCE_REROOT_ONLY', 'advance cannot perform materialization, admission, reuse classification, transform/reset, reclamation, or eager cleanup');
