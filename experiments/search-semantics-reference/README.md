@@ -4,72 +4,49 @@
 
 This CUDA-free experiment is the behavioral/reference evidence lane for `ENGINE-REFERENCE-01`. Each brick is owner-local and replaceable: it consumes normalized identities or public facts owned elsewhere, proves one semantic boundary, and leaves native/CUDA realization downstream.
 
-## Current portfolio state
+## Authority and integrated base
 
-Protected semantic authority remains:
+Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd031`.
 
-`main@3ecac11e3576bd063760bc9572f79bea78acd031`
+The integrated candidate/reference base remains `experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`. Candidate integration is not protected #122 acceptance.
 
-The integrated candidate/reference line is:
-
-`experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`
-
-It contains the current Graph reference chain plus Policy, Evaluator, Resource, corrected Progress, Output and Framework evidence, and the integrated complete Session-absent terminal slice from #184. Candidate integration is not protected #122 acceptance.
-
-## Integrated terminal slice
-
-`REF-TERMINAL-SLICE-01` / #184 is complete. Authorized source `547e4632aa9e3d4b3cd45db8056f215d6212de5c` was reviewed on PR #187 and transported unchanged through PR #188 to integration commit `3766353d5fa264067e33ae6798c632ffd65494ef`; the integrated tree exactly matched the authorized source tree.
-
-The slice proves a finite product-neutral CUDA-free lifecycle across public Domain/Graph/Policy/Evaluator/Resource/Progress/Output/Framework facts, including cancellation/must-drain, Resource conservation, terminal publication ordering, terminal borrow cleanup, multiple legal schedules, evaluator-selected/absent variants and exact Session/Stage/Channel/first-product deletion. It does not introduce a universal scheduler or native mechanism.
+`REF-TERMINAL-SLICE-01` / #184 is already integrated: authorized source `547e4632aa9e3d4b3cd45db8056f215d6212de5c`, review PR #187, transport PR #188, integration `3766353d5fa264067e33ae6798c632ffd65494ef` with exact authorized-tree equality.
 
 ## Active Session brick
 
-Issue #181 / branch `ref/session-01` constructs `REF-SESSION-01` from exact integrated base:
+Issue #181 / `ref/session-01` constructs `REF-SESSION-01` from exact base `079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`.
 
-`experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`
+Qualified semantic checkpoint before the current tracker-only reconciliation:
 
-Exact semantic head before the current-state-only reconciliation:
+`9447146093aa993eb98d0de24db0e9a9a26fef11`
 
-`c554e51423600f1c6bd7f52b5ee1fb6a2b7826fa`
+tree `9e28e0b67a37aba277155f992b489ad3dc891681`.
 
-Semantic tree:
+Session owns command ordering/replay/idempotence/provenance, Session identity/incarnation, initial-root and advance authority coordination, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite counters, and cleanup. Current root authority plus search/session identity are public provenance inputs, not replacement Domain/Graph/Output authority.
 
-`a9ae9970fe2b9e37a2223bb89c19942ba6d1e5bc`
+Session does not own Domain validity, Graph storage/reclamation, source reuse meaning, Resource accounting, Progress scheduling/closure, Output payload/snapshot/publication semantics, Framework lifecycle, CUDA mechanisms, or product meaning.
 
-Session owns only external command ordering/replay/idempotence/provenance, Session identity/incarnation, initial-root authority coordination, already-ready successor advance, reroot transaction coordination, attention provenance, bounded observation request/borrow coordination, cancellation/completion, finite counters and cleanup. Runtime search identity/incarnation are injected public provenance facts used only to reject foreign Output publications.
+## Qualification
 
-It does **not** own Domain root validity, Graph occurrence/storage/reclamation, source reuse semantics, Resource accounting, Progress scheduling/closure, Output payload/snapshot/publication semantics, Framework lifecycle, CUDA mechanism or product meaning.
+Permanent Session workflow `33690701083` checked out exact semantic checkpoint `94471460…` and passed:
 
-## Current Session qualification
+- CI self-gate: pass;
+- Composer `881/881`;
+- all required owner projections: pass;
+- Session advance/reroot/teardown boundary gate: pass;
+- terminal Session-absent coupled reference `6/6`;
+- Session reference `23/23`;
+- all 38 direct SPEC-0006 ENGINE-REFERENCE routes executed;
+- evidence `eb6fb96a0d3e14908189ede8f065d0863b19065bc717ce0b3c351fe0e79fd3c7` over `16913` canonical bytes;
+- artifact `9869899487`, digest `sha256:af2d6595dcf6257e9dce933f22cb37d59d695d1c11c78f12cde9d54d2c38c1d4`.
 
-The exact semantic head `c554e514…` passed PR Session workflow `33689816193`, Terminal Slice `33689816259`, and Framework `33689816270`. Its documentation-only reconciliation follows this semantic qualification and must be requalified on the final exact head.
+Generated `build/` evidence remains disposable; checked-in sources/cases, workflow artifacts and evidence identities are the durable coordinates.
 
-- CI self-verifier: pass;
-- Composer: `881/881`;
-- all required owner profile projections: pass;
-- Session advance/teardown boundary gate: pass;
-- terminal Session-absent coupled regression: `6/6`;
-- Session cases: `22/22`;
-- direct SPEC-0006 ENGINE-REFERENCE obligations: `38/38`;
-- Session evidence: `9bca68e4cf19ea62742a606a75bab82c1146a832c6cf9ef57ef9cf0bd6a1c431` (`16175` canonical bytes);
-- PR artifact `9869565953`, digest `sha256:e32621394f322273146336f17e8233867d26634a4408a9b6f67cf27e55976c55`.
+## Decisive red seams retained
 
-The whole semantic diff is confined to the Session Composer projection/export, Session owner-local oracle/cases/runner, public wrappers and permanent Session CI gate. No native code, private sibling-owner interpreter, product fixture or host progression loop was introduced.
+The permanent case/gate bank retains review-discovered failures for root-incarnation preservation, Output publication ownership/profile/session provenance, observation borrow quiescence, cancellation admission, CI-gate integrity, pre-mutation validation, stale advance authority, normalized teardown order, and stale reroot authority.
 
-## Red-before-green provenance
-
-Useful review-discovered red seams are retained in the permanent bank/gates:
-
-1. advance incorrectly consumed a new root incarnation — `dc5b2c363933476b9580c267ba58c6f79ee56966`, run `33682215069`;
-2. Session invented runtime Output observation truth instead of consuming Output-owned publication facts — `1341d784329c03b7f697fa62a5dc6fba1237cd4f`, run `33682862655`;
-3. completion could publish terminal provenance with a live observation borrow — `f7a78dda0e9be4bd52a8dd28db82710be059c5e2`, run `33683367794`;
-4. cancellation could mutate prepared reroot state before command admission succeeded — `f4a8d21dd2c53dceba3ec1cdbdbf371f05598f94`, run `33684006773`;
-5. the permanent Session gate could conditionally skip its runner and merely warn on missing evidence — `46d105821be7a49063f0bc91cce0ebe4acf570a7`, run `33684533233`;
-6. malformed untrusted command identity could mutate counters before semantic validation — `d74ab8b9efd5df68e47d7099081c58f743dea12a`, run `33684937813`;
-7. a same-epoch publication from a foreign Output profile could be admitted as current Session observation evidence — `3f0e86f871795a5c26a7277210e2685f4264cb80`, run `33688752675`, artifact `9869167043`, digest `sha256:dfc5da2562a399e0550b6af7e139c1bc65e5b4508f87b0d93fe409e8c01e4c48`;
-8. after that repair, a same-profile/same-epoch publication from a foreign Session identity could still be admitted — `d569fd1cbb3374697751e1b9772bd43c1fbd845b`, run `33689574707`, artifact `9869474428`, digest `sha256:1ed1b6427c45afd57dc7f418ccee98297e42439c462aa7ca76ae3fcdb8783c7d`.
-
-The green repair keeps the selected Session observation profile as coordination authority while requiring the Output-owned ready publication to bind to the normalized top-level Output profile and the exact injected search/Session provenance before Session request state can mutate. Session does not reconstruct or reinterpret Output payload/snapshot meaning.
+The latest stale-reroot falsifier is test-only head `5e3864f854483d989815044ce7f5fd4aa36d4438`, Session run `33690463348`. The strict owner repair then exposed stale ordinary case composition at `9edc258b7aa3336a1c868c1d779baaecac0f3809` / run `33690589366`; `94471460…` fixes only the composition by supplying current public authority by default while explicit stale-authority inputs still override it.
 
 ## Run
 
@@ -82,20 +59,16 @@ node scripts/run-terminal-slice-reference.mjs
 node scripts/run-session-reference.mjs
 ```
 
-The permanent CI lane additionally runs `scripts/verify-session-ci-gate.mjs` and `scripts/verify-session-advance-boundary.mjs` before the Session reference.
-
-Generated `build/` evidence is disposable. Checked-in fixtures/source, workflow artifacts, exact source SHAs and content-sensitive evidence identities are the durable coordinates.
+The permanent Session lane additionally runs `scripts/verify-session-ci-gate.mjs` and `scripts/verify-session-advance-boundary.mjs`.
 
 ## Current gate
 
-This README and the other current-state files are intentionally updated after the final review-discovered provenance repair. Their commit advances the candidate head without changing the qualified Session behavior above.
+The current tracker reconciliation does not change semantic sources covered by the evidence key. Freeze the resulting documentation-inclusive PR head, prove its semantic sources are unchanged from `94471460…`, run/verify the full repository/documentation matrix on that exact head, then perform one fresh complete-diff author review.
 
-The resulting documentation-inclusive #181 PR head must rerun the permanent Session, Terminal Slice, Framework and full repository/documentation PR gates, then receive a fresh complete-diff author review. Stop after that at the exact-head repository-owner authorization boundary. The known draft-state connector defect may require a same-head/same-base transport only **after** authorization; transport does not substitute for review or authorization.
+Stop after a clean review for fresh repository-owner authorization of that exact head/base. PR #189 remains the draft review record; the known draft-state connector defect does not authorize integration.
 
-## Next semantic seam
-
-Only after #181 is separately authorized, guarded-integrated and read back does #30 / `REF-STAGE-01` become dependency-ready. Then #33 Channel evidence, #36 final reference integration and #122 protected atomic acceptance follow.
+Only after guarded #181 integration/readback does #30 Stage become dependency-ready, followed by #33 Channel evidence, #36 final reference integration and #122 protected atomic semantic acceptance.
 
 ## Claim limits
 
-Passing these CUDA-free references does not establish protected proposal acceptance, production lowering, native CUDA behavior, CUDA-JS compatible-pair support, physical scheduling, performance, stable SDK/release readiness or product/chess/UCI/model/Book Forge/Timing Evidence/tablebase behavior.
+This is CUDA-free product-neutral reference evidence. It does not establish protected proposal acceptance, production lowering, native CUDA behavior, physical concurrency/performance, stable SDK support, or chess/UCI/model/Book Forge/Timing Evidence/tablebase behavior.
