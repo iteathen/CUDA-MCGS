@@ -8,14 +8,22 @@ export function profileById(projection, id) {
   return entry.normalized;
 }
 
-export function selectedInvocation(profile, { stageIndex = 0, checkpoint = null, workItemId = 'stage-item.synthetic.alpha', generation = '1', outcomeCode = 'extension-pending', outcomeOverrides = {} } = {}) {
-  const stage = profile.stages[stageIndex];
+export function selectedInvocation(profile, { stageIndex = null, checkpoint = null, workItemId = 'stage-item.synthetic.alpha', generation = '1', outcomeCode = 'extension-pending', outcomeOverrides = {} } = {}) {
+  let surface = checkpoint === null ? null : profile.surfaces.find((candidate) => candidate.checkpoint === checkpoint);
+  let stage = surface ? profile.stages.find((candidate) => candidate.id === surface.stage) : null;
+  if (!stage) {
+    stage = stageIndex === null
+      ? profile.stages.find((candidate) => candidate.id === profile.entryStage)
+      : profile.stages[stageIndex];
+  }
   assert(stage);
-  const surface = profile.surfaces.find((candidate) => candidate.stage === stage.id && (checkpoint === null || candidate.checkpoint === checkpoint));
+  if (!surface) surface = profile.surfaces.find((candidate) => candidate.stage === stage.id);
   assert(surface);
+  assert.equal(surface.stage, stage.id, 'selected Stage surface must belong to the selected semantic stage');
   const oracle = createStageOracle({ profile });
   const normalizedOutcome = stage.outcomes.find(({ code }) => code === outcomeCode);
   assert(normalizedOutcome);
+  assert(surface.outcomes.includes(normalizedOutcome.code), 'selected Stage outcome must be published at the selected surface');
   const ownerFacts = surface.baseContext.map((field) => ({ id: field.id, sourceOwner: field.sourceOwner, stable: true, value: { identity: `${field.id}.public` } }));
   return {
     oracle,
