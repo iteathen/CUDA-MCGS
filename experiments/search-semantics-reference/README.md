@@ -2,45 +2,55 @@
 
 **Status:** Informational
 
-This CUDA-free experiment is the behavioral reference/conformance capsule for `ENGINE-REFERENCE-01`. It is intentionally composed from owner-local LEGO bricks rather than one reference engine. Each brick consumes only normalized or already-qualified inputs owned elsewhere, proves one semantic ownership boundary, and leaves native/CUDA mechanism selection downstream.
+This CUDA-free experiment is the behavioral/reference evidence lane for `ENGINE-REFERENCE-01`. It is composed from owner-local LEGO bricks: each reference consumes normalized or already-qualified facts owned elsewhere, proves one semantic boundary, and leaves native/CUDA realization downstream.
 
 ## Current portfolio state
 
-The isolated `experimental/portfolio` authority currently includes the accepted Graph owner chain through cleanup, the Policy reference, and the corrected shared Evaluator fixture from PR #162. Protected `main` is a separate release surface and is not changed by this experiment lane.
+`experimental/portfolio@80cbc05a54234ae41201e90db8737472db62fff8` contains the accepted Graph reference chain through cleanup, Policy reference, and `REF-EVALUATOR-01` from PR #160. Protected `main` is a separate release/authority surface.
 
-The active candidate is `REF-EVALUATOR-01`:
+The active integration candidate is shared Composer/Progress authority PR #169 on branch `fix/36-progress-stop-disposition-authority`.
 
-- source authority: `experimental/portfolio@95fdda77d002cc899a6534f02a6c2af0580303af`;
-- candidate branch: `ref/evaluator-01`;
-- qualified semantic/documentation checkpoint: `5172dfc822d2164250f57b7f4fd68fc31fdff2c1`;
-- permanent qualification run: `33552385704`.
+The candidate changes one shared normalization invariant:
 
-That checkpoint passed the complete permanent gate, including the Evaluator reference, Windows and Ubuntu Search IR references, governance, Policy, every Graph owner reference, and aggregate fail-closed `verify`. `REF-EVALUATOR-01` remains a candidate until exact-head review/authorization and isolated-portfolio integration are complete.
+- `abandon` requires terminal `abandoned`;
+- `cancel` requires terminal `cancelled`;
+- `stale-dispose` requires terminal `stale-disposed`;
+- `service` and `drain` remain service/drain contracts and do not gain an immediate terminal mapping.
+
+The correction is owned by Composer/Profile normalization. It does not move Progress reference behavior, Evaluator semantics, scheduler topology, native/CUDA mechanisms, or product policy into that owner.
+
+## Evaluator provenance under the shared correction
+
+Because the integrated Evaluator reference binds exact Composer evidence, #169 deliberately revalidated that dependency after the portfolio base advanced.
+
+The first reconstructed head `f72f16d2a4c26ab14fcd195451388cec59ae4d8d` ran the normal repository workflow without changing the Evaluator fixture. Run `33583664572` proved:
+
+- Composer/Domain/Policy/Graph semantics remained green;
+- the Progress stop-disposition authority falsifier passed;
+- Composer representation/composition evidence changed to `00045fcb77d8690bfc44bcb5b8d46d55f92db7a924203fff5c8e12b1c8710eb0` (`727811` canonical bytes);
+- the regenerated Evaluator profile projection changed to `3c3609a53177401270da372add3c9ca56dfef1442e571b591efe9093b1bc17f2` (`155494` canonical bytes);
+- Evaluator stopped before semantic execution because its checked-in fixture still named the old Composer evidence.
+
+That was the intended fail-closed provenance falsifier, not an Evaluator semantic failure.
+
+The next head `df8241020340eaec55656972fad3e98f43b321d9` changed only those two frozen Evaluator provenance identities. No Evaluator oracle/source, case list, mutable-state/cache behavior, or ownership rule changed.
+
+Normal workflow `33583779152` then passed the complete gate, including Windows/Ubuntu Search IR, Governance, Policy, all Graph reference jobs, Evaluator, and aggregate `verify`.
+
+Current exact Evaluator bindings under the shared Progress authority are:
+
+- Composer evidence: `00045fcb77d8690bfc44bcb5b8d46d55f92db7a924203fff5c8e12b1c8710eb0` (`727811` bytes);
+- Evaluator profile projection: `3c3609a53177401270da372add3c9ca56dfef1442e571b591efe9093b1bc17f2` (`155494` bytes);
+- Evaluator evidence: `c1229a47e9c4b036bd9e20af7f8f3fd8827c60f8cdf82d0cb55a4f0231050635` (`18051` bytes);
+- Evaluator cases: `30/30` passed, covering all `37/37` direct SPEC-0009 Evaluator reference obligations.
+
+Retained Evaluator artifact from run `33583779152`: artifact `9829312993`, archive digest `sha256:d9f1d724edf229820ccce79c6cc4b3da611354d6293a7e500e97eb5a7d67bd1c`.
 
 ## Evaluator ownership boundary
 
-The Evaluator reference directly owns the 37 `SPEC-0009` requirements classified to `ENGINE-REFERENCE-01`:
+The Evaluator reference owns only the direct `EVAL-REQUEST-*`, `EVAL-BATCH-*`, `EVAL-CACHE-*`, `EVAL-REUSE-*`, and `EVAL-CLEANUP-*` behavior assigned to `ENGINE-REFERENCE-01`. Domain/Graph identity, Resource admission/pressure, Progress service opportunities, Session advance facts, Policy consumption, Output publication, CUDA-JS realization, and CUDA-JS-Tensor math remain separate owners or injected facts.
 
-- `EVAL-REQUEST-001..010` — stale-safe request/incarnation lifecycle, atomic admission, coalescing, readiness and exact terminal disposition;
-- `EVAL-BATCH-001..010` — finite batching, batch-sensitive/independent semantics, continuation/workspace ownership, failure domains, stale-safe scatter and mutable-state ordering;
-- `EVAL-CACHE-001..008` — optional zero-residue cache selection, complete result-affecting keys, collision verification, lifecycle/generation, freshness, pressure/protection and invalidation;
-- `EVAL-REUSE-001..006` — explicit reroot reuse dispositions, root/history/artifact semantics, admitted reroot actions and non-wrapping generations;
-- `EVAL-CLEANUP-001..003` — complete runtime disposition, quarantine of uncertain/conflicting evidence and zero residue after evaluator/capability removal.
-
-It does **not** own Resource admission policy, Progress scheduling/fairness, Session root authority, Output publication/ranking, Domain/Graph identity, Policy backup meaning, CUDA-JS mechanism realization or CUDA-JS-Tensor math. Those are injected facts or downstream owners.
-
-Other SPEC-0009 requirement families such as proposal/open-action-space semantics, structural profile normalization, resident/native execution and cross-owner integration remain governed by their declared Composer, cross-specification, native or later `ENGINE-REFERENCE-01` evidence owners. Passing this Evaluator leaf is not full SPEC-0009 acceptance.
-
-## Evaluator profile binding
-
-The reference does not invent a second evaluator schema. It first runs the exact Search IR Composer and exports the normalized Evaluator profiles into an owner-local immutable projection. The projection must match Composer-published profile identities exactly before semantic cases run.
-
-Current qualified bindings are:
-
-- Composer representation/composition evidence: `1285fa9abdf70ba6902aae0d0f86a14b9a23b2c56b2aa8f5168970c0003124f2` (`727811` canonical bytes);
-- Evaluator profile projection: `1e3da52e43c498b0e53107383a9ff48345e71d097208ddb7c414cef06e5c7fa1` (`155494` canonical bytes).
-
-The projection contains five normalized synthetic Evaluator profiles: combined/cached, proposal-only/stateless, proof-evaluation, analytic-evaluation, and a batch-sensitive resumable evaluator that simultaneously selects mutable state and cache with `state-generation` in the cache key.
+The shared Composer correction changing an exact upstream identity therefore requires an Evaluator evidence rebind, not an Evaluator semantic rewrite.
 
 ## Run
 
@@ -52,43 +62,12 @@ node scripts/export-search-ir-composer-evaluator-profiles.mjs
 node scripts/run-evaluator-reference.mjs
 ```
 
-Focused cases use the same exact upstream projection, for example:
+Generated `build/` evidence is disposable. Checked-in fixtures/source, retained workflow artifacts, and exact evidence identities are the durable coordinates.
 
-```bash
-node scripts/run-evaluator-reference.mjs --case evaluator-scatter-incarnation
-node scripts/run-evaluator-reference.mjs --case evaluator-cache-full-key-collision
-node scripts/run-evaluator-reference.mjs --case evaluator-cache-mutable-state-invalidation
-```
+## Historical evidence
 
-Generated machine evidence under `build/` is disposable. Checked-in fixtures/source, retained workflow artifacts and exact evidence identities are the durable coordinates.
-
-## Case-bank structure
-
-The Evaluator cases are split by semantic responsibility instead of one oversized test file:
-
-- request lifecycle/readiness;
-- batch/workspace/continuation semantics;
-- cache correctness, protection and invalidation;
-- reroot reuse and cleanup/quarantine;
-- lifecycle edge cases;
-- mutation sensitivity.
-
-Explicit mutants remove the stale-incarnation scatter fence, required-capability readiness fence and cache full-key verification. The normal suite must distinguish each mutant, so a green result is evidence that the reference detects those semantic failures rather than merely exercising happy paths.
-
-## Current result
-
-Permanent workflow `33552385704` on exact checkpoint `5172dfc822d2164250f57b7f4fd68fc31fdff2c1` recorded:
-
-- Composer `881/881`;
-- Evaluator `30/30` expected/discovered/executed/passed;
-- all `37/37` direct Evaluator requirements covered;
-- `0` failed or skipped cases;
-- Evaluator evidence `4a6c5d85fa7fc87b900ff81b4e86d99984eb49bcb531b696d4754236fbcad6af` (`18051` canonical bytes).
-
-The required `evaluator-cache-mutable-state-invalidation` falsifier now proves that committing a new mutable evaluator-state generation makes old-generation cache entries non-hittable while protected entries remain safely retiring until protection drains.
-
-See [`RESULTS.md`](RESULTS.md) and [`../../docs/handoffs/2026-09-01-ref-evaluator-01-mutable-cache-qualification.md`](../../docs/handoffs/2026-09-01-ref-evaluator-01-mutable-cache-qualification.md) for exact evidence and the development-cycle record.
+The original `REF-EVALUATOR-01` qualification and its development cycle remain preserved in `docs/handoffs/2026-09-01-ref-evaluator-01-mutable-cache-qualification.md`. That handoff is historical evidence and is not rewritten when later shared authority changes provenance.
 
 ## Claim limits
 
-Passing this reference proves only the bounded CUDA-free Evaluator semantics above. It does not qualify a native evaluator, CUDA memory ordering/atomics, CUDA-JS execution, CUDA-JS-Tensor kernels, physical scheduling, performance, search strength, production lowering, SDK/release readiness, protected-main acceptance or multi-GPU behavior.
+Passing these CUDA-free references does not establish #122 production contract acceptance, native CUDA realization, CUDA-JS compatible-pair qualification, physical scheduling, performance, search strength, stable SDK/release readiness, or product behavior. PR #169 is a shared semantic-authority integration candidate until its final exact head is independently reviewed/authorized and integrated.
