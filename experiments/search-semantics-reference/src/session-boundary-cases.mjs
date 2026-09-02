@@ -114,6 +114,36 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     return { blockedWhileBorrowed: true, terminalAfterRelease: true };
   }, ['SESSION-LIFE-', 'SESSION-OBS-', 'SESSION-CLEANUP-']);
 
+  defineCase('session-cancellation-admission-precedes-reroot-mutation', () => {
+    const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
+    const commandCounter = profile.counters.find(({ kind }) => kind === 'command');
+    assert(commandCounter);
+    const counterStart = (BigInt(commandCounter.exhaustionThreshold) - 2n).toString();
+    const session = liveSession(sessionProjection, { counterStarts: { command: counterStart } });
+    establish(session, 'cancel-admission');
+    const transaction = profile.reroot.profile.transaction;
+    assert.equal(session.prepareReroot({
+      commandId: 'reroot-prepare-cancel-admission',
+      transactionId: 'reroot-cancel-admission',
+      candidateRoot: {
+        rootIdentity: 'root.synthetic.cancel-admission-reroot',
+        occurrenceReference: { slot: 'node-cancel-admission-reroot', generation: '1' },
+        domainReady: true,
+        graphReady: true,
+      },
+      compoundAdmission: { approved: true, token: 'admission-cancel-admission' },
+      ownerPreparations: transaction.prepareOrder.map((owner) => ({ owner, status: 'prepared' })),
+    }).kind, 'prepared');
+
+    const beforeCancellation = session.snapshot();
+    expectCode(() => session.requestCancellation({
+      commandId: 'cancel-command-capacity-exhausted',
+      rerootAbortFacts: transaction.abortOrder.map((owner) => ({ owner, status: 'released' })),
+    }), 'SESSION_REFERENCE_COUNTER_EXHAUSTED');
+    assert.deepEqual(session.snapshot(), beforeCancellation, 'failed cancellation admission must not abort prepared reroot state');
+    return { commandCounterExhausted: true, rerootPreserved: true };
+  }, ['SESSION-LIFE-', 'SESSION-SEC-', 'SESSION-ROOT-']);
+
   defineCase('session-advance-preserves-root-incarnation', () => {
     const session = liveSession(sessionProjection);
     establish(session, 'advance-incarnation');
