@@ -27,6 +27,7 @@ const STOP_CAUSES = new Set([
 const WORK_DISPOSITIONS = new Set(['abandon', 'must-drain', 'release']);
 const CLEANUP_KINDS = new Set([
   'normalized-profile',
+  'generated-source',
   'generated-package',
   'cache-artifact',
   'allocation',
@@ -37,6 +38,10 @@ const CLEANUP_KINDS = new Set([
   'borrow',
   'diagnostic',
   'persisted-artifact',
+  'local-state',
+  'process',
+  'transfer',
+  'credential',
   'coordination-record',
 ]);
 const CLEANUP_DISPOSITIONS = new Set(['release', 'retain', 'archive', 'quarantine', 'transfer']);
@@ -49,10 +54,16 @@ const REQUIRED_PLAN_FIELDS = Object.freeze([
   'cleanupReady',
 ]);
 const TEARDOWN_BOOLEAN_FIELDS = Object.freeze([
-  'opaqueCudaReleased',
-  'ownerResourcesReleased',
-  'protectionsReleased',
   'workFinalized',
+  'protectionsReleased',
+  'ownerResourcesReleased',
+  'opaqueCudaReleased',
+  'transfersBorrowsReleased',
+  'cachesArtifactsDisposed',
+  'localStateDisposed',
+  'processesDeviceResourcesReleased',
+  'credentialsDisposed',
+  'externalCoordinationDisposed',
 ]);
 
 function clone(value) {
@@ -103,7 +114,7 @@ function normalizePersistence(input) {
   }
   exactKeys(
     input,
-    ['authorization', 'cleanup', 'compatibilityIdentity', 'encoding', 'forbiddenDurableFields', 'kind', 'migration', 'owner', 'recovery', 'retention'],
+    ['authorization', 'cleanup', 'compatibilityIdentity', 'encoding', 'forbiddenDurableFields', 'kind', 'migration', 'owner', 'recovery', 'retention', 'rollback'],
     'FRAMEWORK_PERSIST_FIELDS',
     'selected persistence',
   );
@@ -121,6 +132,7 @@ function normalizePersistence(input) {
     migration: assertNonemptyString(input.migration, 'FRAMEWORK_PERSIST_MIGRATION', 'persistence migration'),
     authorization: assertNonemptyString(input.authorization, 'FRAMEWORK_PERSIST_AUTHORIZATION', 'persistence authorization'),
     recovery: assertNonemptyString(input.recovery, 'FRAMEWORK_PERSIST_RECOVERY', 'persistence recovery'),
+    rollback: assertNonemptyString(input.rollback, 'FRAMEWORK_PERSIST_ROLLBACK', 'persistence rollback'),
     retention: assertNonemptyString(input.retention, 'FRAMEWORK_PERSIST_RETENTION', 'persistence retention'),
     cleanup: assertNonemptyString(input.cleanup, 'FRAMEWORK_PERSIST_CLEANUP', 'persistence cleanup'),
     forbiddenDurableFields: [...forbiddenDurableFields],
@@ -130,7 +142,7 @@ function normalizePersistence(input) {
 export function normalizeFrameworkLifecycleProfile(input) {
   exactKeys(
     input,
-    ['cleanup', 'deviceClosure', 'engineIdentity', 'ownerOrder', 'packageIdentity', 'persistence', 'plans', 'profileIdentity', 'resultVisibleOwners', 'schema'],
+    ['cleanup', 'deviceClosure', 'engineIdentity', 'ownerOrder', 'packageIdentity', 'persistence', 'plans', 'profileIdentity', 'resultVisibleOwners', 'schema', 'semanticIdentity'],
     'FRAMEWORK_PROFILE_FIELDS',
     'framework lifecycle profile',
   );
@@ -151,6 +163,7 @@ export function normalizeFrameworkLifecycleProfile(input) {
   return clone({
     schema: input.schema,
     engineIdentity: assertNonemptyString(input.engineIdentity, 'FRAMEWORK_ENGINE_IDENTITY', 'engine identity'),
+    semanticIdentity: assertNonemptyString(input.semanticIdentity, 'FRAMEWORK_SEMANTIC_IDENTITY', 'semantic identity'),
     profileIdentity: assertNonemptyString(input.profileIdentity, 'FRAMEWORK_PROFILE_IDENTITY', 'profile identity'),
     packageIdentity: assertNonemptyString(input.packageIdentity, 'FRAMEWORK_PACKAGE_IDENTITY', 'package identity'),
     ownerOrder,
@@ -238,11 +251,12 @@ export function recordStopCause(state, cause) {
 export function requestFrameworkCancellation(state, facts) {
   exactKeys(
     facts,
-    ['accountingConserved', 'ownerRulesApplied', 'partialBackupPublished', 'prematureTeardown', 'workDispositions'],
+    ['ownerRulesApplied', 'partialBackupPublished', 'prematureTeardown', 'reservationAccountingConserved', 'resourceAccountingConserved', 'workDispositions'],
     'FRAMEWORK_CANCELLATION_FIELDS',
     'cancellation facts',
   );
-  if (facts.accountingConserved !== true) fail('FRAMEWORK_CANCELLATION_ACCOUNTING', 'cancellation must conserve reservation/resource accounting');
+  if (facts.reservationAccountingConserved !== true) fail('FRAMEWORK_CANCELLATION_ACCOUNTING', 'cancellation must conserve reservation accounting');
+  if (facts.resourceAccountingConserved !== true) fail('FRAMEWORK_CANCELLATION_ACCOUNTING', 'cancellation must conserve resource accounting');
   if (facts.ownerRulesApplied !== true) fail('FRAMEWORK_CANCELLATION_OWNER_RULES', 'cancellation must apply owner-declared abandon/must-drain/release rules');
   if (facts.partialBackupPublished !== false) fail('FRAMEWORK_CANCELLATION_PARTIAL_BACKUP', 'cancellation cannot publish partial backup');
   if (facts.prematureTeardown !== false) fail('FRAMEWORK_CANCELLATION_PREMATURE_TEARDOWN', 'cancellation cannot trigger premature teardown');
@@ -376,13 +390,14 @@ export function restoreFrameworkPersistence(profileInput, snapshot) {
   if (profile.persistence.kind !== 'selected') fail('FRAMEWORK_PERSIST_ABSENT', 'persistence is not selected');
   exactKeys(
     snapshot,
-    ['compatibilityIdentity', 'durableAuthorityKinds', 'engineIdentity', 'generationValid', 'packageIdentity', 'profileIdentity', 'resourcePlanValid', 'staleReferenceProtection'],
+    ['compatibilityIdentity', 'durableAuthorityKinds', 'engineIdentity', 'generationValid', 'packageIdentity', 'profileIdentity', 'resourcePlanValid', 'semanticIdentity', 'staleReferenceProtection'],
     'FRAMEWORK_RESTORE_FIELDS',
     'persistence snapshot',
   );
   const durableAuthorityKinds = assertUniqueStrings(snapshot.durableAuthorityKinds, 'FRAMEWORK_RESTORE_AUTHORITY', 'durable authority kinds');
   const forbidden = new Set(profile.persistence.forbiddenDurableFields);
   const invalid = snapshot.engineIdentity !== profile.engineIdentity
+    || snapshot.semanticIdentity !== profile.semanticIdentity
     || snapshot.profileIdentity !== profile.profileIdentity
     || snapshot.packageIdentity !== profile.packageIdentity
     || snapshot.compatibilityIdentity !== profile.persistence.compatibilityIdentity
