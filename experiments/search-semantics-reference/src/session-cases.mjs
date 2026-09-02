@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import {
   advanceInput,
   candidateRoot,
-  cleanupFacts,
   establish,
   expectCode,
   getSessionProfile,
@@ -11,6 +10,7 @@ import {
   ownerOrderFacts,
   readyOutputPublication,
   restartSession,
+  teardownInput,
 } from './session-case-support.mjs';
 
 function authorityMeaning(session) {
@@ -242,7 +242,7 @@ export function registerSessionCases({ defineCase, sessionProjection, terminalEv
       terminalOutputIdentity: 'terminal.output.current',
       completionClass: 'complete',
     }).kind, 'terminal');
-    const released = session.teardown({ cleanupFacts: cleanupFacts(profile) });
+    const released = session.teardown(teardownInput(profile));
     assert.equal(released.kind, 'released');
     assert.equal(released.runtimeResidue, 0);
     return { staleRejected: true, cleanupRecords: released.cleanupReadback.length };
@@ -298,8 +298,8 @@ export function registerSessionCases({ defineCase, sessionProjection, terminalEv
       completionClass: 'cancelled',
     });
     assert.equal(terminal.kind, 'terminal');
-    assert.equal(session.teardown({ terminalResultBorrowOpen: true, cleanupFacts: cleanupFacts(profile) }).kind, 'pending-borrow');
-    const released = session.teardown({ terminalResultBorrowOpen: false, cleanupFacts: cleanupFacts(profile) });
+    assert.equal(session.teardown(teardownInput(profile, { terminalResultBorrowOpen: true })).kind, 'pending-borrow');
+    const released = session.teardown(teardownInput(profile));
     assert.equal(released.kind, 'released');
     return { cancellationIdempotent: true, runtimeResidue: released.runtimeResidue };
   }, ['SESSION-', 'SESSION-LIFE-', 'SESSION-CLEANUP-']);
