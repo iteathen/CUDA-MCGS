@@ -2,12 +2,12 @@ import assert from 'node:assert/strict';
 
 import {
   advanceInput,
-  cleanupFacts,
   establish,
   expectCode,
   getSessionProfile,
   liveSession,
   readyOutputPublication,
+  teardownInput,
 } from './session-case-support.mjs';
 
 export function registerSessionBoundaryCases({ defineCase, sessionProjection }) {
@@ -146,7 +146,7 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
       completionClass: 'complete',
     });
     assert.equal(terminal.kind, 'terminal');
-    assert.equal(session.teardown({ cleanupFacts: cleanupFacts(profile) }).kind, 'released');
+    assert.equal(session.teardown(teardownInput(profile)).kind, 'released');
     return { blockedWhileBorrowed: true, terminalAfterRelease: true };
   }, ['SESSION-LIFE-', 'SESSION-OBS-', 'SESSION-CLEANUP-']);
 
@@ -252,6 +252,32 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     };
   }, ['SESSION-ROOT-', 'SESSION-EPOCH-', 'SESSION-LIFE-']);
 
+  defineCase('session-teardown-enforces-normalized-order', () => {
+    const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
+    const session = liveSession(sessionProjection);
+    establish(session, 'teardown-order');
+    assert.equal(session.completeSession({
+      commandId: 'complete-teardown-order',
+      progressClosed: true,
+      terminalOutputReady: true,
+      staleWorkDisposed: true,
+      terminalOutputIdentity: 'terminal.output.teardown-order',
+      completionClass: 'complete',
+    }).kind, 'terminal');
+
+    const before = session.snapshot();
+    const outOfOrder = [...profile.lifecycle.teardownOrder];
+    [outOfOrder[0], outOfOrder[1]] = [outOfOrder[1], outOfOrder[0]];
+    expectCode(() => session.teardown(teardownInput(profile, { completedTeardownSteps: outOfOrder })), 'SESSION_REFERENCE_TEARDOWN_ORDER');
+    assert.deepEqual(session.snapshot(), before, 'invalid teardown ordering must not release Session state');
+
+    const released = session.teardown(teardownInput(profile));
+    assert.equal(released.kind, 'released');
+    assert.equal(released.runtimeResidue, 0);
+    assert.deepEqual(released.completedTeardownSteps, profile.lifecycle.teardownOrder);
+    return { teardownOrder: released.completedTeardownSteps, runtimeResidue: released.runtimeResidue };
+  }, ['SESSION-LIFE-']);
+
   defineCase('session-completion-command-replay-idempotent', () => {
     const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
     const session = liveSession(sessionProjection);
@@ -269,7 +295,7 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     const twice = session.completeSession(input);
     assert.deepEqual(twice, once, 'terminal completion replay must be idempotent');
     assert.deepEqual(session.snapshot(), afterOnce, 'terminal completion replay must not mutate counters or authority');
-    assert.equal(session.teardown({ cleanupFacts: cleanupFacts(profile) }).kind, 'released');
+    assert.equal(session.teardown(teardownInput(profile)).kind, 'released');
     return { completionReplayStable: true, terminalOutputIdentity: once.terminalProvenance.terminalOutputIdentity };
   }, ['SESSION-', 'SESSION-LIFE-', 'SESSION-SEC-']);
 }
