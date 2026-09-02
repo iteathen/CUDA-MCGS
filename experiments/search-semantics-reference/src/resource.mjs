@@ -287,6 +287,7 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
     const byClass = new Map(input.reservations.map((entry) => [entry.classId, entry]));
     if (byClass.size !== group.classes.length || group.classes.some((classId) => !byClass.has(classId))) fail('RESOURCE_REFERENCE_COMPOUND', 'compound reservation classes differ from the declared group');
     const planned = [];
+    const transactionLeaseIds = new Set();
     for (const classId of group.globalOrder) {
       const reservation = byClass.get(classId);
       const plan = planReservation(reservation, { countFailure: false });
@@ -296,6 +297,10 @@ export function createResourceOracle({ profile, counterStarts = {}, mutations = 
         transactions.set(transactionId, freeze({ state: 'rolled-back', failedClass: classId }, 'Resource transaction result'));
         return { kind: 'rolled-back', transactionId, failure: failed, committed: 0 };
       }
+      if (transactionLeaseIds.has(plan.leaseId)) {
+        fail('RESOURCE_REFERENCE_TRANSACTION_LEASE_IDENTITY', 'compound transaction cannot reserve more than one generation of the same lease id');
+      }
+      transactionLeaseIds.add(plan.leaseId);
       planned.push({ plan, reservation });
     }
     const leasesCommitted = planned.map(({ plan, reservation }) => commitReservation(plan, reservation));

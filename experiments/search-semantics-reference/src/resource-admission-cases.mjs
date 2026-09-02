@@ -55,6 +55,7 @@ export function registerResourceAdmissionCases({ defineCase, projection }) {
       assert(reserve, `compound class ${classId} must be protected by its declared reserve`);
       return reservedLeaseInput(base, reserve, `compound-${index}`, { quantity: reserve.minimum });
     });
+    assert(reservations.length >= 2, 'compound rollback falsifier requires at least two classes');
     const failing = reservations.map((entry, index) => index === reservations.length - 1
       ? { ...entry, quantity: (BigInt(base.reserves.find(({ id }) => id === entry.reserveId).maximum) + 1n).toString() }
       : entry);
@@ -65,6 +66,34 @@ export function registerResourceAdmissionCases({ defineCase, projection }) {
     const after = oracle.snapshot();
     assert.equal(liveCount(after), liveCount(before), 'failed compound admission must publish no partial lease');
     assert.deepEqual(accountingWithoutDiagnostics(after), accountingWithoutDiagnostics(before), 'failed compound admission must leave live capacity unchanged');
+
+    const exactCollision = reservations.map((entry, index) => index === 1
+      ? { ...entry, leaseId: reservations[0].leaseId, generation: reservations[0].generation }
+      : entry);
+    const exactBefore = oracle.snapshot();
+    assert.throws(
+      () => oracle.reserveCompound({ groupId: group.id, transactionId: 'transaction-exact-lease-collision', reservations: exactCollision }),
+      { code: 'RESOURCE_REFERENCE_TRANSACTION_LEASE_IDENTITY' },
+      'transaction-local exact lease identity must reject before any commit',
+    );
+    const exactAfter = oracle.snapshot();
+    assert.equal(liveCount(exactAfter), liveCount(exactBefore), 'lease-identity rejection must publish no partial lease');
+    assert.deepEqual(accountingWithoutDiagnostics(exactAfter), accountingWithoutDiagnostics(exactBefore), 'lease-identity rejection must leave live accounting unchanged');
+    assert.deepEqual(exactAfter.leases, exactBefore.leases, 'lease-identity rejection must leave the authoritative lease set unchanged');
+
+    const generationCollision = reservations.map((entry, index) => index === 1
+      ? { ...entry, leaseId: reservations[0].leaseId, generation: (BigInt(reservations[0].generation) + 1n).toString() }
+      : entry);
+    const generationBefore = oracle.snapshot();
+    assert.throws(
+      () => oracle.reserveCompound({ groupId: group.id, transactionId: 'transaction-generation-collision', reservations: generationCollision }),
+      { code: 'RESOURCE_REFERENCE_TRANSACTION_LEASE_IDENTITY' },
+      'one compound transaction cannot allocate two generations of one logical lease id',
+    );
+    const generationAfter = oracle.snapshot();
+    assert.equal(liveCount(generationAfter), liveCount(generationBefore), 'generation-collision rejection must publish no partial lease');
+    assert.deepEqual(accountingWithoutDiagnostics(generationAfter), accountingWithoutDiagnostics(generationBefore), 'generation-collision rejection must leave live accounting unchanged');
+    assert.deepEqual(generationAfter.leases, generationBefore.leases, 'generation-collision rejection must leave the authoritative lease set unchanged');
 
     const committed = oracle.reserveCompound({ groupId: group.id, transactionId: 'transaction-ok', reservations });
     assert.equal(committed.kind, 'committed');
