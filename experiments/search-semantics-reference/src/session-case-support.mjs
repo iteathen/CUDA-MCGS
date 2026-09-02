@@ -48,6 +48,14 @@ export function cleanupFacts(profile) {
   return profile.cleanup.kinds.map((kind) => ({ kind, disposition: kind === 'diagnostic' ? 'archive' : 'released' }));
 }
 
+export function teardownInput(profile, overrides = {}) {
+  return {
+    completedTeardownSteps: [...profile.lifecycle.teardownOrder],
+    cleanupFacts: cleanupFacts(profile),
+    ...overrides,
+  };
+}
+
 export function readyOutputPublication(session, identity = 'observation.synthetic.1') {
   const snapshot = session.snapshot();
   const authority = snapshot.authority;
