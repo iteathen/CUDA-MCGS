@@ -339,6 +339,16 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     if (publication?.kind !== 'ready' || !publication.metadata || typeof publication.metadata !== 'object') {
       fail('SESSION_REFERENCE_OBSERVATION_PUBLICATION', 'Session observation requires an Output-owned immutable ready publication fact');
     }
+    const expectedOutputProfile = profile.outputProfile?.id;
+    if (
+      typeof expectedOutputProfile !== 'string'
+      || publication.profileId !== expectedOutputProfile
+      || publication.metadata.profileIdentity !== expectedOutputProfile
+      || publication.searchIncarnation !== publication.metadata.searchIncarnation
+      || publication.sequence !== publication.metadata.sequence
+    ) {
+      fail('SESSION_REFERENCE_OBSERVATION_PUBLICATION', 'Output publication provenance does not match the selected normalized Output profile');
+    }
     if (publication.metadata.rootEpoch !== authority.rootEpoch) {
       return freeze({ kind: 'stale-rejected', code: selected.stale, authorityUnchanged: true }, 'Session observation stale rejection');
     }
