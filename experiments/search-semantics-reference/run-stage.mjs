@@ -85,14 +85,14 @@ const cases = [];
 const executedRequirements = new Set();
 for (const definition of definitions) {
   if (selectedCase !== null && definition.id !== selectedCase) continue;
+  const mapped = directRequirements.filter((requirementId) => definition.coveragePrefixes.includes(classificationFor(requirementId).requirementPrefix));
+  for (const requirementId of mapped) executedRequirements.add(requirementId);
   try {
     const detail = await definition.body();
-    const mapped = directRequirements.filter((requirementId) => definition.coveragePrefixes.includes(classificationFor(requirementId).requirementPrefix));
-    for (const requirementId of mapped) executedRequirements.add(requirementId);
     cases.push({ id: definition.id, status: 'pass', requirements: mapped, detail: detail ?? null });
     console.log(`case=${definition.id} result=pass requirements=${mapped.length}`);
   } catch (error) {
-    cases.push({ id: definition.id, status: 'fail', requirements: [], detail: null, error: { name: error.name, code: error.code ?? null, message: error.message } });
+    cases.push({ id: definition.id, status: 'fail', requirements: mapped, detail: null, error: { name: error.name, code: error.code ?? null, message: error.message } });
     console.error(`case=${definition.id} result=fail error=${JSON.stringify(error.message)}`);
   }
 }
