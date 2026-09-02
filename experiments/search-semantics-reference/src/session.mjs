@@ -386,6 +386,7 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     requireCommandPhase();
     const replayed = replay(input.commandId, 'cancel', input);
     if (replayed) return replayed;
+    preflightCounters(['command']);
     if (reroot !== null) {
       const expected = profile.reroot.profile.transaction.abortOrder;
       const owners = (input.rerootAbortFacts ?? []).map(({ owner }) => owner);
@@ -393,7 +394,6 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
       if ((input.rerootAbortFacts ?? []).some(({ status }) => !['aborted', 'released', 'restored'].includes(status))) fail('SESSION_REFERENCE_CANCELLATION_REROOT', 'cancellation must resolve prepared reroot state');
       reroot = null;
     }
-    preflightCounters(['command']);
     commitCounters(['command']);
     cancellationRequested = true;
     lifecycle = 'cancelling';
