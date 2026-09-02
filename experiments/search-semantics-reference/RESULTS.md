@@ -22,11 +22,11 @@ Candidate/reference integration remains distinct from protected #122 acceptance,
 
 Exact semantic head before this current-state-only reconciliation:
 
-`910f2eeb6ad665f7690ad4b05e9a2dcbfc55fd2c`
+`c554e51423600f1c6bd7f52b5ee1fb6a2b7826fa`
 
 Semantic tree:
 
-`d53a43950f5efbed6f28d3eb7140d5aeb84f1b08`
+`a9ae9970fe2b9e37a2223bb89c19942ba6d1e5bc`
 
 The semantic diff is confined to Session profile projection/export, owner-local Session semantics/cases/runner, public script wrappers and the permanent Session CI gate.
 
@@ -41,12 +41,13 @@ The semantic diff is confined to Session profile projection/export, owner-local 
 | Permanent Session runner was conditionally skippable and missing evidence only warned | `46d105821be7a49063f0bc91cce0ebe4acf570a7` | `33684533233` | workflow log; failure occurs before Session evidence generation |
 | Malformed untrusted command identity mutated counters before semantic validation | `d74ab8b9efd5df68e47d7099081c58f743dea12a` | `33684937813` | artifact `9867706099`; `sha256:0aae20cbc391c87b86a82e11d1a1cd09027f0a37abf319da91516b11a4a62409` |
 | Same-epoch foreign Output-profile publication could be admitted as current Session observation provenance | `3f0e86f871795a5c26a7277210e2685f4264cb80` | `33688752675` | artifact `9869167043`; `sha256:dfc5da2562a399e0550b6af7e139c1bc65e5b4508f87b0d93fe409e8c01e4c48` |
+| Same-profile/same-epoch publication from a foreign Session identity could still be admitted | `d569fd1cbb3374697751e1b9772bd43c1fbd845b` | `33689574707` | artifact `9869474428`; `sha256:1ed1b6427c45afd57dc7f418ccee98297e42439c462aa7ca76ae3fcdb8783c7d` |
 
-The green repair line preserves these falsifiers. It keeps advance within the existing root incarnation, consumes Output-owned ready-publication facts, binds a publication to the normalized top-level Output profile and self-consistent public provenance before Session state mutation, requires observation-borrow quiescence before terminal provenance, admits cancellation before reroot mutation, makes the Session CI lane non-bypassable, and validates command content/identities before any state mutation.
+The green repair line preserves these falsifiers. It keeps advance within the existing root incarnation, consumes Output-owned ready-publication facts, binds a publication to the normalized top-level Output profile plus exact injected Session/search provenance before Session state mutation, requires observation-borrow quiescence before terminal provenance, admits cancellation before reroot mutation, makes the Session CI lane non-bypassable, and validates command content/identities before any state mutation.
 
-## Semantic qualification at 910f2eeb…
+## Semantic qualification at c554e514…
 
-Permanent Session push workflow `33688951561` succeeded. The exact same semantic head also passed the PR Session workflow `33688958267`, Terminal Slice `33688958229`, Framework lifecycle `33688958245`, and full repository/documentation matrix `33688958297`.
+The exact semantic head passed PR Session workflow `33689816193`, Terminal Slice `33689816259`, and Framework lifecycle `33689816270`. The full repository/documentation matrix is deliberately required again on the final documentation-inclusive head rather than being inferred from an earlier semantic head.
 
 ### Composer and projections
 
@@ -61,13 +62,13 @@ Permanent Session push workflow `33688951561` succeeded. The exact same semantic
 
 ### Session behavioral reference
 
-- expected/discovered/executed/passed: `21/21/21/21`;
+- expected/discovered/executed/passed: `22/22/22/22`;
 - failed/skipped/undiscovered: `0`;
 - direct SPEC-0006 ENGINE-REFERENCE routes executed/covered: `38/38`;
-- Session evidence: `a6e5247464ecee9860aa6321bcd8eca4891078d70d27450c35e082896ee2e3bd`;
-- Session canonical bytes: `15716`;
-- PR artifact: `9869244684`;
-- artifact SHA-256: `af7c0b8ccf8fad78346016eaefdf495816d1f70ae5e77cb55b0a04be3f50c2e6`.
+- Session evidence: `9bca68e4cf19ea62742a606a75bab82c1146a832c6cf9ef57ef9cf0bd6a1c431`;
+- Session canonical bytes: `16175`;
+- PR artifact: `9869565953`;
+- artifact SHA-256: `e32621394f322273146336f17e8233867d26634a4408a9b6f67cf27e55976c55`.
 
 ### Permanent gate integrity
 
@@ -78,15 +79,15 @@ Permanent Session push workflow `33688951561` succeeded. The exact same semantic
 
 ## Ownership review result at semantic head
 
-The executable Session brick remains bounded to Session authority. It consumes the normalized Composer Session profile and public sibling-owner facts. It does not duplicate Domain root validity, Graph storage/reclamation, Resource accounting, Progress scheduling/closure, Output payload/snapshot/publication semantics, Framework lifecycle or CUDA-JS mechanism authority.
+The executable Session brick remains bounded to Session authority. It consumes the normalized Composer Session profile and public sibling-owner facts. Runtime Session identity plus injected search identity/incarnation are used as public provenance guards so Session can reject Output facts from another execution; Session does not become the owner of Output payload, snapshot or publication meaning.
 
-The case bank includes materially different selected Session profiles, attention/observation schedule permutation, advance/reroot distinction, shared-transposition occurrence behavior, reroot abort/commit/quarantine, observation freshness/profile/provenance/pressure/borrow lifecycle, cancellation/completion, finite exhaustion, command replay, admission-before-mutation and the exact Session-absent terminal regression.
+The case bank includes materially different selected Session profiles, attention/observation schedule permutation, advance/reroot distinction, shared-transposition occurrence behavior, reroot abort/commit/quarantine, observation freshness/profile/execution-provenance/pressure/borrow lifecycle, cancellation/completion, finite exhaustion, command replay, admission-before-mutation and the exact Session-absent terminal regression.
 
 No native source, private runtime access, product/chess/UCI/model semantics, second root-control authority or host observe-decide-write/relaunch progression loop was introduced.
 
 ## Documentation-inclusive final gate
 
-This RESULTS file and the other current-state trackers are intentionally reconciled after semantic qualification and review-discovered provenance remediation. That state-only reconciliation changes the candidate head but not the qualified Session semantics above.
+This RESULTS file and the other current-state trackers are intentionally reconciled after semantic qualification and the complete review-discovered provenance remediation. That state-only reconciliation changes the candidate head but not the qualified Session semantics above.
 
 The resulting exact #181 review head must still pass:
 
