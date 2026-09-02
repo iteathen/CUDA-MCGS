@@ -158,7 +158,7 @@
       "status": "Proposal",
       "semanticOwner": "CUDA-MCGS universal device-owned progress semantics",
       "sourcePath": "docs/specs/SPEC-0012-device-owned-search-progress.md",
-      "sha256": "ed1fac37eb90e1d0d1c1cec046bfff3671f04eec8f791dcc2ea53c08ce659488",
+      "sha256": "0467ce79417c49d9bb261a2456e3f5f09fa512f6894d8336b4543eba5b1d693b",
       "requirementPrefix": "PROGRESS-",
       "requirementCount": 51,
       "plannedLeaf": "IR-PROGRESS-01"
