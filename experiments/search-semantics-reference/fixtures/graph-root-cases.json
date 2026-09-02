@@ -29,7 +29,7 @@
   "rootControlProjection": {
     "algorithm": "sha256",
     "byteLength": 10489,
-    "sha256": "5bed9239f992a7a870800988654aa0761dfe4e4c36191185d71e3c95f361fe68"
+    "sha256": "e09b71bb3d9b7303d2671ff147d6ef4759c93c0d56f8ebb4d7828c35108cdcbe"
   },
   "expectedCases": [
     "graph-root-profile-and-upstream-evidence-exact",
