@@ -130,7 +130,7 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
     if (replayed) return replayed;
     if (authority !== null) fail('SESSION_REFERENCE_ROOT_EXISTS', 'initial root is already authoritative');
     if (input.domainReady !== true || input.graphReady !== true || input.resourceReady !== true) {
-      return freeze({ kind: 'rejected', code: 'session-root-unready', authorityUnchanged: true }, 'Session root rejection');
+      return record(input.commandId, 'root', input, { kind: 'rejected', code: 'session-root-unready', authorityUnchanged: true });
     }
     const rootIdentity = text(input.rootIdentity, 'root identity');
     const occurrenceReference = freeze(input.occurrenceReference, 'root occurrence reference');
@@ -160,14 +160,14 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
     const replayed = replay(input.commandId, 'advance', input);
     if (replayed) return replayed;
     if (!same(input.authority, authority, 'Session advance authority provenance')) {
-      return freeze({ kind: 'rejected', code: 'session-command-stale', authorityUnchanged: true }, 'Session stale advance rejection');
+      return record(input.commandId, 'advance', input, { kind: 'rejected', code: 'session-command-stale', authorityUnchanged: true });
     }
     const requestedWork = input.requestedWork ?? {};
     if (ADVANCE_REROOT_ONLY.some((key) => requestedWork[key] === true)) {
       fail('SESSION_REFERENCE_ADVANCE_REROOT_ONLY', 'advance cannot perform materialization, admission, reuse classification, transform/reset, reclamation, or eager cleanup');
     }
     if (input.successor?.realizedTransition !== true || input.successor?.successorReady !== true) {
-      return freeze({ kind: 'rejected', code: 'session-advance-unready', authorityUnchanged: true }, 'Session advance rejection');
+      return record(input.commandId, 'advance', input, { kind: 'rejected', code: 'session-advance-unready', authorityUnchanged: true });
     }
     if (input.successor?.nodeInvalidated === true) {
       fail('SESSION_REFERENCE_ADVANCE_SHARED_NODE', 'advance cannot invalidate a shared graph node when only one occurrence is superseded');
@@ -207,12 +207,12 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
     const replayed = replay(input.commandId, 'reroot-prepare', input);
     if (replayed) return replayed;
     if (!same(input.authority, authority, 'Session reroot authority provenance')) {
-      return freeze({ kind: 'rejected', code: 'session-command-stale', authorityUnchanged: true }, 'Session stale reroot rejection');
+      return record(input.commandId, 'reroot-prepare', input, { kind: 'rejected', code: 'session-command-stale', authorityUnchanged: true });
     }
     if (reroot !== null) fail('SESSION_REFERENCE_REROOT_BUSY', 'a reroot transaction is already prepared');
     if (input.compoundAdmission?.approved !== true) {
       const pressureOutcome = profile.reroot.profile.pressureOutcome;
-      return freeze({ kind: pressureOutcome, authorityUnchanged: true, transactionPublished: false }, 'Session reroot pressure');
+      return record(input.commandId, 'reroot-prepare', input, { kind: pressureOutcome, authorityUnchanged: true, transactionPublished: false });
     }
     const transaction = profile.reroot.profile.transaction;
     const preparedOwners = (input.ownerPreparations ?? []).map(({ owner }) => owner);
@@ -221,7 +221,7 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
       fail('SESSION_REFERENCE_REROOT_PREPARE', 'every affected owner must publish prepared before reroot becomes prepared');
     }
     if (input.candidateRoot?.domainReady !== true || input.candidateRoot?.graphReady !== true) {
-      return freeze({ kind: 'rejected', code: 'session-reroot-candidate-unready', authorityUnchanged: true }, 'Session reroot rejection');
+      return record(input.commandId, 'reroot-prepare', input, { kind: 'rejected', code: 'session-reroot-candidate-unready', authorityUnchanged: true });
     }
     const transactionId = text(input.transactionId, 'transactionId');
     text(input.candidateRoot.rootIdentity, 'root identity');
@@ -315,7 +315,9 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
     if (profile.attention?.kind !== 'selected') fail('SESSION_REFERENCE_ATTENTION_ABSENT', 'attention is not selected for this Session profile');
     const replayed = replay(input.commandId, 'attention', input);
     if (replayed) return replayed;
-    if (input.ownerEffect?.ready !== true) return freeze({ kind: 'rejected', code: 'session-attention-unready', authorityUnchanged: true }, 'Session attention rejection');
+    if (input.ownerEffect?.ready !== true) {
+      return record(input.commandId, 'attention', input, { kind: 'rejected', code: 'session-attention-unready', authorityUnchanged: true });
+    }
     if (input.ownerEffect.rootAuthorityChanged === true || input.ownerEffect.graphWork === true || input.ownerEffect.reclamation === true || input.ownerEffect.invalidatedExistingWork === true) {
       fail('SESSION_REFERENCE_ATTENTION_AUTHORITY', 'attention cannot change root authority, graph/reclamation state, or existing-work validity');
     }
@@ -371,13 +373,13 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
       fail('SESSION_REFERENCE_OBSERVATION_PUBLICATION', 'Output publication provenance does not match the current Session/search context and normalized Output profile');
     }
     if (publication.metadata.rootEpoch !== authority.rootEpoch) {
-      return freeze({ kind: 'stale-rejected', code: selected.stale, authorityUnchanged: true }, 'Session observation stale rejection');
+      return record(input.commandId, 'observation-request', input, { kind: 'stale-rejected', code: selected.stale, authorityUnchanged: true });
     }
     const requestId = text(input.requestId, 'requestId');
     if (observations.has(requestId)) fail('SESSION_REFERENCE_OBSERVATION_REQUEST', `duplicate observation request ${requestId}`);
     const pendingRequests = [...observations.values()].filter((request) => !request.released).length;
     if (BigInt(pendingRequests) >= dec(selected.maxPendingRequests, 'observation maxPendingRequests')) {
-      return freeze({ kind: 'pressure', code: selected.pressure, authorityUnchanged: true }, 'Session observation pressure');
+      return record(input.commandId, 'observation-request', input, { kind: 'pressure', code: selected.pressure, authorityUnchanged: true });
     }
     preflightCounters(['command', 'observation-generation']);
     commitCounters(['command', 'observation-generation']);
