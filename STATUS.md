@@ -18,38 +18,44 @@ Branch: `ref/session-01`
 
 Exact base: `experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`
 
-Qualified semantic checkpoint before this tracker reconciliation:
+Qualified semantic checkpoint before final tracker reconciliation:
 
-`9447146093aa993eb98d0de24db0e9a9a26fef11`
+`51b596ecdc2da1ff2c9c69b4974858d9a42dec88`
 
 tree:
 
-`9e28e0b67a37aba277155f992b489ad3dc891681`
+`9eaff501ff5e14479bae81f3dca8c08b8dafb148`
 
-Session remains a bounded external-lifecycle owner. It owns command order/replay/idempotence/provenance, Session identity/incarnation, root/advance authority coordination, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite counters, and cleanup. Injected search identity/incarnation are public provenance guards only. Domain root validity, Graph storage/reclamation, Resource accounting, Progress scheduling/closure, Output snapshot/publication meaning, Framework lifecycle, CUDA mechanisms, and product semantics remain with their natural owners.
+Session remains a bounded external-lifecycle owner. It owns command order/replay/idempotence/provenance, Session identity/incarnation, root/advance authority coordination, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite counters, and cleanup. Current root authority and injected search/session identity are public provenance guards only. Domain validity, Graph storage/reclamation, Resource accounting, Progress scheduling/closure, Output snapshot/publication meaning, Framework lifecycle, CUDA mechanisms, and product semantics remain with their natural owners.
 
 No native code, product semantics, generic scheduler, workflow DSL, or host observe-decide-write/relaunch loop was introduced.
 
-## Qualification at 94471460…
+## Qualification at 51b596ec…
 
-Permanent Session workflow `33690701083` checked out exact head `9447146093aa993eb98d0de24db0e9a9a26fef11` and passed:
+Exact-head PR workflows passed:
+
+- Session behavioral reference `33691899626` — success;
+- Terminal slice `33691899620` — success;
+- Framework lifecycle `33691899664` — success.
+
+The Session run proved:
 
 - Session CI self-gate: pass;
 - Composer: `881/881`;
 - all required owner profile projections: pass;
 - advance/reroot/teardown boundary gate: pass;
 - terminal Session-absent regression: `6/6`;
-- Session reference: `23/23`;
+- Session reference: `25/25`;
 - direct SPEC-0006 ENGINE-REFERENCE obligations: `38/38`;
-- Session evidence: `eb6fb96a0d3e14908189ede8f065d0863b19065bc717ce0b3c351fe0e79fd3c7` (`16913` canonical bytes);
-- artifact: `9869899487`;
-- artifact digest: `sha256:af2d6595dcf6257e9dce933f22cb37d59d695d1c11c78f12cde9d54d2c38c1d4`.
+- Session evidence: `06232b783f4b60cd61874f885840191497443139517d62c4b98f0855f4286417` (`20380` canonical bytes);
+- artifact: `9870343695`;
+- artifact digest: `sha256:f35baa0ccb332ec5f5bd58e095269d128eaf0c423768f5d40342d9ad7c1704f1`.
 
-The current case bank includes stale-authority rejection for advance, normalized teardown order, exact Output/Session/search provenance, and the earlier lifecycle/resource/borrow/cancellation cases.
+The 25th permanent case proves the replay contract after typed terminal rejection: exact replay returns the original typed outcome, while changed input under the same command ID is rejected. This is the durable case for the earlier replay defect exposed at `31dd36d918c062750361b5ed9fe227854e2c9280` / run `33691410709`.
 
 ## Preserved decisive reds
 
-The permanent gates/cases retain the useful failures rather than weakening them:
+The permanent gates/cases retain the review-discovered failures rather than weakening them:
 
 - advance changed root incarnation — `dc5b2c363933476b9580c267ba58c6f79ee56966`, run `33682215069`;
 - Session invented Output observation truth — `1341d784329c03b7f697fa62a5dc6fba1237cd4f`, run `33682862655`;
@@ -61,19 +67,19 @@ The permanent gates/cases retain the useful failures rather than weakening them:
 - foreign Session provenance was accepted — `d569fd1cbb3374697751e1b9772bd43c1fbd845b`, run `33689574707`;
 - stale advance authority was accepted — `3a00cacb58cc244b0b1918e3d40dc18ea3448875`, run `33690115667`;
 - stale reroot authority was accepted — `5e3864f854483d989815044ce7f5fd4aa36d4438`, run `33690463348`;
-- strict reroot authority initially exposed six stale case-composition callsites — `9edc258b7aa3336a1c868c1d779baaecac0f3809`, run `33690589366`, artifact `9869859986`.
-
-The `94471460…` case-support repair supplies current public authority to normal reroot histories while explicit stale-authority inputs still override it for negative tests.
+- strict reroot authority exposed stale case composition — `9edc258b7aa3336a1c868c1d779baaecac0f3809`, run `33690589366`;
+- invalid reroot authority leaked harness canonicalization instead of typed Session rejection — `2a6fe270d44a1cd91dd72de13b066200988f2c92`, run `33690963232`;
+- changed replay after typed command rejection was accepted — `31dd36d918c062750361b5ed9fe227854e2c9280`, run `33691410709`.
 
 ## Current gate
 
-This file and the other current-state trackers are documentation-only reconciliation after the qualified semantic checkpoint. Evidence reuse is valid only because the Session evidence key is content-sensitive to its semantic source set and those sources are unchanged by tracker edits.
+The current-state trackers are being reconciled after the exact semantic checkpoint above. Their commits must not change Session semantic/test/workflow sources.
 
 Before #181 can integrate:
 
-1. freeze the resulting documentation-inclusive head and verify the full repository/documentation PR matrix on that exact head;
-2. verify the frozen diff from base and confirm the semantic source tree still matches the qualified `94471460…` checkpoint except for tracker-only changes;
-3. complete fresh author-side whole-diff review with no blocker;
+1. freeze the resulting documentation-inclusive head and compare it to `51b596ec…`; only `STATUS.md`, `next_step.yaml`, and the experiment `README.md`/`RESULTS.md` may differ after the semantic checkpoint;
+2. require the full repository/documentation PR matrix to pass on that exact final head;
+3. complete one fresh author-side whole-diff review of PR #189 with no blocker;
 4. stop for fresh repository-owner authorization for that exact head/base.
 
 PR #189 remains the draft review record. If the known connector draft-state defect prevents clearing the draft flag, preserve #189 and use only the accepted same-head/same-base transport after authorization.
