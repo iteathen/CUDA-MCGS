@@ -70,6 +70,21 @@
     {"finding":"invalid reroot authority leaked harness canonicalization instead of typed Session rejection","head":"2a6fe270d44a1cd91dd72de13b066200988f2c92","workflow":33690963232},
     {"finding":"changed replay after typed command rejection was accepted","head":"31dd36d918c062750361b5ed9fe227854e2c9280","workflow":33691410709}
   ],
+  "deliverables": [
+    "Session profile projection/export consuming the existing Composer normalizer as structural authority.",
+    "Owner-local Session oracle, case support, permanent expected case bank and runner under experiments/search-semantics-reference.",
+    "Permanent Session CI gate coupled to Composer projections, Session advance/reroot/teardown boundary checks and terminal Session-absent regression.",
+    "25-case Session behavioral reference covering all 38 direct SPEC-0006 ENGINE-REFERENCE obligations.",
+    "Permanent rejected-command replay case proving original typed outcome replay and changed-input rejection.",
+    "PR #189 as the author-review record plus reconciled STATUS.md, next_step.yaml and experiment README/RESULTS."
+  ],
+  "validation": [
+    "The exact final head must pass Session behavioral reference, Terminal slice reference, Framework lifecycle reference and the full repository/documentation matrix.",
+    "The tracker-only finalization after 61fce562... may change only STATUS.md, next_step.yaml and experiments/search-semantics-reference/README.md and RESULTS.md.",
+    "Session must remain 25/25 with Composer 881/881, terminal Session-absent 6/6 and all 38 direct SPEC-0006 routes.",
+    "Fresh complete-diff author review must remain free of blocking semantic, ownership, governance, evidence or cleanup defects.",
+    "Any material head or base change after review invalidates affected review/authorization and requires requalification."
+  ],
   "blockers": [],
   "current_gate": [
     "Qualify the tracker-only finalization head with Session, Terminal, Framework and full repository/documentation workflows.",
