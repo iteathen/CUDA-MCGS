@@ -144,6 +144,59 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     return { commandCounterExhausted: true, rerootPreserved: true };
   }, ['SESSION-LIFE-', 'SESSION-SEC-', 'SESSION-ROOT-']);
 
+  defineCase('session-command-validation-precedes-mutation', () => {
+    const invalidRootSession = liveSession(sessionProjection);
+    const beforeInvalidRoot = invalidRootSession.snapshot();
+    expectCode(() => invalidRootSession.establishInitialRoot({
+      commandId: 'root-invalid-identity',
+      rootIdentity: '',
+      occurrenceReference: { slot: 'node-invalid-root', generation: '1' },
+      domainReady: true,
+      graphReady: true,
+      resourceReady: true,
+    }), 'SESSION_REFERENCE_ID');
+    assert.deepEqual(invalidRootSession.snapshot(), beforeInvalidRoot, 'invalid initial root identity must be rejected before counters or authority mutate');
+
+    const invalidAdvanceSession = liveSession(sessionProjection);
+    establish(invalidAdvanceSession, 'invalid-advance-base');
+    const beforeInvalidAdvance = invalidAdvanceSession.snapshot();
+    expectCode(() => invalidAdvanceSession.applyAdvance(advanceInput('invalid-advance', {
+      successor: { rootIdentity: '' },
+    })), 'SESSION_REFERENCE_ID');
+    assert.deepEqual(invalidAdvanceSession.snapshot(), beforeInvalidAdvance, 'invalid advance identity must be rejected before counters or authority mutate');
+
+    const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
+    const invalidRerootSession = liveSession(sessionProjection);
+    establish(invalidRerootSession, 'invalid-reroot-base');
+    const beforeInvalidReroot = invalidRerootSession.snapshot();
+    const transaction = profile.reroot.profile.transaction;
+    expectCode(() => invalidRerootSession.prepareReroot({
+      commandId: 'reroot-invalid-transaction',
+      transactionId: '',
+      candidateRoot: {
+        rootIdentity: 'root.synthetic.invalid-reroot-candidate',
+        occurrenceReference: { slot: 'node-invalid-reroot-candidate', generation: '1' },
+        domainReady: true,
+        graphReady: true,
+      },
+      compoundAdmission: { approved: true, token: 'admission-invalid-reroot' },
+      ownerPreparations: transaction.prepareOrder.map((owner) => ({ owner, status: 'prepared' })),
+    }), 'SESSION_REFERENCE_ID');
+    assert.deepEqual(invalidRerootSession.snapshot(), beforeInvalidReroot, 'invalid reroot transaction identity must be rejected before counters or transaction state mutate');
+
+    const invalidAttentionSession = liveSession(sessionProjection);
+    establish(invalidAttentionSession, 'invalid-attention-base');
+    const beforeInvalidAttention = invalidAttentionSession.snapshot();
+    expectCode(() => invalidAttentionSession.applyAttention({
+      commandId: 'attention-invalid-identity',
+      attentionIdentity: '',
+      ownerEffect: { ready: true, rootAuthorityChanged: false, graphWork: false, reclamation: false, invalidatedExistingWork: false },
+    }), 'SESSION_REFERENCE_ID');
+    assert.deepEqual(invalidAttentionSession.snapshot(), beforeInvalidAttention, 'invalid attention identity must be rejected before counters or attention state mutate');
+
+    return { root: true, advance: true, reroot: true, attention: true };
+  }, ['SESSION-SEC-', 'SESSION-ROOT-', 'SESSION-CONTROL-', 'SESSION-LIFE-']);
+
   defineCase('session-advance-preserves-root-incarnation', () => {
     const session = liveSession(sessionProjection);
     establish(session, 'advance-incarnation');

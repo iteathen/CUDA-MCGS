@@ -19,6 +19,7 @@
     "session-observation-consumes-output-publication-fact",
     "session-completion-waits-for-live-observation-borrows",
     "session-cancellation-admission-precedes-reroot-mutation",
+    "session-command-validation-precedes-mutation",
     "session-advance-preserves-root-incarnation",
     "session-completion-command-replay-idempotent"
   ],
