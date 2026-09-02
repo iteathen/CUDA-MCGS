@@ -48,7 +48,7 @@ Deleting chess, evaluator, live observation, optional capabilities, a queue impl
 
 A **work class** is a normalized owner-defined finite transition kind with input readiness, output/terminal states, resource needs, cancellation points and service contract. A **work incarnation** is one stale-safe admitted instance.
 
-`pending` means a declared prerequisite is not ready and a producer/escape remains possible. `ready` means all service prerequisites and resources required to claim are available. `claimed/running` means one device participant owns the service attempt. `terminal` means completed, failed, cancelled, abandoned or stale-disposed exactly once.
+`pending` means a declared prerequisite is not ready and a producer/escape remains possible. `ready` means all service prerequisites and resources required to claim are available. `claimed/running` means one device participant owns the service attempt. `terminal` means completed, failed, cancelled, abandoned, stale-disposed or, for irreversible result-visible work, quarantined exactly once. `quarantined` is the typed fatal terminal disposition used when such work cannot safely report completion.
 
 A **progress step** is a finite owner transition that completes work, changes a dependency/readiness/resource fact, advances a bounded continuation, or contributes to stop/drain/closure. A **service opportunity** is a scheduler-neutral chance for a ready class/item to attempt such a step.
 
