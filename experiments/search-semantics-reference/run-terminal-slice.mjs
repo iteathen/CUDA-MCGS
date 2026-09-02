@@ -149,6 +149,7 @@ const sourcePaths = [
   'experiments/search-semantics-reference/src/terminal-slice-cases.mjs',
   'experiments/search-semantics-reference/run-terminal-slice.mjs',
   'scripts/run-terminal-slice-reference.mjs',
+  'scripts/verify-terminal-slice-ignition-order.mjs',
   'docs/specs/SPEC-0007-domain-state-action-and-transition.md',
   'docs/specs/SPEC-0008-search-policy-and-backup.md',
   'docs/specs/SPEC-0009-evaluator-contract.md',
