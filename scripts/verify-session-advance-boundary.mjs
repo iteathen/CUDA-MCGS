@@ -9,8 +9,13 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 const projection = JSON.parse(await readFile(path.join(repositoryRoot, 'experiments/search-ir-composer-reference/build/session-profiles.json'), 'utf8'));
 const entry = projection.profiles.find(({ id }) => id === 'session.synthetic-live-session');
 assert(entry, 'Session projection must contain the live Session profile');
+const provenance = {
+  sessionIdentity: 'session.synthetic',
+  searchIdentity: 'search.synthetic',
+  searchIncarnation: '1',
+};
 
-const session = createSessionOracle({ profile: entry.normalized });
+const session = createSessionOracle({ profile: entry.normalized, ...provenance });
 const established = session.establishInitialRoot({
   commandId: 'root-1',
   rootIdentity: 'root.synthetic.alpha',
@@ -42,7 +47,7 @@ assert.throws(() => session.applyAdvance({
 }), { code: 'SESSION_REFERENCE_ADVANCE_REROOT_ONLY' });
 assert.deepEqual(session.snapshot(), before, 'rejected reroot-only advance must not mutate Session authority or counters');
 
-const teardownSession = createSessionOracle({ profile: entry.normalized });
+const teardownSession = createSessionOracle({ profile: entry.normalized, ...provenance });
 assert.equal(teardownSession.establishInitialRoot({
   commandId: 'root-teardown',
   rootIdentity: 'root.synthetic.teardown',
