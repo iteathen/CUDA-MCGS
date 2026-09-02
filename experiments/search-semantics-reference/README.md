@@ -16,23 +16,26 @@ The integrated candidate/reference base remains `experimental/portfolio@079e80a4
 
 Issue #181 / `ref/session-01` constructs `REF-SESSION-01` from exact base `079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`.
 
-Qualified semantic checkpoint before final tracker reconciliation:
+Latest fully qualified content checkpoint before this tracker-only finalization:
 
-`51b596ecdc2da1ff2c9c69b4974858d9a42dec88`
+`61fce562f97d475c140ac33e9e5c9f226abef570`
 
-tree `9eaff501ff5e14479bae81f3dca8c08b8dafb148`.
+tree `d6681d2c441453266fcfd4b8c696db7bb72d1a64`.
+
+That tree is exactly equal to the prior documentation-inclusive `bc4902aad716cb8daf7dcafc0d5058c885399659` tree despite preserved exploratory/revert history between them.
 
 Session owns command ordering/replay/idempotence/provenance, Session identity/incarnation, initial-root and advance authority coordination, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite counters, and cleanup. Current root authority plus search/session identity are public provenance inputs, not replacement Domain/Graph/Output authority.
 
 Session does not own Domain validity, Graph storage/reclamation, source reuse meaning, Resource accounting, Progress scheduling/closure, Output payload/snapshot/publication semantics, Framework lifecycle, CUDA mechanisms, or product meaning.
 
-## Qualification
+## Exact-head qualification
 
-Exact-head PR workflows on `51b596ec…` passed:
+PR workflows on exact head `61fce562…` passed:
 
-- Session behavioral reference `33691899626`;
-- Terminal slice `33691899620`;
-- Framework lifecycle `33691899664`.
+- Session behavioral reference `33692905307`;
+- Terminal slice `33692905267`;
+- Framework lifecycle `33692905299`;
+- full repository/documentation matrix `33692905302`.
 
 The Session workflow proved:
 
@@ -43,18 +46,24 @@ The Session workflow proved:
 - terminal Session-absent coupled reference `6/6`;
 - Session reference `25/25`;
 - all 38 direct SPEC-0006 ENGINE-REFERENCE routes executed;
-- evidence `06232b783f4b60cd61874f885840191497443139517d62c4b98f0855f4286417` over `20380` canonical bytes;
-- artifact `9870343695`, digest `sha256:f35baa0ccb332ec5f5bd58e095269d128eaf0c423768f5d40342d9ad7c1704f1`.
+- evidence `850ec70294295a605ee3f449c1dccb91d87795a00b6bf966cde36f8fcc76f6bf` over `18579` canonical bytes;
+- artifact `9870707549`, digest `sha256:381746482638e01643935b787d867a869c3969da10e68f293d2e1982ccac13d1`.
 
-The permanent case bank now includes rejected-command replay: an exact replay after a typed terminal rejection returns the original typed outcome, while changed input under the same command ID is rejected. This permanently covers the replay defect exposed at `31dd36d918c062750361b5ed9fe227854e2c9280` / run `33691410709`.
+The permanent case bank includes rejected-command replay: an exact replay after a typed terminal rejection returns the original typed outcome, while changed input under the same command ID is rejected. This permanently covers the replay defect exposed at `31dd36d918c062750361b5ed9fe227854e2c9280` / run `33691410709`.
 
 Generated `build/` evidence remains disposable; checked-in sources/cases, workflow artifacts and evidence identities are the durable coordinates.
 
+## Invalid exploratory probe retained as history
+
+A later exploratory test at `87c135ba905ff340f575df3448463f727bdc7d33` tried to interpret normalized `commands.capacity` as a lifetime replay-history bound and counted rejected initial-root requests against it. That assumption was not supported by the normalized profile: the field is sourced from Progress external-wait `maxPendingCommands`, while initial-root establishment is a separate pre-ignition lifecycle operation.
+
+The test run `33692373122` and attempted repair run `33692621320` are therefore diagnostic history, not accepted conformance reds. Forward revert `61fce562…` restored the exact prior reviewed tree; no branch history was rewritten.
+
 ## Decisive red seams retained
 
-The permanent cases/gates retain review-discovered failures for root-incarnation preservation, Output publication ownership/profile/session provenance, observation borrow quiescence, cancellation admission, CI-gate integrity, pre-mutation validation, stale advance/reroot authority, normalized teardown order, typed authority validation, and rejected-command replay.
+The permanent cases/gates retain the valid review-discovered failures for root-incarnation preservation, Output publication ownership/profile/session provenance, observation borrow quiescence, cancellation admission, CI-gate integrity, pre-mutation validation, stale advance/reroot authority, normalized teardown order, typed authority validation, and rejected-command replay.
 
-No falsifier was weakened to obtain the 25-case green result.
+No accepted falsifier was weakened to obtain the 25-case green result.
 
 ## Run
 
@@ -71,11 +80,9 @@ The permanent Session lane additionally runs `scripts/verify-session-ci-gate.mjs
 
 ## Current gate
 
-The current tracker reconciliation must not change semantic/test/workflow sources covered by the evidence key. Freeze the resulting documentation-inclusive PR head and compare it to `51b596ec…`; only `STATUS.md`, `next_step.yaml`, and this experiment's `README.md`/`RESULTS.md` may differ.
+The semantic/reference content has completed exact-head qualification and fresh author-side whole-diff review with no blocker. This tracker-only finalization must itself pass the permanent Session, Terminal, Framework and full repository/documentation workflows.
 
-Then require the full repository/documentation matrix to pass on that exact final head and perform one fresh complete-diff author review of PR #189.
-
-Stop after a clean review for fresh repository-owner authorization of that exact head/base. PR #189 remains the draft review record; the known draft-state connector defect does not authorize integration.
+Then stop for fresh repository-owner authorization of that exact final head/base. PR #189 remains the draft review record; the known draft-state connector defect does not authorize integration.
 
 Only after guarded #181 integration/readback does #30 Stage become dependency-ready, followed by #33 Channel evidence, #36 final reference integration and #122 protected atomic semantic acceptance.
 

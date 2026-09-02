@@ -10,21 +10,24 @@ Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd
 
 The integrated Session base remains `experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`. Framework #183 and terminal slice #184 are already integrated on that candidate lineage; candidate/reference integration remains distinct from #122 protected acceptance and native/product claims.
 
-## Qualified Session semantic checkpoint
+## Latest fully qualified Session content checkpoint
 
-`REF-SESSION-01` / #181 semantic checkpoint:
+`REF-SESSION-01` / #181:
 
-`51b596ecdc2da1ff2c9c69b4974858d9a42dec88`
+`61fce562f97d475c140ac33e9e5c9f226abef570`
 
 tree:
 
-`9eaff501ff5e14479bae81f3dca8c08b8dafb148`
+`d6681d2c441453266fcfd4b8c696db7bb72d1a64`
+
+The tree is exactly equal to `bc4902aad716cb8daf7dcafc0d5058c885399659`; the exploratory/revert commits between those heads have zero net file difference.
 
 Exact-head PR workflows passed:
 
-- Session behavioral reference `33691899626`;
-- Terminal slice `33691899620`;
-- Framework lifecycle `33691899664`.
+- Session behavioral reference `33692905307`;
+- Terminal slice `33692905267`;
+- Framework lifecycle `33692905299`;
+- full repository/documentation matrix `33692905302`.
 
 ### Composer and coupled prerequisites
 
@@ -41,32 +44,40 @@ Exact-head PR workflows passed:
 - failures/skips/not-discovered: `0`;
 - direct SPEC-0006 ENGINE-REFERENCE routes: `38/38` executed;
 - Session profile projection: `4bbead6230b841d42c6658397164900895a30391c69279be1fab84b3225f5106`;
-- Session evidence: `06232b783f4b60cd61874f885840191497443139517d62c4b98f0855f4286417`;
-- canonical bytes: `20380`;
-- artifact: `9870343695`;
-- artifact digest: `sha256:f35baa0ccb332ec5f5bd58e095269d128eaf0c423768f5d40342d9ad7c1704f1`.
+- Session evidence: `850ec70294295a605ee3f449c1dccb91d87795a00b6bf966cde36f8fcc76f6bf`;
+- canonical bytes: `18579`;
+- artifact: `9870707549`;
+- artifact digest: `sha256:381746482638e01643935b787d867a869c3969da10e68f293d2e1982ccac13d1`.
 
-The permanent 25th case covers the replay ledger after typed terminal rejection: exact replay returns the original typed outcome; changed payload under the same command ID raises the Session replay conflict. This converts the review red at `31dd36d918c062750361b5ed9fe227854e2c9280` / run `33691410709` into durable checked-in evidence.
+The permanent 25th case covers replay after typed terminal rejection: exact replay returns the original typed outcome; changed payload under the same command ID raises the Session replay conflict. This converts the valid review red at `31dd36d918c062750361b5ed9fe227854e2c9280` / run `33691410709` into durable checked-in evidence.
 
-## Retained review reds
+## Invalid exploratory capacity probe
 
-| Finding | Test-only/intermediate head | Workflow | Durable evidence |
-| --- | --- | ---: | --- |
-| advance changed root incarnation | `dc5b2c363933476b9580c267ba58c6f79ee56966` | `33682215069` | artifact `9866689484` |
-| Session invented Output publication truth | `1341d784329c03b7f697fa62a5dc6fba1237cd4f` | `33682862655` | artifact `9866932885` |
-| completion allowed a live observation borrow | `f7a78dda0e9be4bd52a8dd28db82710be059c5e2` | `33683367794` | artifact `9867120969` |
-| cancellation mutated reroot before command admission | `f4a8d21dd2c53dceba3ec1cdbdbf371f05598f94` | `33684006773` | artifact `9867359227` |
-| permanent Session CI runner could be skipped | `46d105821be7a49063f0bc91cce0ebe4acf570a7` | `33684533233` | workflow log; failure before evidence generation |
-| malformed command mutated before validation | `d74ab8b9efd5df68e47d7099081c58f743dea12a` | `33684937813` | artifact `9867706099` |
-| foreign Output profile provenance accepted | `3f0e86f871795a5c26a7277210e2685f4264cb80` | `33688752675` | artifact `9869167043` |
-| foreign Session provenance accepted | `d569fd1cbb3374697751e1b9772bd43c1fbd845b` | `33689574707` | artifact `9869474428` |
-| stale advance authority accepted | `3a00cacb58cc244b0b1918e3d40dc18ea3448875` | `33690115667` | boundary-gate log |
-| stale reroot authority accepted | `5e3864f854483d989815044ce7f5fd4aa36d4438` | `33690463348` | boundary-gate log |
-| strict reroot authority exposed ordinary case composition missing public authority | `9edc258b7aa3336a1c868c1d779baaecac0f3809` | `33690589366` | artifact `9869859986` |
-| invalid reroot authority leaked harness canonicalization instead of typed rejection | `2a6fe270d44a1cd91dd72de13b066200988f2c92` | `33690963232` | artifact `9869999590` |
-| changed replay after typed command rejection was accepted | `31dd36d918c062750361b5ed9fe227854e2c9280` | `33691410709` | boundary-gate log |
+A review-time experiment at `87c135ba905ff340f575df3448463f727bdc7d33` added a 26th case that treated `profile.commands.capacity` as a lifetime replay ledger and counted rejected pre-ignition initial-root command identities against it. Run `33692373122` failed only that new case.
 
-No falsifier above was weakened to obtain the current green result.
+An attempted narrow repair at `7576aed00a14456ef9a029d436a651d87b0c2f11` made Session pressure legal observation requests before the Output observation profile reached its own pending-request capacity; run `33692621320` exposed that contradiction.
+
+Reassessment against SPEC-0006 and the Composer profile established that the falsifier premise was invalid: `commands.capacity` is sourced from Progress external-wait `maxPendingCommands`; initial root is a separate pre-ignition lifecycle operation. Forward revert `61fce562…` removed the test and repair and restored the exact prior reviewed tree. These two runs are preserved as diagnostic history and are not counted as conformance reds.
+
+## Retained valid review reds
+
+| Finding | Test-only/intermediate head | Workflow |
+| --- | --- | ---: |
+| advance changed root incarnation | `dc5b2c363933476b9580c267ba58c6f79ee56966` | `33682215069` |
+| Session invented Output publication truth | `1341d784329c03b7f697fa62a5dc6fba1237cd4f` | `33682862655` |
+| completion allowed a live observation borrow | `f7a78dda0e9be4bd52a8dd28db82710be059c5e2` | `33683367794` |
+| cancellation mutated reroot before command admission | `f4a8d21dd2c53dceba3ec1cdbdbf371f05598f94` | `33684006773` |
+| permanent Session CI runner could be skipped | `46d105821be7a49063f0bc91cce0ebe4acf570a7` | `33684533233` |
+| malformed command mutated before validation | `d74ab8b9efd5df68e47d7099081c58f743dea12a` | `33684937813` |
+| foreign Output profile provenance accepted | `3f0e86f871795a5c26a7277210e2685f4264cb80` | `33688752675` |
+| foreign Session provenance accepted | `d569fd1cbb3374697751e1b9772bd43c1fbd845b` | `33689574707` |
+| stale advance authority accepted | `3a00cacb58cc244b0b1918e3d40dc18ea3448875` | `33690115667` |
+| stale reroot authority accepted | `5e3864f854483d989815044ce7f5fd4aa36d4438` | `33690463348` |
+| strict reroot authority exposed ordinary case composition missing public authority | `9edc258b7aa3336a1c868c1d779baaecac0f3809` | `33690589366` |
+| invalid reroot authority leaked harness canonicalization instead of typed rejection | `2a6fe270d44a1cd91dd72de13b066200988f2c92` | `33690963232` |
+| changed replay after typed command rejection was accepted | `31dd36d918c062750361b5ed9fe227854e2c9280` | `33691410709` |
+
+No valid falsifier above was weakened to obtain the current green result.
 
 ## Ownership result
 
@@ -74,12 +85,10 @@ The executable Session reference consumes Composer-normalized Session structure 
 
 The case bank covers initial root, advance/reroot separation, transposed occurrence behavior, stale authority, reroot prepare/abort/commit/quarantine, attention independence, Output/Session/search provenance, observation pressure/borrow lifecycle, cancellation/completion, finite counter exhaustion, command validation/replay, normalized teardown order, typed rejection replay, and exact Session absence.
 
-## Final tracker/review gate
+## Current gate
 
-The current tracker-only commits are outside the Session evidence source set. Their final head must be compared to `51b596ec…` and contain changes only to `STATUS.md`, `next_step.yaml`, this `README.md`, and this `RESULTS.md`.
+The semantic/reference content has completed exact-head qualification and fresh whole-diff author review without a blocker. This tracker-only finalization must pass the permanent Session, Terminal, Framework and full repository/documentation workflows, and must differ from `61fce562…` only in current-state documentation.
 
-Then the full repository/documentation PR matrix must pass on that exact documentation-inclusive head. After that, perform one fresh author-side whole-diff review of PR #189 against base `079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`.
-
-A clean author review is not repository-owner authorization: stop for fresh exact-head authorization before any transport or merge.
+After that, stop for fresh repository-owner authorization of the exact final head against base `079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd` before any transport or merge.
 
 After authorized #181 integration/readback: #30 Stage → #33 Channel evidence → #36 final reference integration → #122 protected atomic acceptance.

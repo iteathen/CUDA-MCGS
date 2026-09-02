@@ -1,9 +1,9 @@
 {
-  "schema_version": 98,
+  "schema_version": 99,
   "updated": "2026-09-02",
-  "status": "ref_session_01_semantic_head_qualified_pending_final_docs_matrix_review_authorization",
-  "objective": "Freeze and qualify the documentation-inclusive REF-SESSION-01 head, complete one fresh whole-diff author review, and stop for repository-owner exact-head authorization. Do not start Stage or integrate Session before authorization.",
-  "ownership_boundary": "Session owns external command ordering/replay/idempotence/provenance, Session identity/incarnation, initial-root and advance authority coordination, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite counters and Session cleanup. Current root authority and injected search/session provenance are public inputs. Domain, Graph, Resource, Progress, Output, Framework, CUDA-JS and product semantics remain with their natural owners.",
+  "status": "ref_session_01_review_complete_pending_tracker_head_qualification_and_owner_authorization",
+  "objective": "Qualify the tracker-only final REF-SESSION-01 head, then stop for fresh repository-owner exact-head authorization. Do not start Stage or integrate Session before authorization.",
+  "ownership_boundary": "Session owns external command ordering/replay/idempotence/provenance, Session identity/incarnation, initial-root and advance authority coordination, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite counters and Session cleanup. Domain, Graph, Resource, Progress, Output, Framework, CUDA-JS and product semantics remain with their natural owners.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
@@ -26,21 +26,34 @@
     "active_branch": "ref/session-01",
     "review_pr": 189,
     "exact_session_base": "079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd",
-    "qualified_semantic_head": "51b596ecdc2da1ff2c9c69b4974858d9a42dec88",
-    "qualified_semantic_tree": "9eaff501ff5e14479bae81f3dca8c08b8dafb148"
+    "latest_fully_qualified_content_head": "61fce562f97d475c140ac33e9e5c9f226abef570",
+    "latest_fully_qualified_content_tree": "d6681d2c441453266fcfd4b8c696db7bb72d1a64",
+    "qualified_semantic_checkpoint": "51b596ecdc2da1ff2c9c69b4974858d9a42dec88"
   },
-  "semantic_qualification": {
-    "session_workflow": 33691899626,
-    "terminal_workflow": 33691899620,
-    "framework_workflow": 33691899664,
+  "exact_head_qualification": {
+    "session_workflow": 33692905307,
+    "terminal_workflow": 33692905267,
+    "framework_workflow": 33692905299,
+    "documentation_workflow": 33692905302,
     "composer_cases": "881/881",
     "session_cases": "25/25",
     "direct_spec_0006_routes": "38/38",
     "terminal_session_absent_cases": "6/6",
-    "session_evidence": "06232b783f4b60cd61874f885840191497443139517d62c4b98f0855f4286417",
-    "session_canonical_bytes": 20380,
-    "artifact": 9870343695,
-    "artifact_digest": "sha256:f35baa0ccb332ec5f5bd58e095269d128eaf0c423768f5d40342d9ad7c1704f1"
+    "session_evidence": "850ec70294295a605ee3f449c1dccb91d87795a00b6bf966cde36f8fcc76f6bf",
+    "session_canonical_bytes": 18579,
+    "artifact": 9870707549,
+    "artifact_digest": "sha256:381746482638e01643935b787d867a869c3969da10e68f293d2e1982ccac13d1"
+  },
+  "review": {
+    "whole_diff": "complete-no-blocker",
+    "content_identity": "61fce562 tree equals bc4902aad716cb8daf7dcafc0d5058c885399659 tree exactly",
+    "invalid_exploration": {
+      "test_head": "87c135ba905ff340f575df3448463f727bdc7d33",
+      "test_workflow": 33692373122,
+      "attempted_repair_head": "7576aed00a14456ef9a029d436a651d87b0c2f11",
+      "attempted_repair_workflow": 33692621320,
+      "disposition": "rejected after reassessment; pending-command capacity was incorrectly interpreted as lifetime replay-ledger capacity; forward-reverted without rewriting history"
+    }
   },
   "preserved_red_evidence": [
     {"finding":"advance changed root incarnation","head":"dc5b2c363933476b9580c267ba58c6f79ee56966","workflow":33682215069},
@@ -53,44 +66,19 @@
     {"finding":"foreign Session provenance accepted","head":"d569fd1cbb3374697751e1b9772bd43c1fbd845b","workflow":33689574707},
     {"finding":"stale advance authority accepted","head":"3a00cacb58cc244b0b1918e3d40dc18ea3448875","workflow":33690115667},
     {"finding":"stale reroot authority accepted","head":"5e3864f854483d989815044ce7f5fd4aa36d4438","workflow":33690463348},
-    {"finding":"strict reroot authority exposed stale case-composition inputs","head":"9edc258b7aa3336a1c868c1d779baaecac0f3809","workflow":33690589366,"artifact":9869859986},
-    {"finding":"invalid reroot authority leaked harness canonicalization instead of typed Session rejection","head":"2a6fe270d44a1cd91dd72de13b066200988f2c92","workflow":33690963232,"artifact":9869999590},
+    {"finding":"strict reroot authority exposed stale case composition","head":"9edc258b7aa3336a1c868c1d779baaecac0f3809","workflow":33690589366},
+    {"finding":"invalid reroot authority leaked harness canonicalization instead of typed Session rejection","head":"2a6fe270d44a1cd91dd72de13b066200988f2c92","workflow":33690963232},
     {"finding":"changed replay after typed command rejection was accepted","head":"31dd36d918c062750361b5ed9fe227854e2c9280","workflow":33691410709}
-  ],
-  "confirmed_behavior": [
-    "Advance is only to a ready realized successor, remains in the root incarnation, rejects stale authority without mutation, and typed rejected outcomes reserve command identity.",
-    "Reroot requires exact current Session root authority provenance plus normalized admission/prepare/commit/abort ordering and typed authority validation before replay canonicalization.",
-    "Exact replay after typed terminal rejection returns the original outcome; changed input under the same command ID is rejected.",
-    "Observation consumes Output-owned ready publication facts and binds them to exact Output, Session and search provenance.",
-    "Completion waits for observation borrow quiescence; teardown follows normalized order.",
-    "Cancellation admission precedes mutation and is idempotent.",
-    "Finite counters fail before alias/wrap and command validation precedes mutation.",
-    "Session-absent terminal reference remains 6/6 and zero-residue."
-  ],
-  "deliverables": [
-    "Session profile projection/export consuming the existing Composer normalizer as structural authority.",
-    "Owner-local Session oracle, case support, permanent expected case bank and runner under experiments/search-semantics-reference.",
-    "Permanent Session CI gate coupled to Composer projections, Session advance/reroot/teardown boundary checks and terminal Session-absent regression.",
-    "25-case Session behavioral reference covering all 38 direct SPEC-0006 ENGINE-REFERENCE obligations.",
-    "Permanent rejected-command replay case proving original typed outcome replay and changed-input rejection.",
-    "PR #189 as the author-review record plus reconciled STATUS.md, next_step.yaml and experiment README/RESULTS."
-  ],
-  "validation": [
-    "Session workflow must remain 25/25 with Composer 881/881, terminal Session-absent 6/6 and all 38 direct SPEC-0006 routes on semantic head 51b596ec....",
-    "Final documentation-inclusive head must differ from 51b596ec... only in STATUS.md, next_step.yaml and experiments/search-semantics-reference/README.md and RESULTS.md.",
-    "Final documentation-inclusive head must pass the full repository/documentation PR matrix, including governance verification.",
-    "Fresh complete-diff author review of PR #189 must find no blocking semantic, ownership, governance, evidence or cleanup defect.",
-    "Any material head or base change after review invalidates affected review/authorization and requires requalification."
   ],
   "blockers": [],
   "current_gate": [
-    "Finish tracker reconciliation without changing semantic/test/workflow sources.",
-    "Freeze the resulting documentation-inclusive head and compare it to 51b596ec...; only the four tracker/current-state files may differ.",
-    "Verify the full repository/documentation PR matrix passes on that exact final head.",
-    "Perform one fresh complete-diff author review of PR #189 against base 079e80a4... and reconcile PR discussion/cleanup state.",
-    "Stop for fresh repository-owner authorization for the exact reviewed head/base."
+    "Qualify the tracker-only finalization head with Session, Terminal, Framework and full repository/documentation workflows.",
+    "Verify the tracker-only finalization changed no semantic/test/workflow source.",
+    "Update PR #189 and issue/current-state surfaces to the exact final head.",
+    "Stop for fresh repository-owner authorization of that exact reviewed head/base."
   ],
   "do_not": [
+    "Do not count the invalid replay-ledger capacity exploration as a conformance red.",
     "Do not weaken stale authority, provenance, teardown, or rejected-command replay gates.",
     "Do not create another Session schema/normalizer or generic root transaction owner.",
     "Do not duplicate Domain, Graph, Resource, Progress, Output or Framework authority.",
