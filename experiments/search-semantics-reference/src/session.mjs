@@ -31,9 +31,14 @@ function authorityRecord({ rootIdentity, occurrenceReference, rootEpoch, rootInc
   }, 'Session root authority');
 }
 
-export function createSessionOracle({ profile, counterStarts = {} } = {}) {
+export function createSessionOracle({ profile, sessionIdentity, searchIdentity, searchIncarnation, counterStarts = {} } = {}) {
   if (!profile || typeof profile !== 'object') fail('SESSION_REFERENCE_PROFILE', 'normalized Session profile is required');
   if (!Array.isArray(profile.counters) || profile.counters.length === 0) fail('SESSION_REFERENCE_PROFILE', 'Session profile must declare finite counters');
+  const provenance = freeze({
+    sessionIdentity: text(sessionIdentity, 'sessionIdentity'),
+    searchIdentity: text(searchIdentity, 'searchIdentity'),
+    searchIncarnation: text(searchIncarnation, 'searchIncarnation'),
+  }, 'Session provenance context');
 
   const counterRules = new Map(profile.counters.map((rule) => [rule.kind, rule]));
   const counters = new Map(profile.counters.map((rule) => {
@@ -140,6 +145,7 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     lifecycle = 'active';
     return record(input.commandId, 'root', input, {
       kind: 'accepted',
+      sessionIdentity: provenance.sessionIdentity,
       authority,
       sessionIncarnation: counterText('session-incarnation'),
       hostProgressRequired: false,
@@ -344,10 +350,13 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
       typeof expectedOutputProfile !== 'string'
       || publication.profileId !== expectedOutputProfile
       || publication.metadata.profileIdentity !== expectedOutputProfile
-      || publication.searchIncarnation !== publication.metadata.searchIncarnation
+      || publication.metadata.searchIdentity !== provenance.searchIdentity
+      || publication.metadata.sessionIdentity !== provenance.sessionIdentity
+      || publication.searchIncarnation !== provenance.searchIncarnation
+      || publication.metadata.searchIncarnation !== provenance.searchIncarnation
       || publication.sequence !== publication.metadata.sequence
     ) {
-      fail('SESSION_REFERENCE_OBSERVATION_PUBLICATION', 'Output publication provenance does not match the selected normalized Output profile');
+      fail('SESSION_REFERENCE_OBSERVATION_PUBLICATION', 'Output publication provenance does not match the current Session/search context and normalized Output profile');
     }
     if (publication.metadata.rootEpoch !== authority.rootEpoch) {
       return freeze({ kind: 'stale-rejected', code: selected.stale, authorityUnchanged: true }, 'Session observation stale rejection');
@@ -439,6 +448,8 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     commitCounters(['command']);
     lifecycle = 'terminal';
     terminalProvenance = freeze({
+      sessionIdentity: provenance.sessionIdentity,
+      sessionIncarnation: counterText('session-incarnation'),
       authority,
       completionClass: input.completionClass ?? (cancellationRequested ? 'cancelled' : 'complete'),
       terminalOutputIdentity: input.terminalOutputIdentity,
@@ -475,6 +486,9 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
   function snapshot() {
     return canonicalClone({
       profileId: profile.id,
+      sessionIdentity: provenance.sessionIdentity,
+      searchIdentity: provenance.searchIdentity,
+      searchIncarnation: provenance.searchIncarnation,
       lifecycle,
       authority,
       counters: Object.fromEntries([...counters].map(([kind, value]) => [kind, value.toString()])),
