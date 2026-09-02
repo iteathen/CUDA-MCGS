@@ -2,53 +2,68 @@
 
 **Status:** Informational
 
-This CUDA-free experiment is the behavioral/reference evidence lane for `ENGINE-REFERENCE-01`. Reference bricks are owner-local and independently replaceable: they consume normalized identities or public facts owned elsewhere, prove one semantic boundary, and leave native/CUDA realization downstream.
+This CUDA-free experiment is the behavioral/reference evidence lane for `ENGINE-REFERENCE-01`. Each brick is owner-local and replaceable: it consumes normalized identities or public facts owned elsewhere, proves one semantic boundary, and leaves native/CUDA realization downstream.
 
-## Current portfolio state
+## Authority and integrated base
 
 Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd031`.
 
-The integrated candidate/reference line is `experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe`, containing the current Graph reference chain plus Policy, Evaluator, Resource, corrected Progress and Output evidence. Candidate integration is not protected #122 acceptance.
+The integrated candidate/reference base remains `experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`. Candidate integration is not protected #122 acceptance.
 
-## Active Framework lifecycle brick
+`REF-TERMINAL-SLICE-01` / #184 is already integrated: authorized source `547e4632aa9e3d4b3cd45db8056f215d6212de5c`, review PR #187, transport PR #188, integration `3766353d5fa264067e33ae6798c632ffd65494ef` with exact authorized-tree equality.
 
-Issue #183 / draft PR #185 constructs `REF-FRAMEWORK-LIFE-01` for exactly 15 direct SPEC-0000 ENGINE-REFERENCE routes:
+## Active Session brick
 
-- `FRAMEWORK-LIFE-001..009`;
-- `FRAMEWORK-PERSIST-001..002`;
-- `FRAMEWORK-CLEANUP-001..004`.
+Issue #181 / `ref/session-01` constructs `REF-SESSION-01` from exact base `079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`.
 
-Framework coordinates only public cross-owner lifecycle/disposition facts: complete plan admission, ordered initialization/reverse rollback, ignition/device closure, immutable first stop cause, completion/cancellation, terminal borrow/teardown, optional persistence selection/restore validation and complete cleanup/readback.
+Latest fully qualified content checkpoint before this tracker-only finalization:
 
-It does **not** implement Domain/Graph/Policy/Evaluator/Resource/Progress/Output private semantics, select a scheduler/CUDA mechanism, become a persistence backend, or own product meaning.
+`61fce562f97d475c140ac33e9e5c9f226abef570`
 
-## Red-before-green provenance
+tree `d6681d2c441453266fcfd4b8c696db7bb72d1a64`.
 
-Two useful semantic red seams are retained:
+That tree is exactly equal to the prior documentation-inclusive `bc4902aad716cb8daf7dcafc0d5058c885399659` tree despite preserved exploratory/revert history between them.
 
-1. `191add5a0e72e2c19e6e862676baf0251c593a95` / workflow `33651637686` proved the original last-stop-wins defect. Composer remained 881/881; exactly the first-cause cases failed. Evidence `594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e`.
-2. `47bd5f1326d47ce1a955b55d9f5c0e13334145da` / workflow `33659024252` preserved review-discovered gaps in partial-rollback protected-state preservation and distinct local-files/Git cleanup readback. Composer remained 881/881; the resulting six Framework failures were all direct consequences of those two missing facts. Evidence `2c3e22a634eb004cbcd249712cc079a41e8a84116296fff0d204a49202fa35f2`.
+Session owns command ordering/replay/idempotence/provenance, Session identity/incarnation, initial-root and advance authority coordination, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite counters, and cleanup. Current root authority plus search/session identity are public provenance inputs, not replacement Domain/Graph/Output authority.
 
-Neither case bank was weakened for the green repairs.
+Session does not own Domain validity, Graph storage/reclamation, source reuse meaning, Resource accounting, Progress scheduling/closure, Output payload/snapshot/publication semantics, Framework lifecycle, CUDA mechanisms, or product meaning.
 
-## Current semantic qualification
+## Exact-head qualification
 
-Exact semantic head before this documentation-only reconciliation:
+PR workflows on exact head `61fce562…` passed:
 
-`7eb25f17481fea6a925d6d0e29baa06473ee2bff`
+- Session behavioral reference `33692905307`;
+- Terminal slice `33692905267`;
+- Framework lifecycle `33692905299`;
+- full repository/documentation matrix `33692905302`.
 
-Framework workflow `33659209749` passed:
+The Session workflow proved:
 
+- CI self-gate: pass;
 - Composer `881/881`;
-- Framework `18/18`;
-- `15/15` direct SPEC-0000 routes;
-- Composer evidence `a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe` (`727811` canonical bytes);
-- Framework evidence `a8f17027993720c4fe61a76ce060c46206a73f36926dc280d1659c7759e0e0ad` (`6517` canonical bytes);
-- artifact `9857969833`, archive SHA-256 `03c553a341b8c8314167d2ddba7536892fe9a3a1ee21b2985077d6260485f90d`.
+- all required owner projections: pass;
+- advance/reroot/teardown boundary gate: pass;
+- terminal Session-absent coupled reference `6/6`;
+- Session reference `25/25`;
+- all 38 direct SPEC-0006 ENGINE-REFERENCE routes executed;
+- evidence `850ec70294295a605ee3f449c1dccb91d87795a00b6bf966cde36f8fcc76f6bf` over `18579` canonical bytes;
+- artifact `9870707549`, digest `sha256:381746482638e01643935b787d867a869c3969da10e68f293d2e1982ccac13d1`.
 
-Full repository workflow `33659209933` passed Governance, Windows/Ubuntu Search IR, all Graph lanes, Policy, Evaluator, Resource, Progress, Output and aggregate `verify`.
+The permanent case bank includes rejected-command replay: an exact replay after a typed terminal rejection returns the original typed outcome, while changed input under the same command ID is rejected. This permanently covers the replay defect exposed at `31dd36d918c062750361b5ed9fe227854e2c9280` / run `33691410709`.
 
-Because this README and the other current-state files are changed after that semantic qualification, the resulting documentation-inclusive PR head still requires one final exact-head workflow/readback and complete-diff author review before authorization is requested.
+Generated `build/` evidence remains disposable; checked-in sources/cases, workflow artifacts and evidence identities are the durable coordinates.
+
+## Invalid exploratory probe retained as history
+
+A later exploratory test at `87c135ba905ff340f575df3448463f727bdc7d33` tried to interpret normalized `commands.capacity` as a lifetime replay-history bound and counted rejected initial-root requests against it. That assumption was not supported by the normalized profile: the field is sourced from Progress external-wait `maxPendingCommands`, while initial-root establishment is a separate pre-ignition lifecycle operation.
+
+The test run `33692373122` and attempted repair run `33692621320` are therefore diagnostic history, not accepted conformance reds. Forward revert `61fce562…` restored the exact prior reviewed tree; no branch history was rewritten.
+
+## Decisive red seams retained
+
+The permanent cases/gates retain the valid review-discovered failures for root-incarnation preservation, Output publication ownership/profile/session provenance, observation borrow quiescence, cancellation admission, CI-gate integrity, pre-mutation validation, stale advance/reroot authority, normalized teardown order, typed authority validation, and rejected-command replay.
+
+No accepted falsifier was weakened to obtain the 25-case green result.
 
 ## Run
 
@@ -56,15 +71,21 @@ Use Node.js 26 or newer:
 
 ```bash
 node scripts/run-search-ir-composer-reference.mjs
-node scripts/run-framework-lifecycle-reference.mjs
+node scripts/export-search-ir-composer-session-profiles.mjs
+node scripts/run-terminal-slice-reference.mjs
+node scripts/run-session-reference.mjs
 ```
 
-Generated `build/` evidence is disposable. Checked-in fixtures/source, workflow artifacts, exact source SHAs and content-sensitive evidence identities are the durable coordinates.
+The permanent Session lane additionally runs `scripts/verify-session-ci-gate.mjs` and `scripts/verify-session-advance-boundary.mjs`.
 
-## Next semantic seam
+## Current gate
 
-After #183 is separately authorized, guarded-integrated and read back, #184 / `REF-TERMINAL-SLICE-01` is next. It composes one complete finite session-absent, extension-absent CUDA-free lifecycle through public owner events/facts only. Session (#181), Stage (#30), Channel (#33), final reference integration (#36) and protected #122 acceptance remain downstream in that order.
+The semantic/reference content has completed exact-head qualification and fresh author-side whole-diff review with no blocker. This tracker-only finalization must itself pass the permanent Session, Terminal, Framework and full repository/documentation workflows.
+
+Then stop for fresh repository-owner authorization of that exact final head/base. PR #189 remains the draft review record; the known draft-state connector defect does not authorize integration.
+
+Only after guarded #181 integration/readback does #30 Stage become dependency-ready, followed by #33 Channel evidence, #36 final reference integration and #122 protected atomic semantic acceptance.
 
 ## Claim limits
 
-Passing these CUDA-free references does not establish protected proposal acceptance, production lowering, native CUDA behavior, CUDA-JS compatible-pair support, physical scheduling, performance, stable SDK/release readiness or product/chess/UCI/model/Book Forge/Timing Evidence/tablebase behavior.
+This is CUDA-free product-neutral reference evidence. It does not establish protected proposal acceptance, production lowering, native CUDA behavior, physical concurrency/performance, stable SDK support, or chess/UCI/model/Book Forge/Timing Evidence/tablebase behavior.

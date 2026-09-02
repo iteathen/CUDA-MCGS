@@ -4,98 +4,91 @@
 
 **Updated:** 2026-09-02
 
-## Active candidate
+## Prerequisite state
 
-`REF-FRAMEWORK-LIFE-01` is the active CUDA-free owner reference on draft PR #185, branch `ref/framework-life-01`, exact base:
+Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd031`.
 
-`experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe`
+The integrated Session base remains `experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`. Framework #183 and terminal slice #184 are already integrated on that candidate lineage; candidate/reference integration remains distinct from #122 protected acceptance and native/product claims.
 
-It covers exactly 15 direct SPEC-0000 ENGINE-REFERENCE routes and introduces no native/runtime/product authority.
+## Latest fully qualified Session content checkpoint
 
-## First red proof — first stop cause
+`REF-SESSION-01` / #181:
 
-Exact red head:
+`61fce562f97d475c140ac33e9e5c9f226abef570`
 
-`191add5a0e72e2c19e6e862676baf0251c593a95`
+tree:
 
-Workflow `33651637686` preserved the intentional last-stop-wins defect. Composer stayed 881/881; all 18 Framework cases executed; exactly `framework-first-stop-cause` and `framework-cancellation-idempotent` failed.
+`d6681d2c441453266fcfd4b8c696db7bb72d1a64`
 
-- red Framework evidence: `594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e`;
-- artifact: `9855005183`;
-- archive SHA-256: `a8ce1cc1b2133bff7cdf655b163fdd6f4487cd94369ea38e553789c9a7b65cbb`.
+The tree is exactly equal to `bc4902aad716cb8daf7dcafc0d5058c885399659`; the exploratory/revert commits between those heads have zero net file difference.
 
-The repair preserved the first authoritative cause without changing the falsifiers.
+Exact-head PR workflows passed:
 
-## Second red proof — review-discovered cleanup/rollback truth
+- Session behavioral reference `33692905307`;
+- Terminal slice `33692905267`;
+- Framework lifecycle `33692905299`;
+- full repository/documentation matrix `33692905302`.
 
-Literal SPEC-0000 review later found two facts that the earlier green suite did not make explicit:
+### Composer and coupled prerequisites
 
-- CLEANUP-002 required partial initialization failure to prove task-created-state disposal/quarantine **and** preservation of protected pre-existing/user/shared state;
-- CLEANUP-003 required owning-system readback to distinguish local files from Git state.
+- Composer: `881/881`;
+- required owner projections: pass;
+- Session CI self-gate: pass;
+- advance/reroot/teardown boundary gate: pass;
+- terminal Session-absent reference: `6/6`;
+- terminal evidence: `c9c0b9b8847c5121bc6cce1ff3707e2c465a4fddd067a400693b235972254388`.
 
-Test-only red head:
+### Session behavioral result
 
-`47bd5f1326d47ce1a955b55d9f5c0e13334145da`
+- expected/discovered/executed/passed: `25/25/25/25`;
+- failures/skips/not-discovered: `0`;
+- direct SPEC-0006 ENGINE-REFERENCE routes: `38/38` executed;
+- Session profile projection: `4bbead6230b841d42c6658397164900895a30391c69279be1fab84b3225f5106`;
+- Session evidence: `850ec70294295a605ee3f449c1dccb91d87795a00b6bf966cde36f8fcc76f6bf`;
+- canonical bytes: `18579`;
+- artifact: `9870707549`;
+- artifact digest: `sha256:381746482638e01643935b787d867a869c3969da10e68f293d2e1982ccac13d1`.
 
-Framework workflow `33659024252` kept Composer 881/881 green and ran all 18 Framework cases. Six failures were direct consequences of those two missing facts; no unrelated wiring or coverage failure appeared.
+The permanent 25th case covers replay after typed terminal rejection: exact replay returns the original typed outcome; changed payload under the same command ID raises the Session replay conflict. This converts the valid review red at `31dd36d918c062750361b5ed9fe227854e2c9280` / run `33691410709` into durable checked-in evidence.
 
-- red Framework evidence: `2c3e22a634eb004cbcd249712cc079a41e8a84116296fff0d204a49202fa35f2`;
-- canonical bytes: `8349`;
-- artifact: `9857898880`;
-- archive SHA-256: `c6f4cac791297168b91cad2a1f4025a2bb96343b7b96796b75aec6fdfaa8ccc8`.
+## Invalid exploratory capacity probe
 
-Green repair head `7eb25f17481fea6a925d6d0e29baa06473ee2bff` adds only Framework-owned public rollback/preservation validation and separate local-files/Git-state cleanup facts.
+A review-time experiment at `87c135ba905ff340f575df3448463f727bdc7d33` added a 26th case that treated `profile.commands.capacity` as a lifetime replay ledger and counted rejected pre-ignition initial-root command identities against it. Run `33692373122` failed only that new case.
 
-## Semantic qualification at 7eb25f17…
+An attempted narrow repair at `7576aed00a14456ef9a029d436a651d87b0c2f11` made Session pressure legal observation requests before the Output observation profile reached its own pending-request capacity; run `33692621320` exposed that contradiction.
 
-Framework workflow `33659209749` succeeded:
+Reassessment against SPEC-0006 and the Composer profile established that the falsifier premise was invalid: `commands.capacity` is sourced from Progress external-wait `maxPendingCommands`; initial root is a separate pre-ignition lifecycle operation. Forward revert `61fce562…` removed the test and repair and restored the exact prior reviewed tree. These two runs are preserved as diagnostic history and are not counted as conformance reds.
 
-### Composer
+## Retained valid review reds
 
-- capsule: `cuda-mcgs-search-ir-composer-reference-v0.2.0`;
-- cases: `881/881`;
-- representation/composition SHA-256: `a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe`;
-- canonical bytes: `727811`.
+| Finding | Test-only/intermediate head | Workflow |
+| --- | --- | ---: |
+| advance changed root incarnation | `dc5b2c363933476b9580c267ba58c6f79ee56966` | `33682215069` |
+| Session invented Output publication truth | `1341d784329c03b7f697fa62a5dc6fba1237cd4f` | `33682862655` |
+| completion allowed a live observation borrow | `f7a78dda0e9be4bd52a8dd28db82710be059c5e2` | `33683367794` |
+| cancellation mutated reroot before command admission | `f4a8d21dd2c53dceba3ec1cdbdbf371f05598f94` | `33684006773` |
+| permanent Session CI runner could be skipped | `46d105821be7a49063f0bc91cce0ebe4acf570a7` | `33684533233` |
+| malformed command mutated before validation | `d74ab8b9efd5df68e47d7099081c58f743dea12a` | `33684937813` |
+| foreign Output profile provenance accepted | `3f0e86f871795a5c26a7277210e2685f4264cb80` | `33688752675` |
+| foreign Session provenance accepted | `d569fd1cbb3374697751e1b9772bd43c1fbd845b` | `33689574707` |
+| stale advance authority accepted | `3a00cacb58cc244b0b1918e3d40dc18ea3448875` | `33690115667` |
+| stale reroot authority accepted | `5e3864f854483d989815044ce7f5fd4aa36d4438` | `33690463348` |
+| strict reroot authority exposed ordinary case composition missing public authority | `9edc258b7aa3336a1c868c1d779baaecac0f3809` | `33690589366` |
+| invalid reroot authority leaked harness canonicalization instead of typed rejection | `2a6fe270d44a1cd91dd72de13b066200988f2c92` | `33690963232` |
+| changed replay after typed command rejection was accepted | `31dd36d918c062750361b5ed9fe227854e2c9280` | `33691410709` |
 
-### Framework lifecycle
+No valid falsifier above was weakened to obtain the current green result.
 
-- capsule: `cuda-mcgs-framework-lifecycle-reference-v0.2.0`;
-- scope: `full-framework-lifecycle-reference`;
-- expected/discovered/executed/passed: `18/18/18/18`;
-- failed/skipped/undiscovered: `0`;
-- direct SPEC-0000 routes: `15/15`;
-- Framework evidence SHA-256: `a8f17027993720c4fe61a76ce060c46206a73f36926dc280d1659c7759e0e0ad`;
-- canonical bytes: `6517`;
-- artifact: `9857969833`;
-- archive SHA-256: `03c553a341b8c8314167d2ddba7536892fe9a3a1ee21b2985077d6260485f90d`.
+## Ownership result
 
-### Full repository matrix
+The executable Session reference consumes Composer-normalized Session structure and public sibling-owner facts. It does not reconstruct Domain root validity, Graph storage/reclamation, Resource accounting, Progress scheduling/closure, Output payload/snapshot/publication meaning, Framework lifecycle, CUDA mechanisms, or product semantics.
 
-Workflow `33659209933` succeeded across:
+The case bank covers initial root, advance/reroot separation, transposed occurrence behavior, stale authority, reroot prepare/abort/commit/quarantine, attention independence, Output/Session/search provenance, observation pressure/borrow lifecycle, cancellation/completion, finite counter exhaustion, command validation/replay, normalized teardown order, typed rejection replay, and exact Session absence.
 
-- Governance verification;
-- Search IR on Ubuntu;
-- Search IR on Windows;
-- Graph NODE, EDGE, REF, PATH, ROOT, RECLAIM, ADVANCE occurrence and CLEANUP;
-- Policy reference;
-- Evaluator reference;
-- Resource reference;
-- Progress reference;
-- Output reference;
-- aggregate `verify`.
+## Current gate
 
-## Ownership review result at semantic head
+The semantic/reference content has completed exact-head qualification and fresh whole-diff author review without a blocker. This tracker-only finalization must pass the permanent Session, Terminal, Framework and full repository/documentation workflows, and must differ from `61fce562…` only in current-state documentation.
 
-The complete executable Framework brick remains bounded to public lifecycle/disposition coordination. The runner derives the exact 15-route registry from authoritative SPEC-0000 and requirement coverage; the checked-in 18-case bank cannot silently omit or invent a direct route. Fixtures are synthetic and product-neutral. No sibling-owner private state, physical scheduler, CUDA mechanism, persistence storage backend, Tensor assumption or product semantic was introduced.
+After that, stop for fresh repository-owner authorization of the exact final head against base `079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd` before any transport or merge.
 
-The latest repair did not change Composer or sibling owner identities; only Framework source/evidence changed, so no dependent upstream evidence rebind was appropriate.
-
-## Final documentation-inclusive gate
-
-This RESULTS file and the repository current-state files are intentionally updated after semantic qualification. That documentation-only reconciliation changes the PR head but not Framework semantics. The resulting exact head must rerun the permanent Framework workflow and full repository matrix, then receive a fresh complete-diff author review before any integration authorization request.
-
-PR #185 remains a candidate. No merge or protected/native/performance/product claim is authorized by these results.
-
-## Next after authorized integration
-
-After exact-head repository-owner authorization, guarded integration and target readback, #184 / `REF-TERMINAL-SLICE-01` is the next dependency-ready reference leaf. Do not skip directly to Session.
+After authorized #181 integration/readback: #30 Stage → #33 Channel evidence → #36 final reference integration → #122 protected atomic acceptance.

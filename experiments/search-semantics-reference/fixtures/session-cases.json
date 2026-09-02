@@ -1,0 +1,38 @@
+{
+  "schema": "cuda-mcgs.reference-session-fixtures/0.1.0",
+  "directRequirementCount": 38,
+  "expectedCases": [
+    "session-initial-root-validation-and-replay",
+    "session-advance-rejects-reroot-work-without-mutation",
+    "session-advance-shared-transposition-occurrence-only",
+    "session-attention-observation-schedule-invariant",
+    "session-reroot-prepare-abort-preserves-authority",
+    "session-reroot-commit-and-postcommit-quarantine",
+    "session-reroot-pressure-and-attention-deletion",
+    "session-observation-readonly-stale-and-borrow-teardown",
+    "session-attention-does-not-change-authority",
+    "session-counter-exhaustion-prevents-alias",
+    "session-cancellation-idempotent-terminal-cleanup",
+    "session-cancellation-aborts-prepared-reroot",
+    "session-absent-terminal-slice-remains-zero-residue",
+    "session-observation-profile-and-capacity-guard",
+    "session-observation-consumes-output-publication-fact",
+    "session-observation-rejects-foreign-output-provenance",
+    "session-completion-waits-for-live-observation-borrows",
+    "session-cancellation-admission-precedes-reroot-mutation",
+    "session-command-validation-precedes-mutation",
+    "session-advance-preserves-root-incarnation",
+    "session-advance-rejects-stale-authority",
+    "session-reroot-rejects-stale-authority",
+    "session-teardown-enforces-normalized-order",
+    "session-completion-command-replay-idempotent",
+    "session-rejected-command-replay-is-stable"
+  ],
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-session-profile-projection/0.2.0",
+    "profileIds": [
+      "session.synthetic-live-session",
+      "session.synthetic-live-session-restart"
+    ]
+  }
+}
