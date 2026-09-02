@@ -81,19 +81,34 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     assert(observationProfile);
     const session = liveSession(sessionProjection);
     establish(session, 'foreign-output-provenance');
-    const foreignPublication = readyOutputPublication(session, 'publication.foreign-output-profile');
-    foreignPublication.profileId = 'output.synthetic-foreign';
-    foreignPublication.metadata.profileIdentity = 'output.synthetic-foreign';
     const before = session.snapshot();
 
+    const foreignProfilePublication = readyOutputPublication(session, 'publication.foreign-output-profile');
+    foreignProfilePublication.profileId = 'output.synthetic-foreign';
+    foreignProfilePublication.metadata.profileIdentity = 'output.synthetic-foreign';
     expectCode(() => session.requestObservation({
-      commandId: 'observation-foreign-output-provenance',
-      requestId: 'observation-foreign-output-provenance',
+      commandId: 'observation-foreign-output-profile',
+      requestId: 'observation-foreign-output-profile',
       outputProfile: observationProfile.outputProfile,
-      outputPublication: foreignPublication,
+      outputPublication: foreignProfilePublication,
     }), 'SESSION_REFERENCE_OBSERVATION_PUBLICATION');
-    assert.deepEqual(session.snapshot(), before, 'foreign Output publication provenance must be rejected before Session request state mutates');
-    return { foreignOutputProfileRejected: true, expectedOutputProfile: profile.outputProfile.id };
+    assert.deepEqual(session.snapshot(), before, 'foreign Output profile provenance must be rejected before Session request state mutates');
+
+    const foreignSessionPublication = readyOutputPublication(session, 'publication.foreign-session');
+    foreignSessionPublication.metadata.sessionIdentity = 'session.synthetic.foreign';
+    expectCode(() => session.requestObservation({
+      commandId: 'observation-foreign-session-provenance',
+      requestId: 'observation-foreign-session-provenance',
+      outputProfile: observationProfile.outputProfile,
+      outputPublication: foreignSessionPublication,
+    }), 'SESSION_REFERENCE_OBSERVATION_PUBLICATION');
+    assert.deepEqual(session.snapshot(), before, 'foreign Session publication provenance must be rejected before Session request state mutates');
+
+    return {
+      foreignOutputProfileRejected: true,
+      foreignSessionRejected: true,
+      expectedOutputProfile: profile.outputProfile.id,
+    };
   }, ['SESSION-OBS-', 'SESSION-SEC-', 'SESSION-COMPAT-']);
 
   defineCase('session-completion-waits-for-live-observation-borrows', () => {
