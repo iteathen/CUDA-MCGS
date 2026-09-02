@@ -85,9 +85,9 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
 
   function replay(commandId, kind, input) {
     const id = text(commandId, 'commandId');
+    const signature = commandSignature(kind, input);
     const prior = commandResults.get(id);
     if (!prior) return null;
-    const signature = commandSignature(kind, input);
     if (!same(prior.signature, signature, 'Session command replay')) {
       fail('SESSION_REFERENCE_COMMAND_REPLAY', `commandId ${id} was reused for a different Session command`);
     }
@@ -127,11 +127,13 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     if (input.domainReady !== true || input.graphReady !== true || input.resourceReady !== true) {
       return freeze({ kind: 'rejected', code: 'session-root-unready', authorityUnchanged: true }, 'Session root rejection');
     }
+    const rootIdentity = text(input.rootIdentity, 'root identity');
+    const occurrenceReference = freeze(input.occurrenceReference, 'root occurrence reference');
     preflightCounters(['command', 'session-incarnation', 'root-epoch', 'root-incarnation']);
     commitCounters(['command', 'session-incarnation', 'root-epoch', 'root-incarnation']);
     authority = authorityRecord({
-      rootIdentity: input.rootIdentity,
-      occurrenceReference: input.occurrenceReference,
+      rootIdentity,
+      occurrenceReference,
       rootEpoch: counterText('root-epoch'),
       rootIncarnation: counterText('root-incarnation'),
     });
@@ -158,12 +160,14 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     if (input.successor?.nodeInvalidated === true) {
       fail('SESSION_REFERENCE_ADVANCE_SHARED_NODE', 'advance cannot invalidate a shared graph node when only one occurrence is superseded');
     }
+    const rootIdentity = text(input.successor.rootIdentity, 'root identity');
+    const occurrenceReference = freeze(input.successor.occurrenceReference, 'root occurrence reference');
     preflightCounters(['command', 'advance-generation', 'root-epoch']);
     const priorAuthority = authority;
     commitCounters(['command', 'advance-generation', 'root-epoch']);
     authority = authorityRecord({
-      rootIdentity: input.successor.rootIdentity,
-      occurrenceReference: input.successor.occurrenceReference,
+      rootIdentity,
+      occurrenceReference,
       rootEpoch: counterText('root-epoch'),
       rootIncarnation: counterText('root-incarnation'),
     });
@@ -201,10 +205,13 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     if (input.candidateRoot?.domainReady !== true || input.candidateRoot?.graphReady !== true) {
       return freeze({ kind: 'rejected', code: 'session-reroot-candidate-unready', authorityUnchanged: true }, 'Session reroot rejection');
     }
+    const transactionId = text(input.transactionId, 'transactionId');
+    text(input.candidateRoot.rootIdentity, 'root identity');
+    freeze(input.candidateRoot.occurrenceReference, 'root occurrence reference');
     preflightCounters(['command']);
     commitCounters(['command']);
     reroot = freeze({
-      transactionId: text(input.transactionId, 'transactionId'),
+      transactionId,
       candidateRoot: input.candidateRoot,
       admission: input.compoundAdmission,
       ownerPreparations: input.ownerPreparations,
@@ -294,11 +301,12 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     if (input.ownerEffect.rootAuthorityChanged === true || input.ownerEffect.graphWork === true || input.ownerEffect.reclamation === true || input.ownerEffect.invalidatedExistingWork === true) {
       fail('SESSION_REFERENCE_ATTENTION_AUTHORITY', 'attention cannot change root authority, graph/reclamation state, or existing-work validity');
     }
+    const attentionIdentity = text(input.attentionIdentity, 'attentionIdentity');
     preflightCounters(['command', 'attention-generation']);
     const rootBefore = authority;
     commitCounters(['command', 'attention-generation']);
     attention = freeze({
-      attentionIdentity: text(input.attentionIdentity, 'attentionIdentity'),
+      attentionIdentity,
       generation: counterText('attention-generation'),
       ownerEffect: input.ownerEffect,
     }, 'Session attention state');
