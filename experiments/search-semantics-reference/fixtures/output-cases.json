@@ -1,0 +1,43 @@
+{
+  "schema": "cuda-mcgs.reference-output-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 727811,
+    "sha256": "a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-output-profile-projection/0.2.0",
+    "profileIds": [
+      "output.synthetic-evaluator-absent",
+      "output.synthetic-evaluator-workspace",
+      "output.synthetic-live-session"
+    ]
+  },
+  "expectedCases": [
+    "output-profile-strict-normalization",
+    "output-envelope-only-terminal",
+    "output-complete-vs-valid-partial",
+    "output-first-stop-cause",
+    "output-no-valid-result-envelope",
+    "output-terminal-reserve-isolation",
+    "output-no-ranked-action",
+    "output-ranked-product-binding",
+    "output-evaluator-absent",
+    "output-live-absent-zero-residue",
+    "output-observation-read-only",
+    "output-observation-cadence-invariance",
+    "output-unavailable-source-no-materialize",
+    "output-independently-versioned-honesty",
+    "output-versioned-cut-retry",
+    "output-stale-root-publication",
+    "output-protected-source-lifetime",
+    "output-bounded-sequence-cycle",
+    "output-ready-immutability",
+    "output-borrow-reuse-race",
+    "output-drop-coalesce-accounting",
+    "output-host-read-no-progression",
+    "output-generation-exhaustion",
+    "output-product-capability-deletion",
+    "output-oracle-sensitivity-publication"
+  ]
+}
