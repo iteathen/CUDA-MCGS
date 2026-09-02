@@ -30,6 +30,7 @@
     "terminal_slice_review_record_pr": 187,
     "active_issue": 181,
     "active_branch": "ref/session-01",
+    "review_pr": 189,
     "exact_session_base": "079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd",
     "semantic_head_before_state_reconciliation": "2ed5bccd04ed95e96fc8bc2a5e957daef339db2e",
     "semantic_tree_before_state_reconciliation": "3b57fb0998e8f7b271c58a90e2f5df3b5fa7798c"
@@ -103,11 +104,26 @@
     ],
     "whole_diff_result_at_semantic_head": "No blocking semantic or ownership finding remains in the 29-commit diff from exact base 079e80a4... to semantic head 2ed5bccd.... The diff is confined to Session projection/reference/gate files."
   },
+  "deliverables": [
+    "Completed Session profile projection/export bound to the existing Composer normalizer/builders as sole structural authority.",
+    "Completed Session-owned behavioral oracle and focused case-support modules under experiments/search-semantics-reference/src.",
+    "Checked-in 20-case expected bank, runner, content-sensitive evidence identity and public script entrypoint covering all 38 direct SPEC-0006 engine-reference obligations.",
+    "Permanent non-bypassable Session reference CI gate coupled to Composer, sibling-owner profile projections and the terminal Session-absent regression.",
+    "Preserved meaningful red-before-green evidence for root-incarnation, Output-publication ownership, borrow quiescence, cancellation admission, CI-gate integrity and pre-mutation command validation.",
+    "Draft PR #189 as the exact-head review record plus reconciled STATUS.md, next_step.yaml and experiment README/RESULTS."
+  ],
+  "validation": [
+    "Permanent Session workflow must pass on the exact final PR head with Composer 881/881, Session 20/20 and all 38 direct SPEC-0006 routes covered.",
+    "Terminal Session-absent reference must remain 6/6 with zero Session runtime/generated residue and no host progress loop.",
+    "Framework and terminal-slice coupled PR gates must remain green on the exact final PR head.",
+    "Full repository/documentation PR matrix, including governance verification, must pass on the exact final PR head.",
+    "Fresh complete-diff author review must find no blocking semantic, ownership, governance or cleanup issue on that exact head/base.",
+    "If the head or material base changes after review, repeat relevant exact-head qualification/review before repository-owner authorization or integration."
+  ],
   "current_gate": [
-    "Commit the current-state-only reconciliation without changing Session semantics.",
-    "Open the #181 review candidate against exact base experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd.",
-    "Require the permanent Session workflow and full documentation/repository PR matrix to pass on that exact documentation-inclusive head.",
-    "Perform a fresh complete-diff author review of that exact final head.",
+    "PR #189 is the draft review record against exact base experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd.",
+    "Require the permanent Session, Framework, terminal-slice and full documentation/repository PR gates to pass on the current documentation-inclusive PR head.",
+    "Perform a fresh complete-diff author review of that exact final head after all gates are green.",
     "Stop for fresh repository-owner authorization for the exact reviewed head/base before integration.",
     "If the connector cannot clear the reviewed draft bit, use only the accepted same-head/same-base replacement transport after authorization and verify expected-head plus integrated tree equality."
   ],
