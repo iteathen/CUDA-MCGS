@@ -1,7 +1,7 @@
 {
   "schema_version": 91,
   "updated": "2026-09-02",
-  "status": "ref_terminal_slice_01_draft_pr_exact_head_requalification",
+  "status": "ref_terminal_slice_01_review_ready_awaiting_authorization",
   "objective": "Qualify and review REF-TERMINAL-SLICE-01 as integration evidence only: one complete finite session-absent, extension-absent CUDA-free engine lifecycle composed through the already-owned public Domain, Graph, Policy, optional Evaluator, Resource, Progress, Output and Framework reference surfaces. Do not create a second semantic owner or monolithic reference engine.",
   "ownership_boundary": "The terminal slice owns only conformance composition, schedule/event traces, cross-owner invariant checks and evidence. Domain, Graph, Policy, Evaluator, Resource, Progress, Output and Framework retain their existing semantic state and failure interpretation. Session, Stage and Channel are absent in this leaf. CUDA-JS owns generic CUDA mechanisms; CUDA-JS-Tensor owns generic dense Tensor math; downstream products own chess/UCI/model/Book Forge/Timing Evidence/tablebase meaning.",
   "authority": [
@@ -37,7 +37,7 @@
     "active_issue": 184,
     "active_branch": "ref/terminal-slice-01",
     "draft_pr": 187,
-    "last_semantic_candidate": "2c5db70ab7befbdbf1307e98db18cd13888b319a",
+    "last_semantic_candidate": "3a6ed1691c362da046251e3b01d2ed366b7770c0",
     "qualified_pre_pr_checkpoint": "checkpoint/terminal-slice-qualified-pre-pr-20260902",
     "pre_ignition_red_checkpoint": "checkpoint/terminal-slice-pre-ignition-red-20260902"
   },
@@ -54,21 +54,21 @@
     "full_matrix_rule": "The documentation workflow runs on pull_request and main push, not experimental/portfolio push. PR #186 reran the full repository matrix on source tree a5f86cecd40fb1f58198e942553a5e756a49dd28; integration commit 7701b9be has exactly that same tree."
   },
   "terminal_slice_qualification": {
-    "semantic_candidate": "2c5db70ab7befbdbf1307e98db18cd13888b319a",
-    "branch_terminal_workflow": 33676593687,
-    "pr_terminal_workflow": 33676885544,
-    "pr_framework_workflow": 33676885543,
+    "semantic_candidate": "3a6ed1691c362da046251e3b01d2ed366b7770c0",
+    "pr_terminal_workflow": 33677919633,
+    "pr_framework_workflow": 33677919582,
+    "pr_full_matrix_workflow": 33677919508,
     "composer_cases": "881/881",
     "terminal_slice_cases": "6/6",
     "ignition_order": "pass",
-    "terminal_evidence": "70d9bed23db7bd390ecbae13dd62f9f395bffbc721f92b8284bb39c2c442f7c0",
-    "artifact": 9864582487,
-    "archive_sha256": "4c3383e8e860eb5a42692c4005d2b6dc1e8cfd59ce5d9884200b7b6d9b525360",
-    "pr_matrix": "All semantic/reference jobs reported success on PR #187 merge candidate; governance alone failed because this tracking file omitted required blockers/validation keys. This reconciliation invalidates that exact PR merge SHA and requires a fresh PR matrix on the new head."
+    "terminal_evidence": "c9c0b9b8847c5121bc6cce1ff3707e2c465a4fddd067a400693b235972254388",
+    "artifact": 9865069421,
+    "archive_sha256": "f7c516b23c45476e46c3b6764c7bc0bb19cb6b63f648e4340a8cfc090a61d016",
+    "pr_matrix": "Terminal slice, Framework lifecycle and the full documentation/owner matrix all passed on semantic source head 3a6ed1691c362da046251e3b01d2ed366b7770c0. This tracking-only reconciliation creates a new PR head and therefore still requires a final exact-head PR requalification before authorization."
   },
   "red_before_green": [
     "Run 33664488775 failed when the initial integration classified Output before Progress closure; commit 2240d6423c5ea61c94ee0eaf439290c2973e440c repaired the ordering and run 33664588148 passed.",
-    "Run 33676366735 failed only the permanent terminal ignition-order falsifier because the slice ignited before Output pre-ignition initialization; semantic candidate 2c5db70ab7befbdbf1307e98db18cd13888b319a separated Framework initialization/ignition and passed run 33676593687."
+    "Run 33676366735 failed only the permanent terminal ignition-order falsifier because the slice ignited before Output pre-ignition initialization; later semantic work separated Framework initialization/ignition and preserved that falsifier in the evidence source set."
   ],
   "terminal_slice_required_falsifiers": [
     "At least two materially different product-neutral fixture families must complete; one product shape cannot be the oracle.",
@@ -79,23 +79,24 @@
     "Failure and cancellation must conserve finite Resource accounting and complete Framework/owner cleanup/readback.",
     "Evaluator-selected and evaluator-absent profiles must both work; absence must leave zero evaluator residue.",
     "Session, Stage, Channel and first-product optional surfaces must be exactly absent with zero residue.",
-    "Framework/owner initialization and Output pre-ignition setup must precede ignition; device-active Resource/Progress work must follow ignition."
+    "Framework/owner initialization and Output pre-ignition setup must precede ignition; device-active Resource/Progress work must follow ignition.",
+    "Result-visible owner teardown must not retire source results before terminal Output capture and Framework completion."
   ],
   "deliverables": [
-    "Inspect and compose existing public owner oracle methods rather than copying their state machines.",
-    "Preserve decisive red-before-green integration falsifiers.",
+    "Compose existing public owner oracle methods rather than copying their state machines.",
+    "Preserve decisive red-before-green integration falsifiers and bind them into evidence provenance.",
     "Maintain product-neutral terminal-slice fixtures/cases/runner/evidence and the permanent peer CI gate.",
     "Run owning and full repository qualification, perform exact-head complete-diff author review, reconcile current-state docs/issues and stop for fresh exact-head owner authorization before integration."
   ],
   "validation": [
-    "Fresh PR #187 matrix on the post-reconciliation exact head must pass governance plus all applicable Search IR, Graph, Policy, Evaluator, Resource, Progress, Output, Framework and terminal-slice jobs.",
+    "The final PR #187 head must pass governance plus all applicable Search IR, Graph, Policy, Evaluator, Resource, Progress, Output, Framework and terminal-slice jobs.",
     "Terminal-slice evidence must remain 6/6 with Composer 881/881 and ignition-order pass.",
-    "Review the complete PR #187 diff for duplicate authority, private owner-state access, first-consumer assumptions, lifecycle/cleanup gaps, stale provenance and unnecessary architecture.",
+    "The complete PR #187 diff must remain clean for duplicate authority, private owner-state access, first-consumer assumptions, lifecycle/cleanup gaps, stale provenance and unnecessary architecture.",
     "If the PR head or material base changes after review, repeat exact-head review/qualification before any authorization."
   ],
   "blockers": [
-    "No semantic dependency blocker is known. Current gate is fresh exact-head PR requalification after tracking/governance reconciliation.",
-    "Integration/merge remains blocked on final exact-head review and the repository-owner/independent authorization required by project policy."
+    "No semantic dependency blocker is known.",
+    "Integration/merge remains blocked on final docs-only exact-head PR requalification and the repository-owner/independent authorization required by project policy."
   ],
   "do_not": [
     "Do not add a second semantic owner, runtime registry or monolithic reference engine.",
