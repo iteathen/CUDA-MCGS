@@ -1,96 +1,93 @@
 {
   "schema_version": 88,
   "updated": "2026-09-02",
-  "status": "ref_framework_life_candidate_final_qualification_pending",
-  "objective": "Finish exact-head qualification and author-side whole-diff review of REF-FRAMEWORK-LIFE-01 on PR #185 without crossing the integration authorization boundary. After explicit exact-head authorization and guarded integration, begin #184 REF-TERMINAL-SLICE-01 from the exact read-back experimental/portfolio revision; do not skip directly to Session.",
-  "ownership_boundary": "Framework lifecycle owns top-level pre-ignition admission/initialization/rollback, ignition boundary, first authoritative stop cause, completion/cancellation coordination, terminal borrow/teardown coordination, optional persistence selection/restore revalidation, and complete task-created cleanup/readback disposition. Domain, Graph, Policy, Evaluator, Resource, Progress and Output retain their private state and semantic transitions. Framework consumes only public owner facts and may not become a scheduler, CUDA mechanism owner, persistence backend or product authority.",
-  "current_state": {
-    "protected_main": "3ecac11e3576bd063760bc9572f79bea78acd031",
-    "integrated_experimental_portfolio": "d8b2f617abcc4a02719499b2beb6c1b15b9896fe",
-    "active_issue": 183,
-    "active_pr": 185,
-    "active_branch": "ref/framework-life-01",
-    "exact_base": "d8b2f617abcc4a02719499b2beb6c1b15b9896fe",
-    "pre_documentation_semantic_head": "7934537fa331b074a12d7725ba6bc0087134a7ce",
-    "integrated_output_pr": 182,
-    "integrated_output_source_head": "a6b4d6f9795191c057dd477e5e571aa570f8a842"
-  },
-  "framework_reference": {
-    "direct_spec_0000_routes": 15,
-    "cases": "18/18",
-    "composer_cases": "881/881",
-    "composer_evidence": "a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe",
-    "pre_documentation_framework_evidence": "8ba3f17858a4452f919fbea02bb822860ed13388748f11c9feacc757c63492c6",
-    "pre_documentation_framework_workflow": 33653132339,
-    "pre_documentation_full_workflow": 33653132386,
-    "pre_documentation_artifact": 9855587220,
-    "pre_documentation_artifact_zip_sha256": "ff38b018a82c04b66ae28fde17c672163ba764161cc9ec104da779c9bb16b583",
-    "red_head": "191add5a0e72e2c19e6e862676baf0251c593a95",
-    "red_workflow": 33651637686,
-    "red_evidence": "594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e",
-    "red_artifact": 9855005183,
-    "red_artifact_zip_sha256": "a8ce1cc1b2133bff7cdf655b163fdd6f4487cd94369ea38e553789c9a7b65cbb",
-    "red_falsifier": "A later stop/cancellation signal overwrote the first authoritative stop cause. Composer remained 881/881; exactly framework-first-stop-cause and framework-cancellation-idempotent failed. The green repair preserves the first cause and leaves the falsifiers intact."
-  },
-  "reference_order": [
-    "#183 REF-FRAMEWORK-LIFE-01: final qualification/review, then stop for exact-head authorization",
-    "#184 REF-TERMINAL-SLICE-01: complete session-absent and extension-absent CUDA-free vertical lifecycle after #183 integration",
-    "#181 REF-SESSION-01: 38 direct SPEC-0006 behavioral routes after #184",
-    "#30 REF-STAGE-01: eight direct SPEC-0003 route gap audit after Session",
-    "#33 REF-CHANNEL-EVIDENCE-01: reuse/gap-audit the existing 41-route Channel oracle after Stage",
-    "#36 REF-INTEGRATE-01: exact product-neutral Search IR/Composer/reference reconciliation",
-    "#122: protected atomic semantic acceptance"
-  ],
+  "status": "ref_framework_life_01_semantically_qualified_current_state_reconciliation_pending_final_head_gate",
+  "objective": "Freeze REF-FRAMEWORK-LIFE-01 as one exact documentation-inclusive candidate, rerun exact-head qualification and complete-diff author review, then stop for fresh repository-owner authorization before any guarded integration.",
+  "ownership_boundary": "Framework owns only cross-owner top-level lifecycle coordination for the 15 direct SPEC-0000 ENGINE-REFERENCE routes: admission, initialization/reverse rollback, ignition/device closure, first cause, completion/cancellation, terminal borrow/teardown, optional persistence contract and complete cleanup/readback. Domain, Graph, Policy, Evaluator, Resource, Progress and Output retain private semantic state; CUDA-JS owns generic CUDA mechanisms; CUDA-JS-Tensor owns generic dense Tensor math; downstream products own chess/UCI/model/Book Forge/Timing Evidence/tablebase/product meaning.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
     "agent_files/AI_RULES.md",
     "agent_files/DESIGN_ALIGNMENT_CARD.md",
     "agent_files/general_foundation/LEGO_ARCHITECTURE.md",
-    "agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md",
-    "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
-    "agent_files/general_foundation/SEMANTIC_INTERROGATION.md",
     "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
+    "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
     "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
     "docs/specs/SPEC-0000-framework-requirements.md",
+    "schemas/search-ir/0.2.0/requirement-coverage.json",
     "https://github.com/iteathen/CUDA-MCGS/issues/183",
     "https://github.com/iteathen/CUDA-MCGS/pull/185",
-    "https://github.com/iteathen/CUDA-MCGS/issues/184",
     "https://github.com/iteathen/CUDA-MCGS/issues/36",
-    "https://github.com/iteathen/CUDA-MCGS/issues/122"
+    "https://github.com/iteathen/CUDA-MCGS/issues/142"
   ],
+  "state": {
+    "protected_authority": "main@3ecac11e3576bd063760bc9572f79bea78acd031",
+    "integrated_candidate_base": "experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe",
+    "branch": "ref/framework-life-01",
+    "pr": 185,
+    "issue": 183,
+    "semantic_head_before_this_reconciliation": "7eb25f17481fea6a925d6d0e29baa06473ee2bff"
+  },
+  "red_evidence": [
+    {
+      "purpose": "first authoritative stop cause preservation",
+      "head": "191add5a0e72e2c19e6e862676baf0251c593a95",
+      "workflow": 33651637686,
+      "framework_evidence": "594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e",
+      "artifact": 9855005183,
+      "archive_sha256": "a8ce1cc1b2133bff7cdf655b163fdd6f4487cd94369ea38e553789c9a7b65cbb"
+    },
+    {
+      "purpose": "partial rollback protected-state preservation plus distinct local-files/Git cleanup readback",
+      "head": "47bd5f1326d47ce1a955b55d9f5c0e13334145da",
+      "workflow": 33659024252,
+      "framework_evidence": "2c3e22a634eb004cbcd249712cc079a41e8a84116296fff0d204a49202fa35f2",
+      "artifact": 9857898880,
+      "archive_sha256": "c6f4cac791297168b91cad2a1f4025a2bb96343b7b96796b75aec6fdfaa8ccc8"
+    }
+  ],
+  "semantic_qualification": {
+    "head": "7eb25f17481fea6a925d6d0e29baa06473ee2bff",
+    "framework_workflow": 33659209749,
+    "repository_workflow": 33659209933,
+    "composer_cases": "881/881",
+    "framework_cases": "18/18",
+    "direct_spec_0000_routes": "15/15",
+    "composer_evidence": "a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe",
+    "framework_evidence": "a8f17027993720c4fe61a76ce060c46206a73f36926dc280d1659c7759e0e0ad",
+    "artifact": 9857969833,
+    "archive_sha256": "03c553a341b8c8314167d2ddba7536892fe9a3a1ee21b2985077d6260485f90d",
+    "repository_matrix": "Governance, Windows/Ubuntu Search IR, all Graph lanes, Policy, Evaluator, Resource, Progress, Output and aggregate verify all succeeded"
+  },
   "deliverables": [
-    "keep all 15 direct SPEC-0000 Framework lifecycle routes fail-closed in the checked-in 18-case bank",
-    "preserve red-before-green first-cause provenance and final content-sensitive Framework evidence",
-    "keep exact result-visible completion coverage, cancellation accounting/drain facts, terminal-borrow teardown deferral, persistence absence/restore revalidation and complete cleanup/readback evidence",
-    "reconcile STATUS.md, next_step.yaml and search-semantics-reference README/RESULTS to the live Output-integrated/Framework-active frontier",
-    "rerun the permanent Framework workflow and complete repository documentation/semantic matrix on the exact final head",
-    "perform fresh author-side whole-diff technical review on the exact final head",
-    "if the draft-bit connector defect recurs, use only the same-head/same-base replacement transport after preserving PR #185 as the reviewed record",
-    "stop before integration and present the exact final qualified/reviewed head for fresh repository-owner authorization"
+    "Complete this current-state-only repository reconciliation without changing Framework semantics.",
+    "Run the permanent Framework workflow and full repository matrix on the resulting exact documentation-inclusive head.",
+    "Review the complete ten-file PR diff on that same exact head for duplicate authority, ownership leakage, stale provenance, failure/cleanup holes, resource/concurrency assumptions and unnecessary architecture.",
+    "Update #183, #36, #142, #32 and PR #185 to the final exact head/evidence without changing the repository head.",
+    "Stop and present the exact head/base for fresh repository-owner authorization; do not merge from this execution request alone."
   ],
   "validation": [
-    "Composer remains exactly 881/881 on the final head",
-    "Framework lifecycle remains exactly 18/18 with all 15 direct SPEC-0000 routes covered",
-    "permanent framework-lifecycle-reference workflow succeeds and retains exact evidence artifact",
-    "documentation workflow succeeds across Governance, Ubuntu/Windows Search IR, all owner reference lanes and aggregate verify",
-    "fresh whole-diff review finds no duplicate semantic owner, private-state leakage, scheduler/CUDA/persistence-backend/product semantics, lifecycle/accounting/cleanup hole or stale current-state route",
-    "live experimental/portfolio remains unchanged until explicit exact-head authorization and guarded integration"
+    "The resulting exact head remains based on experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe.",
+    "Framework reference discovers/executes/passes exactly 18/18 cases and maps all 15/15 direct SPEC-0000 routes.",
+    "Composer remains 881/881 and its representation/composition evidence remains exactly a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe.",
+    "Full repository matrix passes Governance, Windows/Ubuntu Search IR, Graph, Policy, Evaluator, Resource, Progress, Output and aggregate verify.",
+    "Fresh author-side complete-diff review has no blocking finding on the exact final head.",
+    "Protected main remains separate; no #122/native/performance/product claim is made."
   ],
   "blockers": [
-    "PR #185 is not authorized for integration; green CI and author review do not replace fresh exact-head repository-owner authorization.",
-    "#184 cannot begin from candidate #185 content; it begins only after #183 is authorized, guarded-integrated and read back on experimental/portfolio.",
-    "#181 Session remains blocked on #184, then #30 Stage and #33 Channel remain downstream before REF-INTEGRATE/#122.",
-    "Protected #122 semantic acceptance, production lowering, CUDA-JS adapter work, native qualification and product behavior remain later gates."
+    "The documentation-inclusive exact head must still pass exact-head CI after this reconciliation commit.",
+    "Fresh complete-diff author review is required after that exact-head CI.",
+    "Fresh repository-owner authorization for the exact final head/base is required before integration.",
+    "#184 remains blocked until #183 is authorized, guarded-integrated and read back."
   ],
   "do_not": [
-    "merge PR #185 or a replacement transport without fresh authorization for the exact final head",
-    "skip #184 and start Session directly after Framework",
-    "copy Domain, Graph, Policy, Evaluator, Resource, Progress or Output private state into Framework",
-    "turn public lifecycle facts into a physical scheduler, CUDA stream/event/atomic topology or host read-decide-write progression loop",
-    "implement a persistence storage backend inside the reference owner or make restored state authoritative before normal validation/initialization",
-    "weaken first-cause, cancellation accounting, completion coverage, terminal-borrow, restore-quarantine, cleanup-disposition or owning-system readback falsifiers",
-    "claim protected acceptance, production/native support, compatible-pair evidence, performance or product semantics from CUDA-free candidate evidence",
-    "add C/C++, CUDA C++, native addons/FFI, hand-written PTX, embedded CUDA source, direct CUDA-JS private access or Python"
-  ]
+    "Do not merge PR #185 or a replacement transport without fresh exact-head repository-owner authorization.",
+    "Do not skip #184 and jump directly to Session.",
+    "Do not absorb Domain, Graph, Policy, Evaluator, Resource, Progress or Output private state into Framework.",
+    "Do not make scheduler topology, CUDA mechanism, persistence storage backend, Tensor or product semantics part of universal Framework meaning.",
+    "Do not add C/C++, CUDA C/C++, .cu/.cuh, hand-written PTX, native addons/FFI, private CUDA-JS calls or Python.",
+    "Do not weaken either preserved red probe, exact requirement coverage, cleanup readback or provenance checks to restore green CI.",
+    "Do not describe candidate evidence as protected semantic/native/production authority."
+  ],
+  "next_after_authorized_integration": "#184 / REF-TERMINAL-SLICE-01 on the exact read-back experimental/portfolio integration head; compose one complete finite session-absent, extension-absent CUDA-free lifecycle using public owner events/facts only."
 }

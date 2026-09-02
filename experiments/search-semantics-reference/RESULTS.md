@@ -4,100 +4,98 @@
 
 **Updated:** 2026-09-02
 
-## Integrated reference baseline
+## Active candidate
 
-Current integrated candidate/reference line:
+`REF-FRAMEWORK-LIFE-01` is the active CUDA-free owner reference on draft PR #185, branch `ref/framework-life-01`, exact base:
 
 `experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe`
 
-Protected semantic authority remains separate at:
+It covers exactly 15 direct SPEC-0000 ENGINE-REFERENCE routes and introduces no native/runtime/product authority.
 
-`main@3ecac11e3576bd063760bc9572f79bea78acd031`
-
-`REF-OUTPUT-01` is integrated through PR #182. Its reviewed/authorized source head `a6b4d6f9795191c057dd477e5e571aa570f8a842` and integrated commit have the same tree. Output retained 25/25 cases, 51/51 direct SPEC-0013 obligations and evidence `c3e07a14aac198ae6dede35e6606a60e1e9e0965687508db4608c97508faed5c`.
-
-## Active Framework lifecycle candidate
-
-Issue #183 / draft PR #185 owns `REF-FRAMEWORK-LIFE-01` on branch `ref/framework-life-01`, based exactly on the Output-integrated candidate line above.
-
-The owner maps exactly 15 direct SPEC-0000 ENGINE-REFERENCE obligations:
-
-- `FRAMEWORK-LIFE-001..009`;
-- `FRAMEWORK-PERSIST-001..002`;
-- `FRAMEWORK-CLEANUP-001..004`.
-
-The checked-in case bank has 18 cases and remains owner-local. It consumes public lifecycle/disposition facts rather than copying Domain, Graph, Policy, Evaluator, Resource, Progress or Output private state.
-
-## Preserved red evidence
+## First red proof — first stop cause
 
 Exact red head:
 
 `191add5a0e72e2c19e6e862676baf0251c593a95`
 
-Workflow `33651637686` produced:
+Workflow `33651637686` preserved the intentional last-stop-wins defect. Composer stayed 881/881; all 18 Framework cases executed; exactly `framework-first-stop-cause` and `framework-cancellation-idempotent` failed.
 
-- Composer: 881/881 pass;
-- Framework: 18 discovered / 18 executed / 16 pass / 2 fail;
-- only failing cases: `framework-first-stop-cause` and `framework-cancellation-idempotent`;
-- cause: a later stop/cancellation signal overwrote the first authoritative stop cause.
+- red Framework evidence: `594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e`;
+- artifact: `9855005183`;
+- archive SHA-256: `a8ce1cc1b2133bff7cdf655b163fdd6f4487cd94369ea38e553789c9a7b65cbb`.
 
-Red Framework evidence:
+The repair preserved the first authoritative cause without changing the falsifiers.
 
-`594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e`
+## Second red proof — review-discovered cleanup/rollback truth
 
-Retained artifact:
+Literal SPEC-0000 review later found two facts that the earlier green suite did not make explicit:
 
-- artifact `9855005183`;
-- archive SHA-256 `a8ce1cc1b2133bff7cdf655b163fdd6f4487cd94369ea38e553789c9a7b65cbb`.
+- CLEANUP-002 required partial initialization failure to prove task-created-state disposal/quarantine **and** preservation of protected pre-existing/user/shared state;
+- CLEANUP-003 required owning-system readback to distinguish local files from Git state.
 
-The repair preserves the first cause. The red cases were not weakened or reinterpreted.
+Test-only red head:
 
-## Review-driven hardening
+`47bd5f1326d47ce1a955b55d9f5c0e13334145da`
 
-The first green implementation was not accepted as semantic proof merely because CI passed. Fresh exact-head review found four Framework-owned evidence gaps:
+Framework workflow `33659024252` kept Composer 881/881 green and ran all 18 Framework cases. Six failures were direct consequences of those two missing facts; no unrelated wiring or coverage failure appeared.
 
-1. cancellation did not yet prove owner-declared abandon/must-drain/release plus conserved reservation/resource accounting, no partial backup and no premature teardown;
-2. completion did not prove exact coverage of every declared result-visible owner;
-3. selected persistence did not yet declare authorization/recovery/rollback or revalidate semantic/profile/package identity on restore; and
-4. cleanup/readback did not enumerate the full task-created lifecycle surface required by SPEC-0000.
+- red Framework evidence: `2c3e22a634eb004cbcd249712cc079a41e8a84116296fff0d204a49202fa35f2`;
+- canonical bytes: `8349`;
+- artifact: `9857898880`;
+- archive SHA-256: `c6f4cac791297168b91cad2a1f4025a2bb96343b7b96796b75aec6fdfaa8ccc8`.
 
-The candidate was hardened in the same Framework owner. Current falsifiers now cover exact completion owner sets, cancellation accounting/drain truth, persistence absence and selected restore quarantine, generated source/package/cache and persisted-artifact ownership, local state/process/transfer/credential/external-coordination cleanup, and exact final disposition readback.
+Green repair head `7eb25f17481fea6a925d6d0e29baa06473ee2bff` adds only Framework-owned public rollback/preservation validation and separate local-files/Git-state cleanup facts.
 
-No scheduler, CUDA implementation, persistence storage backend, product semantics or other owner-private state was added.
+## Semantic qualification at 7eb25f17…
 
-## Pre-documentation semantic qualification
+Framework workflow `33659209749` succeeded:
 
-Exact semantic head before this documentation reconciliation:
+### Composer
 
-`7934537fa331b074a12d7725ba6bc0087134a7ce`
+- capsule: `cuda-mcgs-search-ir-composer-reference-v0.2.0`;
+- cases: `881/881`;
+- representation/composition SHA-256: `a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe`;
+- canonical bytes: `727811`.
 
-Permanent Framework workflow `33653132339` passed:
+### Framework lifecycle
 
-- Composer: 881/881;
-- Framework lifecycle: 18/18;
-- direct SPEC-0000 Framework routes: 15/15;
-- Framework evidence: `8ba3f17858a4452f919fbea02bb822860ed13388748f11c9feacc757c63492c6`;
-- canonical evidence bytes: 6517.
+- capsule: `cuda-mcgs-framework-lifecycle-reference-v0.2.0`;
+- scope: `full-framework-lifecycle-reference`;
+- expected/discovered/executed/passed: `18/18/18/18`;
+- failed/skipped/undiscovered: `0`;
+- direct SPEC-0000 routes: `15/15`;
+- Framework evidence SHA-256: `a8f17027993720c4fe61a76ce060c46206a73f36926dc280d1659c7759e0e0ad`;
+- canonical bytes: `6517`;
+- artifact: `9857969833`;
+- archive SHA-256: `03c553a341b8c8314167d2ddba7536892fe9a3a1ee21b2985077d6260485f90d`.
 
-Retained artifact:
+### Full repository matrix
 
-- artifact `9855587220`;
-- archive SHA-256 `ff38b018a82c04b66ae28fde17c672163ba764161cc9ec104da779c9bb16b583`.
+Workflow `33659209933` succeeded across:
 
-The complete repository documentation/semantic workflow `33653132386` also passed on that semantic head.
+- Governance verification;
+- Search IR on Ubuntu;
+- Search IR on Windows;
+- Graph NODE, EDGE, REF, PATH, ROOT, RECLAIM, ADVANCE occurrence and CLEANUP;
+- Policy reference;
+- Evaluator reference;
+- Resource reference;
+- Progress reference;
+- Output reference;
+- aggregate `verify`.
 
-This current-state documentation reconciliation advances the branch after that evidence. Therefore the numbers above are preserved pre-documentation provenance, not a claim that the new final head has already been qualified. Final exact-head CI and whole-diff review must rerun.
+## Ownership review result at semantic head
 
-## Next evidence gates
+The complete executable Framework brick remains bounded to public lifecycle/disposition coordination. The runner derives the exact 15-route registry from authoritative SPEC-0000 and requirement coverage; the checked-in 18-case bank cannot silently omit or invent a direct route. Fixtures are synthetic and product-neutral. No sibling-owner private state, physical scheduler, CUDA mechanism, persistence storage backend, Tensor assumption or product semantic was introduced.
 
-After #183 reaches one exact green/reviewed head and receives separate repository-owner authorization:
+The latest repair did not change Composer or sibling owner identities; only Framework source/evidence changed, so no dependent upstream evidence rebind was appropriate.
 
-1. guarded-integrate #183 and read back `experimental/portfolio`;
-2. execute #184 `REF-TERMINAL-SLICE-01` as the complete finite session-absent/extension-absent CUDA-free lifecycle integration slice;
-3. then #181 Session, #30 Stage, #33 Channel evidence, #36 `REF-INTEGRATE-01` and #122 protected atomic semantic acceptance.
+## Final documentation-inclusive gate
 
-No candidate evidence here authorizes production lowering or native implementation.
+This RESULTS file and the repository current-state files are intentionally updated after semantic qualification. That documentation-only reconciliation changes the PR head but not Framework semantics. The resulting exact head must rerun the permanent Framework workflow and full repository matrix, then receive a fresh complete-diff author review before any integration authorization request.
 
-## Claim limits
+PR #185 remains a candidate. No merge or protected/native/performance/product claim is authorized by these results.
 
-This evidence concerns CUDA-free Framework/reference semantics only. It does not prove production runtime behavior, native CUDA memory ordering/concurrency, physical device support, CUDA-JS compatible-pair support, performance, release readiness, multi-GPU support or downstream product/chess/UCI/model semantics.
+## Next after authorized integration
+
+After exact-head repository-owner authorization, guarded integration and target readback, #184 / `REF-TERMINAL-SLICE-01` is the next dependency-ready reference leaf. Do not skip directly to Session.

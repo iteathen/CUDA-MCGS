@@ -2,75 +2,55 @@
 
 **Status:** Informational
 
-This CUDA-free experiment is the behavioral/reference evidence lane for `ENGINE-REFERENCE-01`. It is composed from owner-local LEGO bricks: each reference consumes normalized or already-qualified public facts owned elsewhere, proves one semantic boundary, and leaves native/CUDA realization downstream.
+This CUDA-free experiment is the behavioral/reference evidence lane for `ENGINE-REFERENCE-01`. Reference bricks are owner-local and independently replaceable: they consume normalized identities or public facts owned elsewhere, prove one semantic boundary, and leave native/CUDA realization downstream.
 
-## Current integration state
+## Current portfolio state
 
-Protected authority remains separate at:
+Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd031`.
 
-`main@3ecac11e3576bd063760bc9572f79bea78acd031`
+The integrated candidate/reference line is `experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe`, containing the current Graph reference chain plus Policy, Evaluator, Resource, corrected Progress and Output evidence. Candidate integration is not protected #122 acceptance.
 
-The integrated candidate/reference line is:
+## Active Framework lifecycle brick
 
-`experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe`
+Issue #183 / draft PR #185 constructs `REF-FRAMEWORK-LIFE-01` for exactly 15 direct SPEC-0000 ENGINE-REFERENCE routes:
 
-That candidate line now contains reference work through `REF-OUTPUT-01`. Output was integrated through PR #182 from exact reviewed/authorized source head `a6b4d6f9795191c057dd477e5e571aa570f8a842` with 25/25 cases and all 51 direct SPEC-0013 reference routes covered.
+- `FRAMEWORK-LIFE-001..009`;
+- `FRAMEWORK-PERSIST-001..002`;
+- `FRAMEWORK-CLEANUP-001..004`.
 
-Candidate/reference integration is not protected #122 semantic acceptance and establishes no native CUDA, compatible-pair, performance, release or product claim.
+Framework coordinates only public cross-owner lifecycle/disposition facts: complete plan admission, ordered initialization/reverse rollback, ignition/device closure, immutable first stop cause, completion/cancellation, terminal borrow/teardown, optional persistence selection/restore validation and complete cleanup/readback.
 
-## Active reference owner
-
-Issue #183 / draft PR #185 constructs `REF-FRAMEWORK-LIFE-01` from exact integrated base `d8b2f617abcc4a02719499b2beb6c1b15b9896fe`.
-
-The Framework lifecycle brick owns only the 15 direct SPEC-0000 ENGINE-REFERENCE routes:
-
-- top-level pre-ignition admission, initialization and reverse rollback;
-- ignition/device-closure boundary;
-- immutable first authoritative stop cause;
-- exact result-visible completion coverage;
-- idempotent cancellation with owner-declared work disposition and conserved reservation/resource accounting;
-- terminal borrow and teardown coordination;
-- typed Framework lifecycle status;
-- persistence absent-by-default plus selected persistence ownership/authorization/recovery/rollback/restore revalidation; and
-- complete task-created cleanup/disposition/readback provenance.
-
-It consumes public facts from Domain, Graph, Policy, Evaluator, Resource, Progress and Output. It does not implement or reinterpret their private state. It does not select a scheduler, CUDA mechanism, persistence backend or product semantics.
+It does **not** implement Domain/Graph/Policy/Evaluator/Resource/Progress/Output private semantics, select a scheduler/CUDA mechanism, become a persistence backend, or own product meaning.
 
 ## Red-before-green provenance
 
-Exact red head:
+Two useful semantic red seams are retained:
 
-`191add5a0e72e2c19e6e862676baf0251c593a95`
+1. `191add5a0e72e2c19e6e862676baf0251c593a95` / workflow `33651637686` proved the original last-stop-wins defect. Composer remained 881/881; exactly the first-cause cases failed. Evidence `594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e`.
+2. `47bd5f1326d47ce1a955b55d9f5c0e13334145da` / workflow `33659024252` preserved review-discovered gaps in partial-rollback protected-state preservation and distinct local-files/Git cleanup readback. Composer remained 881/881; the resulting six Framework failures were all direct consequences of those two missing facts. Evidence `2c3e22a634eb004cbcd249712cc079a41e8a84116296fff0d204a49202fa35f2`.
 
-Workflow `33651637686` kept the Composer at 881/881 and executed all 18 Framework cases. Exactly the two intended first-cause falsifiers failed because a later stop/cancellation signal overwrote the earlier authoritative cause.
+Neither case bank was weakened for the green repairs.
 
-Red evidence:
+## Current semantic qualification
 
-`594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e`
+Exact semantic head before this documentation-only reconciliation:
 
-Retained artifact `9855005183`, archive SHA-256 `a8ce1cc1b2133bff7cdf655b163fdd6f4487cd94369ea38e553789c9a7b65cbb`.
+`7eb25f17481fea6a925d6d0e29baa06473ee2bff`
 
-The repair made first-cause assignment conditional on no cause having been published yet. The falsifiers were retained unchanged.
+Framework workflow `33659209749` passed:
 
-## Current pre-documentation qualification
+- Composer `881/881`;
+- Framework `18/18`;
+- `15/15` direct SPEC-0000 routes;
+- Composer evidence `a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe` (`727811` canonical bytes);
+- Framework evidence `a8f17027993720c4fe61a76ce060c46206a73f36926dc280d1659c7759e0e0ad` (`6517` canonical bytes);
+- artifact `9857969833`, archive SHA-256 `03c553a341b8c8314167d2ddba7536892fe9a3a1ee21b2985077d6260485f90d`.
 
-Before this current-state documentation reconciliation, semantic head `7934537fa331b074a12d7725ba6bc0087134a7ce` passed:
+Full repository workflow `33659209933` passed Governance, Windows/Ubuntu Search IR, all Graph lanes, Policy, Evaluator, Resource, Progress, Output and aggregate `verify`.
 
-- Composer 881/881;
-- Framework lifecycle 18/18;
-- all 15 direct SPEC-0000 routes mapped to checked-in cases;
-- permanent Framework workflow `33653132339`;
-- complete repository documentation/semantic workflow `33653132386`.
+Because this README and the other current-state files are changed after that semantic qualification, the resulting documentation-inclusive PR head still requires one final exact-head workflow/readback and complete-diff author review before authorization is requested.
 
-Framework evidence was:
-
-`8ba3f17858a4452f919fbea02bb822860ed13388748f11c9feacc757c63492c6`
-
-Retained artifact `9855587220`, archive SHA-256 `ff38b018a82c04b66ae28fde17c672163ba764161cc9ec104da779c9bb16b583`.
-
-A fresh review of an earlier green head found lifecycle-evidence gaps that CI had not exposed: cancellation accounting/drain facts, exact result-visible completion owner coverage, persistence restore identity/rollback truth and complete cleanup readback. Those were repaired in the same Framework owner and new falsifiers were added. Because this documentation reconciliation advances the PR head, final exact-head CI and review remain required before authorization.
-
-## Run the active owner reference
+## Run
 
 Use Node.js 26 or newer:
 
@@ -79,22 +59,12 @@ node scripts/run-search-ir-composer-reference.mjs
 node scripts/run-framework-lifecycle-reference.mjs
 ```
 
-Generated `build/` evidence is disposable. Checked-in fixtures/source, retained workflow artifacts, exact red provenance and exact evidence identities are the durable coordinates.
+Generated `build/` evidence is disposable. Checked-in fixtures/source, workflow artifacts, exact source SHAs and content-sensitive evidence identities are the durable coordinates.
 
-## Remaining reference sequence
+## Next semantic seam
 
-The governing `docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md` requires:
-
-1. finish #183 / `REF-FRAMEWORK-LIFE-01`;
-2. #184 / `REF-TERMINAL-SLICE-01` — complete finite session-absent, extension-absent vertical lifecycle through public owner events/facts;
-3. #181 / `REF-SESSION-01`;
-4. #30 / `REF-STAGE-01` eight-route gap audit;
-5. #33 / `REF-CHANNEL-EVIDENCE-01` reuse/gap-audit of the existing 41-route Channel logical oracle;
-6. #36 / `REF-INTEGRATE-01` exact reference packet reconciliation;
-7. #122 protected atomic semantic acceptance.
-
-Do not skip the Framework or terminal-slice owners merely because the Composer already contains structural Session/Stage/Channel evidence.
+After #183 is separately authorized, guarded-integrated and read back, #184 / `REF-TERMINAL-SLICE-01` is next. It composes one complete finite session-absent, extension-absent CUDA-free lifecycle through public owner events/facts only. Session (#181), Stage (#30), Channel (#33), final reference integration (#36) and protected #122 acceptance remain downstream in that order.
 
 ## Claim limits
 
-Passing these CUDA-free references does not establish protected semantic acceptance, production lowering, native CUDA realization, CUDA-JS compatible-pair qualification, physical scheduling, performance, stable SDK/release readiness or downstream chess/UCI/model/product behavior.
+Passing these CUDA-free references does not establish protected proposal acceptance, production lowering, native CUDA behavior, CUDA-JS compatible-pair support, physical scheduling, performance, stable SDK/release readiness or product/chess/UCI/model/Book Forge/Timing Evidence/tablebase behavior.
