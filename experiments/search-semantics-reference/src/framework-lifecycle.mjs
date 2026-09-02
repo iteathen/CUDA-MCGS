@@ -150,8 +150,7 @@ export function recordStopCause(state, cause) {
   assertNonemptyString(cause, 'FRAMEWORK_STOP_CAUSE', 'stop cause');
   if (!['running', 'stop-requested'].includes(state.phase)) fail('FRAMEWORK_STOP_PHASE', 'stop cause requires running or stop-requested phase');
   const next = clone(state);
-  // Intentional red probe: this incorrectly lets a later cause overwrite the first authoritative cause.
-  next.stopCause = cause;
+  if (next.stopCause === null) next.stopCause = cause;
   next.phase = 'stop-requested';
   return next;
 }
