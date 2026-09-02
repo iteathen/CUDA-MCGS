@@ -1,155 +1,65 @@
 {
-  "schema_version": 95,
+  "schema_version": 96,
   "updated": "2026-09-02",
-  "status": "ref_session_01_review_remediation_qualified_pending_final_exact_head_review_and_authorization",
-  "objective": "Complete the final documentation-inclusive qualification and author review of REF-SESSION-01 after the review-discovered Output-provenance repairs. The next semantic action after a clean exact-head review is repository-owner authorization or another blocker repair, not Stage construction or integration without authorization.",
-  "ownership_boundary": "Session owns external command ordering/idempotence/provenance, Session identity/incarnation, initial-root authority coordination, advance authority publication/adoption provenance, reroot transaction coordination, attention generation/application provenance, bounded observation request/acquire/release coordination, Session cancellation/completion, finite Session counters and Session cleanup. Runtime search identity/incarnation are injected public provenance facts used only to bind publications to the active execution. Domain owns root validity; Graph owns occurrences/storage/reclamation; source owners own reuse/stale meaning; Resource owns finite admission/accounting; Progress owns readiness/service/closure; Output owns snapshot/result publication; Framework owns top-level lifecycle; CUDA-JS owns generic mechanisms.",
-  "authority": [
-    "AGENTS.md",
-    "agent_files/AGENTS.md",
-    "agent_files/AI_RULES.md",
-    "agent_files/DESIGN_ALIGNMENT_CARD.md",
-    "agent_files/general_foundation/LEGO_ARCHITECTURE.md",
-    "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
-    "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
-    "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
-    "docs/specs/SPEC-0006-search-session-control-and-observation.md",
-    "experiments/search-ir-composer-reference/src/session.mjs",
-    "experiments/search-ir-composer-reference/src/session-fixtures.mjs",
-    "https://github.com/iteathen/CUDA-MCGS/issues/181",
-    "https://github.com/iteathen/CUDA-MCGS/issues/36"
-  ],
+  "status": "ref_session_01_semantic_checkpoint_qualified_pending_final_tracker_matrix_review_authorization",
+  "objective": "Reconcile and qualify the documentation-inclusive REF-SESSION-01 head, perform one fresh complete-diff author review, and stop for repository-owner exact-head authorization. Do not start Stage or integrate Session before authorization.",
+  "ownership_boundary": "Session owns external command ordering/idempotence/provenance, Session identity/incarnation, initial-root and advance authority coordination, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite counters and Session cleanup. Injected search identity/incarnation and current root authority are public provenance inputs. Domain, Graph, Resource, Progress, Output, Framework, CUDA-JS and product semantics remain with their natural owners.",
   "state": {
     "protected_authority": "main@3ecac11e3576bd063760bc9572f79bea78acd031",
     "integrated_candidate_portfolio": "experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd",
-    "terminal_slice_issue": 184,
-    "terminal_slice_authorized_source_head": "547e4632aa9e3d4b3cd45db8056f215d6212de5c",
-    "terminal_slice_integration": "3766353d5fa264067e33ae6798c632ffd65494ef",
-    "terminal_slice_tree": "671ab5dc585d80bcd78e93311cb6e46119162d92",
-    "terminal_slice_transport_pr": 188,
-    "terminal_slice_review_record_pr": 187,
     "active_issue": 181,
     "active_branch": "ref/session-01",
     "review_pr": 189,
     "exact_session_base": "079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd",
-    "semantic_head_before_state_reconciliation": "c554e51423600f1c6bd7f52b5ee1fb6a2b7826fa",
-    "semantic_tree_before_state_reconciliation": "a9ae9970fe2b9e37a2223bb89c19942ba6d1e5bc"
+    "qualified_semantic_head": "9447146093aa993eb98d0de24db0e9a9a26fef11",
+    "qualified_semantic_tree": "9e28e0b67a37aba277155f992b489ad3dc891681"
   },
   "semantic_qualification": {
-    "pr_session_workflow": 33689816193,
-    "pr_terminal_workflow": 33689816259,
-    "pr_framework_workflow": 33689816270,
-    "pr_full_repository_workflow": null,
-    "full_repository_note": "The semantic head was qualified by the Session, Terminal Slice and Framework PR gates. The full repository/documentation matrix is required on the final documentation-inclusive exact head.",
+    "session_workflow": 33690701083,
     "composer_cases": "881/881",
-    "session_cases": "22/22",
+    "session_cases": "23/23",
     "direct_spec_0006_routes": "38/38",
     "terminal_session_absent_cases": "6/6",
-    "session_evidence": "9bca68e4cf19ea62742a606a75bab82c1146a832c6cf9ef57ef9cf0bd6a1c431",
-    "session_canonical_bytes": 16175,
-    "artifact": 9869565953,
-    "artifact_digest": "sha256:e32621394f322273146336f17e8233867d26634a4408a9b6f67cf27e55976c55"
+    "session_evidence": "eb6fb96a0d3e14908189ede8f065d0863b19065bc717ce0b3c351fe0e79fd3c7",
+    "session_canonical_bytes": 16913,
+    "artifact": 9869899487,
+    "artifact_digest": "sha256:af2d6595dcf6257e9dce933f22cb37d59d695d1c11c78f12cde9d54d2c38c1d4"
   },
   "preserved_red_evidence": [
-    {
-      "finding": "advance changed root incarnation instead of staying within the current incarnation",
-      "test_only_head": "dc5b2c363933476b9580c267ba58c6f79ee56966",
-      "workflow": 33682215069,
-      "artifact": 9866689484
-    },
-    {
-      "finding": "Session invented a runtime Output observation-publication contract instead of consuming Output-owned publication facts",
-      "test_only_head": "1341d784329c03b7f697fa62a5dc6fba1237cd4f",
-      "workflow": 33682862655,
-      "artifact": 9866932885
-    },
-    {
-      "finding": "Session completion published terminal provenance while an observation borrow remained live",
-      "test_only_head": "f7a78dda0e9be4bd52a8dd28db82710be059c5e2",
-      "workflow": 33683367794,
-      "artifact": 9867120969
-    },
-    {
-      "finding": "cancellation mutated prepared reroot state before command admission succeeded",
-      "test_only_head": "f4a8d21dd2c53dceba3ec1cdbdbf371f05598f94",
-      "workflow": 33684006773,
-      "artifact": 9867359227
-    },
-    {
-      "finding": "permanent Session CI could skip the runner and warn on missing evidence",
-      "test_only_head": "46d105821be7a49063f0bc91cce0ebe4acf570a7",
-      "workflow": 33684533233,
-      "artifact": null,
-      "note": "The gate intentionally failed before Session evidence generation; the workflow log is the durable red proof."
-    },
-    {
-      "finding": "malformed untrusted Session command identity could mutate counters before semantic validation",
-      "test_only_head": "d74ab8b9efd5df68e47d7099081c58f743dea12a",
-      "workflow": 33684937813,
-      "artifact": 9867706099,
-      "artifact_digest": "sha256:0aae20cbc391c87b86a82e11d1a1cd09027f0a37abf319da91516b11a4a62409"
-    },
-    {
-      "finding": "same-epoch foreign Output profile publication could be admitted as current Session observation provenance",
-      "test_only_head": "3f0e86f871795a5c26a7277210e2685f4264cb80",
-      "workflow": 33688752675,
-      "artifact": 9869167043,
-      "artifact_digest": "sha256:dfc5da2562a399e0550b6af7e139c1bc65e5b4508f87b0d93fe409e8c01e4c48"
-    },
-    {
-      "finding": "same-profile same-epoch foreign Session identity could be admitted as current Session observation provenance",
-      "test_only_head": "d569fd1cbb3374697751e1b9772bd43c1fbd845b",
-      "workflow": 33689574707,
-      "artifact": 9869474428,
-      "artifact_digest": "sha256:1ed1b6427c45afd57dc7f418ccee98297e42439c462aa7ca76ae3fcdb8783c7d"
-    }
+    {"finding":"advance changed root incarnation","head":"dc5b2c363933476b9580c267ba58c6f79ee56966","workflow":33682215069},
+    {"finding":"Session invented Output publication truth","head":"1341d784329c03b7f697fa62a5dc6fba1237cd4f","workflow":33682862655},
+    {"finding":"completion allowed live observation borrow","head":"f7a78dda0e9be4bd52a8dd28db82710be059c5e2","workflow":33683367794},
+    {"finding":"cancellation mutated reroot before admission","head":"f4a8d21dd2c53dceba3ec1cdbdbf371f05598f94","workflow":33684006773},
+    {"finding":"Session CI runner could be skipped","head":"46d105821be7a49063f0bc91cce0ebe4acf570a7","workflow":33684533233},
+    {"finding":"malformed command mutated before validation","head":"d74ab8b9efd5df68e47d7099081c58f743dea12a","workflow":33684937813},
+    {"finding":"foreign Output profile provenance accepted","head":"3f0e86f871795a5c26a7277210e2685f4264cb80","workflow":33688752675},
+    {"finding":"foreign Session provenance accepted","head":"d569fd1cbb3374697751e1b9772bd43c1fbd845b","workflow":33689574707},
+    {"finding":"stale advance authority accepted","head":"3a00cacb58cc244b0b1918e3d40dc18ea3448875","workflow":33690115667},
+    {"finding":"stale reroot authority accepted","head":"5e3864f854483d989815044ce7f5fd4aa36d4438","workflow":33690463348},
+    {"finding":"strict reroot authority exposed stale case-composition inputs","head":"9edc258b7aa3336a1c868c1d779baaecac0f3809","workflow":33690589366,"artifact":9869859986,"artifact_digest":"sha256:85c674dc29ecd44e22c5a834fba97f06f4fe75f225e2c41c9b2863bf65ad31d6"}
   ],
-  "assessment": {
-    "gap_classification": "construction and review-discovered provenance repair complete; final documentation-inclusive exact-head qualification/review/authorization gate remains",
-    "confirmed_behavior": [
-      "Session consumes the normalized Composer profile as structural authority.",
-      "Advance adopts only an already-ready successor and remains inside the current root incarnation.",
-      "Reroot is pre-admitted, prepare/abort/commit ordered and post-commit failure quarantined.",
-      "Attention changes no root/Graph/reclamation authority and requires no host progress loop.",
-      "Observation consumes Output-owned ready publication facts and binds them to the normalized Output profile plus the exact injected Session/search provenance while remaining read-only/bounded.",
-      "Completion waits for validity-relevant observation borrow quiescence.",
-      "Cancellation is idempotent and admission precedes reroot mutation.",
-      "Finite counters fail before alias/wrap and malformed commands validate before mutation.",
-      "The integrated terminal Session-absent slice remains zero-residue and green."
-    ],
-    "review_remediation": "Fresh whole-diff review first showed that same-epoch foreign top-level Output profiles were accepted; test-only head 3f0e86f... preserved that red. After the profile repair, the same review exposed that a same-profile/same-epoch publication from a foreign Session identity could still pass; test-only head d569fd1... preserved that red. Semantic head c554e514... now binds Output-owned publication facts to the normalized Output profile and exact injected Session/search provenance before Session mutation."
-  },
-  "deliverables": [
-    "Completed Session profile projection/export bound to the existing Composer normalizer/builders as sole structural authority.",
-    "Completed Session-owned behavioral oracle and focused case-support modules under experiments/search-semantics-reference/src.",
-    "Checked-in 22-case expected bank, runner, content-sensitive evidence identity and public script entrypoint covering all 38 direct SPEC-0006 engine-reference obligations.",
-    "Permanent non-bypassable Session reference CI gate coupled to Composer, sibling-owner profile projections and the terminal Session-absent regression.",
-    "Preserved meaningful red-before-green evidence for root-incarnation, Output-publication ownership/profile/execution provenance, borrow quiescence, cancellation admission, CI-gate integrity and pre-mutation command validation.",
-    "Draft PR #189 as the review record plus reconciled STATUS.md, next_step.yaml and experiment README/RESULTS."
-  ],
-  "validation": [
-    "Permanent Session workflow must pass on the exact final PR head with Composer 881/881, Session 22/22 and all 38 direct SPEC-0006 routes covered.",
-    "Terminal Session-absent reference must remain 6/6 with zero Session runtime/generated residue and no host progress loop.",
-    "Framework and terminal-slice coupled PR gates must remain green on the exact final PR head.",
-    "Full repository/documentation PR matrix, including governance verification, must pass on the exact final PR head.",
-    "Fresh complete-diff author review must find no blocking semantic, ownership, governance or cleanup issue on that exact head/base.",
-    "If the head or material base changes after review, repeat relevant exact-head qualification/review before repository-owner authorization or integration."
+  "confirmed_behavior": [
+    "Advance is only to a ready realized successor, remains in the root incarnation, and rejects stale authority without mutation.",
+    "Reroot requires exact current Session root authority provenance plus normalized admission/prepare/commit/abort ordering.",
+    "Observation consumes Output-owned ready publication facts and binds them to exact Output, Session and search provenance.",
+    "Completion waits for observation borrow quiescence; teardown follows normalized order.",
+    "Cancellation admission precedes mutation and is idempotent.",
+    "Finite counters fail before alias/wrap and command validation precedes mutation.",
+    "Session-absent terminal reference remains 6/6 and zero-residue."
   ],
   "current_gate": [
-    "PR #189 remains the draft review record against exact base experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd.",
-    "Require the permanent Session, Framework, terminal-slice and full documentation/repository PR gates to pass on the final documentation-inclusive PR head.",
-    "Perform a fresh complete-diff author review of that exact final head after all gates are green.",
-    "Stop for fresh repository-owner authorization for the exact reviewed head/base before integration.",
-    "If the connector cannot clear the reviewed draft bit, use only the accepted same-head/same-base replacement transport after authorization and verify expected-head plus integrated tree equality."
+    "Finish updating STATUS.md, next_step.yaml and the experiment README/RESULTS without changing semantic sources.",
+    "Freeze the documentation-inclusive head and compare it against qualified semantic head 94471460...; only tracker documentation may differ after that checkpoint.",
+    "Run/verify the full repository/documentation PR matrix on the documentation-inclusive exact head. Reuse unchanged content-sensitive Session evidence only with explicit source-identity proof.",
+    "Perform one fresh complete-diff author review of PR #189 against base 079e80a4... and reconcile PR discussion/cleanup state.",
+    "Stop for fresh repository-owner authorization for the exact reviewed head/base."
   ],
-  "blockers": [],
   "do_not": [
-    "Do not create another Session schema/normalizer or generic rootTransaction authority.",
-    "Do not duplicate Domain root validity, Graph occurrence/reclamation, owner reuse classification, Progress scheduling or Output payload/snapshot semantics.",
-    "Do not make observation, host polling, callbacks, filesystem/network work, or relaunch necessary for active internal progress.",
-    "Do not add C/C++, CUDA C/C++, .cu/.cuh, hand-written PTX, native addons/FFI, private CUDA-JS calls or Python.",
-    "Do not introduce chess/UCI/model/product semantics or claim native/performance/#122 acceptance.",
-    "Do not start #30 Stage or integrate #181 before exact-head repository-owner authorization and guarded readback."
+    "Do not weaken stale advance/reroot authority gates or any preserved falsifier.",
+    "Do not create another Session schema/normalizer or generic root transaction owner.",
+    "Do not duplicate Domain, Graph, Resource, Progress, Output or Framework authority.",
+    "Do not add native code, private CUDA-JS access, product semantics or a host progression loop.",
+    "Do not start #30 or merge #181 before exact-head authorization and guarded readback."
   ],
-  "next_after_authorized_integration": "#30 Stage, then #33 Channel evidence, #36 final reference integration and #122 protected atomic semantic acceptance."
+  "next_after_authorized_integration": "#30 REF-STAGE-01, then #33 REF-CHANNEL-EVIDENCE-01, #36 REF-INTEGRATE-01, and #122 protected atomic semantic acceptance."
 }
