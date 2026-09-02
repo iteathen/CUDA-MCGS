@@ -1,0 +1,113 @@
+{
+  "schema": "cuda-mcgs.reference-framework-lifecycle-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 727811,
+    "sha256": "a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe"
+  },
+  "expectedCases": [
+    "framework-profile-strict-normalization",
+    "framework-admission-complete",
+    "framework-initialization-reverse-rollback",
+    "framework-ignition-device-closure",
+    "framework-first-stop-cause",
+    "framework-completion-gated",
+    "framework-cancellation-idempotent",
+    "framework-terminal-borrow-defers-teardown",
+    "framework-teardown-complete",
+    "framework-status-catalog",
+    "framework-cleanup-disposition-complete",
+    "framework-partial-failure-preserves-evidence",
+    "framework-cleanup-readback-required",
+    "framework-retained-state-provenance",
+    "framework-persistence-absent-zero-residue",
+    "framework-persistence-selected-bounded",
+    "framework-persistence-restore-revalidates",
+    "framework-persistence-invalid-restore-quarantines"
+  ],
+  "profile": {
+    "schema": "cuda-mcgs.framework-lifecycle-profile/0.1.0",
+    "engineIdentity": "engine.synthetic-terminal-v1",
+    "ownerOrder": [
+      "domain",
+      "graph",
+      "policy",
+      "evaluator",
+      "resource",
+      "progress",
+      "output"
+    ],
+    "plans": {
+      "ownersReady": true,
+      "compoundResourcesReady": true,
+      "progressGraphReady": true,
+      "terminalOutputReserveReady": true,
+      "packageCompatible": true,
+      "cleanupReady": true
+    },
+    "deviceClosure": {
+      "resident": true,
+      "hostProgress": "none"
+    },
+    "persistence": {
+      "kind": "absent"
+    },
+    "cleanup": {
+      "diagnosticEvidence": "preserve-decisive",
+      "releaseOrder": "reverse-dependency"
+    }
+  },
+  "persistenceProfile": {
+    "schema": "cuda-mcgs.framework-lifecycle-profile/0.1.0",
+    "engineIdentity": "engine.synthetic-persistent-v1",
+    "ownerOrder": [
+      "domain",
+      "graph",
+      "policy",
+      "resource",
+      "progress",
+      "output"
+    ],
+    "plans": {
+      "ownersReady": true,
+      "compoundResourcesReady": true,
+      "progressGraphReady": true,
+      "terminalOutputReserveReady": true,
+      "packageCompatible": true,
+      "cleanupReady": true
+    },
+    "deviceClosure": {
+      "resident": true,
+      "hostProgress": "none"
+    },
+    "persistence": {
+      "kind": "selected",
+      "owner": "framework.persistence.synthetic",
+      "encoding": "canonical-v1",
+      "compatibilityIdentity": "persist.synthetic-v1",
+      "migration": "explicit",
+      "retention": "bounded",
+      "cleanup": "owner-declared",
+      "forbiddenDurableFields": [
+        "raw-pointer",
+        "cuda-handle",
+        "in-flight-work",
+        "active-borrow"
+      ]
+    },
+    "cleanup": {
+      "diagnosticEvidence": "preserve-decisive",
+      "releaseOrder": "reverse-dependency"
+    }
+  },
+  "validPersistenceSnapshot": {
+    "engineIdentity": "engine.synthetic-persistent-v1",
+    "compatibilityIdentity": "persist.synthetic-v1",
+    "resourcePlanValid": true,
+    "generationValid": true,
+    "staleReferenceProtection": true,
+    "durableAuthorityKinds": [
+      "canonical-state"
+    ]
+  }
+}
