@@ -1,0 +1,14 @@
+{
+  "schema": "cuda-mcgs.reference-stage-fixtures/0.1.0",
+  "directRequirementCount": 8,
+  "expectedCases": [
+    "stage-pending-releases-worker-lease-and-reservation"
+  ],
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-stage-profile-projection/0.2.0",
+    "profileIds": [
+      "extension.synthetic-capability-pair",
+      "extension.synthetic-proof-stage"
+    ]
+  }
+}
