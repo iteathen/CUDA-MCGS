@@ -197,6 +197,7 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     establish(invalidAdvanceSession, 'invalid-advance-base');
     const beforeInvalidAdvance = invalidAdvanceSession.snapshot();
     expectCode(() => invalidAdvanceSession.applyAdvance(advanceInput('invalid-advance', {
+      authority: beforeInvalidAdvance.authority,
       successor: { rootIdentity: '' },
     })), 'SESSION_REFERENCE_ID');
     assert.deepEqual(invalidAdvanceSession.snapshot(), beforeInvalidAdvance, 'invalid advance identity must be rejected before counters or authority mutate');
@@ -237,7 +238,7 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     const session = liveSession(sessionProjection);
     establish(session, 'advance-incarnation');
     const before = session.snapshot();
-    const advanced = session.applyAdvance(advanceInput('advance-incarnation-successor'));
+    const advanced = session.applyAdvance(advanceInput('advance-incarnation-successor', { authority: before.authority }));
     const after = session.snapshot();
 
     assert.equal(advanced.kind, 'advanced');
@@ -251,6 +252,25 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
       advanceGeneration: advanced.advanceGeneration,
     };
   }, ['SESSION-ROOT-', 'SESSION-EPOCH-', 'SESSION-LIFE-']);
+
+  defineCase('session-advance-rejects-stale-authority', () => {
+    const session = liveSession(sessionProjection);
+    establish(session, 'advance-stale-authority');
+    const original = session.snapshot();
+
+    expectCode(() => session.applyAdvance(advanceInput('advance-missing-authority')), 'SESSION_REFERENCE_ADVANCE_AUTHORITY');
+    assert.deepEqual(session.snapshot(), original, 'missing advance authority must not mutate Session state');
+
+    const first = session.applyAdvance(advanceInput('advance-current-authority', { authority: original.authority }));
+    assert.equal(first.kind, 'advanced');
+    const beforeStale = session.snapshot();
+    const stale = session.applyAdvance(advanceInput('advance-stale-authority-target', { authority: original.authority }));
+    assert.equal(stale.kind, 'rejected');
+    assert.equal(stale.code, 'session-command-stale');
+    assert.equal(stale.authorityUnchanged, true);
+    assert.deepEqual(session.snapshot(), beforeStale, 'stale advance authority must not mutate Session state');
+    return { missingAuthorityRejected: true, staleAuthorityRejected: true, currentAuthority: beforeStale.authority };
+  }, ['SESSION-ROOT-', 'SESSION-EPOCH-', 'SESSION-SEC-', 'SESSION-LIFE-']);
 
   defineCase('session-teardown-enforces-normalized-order', () => {
     const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
