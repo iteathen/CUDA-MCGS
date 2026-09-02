@@ -272,6 +272,48 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     return { missingAuthorityRejected: true, staleAuthorityRejected: true, currentAuthority: beforeStale.authority };
   }, ['SESSION-ROOT-', 'SESSION-EPOCH-', 'SESSION-SEC-', 'SESSION-LIFE-']);
 
+  defineCase('session-reroot-rejects-stale-authority', () => {
+    const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
+    const session = liveSession(sessionProjection);
+    establish(session, 'reroot-stale-authority');
+    const original = session.snapshot();
+    const transaction = profile.reroot.profile.transaction;
+    const candidate = (label) => ({
+      rootIdentity: `root.synthetic.${label}`,
+      occurrenceReference: { slot: `node-${label}`, generation: '1' },
+      domainReady: true,
+      graphReady: true,
+    });
+    const preparedOwners = transaction.prepareOrder.map((owner) => ({ owner, status: 'prepared' }));
+
+    expectCode(() => session.prepareReroot({
+      commandId: 'reroot-missing-authority',
+      authority: undefined,
+      transactionId: 'reroot-missing-authority',
+      candidateRoot: candidate('reroot-missing-authority'),
+      compoundAdmission: { approved: true, token: 'admission-reroot-missing-authority' },
+      ownerPreparations: preparedOwners,
+    }), 'SESSION_REFERENCE_REROOT_AUTHORITY');
+    assert.deepEqual(session.snapshot(), original, 'missing reroot authority must not mutate Session state');
+
+    const advanced = session.applyAdvance(advanceInput('reroot-current-authority', { authority: original.authority }));
+    assert.equal(advanced.kind, 'advanced');
+    const beforeStale = session.snapshot();
+    const stale = session.prepareReroot({
+      commandId: 'reroot-stale-authority',
+      authority: original.authority,
+      transactionId: 'reroot-stale-authority',
+      candidateRoot: candidate('reroot-stale-authority'),
+      compoundAdmission: { approved: true, token: 'admission-reroot-stale-authority' },
+      ownerPreparations: preparedOwners,
+    });
+    assert.equal(stale.kind, 'rejected');
+    assert.equal(stale.code, 'session-command-stale');
+    assert.equal(stale.authorityUnchanged, true);
+    assert.deepEqual(session.snapshot(), beforeStale, 'stale reroot authority must not publish a transaction or mutate Session state');
+    return { missingAuthorityRejected: true, staleAuthorityRejected: true, currentAuthority: beforeStale.authority };
+  }, ['SESSION-ROOT-', 'SESSION-EPOCH-', 'SESSION-SEC-', 'SESSION-LIFE-']);
+
   defineCase('session-teardown-enforces-normalized-order', () => {
     const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
     const session = liveSession(sessionProjection);
