@@ -93,6 +93,9 @@ export function createStageOracle({ profile } = {}) {
       if (!fact || fact.sourceOwner !== field.sourceOwner) fail('STAGE_REFERENCE_OWNER', `${field.id} must come from its declared source owner`);
       if (fact.stable !== true) fail('STAGE_REFERENCE_CHECKPOINT_UNSTABLE', `${field.id} is not stable at checkpoint invocation`);
     }
+    if (facts.size !== surface.baseContext.length) {
+      fail('STAGE_REFERENCE_OWNER_FACT_RESIDUE', 'Stage invocation must contain exactly the selected checkpoint owner facts');
+    }
     const expectedOrder = orders.get(surfaceId);
     if (!Array.isArray(input.capabilityOrder) || input.capabilityOrder.length !== expectedOrder.length || input.capabilityOrder.some((id, index) => id !== expectedOrder[index])) {
       fail('STAGE_REFERENCE_CAPABILITY_ORDER', `${surfaceId} capability execution differs from normalized deterministic order`);
@@ -109,6 +112,9 @@ export function createStageOracle({ profile } = {}) {
     }
     if (['pending', 'retry'].includes(outcome.kind) && (input.outcome.workerReleased !== true || input.outcome.mutableLeaseReleased !== true || input.outcome.reservationReleased !== true)) {
       fail('STAGE_REFERENCE_PENDING_RELEASE', 'pending/retry must release worker, mutable lease and reservation before publication');
+    }
+    if (input.outcome.workerReleased !== outcome.workerReleased || input.outcome.mutableLeaseReleased !== outcome.mutableLeaseReleased) {
+      fail('STAGE_REFERENCE_OUTCOME_RELEASE', 'published Stage outcome must match its normalized worker and mutable-lease release contract');
     }
 
     const itemIndex = state.items.findIndex(({ id }) => id === workItemId);
