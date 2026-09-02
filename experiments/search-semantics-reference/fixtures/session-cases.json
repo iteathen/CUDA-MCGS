@@ -26,7 +26,8 @@
     "session-reroot-rejects-stale-authority",
     "session-teardown-enforces-normalized-order",
     "session-completion-command-replay-idempotent",
-    "session-rejected-command-replay-is-stable"
+    "session-rejected-command-replay-is-stable",
+    "session-rejected-command-replay-ledger-is-bounded"
   ],
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-session-profile-projection/0.2.0",
