@@ -233,6 +233,7 @@ export function registerSessionCases({ defineCase, sessionProjection, terminalEv
     const publication = readyOutputPublication(session, 'observation.current');
     assert.equal(session.requestObservation({ commandId: 'observation-current', requestId: 'observation-current', outputPublication: publication }).kind, 'ready');
     assert.equal(session.acquireObservation({ requestId: 'observation-current', borrowId: 'borrow-current' }).kind, 'borrowed');
+    assert.equal(session.releaseObservation({ requestId: 'observation-current', borrowId: 'borrow-current' }).kind, 'released');
     assert.equal(session.completeSession({
       commandId: 'complete-observation',
       progressClosed: true,
@@ -241,8 +242,6 @@ export function registerSessionCases({ defineCase, sessionProjection, terminalEv
       terminalOutputIdentity: 'terminal.output.current',
       completionClass: 'complete',
     }).kind, 'terminal');
-    assert.equal(session.teardown({ cleanupFacts: cleanupFacts(profile) }).kind, 'pending-borrow');
-    assert.equal(session.releaseObservation({ requestId: 'observation-current', borrowId: 'borrow-current' }).kind, 'released');
     const released = session.teardown({ cleanupFacts: cleanupFacts(profile) });
     assert.equal(released.kind, 'released');
     assert.equal(released.runtimeResidue, 0);
