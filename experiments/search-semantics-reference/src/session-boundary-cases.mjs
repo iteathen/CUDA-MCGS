@@ -288,7 +288,7 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
 
     expectCode(() => session.prepareReroot({
       commandId: 'reroot-missing-authority',
-      authority: undefined,
+      authority: null,
       transactionId: 'reroot-missing-authority',
       candidateRoot: candidate('reroot-missing-authority'),
       compoundAdmission: { approved: true, token: 'admission-reroot-missing-authority' },
