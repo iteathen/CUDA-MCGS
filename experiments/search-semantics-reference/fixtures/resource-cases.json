@@ -1,0 +1,39 @@
+{
+  "schema": "cuda-mcgs.reference-resource-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 727811,
+    "sha256": "1285fa9abdf70ba6902aae0d0f86a14b9a23b2c56b2aa8f5168970c0003124f2"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-resource-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 983107,
+    "sha256": "a4a9f3710c1e06ea543af821308825d655bbc96527218a9100ecdb91d351d218"
+  },
+  "expectedCases": [
+    "resource-single-admission-atomicity",
+    "resource-compound-admission-rollback",
+    "resource-claim-publish-release",
+    "resource-retired-not-free",
+    "resource-quarantine-visible",
+    "resource-lease-epoch-and-generation-identity",
+    "resource-protected-reserves",
+    "resource-pressure-owner-separation",
+    "resource-pressure-recovery-reserve",
+    "resource-exhaustion-diagnostics",
+    "resource-first-exhaustion-cause",
+    "resource-counter-vs-capacity-exhaustion",
+    "resource-valid-partial-ready-only",
+    "resource-terminal-exhaustion-drain",
+    "resource-no-host-growth",
+    "resource-schedule-invariant-conservation",
+    "resource-lifecycle-admission-closure",
+    "resource-root-epoch-preservation",
+    "resource-root-update-reject-no-mutation",
+    "resource-teardown-ledger-zero-or-retained",
+    "resource-arbitrary-width-runtime-counters",
+    "resource-absent-owner-zero-residue",
+    "resource-oracle-sensitivity-conservation"
+  ]
+}
