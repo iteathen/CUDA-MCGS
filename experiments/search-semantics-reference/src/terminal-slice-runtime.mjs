@@ -468,7 +468,7 @@ function finishTerminalSlice({
   assert.equal(domainCleanup.retained.domainMetadataEntries, 0);
   assert.equal(domainCleanup.retained.admittedRangeReferences, 0);
 
-  const stoppedFramework = recordStopCause(setup.frameworkRunning, progressClosure.firstStopCause.cause);
+  const stoppedFramework = recordStopCause(setup.frameworkRunning, 'policy-stop');
   const frameworkTerminal = publishFrameworkCompletion(stoppedFramework, completionFacts(frameworkProfile, progressClosure, {
     policy: { disposition: policyTerminal.kind === 'terminal' ? 'ready' : 'pending' },
     evaluator: { disposition: evaluatorSelected && evaluatorCleanup.runtimeResidue === 0 ? 'ready' : 'terminally-absent' },
