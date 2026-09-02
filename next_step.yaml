@@ -1,8 +1,8 @@
 {
-  "schema_version": 93,
+  "schema_version": 94,
   "updated": "2026-09-02",
-  "status": "ref_session_01_semantic_qualified_pending_final_pr_review_and_authorization",
-  "objective": "Reconcile, exact-head qualify and review the completed REF-SESSION-01 candidate without changing protected authority. The next write after qualification/review is repository-owner authorization or a blocker repair, not Stage construction or integration without authorization.",
+  "status": "ref_session_01_review_remediation_qualified_pending_final_exact_head_review_and_authorization",
+  "objective": "Complete the final documentation-inclusive qualification and author review of REF-SESSION-01 after the review-discovered Output-provenance repair. The next semantic action after a clean exact-head review is repository-owner authorization or another blocker repair, not Stage construction or integration without authorization.",
   "ownership_boundary": "Session owns external command ordering/idempotence/provenance, initial-root authority coordination, advance authority publication/adoption provenance, reroot transaction coordination, attention generation/application provenance, bounded observation request/acquire/release coordination, Session cancellation/completion, finite Session counters and Session cleanup. Domain owns root validity; Graph owns occurrences/storage/reclamation; source owners own reuse/stale meaning; Resource owns finite admission/accounting; Progress owns readiness/service/closure; Output owns snapshot/result publication; Framework owns top-level lifecycle; CUDA-JS owns generic mechanisms.",
   "authority": [
     "AGENTS.md",
@@ -32,22 +32,23 @@
     "active_branch": "ref/session-01",
     "review_pr": 189,
     "exact_session_base": "079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd",
-    "semantic_head_before_state_reconciliation": "2ed5bccd04ed95e96fc8bc2a5e957daef339db2e",
-    "semantic_tree_before_state_reconciliation": "3b57fb0998e8f7b271c58a90e2f5df3b5fa7798c"
+    "semantic_head_before_state_reconciliation": "910f2eeb6ad665f7690ad4b05e9a2dcbfc55fd2c",
+    "semantic_tree_before_state_reconciliation": "d53a43950f5efbed6f28d3eb7140d5aeb84f1b08"
   },
   "semantic_qualification": {
-    "workflow": 33685204052,
+    "push_workflow": 33688951561,
+    "pr_session_workflow": 33688958267,
+    "pr_terminal_workflow": 33688958229,
+    "pr_framework_workflow": 33688958245,
+    "pr_full_repository_workflow": 33688958297,
     "composer_cases": "881/881",
-    "session_cases": "20/20",
+    "session_cases": "21/21",
     "direct_spec_0006_routes": "38/38",
     "terminal_session_absent_cases": "6/6",
-    "terminal_session_absent_evidence": "6bf37be20b02051f30aafec4c50c1d3262af28b41bf537f8825679fa5667e4c3",
-    "session_evidence": "dc737cdf719e51298271209f63941f7c1e8af6426466a1f4dc7fdb7bc72018f3",
-    "session_canonical_bytes": 8647,
-    "composer_evidence": "a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe",
-    "composer_canonical_bytes": 727811,
-    "artifact": 9867807703,
-    "artifact_digest": "sha256:03af6fbf452426726b5d1c08a80b952fb5f2f576578391db55da1edbd7fa74e6"
+    "session_evidence": "a6e5247464ecee9860aa6321bcd8eca4891078d70d27450c35e082896ee2e3bd",
+    "session_canonical_bytes": 15716,
+    "artifact": 9869244684,
+    "artifact_digest": "sha256:af7c0b8ccf8fad78346016eaefdf495816d1f70ae5e77cb55b0a04be3f50c2e6"
   },
   "preserved_red_evidence": [
     {
@@ -87,33 +88,40 @@
       "workflow": 33684937813,
       "artifact": 9867706099,
       "artifact_digest": "sha256:0aae20cbc391c87b86a82e11d1a1cd09027f0a37abf319da91516b11a4a62409"
+    },
+    {
+      "finding": "same-epoch foreign Output profile publication could be admitted as current Session observation provenance",
+      "test_only_head": "3f0e86f871795a5c26a7277210e2685f4264cb80",
+      "workflow": 33688752675,
+      "artifact": 9869167043,
+      "artifact_digest": "sha256:dfc5da2562a399e0550b6af7e139c1bc65e5b4508f87b0d93fe409e8c01e4c48"
     }
   ],
   "assessment": {
-    "gap_classification": "construction complete; final exact-head qualification/review/authorization gate remains",
+    "gap_classification": "construction and review-discovered provenance repair complete; final documentation-inclusive exact-head qualification/review/authorization gate remains",
     "confirmed_behavior": [
       "Session consumes the normalized Composer profile as structural authority.",
       "Advance adopts only an already-ready successor and remains inside the current root incarnation.",
       "Reroot is pre-admitted, prepare/abort/commit ordered and post-commit failure quarantined.",
       "Attention changes no root/Graph/reclamation authority and requires no host progress loop.",
-      "Observation consumes Output-owned ready publication provenance and remains read-only/bounded.",
+      "Observation consumes Output-owned ready publication facts, binds them to the normalized Output profile, and remains read-only/bounded.",
       "Completion waits for validity-relevant observation borrow quiescence.",
       "Cancellation is idempotent and admission precedes reroot mutation.",
       "Finite counters fail before alias/wrap and malformed commands validate before mutation.",
-      "The integrated terminal Session-absent slice remains zero-residue and fully green."
+      "The integrated terminal Session-absent slice remains zero-residue and green."
     ],
-    "whole_diff_result_at_semantic_head": "No blocking semantic or ownership finding remains in the 29-commit diff from exact base 079e80a4... to semantic head 2ed5bccd.... The diff is confined to Session projection/reference/gate files."
+    "review_remediation": "Fresh review found that matching only the selected observation profile and root epoch allowed a foreign top-level Output profile publication to pass. Test-only head 3f0e86f... preserved the red; 910f2eeb... repaired the owner boundary by validating Output-owned profile/publication provenance before Session state mutation."
   },
   "deliverables": [
     "Completed Session profile projection/export bound to the existing Composer normalizer/builders as sole structural authority.",
     "Completed Session-owned behavioral oracle and focused case-support modules under experiments/search-semantics-reference/src.",
-    "Checked-in 20-case expected bank, runner, content-sensitive evidence identity and public script entrypoint covering all 38 direct SPEC-0006 engine-reference obligations.",
+    "Checked-in 21-case expected bank, runner, content-sensitive evidence identity and public script entrypoint covering all 38 direct SPEC-0006 engine-reference obligations.",
     "Permanent non-bypassable Session reference CI gate coupled to Composer, sibling-owner profile projections and the terminal Session-absent regression.",
-    "Preserved meaningful red-before-green evidence for root-incarnation, Output-publication ownership, borrow quiescence, cancellation admission, CI-gate integrity and pre-mutation command validation.",
-    "Draft PR #189 as the exact-head review record plus reconciled STATUS.md, next_step.yaml and experiment README/RESULTS."
+    "Preserved meaningful red-before-green evidence for root-incarnation, Output-publication ownership/provenance, borrow quiescence, cancellation admission, CI-gate integrity and pre-mutation command validation.",
+    "Draft PR #189 as the review record plus reconciled STATUS.md, next_step.yaml and experiment README/RESULTS."
   ],
   "validation": [
-    "Permanent Session workflow must pass on the exact final PR head with Composer 881/881, Session 20/20 and all 38 direct SPEC-0006 routes covered.",
+    "Permanent Session workflow must pass on the exact final PR head with Composer 881/881, Session 21/21 and all 38 direct SPEC-0006 routes covered.",
     "Terminal Session-absent reference must remain 6/6 with zero Session runtime/generated residue and no host progress loop.",
     "Framework and terminal-slice coupled PR gates must remain green on the exact final PR head.",
     "Full repository/documentation PR matrix, including governance verification, must pass on the exact final PR head.",
@@ -121,8 +129,8 @@
     "If the head or material base changes after review, repeat relevant exact-head qualification/review before repository-owner authorization or integration."
   ],
   "current_gate": [
-    "PR #189 is the draft review record against exact base experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd.",
-    "Require the permanent Session, Framework, terminal-slice and full documentation/repository PR gates to pass on the current documentation-inclusive PR head.",
+    "PR #189 remains the draft review record against exact base experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd.",
+    "Require the permanent Session, Framework, terminal-slice and full documentation/repository PR gates to pass on the final documentation-inclusive PR head.",
     "Perform a fresh complete-diff author review of that exact final head after all gates are green.",
     "Stop for fresh repository-owner authorization for the exact reviewed head/base before integration.",
     "If the connector cannot clear the reviewed draft bit, use only the accepted same-head/same-base replacement transport after authorization and verify expected-head plus integrated tree equality."
