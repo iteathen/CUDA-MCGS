@@ -1,0 +1,24 @@
+{
+  "schema": "cuda-mcgs.reference-terminal-slice-fixtures/0.1.0",
+  "expectedCases": [
+    "terminal-slice-must-drain-gates-output"
+  ],
+  "profileProjection": {
+    "progress": {
+      "schema": "cuda-mcgs.search-ir-composer-progress-profile-projection/0.2.0",
+      "profileIds": [
+        "progress.synthetic-evaluator-absent",
+        "progress.synthetic-evaluator-workspace",
+        "progress.synthetic-live-session"
+      ]
+    },
+    "output": {
+      "schema": "cuda-mcgs.search-ir-composer-output-profile-projection/0.2.0",
+      "profileIds": [
+        "output.synthetic-evaluator-absent",
+        "output.synthetic-evaluator-workspace",
+        "output.synthetic-live-session"
+      ]
+    }
+  }
+}
