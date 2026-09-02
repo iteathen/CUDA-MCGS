@@ -1,9 +1,24 @@
 {
-  "schema_version": 96,
+  "schema_version": 97,
   "updated": "2026-09-02",
-  "status": "ref_session_01_semantic_checkpoint_qualified_pending_final_tracker_matrix_review_authorization",
-  "objective": "Reconcile and qualify the documentation-inclusive REF-SESSION-01 head, perform one fresh complete-diff author review, and stop for repository-owner exact-head authorization. Do not start Stage or integrate Session before authorization.",
-  "ownership_boundary": "Session owns external command ordering/idempotence/provenance, Session identity/incarnation, initial-root and advance authority coordination, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite counters and Session cleanup. Injected search identity/incarnation and current root authority are public provenance inputs. Domain, Graph, Resource, Progress, Output, Framework, CUDA-JS and product semantics remain with their natural owners.",
+  "status": "ref_session_01_semantic_head_qualified_pending_final_docs_matrix_review_authorization",
+  "objective": "Qualify the documentation-inclusive REF-SESSION-01 head, complete one fresh whole-diff author review, and stop for repository-owner exact-head authorization. Do not start Stage or integrate Session before authorization.",
+  "ownership_boundary": "Session owns external command ordering/replay/idempotence/provenance, Session identity/incarnation, initial-root and advance authority coordination, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite counters and Session cleanup. Injected search identity/incarnation and current root authority are public provenance inputs. Domain, Graph, Resource, Progress, Output, Framework, CUDA-JS and product semantics remain with their natural owners.",
+  "authority": [
+    "AGENTS.md",
+    "agent_files/AGENTS.md",
+    "agent_files/AI_RULES.md",
+    "agent_files/DESIGN_ALIGNMENT_CARD.md",
+    "agent_files/general_foundation/PRINCIPLES.md",
+    "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
+    "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
+    "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
+    "docs/specs/SPEC-0006-search-session-control-and-observation.md",
+    "experiments/search-ir-composer-reference/src/session.mjs",
+    "experiments/search-ir-composer-reference/src/session-fixtures.mjs",
+    "https://github.com/iteathen/CUDA-MCGS/issues/181",
+    "https://github.com/iteathen/CUDA-MCGS/pull/189"
+  ],
   "state": {
     "protected_authority": "main@3ecac11e3576bd063760bc9572f79bea78acd031",
     "integrated_candidate_portfolio": "experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd",
@@ -11,19 +26,24 @@
     "active_branch": "ref/session-01",
     "review_pr": 189,
     "exact_session_base": "079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd",
-    "qualified_semantic_head": "9447146093aa993eb98d0de24db0e9a9a26fef11",
-    "qualified_semantic_tree": "9e28e0b67a37aba277155f992b489ad3dc891681"
+    "qualified_semantic_head": "f4dcb8a71230d7edf4f829a5e0ef13ab936a3288",
+    "qualified_semantic_tree": "c7d57adf8473b2f137db3103c82f1faacecce67c"
   },
   "semantic_qualification": {
-    "session_workflow": 33690701083,
+    "session_workflow": 33691674391,
+    "terminal_workflow": 33691674421,
+    "framework_workflow": 33691674427,
+    "full_repository_workflow": 33691674411,
+    "full_repository_conclusion": "failure-governance-only",
+    "full_repository_failure": "next_step.yaml omitted required governance keys authority, blockers, deliverables, validation; no semantic or test job failed",
     "composer_cases": "881/881",
-    "session_cases": "23/23",
+    "session_cases": "24/24",
     "direct_spec_0006_routes": "38/38",
     "terminal_session_absent_cases": "6/6",
-    "session_evidence": "eb6fb96a0d3e14908189ede8f065d0863b19065bc717ce0b3c351fe0e79fd3c7",
-    "session_canonical_bytes": 16913,
-    "artifact": 9869899487,
-    "artifact_digest": "sha256:af2d6595dcf6257e9dce933f22cb37d59d695d1c11c78f12cde9d54d2c38c1d4"
+    "session_evidence": "f2d39c16ac451a73a0c8ad333a26d126c6c2f5766bcd74f588d95f32b1492ef9",
+    "session_canonical_bytes": 18850,
+    "artifact": 9870332727,
+    "artifact_digest": "sha256:38e549d35e61b3fec3abb53428a49c48c27df17c17a06ebc91837480a1578a0d"
   },
   "preserved_red_evidence": [
     {"finding":"advance changed root incarnation","head":"dc5b2c363933476b9580c267ba58c6f79ee56966","workflow":33682215069},
@@ -36,26 +56,45 @@
     {"finding":"foreign Session provenance accepted","head":"d569fd1cbb3374697751e1b9772bd43c1fbd845b","workflow":33689574707},
     {"finding":"stale advance authority accepted","head":"3a00cacb58cc244b0b1918e3d40dc18ea3448875","workflow":33690115667},
     {"finding":"stale reroot authority accepted","head":"5e3864f854483d989815044ce7f5fd4aa36d4438","workflow":33690463348},
-    {"finding":"strict reroot authority exposed stale case-composition inputs","head":"9edc258b7aa3336a1c868c1d779baaecac0f3809","workflow":33690589366,"artifact":9869859986,"artifact_digest":"sha256:85c674dc29ecd44e22c5a834fba97f06f4fe75f225e2c41c9b2863bf65ad31d6"}
+    {"finding":"strict reroot authority exposed stale case-composition inputs","head":"9edc258b7aa3336a1c868c1d779baaecac0f3809","workflow":33690589366,"artifact":9869859986},
+    {"finding":"invalid reroot authority leaked harness canonicalization instead of typed Session rejection","head":"2a6fe270d44a1cd91dd72de13b066200988f2c92","workflow":33690963232,"artifact":9869999590},
+    {"finding":"changed replay after typed command rejection was accepted","head":"31dd36d918c062750361b5ed9fe227854e2c9280","workflow":33691410709}
   ],
   "confirmed_behavior": [
-    "Advance is only to a ready realized successor, remains in the root incarnation, and rejects stale authority without mutation.",
-    "Reroot requires exact current Session root authority provenance plus normalized admission/prepare/commit/abort ordering.",
+    "Advance is only to a ready realized successor, remains in the root incarnation, rejects stale authority without mutation, and reserves command identity for typed rejection replay.",
+    "Reroot requires exact current Session root authority provenance plus normalized admission/prepare/commit/abort ordering and typed authority validation before replay canonicalization.",
+    "All typed terminal command rejections now bind command identity so exact replay returns the original outcome and changed replay is rejected.",
     "Observation consumes Output-owned ready publication facts and binds them to exact Output, Session and search provenance.",
     "Completion waits for observation borrow quiescence; teardown follows normalized order.",
     "Cancellation admission precedes mutation and is idempotent.",
     "Finite counters fail before alias/wrap and command validation precedes mutation.",
     "Session-absent terminal reference remains 6/6 and zero-residue."
   ],
+  "deliverables": [
+    "Session profile projection/export consuming the existing Composer normalizer as structural authority.",
+    "Owner-local Session oracle, case support, permanent expected case bank and runner under experiments/search-semantics-reference.",
+    "Permanent Session CI gate coupled to Composer projections, Session advance/reroot/teardown boundary checks and terminal Session-absent regression.",
+    "24-case Session behavioral reference covering all 38 direct SPEC-0006 ENGINE-REFERENCE obligations.",
+    "Preserved red-before-green evidence for provenance, stale authority, replay, borrow, cancellation, validation and CI-gate defects.",
+    "PR #189 as the author-review record plus reconciled STATUS.md, next_step.yaml and experiment README/RESULTS."
+  ],
+  "validation": [
+    "Session workflow must remain 24/24 with Composer 881/881, terminal Session-absent 6/6 and all 38 direct SPEC-0006 routes on the qualified semantic head.",
+    "Final documentation-inclusive head must pass the full repository/documentation PR matrix, including governance verification.",
+    "Final head must be compared against semantic head f4dcb8a7... to prove only tracker/current-state documents changed after semantic qualification.",
+    "Fresh complete-diff author review of PR #189 must find no blocking semantic, ownership, governance, evidence or cleanup defect.",
+    "Any material head or base change after review invalidates affected review/authorization and requires requalification."
+  ],
+  "blockers": [],
   "current_gate": [
-    "Finish updating STATUS.md, next_step.yaml and the experiment README/RESULTS without changing semantic sources.",
-    "Freeze the documentation-inclusive head and compare it against qualified semantic head 94471460...; only tracker documentation may differ after that checkpoint.",
-    "Run/verify the full repository/documentation PR matrix on the documentation-inclusive exact head. Reuse unchanged content-sensitive Session evidence only with explicit source-identity proof.",
+    "Reconcile STATUS.md and experiment README/RESULTS to semantic head f4dcb8a7... without changing semantic sources.",
+    "Freeze the resulting documentation-inclusive head and compare it to f4dcb8a7...; only tracker/current-state files may differ.",
+    "Verify the full repository/documentation PR matrix passes on that exact final head.",
     "Perform one fresh complete-diff author review of PR #189 against base 079e80a4... and reconcile PR discussion/cleanup state.",
     "Stop for fresh repository-owner authorization for the exact reviewed head/base."
   ],
   "do_not": [
-    "Do not weaken stale advance/reroot authority gates or any preserved falsifier.",
+    "Do not weaken stale advance/reroot authority or changed-replay gates.",
     "Do not create another Session schema/normalizer or generic root transaction owner.",
     "Do not duplicate Domain, Graph, Resource, Progress, Output or Framework authority.",
     "Do not add native code, private CUDA-JS access, product semantics or a host progression loop.",
