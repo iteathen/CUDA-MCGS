@@ -16,11 +16,18 @@ import {
 export function registerProgressStopLifecycleCases({ defineCase, projection }) {
   defineCase('progress-first-stop-cause', () => {
     const profile = getProgressProfile(projection, 'progress.synthetic-evaluator-absent');
+    const abandonClass = profile.workClasses.find(({ stopDisposition }) => stopDisposition === 'abandon');
+    assert(abandonClass, 'current normalized Progress profile must expose an ordinary abandon disposition');
+    assert(abandonClass.terminalStates.includes('abandoned'), 'abandon work class must admit the Composer-owned abandoned terminal state');
     const oracle = activeProgressOracle(profile);
+    const abandonInput = admitAndReady(oracle, profile, abandonClass, 'stop-abandon');
     assert.deepEqual(oracle.requestStop({ cause: 'progress-internal-failure' }).firstCause, { cause: 'progress-internal-failure' });
+    const abandoned = oracle.observeProgress().work.find(({ workId, incarnation }) => workId === abandonInput.workId && incarnation === abandonInput.incarnation);
+    assert(abandoned, 'abandon work must remain visible in terminal accounting');
+    assert.equal(abandoned.state, 'abandoned', 'Progress must consume normalized abandon disposition as the accepted abandoned terminal state');
     assert.deepEqual(oracle.requestStop({ cause: 'progress-deadlock' }).firstCause, { cause: 'progress-internal-failure' });
     assert.deepEqual(oracle.beginDraining().firstCause, { cause: 'progress-internal-failure' });
-    return { immutableFirstCause: true, lifecycle: oracle.observeProgress().lifecycle };
+    return { immutableFirstCause: true, abandonTerminalState: abandoned.state, lifecycle: oracle.observeProgress().lifecycle };
   }, ['PROGRESS-STOP-001']);
 
   defineCase('progress-stale-epoch-isolation', () => {
