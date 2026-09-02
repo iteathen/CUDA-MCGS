@@ -351,6 +351,28 @@ jobs:
             experiments/search-ir-composer-reference/build/progress-profiles.json
             experiments/search-semantics-reference/build/progress-evidence.json
 
+  output-reference:
+    name: Output reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Composer and Output reference
+        # Output owns terminal envelope/capture, optional observation, consistency, publication/borrow, lifecycle and cleanup semantics only. Policy payload meaning, Resource capacity, Progress closure/scheduling, Session control and native/CUDA realization remain separate owners.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-output-profiles.mjs
+          node scripts/run-output-reference.mjs
+      - name: Retain Output evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: output-reference
+          path: |
+            experiments/search-ir-composer-reference/build/output-profiles.json
+            experiments/search-semantics-reference/build/output-evidence.json
+
   verify:
     name: verify
     if: ${{ always() }}
@@ -369,6 +391,7 @@ jobs:
       - evaluator-reference
       - resource-reference
       - progress-reference
+      - output-reference
     runs-on: ubuntu-latest
     steps:
       - name: Require every merge-gate job to succeed
@@ -387,9 +410,10 @@ jobs:
           EVALUATOR_RESULT: ${{ needs.evaluator-reference.result }}
           RESOURCE_RESULT: ${{ needs.resource-reference.result }}
           PROGRESS_RESULT: ${{ needs.progress-reference.result }}
+          OUTPUT_RESULT: ${{ needs.output-reference.result }}
         run: |
           set -euo pipefail
-          names=(GOVERNANCE SEARCH_IR GRAPH_NODE GRAPH_EDGE GRAPH_REF GRAPH_PATH GRAPH_ROOT GRAPH_RECLAIM GRAPH_ADVANCE_OCCURRENCE GRAPH_CLEANUP POLICY EVALUATOR RESOURCE PROGRESS)
+          names=(GOVERNANCE SEARCH_IR GRAPH_NODE GRAPH_EDGE GRAPH_REF GRAPH_PATH GRAPH_ROOT GRAPH_RECLAIM GRAPH_ADVANCE_OCCURRENCE GRAPH_CLEANUP POLICY EVALUATOR RESOURCE PROGRESS OUTPUT)
           results=(
             "$GOVERNANCE_RESULT"
             "$SEARCH_IR_RESULT"
@@ -405,6 +429,7 @@ jobs:
             "$EVALUATOR_RESULT"
             "$RESOURCE_RESULT"
             "$PROGRESS_RESULT"
+            "$OUTPUT_RESULT"
           )
           failed=0
           for index in "${!results[@]}"; do

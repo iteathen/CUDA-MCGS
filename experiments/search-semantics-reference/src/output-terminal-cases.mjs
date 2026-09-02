@@ -2,12 +2,12 @@ import assert from 'node:assert/strict';
 
 import {
   admitLive,
+  captureAndPublishLive,
   classifyTerminal,
   expectCode,
   factsForFields,
   getOutputProfile,
   initializedOutputOracle,
-  liveFields,
   publishTerminal,
   terminalFields,
 } from './output-case-support.mjs';
@@ -26,11 +26,11 @@ export function registerOutputTerminalCases({ defineCase, projection }) {
     const profile = getOutputProfile(projection, 'output.synthetic-evaluator-absent');
     assert.equal(terminalFields(profile).length, 0);
     const oracle = initializedOutputOracle(profile);
-    const published = publishTerminal(oracle, profile, { completedWork: '11' });
+    const published = publishTerminal(oracle, profile, { completedWork: { count: '11', unit: 'work-items' } });
     assert.equal(published.kind, 'ready');
     assert.deepEqual(published.payload, []);
     assert.equal(published.envelope.completionClass, 'complete');
-    assert.equal(published.envelope.completedWork, '11');
+    assert.deepEqual(published.envelope.completedWork, { count: '11', unit: 'work-items' });
     return published;
   }, ['OUTPUT-TERMINAL-001', 'OUTPUT-TERMINAL-002', 'OUTPUT-TERMINAL-010', 'OUTPUT-SNAPSHOT-001']);
 
@@ -52,36 +52,90 @@ export function registerOutputTerminalCases({ defineCase, projection }) {
     const published = partialOracle.publishOutput({ slotId: 'terminal-0' });
     assert.equal(published.envelope.completionClass, 'valid-partial');
     assert(!published.payload.some(({ fieldId }) => fieldId === fields[0].id));
-    return { completeRejectedUnready: true, partialPayloadFields: published.payload.length };
-  }, ['OUTPUT-TERMINAL-004', 'OUTPUT-TERMINAL-005', 'OUTPUT-TERMINAL-006', 'OUTPUT-LIFE-002']);
+
+    const mustCompleteProfile = getOutputProfile(projection, 'output.synthetic-evaluator-workspace');
+    const mustComplete = initializedOutputOracle(mustCompleteProfile);
+    classifyTerminal(mustComplete, { completionClass: 'complete' });
+    mustComplete.captureTerminalPayload({ facts: factsForFields(terminalFields(mustCompleteProfile)) });
+    assert.deepEqual(mustComplete.teardown(), { kind: 'pending-terminal-publication', state: 'publishing' });
+    assert.equal(mustComplete.publishOutput({ slotId: 'terminal-0' }).kind, 'ready');
+    assert.equal(mustComplete.teardown().kind, 'terminal-retained');
+
+    return {
+      completeRejectedUnready: true,
+      partialPayloadFields: published.payload.length,
+      terminalMustCompleteAcrossTeardown: true,
+    };
+  }, ['OUTPUT-TERMINAL-004', 'OUTPUT-TERMINAL-005', 'OUTPUT-TERMINAL-006', 'OUTPUT-LIFE-002', 'OUTPUT-LIFE-006']);
 
   defineCase('output-first-stop-cause', () => {
     const profile = getOutputProfile(projection, 'output.synthetic-evaluator-absent');
+    const laterDispositions = [{ owner: 'resource', code: 'late-drain-pressure' }];
+
     const oracle = initializedOutputOracle(profile);
     const first = classifyTerminal(oracle, {
       completionClass: 'valid-partial',
       firstStopCause: 'budget-exhausted',
-      laterDispositions: [{ owner: 'resource', code: 'late-drain-pressure' }],
+      laterDispositions,
     });
     assert.equal(first.firstStopCause, 'budget-exhausted');
-    expectCode(() => classifyTerminal(oracle, { completionClass: 'valid-partial', firstStopCause: 'late-drain-failure' }), 'OUTPUT_REFERENCE_FIRST_CAUSE');
+    expectCode(() => classifyTerminal(oracle, {
+      completionClass: 'valid-partial',
+      firstStopCause: 'late-drain-failure',
+      laterDispositions,
+    }), 'OUTPUT_REFERENCE_FIRST_CAUSE');
+    const retry = classifyTerminal(oracle, {
+      completionClass: 'valid-partial',
+      firstStopCause: 'budget-exhausted',
+      laterDispositions,
+    });
+    assert.equal(retry.kind, 'already-classified');
     oracle.captureTerminalPayload({ facts: [] });
     const published = oracle.publishOutput({ slotId: 'terminal-0' });
     assert.equal(published.envelope.firstStopCause, 'budget-exhausted');
-    assert.deepEqual(published.envelope.laterDispositions, [{ owner: 'resource', code: 'late-drain-pressure' }]);
-    return { immutableFirstCause: published.envelope.firstStopCause };
-  }, ['OUTPUT-TERMINAL-003', 'OUTPUT-TERMINAL-007']);
+    assert.equal(published.envelope.completionClass, 'valid-partial');
+    assert.deepEqual(published.envelope.laterDispositions, laterDispositions);
+
+    const conflictOracle = initializedOutputOracle(profile);
+    classifyTerminal(conflictOracle, {
+      completionClass: 'valid-partial',
+      firstStopCause: 'budget-exhausted',
+      laterDispositions,
+    });
+    expectCode(() => classifyTerminal(conflictOracle, {
+      completionClass: 'complete',
+      firstStopCause: 'budget-exhausted',
+      laterDispositions,
+    }), 'OUTPUT_REFERENCE_TERMINAL_CONFLICT');
+    const conflictCleanup = conflictOracle.cleanupReport();
+    assert(conflictCleanup.some(({ id, disposition }) => id === 'terminal-slot' && disposition === 'quarantine'));
+    assert(conflictCleanup.some(({ id, disposition }) => id === 'terminal-payload' && disposition === 'quarantine'));
+
+    return {
+      immutableFirstCause: published.envelope.firstStopCause,
+      immutableCompletionClass: published.envelope.completionClass,
+      conflictingClassificationQuarantined: true,
+    };
+  }, ['OUTPUT-TERMINAL-003', 'OUTPUT-TERMINAL-007', 'OUTPUT-TERMINAL-008', 'OUTPUT-CLEANUP-002']);
 
   defineCase('output-no-valid-result-envelope', () => {
     const profile = getOutputProfile(projection, 'output.synthetic-evaluator-workspace');
-    const oracle = initializedOutputOracle(profile);
-    classifyTerminal(oracle, { completionClass: 'no-valid-result', firstStopCause: 'owner-failure', resourceStatus: { kind: 'conserved-after-failure' } });
-    oracle.captureTerminalPayload({ facts: factsForFields(terminalFields(profile)) });
-    const published = oracle.publishOutput({ slotId: 'terminal-0' });
+    const noResult = initializedOutputOracle(profile);
+    classifyTerminal(noResult, { completionClass: 'no-valid-result', firstStopCause: 'owner-failure', resourceStatus: { kind: 'conserved-after-failure' } });
+    noResult.captureTerminalPayload({ facts: factsForFields(terminalFields(profile)) });
+    const published = noResult.publishOutput({ slotId: 'terminal-0' });
     assert.equal(published.envelope.completionClass, 'no-valid-result');
     assert.equal(published.envelope.firstStopCause, 'owner-failure');
     assert.deepEqual(published.payload, []);
-    return published;
+
+    const failed = initializedOutputOracle(profile);
+    classifyTerminal(failed, { completionClass: 'failed', firstStopCause: 'output-internal-failure', resourceStatus: { kind: 'conserved-after-failure' } });
+    failed.captureTerminalPayload({ facts: factsForFields(terminalFields(profile)) });
+    const failedPublished = failed.publishOutput({ slotId: 'terminal-0' });
+    assert.equal(failedPublished.envelope.completionClass, 'failed');
+    assert.equal(failedPublished.envelope.firstStopCause, 'output-internal-failure');
+    assert.deepEqual(failedPublished.payload, []);
+    return { noValidResult: published.envelope.completionClass, failed: failedPublished.envelope.completionClass };
   }, ['OUTPUT-TERMINAL-004', 'OUTPUT-TERMINAL-005']);
 
   defineCase('output-terminal-reserve-isolation', () => {
@@ -89,16 +143,26 @@ export function registerOutputTerminalCases({ defineCase, projection }) {
     const observationClass = profile.observations.profiles[0].resources[0];
     assert.notEqual(observationClass, profile.terminalEnvelope.terminalReserve);
     const oracle = initializedOutputOracle(profile, { limits: { maxObservationSlots: '1' } });
-    const first = admitLive(oracle, profile, 'reserve-pressure-1');
-    oracle.captureObservation({ requestId: 'reserve-pressure-1', facts: factsForFields(liveFields(profile)) });
-    oracle.publishOutput({ slotId: first.slotId });
+    const first = captureAndPublishLive(oracle, profile, 'reserve-pressure-1');
+    assert.equal(first.kind, 'ready');
     const second = admitLive(oracle, profile, 'reserve-pressure-2');
     assert.equal(second.kind, 'admitted');
     const terminal = publishTerminal(oracle, profile);
     assert.equal(terminal.kind, 'ready');
     assert.equal(terminal.slotId, 'terminal-0');
-    return { terminalReadyUnderObservationPressure: true, coalesced: oracle.snapshot().counters.coalesced };
-  }, ['OUTPUT-TERMINAL-001']);
+    assert.equal(oracle.teardown().kind, 'terminal-retained');
+    const snapshot = oracle.snapshot();
+    assert(!snapshot.slots.some(({ kind, state }) => kind === 'observation' && ['reserved', 'capturing', 'publishing', 'ready'].includes(state)));
+    const cleanup = oracle.cleanupReport();
+    assert(cleanup.some(({ id, disposition }) => id === 'terminal-slot' && disposition === 'retain'));
+    assert(cleanup.some(({ id, disposition }) => id === 'terminal-payload' && disposition === 'retain'));
+    return {
+      terminalReadyUnderObservationPressure: true,
+      coalesced: snapshot.counters.coalesced,
+      liveSlotsDrained: true,
+      terminalRetained: true,
+    };
+  }, ['OUTPUT-TERMINAL-001', 'OUTPUT-LIFE-006']);
 
   defineCase('output-no-ranked-action', () => {
     const profile = getOutputProfile(projection, 'output.synthetic-evaluator-absent');

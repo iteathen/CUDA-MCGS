@@ -31,8 +31,46 @@ export function registerOutputObservationCases({ defineCase, projection }) {
     const after = stableSourceSemantics(oracle.snapshot());
     assert.deepEqual(after, before, 'observation lifecycle may not mutate search-semantic state');
     assert.equal(published.envelope, null, 'live observation is not authoritative terminal completion');
-    return { sourceMutationCount: after.sourceMutationCount, hostProgressCount: after.hostProgressCount };
-  }, ['OUTPUT-OBS-002', 'OUTPUT-OBS-003', 'OUTPUT-OBS-004', 'OUTPUT-OBS-010']);
+    assert.equal(published.metadata.sessionIdentity, 'session.synthetic');
+    assert.equal(published.metadata.rootEpoch, '1');
+    assert.equal(published.metadata.workEpoch, '1');
+    assert.equal(published.metadata.sequence, published.sequence);
+    assert.equal(published.metadata.consistency, 'versioned-cut');
+    assert.equal(published.metadata.sourceVersions.length, liveFields(profile).length);
+    assert.deepEqual(published.metadata.sourceDispositions, []);
+    assert.deepEqual(published.metadata.lossAccounting, { dropped: '0', coalesced: '0', lostSequences: [] });
+
+    const unauthorized = initializedOutputOracle(profile);
+    const unauthorizedBefore = unauthorized.snapshot();
+    expectCode(() => admitLive(unauthorized, profile, 'unauthorized', { authorized: false }), 'OUTPUT_REFERENCE_PERMISSION');
+    const unauthorizedAfter = unauthorized.snapshot();
+    assert.deepEqual(unauthorizedAfter.counters, unauthorizedBefore.counters);
+    assert.deepEqual(stableSourceSemantics(unauthorizedAfter), stableSourceSemantics(unauthorizedBefore));
+
+    const wrongSession = initializedOutputOracle(profile);
+    const wrongSessionBefore = wrongSession.snapshot();
+    expectCode(() => admitLive(wrongSession, profile, 'wrong-session', { sessionIdentity: 'session.other' }), 'OUTPUT_REFERENCE_STALE_ROOT');
+    const wrongSessionAfter = wrongSession.snapshot();
+    assert.deepEqual(wrongSessionAfter.counters, wrongSessionBefore.counters);
+    assert.deepEqual(stableSourceSemantics(wrongSessionAfter), stableSourceSemantics(wrongSessionBefore));
+
+    const boundedProfile = structuredClone(profile);
+    boundedProfile.observations.profiles[0].maxRequests = '1';
+    const bounded = initializedOutputOracle(boundedProfile);
+    assert.equal(admitLive(bounded, boundedProfile, 'capacity-1').kind, 'admitted');
+    const capacityBefore = bounded.snapshot();
+    expectCode(() => admitLive(bounded, boundedProfile, 'capacity-2'), 'OUTPUT_REFERENCE_CAPACITY');
+    const capacityAfter = bounded.snapshot();
+    assert.deepEqual(capacityAfter.counters, capacityBefore.counters, 'over-capacity request must fail before Output accounting mutation');
+    assert.deepEqual(stableSourceSemantics(capacityAfter), stableSourceSemantics(capacityBefore));
+    return {
+      sourceMutationCount: after.sourceMutationCount,
+      hostProgressCount: after.hostProgressCount,
+      freshnessSequence: published.metadata.sequence,
+      invalidRequestsSideEffectFree: true,
+      sessionIdentityValidated: true,
+    };
+  }, ['OUTPUT-OBS-002', 'OUTPUT-OBS-003', 'OUTPUT-OBS-004', 'OUTPUT-OBS-006', 'OUTPUT-OBS-007', 'OUTPUT-OBS-010']);
 
   defineCase('output-observation-cadence-invariance', () => {
     const profile = getOutputProfile(projection, 'output.synthetic-live-session');
@@ -63,8 +101,9 @@ export function registerOutputObservationCases({ defineCase, projection }) {
     assert.deepEqual(captured.omitted, [{ fieldId: fields[0].id, state: 'pending' }]);
     const ready = oracle.publishOutput({ slotId: admission.slotId });
     assert.deepEqual(ready.payload, []);
+    assert.deepEqual(ready.metadata.sourceDispositions, [{ fieldId: fields[0].id, state: 'pending' }]);
+    assert.equal(ready.metadata.consistency, 'versioned-cut');
     assert.equal(oracle.snapshot().sourceMutationCount, '0');
     return { materialized: false, omitted: captured.omitted };
-  }, ['OUTPUT-OBS-004']);
-
+  }, ['OUTPUT-OBS-004', 'OUTPUT-OBS-007']);
 }

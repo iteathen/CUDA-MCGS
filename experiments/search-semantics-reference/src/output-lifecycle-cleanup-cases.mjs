@@ -11,6 +11,7 @@ import {
   liveFields,
   publishTerminal,
   terminalFields,
+  versionMaps,
 } from './output-case-support.mjs';
 
 export function registerOutputLifecycleCleanupCases({ defineCase, projection }) {
@@ -18,13 +19,18 @@ export function registerOutputLifecycleCleanupCases({ defineCase, projection }) 
     const profile = getOutputProfile(projection, 'output.synthetic-live-session');
     const oracle = initializedOutputOracle(profile, { limits: { maxObservationSlots: '2', maxSequence: '1' } });
     const first = admitLive(oracle, profile, 'generation-1');
-    oracle.captureObservation({ requestId: 'generation-1', facts: factsForFields(liveFields(profile)) });
+    const firstFacts = factsForFields(liveFields(profile));
+    oracle.captureObservation({ requestId: 'generation-1', facts: firstFacts, ...versionMaps(firstFacts) });
     oracle.publishOutput({ slotId: first.slotId });
     admitLive(oracle, profile, 'generation-2');
-    expectCode(() => oracle.captureObservation({ requestId: 'generation-2', facts: factsForFields(liveFields(profile)) }), 'OUTPUT_REFERENCE_GENERATION_EXHAUSTED');
+    const secondFacts = factsForFields(liveFields(profile));
+    expectCode(() => oracle.captureObservation({ requestId: 'generation-2', facts: secondFacts, ...versionMaps(secondFacts) }), 'OUTPUT_REFERENCE_GENERATION_EXHAUSTED');
     assert.equal(oracle.snapshot().sequence, '1');
-    return { wrapped: false, terminalFailureBeforeAlias: true };
-  }, ['OUTPUT-LIFE-008']);
+    const cleanup = oracle.cleanupReport();
+    assert(cleanup.some(({ id, disposition }) => id === 'observation-slot:generation-2' && disposition === 'retire'));
+    assert(cleanup.some(({ id, disposition }) => id === 'observation-payload:generation-2' && disposition === 'retire'));
+    return { wrapped: false, terminalFailureBeforeAlias: true, exhaustedSlotRetired: true };
+  }, ['OUTPUT-LIFE-008', 'OUTPUT-CLEANUP-001']);
 
   defineCase('output-product-capability-deletion', () => {
     const liveProfile = getOutputProfile(projection, 'output.synthetic-live-session');
@@ -38,9 +44,14 @@ export function registerOutputLifecycleCleanupCases({ defineCase, projection }) 
     const oracle = initializedOutputOracle(terminalProfile);
     publishTerminal(oracle, terminalProfile);
     const report = oracle.cleanupReport();
-    for (const kind of terminalProfile.cleanup.kinds) assert(report.some(({ id, disposition }) => id === kind && ['pending', 'retain', 'release', 'quarantine'].includes(disposition)));
+    const settledDispositions = new Set(['retain', 'release', 'retire', 'invalidate', 'quarantine']);
+    for (const kind of terminalProfile.cleanup.kinds) {
+      const entry = report.find(({ id }) => id === kind);
+      assert(entry, `missing cleanup entry ${kind}`);
+      assert(settledDispositions.has(entry.disposition), `${kind} cleanup must be explicit, not pending`);
+    }
     assert(!report.some(({ id }) => [...liveOnlyKinds].some((kind) => id === kind || id.startsWith(`${kind}:`))));
-    return { deletedLiveResidue: true, cleanupKinds: terminalProfile.cleanup.kinds };
+    return { deletedLiveResidue: true, cleanupKinds: terminalProfile.cleanup.kinds, allCleanupExplicit: true };
   }, ['OUTPUT-CLEANUP-001', 'OUTPUT-CLEANUP-003']);
 
   defineCase('output-oracle-sensitivity-publication', () => {
@@ -50,6 +61,9 @@ export function registerOutputLifecycleCleanupCases({ defineCase, projection }) 
     classifyTerminal(incompleteBaseline);
     incompleteBaseline.captureTerminalPayload({ facts: factsForFields(terminalFields(structured)), completeWrites: false });
     expectCode(() => incompleteBaseline.publishOutput({ slotId: 'terminal-0' }), 'OUTPUT_REFERENCE_PUBLICATION_INCOMPLETE');
+    const incompleteCleanup = incompleteBaseline.cleanupReport();
+    assert(incompleteCleanup.some(({ id, disposition }) => id === 'terminal-slot' && disposition === 'quarantine'));
+    assert(incompleteCleanup.some(({ id, disposition }) => id === 'terminal-payload' && disposition === 'quarantine'));
 
     const incompleteMutant = initializedOutputOracle(structured, { mutations: { skipPublicationReadiness: true } });
     classifyTerminal(incompleteMutant);
@@ -69,14 +83,22 @@ export function registerOutputLifecycleCleanupCases({ defineCase, projection }) 
     assert.equal(readinessMutant.publishOutput({ slotId: 'terminal-0' }).kind, 'ready');
 
     const live = getOutputProfile(projection, 'output.synthetic-live-session');
+    const staleFacts = factsForFields(liveFields(live));
+    const staleVersions = versionMaps(staleFacts);
     const staleBaseline = initializedOutputOracle(live);
     const staleAdmission = admitLive(staleBaseline, live, 'sensitivity-stale');
-    staleBaseline.captureObservation({ requestId: 'sensitivity-stale', facts: factsForFields(liveFields(live)) });
+    staleBaseline.captureObservation({ requestId: 'sensitivity-stale', facts: staleFacts, ...staleVersions });
     staleBaseline.advanceRoot({ rootEpoch: '2', workEpoch: '2' });
     expectCode(() => staleBaseline.publishOutput({ slotId: staleAdmission.slotId }), 'OUTPUT_REFERENCE_STALE_ROOT');
+    const staleCleanup = staleBaseline.cleanupReport();
+    assert(staleCleanup.some(({ id, disposition }) => id === 'observation-slot:sensitivity-stale' && disposition === 'quarantine'));
+    assert(staleCleanup.some(({ id, disposition }) => id === 'observation-payload:sensitivity-stale' && disposition === 'quarantine'));
+
+    const staleMutantFacts = factsForFields(liveFields(live));
+    const staleMutantVersions = versionMaps(staleMutantFacts);
     const staleMutant = initializedOutputOracle(live, { mutations: { skipIncarnation: true } });
     const staleMutantAdmission = admitLive(staleMutant, live, 'sensitivity-stale-mutant');
-    staleMutant.captureObservation({ requestId: 'sensitivity-stale-mutant', facts: factsForFields(liveFields(live)) });
+    staleMutant.captureObservation({ requestId: 'sensitivity-stale-mutant', facts: staleMutantFacts, ...staleMutantVersions });
     staleMutant.advanceRoot({ rootEpoch: '2', workEpoch: '2' });
     assert.equal(staleMutant.publishOutput({ slotId: staleMutantAdmission.slotId }).kind, 'ready');
 
@@ -103,10 +125,14 @@ export function registerOutputLifecycleCleanupCases({ defineCase, projection }) 
     publishTerminal(conflict, structured);
     const quarantine = conflict.failOutput({ slotId: 'terminal-0', reason: 'conflicting-terminal-outcome' });
     assert.equal(quarantine.kind, 'quarantined');
-    assert(conflict.cleanupReport().some(({ id, disposition }) => id === 'terminal-payload' && disposition === 'quarantine'));
+    const conflictCleanup = conflict.cleanupReport();
+    assert(conflictCleanup.some(({ id, disposition }) => id === 'terminal-slot' && disposition === 'quarantine'));
+    assert(conflictCleanup.some(({ id, disposition }) => id === 'terminal-payload' && disposition === 'quarantine'));
 
     return {
       killedMutants: ['skipPublicationReadiness', 'skipReadiness', 'skipIncarnation', 'skipConsistency'],
+      partialPublicationQuarantined: true,
+      stalePublicationQuarantined: true,
       conflictingTerminalQuarantined: true,
     };
   }, ['OUTPUT-PUB-002', 'OUTPUT-PUB-003', 'OUTPUT-SNAPSHOT-003', 'OUTPUT-SNAPSHOT-005', 'OUTPUT-CLEANUP-002']);

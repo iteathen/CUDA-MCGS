@@ -54,11 +54,17 @@ export function factsForFields(fields, options = {}) {
   return fields.map((field, index) => fact(field, options.values?.[field.id] ?? { field: field.id, index }, options.byField?.[field.id] ?? options.defaults ?? {}));
 }
 
+export function versionMaps(facts) {
+  const ready = facts.filter(({ state }) => state === 'ready');
+  const versions = Object.fromEntries(ready.map(({ fieldId, version }) => [fieldId, version]));
+  return { versionsBefore: versions, versionsAfter: { ...versions } };
+}
+
 export function classifyTerminal(oracle, options = {}) {
   return oracle.classifyTerminalResult({
     completionClass: options.completionClass ?? 'complete',
     firstStopCause: options.firstStopCause ?? 'search-complete',
-    completedWork: options.completedWork ?? '7',
+    completedWork: options.completedWork ?? { count: '7', unit: 'work-items' },
     policyBudgetStatus: options.policyBudgetStatus ?? 'satisfied',
     resourceStatus: options.resourceStatus ?? { kind: 'conserved', highWater: '7' },
     diagnosticIdentity: options.diagnosticIdentity ?? 'diagnostic.synthetic',
@@ -79,6 +85,7 @@ export function admitLive(oracle, profile, requestId, options = {}) {
     requestId,
     authorized: options.authorized ?? true,
     schemaId: options.schemaId ?? liveSchema(profile).id,
+    sessionIdentity: options.sessionIdentity ?? 'session.synthetic',
     searchIncarnation: options.searchIncarnation ?? '1',
     rootEpoch: options.rootEpoch ?? '1',
     workEpoch: options.workEpoch ?? '1',
@@ -90,15 +97,36 @@ export function admitLive(oracle, profile, requestId, options = {}) {
 export function captureAndPublishLive(oracle, profile, requestId, options = {}) {
   const admission = admitLive(oracle, profile, requestId, options);
   if (admission.kind !== 'admitted') return admission;
+  const facts = options.facts ?? factsForFields(liveFields(profile));
+  const versions = versionMaps(facts);
   const captured = oracle.captureObservation({
     requestId,
-    facts: options.facts ?? factsForFields(liveFields(profile)),
-    versionsBefore: options.versionsBefore,
-    versionsAfter: options.versionsAfter,
+    facts,
+    versionsBefore: options.versionsBefore ?? versions.versionsBefore,
+    versionsAfter: options.versionsAfter ?? versions.versionsAfter,
+    expectedGenerations: options.expectedGenerations,
     completeWrites: options.completeWrites ?? true,
   });
   if (captured.kind !== 'captured') return captured;
   return oracle.publishOutput({ slotId: admission.slotId });
+}
+
+export function slotIdentity(publication, overrides = {}) {
+  return {
+    slotId: overrides.slotId ?? publication.slotId,
+    incarnation: overrides.incarnation ?? publication.incarnation,
+    profileId: overrides.profileId ?? publication.profileId,
+    schemaId: overrides.schemaId ?? publication.schemaId,
+    searchIncarnation: overrides.searchIncarnation ?? publication.searchIncarnation,
+  };
+}
+
+export function acquirePublished(oracle, publication, borrowId, overrides = {}) {
+  return oracle.acquireOutput({ ...slotIdentity(publication, overrides), borrowId });
+}
+
+export function releasePublished(oracle, publication, borrowId, overrides = {}) {
+  return oracle.releaseOutput({ ...slotIdentity(publication, overrides), borrowId, ...(overrides.operationQuiescent === undefined ? {} : { operationQuiescent: overrides.operationQuiescent }) });
 }
 
 export function expectCode(body, code) {
