@@ -132,6 +132,22 @@ function requireText(relativePath, requiredText) {
   }
 }
 
+function walkFiles(absolutePath) {
+  if (!isDirectory(absolutePath)) {
+    return [];
+  }
+  const result = [];
+  for (const entry of readdirSync(absolutePath, { withFileTypes: true })) {
+    const entryPath = path.join(absolutePath, entry.name);
+    if (entry.isDirectory()) {
+      result.push(...walkFiles(entryPath));
+    } else if (entry.isFile()) {
+      result.push(entryPath);
+    }
+  }
+  return result;
+}
+
 function validateComponent(componentPath, expectedArea) {
   if (forbiddenDumpNames.has(path.basename(componentPath).toLowerCase())) {
     fail(`forbidden catch-all component name: ${repositoryPath(componentPath)}`);
@@ -252,6 +268,13 @@ if (isNonEmptyFile(workflowPath)) {
 requireText("SECURITY.md", "https://github.com/iteathen/CUDA-MCGS/security/advisories/new");
 requireText(".github/ISSUE_TEMPLATE/config.yml", "https://github.com/iteathen/CUDA-MCGS/security/advisories/new");
 requireText(".github/dependabot.yml", "package-ecosystem: github-actions");
+requireText("docs/decisions/ADR-0024-framework-only-production-ownership.md", "Production domain/search products");
+requireText("docs/PROJECT_CHARTER.md", "ADR-0024");
+
+const activeProductSpecs = walkFiles(path.join(root, "docs", "specs", "products"));
+if (activeProductSpecs.length > 0) {
+  fail(`active production product specifications must live outside CUDA-MCGS; found: ${activeProductSpecs.map(repositoryPath).sort().join(", ")}`);
+}
 
 const components = path.join(root, "components");
 if (isDirectory(components)) {
