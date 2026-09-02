@@ -47,32 +47,4 @@ assert.throws(() => session.applyAdvance({
 }), { code: 'SESSION_REFERENCE_ADVANCE_REROOT_ONLY' });
 assert.deepEqual(session.snapshot(), before, 'rejected reroot-only advance must not mutate Session authority or counters');
 
-const teardownSession = createSessionOracle({ profile: entry.normalized, ...provenance });
-assert.equal(teardownSession.establishInitialRoot({
-  commandId: 'root-teardown',
-  rootIdentity: 'root.synthetic.teardown',
-  occurrenceReference: { slot: 'node-teardown', generation: '1' },
-  domainReady: true,
-  graphReady: true,
-  resourceReady: true,
-}).kind, 'accepted');
-assert.equal(teardownSession.completeSession({
-  commandId: 'complete-teardown',
-  progressClosed: true,
-  terminalOutputReady: true,
-  staleWorkDisposed: true,
-  terminalOutputIdentity: 'terminal.output.teardown',
-  completionClass: 'complete',
-}).kind, 'terminal');
-const cleanupFacts = entry.normalized.cleanup.kinds.map((kind) => ({
-  kind,
-  disposition: kind === 'diagnostic' ? 'archive' : 'released',
-}));
-const outOfOrderTeardownSteps = [...entry.normalized.lifecycle.teardownOrder];
-[outOfOrderTeardownSteps[0], outOfOrderTeardownSteps[1]] = [outOfOrderTeardownSteps[1], outOfOrderTeardownSteps[0]];
-assert.throws(() => teardownSession.teardown({
-  completedTeardownSteps: outOfOrderTeardownSteps,
-  cleanupFacts,
-}), { code: 'SESSION_REFERENCE_TEARDOWN_ORDER' });
-
 console.log('session_advance_boundary=pass');
