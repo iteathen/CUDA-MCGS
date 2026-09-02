@@ -2,134 +2,95 @@
 
 **Status:** Informational
 
-**Updated:** 2026-08-29
+**Updated:** 2026-09-02
 
-## Protected authority
+## Authority lanes
 
-Protected `main` remains intentionally unchanged:
+Protected semantic authority remains:
 
-`ee4434be0ae927c4ae1d5c106f91503d28b1aa01`
+`main@3ecac11e3576bd063760bc9572f79bea78acd031`
 
-Nothing below is a protected-main support, release, native, compatible-pair, performance, proposal-acceptance or production claim.
+The integrated CUDA-free candidate/reference line is:
 
-## Experimental integration line
+`experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe`
 
-The remaining-owner assessment was performed against exact:
+Candidate/reference integration is not protected semantic acceptance. Protected #122 acceptance, production lowering, native CUDA qualification, compatible-pair support, performance and product behavior remain separate gates.
 
-`experimental/portfolio@e629210bde91484235bf0feb266507d95042b90e`
+## Integrated reference frontier
 
-That line contains the qualified Domain/Graph/Policy semantic/reference packet, the current v7 GitHub Actions maintenance pins, preserved non-authoritative superseded research, and completed open-PR audit reconciliation. This state change is assessment/routing only; read the live `experimental/portfolio` ref after integration for current authority.
+The experimental line now contains the product-neutral Graph reference chain plus Policy, Evaluator, Resource, corrected Progress and Output reference evidence. `REF-OUTPUT-01` was integrated through PR #182 after exact-head authorization; its integrated tree exactly matches reviewed Output head `a6b4d6f9795191c057dd477e5e571aa570f8a842`.
 
-The integrated Policy packet remains unchanged:
+Output qualification retained:
 
-- semantic/evidence head `104cb8356417f95cc3783144b306f7b7725f9726`, workflow `33231519393` — success;
-- owner-authorized final Policy source/state head `877765e7fadafd9459bf13c1024c002edd279427`, workflow `33233026019` — success;
-- Composer `881/881`, representation/composition `115cceb16db3e4a99944c7228e1d5dff7047f342ddbe63a3e695c027d33e85c8`;
-- Policy projection `6662d8101bbffee0e322ef7e2172f5980d69a09aec8ec565c9425578751310c2`;
-- Policy reference `e58a5d2f1d49bab77c8b2176750ac764bc6f5295907bbffb708308b5ca35c116`, `24/24`;
-- truthful requirement disposition summary `52 deferred / 910 partial / 27 pending`.
+- 25/25 required Output cases;
+- 51/51 direct SPEC-0013 ENGINE-REFERENCE routes;
+- workflow `33599425137` success;
+- Output evidence `c3e07a14aac198ae6dede35e6606a60e1e9e0965687508db4608c97508faed5c`.
 
-## Remaining-owner assessment — complete
+## Active owner — REF-FRAMEWORK-LIFE-01
 
-Issue #36 now carries the exact owner-by-owner reassessment. The result is:
+Issue #183 and draft PR #185 own the missing Framework lifecycle reference required by the governing ENGINE-REFERENCE plan before the complete terminal slice.
 
-**`REF-EVALUATOR-01` is the smallest dependency-ready remaining semantic/reference leaf.**
+Active branch:
 
-This selection is based on dependency truth, not historical ordering or raw requirement count.
+`ref/framework-life-01`
 
-### Why Evaluator is ready
+Exact integrated base:
 
-SPEC-0009 and the live Composer normalizer require the already integrated Domain and Graph normalized profiles plus the frozen Policy contract semantics. The Evaluator boundary owns finite request/incarnation lifecycle, input/key validity, batching, evaluator-owned workspace and continuation state, cache meaning, internal result readiness/publication/scatter, evaluator reroot reuse classification, cancellation/failure and cleanup.
+`experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe`
 
-Its remaining Resource, Progress and Session interactions can be represented as explicit immutable injected facts in the reference cases—such as admission granted/denied, one service opportunity, or the current root/work epoch. The Evaluator oracle may consume those facts but may not implement the owners that publish them.
+Pre-documentation semantic head:
 
-ENGINE-REFERENCE-01 assigns **37 direct behavioral requirements** to Evaluator.
+`7934537fa331b074a12d7725ba6bc0087134a7ce`
 
-### Why the smaller-looking leaves are not next
+The leaf owns exactly the 15 direct SPEC-0000 ENGINE-REFERENCE obligations:
 
-- **Resource / SPEC-0011 (34 direct behavioral requirements)** composes selected owner resource contributions and validates classes against owner profile resource/pressure semantics. Starting it before the remaining owner contributions are behaviorally qualified would either guess their meaning or turn Resource into a surrogate semantic owner.
-- **Progress / SPEC-0012 (31)** covers every selected work class and explicitly consumes Evaluator, Resource and Output readiness/closure facts. Placeholder work semantics would violate LEGO ownership.
-- **Output / SPEC-0013 (51)** consumes ready Evaluator facts plus Resource/Progress terminal facts; it cannot precede Evaluator readiness evidence.
-- **Session / SPEC-0006 (38)** coordinates Policy/Evaluator/Output reuse, Resource admission, Progress stale-work disposition and Output observation. The reference plan deliberately places it after the complete session-absent terminal core slice.
-- **Stage / SPEC-0003 (8 direct ENGINE-REFERENCE routes)** is optional composition over stable source-owner transitions. Core owners never depend on Stage for their semantic completeness.
-- **Channel / SPEC-0004 (41 existing owner-evidence routes)** is downstream of Stage and already has a logical oracle in the Composer experiment. Later work must gap-audit/reuse that evidence, not copy it into another interpreter.
+- `FRAMEWORK-LIFE-001..009`;
+- `FRAMEWORK-PERSIST-001..002`;
+- `FRAMEWORK-CLEANUP-001..004`.
 
-## Selected Evaluator falsifier
+It coordinates public owner lifecycle/disposition facts only. Domain, Graph, Policy, Evaluator, Resource, Progress and Output retain their private semantic state. The Framework reference does not select a scheduler, CUDA mechanism, persistence backend or product meaning.
 
-The first decisive case is intentionally small and adversarial:
+### Preserved red proof
 
-1. admit two compatible evaluator request incarnations using explicit public Domain/Graph/Policy inputs and injected admission facts;
-2. form one finite evaluator batch/workspace lease;
-3. cancel or supersede one request and reuse its logical slot with a new incarnation before the old batch completes;
-4. complete the old batch;
-5. require the still-current result to publish exactly once, reject the stale old result before scatter/ready-result mutation, and terminate every evaluator-owned request/workspace disposition exactly once.
+Red head `191add5a0e72e2c19e6e862676baf0251c593a95` intentionally allowed a later stop signal to overwrite the first authoritative stop cause.
 
-Replay the case as a partial batch under an explicit device-side service-opportunity fact. No host timeout, callback, poll/relaunch loop or host-produced intermediate may be required for progress.
+Workflow `33651637686` kept Composer 881/881 green and executed all 18 Framework cases; exactly the two first-cause falsifiers failed. Red evidence is `594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e`; retained artifact `9855005183`, archive SHA-256 `a8ce1cc1b2133bff7cdf655b163fdd6f4487cd94369ea38e553789c9a7b65cbb`.
 
-A paired `evaluator-absent` case must prove exact zero evaluator residue. An oracle-sensitivity mutation that removes the incarnation fence or complete-publication fence must fail.
+The green repair preserves the first cause rather than weakening either falsifier.
 
-This falsifier crosses the highest-risk evaluator invariants without importing Resource/Progress implementation: request identity, finite batching, workspace ownership, stale isolation, scatter, publication and cleanup.
+### Current semantic evidence before this documentation reconciliation
 
-## Required profile breadth
+On exact semantic head `7934537fa331b074a12d7725ba6bc0087134a7ce`:
 
-The Evaluator reference cannot be a neural/scalar happy path. The selected leaf must cover materially different product-neutral families, including:
+- Composer: 881/881;
+- Framework lifecycle: 18/18;
+- all 15 direct SPEC-0000 routes mapped fail-closed;
+- Framework evidence: `8ba3f17858a4452f919fbea02bb822860ed13388748f11c9feacc757c63492c6`;
+- Framework artifact: `9855587220`, archive SHA-256 `ff38b018a82c04b66ae28fde17c672163ba764161cc9ec104da779c9bb16b583`;
+- Framework workflow `33653132339`: success;
+- full repository documentation/semantic matrix `33653132386`: success.
 
-- proposal-only capability production;
-- evaluation-only structured/vector or proof/table-like outputs;
-- a combined capability profile;
-- history/root-sensitive cache and key behavior;
-- full and partial finite batches;
-- partial capability readiness and failure/cancellation;
-- stale request/incarnation/reuse behavior; and
-- exact evaluator absence/deletion.
+Fresh technical review of an earlier green head found incomplete cancellation accounting, result-visible completion coverage, persistence restore validation and cleanup readback. Those gaps were repaired in this same owner rather than deferred to the later integration slice. This documentation change advances the head, so final qualification/review must rerun before any authorization request.
 
-CUDA-JS-Tensor is an optional later mathematical mechanism for selected consumers. It is not a universal Evaluator dependency or semantic authority.
+## Correct remaining reference order
 
-## LEGO and claim limits
+The governing `docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md` requires:
 
-The selected Evaluator leaf must not own or implement:
+1. **#183 / `REF-FRAMEWORK-LIFE-01`** — finish exact-head qualification/review of the active candidate.
+2. **#184 / `REF-TERMINAL-SLICE-01`** — compose one complete finite session-absent, extension-absent CUDA-free engine lifecycle through public owner events/facts only.
+3. **#181 / `REF-SESSION-01`** — complete the 38-route optional Session behavioral reference without duplicating root-control authority.
+4. **#30 / `REF-STAGE-01`** — gap-audit the eight direct Stage routes and add only missing owner-local checkpoint/outcome evidence.
+5. **#33 / `REF-CHANNEL-EVIDENCE-01`** — reuse/gap-audit the existing 41-route Channel logical oracle; do not build a second Channel interpreter.
+6. **#36 / `REF-INTEGRATE-01`** — reconcile one exact Search IR/Composer/reference packet, materially different legal schedules, product-neutral instances, deletion and evidence identities.
+7. **#122** — atomically accept that coherent packet on protected authority.
 
-- Domain state/action/history/transition semantics;
-- Graph storage/reference/reclamation;
-- Policy value conversion, statistics, backup, ranking or stopping;
-- Resource global plan/admission/watermark/pressure policy;
-- Progress scheduling, fairness, no-progress or closure;
-- Output terminal/live external publication;
-- Session root/advance/reroot/attention authority;
-- neural/model/chess/UCI/product-head semantics;
-- CUDA-JS-Tensor as mandatory evaluator meaning; or
-- CUDA/native mechanisms, compatible-pair qualification, performance or production lowering.
+No production lowering starts before #122 protected readback.
 
-No C/C++, CUDA C++, native addon/FFI, hand-written PTX, embedded CUDA source, private CUDA-JS access or Python belongs in this reference leaf.
+## Downstream production/runtime path
 
-## Exact validation target for REF-EVALUATOR-01
+After #122, the current portfolio path remains production source-boundary proof, the single public CUDA-JS adapter, an exact CUDA-MCGS/CUDA-JS compatible pair, optional Tensor evaluator integration, unrelated external-consumer proof and later physical native qualification. Product/UCI/chess/model/Book Forge/Timing Evidence/tablebase meaning remains downstream rather than being absorbed into CUDA-MCGS.
 
-Before any Evaluator integration claim:
+## Cleanup / current-state rule
 
-- add an owner-local Composer Evaluator projection/export that proves exact normalized Evaluator identities;
-- make the semantic Evaluator oracle consume only that generated public normalized projection, not Composer private state;
-- cover all 37 direct evaluator behavioral obligations with named cases and no promotion of native-deferred requirements;
-- include the stale-incarnation/publication mutation-sensitivity proof and evaluator-absence deletion proof;
-- retain materially varied profile families and bounded declared schedules;
-- add a permanent Evaluator peer CI job only with the complete semantic slice, wired into fail-closed aggregate `verify`;
-- run all existing Composer, Graph, Policy and repository regressions on the exact head;
-- perform complete whole-diff author review and cleanup; and
-- keep experimental integration separate from any later protected-main semantic-acceptance/native authorization.
-
-## Next semantic seam
-
-The assessment gate is closed. `REF-EVALUATOR-01` is selected but **not yet implemented**.
-
-After this state-only selection record is integrated and read back, the next operation may create one short-lived Evaluator focus branch from that exact experimental head. The first implementation work is the owner-local Evaluator profile projection plus the stale-incarnation/partial-batch/absence falsifiers above.
-
-Do not begin Resource in parallel. Resource becomes the next reassessment candidate only after Evaluator semantic/reference evidence is integrated and reconciled.
-
-Issue #122 remains the later atomic semantic-acceptance gate. Issue #142 remains coordination only. Protected `main` remains outside this experimental routing change.
-
-## Cleanup / coordination
-
-- No Evaluator implementation branch existed at assessment time; `ref/evaluator-reference-01` was not pre-created.
-- This assessment introduced no semantic code, temporary workflow, generated evidence or native artifact.
-- `state/evaluator-owner-selection-20260829` is the state-only reconciliation branch and becomes deletion-eligible after merge.
-- Previously recorded stale Graph/Policy source/recovery refs remain bounded cleanup debt pending safe recovery disposition/deletion support.
-
+PR #185 remains a candidate and is not authorized for integration merely because its tests are green. Final exact-head CI and author-side whole-diff technical review are required after this documentation reconciliation. If the connector again cannot clear a draft bit, preserve #185 as the reviewed record and use only the audited same-head/same-base non-draft replacement transport; do not turn a transport workaround into a review or authorization bypass.
