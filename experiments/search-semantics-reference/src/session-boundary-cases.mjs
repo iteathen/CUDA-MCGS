@@ -75,6 +75,45 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     };
   }, ['SESSION-OBS-', 'SESSION-SEC-', 'SESSION-COMPAT-']);
 
+  defineCase('session-completion-waits-for-live-observation-borrows', () => {
+    const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
+    const observationProfile = profile.observations.profiles[0];
+    assert(observationProfile);
+    const session = liveSession(sessionProjection);
+    establish(session, 'completion-borrow');
+    assert.equal(session.requestObservation({
+      commandId: 'observation-completion-borrow',
+      requestId: 'observation-completion-borrow',
+      outputProfile: observationProfile.outputProfile,
+      outputPublication: readyOutputPublication(session, 'publication.completion.borrow'),
+    }).kind, 'ready');
+    assert.equal(session.acquireObservation({ requestId: 'observation-completion-borrow', borrowId: 'borrow-completion' }).kind, 'borrowed');
+
+    const beforeCompletion = session.snapshot();
+    expectCode(() => session.completeSession({
+      commandId: 'complete-with-live-observation-borrow',
+      progressClosed: true,
+      terminalOutputReady: true,
+      staleWorkDisposed: true,
+      terminalOutputIdentity: 'terminal.output.borrow-blocked',
+      completionClass: 'complete',
+    }), 'SESSION_REFERENCE_COMPLETION_BORROW');
+    assert.deepEqual(session.snapshot(), beforeCompletion, 'blocked completion must not publish terminal Session authority');
+
+    assert.equal(session.releaseObservation({ requestId: 'observation-completion-borrow', borrowId: 'borrow-completion' }).kind, 'released');
+    const terminal = session.completeSession({
+      commandId: 'complete-after-observation-borrow-release',
+      progressClosed: true,
+      terminalOutputReady: true,
+      staleWorkDisposed: true,
+      terminalOutputIdentity: 'terminal.output.borrow-released',
+      completionClass: 'complete',
+    });
+    assert.equal(terminal.kind, 'terminal');
+    assert.equal(session.teardown({ cleanupFacts: cleanupFacts(profile) }).kind, 'released');
+    return { blockedWhileBorrowed: true, terminalAfterRelease: true };
+  }, ['SESSION-LIFE-', 'SESSION-OBS-', 'SESSION-CLEANUP-']);
+
   defineCase('session-advance-preserves-root-incarnation', () => {
     const session = liveSession(sessionProjection);
     establish(session, 'advance-incarnation');

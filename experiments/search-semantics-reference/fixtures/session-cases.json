@@ -17,6 +17,7 @@
     "session-absent-terminal-slice-remains-zero-residue",
     "session-observation-profile-and-capacity-guard",
     "session-observation-consumes-output-publication-fact",
+    "session-completion-waits-for-live-observation-borrows",
     "session-advance-preserves-root-incarnation",
     "session-completion-command-replay-idempotent"
   ],
