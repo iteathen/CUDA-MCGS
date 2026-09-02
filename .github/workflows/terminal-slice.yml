@@ -15,19 +15,13 @@ on:
       - 'docs/specs/SPEC-0012-device-owned-search-progress.md'
       - 'docs/specs/SPEC-0013-result-and-observation-publication.md'
       - 'experiments/search-ir-composer-reference/**'
+      - 'experiments/search-semantics-reference/fixtures/domain-cases.json'
+      - 'experiments/search-semantics-reference/fixtures/framework-lifecycle-cases.json'
       - 'experiments/search-semantics-reference/fixtures/terminal-slice-cases.json'
-      - 'experiments/search-semantics-reference/src/canonical.mjs'
-      - 'experiments/search-semantics-reference/src/errors.mjs'
-      - 'experiments/search-semantics-reference/src/progress.mjs'
-      - 'experiments/search-semantics-reference/src/progress-case-support.mjs'
-      - 'experiments/search-semantics-reference/src/output.mjs'
-      - 'experiments/search-semantics-reference/src/output-case-support.mjs'
-      - 'experiments/search-semantics-reference/src/terminal-slice.mjs'
-      - 'experiments/search-semantics-reference/src/terminal-slice-cases.mjs'
+      - 'experiments/search-semantics-reference/src/**'
       - 'experiments/search-semantics-reference/run-terminal-slice.mjs'
       - 'scripts/run-search-ir-composer-reference.mjs'
-      - 'scripts/export-search-ir-composer-progress-profiles.mjs'
-      - 'scripts/export-search-ir-composer-output-profiles.mjs'
+      - 'scripts/export-search-ir-composer-*-profiles.mjs'
       - 'scripts/run-terminal-slice-reference.mjs'
   pull_request:
     paths:
@@ -40,12 +34,13 @@ on:
       - 'docs/specs/SPEC-0012-device-owned-search-progress.md'
       - 'docs/specs/SPEC-0013-result-and-observation-publication.md'
       - 'experiments/search-ir-composer-reference/**'
+      - 'experiments/search-semantics-reference/fixtures/domain-cases.json'
+      - 'experiments/search-semantics-reference/fixtures/framework-lifecycle-cases.json'
       - 'experiments/search-semantics-reference/fixtures/terminal-slice-cases.json'
       - 'experiments/search-semantics-reference/src/**'
       - 'experiments/search-semantics-reference/run-terminal-slice.mjs'
       - 'scripts/run-search-ir-composer-reference.mjs'
-      - 'scripts/export-search-ir-composer-progress-profiles.mjs'
-      - 'scripts/export-search-ir-composer-output-profiles.mjs'
+      - 'scripts/export-search-ir-composer-*-profiles.mjs'
       - 'scripts/run-terminal-slice-reference.mjs'
 
 permissions:
@@ -55,12 +50,22 @@ jobs:
   reference:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26
       - name: Compose normalized profiles
         run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Export Domain profiles
+        run: node scripts/export-search-ir-composer-domain-profiles.mjs
+      - name: Export Graph profiles
+        run: node scripts/export-search-ir-composer-graph-profiles.mjs
+      - name: Export Policy profiles
+        run: node scripts/export-search-ir-composer-policy-profiles.mjs
+      - name: Export Evaluator profiles
+        run: node scripts/export-search-ir-composer-evaluator-profiles.mjs
+      - name: Export Resource profiles
+        run: node scripts/export-search-ir-composer-resource-profiles.mjs
       - name: Export Progress profiles
         run: node scripts/export-search-ir-composer-progress-profiles.mjs
       - name: Export Output profiles
@@ -69,7 +74,7 @@ jobs:
         run: node scripts/run-terminal-slice-reference.mjs
       - name: Upload terminal-slice evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0 # v7.0.1
         with:
           name: terminal-slice-reference-evidence
           if-no-files-found: warn

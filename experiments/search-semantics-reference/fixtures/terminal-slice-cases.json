@@ -1,9 +1,58 @@
 {
-  "schema": "cuda-mcgs.reference-terminal-slice-fixtures/0.1.0",
+  "schema": "cuda-mcgs.reference-terminal-slice-fixtures/0.2.0",
   "expectedCases": [
-    "terminal-slice-must-drain-gates-output"
+    "terminal-slice-must-drain-gates-output",
+    "terminal-slice-evaluator-absent-full-lifecycle",
+    "terminal-slice-evaluator-selected-schedule-invariant",
+    "terminal-slice-cancellation-drains-and-cleans",
+    "terminal-slice-initialization-failure-reverse-unwind",
+    "terminal-slice-absence-zero-residue"
   ],
   "profileProjection": {
+    "domain": {
+      "schema": "cuda-mcgs.search-ir-composer-domain-profile-projection/0.2.0",
+      "profileIds": [
+        "domain.synthetic-transposing",
+        "domain.synthetic-stochastic-history",
+        "domain.synthetic-lazy-continuous"
+      ]
+    },
+    "graph": {
+      "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
+      "profileIds": [
+        "graph.synthetic-transposing",
+        "graph.synthetic-reclaiming",
+        "graph.synthetic-isolated",
+        "graph.synthetic-stateless"
+      ]
+    },
+    "policy": {
+      "schema": "cuda-mcgs.search-ir-composer-policy-profile-projection/0.2.0",
+      "profileIds": [
+        "policy.synthetic-scalar-absent",
+        "policy.synthetic-vector-combined",
+        "policy.synthetic-proposal-only-stateless",
+        "policy.synthetic-proof-evaluation-only"
+      ]
+    },
+    "evaluator": {
+      "schema": "cuda-mcgs.search-ir-composer-evaluator-profile-projection/0.2.0",
+      "profileIds": [
+        "evaluator.synthetic-vector-combined",
+        "evaluator.synthetic-proposal-only-stateless",
+        "evaluator.synthetic-proof-evaluation-only",
+        "evaluator.synthetic-analytic-evaluation-only",
+        "evaluator.synthetic-batch-sensitive-resumable"
+      ]
+    },
+    "resource": {
+      "schema": "cuda-mcgs.search-ir-composer-resource-profile-projection/0.2.0",
+      "profileIds": [
+        "resource.synthetic-evaluator-absent",
+        "resource.synthetic-evaluator-workspace",
+        "resource.synthetic-live-session"
+      ]
+    },
     "progress": {
       "schema": "cuda-mcgs.search-ir-composer-progress-profile-projection/0.2.0",
       "profileIds": [

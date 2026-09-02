@@ -12,9 +12,9 @@ const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const composerRoot = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'terminal-slice-cases.json');
+const domainFixturePath = path.join(experimentRoot, 'fixtures', 'domain-cases.json');
+const frameworkFixturePath = path.join(experimentRoot, 'fixtures', 'framework-lifecycle-cases.json');
 const composerEvidencePath = path.join(composerRoot, 'build', 'evidence.json');
-const progressProjectionPath = path.join(composerRoot, 'build', 'progress-profiles.json');
-const outputProjectionPath = path.join(composerRoot, 'build', 'output-profiles.json');
 
 assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS terminal-slice reference requires Node 26 or newer; found ${process.version}`);
 
@@ -28,17 +28,29 @@ async function readJson(absolutePath, missingCode) {
 }
 
 const fixture = await readJson(fixturePath);
+const domainFixture = await readJson(domainFixturePath);
+const frameworkFixture = await readJson(frameworkFixturePath);
 const composerEvidence = await readJson(composerEvidencePath, 'TERMINAL_SLICE_COMPOSER_EVIDENCE_MISSING');
-const progressProjection = await readJson(progressProjectionPath, 'TERMINAL_SLICE_PROGRESS_PROJECTION_MISSING');
-const outputProjection = await readJson(outputProjectionPath, 'TERMINAL_SLICE_OUTPUT_PROJECTION_MISSING');
+
+const projectionDefinitions = [
+  ['domain', 'domain-profiles.json', 'cuda-mcgs.search-ir-composer-domain-profile-projection/0.2.0'],
+  ['graph', 'graph-profiles.json', 'cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0'],
+  ['policy', 'policy-profiles.json', 'cuda-mcgs.search-ir-composer-policy-profile-projection/0.2.0'],
+  ['evaluator', 'evaluator-profiles.json', 'cuda-mcgs.search-ir-composer-evaluator-profile-projection/0.2.0'],
+  ['resource', 'resource-profiles.json', 'cuda-mcgs.search-ir-composer-resource-profile-projection/0.2.0'],
+  ['progress', 'progress-profiles.json', 'cuda-mcgs.search-ir-composer-progress-profile-projection/0.2.0'],
+  ['output', 'output-profiles.json', 'cuda-mcgs.search-ir-composer-output-profile-projection/0.2.0'],
+];
+const projections = {};
+for (const [owner, fileName] of projectionDefinitions) {
+  projections[owner] = await readJson(path.join(composerRoot, 'build', fileName), `TERMINAL_SLICE_${owner.toUpperCase()}_PROJECTION_MISSING`);
+}
 
 exactKeys(fixture, ['expectedCases', 'profileProjection', 'schema'], 'TERMINAL_SLICE_FIXTURE_FIELDS', 'terminal-slice fixture');
-assert.equal(fixture.schema, 'cuda-mcgs.reference-terminal-slice-fixtures/0.1.0');
-exactKeys(fixture.profileProjection, ['output', 'progress'], 'TERMINAL_SLICE_FIXTURE_PROJECTIONS', 'terminal-slice profile projections');
-for (const [owner, projection, expectedSchema] of [
-  ['progress', progressProjection, 'cuda-mcgs.search-ir-composer-progress-profile-projection/0.2.0'],
-  ['output', outputProjection, 'cuda-mcgs.search-ir-composer-output-profile-projection/0.2.0'],
-]) {
+assert.equal(fixture.schema, 'cuda-mcgs.reference-terminal-slice-fixtures/0.2.0');
+assert.deepEqual(Object.keys(fixture.profileProjection).sort(), projectionDefinitions.map(([owner]) => owner).sort());
+for (const [owner, , expectedSchema] of projectionDefinitions) {
+  const projection = projections[owner];
   const expected = fixture.profileProjection[owner];
   exactKeys(expected, ['profileIds', 'schema'], 'TERMINAL_SLICE_FIXTURE_PROJECTION', `${owner} profile projection`);
   assert.equal(expected.schema, expectedSchema);
@@ -56,7 +68,13 @@ function defineCase(id, body) {
   definitions.push({ id, body });
 }
 
-registerTerminalSliceCases({ defineCase, progressProjection, outputProjection });
+registerTerminalSliceCases({
+  defineCase,
+  composerEvidence,
+  domainFixture,
+  frameworkFixture,
+  projections,
+});
 assert.deepEqual(definitions.map(({ id }) => id), expectedCaseIds, 'discovered terminal-slice cases must exactly match checked-in expected case bank');
 
 const args = process.argv.slice(2);
@@ -101,30 +119,52 @@ const summary = {
 if (selectedCase === null) assert.equal(cases.length, expectedCaseIds.length);
 
 const sourcePaths = [
+  'experiments/search-ir-composer-reference/export-domain-profiles.mjs',
+  'experiments/search-ir-composer-reference/export-graph-profiles.mjs',
+  'experiments/search-ir-composer-reference/export-policy-profiles.mjs',
+  'experiments/search-ir-composer-reference/export-evaluator-profiles.mjs',
+  'experiments/search-ir-composer-reference/export-resource-profiles.mjs',
   'experiments/search-ir-composer-reference/export-progress-profiles.mjs',
   'experiments/search-ir-composer-reference/export-output-profiles.mjs',
+  'experiments/search-semantics-reference/fixtures/domain-cases.json',
+  'experiments/search-semantics-reference/fixtures/framework-lifecycle-cases.json',
   'experiments/search-semantics-reference/fixtures/terminal-slice-cases.json',
   'experiments/search-semantics-reference/src/canonical.mjs',
   'experiments/search-semantics-reference/src/errors.mjs',
+  'experiments/search-semantics-reference/src/domain-instances.mjs',
+  'experiments/search-semantics-reference/src/graph-cleanup.mjs',
+  'experiments/search-semantics-reference/src/policy.mjs',
+  'experiments/search-semantics-reference/src/evaluator.mjs',
+  'experiments/search-semantics-reference/src/evaluator-case-support.mjs',
+  'experiments/search-semantics-reference/src/resource.mjs',
+  'experiments/search-semantics-reference/src/resource-case-support.mjs',
   'experiments/search-semantics-reference/src/progress.mjs',
   'experiments/search-semantics-reference/src/progress-case-support.mjs',
   'experiments/search-semantics-reference/src/output.mjs',
   'experiments/search-semantics-reference/src/output-case-support.mjs',
+  'experiments/search-semantics-reference/src/framework-lifecycle.mjs',
+  'experiments/search-semantics-reference/src/schedule.mjs',
   'experiments/search-semantics-reference/src/terminal-slice.mjs',
+  'experiments/search-semantics-reference/src/terminal-slice-runtime.mjs',
   'experiments/search-semantics-reference/src/terminal-slice-cases.mjs',
   'experiments/search-semantics-reference/run-terminal-slice.mjs',
   'scripts/run-terminal-slice-reference.mjs',
+  'docs/specs/SPEC-0007-domain-state-action-and-transition.md',
+  'docs/specs/SPEC-0008-search-policy-and-backup.md',
+  'docs/specs/SPEC-0009-evaluator-contract.md',
+  'docs/specs/SPEC-0010-graph-storage-and-reclamation.md',
+  'docs/specs/SPEC-0011-finite-search-resources.md',
   'docs/specs/SPEC-0012-device-owned-search-progress.md',
-  'docs/specs/SPEC-0013-result-and-observation-publication.md'
+  'docs/specs/SPEC-0013-result-and-observation-publication.md',
 ];
 const sources = {};
 for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
 
+const projectionIdentities = Object.fromEntries(projectionDefinitions.map(([owner]) => [owner, projections[owner].projectionIdentity]));
 const evidenceSubject = {
-  schema: 'cuda-mcgs.search-semantics-terminal-slice-evidence-key/0.1.0',
+  schema: 'cuda-mcgs.search-semantics-terminal-slice-evidence-key/0.2.0',
   composerEvidence: composerEvidence.representationCompositionEvidenceKey,
-  progressProfileProjection: progressProjection.projectionIdentity,
-  outputProfileProjection: outputProjection.projectionIdentity,
+  profileProjections: projectionIdentities,
   selection: selectedCase,
   sources,
   summary,
@@ -132,24 +172,23 @@ const evidenceSubject = {
 };
 const evidenceIdentity = canonicalIdentity(evidenceSubject, 'terminal-slice reference evidence');
 const evidence = {
-  schemaVersion: 1,
-  capsule: 'cuda-mcgs-terminal-slice-reference-v0.1.0',
+  schemaVersion: 2,
+  capsule: 'cuda-mcgs-terminal-slice-reference-v0.2.0',
   scope: selectedCase === null ? 'full-terminal-slice-reference' : 'focused-case',
   status: failed.length === 0 ? 'pass' : 'fail',
   generatedAt: new Date().toISOString(),
   environment: { node: process.version, platform: process.platform, architecture: process.arch, osRelease: os.release() },
   composerEvidence: composerEvidence.representationCompositionEvidenceKey,
-  progressProfileProjection: progressProjection.projectionIdentity,
-  outputProfileProjection: outputProjection.projectionIdentity,
+  profileProjections: projectionIdentities,
   evidenceIdentity,
   sources,
   summary,
   cases,
   claimLimits: [
-    'This capsule is a CUDA-free cross-owner integration reference only; Progress and Output retain their own semantic authority.',
-    'The terminal-slice bridge may route immutable public owner facts but must not invent terminal readiness, work state, resource state, output state or a replacement scheduler.',
-    'Session, Stage, Channel, native CUDA-JS realization, physical device behavior, product semantics and protected-main/#122 acceptance remain downstream.'
-  ]
+    'This capsule is a CUDA-free product-neutral terminal integration reference; Domain, Graph, Policy, Evaluator, Resource, Progress, Output and Framework retain their own semantic authority.',
+    'Declared schedules only order public owner operations for falsification; they are not a second production scheduler or semantic authority.',
+    'The reference proves session-absent terminal lifecycle semantics only. Session, Stage, Channel, native CUDA-JS realization, physical GPU behavior, product semantics and protected-main/#122 acceptance remain downstream.',
+  ],
 };
 
 const evidenceDirectory = path.join(experimentRoot, 'build');
