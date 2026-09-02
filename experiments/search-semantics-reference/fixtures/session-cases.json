@@ -25,7 +25,8 @@
     "session-advance-rejects-stale-authority",
     "session-reroot-rejects-stale-authority",
     "session-teardown-enforces-normalized-order",
-    "session-completion-command-replay-idempotent"
+    "session-completion-command-replay-idempotent",
+    "session-rejected-command-replay-is-stable"
   ],
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-session-profile-projection/0.2.0",
