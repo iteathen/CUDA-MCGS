@@ -14,7 +14,9 @@
     "session-counter-exhaustion-prevents-alias",
     "session-cancellation-idempotent-terminal-cleanup",
     "session-cancellation-aborts-prepared-reroot",
-    "session-absent-terminal-slice-remains-zero-residue"
+    "session-absent-terminal-slice-remains-zero-residue",
+    "session-observation-profile-and-capacity-guard",
+    "session-completion-command-replay-idempotent"
   ],
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-session-profile-projection/0.2.0",
