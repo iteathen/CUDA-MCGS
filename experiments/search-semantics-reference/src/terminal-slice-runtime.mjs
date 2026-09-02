@@ -15,9 +15,11 @@ import {
 } from './resource-case-support.mjs';
 import { createProgressOracle } from './progress.mjs';
 import {
+  admitAndReady,
   dependencyFacts,
   getProgressProfile,
   ordinaryWorkClass,
+  workClassByKind,
   workInput,
   workRef,
 } from './progress-case-support.mjs';
@@ -33,6 +35,7 @@ import {
   publishFrameworkCompletion,
   recordStopCause,
   releaseTerminalResult,
+  requestFrameworkCancellation,
   teardownFramework,
 } from './framework-lifecycle.mjs';
 import { runDeclaredSchedule } from './schedule.mjs';
@@ -213,6 +216,71 @@ function scheduleEvents(order, evaluatorSelected) {
   return order.filter((name) => evaluatorSelected || name !== 'evaluator').map((name) => byName[name]);
 }
 
+function reserveProgressWorkResources({ resource, resourceProfile, workClass, id }) {
+  const reserve = workClass.reserve === null
+    ? null
+    : resourceProfile.reserves.find(({ id: reserveId }) => reserveId === workClass.reserve);
+  if (workClass.reserve !== null) assert(reserve, `missing Resource reserve ${workClass.reserve}`);
+  const claimed = [];
+  for (let index = 0; index < workClass.resources.length; index += 1) {
+    const classId = workClass.resources[index];
+    const resourceClass = resourceProfile.classes.find(({ id: candidate }) => candidate === classId);
+    assert(resourceClass, `Resource profile lacks Progress-required class ${classId}`);
+    const leaseId = `${id}-${index + 1}`;
+    const input = reserve !== null && reserve.class === classId
+      ? reservedLeaseInput(resourceProfile, reserve, leaseId, {
+        quantity: '1',
+        owner: workClass.owner,
+        transition: reserve.eligibleTransitions[0],
+      })
+      : leaseInput(resourceClass, leaseId, { quantity: '1' });
+    const reserved = resource.reserveResource(input);
+    if (reserved.kind !== 'claimed') {
+      for (const prior of claimed.reverse()) resource.releaseResource(leaseRef(prior));
+    }
+    assert.equal(reserved.kind, 'claimed');
+    claimed.push(input);
+  }
+  return {
+    inputs: claimed,
+    admission: {
+      approved: true,
+      token: `resource:${id}:${claimed.map(({ leaseId, generation }) => `${leaseId}/${generation}`).join('|')}`,
+      classes: [...workClass.resources],
+      reserve: workClass.reserve,
+    },
+  };
+}
+
+function prepareCancellationObligations({ resource, resourceProfile, progress, progressProfile }) {
+  const ordinaryClass = ordinaryWorkClass(progressProfile);
+  const ordinaryResources = reserveProgressWorkResources({
+    resource,
+    resourceProfile,
+    workClass: ordinaryClass,
+    id: 'cancellation-ordinary-resource',
+  });
+  const ordinary = admitAndReady(progress, progressProfile, ordinaryClass, 'cancellation-ordinary', {
+    resourceAdmission: ordinaryResources.admission,
+  });
+  assert.equal(progress.claimReady({ ...workRef(ordinary), claimId: 'cancellation-ordinary-claim' }).kind, 'claimed');
+
+  const mustDrainClass = workClassByKind(progressProfile, 'must-drain');
+  const mustDrainResources = reserveProgressWorkResources({
+    resource,
+    resourceProfile,
+    workClass: mustDrainClass,
+    id: 'cancellation-must-drain-resource',
+  });
+  const mustDrain = admitAndReady(progress, progressProfile, mustDrainClass, 'cancellation-must-drain', {
+    resourceAdmission: mustDrainResources.admission,
+  });
+  assert.equal(progress.claimReady({ ...workRef(mustDrain), claimId: 'cancellation-must-drain-claim' }).kind, 'claimed');
+  assert.equal(progress.beginResultVisibleTransition(workRef(mustDrain)).kind, 'must-drain');
+
+  return { ordinaryClass, ordinary, ordinaryResources, mustDrainClass, mustDrain, mustDrainResources };
+}
+
 function runSetup({
   composerEvidence,
   domainOracle,
@@ -368,7 +436,10 @@ function finishTerminalSlice({
   output,
   outputProfile,
   frameworkProfile,
+  termination,
 }) {
+  assert(['complete', 'cancelled'].includes(termination), `unsupported terminal-slice termination ${termination}`);
+  const cancelled = termination === 'cancelled';
   const domainFact = factValue(setup.result, 'domain.owner.root-ready');
   const graphFact = factValue(setup.result, 'graph.owner.cleanup-ready');
   const outputInitializationFact = factValue(setup.result, 'output.owner.initialized');
@@ -379,9 +450,13 @@ function finishTerminalSlice({
     ?? factValue(setup.result, 'resource.owner.work-admission').leaseReferences;
   for (const reference of workLeaseReferences) resource.releaseResource(reference);
 
-  const policyStop = policy.requestStop({ cause: 'policy-budget-satisfied', ready: true });
+  const cancellation = cancelled
+    ? prepareCancellationObligations({ resource, resourceProfile, progress, progressProfile })
+    : null;
+
+  const policyStop = policy.requestStop({ cause: cancelled ? 'cancelled' : 'policy-budget-satisfied', ready: true });
   assert.equal(policy.beginDrain().kind, 'draining');
-  const policyTerminal = policy.terminalizeStop({ classification: 'complete' });
+  const policyTerminal = policy.terminalizeStop({ classification: termination });
   assert.equal(policyTerminal.kind, 'terminal');
   const policyCleanup = policy.cleanup();
   assert.equal(policyCleanup.kind, 'complete');
@@ -397,8 +472,49 @@ function finishTerminalSlice({
     assert.equal(evaluatorRemoval.runtimeResidue, 0);
   }
 
-  const progressStop = progress.requestStop({ cause: policyStop.cause ?? 'policy-budget-satisfied' });
-  assert.equal(progress.beginDraining().kind, 'draining');
+  const progressStop = progress.requestStop({ cause: cancelled ? 'progress-cancelled' : (policyStop.cause ?? 'policy-budget-satisfied') });
+  let cancellationWorkDispositions = null;
+  if (cancellation !== null) {
+    const afterStop = progress.observeProgress();
+    const ordinaryState = afterStop.work.find(({ workId }) => workId === cancellation.ordinary.workId)?.state;
+    const mustDrainState = afterStop.work.find(({ workId }) => workId === cancellation.mustDrain.workId)?.state;
+    assert.equal(ordinaryState, 'abandoned', 'ordinary cancellation work must follow its owner-declared abandon disposition');
+    assert.equal(mustDrainState, 'claimed', 'irreversible result-visible work must remain claimed until drained');
+    assert.equal(progress.beginDraining().kind, 'draining');
+    assert.equal(progress.completeWork({
+      ...workRef(cancellation.mustDrain),
+      operationId: 'cancellation-must-drain-complete',
+      resultVisible: true,
+    }).kind, 'completed');
+    for (const input of [...cancellation.ordinaryResources.inputs, ...cancellation.mustDrainResources.inputs]) {
+      resource.releaseResource(leaseRef(input));
+    }
+    const afterDrain = progress.observeProgress();
+    cancellationWorkDispositions = {
+      ordinary: afterDrain.work.find(({ workId }) => workId === cancellation.ordinary.workId)?.state,
+      mustDrain: afterDrain.work.find(({ workId }) => workId === cancellation.mustDrain.workId)?.state,
+    };
+    assert.deepEqual(cancellationWorkDispositions, { ordinary: 'abandoned', mustDrain: 'completed' });
+  } else {
+    assert.equal(progress.beginDraining().kind, 'draining');
+  }
+
+  const preDrainResourceConservation = resource.assertConservation();
+  assert.equal(preDrainResourceConservation.kind, 'conserved');
+  const frameworkStopped = cancelled
+    ? requestFrameworkCancellation(setup.frameworkRunning, {
+      reservationAccountingConserved: policy.assertAccounting().outstandingReservations === '0',
+      resourceAccountingConserved: preDrainResourceConservation.kind === 'conserved',
+      ownerRulesApplied: cancellationWorkDispositions?.ordinary === 'abandoned' && cancellationWorkDispositions?.mustDrain === 'completed',
+      partialBackupPublished: false,
+      prematureTeardown: false,
+      workDispositions: ['abandon', 'must-drain', 'release'],
+    })
+    : recordStopCause(setup.frameworkRunning, 'policy-stop');
+  if (cancelled) {
+    assert.equal(frameworkStopped.status, 'framework-cancelling');
+    assert.equal(frameworkStopped.stopCause, 'external-cancellation');
+  }
 
   assert.equal(resource.beginDraining().kind, 'draining');
   const cleanupReserve = reserveByPurpose(resourceProfile, 'progress-cleanup');
@@ -420,12 +536,12 @@ function finishTerminalSlice({
     terminalOutputPublishable: outputInitializationFact.kind === 'initialized',
   };
   const outputEnvelope = {
-    completionClass: 'complete',
+    completionClass: cancelled ? 'failed' : 'complete',
     firstStopCause: progressStop.firstCause.cause,
-    completedWork: { count: '1', unit: 'work-items' },
+    completedWork: { count: cancelled ? '2' : '1', unit: 'work-items' },
     policyBudgetStatus: policyTerminal.classification,
     resourceStatus: resourceConservation,
-    diagnosticIdentity: 'diagnostic.terminal-slice.none',
+    diagnosticIdentity: cancelled ? 'diagnostic.terminal-slice.cancelled' : 'diagnostic.terminal-slice.none',
     laterDispositions: [],
   };
   const { closure: progressClosure } = closeProgressThenClassifyOutput({ progress, output, progressClosureFacts, outputEnvelope });
@@ -468,8 +584,7 @@ function finishTerminalSlice({
   assert.equal(domainCleanup.retained.domainMetadataEntries, 0);
   assert.equal(domainCleanup.retained.admittedRangeReferences, 0);
 
-  const stoppedFramework = recordStopCause(setup.frameworkRunning, 'policy-stop');
-  const frameworkTerminal = publishFrameworkCompletion(stoppedFramework, completionFacts(frameworkProfile, progressClosure, {
+  const frameworkTerminal = publishFrameworkCompletion(frameworkStopped, completionFacts(frameworkProfile, progressClosure, {
     policy: { disposition: policyTerminal.kind === 'terminal' ? 'ready' : 'pending' },
     evaluator: { disposition: evaluatorSelected && evaluatorCleanup.runtimeResidue === 0 ? 'ready' : 'terminally-absent' },
     output: { disposition: publishedOutput.kind === 'ready' ? 'ready' : 'pending' },
@@ -525,6 +640,7 @@ function finishTerminalSlice({
   assert.equal(assertFrameworkCleanupReadback(releasedFramework), true);
 
   return {
+    termination,
     schedule: setup.result.scheduleIdentity,
     domainProfile: domainRoot.profileId,
     graphProfile: graphProfile.id,
@@ -537,6 +653,8 @@ function finishTerminalSlice({
     resourceConservation,
     progressClosure,
     outputEnvelope: publishedOutput.envelope,
+    frameworkStopCause: frameworkStopped.stopCause,
+    cancellationWorkDispositions,
     outputCleanup,
     frameworkReleasedOwners: releasedFramework.releasedOwners,
     frameworkCleanupReadback: releasedFramework.cleanupReadback,
@@ -554,6 +672,7 @@ export function runCompleteTerminalSlice({
   family,
   scheduleId,
   order,
+  termination = 'complete',
 }) {
   const familyProfiles = TERMINAL_SLICE_FAMILIES[family];
   assert(familyProfiles, `unsupported terminal-slice family ${family}`);
@@ -623,11 +742,13 @@ export function runCompleteTerminalSlice({
     output,
     outputProfile,
     frameworkProfile,
+    termination,
   });
 }
 
 export function terminalSliceMeaning(result) {
   return {
+    termination: result.termination,
     domainProfile: result.domainProfile,
     graphProfile: result.graphProfile,
     policyProfile: result.policyProfile,
@@ -639,6 +760,8 @@ export function terminalSliceMeaning(result) {
     completionClass: result.outputEnvelope.completionClass,
     firstStopCause: result.outputEnvelope.firstStopCause,
     policyBudgetStatus: result.outputEnvelope.policyBudgetStatus,
+    frameworkStopCause: result.frameworkStopCause,
+    cancellationWorkDispositions: result.cancellationWorkDispositions,
     structuralResidue: result.structuralResidue,
     hostProgressRequired: result.hostProgressRequired,
     firstProductSpecificResidue: result.firstProductSpecificResidue,
