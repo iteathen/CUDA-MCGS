@@ -8,6 +8,7 @@ import { canonicalIdentity, sourceTextSha256 } from './src/canonical.mjs';
 import { assertUniqueStrings, exactKeys, fail } from './src/errors.mjs';
 import { registerSessionBoundaryCases } from './src/session-boundary-cases.mjs';
 import { registerSessionCases } from './src/session-cases.mjs';
+import { registerSessionReplayCases } from './src/session-replay-cases.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
@@ -69,6 +70,7 @@ function defineCase(id, body, coveragePrefixes = []) {
 }
 registerSessionCases({ defineCase, sessionProjection, terminalEvidence });
 registerSessionBoundaryCases({ defineCase, sessionProjection });
+registerSessionReplayCases({ defineCase, sessionProjection });
 assert.deepEqual(definitions.map(({ id }) => id), expectedCaseIds, 'discovered Session cases must exactly match checked-in expected case bank');
 
 const mappedRequirements = new Set();
@@ -144,6 +146,7 @@ const sourcePaths = [
   'experiments/search-semantics-reference/src/session-case-support.mjs',
   'experiments/search-semantics-reference/src/session-cases.mjs',
   'experiments/search-semantics-reference/src/session-boundary-cases.mjs',
+  'experiments/search-semantics-reference/src/session-replay-cases.mjs',
   'experiments/search-semantics-reference/run-session.mjs',
   'scripts/export-search-ir-composer-session-profiles.mjs',
   'scripts/run-session-reference.mjs',
