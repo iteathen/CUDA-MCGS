@@ -28,6 +28,7 @@
   "profile": {
     "schema": "cuda-mcgs.framework-lifecycle-profile/0.1.0",
     "engineIdentity": "engine.synthetic-terminal-v1",
+    "semanticIdentity": "semantic.a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe",
     "profileIdentity": "profile.synthetic-terminal-v1",
     "packageIdentity": "package.synthetic-terminal-v1",
     "ownerOrder": [
@@ -64,8 +65,9 @@
       "releaseOrder": "reverse-dependency",
       "records": [
         { "id": "framework.profile", "kind": "normalized-profile", "owner": "framework", "plannedDisposition": "archive" },
+        { "id": "package.search-source", "kind": "generated-source", "owner": "package", "plannedDisposition": "release" },
         { "id": "package.search-program", "kind": "generated-package", "owner": "package", "plannedDisposition": "release" },
-        { "id": "evaluator.cache", "kind": "cache-artifact", "owner": "evaluator", "plannedDisposition": "release" },
+        { "id": "package.cache", "kind": "cache-artifact", "owner": "package", "plannedDisposition": "release" },
         { "id": "graph.allocation", "kind": "allocation", "owner": "graph", "plannedDisposition": "release" },
         { "id": "cuda.operation", "kind": "operation", "owner": "cuda-js", "plannedDisposition": "release" },
         { "id": "progress.work", "kind": "work-item", "owner": "progress", "plannedDisposition": "release" },
@@ -73,6 +75,10 @@
         { "id": "resource.transaction", "kind": "transaction", "owner": "resource", "plannedDisposition": "release" },
         { "id": "output.borrow", "kind": "borrow", "owner": "output", "plannedDisposition": "release" },
         { "id": "framework.diagnostic", "kind": "diagnostic", "owner": "framework", "plannedDisposition": "archive" },
+        { "id": "framework.local-state", "kind": "local-state", "owner": "framework", "plannedDisposition": "release" },
+        { "id": "framework.process", "kind": "process", "owner": "framework", "plannedDisposition": "release" },
+        { "id": "output.transfer", "kind": "transfer", "owner": "output", "plannedDisposition": "release" },
+        { "id": "framework.credential", "kind": "credential", "owner": "framework", "plannedDisposition": "release" },
         { "id": "framework.coordination", "kind": "coordination-record", "owner": "framework", "plannedDisposition": "release" }
       ]
     }
@@ -80,6 +86,7 @@
   "persistenceProfile": {
     "schema": "cuda-mcgs.framework-lifecycle-profile/0.1.0",
     "engineIdentity": "engine.synthetic-persistent-v1",
+    "semanticIdentity": "semantic.a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe",
     "profileIdentity": "profile.synthetic-persistent-v1",
     "packageIdentity": "package.synthetic-persistent-v1",
     "ownerOrder": [
@@ -114,6 +121,7 @@
       "migration": "explicit",
       "authorization": "owner-and-compatibility-gated",
       "recovery": "revalidate-or-quarantine",
+      "rollback": "quarantine-and-clean-initialize",
       "retention": "bounded",
       "cleanup": "owner-declared",
       "forbiddenDurableFields": [
@@ -129,7 +137,9 @@
       "releaseOrder": "reverse-dependency",
       "records": [
         { "id": "framework.profile", "kind": "normalized-profile", "owner": "framework", "plannedDisposition": "archive" },
+        { "id": "package.search-source", "kind": "generated-source", "owner": "package", "plannedDisposition": "release" },
         { "id": "package.search-program", "kind": "generated-package", "owner": "package", "plannedDisposition": "release" },
+        { "id": "package.cache", "kind": "cache-artifact", "owner": "package", "plannedDisposition": "release" },
         { "id": "graph.allocation", "kind": "allocation", "owner": "graph", "plannedDisposition": "release" },
         { "id": "cuda.operation", "kind": "operation", "owner": "cuda-js", "plannedDisposition": "release" },
         { "id": "progress.work", "kind": "work-item", "owner": "progress", "plannedDisposition": "release" },
@@ -138,12 +148,17 @@
         { "id": "output.borrow", "kind": "borrow", "owner": "output", "plannedDisposition": "release" },
         { "id": "framework.diagnostic", "kind": "diagnostic", "owner": "framework", "plannedDisposition": "archive" },
         { "id": "persistence.snapshot", "kind": "persisted-artifact", "owner": "framework.persistence.synthetic", "plannedDisposition": "archive" },
+        { "id": "framework.local-state", "kind": "local-state", "owner": "framework", "plannedDisposition": "release" },
+        { "id": "framework.process", "kind": "process", "owner": "framework", "plannedDisposition": "release" },
+        { "id": "output.transfer", "kind": "transfer", "owner": "output", "plannedDisposition": "release" },
+        { "id": "framework.credential", "kind": "credential", "owner": "framework", "plannedDisposition": "release" },
         { "id": "framework.coordination", "kind": "coordination-record", "owner": "framework", "plannedDisposition": "release" }
       ]
     }
   },
   "validPersistenceSnapshot": {
     "engineIdentity": "engine.synthetic-persistent-v1",
+    "semanticIdentity": "semantic.a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe",
     "profileIdentity": "profile.synthetic-persistent-v1",
     "packageIdentity": "package.synthetic-persistent-v1",
     "compatibilityIdentity": "persist.synthetic-v1",
