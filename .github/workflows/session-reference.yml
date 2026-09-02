@@ -77,12 +77,11 @@ jobs:
       - name: Run terminal Session-absent coupled reference
         run: node scripts/run-terminal-slice-reference.mjs
       - name: Run Session reference
-        if: ${{ hashFiles('scripts/run-session-reference.mjs') != '' }}
         run: node scripts/run-session-reference.mjs
       - name: Upload Session evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: session-reference-evidence
-          if-no-files-found: warn
+          if-no-files-found: error
           path: experiments/search-semantics-reference/build/session-evidence*.json
