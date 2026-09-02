@@ -22,6 +22,7 @@
     "session-cancellation-admission-precedes-reroot-mutation",
     "session-command-validation-precedes-mutation",
     "session-advance-preserves-root-incarnation",
+    "session-advance-rejects-stale-authority",
     "session-teardown-enforces-normalized-order",
     "session-completion-command-replay-idempotent"
   ],
