@@ -96,24 +96,42 @@ assert.equal(staleAdvance.code, 'session-command-stale');
 assert.equal(staleAdvance.authorityUnchanged, true);
 assert.deepEqual(session.snapshot(), beforeStale, 'stale advance authority must not mutate Session authority or counters');
 
-const transaction = entry.normalized.reroot.profile.transaction;
-const beforeStaleReroot = session.snapshot();
-const staleReroot = session.prepareReroot({
-  commandId: 'reroot-stale-authority',
-  authority: originalAuthority,
-  transactionId: 'reroot-stale-authority',
-  candidateRoot: {
-    rootIdentity: 'root.synthetic.epsilon',
-    occurrenceReference: { slot: 'node-5', generation: '1' },
-    domainReady: true,
-    graphReady: true,
+const replaySession = createSessionOracle({ profile: entry.normalized, ...provenance });
+assert.equal(replaySession.establishInitialRoot({
+  commandId: 'root-rejected-replay',
+  rootIdentity: 'root.synthetic.rejected-replay',
+  occurrenceReference: { slot: 'node-rejected-replay', generation: '1' },
+  domainReady: true,
+  graphReady: true,
+  resourceReady: true,
+}).kind, 'accepted');
+const replayAuthority = replaySession.snapshot().authority;
+const rejectedReplayInput = {
+  commandId: 'advance-rejected-replay',
+  authority: replayAuthority,
+  successor: {
+    rootIdentity: 'root.synthetic.rejected-replay-target',
+    occurrenceReference: { slot: 'node-rejected-replay-target', generation: '1' },
+    realizedTransition: true,
+    successorReady: false,
+    nodeInvalidated: false,
   },
-  compoundAdmission: { approved: true, token: 'admission-stale-authority' },
-  ownerPreparations: transaction.prepareOrder.map((owner) => ({ owner, status: 'prepared' })),
-});
-assert.equal(staleReroot.kind, 'rejected');
-assert.equal(staleReroot.code, 'session-command-stale');
-assert.equal(staleReroot.authorityUnchanged, true);
-assert.deepEqual(session.snapshot(), beforeStaleReroot, 'stale reroot authority must not publish a transaction or mutate Session state');
+  requestedWork: {
+    materialization: false,
+    compoundAdmission: false,
+    reuseClassification: false,
+    transform: false,
+    reset: false,
+    reclamation: false,
+    eagerCleanup: false,
+  },
+};
+assert.equal(replaySession.applyAdvance(rejectedReplayInput).kind, 'rejected');
+const afterRejectedReplay = replaySession.snapshot();
+assert.throws(() => replaySession.applyAdvance({
+  ...rejectedReplayInput,
+  successor: { ...rejectedReplayInput.successor, successorReady: true },
+}), { code: 'SESSION_REFERENCE_COMMAND_REPLAY' });
+assert.deepEqual(replaySession.snapshot(), afterRejectedReplay, 'a rejected commandId cannot be reused with a different payload');
 
 console.log('session_advance_boundary=pass');
