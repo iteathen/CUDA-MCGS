@@ -2,18 +2,32 @@ import assert from 'node:assert/strict';
 
 import { createSessionOracle } from './session.mjs';
 
+const DEFAULT_SESSION_IDENTITY = 'session.synthetic';
+const DEFAULT_SEARCH_IDENTITY = 'search.synthetic';
+const DEFAULT_SEARCH_INCARNATION = '1';
+
 export function getSessionProfile(projection, id) {
   const entry = projection.profiles.find((candidate) => candidate.id === id);
   assert(entry, `missing Session profile ${id}`);
   return entry.normalized;
 }
 
+function sessionOptions(options = {}) {
+  const {
+    sessionIdentity = DEFAULT_SESSION_IDENTITY,
+    searchIdentity = DEFAULT_SEARCH_IDENTITY,
+    searchIncarnation = DEFAULT_SEARCH_INCARNATION,
+    ...rest
+  } = options;
+  return { sessionIdentity, searchIdentity, searchIncarnation, ...rest };
+}
+
 export function liveSession(projection, options = {}) {
-  return createSessionOracle({ profile: getSessionProfile(projection, 'session.synthetic-live-session'), ...options });
+  return createSessionOracle({ profile: getSessionProfile(projection, 'session.synthetic-live-session'), ...sessionOptions(options) });
 }
 
 export function restartSession(projection, options = {}) {
-  return createSessionOracle({ profile: getSessionProfile(projection, 'session.synthetic-live-session-restart'), ...options });
+  return createSessionOracle({ profile: getSessionProfile(projection, 'session.synthetic-live-session-restart'), ...sessionOptions(options) });
 }
 
 export function establish(session, label = 'alpha') {
@@ -60,21 +74,23 @@ export function readyOutputPublication(session, identity = 'observation.syntheti
   const snapshot = session.snapshot();
   const authority = snapshot.authority;
   assert(authority);
+  const outputProfile = session.profile.outputProfile?.id;
+  assert(outputProfile, 'Session profile must bind one normalized Output profile');
   const publication = {
     kind: 'ready',
     slotId: identity,
     incarnation: '1',
-    profileId: 'output.synthetic-live-session',
+    profileId: outputProfile,
     schemaId: 'output-schema.synthetic-live-session.live',
-    searchIncarnation: '1',
+    searchIncarnation: snapshot.searchIncarnation,
     sequence: '1',
     payload: [],
     envelope: null,
     metadata: {
-      searchIdentity: 'search.synthetic',
-      sessionIdentity: 'session.synthetic',
-      searchIncarnation: '1',
-      profileIdentity: 'output.synthetic-live-session',
+      searchIdentity: snapshot.searchIdentity,
+      sessionIdentity: snapshot.sessionIdentity,
+      searchIncarnation: snapshot.searchIncarnation,
+      profileIdentity: outputProfile,
       rootEpoch: authority.rootEpoch,
       workEpoch: '1',
       sequence: '1',
