@@ -1,6 +1,16 @@
 # REF-RESOURCE-01 assessment and plan — 2026-09-01
 
-**Status:** Proposal
+**Status:** Historical construction assessment; superseded as live execution state by the current-portfolio reconstruction recorded in PR #166 and `docs/handoffs/2026-09-01-ref-resource-01-qualification.md`.
+
+## Current disposition
+
+This document preserves the original assessment and construction plan on `experimental/portfolio@95fdda77d002cc899a6534f02a6c2af0580303af`. It is not the current integration authority.
+
+The Resource leaf has since been reconstructed from accepted `experimental/portfolio@f2fa9d0676c770cb19f1cc754ce9db56d2048394`. The reviewed Resource semantic/reference files were replayed unchanged, the current permanent workflow was composition-merged so Evaluator and Resource remain peer required jobs, and a deliberate stale-provenance run proved that only Resource's frozen Composer/projection identities required rebinding. The provenance-rebound semantic checkpoint is `ref/resource-01@65c99981cfbd0d0cfc62fe4bc75dfc74c91d2b0d`; normal workflow `33585922613` passed all current merge-gate jobs, including Resource `23/23` cases and `34/34` direct obligations.
+
+The exact final documentation/review head is intentionally recorded in PR #166 after the documentation-only reconciliation commit and its normal workflow complete, so this historical plan does not create a self-invalidating embedded final-head claim.
+
+---
 
 ## Objective
 
