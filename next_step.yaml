@@ -1,9 +1,9 @@
 {
-  "schema_version": 89,
+  "schema_version": 91,
   "updated": "2026-09-02",
-  "status": "ref_framework_life_01_frozen_candidate_live_head_gate_before_owner_authorization",
-  "objective": "Treat PR #185 as semantically frozen. Read the live PR head, exact base and required checks; if that same head is fully green and a fresh complete-diff author review has no blocker, present that exact head/base for fresh repository-owner authorization. Do not merge before that authorization.",
-  "ownership_boundary": "Framework owns only cross-owner top-level lifecycle coordination for the 15 direct SPEC-0000 ENGINE-REFERENCE routes: admission, initialization/reverse rollback, ignition/device closure, first cause, completion/cancellation, terminal borrow/teardown, optional persistence contract and complete cleanup/readback. Domain, Graph, Policy, Evaluator, Resource, Progress and Output retain private semantic state; CUDA-JS owns generic CUDA mechanisms; CUDA-JS-Tensor owns generic dense Tensor math; downstream products own chess/UCI/model/Book Forge/Timing Evidence/tablebase/product meaning.",
+  "status": "ref_terminal_slice_01_review_ready_awaiting_authorization",
+  "objective": "Qualify and review REF-TERMINAL-SLICE-01 as integration evidence only: one complete finite session-absent, extension-absent CUDA-free engine lifecycle composed through the already-owned public Domain, Graph, Policy, optional Evaluator, Resource, Progress, Output and Framework reference surfaces. Do not create a second semantic owner or monolithic reference engine.",
+  "ownership_boundary": "The terminal slice owns only conformance composition, schedule/event traces, cross-owner invariant checks and evidence. Domain, Graph, Policy, Evaluator, Resource, Progress, Output and Framework retain their existing semantic state and failure interpretation. Session, Stage and Channel are absent in this leaf. CUDA-JS owns generic CUDA mechanisms; CUDA-JS-Tensor owns generic dense Tensor math; downstream products own chess/UCI/model/Book Forge/Timing Evidence/tablebase meaning.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
@@ -14,80 +14,100 @@
     "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
     "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
     "docs/specs/SPEC-0000-framework-requirements.md",
-    "schemas/search-ir/0.2.0/requirement-coverage.json",
-    "https://github.com/iteathen/CUDA-MCGS/issues/183",
-    "https://github.com/iteathen/CUDA-MCGS/pull/185",
+    "docs/specs/SPEC-0007-domain-state-action-and-transition.md",
+    "docs/specs/SPEC-0008-search-policy-and-backup.md",
+    "docs/specs/SPEC-0009-evaluator-contract.md",
+    "docs/specs/SPEC-0010-graph-storage-and-reclamation.md",
+    "docs/specs/SPEC-0011-finite-search-resources.md",
+    "docs/specs/SPEC-0012-device-owned-search-progress.md",
+    "docs/specs/SPEC-0013-result-and-observation-publication.md",
+    "https://github.com/iteathen/CUDA-MCGS/issues/184",
     "https://github.com/iteathen/CUDA-MCGS/issues/36",
-    "https://github.com/iteathen/CUDA-MCGS/issues/142"
+    "https://github.com/iteathen/CUDA-MCGS/issues/142",
+    "https://github.com/iteathen/CUDA-MCGS/pull/187"
   ],
   "state": {
     "protected_authority": "main@3ecac11e3576bd063760bc9572f79bea78acd031",
-    "integrated_candidate_base": "experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe",
-    "branch": "ref/framework-life-01",
-    "pr": 185,
-    "issue": 183,
-    "semantic_head": "7eb25f17481fea6a925d6d0e29baa06473ee2bff",
-    "live_head_rule": "The current PR/ref readback, not a self-referential SHA in this file, is the exact documentation-inclusive authorization subject. Any head/base change requires requalification and review."
+    "integrated_candidate_base": "experimental/portfolio@7701b9be1da69b05efc10172f4b06e86afb27494",
+    "integrated_framework_source_head": "2cc08feaa8a0a2c1a538db30e7eeba6cc6c11829",
+    "integrated_framework_tree": "a5f86cecd40fb1f58198e942553a5e756a49dd28",
+    "framework_transport_pr": 186,
+    "framework_review_record_pr": 185,
+    "framework_issue": 183,
+    "active_issue": 184,
+    "active_branch": "ref/terminal-slice-01",
+    "draft_pr": 187,
+    "last_semantic_candidate": "3a6ed1691c362da046251e3b01d2ed366b7770c0",
+    "last_fully_qualified_tracking_head": "c681f378ff679f4b5325fe92c7855c7ea9c74be4",
+    "qualified_pre_pr_checkpoint": "checkpoint/terminal-slice-qualified-pre-pr-20260902",
+    "pre_ignition_red_checkpoint": "checkpoint/terminal-slice-pre-ignition-red-20260902"
   },
-  "red_evidence": [
-    {
-      "purpose": "first authoritative stop cause preservation",
-      "head": "191add5a0e72e2c19e6e862676baf0251c593a95",
-      "workflow": 33651637686,
-      "framework_evidence": "594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e",
-      "artifact": 9855005183,
-      "archive_sha256": "a8ce1cc1b2133bff7cdf655b163fdd6f4487cd94369ea38e553789c9a7b65cbb"
-    },
-    {
-      "purpose": "partial rollback protected-state preservation plus distinct local-files/Git cleanup readback",
-      "head": "47bd5f1326d47ce1a955b55d9f5c0e13334145da",
-      "workflow": 33659024252,
-      "framework_evidence": "2c3e22a634eb004cbcd249712cc079a41e8a84116296fff0d204a49202fa35f2",
-      "artifact": 9857898880,
-      "archive_sha256": "c6f4cac791297168b91cad2a1f4025a2bb96343b7b96796b75aec6fdfaa8ccc8"
-    }
-  ],
-  "semantic_qualification": {
-    "head": "7eb25f17481fea6a925d6d0e29baa06473ee2bff",
-    "framework_workflow": 33659209749,
-    "repository_workflow": 33659209933,
+  "framework_integration_qualification": {
+    "integration_sha": "7701b9be1da69b05efc10172f4b06e86afb27494",
+    "push_framework_workflow": 33661415916,
     "composer_cases": "881/881",
     "framework_cases": "18/18",
     "direct_spec_0000_routes": "15/15",
     "composer_evidence": "a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe",
     "framework_evidence": "a8f17027993720c4fe61a76ce060c46206a73f36926dc280d1659c7759e0e0ad",
-    "artifact": 9857969833,
-    "archive_sha256": "03c553a341b8c8314167d2ddba7536892fe9a3a1ee21b2985077d6260485f90d",
-    "repository_matrix": "Governance, Windows/Ubuntu Search IR, all Graph lanes, Policy, Evaluator, Resource, Progress, Output and aggregate verify all succeeded"
+    "artifact": 9858821172,
+    "archive_sha256": "33ba47f9c8eabee015db45a48ec192c208964e9b7a486ff84f192eba2016dc86",
+    "full_matrix_rule": "The documentation workflow runs on pull_request and main push, not experimental/portfolio push. PR #186 reran the full repository matrix on source tree a5f86cecd40fb1f58198e942553a5e756a49dd28; integration commit 7701b9be has exactly that same tree."
   },
+  "terminal_slice_qualification": {
+    "semantic_candidate": "3a6ed1691c362da046251e3b01d2ed366b7770c0",
+    "qualified_tracking_head": "c681f378ff679f4b5325fe92c7855c7ea9c74be4",
+    "pr_terminal_workflow": 33678141931,
+    "pr_framework_workflow": 33678142005,
+    "pr_full_matrix_workflow": 33678141975,
+    "composer_cases": "881/881",
+    "terminal_slice_cases": "6/6",
+    "ignition_order": "pass",
+    "terminal_evidence": "c9c0b9b8847c5121bc6cce1ff3707e2c465a4fddd067a400693b235972254388",
+    "artifact": 9865069421,
+    "archive_sha256": "f7c516b23c45476e46c3b6764c7bc0bb19cb6b63f648e4340a8cfc090a61d016",
+    "pr_matrix": "Terminal slice, Framework lifecycle, Governance, Windows/Ubuntu Search IR, Graph NODE/EDGE/PATH/REF/ROOT/ADVANCE/CLEANUP/RECLAIM, Policy, Evaluator, Resource, Progress, Output and aggregate verify all passed on tracking head c681f378ff679f4b5325fe92c7855c7ea9c74be4. The current branch differs from that qualified head only by this state-only reconciliation; exact-head CI must remain green before any authorization is acted on."
+  },
+  "red_before_green": [
+    "Run 33664488775 failed when the initial integration classified Output before Progress closure; commit 2240d6423c5ea61c94ee0eaf439290c2973e440c repaired the ordering and run 33664588148 passed.",
+    "Run 33676366735 failed only the permanent terminal ignition-order falsifier because the slice ignited before Output pre-ignition initialization; later semantic work separated Framework initialization/ignition and preserved that falsifier in the evidence source set."
+  ],
+  "terminal_slice_required_falsifiers": [
+    "At least two materially different product-neutral fixture families must complete; one product shape cannot be the oracle.",
+    "At least two materially different bounded legal schedules must preserve the same semantic result and accounting while allowing different mechanism order.",
+    "The slice must fail if it bypasses or reinterprets a public owner fact or introduces a second Framework/Progress/Output authority table.",
+    "No host observe-decide-write/relaunch loop may be required for internal progression after ignition.",
+    "Terminal publication must be rejected while must-drain/result-visible work or required owner disposition remains live.",
+    "Failure and cancellation must conserve finite Resource accounting and complete Framework/owner cleanup/readback.",
+    "Evaluator-selected and evaluator-absent profiles must both work; absence must leave zero evaluator residue.",
+    "Session, Stage, Channel and first-product optional surfaces must be exactly absent with zero residue.",
+    "Framework/owner initialization and Output pre-ignition setup must precede ignition; device-active Resource/Progress work must follow ignition.",
+    "Result-visible owner teardown must not retire source results before terminal Output capture and Framework completion."
+  ],
   "deliverables": [
-    "Keep semantic/reference source frozen unless a new exact-head review finds a real SPEC-0000 blocker.",
-    "Read the live PR #185 head/base and confirm the permanent Framework workflow plus full repository matrix are green on that exact head.",
-    "Confirm the complete ten-file PR diff has no blocking author-review finding; do not represent author review as independent review.",
-    "Reconcile #183, #36, #142, #32 and PR #185 to the exact live head/evidence without changing the repository head.",
-    "Stop and present the exact live head/base for fresh repository-owner authorization."
+    "Compose existing public owner oracle methods rather than copying their state machines.",
+    "Preserve decisive red-before-green integration falsifiers and bind them into evidence provenance.",
+    "Maintain product-neutral terminal-slice fixtures/cases/runner/evidence and the permanent peer CI gate.",
+    "Run owning and full repository qualification, perform exact-head complete-diff author review, reconcile current-state docs/issues and stop for fresh exact-head owner authorization before integration."
   ],
   "validation": [
-    "Live PR base is exactly experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe.",
-    "Live PR head passes the permanent Framework workflow with exactly 18/18 Framework cases, all 15/15 direct SPEC-0000 routes and Composer 881/881.",
-    "Composer representation/composition evidence remains exactly a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe unless authoritative upstream content actually changes.",
-    "Live PR head passes the full repository matrix: Governance, Windows/Ubuntu Search IR, Graph, Policy, Evaluator, Resource, Progress, Output and aggregate verify.",
-    "Fresh author-side complete-diff review has no blocking finding on that same live head.",
-    "Protected main remains separate; no #122/native/performance/product claim is made."
+    "The current PR #187 head must be read back and remain green in terminal-slice, Framework and full repository/aggregate qualification before merge authorization is acted on.",
+    "Terminal-slice evidence must remain 6/6 with Composer 881/881 and ignition-order pass.",
+    "The complete PR #187 diff must remain clean for duplicate authority, private owner-state access, first-consumer assumptions, lifecycle/cleanup gaps, stale provenance and unnecessary architecture.",
+    "If the PR head or material base changes after review, repeat exact-head review/qualification before any authorization."
   ],
   "blockers": [
-    "Fresh repository-owner authorization for the exact live head/base is required before integration.",
-    "The live head/base/checks must be re-read immediately before authorization/merge; any material movement invalidates the frozen subject.",
-    "#184 remains blocked until #183 is authorized, guarded-integrated and read back."
+    "No semantic or qualification blocker is known after the recorded green matrix.",
+    "Integration/merge remains blocked only on the fresh repository-owner/independent exact-head authorization required by project policy."
   ],
   "do_not": [
-    "Do not merge PR #185 or a replacement transport without fresh exact-head repository-owner authorization.",
-    "Do not skip #184 and jump directly to Session.",
-    "Do not absorb Domain, Graph, Policy, Evaluator, Resource, Progress or Output private state into Framework.",
-    "Do not make scheduler topology, CUDA mechanism, persistence storage backend, Tensor or product semantics part of universal Framework meaning.",
+    "Do not add a second semantic owner, runtime registry or monolithic reference engine.",
+    "Do not deep-read sibling private oracle state when a public event/fact can express the boundary.",
+    "Do not implement Session, Stage or Channel behavior in the terminal slice.",
+    "Do not select a physical scheduler, kernel/stream/warp topology or CUDA mechanism as universal semantics.",
     "Do not add C/C++, CUDA C/C++, .cu/.cuh, hand-written PTX, native addons/FFI, private CUDA-JS calls or Python.",
-    "Do not weaken either preserved red probe, exact requirement coverage, cleanup readback or provenance checks to restore green CI.",
-    "Do not describe candidate evidence as protected semantic/native/production authority."
+    "Do not introduce neural/Tensor/chess/UCI/product assumptions.",
+    "Do not claim native/performance/production/#122 authority from CUDA-free reference evidence."
   ],
-  "next_after_authorized_integration": "#184 / REF-TERMINAL-SLICE-01 on the exact read-back experimental/portfolio integration head; compose one complete finite session-absent, extension-absent CUDA-free lifecycle using public owner events/facts only."
+  "next_after_authorized_integration": "#181 / REF-SESSION-01, then #30 Stage, #33 Channel evidence, #36 final reference integration and #122 protected atomic semantic acceptance."
 }
