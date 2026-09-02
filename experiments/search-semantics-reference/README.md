@@ -2,72 +2,69 @@
 
 **Status:** Informational
 
-This CUDA-free experiment is the behavioral/reference evidence lane for `ENGINE-REFERENCE-01`. It is composed from owner-local LEGO bricks: each reference consumes normalized or already-qualified facts owned elsewhere, proves one semantic boundary, and leaves native/CUDA realization downstream.
+This CUDA-free experiment is the behavioral/reference evidence lane for `ENGINE-REFERENCE-01`. Reference bricks are owner-local and independently replaceable: they consume normalized identities or public facts owned elsewhere, prove one semantic boundary, and leave native/CUDA realization downstream.
 
 ## Current portfolio state
 
-`experimental/portfolio@80cbc05a54234ae41201e90db8737472db62fff8` contains the accepted Graph reference chain through cleanup, Policy reference, and `REF-EVALUATOR-01` from PR #160. Protected `main` is a separate release/authority surface.
+Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd031`.
 
-The active integration candidate is shared Composer/Progress authority PR #169 on branch `fix/36-progress-stop-disposition-authority`.
+The integrated candidate/reference line is `experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe`, containing the current Graph reference chain plus Policy, Evaluator, Resource, corrected Progress and Output evidence. Candidate integration is not protected #122 acceptance.
 
-The candidate changes one shared normalization invariant:
+## Active Framework lifecycle brick
 
-- `abandon` requires terminal `abandoned`;
-- `cancel` requires terminal `cancelled`;
-- `stale-dispose` requires terminal `stale-disposed`;
-- `service` and `drain` remain service/drain contracts and do not gain an immediate terminal mapping.
+Issue #183 / draft PR #185 constructs `REF-FRAMEWORK-LIFE-01` for exactly 15 direct SPEC-0000 ENGINE-REFERENCE routes:
 
-The correction is owned by Composer/Profile normalization. It does not move Progress reference behavior, Evaluator semantics, scheduler topology, native/CUDA mechanisms, or product policy into that owner.
+- `FRAMEWORK-LIFE-001..009`;
+- `FRAMEWORK-PERSIST-001..002`;
+- `FRAMEWORK-CLEANUP-001..004`.
 
-## Evaluator provenance under the shared correction
+Framework coordinates only public cross-owner lifecycle/disposition facts: complete plan admission, ordered initialization/reverse rollback, ignition/device closure, immutable first stop cause, completion/cancellation, terminal borrow/teardown, optional persistence selection/restore validation and complete cleanup/readback.
 
-Because the integrated Evaluator reference binds exact Composer evidence, #169 deliberately revalidated that dependency after the portfolio base advanced.
+It does **not** implement Domain/Graph/Policy/Evaluator/Resource/Progress/Output private semantics, select a scheduler/CUDA mechanism, become a persistence backend, or own product meaning.
 
-The first reconstructed head `f72f16d2a4c26ab14fcd195451388cec59ae4d8d` ran the normal repository workflow without changing the Evaluator fixture. Run `33583664572` proved:
+## Red-before-green provenance
 
-- Composer/Domain/Policy/Graph semantics remained green;
-- the Progress stop-disposition authority falsifier passed;
-- Composer representation/composition evidence changed to `00045fcb77d8690bfc44bcb5b8d46d55f92db7a924203fff5c8e12b1c8710eb0` (`727811` canonical bytes);
-- the regenerated Evaluator profile projection changed to `3c3609a53177401270da372add3c9ca56dfef1442e571b591efe9093b1bc17f2` (`155494` canonical bytes);
-- Evaluator stopped before semantic execution because its checked-in fixture still named the old Composer evidence.
+Two useful semantic red seams are retained:
 
-That was the intended fail-closed provenance falsifier, not an Evaluator semantic failure.
+1. `191add5a0e72e2c19e6e862676baf0251c593a95` / workflow `33651637686` proved the original last-stop-wins defect. Composer remained 881/881; exactly the first-cause cases failed. Evidence `594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e`.
+2. `47bd5f1326d47ce1a955b55d9f5c0e13334145da` / workflow `33659024252` preserved review-discovered gaps in partial-rollback protected-state preservation and distinct local-files/Git cleanup readback. Composer remained 881/881; the resulting six Framework failures were all direct consequences of those two missing facts. Evidence `2c3e22a634eb004cbcd249712cc079a41e8a84116296fff0d204a49202fa35f2`.
 
-The next head `df8241020340eaec55656972fad3e98f43b321d9` changed only those two frozen Evaluator provenance identities. No Evaluator oracle/source, case list, mutable-state/cache behavior, or ownership rule changed.
+Neither case bank was weakened for the green repairs.
 
-Normal workflow `33583779152` then passed the complete gate, including Windows/Ubuntu Search IR, Governance, Policy, all Graph reference jobs, Evaluator, and aggregate `verify`.
+## Current semantic qualification
 
-Current exact Evaluator bindings under the shared Progress authority are:
+Exact semantic head before this documentation-only reconciliation:
 
-- Composer evidence: `00045fcb77d8690bfc44bcb5b8d46d55f92db7a924203fff5c8e12b1c8710eb0` (`727811` bytes);
-- Evaluator profile projection: `3c3609a53177401270da372add3c9ca56dfef1442e571b591efe9093b1bc17f2` (`155494` bytes);
-- Evaluator evidence: `c1229a47e9c4b036bd9e20af7f8f3fd8827c60f8cdf82d0cb55a4f0231050635` (`18051` bytes);
-- Evaluator cases: `30/30` passed, covering all `37/37` direct SPEC-0009 Evaluator reference obligations.
+`7eb25f17481fea6a925d6d0e29baa06473ee2bff`
 
-Retained Evaluator artifact from run `33583779152`: artifact `9829312993`, archive digest `sha256:d9f1d724edf229820ccce79c6cc4b3da611354d6293a7e500e97eb5a7d67bd1c`.
+Framework workflow `33659209749` passed:
 
-## Evaluator ownership boundary
+- Composer `881/881`;
+- Framework `18/18`;
+- `15/15` direct SPEC-0000 routes;
+- Composer evidence `a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe` (`727811` canonical bytes);
+- Framework evidence `a8f17027993720c4fe61a76ce060c46206a73f36926dc280d1659c7759e0e0ad` (`6517` canonical bytes);
+- artifact `9857969833`, archive SHA-256 `03c553a341b8c8314167d2ddba7536892fe9a3a1ee21b2985077d6260485f90d`.
 
-The Evaluator reference owns only the direct `EVAL-REQUEST-*`, `EVAL-BATCH-*`, `EVAL-CACHE-*`, `EVAL-REUSE-*`, and `EVAL-CLEANUP-*` behavior assigned to `ENGINE-REFERENCE-01`. Domain/Graph identity, Resource admission/pressure, Progress service opportunities, Session advance facts, Policy consumption, Output publication, CUDA-JS realization, and CUDA-JS-Tensor math remain separate owners or injected facts.
+Full repository workflow `33659209933` passed Governance, Windows/Ubuntu Search IR, all Graph lanes, Policy, Evaluator, Resource, Progress, Output and aggregate `verify`.
 
-The shared Composer correction changing an exact upstream identity therefore requires an Evaluator evidence rebind, not an Evaluator semantic rewrite.
+Because this README and the other current-state files are changed after that semantic qualification, the resulting documentation-inclusive PR head still requires one final exact-head workflow/readback and complete-diff author review before authorization is requested.
 
 ## Run
 
-Use Node.js 26 or newer.
+Use Node.js 26 or newer:
 
 ```bash
 node scripts/run-search-ir-composer-reference.mjs
-node scripts/export-search-ir-composer-evaluator-profiles.mjs
-node scripts/run-evaluator-reference.mjs
+node scripts/run-framework-lifecycle-reference.mjs
 ```
 
-Generated `build/` evidence is disposable. Checked-in fixtures/source, retained workflow artifacts, and exact evidence identities are the durable coordinates.
+Generated `build/` evidence is disposable. Checked-in fixtures/source, workflow artifacts, exact source SHAs and content-sensitive evidence identities are the durable coordinates.
 
-## Historical evidence
+## Next semantic seam
 
-The original `REF-EVALUATOR-01` qualification and its development cycle remain preserved in `docs/handoffs/2026-09-01-ref-evaluator-01-mutable-cache-qualification.md`. That handoff is historical evidence and is not rewritten when later shared authority changes provenance.
+After #183 is separately authorized, guarded-integrated and read back, #184 / `REF-TERMINAL-SLICE-01` is next. It composes one complete finite session-absent, extension-absent CUDA-free lifecycle through public owner events/facts only. Session (#181), Stage (#30), Channel (#33), final reference integration (#36) and protected #122 acceptance remain downstream in that order.
 
 ## Claim limits
 
-Passing these CUDA-free references does not establish #122 production contract acceptance, native CUDA realization, CUDA-JS compatible-pair qualification, physical scheduling, performance, search strength, stable SDK/release readiness, or product behavior. PR #169 is a shared semantic-authority integration candidate until its final exact head is independently reviewed/authorized and integrated.
+Passing these CUDA-free references does not establish protected proposal acceptance, production lowering, native CUDA behavior, CUDA-JS compatible-pair support, physical scheduling, performance, stable SDK/release readiness or product/chess/UCI/model/Book Forge/Timing Evidence/tablebase behavior.

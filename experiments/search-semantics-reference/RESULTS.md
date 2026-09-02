@@ -2,103 +2,100 @@
 
 **Status:** Informational
 
-**Updated:** 2026-09-01
+**Updated:** 2026-09-02
 
-## Current candidate
+## Active candidate
 
-The current integration candidate is PR #169, the shared Composer/Progress stop-disposition authority correction, reconstructed from accepted `experimental/portfolio@80cbc05a54234ae41201e90db8737472db62fff8` after `REF-EVALUATOR-01` was integrated.
+`REF-FRAMEWORK-LIFE-01` is the active CUDA-free owner reference on draft PR #185, branch `ref/framework-life-01`, exact base:
 
-The semantic/evidence checkpoint before this documentation reconciliation is:
+`experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe`
 
-`fix/36-progress-stop-disposition-authority@df8241020340eaec55656972fad3e98f43b321d9`
+It covers exactly 15 direct SPEC-0000 ENGINE-REFERENCE routes and introduces no native/runtime/product authority.
 
-Normal workflow `33583779152` passed the complete current fail-closed gate on that checkpoint:
+## First red proof — first stop cause
 
-- Governance verification: success;
-- Search IR reference on Ubuntu: success;
-- Search IR reference on Windows: success;
-- Policy reference: success;
-- Graph NODE, EDGE, REF, PATH, ROOT, RECLAIM, ADVANCE occurrence and CLEANUP: success;
-- Evaluator reference: success;
-- aggregate `verify`: success.
+Exact red head:
 
-## Shared Progress authority result
+`191add5a0e72e2c19e6e862676baf0251c593a95`
 
-The Composer/Profile authority now fails closed on stop-disposition/terminal-state mismatch:
+Workflow `33651637686` preserved the intentional last-stop-wins defect. Composer stayed 881/881; all 18 Framework cases executed; exactly `framework-first-stop-cause` and `framework-cancellation-idempotent` failed.
 
-- `abandon` -> `abandoned`;
-- `cancel` -> `cancelled`;
-- `stale-dispose` -> `stale-disposed`;
-- `service` and `drain` remain nonterminal service/drain contracts.
+- red Framework evidence: `594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e`;
+- artifact: `9855005183`;
+- archive SHA-256: `a8ce1cc1b2133bff7cdf655b163fdd6f4487cd94369ea38e553789c9a7b65cbb`.
 
-The correction remains in the shared normalization owner. No Progress reference-consumer implementation or scheduler/native/product behavior is included.
+The repair preserved the first authoritative cause without changing the falsifiers.
 
-## Red provenance falsifier
+## Second red proof — review-discovered cleanup/rollback truth
 
-The first current-base reconstruction was:
+Literal SPEC-0000 review later found two facts that the earlier green suite did not make explicit:
 
-`f72f16d2a4c26ab14fcd195451388cec59ae4d8d`
+- CLEANUP-002 required partial initialization failure to prove task-created-state disposal/quarantine **and** preservation of protected pre-existing/user/shared state;
+- CLEANUP-003 required owning-system readback to distinguish local files from Git state.
 
-Normal workflow `33583664572` intentionally retained the newly integrated Evaluator fixture's old exact Composer identity. All shared semantic jobs remained green, while Evaluator stopped at its exact pre-semantic provenance guard.
+Test-only red head:
 
-The run established the new authoritative generated coordinates:
+`47bd5f1326d47ce1a955b55d9f5c0e13334145da`
 
-- Composer representation/composition evidence: `00045fcb77d8690bfc44bcb5b8d46d55f92db7a924203fff5c8e12b1c8710eb0` (`727811` canonical bytes);
-- Evaluator normalized-profile projection: `3c3609a53177401270da372add3c9ca56dfef1442e571b591efe9093b1bc17f2` (`155494` canonical bytes).
+Framework workflow `33659024252` kept Composer 881/881 green and ran all 18 Framework cases. Six failures were direct consequences of those two missing facts; no unrelated wiring or coverage failure appeared.
 
-The Evaluator fixture was then rebound only to those two exact identities. The case bank, oracle source, mutable-state/cache implementation, and expected cases remained unchanged.
+- red Framework evidence: `2c3e22a634eb004cbcd249712cc079a41e8a84116296fff0d204a49202fa35f2`;
+- canonical bytes: `8349`;
+- artifact: `9857898880`;
+- archive SHA-256: `c6f4cac791297168b91cad2a1f4025a2bb96343b7b96796b75aec6fdfaa8ccc8`.
 
-## Exact current evidence
+Green repair head `7eb25f17481fea6a925d6d0e29baa06473ee2bff` adds only Framework-owned public rollback/preservation validation and separate local-files/Git-state cleanup facts.
 
-On `df8241020340eaec55656972fad3e98f43b321d9`, workflow `33583779152` recorded:
+## Semantic qualification at 7eb25f17…
+
+Framework workflow `33659209749` succeeded:
 
 ### Composer
 
 - capsule: `cuda-mcgs-search-ir-composer-reference-v0.2.0`;
-- cases: `881/881` passed;
-- representation/composition SHA-256: `00045fcb77d8690bfc44bcb5b8d46d55f92db7a924203fff5c8e12b1c8710eb0`;
+- cases: `881/881`;
+- representation/composition SHA-256: `a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe`;
 - canonical bytes: `727811`.
 
-### Evaluator projection
+### Framework lifecycle
 
-- schema: `cuda-mcgs.search-ir-composer-evaluator-profile-projection/0.2.0`;
-- SHA-256: `3c3609a53177401270da372add3c9ca56dfef1442e571b591efe9093b1bc17f2`;
-- canonical bytes: `155494`;
-- five exact Composer-normalized Evaluator profiles.
-
-### Evaluator semantic evidence
-
-- capsule: `cuda-mcgs-evaluator-reference-v0.2.0`;
-- scope: `full-evaluator-reference`;
-- cases: `30/30` expected/discovered/executed/passed;
-- direct SPEC-0009 Evaluator requirements: `37/37` covered;
+- capsule: `cuda-mcgs-framework-lifecycle-reference-v0.2.0`;
+- scope: `full-framework-lifecycle-reference`;
+- expected/discovered/executed/passed: `18/18/18/18`;
 - failed/skipped/undiscovered: `0`;
-- SHA-256: `c1229a47e9c4b036bd9e20af7f8f3fd8827c60f8cdf82d0cb55a4f0231050635`;
-- canonical bytes: `18051`.
+- direct SPEC-0000 routes: `15/15`;
+- Framework evidence SHA-256: `a8f17027993720c4fe61a76ce060c46206a73f36926dc280d1659c7759e0e0ad`;
+- canonical bytes: `6517`;
+- artifact: `9857969833`;
+- archive SHA-256: `03c553a341b8c8314167d2ddba7536892fe9a3a1ee21b2985077d6260485f90d`.
 
-Retained workflow artifact:
+### Full repository matrix
 
-- run: `33583779152`;
-- artifact: `9829312993` (`evaluator-reference`);
-- archive digest: `sha256:d9f1d724edf229820ccce79c6cc4b3da611354d6293a7e500e97eb5a7d67bd1c`.
+Workflow `33659209933` succeeded across:
 
-## Evaluator semantic preservation
+- Governance verification;
+- Search IR on Ubuntu;
+- Search IR on Windows;
+- Graph NODE, EDGE, REF, PATH, ROOT, RECLAIM, ADVANCE occurrence and CLEANUP;
+- Policy reference;
+- Evaluator reference;
+- Resource reference;
+- Progress reference;
+- Output reference;
+- aggregate `verify`.
 
-After the provenance-only rebind, all 30 Evaluator cases passed, including cache full-key collision, mutable-state cache invalidation, stale-incarnation scatter, batching/workspace continuation, quarantine, reroot reuse and cleanup. This demonstrates that #169 changes shared Composer identity/provenance but does not require a second Evaluator semantic repair.
+## Ownership review result at semantic head
 
-## Historical Evaluator qualification
+The complete executable Framework brick remains bounded to public lifecycle/disposition coordination. The runner derives the exact 15-route registry from authoritative SPEC-0000 and requirement coverage; the checked-in 18-case bank cannot silently omit or invent a direct route. Fixtures are synthetic and product-neutral. No sibling-owner private state, physical scheduler, CUDA mechanism, persistence storage backend, Tensor assumption or product semantic was introduced.
 
-The earlier `REF-EVALUATOR-01` qualification at the pre-#169 Composer identity remains historical evidence. Its exact development record is preserved in `docs/handoffs/2026-09-01-ref-evaluator-01-mutable-cache-qualification.md`; it is not rewritten to impersonate current evidence.
+The latest repair did not change Composer or sibling owner identities; only Framework source/evidence changed, so no dependent upstream evidence rebind was appropriate.
 
-## Remaining integration gates
+## Final documentation-inclusive gate
 
-PR #169 still requires:
+This RESULTS file and the repository current-state files are intentionally updated after semantic qualification. That documentation-only reconciliation changes the PR head but not Framework semantics. The resulting exact head must rerun the permanent Framework workflow and full repository matrix, then receive a fresh complete-diff author review before any integration authorization request.
 
-1. final exact-head qualification after this informational documentation reconciliation;
-2. fresh exact-head review/owner authorization because both base and SHA changed after the earlier review;
-3. guarded integration to `experimental/portfolio`;
-4. post-integration readback before dependent Progress/Resource reference branches are reconstructed.
+PR #185 remains a candidate. No merge or protected/native/performance/product claim is authorized by these results.
 
-## Claim limits
+## Next after authorized integration
 
-This packet proves only CUDA-free shared Composer/Progress authority coherence plus continued Evaluator semantic validity under the new exact provenance. It does not establish production lowering (#122), native CUDA/atomic behavior, CUDA-JS compatible-pair support, performance, physical scheduling, stable SDK/release readiness, or product/chess semantics.
+After exact-head repository-owner authorization, guarded integration and target readback, #184 / `REF-TERMINAL-SLICE-01` is the next dependency-ready reference leaf. Do not skip directly to Session.

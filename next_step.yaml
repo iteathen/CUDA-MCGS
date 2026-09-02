@@ -1,131 +1,93 @@
 {
-  "schema_version": 87,
-  "updated": "2026-08-29",
-  "status": "experimental_ref_evaluator_selected_ready_for_focus_branch",
-  "objective": "Implement the selected REF-EVALUATOR-01 CUDA-free semantic/reference leaf only after this completed owner assessment is reconciled on experimental/portfolio. Preserve strict Evaluator ownership, consume integrated Domain/Graph/Policy public facts, and treat Resource/Progress/Session facts as injected immutable inputs rather than absorbing those owners.",
-  "ownership_boundary": "Evaluator owns selected evaluator capabilities, finite request/incarnation lifecycle, input encoding/key validity, batching, evaluator-owned workspace/continuations, cache semantics, internal result readiness/publication/scatter, evaluator reroot reuse classification and evaluator cleanup. Domain retains state/action/history/transition validity; Graph retains storage/reference/lifetime/reclamation; Policy retains selection/value/backup/stop semantics; Resource retains global resource composition/admission/watermark/pressure; Progress retains readiness/service/fairness/no-progress/closure; Output retains external result/observation publication; Session retains root/advance/reroot/attention authority. CUDA-JS owns generic native/CUDA realization and CUDA-JS-Tensor owns optional generic tensor math.",
-  "protected_base": {
-    "branch": "main",
-    "sha": "ee4434be0ae927c4ae1d5c106f91503d28b1aa01",
-    "workflow": "33115975009",
-    "meaning": "Protected authority remains intentionally unchanged; this owner selection is experimental reference routing only and does not authorize protected-main promotion, proposal acceptance, native lowering or production implementation."
-  },
-  "experimental_base": {
-    "branch": "experimental/portfolio",
-    "assessment_input_sha": "e629210bde91484235bf0feb266507d95042b90e",
-    "policy_integration": {
-      "pr": 153,
-      "merge_sha": "eace1d4c80f677763ec4a86773f4011a5f5553b5",
-      "authorized_source_head": "877765e7fadafd9459bf13c1024c002edd279427",
-      "semantic_evidence_head": "104cb8356417f95cc3783144b306f7b7725f9726"
-    },
-    "workflow_maintenance_pr": 156,
-    "research_preservation_pr": 157,
-    "open_pr_audit_reconciliation_pr": 158,
-    "meaning": "The live experimental line contains integrated Domain/Graph/Policy reference evidence plus qualified maintenance/reconciliation. Live branch readback remains authority; this state file does not encode its own eventual merge SHA as forever current."
-  },
-  "integrated_evidence": {
-    "composer_cases": "881/881",
-    "requirements": "989/989 classified",
-    "disposition_summary": {
-      "deferred": 52,
-      "partial": 910,
-      "pending": 27
-    },
-    "composer_representation_composition": "115cceb16db3e4a99944c7228e1d5dff7047f342ddbe63a3e695c027d33e85c8",
-    "policy_projection": "6662d8101bbffee0e322ef7e2172f5980d69a09aec8ec565c9425578751310c2",
-    "policy_reference": "e58a5d2f1d49bab77c8b2176750ac764bc6f5295907bbffb708308b5ca35c116",
-    "policy_cases": "24/24",
-    "policy_artifact_id": 9708629102,
-    "policy_artifact_zip_sha256": "a33e7a4725f6f011737bc280c7f3f721874c4ee9c807a46e550e3c125167b747"
-  },
-  "owner_assessment": {
-    "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36#issuecomment-5461597452",
-    "assessment_base": "e629210bde91484235bf0feb266507d95042b90e",
-    "selected_leaf": "REF-EVALUATOR-01",
-    "direct_behavior_requirement_count": 37,
-    "selection_reason": "Evaluator is the first remaining owner whose direct semantic prerequisites are already integrated: Domain, Graph and Policy. Resource structurally composes selected owner contributions including evaluator/output/progress semantics; Progress consumes Evaluator/Resource/Output work and closure facts; Output consumes Evaluator plus later Resource/Progress facts; Session is after the terminal core slice; Stage is after stable owner transitions; Channel is after Stage and reuses its existing owner-local logical oracle.",
-    "candidate_dispositions": {
-      "REF-EVALUATOR-01": "selected_dependency_ready",
-      "REF-RESOURCE-01": "blocked_on_remaining_owner_contributions",
-      "REF-PROGRESS-01": "blocked_on_evaluator_resource_output_work_readiness",
-      "REF-OUTPUT-01": "blocked_on_evaluator_and_later_resource_progress_ready_facts",
-      "REF-SESSION-01": "blocked_on_terminal_core_slice_and_owner_reuse_admission_progress_facts",
-      "REF-STAGE-01": "blocked_on_stable_owner_transitions",
-      "REF-CHANNEL-EVIDENCE-01": "blocked_on_stage_and_later_gap_audit_only"
-    },
-    "cheapest_falsifier": "Admit two compatible evaluator request incarnations under explicit injected admission facts, form one finite batch/workspace lease, cancel or supersede one request and reuse its logical slot before batch completion, then require only the still-current request to publish exactly once while the stale result is rejected before scatter/ready-result mutation and every evaluator-owned request/workspace disposition terminates exactly once. Replay as a partial batch under an explicit device-side service-opportunity fact so no host timeout/callback is needed. Pair with evaluator-absent zero-residue proof and an oracle-sensitivity mutation that removes incarnation or complete-publication fencing and must fail.",
-    "injected_fact_rule": "Resource admission/pressure facts, Progress service opportunities and Session/root epochs may be immutable explicit test inputs. The Evaluator oracle must not implement the Resource ledger, scheduler/fairness/no-progress classifier, Session authority or another owner's private state to obtain them."
-  },
+  "schema_version": 89,
+  "updated": "2026-09-02",
+  "status": "ref_framework_life_01_frozen_candidate_live_head_gate_before_owner_authorization",
+  "objective": "Treat PR #185 as semantically frozen. Read the live PR head, exact base and required checks; if that same head is fully green and a fresh complete-diff author review has no blocker, present that exact head/base for fresh repository-owner authorization. Do not merge before that authorization.",
+  "ownership_boundary": "Framework owns only cross-owner top-level lifecycle coordination for the 15 direct SPEC-0000 ENGINE-REFERENCE routes: admission, initialization/reverse rollback, ignition/device closure, first cause, completion/cancellation, terminal borrow/teardown, optional persistence contract and complete cleanup/readback. Domain, Graph, Policy, Evaluator, Resource, Progress and Output retain private semantic state; CUDA-JS owns generic CUDA mechanisms; CUDA-JS-Tensor owns generic dense Tensor math; downstream products own chess/UCI/model/Book Forge/Timing Evidence/tablebase/product meaning.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
     "agent_files/AI_RULES.md",
     "agent_files/DESIGN_ALIGNMENT_CARD.md",
     "agent_files/general_foundation/LEGO_ARCHITECTURE.md",
-    "agent_files/general_foundation/ASSESSMENT_AND_PLANNING.md",
-    "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
-    "agent_files/general_foundation/SEMANTIC_INTERROGATION.md",
     "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
+    "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
     "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
-    "docs/specs/SPEC-0009-evaluator-contract.md",
-    "docs/specs/SPEC-0011-finite-search-resources.md",
-    "docs/specs/SPEC-0012-device-owned-search-progress.md",
-    "docs/specs/SPEC-0013-result-and-observation-publication.md",
-    "docs/specs/SPEC-0006-search-session-control-and-observation.md",
-    "docs/specs/SPEC-0003-search-stage-and-extension-surface.md",
-    "docs/specs/SPEC-0004-async-stage-channels.md",
+    "docs/specs/SPEC-0000-framework-requirements.md",
+    "schemas/search-ir/0.2.0/requirement-coverage.json",
+    "https://github.com/iteathen/CUDA-MCGS/issues/183",
+    "https://github.com/iteathen/CUDA-MCGS/pull/185",
     "https://github.com/iteathen/CUDA-MCGS/issues/36",
-    "https://github.com/iteathen/CUDA-MCGS/issues/122",
     "https://github.com/iteathen/CUDA-MCGS/issues/142"
   ],
-  "deliverables": [
-    "after this state-only assessment reconciliation integrates, create one short-lived REF-EVALUATOR-01 focus branch from the exact experimental head",
-    "export/prove exact normalized Composer Evaluator profile identities through an owner-local projection rather than deep-importing Composer internals into the semantic oracle",
-    "implement an independently replaceable CUDA-free Evaluator oracle covering all 37 direct ENGINE-REFERENCE evaluator behavioral obligations",
-    "begin with stale-incarnation batch/publication plus evaluator-absence falsifiers before broadening case coverage",
-    "cover materially different proposal-only, evaluation-only structured/proof and combined evaluator families without neural/tensor/scalar assumptions",
-    "add mutation sensitivity, exact cleanup and a permanent Evaluator peer CI gate before any integration claim",
-    "leave Resource, Progress, Output, Session, Stage/Channel, native/CUDA and protected-main work outside the Evaluator leaf"
-  ],
-  "current_focus": {
-    "id": "ENGINE-REFERENCE-01/REF-EVALUATOR-01",
-    "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/36",
-    "portfolio": "https://github.com/iteathen/CUDA-MCGS/issues/142",
-    "active_branch": "experimental/portfolio",
-    "selection_state": "assessment_complete_selected_not_started",
-    "owner_spec": "SPEC-0009",
-    "direct_behavior_requirement_count": 37,
-    "next_action": "After this state-only selection record is integrated and read back, create the Evaluator focus branch from that exact experimental head. First build the owner-local Evaluator projection and stale-incarnation/partial-batch/absence falsifiers. Do not begin Resource or another downstream owner in parallel.",
-    "exit": "One exact REF-EVALUATOR-01 semantic/reference candidate covers all 37 direct behavioral obligations with materially varied profiles, evaluator-absence zero residue, mutation sensitivity, explicit injected-fact boundaries, full permanent regression qualification, whole-diff review and exact cleanup; no downstream/native claim is made."
+  "state": {
+    "protected_authority": "main@3ecac11e3576bd063760bc9572f79bea78acd031",
+    "integrated_candidate_base": "experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe",
+    "branch": "ref/framework-life-01",
+    "pr": 185,
+    "issue": 183,
+    "semantic_head": "7eb25f17481fea6a925d6d0e29baa06473ee2bff",
+    "live_head_rule": "The current PR/ref readback, not a self-referential SHA in this file, is the exact documentation-inclusive authorization subject. Any head/base change requires requalification and review."
   },
-  "blockers": [
-    "No semantic dependency blocker remains for starting REF-EVALUATOR-01 after this assessment-state reconciliation integrates.",
-    "REF-RESOURCE-01 remains blocked on remaining selected-owner contribution semantics, including Evaluator and later Output/Progress contribution truth.",
-    "REF-PROGRESS-01, REF-OUTPUT-01, REF-SESSION-01, REF-STAGE-01 and REF-CHANNEL-EVIDENCE-01 remain downstream under the recorded dependency map.",
-    "Protected-main promotion and ENGINE-CONTRACT-ACCEPTANCE-01 remain unauthorized/not ready.",
-    "Native concurrency/publication/progress/occupancy/cancellation/teardown qualification remains later exact compatible-pair/device work."
+  "red_evidence": [
+    {
+      "purpose": "first authoritative stop cause preservation",
+      "head": "191add5a0e72e2c19e6e862676baf0251c593a95",
+      "workflow": 33651637686,
+      "framework_evidence": "594cb620885df781a795912e6365db771bdde435cf297ba6241834b527a19c6e",
+      "artifact": 9855005183,
+      "archive_sha256": "a8ce1cc1b2133bff7cdf655b163fdd6f4487cd94369ea38e553789c9a7b65cbb"
+    },
+    {
+      "purpose": "partial rollback protected-state preservation plus distinct local-files/Git cleanup readback",
+      "head": "47bd5f1326d47ce1a955b55d9f5c0e13334145da",
+      "workflow": 33659024252,
+      "framework_evidence": "2c3e22a634eb004cbcd249712cc079a41e8a84116296fff0d204a49202fa35f2",
+      "artifact": 9857898880,
+      "archive_sha256": "c6f4cac791297168b91cad2a1f4025a2bb96343b7b96796b75aec6fdfaa8ccc8"
+    }
+  ],
+  "semantic_qualification": {
+    "head": "7eb25f17481fea6a925d6d0e29baa06473ee2bff",
+    "framework_workflow": 33659209749,
+    "repository_workflow": 33659209933,
+    "composer_cases": "881/881",
+    "framework_cases": "18/18",
+    "direct_spec_0000_routes": "15/15",
+    "composer_evidence": "a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe",
+    "framework_evidence": "a8f17027993720c4fe61a76ce060c46206a73f36926dc280d1659c7759e0e0ad",
+    "artifact": 9857969833,
+    "archive_sha256": "03c553a341b8c8314167d2ddba7536892fe9a3a1ee21b2985077d6260485f90d",
+    "repository_matrix": "Governance, Windows/Ubuntu Search IR, all Graph lanes, Policy, Evaluator, Resource, Progress, Output and aggregate verify all succeeded"
+  },
+  "deliverables": [
+    "Keep semantic/reference source frozen unless a new exact-head review finds a real SPEC-0000 blocker.",
+    "Read the live PR #185 head/base and confirm the permanent Framework workflow plus full repository matrix are green on that exact head.",
+    "Confirm the complete ten-file PR diff has no blocking author-review finding; do not represent author review as independent review.",
+    "Reconcile #183, #36, #142, #32 and PR #185 to the exact live head/evidence without changing the repository head.",
+    "Stop and present the exact live head/base for fresh repository-owner authorization."
   ],
   "validation": [
-    "issue #36 contains the exact remaining-owner assessment, cheapest falsifier, non-goals and validation target",
-    "this state-only reconciliation changes only STATUS.md and next_step.yaml",
-    "full permanent workflow must pass Governance, Search IR on both platforms, all Graph lanes, Policy reference and aggregate verify on the exact state head",
-    "post-merge experimental ref readback",
-    "protected main readback remains ee4434be0ae927c4ae1d5c106f91503d28b1aa01"
+    "Live PR base is exactly experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe.",
+    "Live PR head passes the permanent Framework workflow with exactly 18/18 Framework cases, all 15/15 direct SPEC-0000 routes and Composer 881/881.",
+    "Composer representation/composition evidence remains exactly a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe unless authoritative upstream content actually changes.",
+    "Live PR head passes the full repository matrix: Governance, Windows/Ubuntu Search IR, Graph, Policy, Evaluator, Resource, Progress, Output and aggregate verify.",
+    "Fresh author-side complete-diff review has no blocking finding on that same live head.",
+    "Protected main remains separate; no #122/native/performance/product claim is made."
+  ],
+  "blockers": [
+    "Fresh repository-owner authorization for the exact live head/base is required before integration.",
+    "The live head/base/checks must be re-read immediately before authorization/merge; any material movement invalidates the frozen subject.",
+    "#184 remains blocked until #183 is authorized, guarded-integrated and read back."
   ],
   "do_not": [
-    "start a different owner because it has fewer requirements than Evaluator",
-    "let Evaluator implement global Resource accounting, scheduling/fairness/no-progress, external Output publication or Session authority",
-    "make CUDA-JS-Tensor, neural models, scalar value, ranking, chess or another first product universal Evaluator semantics",
-    "use a host timeout, polling callback, read-decide-write loop or relaunch as required evaluator progress",
-    "mutate or promote protected main under this experimental reference selection",
-    "claim proposal acceptance, native/CUDA mechanism qualification, compatible-pair evidence, performance or production readiness from CUDA-free reference evidence",
-    "add C/C++, CUDA C++, native addons/FFI, hand-written PTX, embedded CUDA source, direct CUDA-JS private access or Python",
-    "weaken identity, coverage, owner-boundary, stale-incarnation, publication, cleanup or aggregate merge-gate checks"
+    "Do not merge PR #185 or a replacement transport without fresh exact-head repository-owner authorization.",
+    "Do not skip #184 and jump directly to Session.",
+    "Do not absorb Domain, Graph, Policy, Evaluator, Resource, Progress or Output private state into Framework.",
+    "Do not make scheduler topology, CUDA mechanism, persistence storage backend, Tensor or product semantics part of universal Framework meaning.",
+    "Do not add C/C++, CUDA C/C++, .cu/.cuh, hand-written PTX, native addons/FFI, private CUDA-JS calls or Python.",
+    "Do not weaken either preserved red probe, exact requirement coverage, cleanup readback or provenance checks to restore green CI.",
+    "Do not describe candidate evidence as protected semantic/native/production authority."
   ],
-  "cleanup_debt": [
-    "Previously recorded stale Graph/Policy source and recovery refs remain bounded cleanup debt pending safe deletion/recovery disposition.",
-    "Merged maintenance/archive/state source branches may remain only where GitHub did not auto-delete them; branch existence must be read before claiming deletion.",
-    "state/evaluator-owner-selection-20260829 becomes deletion-eligible after this state reconciliation merges."
-  ]
+  "next_after_authorized_integration": "#184 / REF-TERMINAL-SLICE-01 on the exact read-back experimental/portfolio integration head; compose one complete finite session-absent, extension-absent CUDA-free lifecycle using public owner events/facts only."
 }
