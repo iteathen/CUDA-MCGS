@@ -77,15 +77,19 @@ export function registerSessionCases({ defineCase, sessionProjection, terminalEv
     establish(session, 'alpha');
     const before = session.snapshot();
     expectCode(() => session.applyAdvance(advanceInput('beta', {
+      authority: before.authority,
       requestedWork: { materialization: true },
     })), 'SESSION_REFERENCE_ADVANCE_REROOT_ONLY');
     assert.deepEqual(session.snapshot(), before);
 
-    const unready = session.applyAdvance(advanceInput('unready', { successor: { successorReady: false } }));
+    const unready = session.applyAdvance(advanceInput('unready', {
+      authority: before.authority,
+      successor: { successorReady: false },
+    }));
     assert.equal(unready.kind, 'rejected');
     assert.deepEqual(session.snapshot(), before);
 
-    const advanced = session.applyAdvance(advanceInput('beta'));
+    const advanced = session.applyAdvance(advanceInput('beta', { authority: before.authority }));
     assert.equal(advanced.kind, 'advanced');
     assert.equal(advanced.reuseReclassified, false);
     assert.equal(advanced.reclamationTriggered, false);
@@ -99,6 +103,7 @@ export function registerSessionCases({ defineCase, sessionProjection, terminalEv
     const session = liveSession(sessionProjection);
     establish(session, 'alpha');
     const advanced = session.applyAdvance(advanceInput('shared', {
+      authority: session.snapshot().authority,
       successor: {
         occurrenceReference: { slot: 'shared-node-occurrence-b', generation: '7', sharedNodeIdentity: 'node.shared.42' },
         nodeInvalidated: false,
@@ -132,7 +137,7 @@ export function registerSessionCases({ defineCase, sessionProjection, terminalEv
           assert.equal(session.releaseObservation({ requestId: 'observation-1', borrowId: 'borrow-1' }).kind, 'released');
         }
       }
-      session.applyAdvance(advanceInput('beta'));
+      session.applyAdvance(advanceInput('beta', { authority: session.snapshot().authority }));
       return authorityMeaning(session);
     }
     const first = run(['attention', 'observation']);
