@@ -49,10 +49,13 @@ export function cleanupFacts(profile) {
 }
 
 export function readyOutputPublication(session, identity = 'observation.synthetic.1') {
-  const authority = session.snapshot().authority;
+  const snapshot = session.snapshot();
+  const authority = snapshot.authority;
   assert(authority);
+  const observationProfile = session.profile.observations?.profiles?.[0];
+  assert(observationProfile, 'Session profile must select an observation profile');
   return {
-    outputProfile: 'output.synthetic-live-observation',
+    outputProfile: observationProfile.outputProfile,
     publicationIdentity: identity,
     ready: true,
     readOnly: true,
