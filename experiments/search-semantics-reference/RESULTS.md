@@ -22,36 +22,31 @@ tree:
 
 Stage workflow `33696515582` passed.
 
-### Composer and projection
+### Stage semantic result
 
-- Composer/profile normalization: pass;
-- Stage CI self-gate: pass;
-- Stage profile projection identity: `919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28`;
-- two selected Stage profiles plus first-product-deleted and complete-absence projections are exact to Composer evidence.
-
-### Stage behavioral result
-
-- expected/discovered/executed/passed: `10/10/10/10`;
+- Stage cases: `10/10`;
+- direct SPEC-0003 ENGINE-REFERENCE routes: `8/8`;
 - failures/skips/not-discovered: `0`;
-- direct SPEC-0003 ENGINE-REFERENCE routes: `8/8` executed;
+- Stage profile projection: `919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28`;
 - Stage evidence: `7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea`;
 - canonical bytes: `9395`;
-- artifact: `9871959921`;
-- artifact digest: `sha256:796f945b704c47a55f3fd06b66224171f4c7a74d987ddeb53a11e667d168c636`.
+- semantic-checkpoint artifact: `9871959921`, digest `sha256:796f945b704c47a55f3fd06b66224171f4c7a74d987ddeb53a11e667d168c636`.
 
-The 10 permanent cases cover:
+The 10 permanent cases cover declared normalized outcomes/source owners, pending ownership release, Resource/Progress delegation, materially different legal schedule orderings with invariant per-item semantics, first-product deletion, whole-substrate absence, mutation sensitivity, a distinct second Stage profile, portable/native claim limits, normalized release closure, and undeclared-owner-fact rejection.
 
-- declared normalized outcome/source-owner publication;
-- pending release of worker, mutable lease and reservation;
-- Resource pressure and Progress scheduling ownership boundaries;
-- two materially different legal per-item schedules with identical terminal/publication semantics;
-- first-product deletion with stable surviving base context and changed program identity;
-- zero-capability whole-substrate absence with zero runtime residue;
-- mutation detection for checkpoint stability, owner identity, capability order/cycle, pending release, surprise allocation, capability provenance and deletion residue;
-- a materially distinct second Stage profile;
-- portable restricted-Device-JS/native-claim limits;
-- normalized worker/mutable-lease release closure for non-pending outcomes;
-- exact rejection of undeclared owner facts beyond the selected checkpoint surface.
+## Documentation-inclusive PR checkpoint
+
+PR #190 head `385594ab40feeb31bea933ceed0155b9a091e996` changed no Stage semantic/test/projection/workflow source after the semantic checkpoint and passed all required exact-head workflows:
+
+- Stage `33696784971` — success;
+- Session `33696784953` — success;
+- Terminal `33696784966` — success;
+- Framework `33696784943` — success;
+- full repository/documentation matrix `33696784987` — success, including Governance, Windows/Ubuntu Search IR and aggregate `verify`.
+
+The Stage evidence identity remained `7f608810…`; regenerated exact-PR-head artifact `9872056402` has archive digest `sha256:4d7334fdd4aa6806762b01040e7eb75143a0c955542b6eacc3891b381e2f80a4`.
+
+Fresh author-side base-to-head review of all 16 changed files found no blocking semantic, ownership, evidence, governance or cleanup defect. The review confirmed that projection reconstruction goes only through existing Composer normalizers and exact published identities, the Stage oracle owns no aggregate Resource or global Progress semantics, native/CUDA mechanisms remain deferred to CUDA-JS, and no generated build artifact is checked in.
 
 ## Retained red-before-green evidence
 
@@ -60,24 +55,20 @@ The 10 permanent cases cover:
 | pending outcome retained worker/mutable lease/reservation | `2a12ca82dd9e99981dc3ed52623ea46d12930819` | `33695493706` | `9871610435` |
 | non-pending release contract not enforced; undeclared owner fact accepted | `4ebfd3f0802f1cb746aaad986ce97cd92c04bc57` | `33696328927` | `9871897062` |
 
-The first red was repaired by requiring pending/retry ownership release before publication. The review red was repaired by matching every published outcome to its normalized worker/lease release contract and requiring the invocation owner-fact set to equal the selected surface base context exactly.
-
 No red was weakened to obtain green.
 
 ## Diagnostic-only intermediate failure
 
-Run `33696000529` at `1a1e21c1…` failed two newly expanded tests because they selected canonically sorted Stage arrays by assumed indices. The semantic oracle was not changed. The harness was corrected to select the normalized `entryStage` and named checkpoint surfaces, after which all eight broad cases passed. This run is diagnostic history, not conformance evidence.
+Run `33696000529` at `1a1e21c1…` failed two expanded tests because they selected canonically sorted Stage arrays by assumed indices. The semantic oracle was unchanged. The harness was corrected to select normalized `entryStage` and checkpoint identities; this run is diagnostic history, not conformance evidence.
 
-## Ownership result
+## Ownership and evidence result
 
-The executable Stage reference consumes existing Composer-normalized Stage structure and public sibling-owner facts. It does not reconstruct source-owner meaning, Resource accounting, Progress scheduling, or CUDA-JS lowering/runtime behavior.
+The executable Stage reference consumes existing Composer-normalized Stage structure and public sibling-owner facts. It does not reconstruct Domain/Graph/Policy/Evaluator meaning, Resource accounting, Progress scheduling, Output/Session/Framework authority, or CUDA-JS lowering/runtime behavior.
 
-The Stage case registration wrapper pins transitive core/review case source hashes, preserving content-sensitive evidence despite the review-time test split.
+The Stage case registration wrapper pins transitive core/review case source hashes, preserving content-sensitive evidence despite the review-time case split.
 
-## Final tracker/review gate
+## Current gate
 
-Only `STATUS.md`, `next_step.yaml`, this `README.md`, and this `RESULTS.md` may change after semantic checkpoint `9ae16e73…`. The documentation-inclusive head must pass the Stage workflow and the full repository/documentation PR matrix. Then complete one fresh author-side whole-diff review against base `f79845b3…`.
-
-A clean author review is not repository-owner authorization: stop for fresh exact-head authorization before any transport or merge.
+This final current-state reconciliation changes only `STATUS.md`, `next_step.yaml`, this `README.md`, and this `RESULTS.md`. Its exact branch head must rerun the same coupled Stage/Session/Terminal/Framework/full-repository gates. If green, the only remaining pre-integration gate is fresh repository-owner authorization for the exact PR #190 head/base.
 
 After authorized #30 integration/readback: #33 Channel evidence → #36 final reference integration → #122 protected atomic acceptance.

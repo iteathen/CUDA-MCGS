@@ -12,7 +12,7 @@ The integrated candidate/reference base is `experimental/portfolio@f79845b3d45eb
 
 ## Active Stage brick
 
-Issue #30 / `ref/stage-01` constructs only the missing Stage behavioral evidence from the existing normalized Stage authority.
+Issue #30 / PR #190 / `ref/stage-01` adds only the missing Stage behavioral evidence from the existing normalized Stage authority.
 
 Qualified semantic checkpoint:
 
@@ -20,31 +20,43 @@ Qualified semantic checkpoint:
 
 tree `2f979d5d53b4e2aca60b8952315ae72753c545c1`.
 
+Documentation-inclusive review checkpoint:
+
+`385594ab40feeb31bea933ceed0155b9a091e996`.
+
 Stage owns per-work-item stable checkpoint invocation and declared local outcome semantics. Resource pressure/admission remains SPEC-0011, global scheduling/fairness remains SPEC-0012, all source-domain semantics remain with their owners, and CUDA-JS retains Device-JS lowering/native artifact/runtime mechanisms.
 
-## Qualification
+## Qualification and review
 
-Stage workflow `33696515582` passed:
+The semantic Stage workflow `33696515582` established the stable evidence identity. The documentation-inclusive PR checkpoint then passed all coupled exact-head gates:
 
-- CI self-gate and Composer/profile projection: pass;
-- Stage cases: `10/10`;
-- direct SPEC-0003 ENGINE-REFERENCE routes: `8/8`;
-- Stage projection: `919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28`;
-- Stage evidence: `7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea` over `9395` canonical bytes;
-- artifact `9871959921`, digest `sha256:796f945b704c47a55f3fd06b66224171f4c7a74d987ddeb53a11e667d168c636`.
+- Stage `33696784971`;
+- Session `33696784953`;
+- Terminal `33696784966`;
+- Framework `33696784943`;
+- full repository/documentation matrix `33696784987`, including Governance, Windows/Ubuntu Search IR and aggregate `verify`.
 
-The permanent case bank proves declared outcomes and owner publication, pending ownership release, Resource/Progress delegation, schedule invariance across two materially different legal orderings, first-product deletion, whole-substrate absence, mutation sensitivity, a distinct second Stage profile, normalized release closure, undeclared-owner-fact rejection, and explicit native claim limits.
+The Stage result remains:
+
+- cases `10/10`;
+- direct SPEC-0003 ENGINE-REFERENCE routes `8/8`;
+- no skips/not-discovered;
+- projection `919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28`;
+- evidence `7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea` over `9395` canonical bytes;
+- exact-PR-checkpoint artifact `9872056402`, digest `sha256:4d7334fdd4aa6806762b01040e7eb75143a0c955542b6eacc3891b381e2f80a4`.
+
+Fresh base-to-head author review of all 16 changed files found no blocking semantic, ownership, evidence, governance or cleanup defect. No generated `build/` output is checked in, no second Stage normalizer exists, and no Resource/Progress/CUDA-JS/product authority was imported.
 
 ## Retained Stage reds
 
-- `2a12ca82…` / run `33695493706` / artifact `9871610435`: pending outcome retained a worker/lease/reservation and was incorrectly accepted.
+- `2a12ca82…` / run `33695493706` / artifact `9871610435`: pending outcome retained worker/lease/reservation and was incorrectly accepted.
 - `4ebfd3f0…` / run `33696328927` / artifact `9871897062`: a non-pending outcome could contradict normalized worker/lease release and an invocation could carry an undeclared owner fact.
 
-Both failures are now durable falsifiers. The intermediate run `33696000529` is diagnostic only; it exposed brittle canonical-array-index assumptions in the tests and was corrected by selecting normalized `entryStage`/checkpoint identities without changing Stage semantics.
+Both failures are durable falsifiers. The intermediate run `33696000529` is diagnostic only; it exposed brittle canonical-array-index assumptions in tests and was corrected by selecting normalized `entryStage`/checkpoint identities without changing Stage semantics.
 
 ## Evidence integrity
 
-The Stage registration module pins the content hashes of both the core and review case modules, so the checked-in evidence source identity cannot silently omit a changed transitive case source.
+The Stage registration module pins the content hashes of both core and review case modules, so a transitive case-source change cannot silently preserve the evidence registration identity.
 
 Generated `build/` evidence remains disposable; checked-in sources/cases, workflow artifacts and evidence identities are durable coordinates.
 
@@ -62,9 +74,9 @@ The permanent Stage lane also runs `scripts/verify-stage-ci-gate.mjs`.
 
 ## Current gate
 
-Reconcile only current-state documents, open/freeze the Stage PR against exact base `f79845b3…`, require Stage plus the full repository/documentation matrix on the exact final head, and complete one fresh whole-diff author review.
+This tracker-only finalization changes no semantic/test/projection/workflow source. Require its exact-head coupled workflows to remain green, then stop for fresh repository-owner authorization of the exact PR #190 head/base before any integration.
 
-Then stop for fresh repository-owner authorization before any integration. Only after guarded Stage integration/readback does #33 Channel become dependency-ready.
+Only after guarded Stage integration/readback does #33 Channel become dependency-ready.
 
 ## Claim limits
 

@@ -1,8 +1,8 @@
 {
-  "schema_version": 100,
+  "schema_version": 101,
   "updated": "2026-09-02",
-  "status": "ref_stage_01_semantic_head_qualified_pending_final_docs_matrix_review_authorization",
-  "objective": "Freeze and qualify the documentation-inclusive REF-STAGE-01 head, complete one fresh whole-diff author review, and stop for repository-owner exact-head authorization. Do not integrate Stage or start Channel before authorization and guarded readback.",
+  "status": "ref_stage_01_review_complete_pending_final_tracker_head_qualification_and_owner_authorization",
+  "objective": "Qualify the final tracker-only REF-STAGE-01 head, then stop for fresh repository-owner exact-head authorization. Do not integrate Stage or start Channel before authorization and guarded readback.",
   "ownership_boundary": "Stage owns per-work-item stable checkpoint invocation and declared local outcome semantics only. Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session and Framework remain separate semantic owners. CUDA-JS owns Device-JS validation/lowering, PTX/cubin/LTO/native artifacts, linking/loading and generic runtime mechanisms; downstream products own product meaning.",
   "authority": [
     "AGENTS.md",
@@ -17,33 +17,46 @@
     "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
     "experiments/search-ir-composer-reference/src/stage.mjs",
     "experiments/search-ir-composer-reference/src/stage-fixtures.mjs",
-    "https://github.com/iteathen/CUDA-MCGS/issues/30"
+    "https://github.com/iteathen/CUDA-MCGS/issues/30",
+    "https://github.com/iteathen/CUDA-MCGS/pull/190"
   ],
   "state": {
     "protected_authority": "main@3ecac11e3576bd063760bc9572f79bea78acd031",
     "integrated_candidate_portfolio": "experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a",
     "active_issue": 30,
     "active_branch": "ref/stage-01",
+    "review_pr": 190,
     "exact_stage_base": "f79845b3d45eb1e3b39d7be6128776a56cb4f54a",
     "qualified_semantic_head": "9ae16e7360226e35a69a1436a1f773dada592c95",
-    "qualified_semantic_tree": "2f979d5d53b4e2aca60b8952315ae72753c545c1"
+    "qualified_semantic_tree": "2f979d5d53b4e2aca60b8952315ae72753c545c1",
+    "documentation_review_checkpoint": "385594ab40feeb31bea933ceed0155b9a091e996"
   },
-  "semantic_qualification": {
-    "stage_workflow": 33696515582,
+  "pr_qualification": {
+    "stage_workflow": 33696784971,
+    "session_workflow": 33696784953,
+    "terminal_workflow": 33696784966,
+    "framework_workflow": 33696784943,
+    "documentation_workflow": 33696784987,
     "stage_cases": "10/10",
     "direct_spec_0003_routes": "8/8",
     "stage_projection": "919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28",
     "stage_evidence": "7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea",
     "stage_canonical_bytes": 9395,
-    "artifact": 9871959921,
-    "artifact_digest": "sha256:796f945b704c47a55f3fd06b66224171f4c7a74d987ddeb53a11e667d168c636"
+    "artifact": 9872056402,
+    "artifact_digest": "sha256:4d7334fdd4aa6806762b01040e7eb75143a0c955542b6eacc3891b381e2f80a4"
+  },
+  "review": {
+    "whole_diff": "complete-no-blocker",
+    "changed_files": 16,
+    "semantic_tail": "all Stage semantic/test/projection/workflow sources are frozen at 9ae16e73...; later branch changes are current-state documents only",
+    "ownership": "no duplicate Stage normalizer, Resource/Progress authority, CUDA-JS lowering/runtime authority, native code or product meaning introduced"
   },
   "preserved_red_evidence": [
     {"finding":"pending Stage outcome retained worker, mutable lease or reservation","head":"2a12ca82dd9e99981dc3ed52623ea46d12930819","workflow":33695493706,"artifact":9871610435},
     {"finding":"declared non-pending release contract not enforced and undeclared owner facts accepted","head":"4ebfd3f0802f1cb746aaad986ce97cd92c04bc57","workflow":33696328927,"artifact":9871897062}
   ],
   "diagnostic_history": [
-    {"head":"1a1e21c18f78119df5ec70da3ebf518b77dbd927","workflow":33696000529,"disposition":"test-selection assumptions used canonical stage array indices instead of normalized entryStage/checkpoint identity; harness-only correction, not a conformance red"}
+    {"head":"1a1e21c18f78119df5ec70da3ebf518b77dbd927","workflow":33696000529,"disposition":"test-selection assumptions used canonical stage-array indices instead of normalized entryStage/checkpoint identity; harness-only correction, not a conformance red"}
   ],
   "deliverables": [
     "Composer-owned Stage profile projection/export bound to exact existing normalized Stage identities.",
@@ -54,19 +67,18 @@
     "Preserved red-before-green evidence for pending ownership release and review-discovered release/owner-fact closure defects."
   ],
   "validation": [
-    "The final documentation-inclusive Stage head must differ from semantic checkpoint 9ae16e73... only in STATUS.md, next_step.yaml and experiments/search-semantics-reference/README.md and RESULTS.md.",
+    "The final tracker-only head may differ from documentation review checkpoint 385594ab... only in STATUS.md, next_step.yaml and experiments/search-semantics-reference/README.md and RESULTS.md.",
+    "The final tracker-only head must pass Stage, Session, Terminal, Framework and full repository/documentation workflows on one exact head.",
     "Stage must remain 10/10 with all 8 direct SPEC-0003 routes and no skips.",
-    "The exact final PR head must pass Stage behavioral reference and the full repository/documentation matrix.",
-    "Fresh complete-diff author review must find no blocking semantic, ownership, governance, evidence or cleanup defect.",
-    "Any material head/base change after review invalidates affected review/authorization and requires requalification."
+    "Fresh whole-diff author review is complete at 385594ab...; any semantic/test/workflow change after that invalidates review and requires another full review.",
+    "Any material base change invalidates review/authorization and requires requalification."
   ],
   "blockers": [],
   "current_gate": [
-    "Finish tracker reconciliation without changing Stage semantic/test/workflow sources.",
-    "Open the Stage PR against exact base f79845b3... and freeze its documentation-inclusive head.",
-    "Require Stage and full repository/documentation PR workflows green on that exact head.",
-    "Perform one fresh whole-diff author review and reconcile PR/issue current-state surfaces.",
-    "Stop for fresh repository-owner authorization of the exact reviewed head/base."
+    "Qualify this final tracker-only head with Stage, Session, Terminal, Framework and full repository/documentation workflows.",
+    "Verify the final tracker-only tail changed no Stage semantic/test/projection/workflow source.",
+    "Update PR #190 and issue/current-state surfaces to the exact final head.",
+    "Stop for fresh repository-owner authorization of that exact reviewed head/base."
   ],
   "do_not": [
     "Do not create a second Stage schema/normalizer, scheduler, workflow DSL or runtime extension registry.",

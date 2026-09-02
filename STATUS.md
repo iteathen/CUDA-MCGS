@@ -10,7 +10,7 @@ Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd
 
 The integrated CUDA-free candidate/reference line is `experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a`. Candidate/reference integration is not protected #122 acceptance, native CUDA qualification, production readiness, or product support.
 
-`REF-SESSION-01` / #181 is complete and integrated through PR #189. The integration commit has the exact reviewed Session tree and passed post-integration Session, Terminal, and Framework push qualification.
+`REF-SESSION-01` / #181 is complete and integrated through PR #189. Its integrated tree equals the authorized reviewed Session tree and its post-integration Session, Terminal and Framework gates passed.
 
 ## Active candidate — #30 / REF-STAGE-01
 
@@ -18,7 +18,9 @@ Branch: `ref/stage-01`
 
 Exact base: `experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a`
 
-Qualified Stage semantic checkpoint before tracker reconciliation:
+Review PR: #190
+
+Qualified Stage semantic checkpoint:
 
 `9ae16e7360226e35a69a1436a1f773dada592c95`
 
@@ -26,41 +28,54 @@ tree:
 
 `2f979d5d53b4e2aca60b8952315ae72753c545c1`
 
-Stage consumes the existing Composer-normalized Stage profiles rather than creating a second schema/normalizer. It owns only per-item Stage checkpoint/outcome semantics. Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session and Framework remain separate semantic owners; CUDA-JS retains Device-JS lowering, generated CUDA/native artifacts, linking/loading and generic runtime mechanisms.
+Documentation-inclusive review checkpoint:
+
+`385594ab40feeb31bea933ceed0155b9a091e996`
+
+The single commit between those checkpoints changes only `STATUS.md`, `next_step.yaml`, and this experiment's `README.md`/`RESULTS.md`. No Stage semantic, test, runner, projection or workflow source changed after `9ae16e73…`.
+
+Stage consumes the existing Composer-normalized Stage profiles rather than creating another schema/normalizer. It owns only per-work-item stable checkpoint invocation and declared local outcome semantics. Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session and Framework remain separate semantic owners; CUDA-JS retains Device-JS lowering, generated CUDA/native artifacts, linking/loading and generic runtime mechanisms.
 
 No native code, PTX backend, runtime extension registry, global scheduler, product semantics, or host progression loop was introduced.
 
-## Stage qualification at 9ae16e73…
+## Exact PR qualification at 385594ab…
 
-Stage workflow `33696515582` passed:
+All required PR workflows passed on the same documentation-inclusive head:
+
+- Stage behavioral reference `33696784971` — success;
+- Session behavioral reference `33696784953` — success;
+- Terminal slice reference `33696784966` — success;
+- Framework lifecycle reference `33696784943` — success;
+- full repository/documentation matrix `33696784987` — success, including Governance, Ubuntu/Windows Search IR, Graph lanes, Policy, Evaluator, Resource, Progress, Output and aggregate `verify`.
+
+The Stage run proved:
 
 - Stage CI self-gate: pass;
-- Composer: pass;
-- exact Stage profile projection/export: pass;
+- Composer and exact Stage projection/export: pass;
 - Stage behavioral reference: `10/10`;
 - direct SPEC-0003 ENGINE-REFERENCE routes: `8/8`;
 - required/conditional/optional skips: `0`;
 - Stage profile projection: `919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28`;
 - Stage evidence: `7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea` (`9395` canonical bytes);
-- artifact: `9871959921`;
-- artifact digest: `sha256:796f945b704c47a55f3fd06b66224171f4c7a74d987ddeb53a11e667d168c636`.
+- exact-PR-head artifact: `9872056402`;
+- artifact digest: `sha256:4d7334fdd4aa6806762b01040e7eb75143a0c955542b6eacc3891b381e2f80a4`.
 
-The case bank proves declared owner-published outcomes, pending ownership release, Resource/Progress delegation, two materially different legal schedules with invariant per-item semantics, first-product deletion, whole-substrate absence, mutation sensitivity, a materially distinct second Stage profile, and explicit portable-vs-native claim limits.
+Fresh base-to-head author review of all 16 changed files found no blocking semantic, ownership, evidence, governance or cleanup defect. This is author review, not repository-owner authorization.
 
 ## Preserved decisive Stage reds
 
-- pending outcome retained Stage-owned worker/lease/reservation state: `2a12ca82dd9e99981dc3ed52623ea46d12930819`, run `33695493706`, artifact `9871610435`;
-- normalized non-pending outcome release contract was not enforced and undeclared owner facts were accepted: `4ebfd3f0802f1cb746aaad986ce97cd92c04bc57`, run `33696328927`, artifact `9871897062`.
+- pending outcome retained worker/mutable lease/reservation state: `2a12ca82dd9e99981dc3ed52623ea46d12930819`, run `33695493706`, artifact `9871610435`;
+- normalized non-pending outcome release was not enforced and undeclared owner facts were accepted: `4ebfd3f0802f1cb746aaad986ce97cd92c04bc57`, run `33696328927`, artifact `9871897062`.
 
-Both reds are now permanent checked-in falsifiers. No falsifier was weakened to obtain green.
+Both are permanent checked-in falsifiers. No falsifier was weakened for green.
 
-The broad expansion run `33696000529` is diagnostic only: its two failures came from brittle test selection by canonical array index, not Stage semantics. The harness was corrected to select normalized `entryStage`/checkpoint surfaces without changing the Stage oracle.
+The expanded-case failure at `1a1e21c1…` / run `33696000529` remains diagnostic only: it exposed brittle test selection by canonical array index, and was corrected by selecting normalized `entryStage`/checkpoint identity without changing Stage semantics.
 
 ## Current gate
 
-Reconcile only `STATUS.md`, `next_step.yaml`, and this experiment's `README.md`/`RESULTS.md`, then freeze the documentation-inclusive Stage head. Open a Stage review PR against exact base `f79845b3…`, require the Stage workflow plus full repository/documentation matrix on that exact head, and complete a fresh whole-diff author review.
+This final tracker reconciliation must change only the four current-state documents above and must itself receive exact-head Stage plus full coupled/repository qualification. After that readback, the only remaining pre-integration gate is **fresh repository-owner authorization of the exact PR #190 head against exact base `f79845b3…`**.
 
-After a clean exact-head review, stop for fresh repository-owner authorization before any Stage integration. Do not start #33 Channel before guarded Stage integration/readback.
+Do not integrate #30 or start #33 Channel before that authorization and guarded Stage integration/readback.
 
 ## Remaining reference sequence
 
