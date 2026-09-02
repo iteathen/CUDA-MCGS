@@ -413,6 +413,10 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     if (input.progressClosed !== true || input.terminalOutputReady !== true || input.staleWorkDisposed !== true) {
       fail('SESSION_REFERENCE_COMPLETION_PENDING', 'Session completion requires Progress closure, terminal Output readiness, and stale-work disposition');
     }
+    const liveObservationBorrows = [...observations.values()].reduce((sum, request) => sum + request.borrows.size, 0);
+    if (liveObservationBorrows > 0) {
+      fail('SESSION_REFERENCE_COMPLETION_BORROW', 'Session completion requires live observation borrows to quiesce before terminal provenance');
+    }
     preflightCounters(['command']);
     commitCounters(['command']);
     lifecycle = 'terminal';
