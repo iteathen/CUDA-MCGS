@@ -51,10 +51,70 @@ const CLEAN_GRAPH_LEDGER = Object.freeze({
   transpositionEntries: '0',
 });
 
+const TERMINAL_SLICE_FAMILIES = Object.freeze({
+  absent: Object.freeze({
+    domainOracle: 'transposing',
+    domainRoot: 'transposingAlphaPacked',
+    domainProfile: 'domain.synthetic-transposing',
+    graphProfile: 'graph.synthetic-transposing',
+    policyProfile: 'policy.synthetic-scalar-absent',
+    evaluatorProfile: null,
+    resourceProfile: 'resource.synthetic-evaluator-absent',
+    progressProfile: 'progress.synthetic-evaluator-absent',
+    outputProfile: 'output.synthetic-evaluator-absent',
+  }),
+  selected: Object.freeze({
+    domainOracle: 'stochastic',
+    domainRoot: 'stochasticChance',
+    domainProfile: 'domain.synthetic-stochastic-history',
+    graphProfile: 'graph.synthetic-reclaiming',
+    policyProfile: 'policy.synthetic-vector-combined',
+    evaluatorProfile: 'evaluator.synthetic-vector-combined',
+    resourceProfile: 'resource.synthetic-evaluator-workspace',
+    progressProfile: 'progress.synthetic-evaluator-workspace',
+    outputProfile: 'output.synthetic-evaluator-workspace',
+  }),
+});
+
 function projected(projection, id, label) {
   const entry = projection.profiles.find((candidate) => candidate.id === id);
   assert(entry, `missing ${label} profile ${id}`);
   return entry.normalized;
+}
+
+function contributorProfileId(resourceProfile, contractId) {
+  return resourceProfile.contributors.find(({ contract }) => contract?.id === contractId)?.profile?.id ?? null;
+}
+
+function assertProfileChain({
+  domainProfile,
+  graphProfile,
+  policyProfile,
+  evaluatorProfile,
+  resourceProfile,
+  progressProfile,
+  outputProfile,
+}) {
+  assert.equal(graphProfile.domainProfile.id, domainProfile.id, 'Graph must consume the selected Domain profile');
+  assert.equal(contributorProfileId(resourceProfile, 'SPEC-0007'), domainProfile.id, 'Resource must bind the selected Domain profile');
+  assert.equal(contributorProfileId(resourceProfile, 'SPEC-0010'), graphProfile.id, 'Resource must bind the selected Graph profile');
+  assert.equal(contributorProfileId(resourceProfile, 'SPEC-0008'), policyProfile.id, 'Resource must bind the selected Policy profile');
+  assert.equal(
+    contributorProfileId(resourceProfile, 'SPEC-0009'),
+    evaluatorProfile?.id ?? null,
+    'Resource Evaluator selection must match the terminal-slice family',
+  );
+  assert.equal(progressProfile.resourcePlan.id, resourceProfile.id, 'Progress must consume the selected Resource profile');
+  assert.equal(outputProfile.resourcePlan.id, resourceProfile.id, 'Output must consume the selected Resource profile');
+  assert.equal(outputProfile.progressPlan.id, progressProfile.id, 'Output must consume the selected Progress profile');
+}
+
+function countSelectedContract(resourceProfile, contractId) {
+  return resourceProfile.contributors.filter(({ contract }) => contract?.id === contractId).length;
+}
+
+function productResidueCount(profiles) {
+  return profiles.reduce((sum, profile) => sum + (Array.isArray(profile.productData) ? profile.productData.length : 0), 0);
 }
 
 function factValue(result, id) {
@@ -294,12 +354,17 @@ function finishTerminalSlice({
   setup,
   domainOracle,
   domainRoot,
+  domainProfile,
+  graphProfile,
   policy,
+  policyProfile,
   evaluator,
+  evaluatorProfile,
   evaluatorSelected,
   resource,
   resourceProfile,
   progress,
+  progressProfile,
   output,
   outputProfile,
   frameworkProfile,
@@ -400,7 +465,7 @@ function finishTerminalSlice({
     admittedRangeReferences: [],
   });
   assert.equal(domainCleanup.status, 'released');
-  assert.equal(domainCleanup.retained.domainMetadata, 0);
+  assert.equal(domainCleanup.retained.domainMetadataEntries, 0);
   assert.equal(domainCleanup.retained.admittedRangeReferences, 0);
 
   const stoppedFramework = recordStopCause(setup.frameworkRunning, progressClosure.firstStopCause.cause);
@@ -414,10 +479,25 @@ function finishTerminalSlice({
   assert.equal(pendingFramework.teardownPending, true);
   const releasedFrameworkBorrow = releaseTerminalResult(pendingFramework);
 
+  const optionalResidue = {
+    session: countSelectedContract(resourceProfile, 'SPEC-0006'),
+    stage: countSelectedContract(resourceProfile, 'SPEC-0003'),
+    channel: countSelectedContract(resourceProfile, 'SPEC-0004'),
+  };
+  assert.deepEqual(optionalResidue, { session: 0, stage: 0, channel: 0 }, 'session-absent terminal families must select no Session/Stage/Channel owners');
+  const firstProductSpecificResidue = productResidueCount([
+    domainProfile,
+    graphProfile,
+    policyProfile,
+    ...(evaluatorProfile ? [evaluatorProfile] : []),
+    resourceProfile,
+    progressProfile,
+    outputProfile,
+  ]);
+  assert.equal(firstProductSpecificResidue, 0, 'product-neutral terminal families must retain no productData residue');
+
   const structuralResidue = {
-    session: 0,
-    stage: 0,
-    channel: 0,
+    ...optionalResidue,
     cuda: 0,
     localFiles: 0,
     gitState: 0,
@@ -447,6 +527,9 @@ function finishTerminalSlice({
   return {
     schedule: setup.result.scheduleIdentity,
     domainProfile: domainRoot.profileId,
+    graphProfile: graphProfile.id,
+    policyProfile: policyProfile.id,
+    evaluatorProfile: evaluatorProfile?.id ?? null,
     graphCleanup: graphFact,
     policyTerminal,
     evaluatorSelection: evaluatorSelected ? evaluator.selection : evaluatorRemoval.selection,
@@ -459,7 +542,7 @@ function finishTerminalSlice({
     frameworkCleanupReadback: releasedFramework.cleanupReadback,
     structuralResidue,
     hostProgressRequired: false,
-    firstProductSpecificResidue: 0,
+    firstProductSpecificResidue,
   };
 }
 
@@ -472,24 +555,38 @@ export function runCompleteTerminalSlice({
   scheduleId,
   order,
 }) {
-  const selected = family === 'selected';
-  assert(selected || family === 'absent');
+  const familyProfiles = TERMINAL_SLICE_FAMILIES[family];
+  assert(familyProfiles, `unsupported terminal-slice family ${family}`);
+  const selected = familyProfiles.evaluatorProfile !== null;
   const domainOracles = createSyntheticDomainOracles(projections.domain);
-  const domainOracle = selected ? domainOracles.transposing : domainOracles.lazy;
-  const domainRoot = selected ? domainFixture.roots.transposingAlphaPacked : domainFixture.roots.lazyContinuous;
-  const graphProfile = projected(projections.graph, selected ? 'graph.synthetic-transposing' : 'graph.synthetic-stateless', 'Graph');
-  assert.equal(graphProfile.domainProfile.id, domainRoot.profileId);
-  const policyProfile = projected(projections.policy, selected ? 'policy.synthetic-vector-combined' : 'policy.synthetic-proposal-only-stateless', 'Policy');
+  const domainOracle = domainOracles[familyProfiles.domainOracle];
+  assert(domainOracle, `missing Domain oracle ${familyProfiles.domainOracle}`);
+  const domainRoot = domainFixture.roots[familyProfiles.domainRoot];
+  assert(domainRoot, `missing Domain root ${familyProfiles.domainRoot}`);
+  const domainProfile = projected(projections.domain, familyProfiles.domainProfile, 'Domain');
+  assert.equal(domainRoot.profileId, domainProfile.id);
+  const graphProfile = projected(projections.graph, familyProfiles.graphProfile, 'Graph');
+  const policyProfile = projected(projections.policy, familyProfiles.policyProfile, 'Policy');
   const policy = createPolicyOracle({ profile: policyProfile });
-  const evaluatorProfile = selected ? getEvaluatorProfile(projections.evaluator, 'evaluator.synthetic-vector-combined') : null;
+  const evaluatorProfile = familyProfiles.evaluatorProfile === null ? null : getEvaluatorProfile(projections.evaluator, familyProfiles.evaluatorProfile);
   const evaluator = createEvaluatorOracle({ profile: evaluatorProfile });
-  const resourceProfile = getResourceProfile(projections.resource, selected ? 'resource.synthetic-evaluator-workspace' : 'resource.synthetic-evaluator-absent');
+  const resourceProfile = getResourceProfile(projections.resource, familyProfiles.resourceProfile);
   const resource = createResourceOracle({ profile: resourceProfile });
-  const progressProfile = getProgressProfile(projections.progress, selected ? 'progress.synthetic-evaluator-workspace' : 'progress.synthetic-evaluator-absent');
+  const progressProfile = getProgressProfile(projections.progress, familyProfiles.progressProfile);
   const progress = createProgressOracle({ profile: progressProfile });
-  const outputProfile = getOutputProfile(projections.output, selected ? 'output.synthetic-evaluator-workspace' : 'output.synthetic-evaluator-absent');
+  const outputProfile = getOutputProfile(projections.output, familyProfiles.outputProfile);
   const output = createOutputOracle({ profile: outputProfile });
   const frameworkProfile = selected ? normalizeFrameworkLifecycleProfile(frameworkFixture.profile) : absentFrameworkProfile(frameworkFixture.profile);
+
+  assertProfileChain({
+    domainProfile,
+    graphProfile,
+    policyProfile,
+    evaluatorProfile,
+    resourceProfile,
+    progressProfile,
+    outputProfile,
+  });
 
   const setup = runSetup({
     composerEvidence,
@@ -512,12 +609,17 @@ export function runCompleteTerminalSlice({
     setup,
     domainOracle,
     domainRoot,
+    domainProfile,
+    graphProfile,
     policy,
+    policyProfile,
     evaluator,
+    evaluatorProfile,
     evaluatorSelected: selected,
     resource,
     resourceProfile,
     progress,
+    progressProfile,
     output,
     outputProfile,
     frameworkProfile,
@@ -527,6 +629,9 @@ export function runCompleteTerminalSlice({
 export function terminalSliceMeaning(result) {
   return {
     domainProfile: result.domainProfile,
+    graphProfile: result.graphProfile,
+    policyProfile: result.policyProfile,
+    evaluatorProfile: result.evaluatorProfile,
     evaluatorSelection: result.evaluatorSelection,
     evaluatorResidue: result.evaluatorResidue,
     resourceConservation: result.resourceConservation.kind,
