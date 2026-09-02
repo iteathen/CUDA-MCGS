@@ -36,30 +36,30 @@ Exact integrated base:
 
 Exact semantic head before this current-state-only reconciliation:
 
-`910f2eeb6ad665f7690ad4b05e9a2dcbfc55fd2c`
+`c554e51423600f1c6bd7f52b5ee1fb6a2b7826fa`
 
 Semantic tree:
 
-`d53a43950f5efbed6f28d3eb7140d5aeb84f1b08`
+`a9ae9970fe2b9e37a2223bb89c19942ba6d1e5bc`
 
-Session owns only external command order/replay/idempotence/provenance, initial-root authority coordination, already-ready successor advance authority/provenance, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite Session counters and Session cleanup. It does not duplicate Domain root validity, Graph occurrence/storage/reclamation, source-owner reuse meaning, Resource accounting, Progress scheduling/closure, Output payload/snapshot/publication authority, Framework lifecycle, CUDA-JS mechanisms or product semantics.
+Session owns external command order/replay/idempotence/provenance, Session identity/incarnation, initial-root authority coordination, already-ready successor advance authority/provenance, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite Session counters and Session cleanup. Search identity/incarnation are injected public provenance facts used only to bind Output publications to the active execution. Session does not duplicate Domain root validity, Graph occurrence/storage/reclamation, source-owner reuse meaning, Resource accounting, Progress scheduling/closure, Output payload/snapshot/publication authority, Framework lifecycle, CUDA-JS mechanisms or product semantics.
 
 The branch adds no native code, scheduler, workflow DSL, product meaning or private sibling-owner state.
 
-## Session semantic qualification at 910f2eeb…
+## Session semantic qualification at c554e514…
 
-The permanent Session push workflow `33688951561` and PR workflow `33688958267` passed on the exact semantic head. The same PR head also passed Terminal Slice `33688958229`, Framework `33688958245`, and the full repository/documentation matrix `33688958297`.
+The exact semantic head passed PR Session workflow `33689816193`, Terminal Slice `33689816259`, and Framework `33689816270`. The documentation/current-state reconciliation after that semantic head must receive its own final exact-head full matrix.
 
 - CI self-verification gate: pass;
 - Composer: `881/881`;
 - Domain/Graph/Policy/Evaluator/Resource/Progress/Output/Session normalized profile exports: pass;
-- Session advance boundary: pass;
+- Session advance/teardown boundary gate: pass;
 - coupled terminal Session-absent regression: `6/6`;
-- Session behavioral reference: `21/21`;
+- Session behavioral reference: `22/22`;
 - direct SPEC-0006 ENGINE-REFERENCE obligations: `38/38` executed and covered;
-- Session evidence: `a6e5247464ecee9860aa6321bcd8eca4891078d70d27450c35e082896ee2e3bd` (`15716` canonical bytes);
-- artifact: `9869244684`;
-- artifact digest: `sha256:af7c0b8ccf8fad78346016eaefdf495816d1f70ae5e77cb55b0a04be3f50c2e6`.
+- Session evidence: `9bca68e4cf19ea62742a606a75bab82c1146a832c6cf9ef57ef9cf0bd6a1c431` (`16175` canonical bytes);
+- artifact: `9869565953`;
+- artifact digest: `sha256:e32621394f322273146336f17e8233867d26634a4408a9b6f67cf27e55976c55`.
 
 ## Preserved Session red-before-green evidence
 
@@ -71,13 +71,14 @@ The permanent case bank/gates retain the useful review falsifiers rather than we
 - cancellation could abort prepared reroot state before command admission succeeded — test-only head `f4a8d21dd2c53dceba3ec1cdbdbf371f05598f94`, run `33684006773`, artifact `9867359227`;
 - the permanent Session CI runner could be conditionally skipped and missing evidence only warned — test-only head `46d105821be7a49063f0bc91cce0ebe4acf570a7`, run `33684533233`;
 - malformed untrusted command identity could advance counters before semantic validation — test-only head `d74ab8b9efd5df68e47d7099081c58f743dea12a`, run `33684937813`, artifact `9867706099`, digest `sha256:0aae20cbc391c87b86a82e11d1a1cd09027f0a37abf319da91516b11a4a62409`;
-- a same-epoch publication from a foreign Output profile could be admitted as current Session observation evidence — test-only head `3f0e86f871795a5c26a7277210e2685f4264cb80`, run `33688752675`, artifact `9869167043`, digest `sha256:dfc5da2562a399e0550b6af7e139c1bc65e5b4508f87b0d93fe409e8c01e4c48`.
+- a same-epoch publication from a foreign Output profile could be admitted as current Session observation evidence — test-only head `3f0e86f871795a5c26a7277210e2685f4264cb80`, run `33688752675`, artifact `9869167043`, digest `sha256:dfc5da2562a399e0550b6af7e139c1bc65e5b4508f87b0d93fe409e8c01e4c48`;
+- after that repair, a same-profile/same-epoch publication from a foreign Session identity could still be admitted — test-only head `d569fd1cbb3374697751e1b9772bd43c1fbd845b`, run `33689574707`, artifact `9869474428`, digest `sha256:1ed1b6427c45afd57dc7f418ccee98297e42439c462aa7ca76ae3fcdb8783c7d`.
 
-The current green implementation keeps those boundaries explicit: advance stays within one root incarnation, Session consumes Output-owned ready-publication facts and binds them to the normalized Output profile before state mutation, completion waits for borrow quiescence, cancellation admission precedes mutation, the CI gate is non-bypassable, and command validation precedes state mutation.
+The current green implementation keeps those boundaries explicit: advance stays within one root incarnation, Session consumes Output-owned ready-publication facts and binds them to the normalized Output profile plus exact injected Session/search provenance before state mutation, completion waits for borrow quiescence, cancellation admission precedes mutation, the CI gate is non-bypassable, and command validation precedes state mutation.
 
 ## Current gate
 
-This file, `next_step.yaml`, and the experiment README/RESULTS are current-state-only reconciliation after the review-discovered provenance repair. Their final reconciliation commit necessarily advances the branch head without changing the qualified Session semantics above.
+This file, `next_step.yaml`, and the experiment README/RESULTS are current-state-only reconciliation after the final review-discovered provenance repair. Their final reconciliation commit necessarily advances the branch head without changing the qualified Session semantics above.
 
 The resulting documentation-inclusive exact head must therefore:
 
