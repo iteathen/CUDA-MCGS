@@ -12,6 +12,7 @@ const text = (value, label) => {
   return value;
 };
 const terminalStates = new Set(['completed', 'failed', 'cancelled', 'abandoned', 'stale-disposed', 'quarantined']);
+const resultVisibleWorkKinds = new Set(['must-drain', 'terminal-output']);
 const fatalNoProgress = new Map([
   ['deadlock', 'progress-deadlock'],
   ['livelock', 'progress-livelock'],
@@ -96,6 +97,8 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
   const transitionTerminal = (item, state, reason = null, ownerFailure = null) => {
     if (terminal(item.state)) return false;
     if (!terminalStates.has(state)) fail('PROGRESS_REFERENCE_TERMINAL', `invalid terminal state ${state}`);
+    const cls = workClass(item.classId);
+    if (!cls.terminalStates.includes(state)) fail('PROGRESS_REFERENCE_TERMINAL_DECLARATION', `${cls.id} does not declare reachable terminal state ${state}`);
     item.state = state;
     item.reason = reason;
     item.ownerFailure = ownerFailure === null ? null : freeze(ownerFailure, 'Progress owner failure');
@@ -140,6 +143,8 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
     const expectedResources = [...cls.resources].sort();
     if (!same(resourceClasses, expectedResources, 'work resource admission classes')) fail('PROGRESS_REFERENCE_RESOURCE', 'resource admission classes differ from normalized work requirements');
     if ((admission.reserve ?? null) !== cls.reserve) fail('PROGRESS_REFERENCE_RESOURCE', 'resource admission reserve differs from normalized work requirement');
+    const irreversibleResultVisible = input.irreversibleResultVisible === true;
+    if (irreversibleResultVisible && !resultVisibleWorkKinds.has(cls.kind)) fail('PROGRESS_REFERENCE_RESULT_VISIBLE', `${cls.id} cannot admit irreversible result-visible work`);
     const key = refKey(input);
     if (work.has(key)) fail('PROGRESS_REFERENCE_WORK', 'duplicate exact work identity');
     const item = {
@@ -160,7 +165,7 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
       readyAtOpportunity: null,
       continuationId: null,
       continuationDepth: 0n,
-      irreversibleResultVisible: input.irreversibleResultVisible === true,
+      irreversibleResultVisible,
       staleEpoch: false,
     };
     work.set(key, item);
@@ -262,6 +267,8 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
   function beginResultVisibleTransition(input) {
     const item = find(input);
     if (item.state !== 'claimed') fail('PROGRESS_REFERENCE_RESULT_VISIBLE', 'result-visible transition requires claimed work');
+    const cls = workClass(item.classId);
+    if (!resultVisibleWorkKinds.has(cls.kind)) fail('PROGRESS_REFERENCE_RESULT_VISIBLE', `${cls.id} does not own an irreversible result-visible transition`);
     item.irreversibleResultVisible = true;
     return { kind: 'must-drain', workId: item.workId, incarnation: item.incarnationText };
   }

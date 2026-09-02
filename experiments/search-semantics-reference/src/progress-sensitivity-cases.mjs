@@ -49,6 +49,22 @@ export function registerProgressSensitivityCases({ defineCase, projection }) {
     closureMutant.beginDraining();
     assert.equal(closureMutant.publishClosure({ channelsTerminal: false, ownerTransitionsReady: false, resourcesConserved: false, terminalOutputPublishable: false }).kind, 'terminal');
 
-    return { killedMutants: ['allowIncompleteReady', 'skipFairness', 'skipClosureCheck'] };
-  }, ['PROGRESS-WORK-003', 'PROGRESS-FAIR-001', 'PROGRESS-STOP-005']);
+    const undeclaredProfile = structuredClone(profile);
+    const undeclaredClass = undeclaredProfile.workClasses.find(({ id }) => id === ordinary.id);
+    undeclaredClass.terminalStates = undeclaredClass.terminalStates.filter((state) => state !== 'completed');
+    const undeclaredOracle = activeProgressOracle(undeclaredProfile);
+    const undeclaredInput = admitAndReady(undeclaredOracle, undeclaredProfile, undeclaredClass, 'sensitivity-terminal-declaration');
+    assert.equal(undeclaredOracle.claimReady({ ...workRef(undeclaredInput), claimId: 'terminal-declaration-claim' }).kind, 'claimed');
+    expectCode(() => undeclaredOracle.completeWork({ ...workRef(undeclaredInput), operationId: 'terminal-declaration-complete', resultVisible: false }), 'PROGRESS_REFERENCE_TERMINAL_DECLARATION');
+
+    const resultVisibleOracle = activeProgressOracle(profile);
+    const ordinaryResultVisible = admitAndReady(resultVisibleOracle, profile, ordinary, 'sensitivity-result-visible-kind');
+    assert.equal(resultVisibleOracle.claimReady({ ...workRef(ordinaryResultVisible), claimId: 'result-visible-kind-claim' }).kind, 'claimed');
+    expectCode(() => resultVisibleOracle.beginResultVisibleTransition(workRef(ordinaryResultVisible)), 'PROGRESS_REFERENCE_RESULT_VISIBLE');
+
+    return {
+      killedMutants: ['allowIncompleteReady', 'skipFairness', 'skipClosureCheck', 'undeclaredTerminalState'],
+      resultVisibleKindGuard: true,
+    };
+  }, ['PROGRESS-WORK-003', 'PROGRESS-WORK-005', 'PROGRESS-FAIR-001', 'PROGRESS-STOP-003', 'PROGRESS-STOP-005']);
 }

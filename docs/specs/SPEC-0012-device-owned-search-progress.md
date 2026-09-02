@@ -48,7 +48,7 @@ Deleting chess, evaluator, live observation, optional capabilities, a queue impl
 
 A **work class** is a normalized owner-defined finite transition kind with input readiness, output/terminal states, resource needs, cancellation points and service contract. A **work incarnation** is one stale-safe admitted instance.
 
-`pending` means a declared prerequisite is not ready and a producer/escape remains possible. `ready` means all service prerequisites and resources required to claim are available. `claimed/running` means one device participant owns the service attempt. `terminal` means completed, failed, cancelled, abandoned or stale-disposed exactly once.
+`pending` means a declared prerequisite is not ready and a producer/escape remains possible. `ready` means all service prerequisites and resources required to claim are available. `claimed/running` means one device participant owns the service attempt. `terminal` means completed, failed, cancelled, abandoned, stale-disposed or, for irreversible result-visible work, quarantined exactly once. `quarantined` is the typed fatal terminal disposition used when such work cannot safely report completion.
 
 A **progress step** is a finite owner transition that completes work, changes a dependency/readiness/resource fact, advances a bounded continuation, or contributes to stop/drain/closure. A **service opportunity** is a scheduler-neutral chance for a ready class/item to attempt such a step.
 
@@ -80,7 +80,7 @@ PROGRESS-GRAPH-005. A removed owner/capability deletes its classes/edges/counter
 
 PROGRESS-WORK-001. Admission validates class/profile, owner payload reference/incarnation, root/work epoch, required resources and representable identity before publishing a work incarnation.
 
-PROGRESS-WORK-002. Admission/accounting conserves `admitted = pending + ready + claimed/running + terminal`; failed admission is not live work and each admitted item reaches exactly one terminal disposition.
+PROGRESS-WORK-002. Admission/accounting conserves `admitted = pending + ready + claimed/running + terminal`; failed admission is not live work and each admitted item reaches exactly one terminal disposition. Each normalized work-class declaration includes every terminal disposition reachable from that class's generic Progress operations, result-visibility semantics and selected stop disposition; `service` and `drain` stop behavior do not invent an additional terminal state.
 
 PROGRESS-WORK-003. Ready publication follows complete prerequisite writes with required visibility. Queue presence, reserved resources, non-null payload or producer start never imply ready.
 
@@ -178,7 +178,7 @@ Required cases include:
 
 | Case ID | Required falsifier |
 |---|---|
-| `progress-profile-strict-normalization` | Missing producer/escape/fairness/closure is accepted. |
+| `progress-profile-strict-normalization` | Missing producer/escape/fairness/closure or reachable terminal disposition is accepted. |
 | `progress-ready-after-publication` | Work runs on incomplete payload. |
 | `progress-pending-yields-worker` | Waiter spins while blocking producer. |
 | `progress-accounting-conservation` | Admitted work disappears/duplicates. |
@@ -196,7 +196,7 @@ Required cases include:
 | `progress-closure-complete` | Terminal publishes with live work/waiter/resource. |
 | `progress-scheduler-semantic-parity` | Two mechanisms violate stable invariants. |
 | `progress-owner-deletion-zero-residue` | Removed evaluator/observation/capability leaves work. |
-| `progress-oracle-sensitivity` | Removing readiness/fairness/closure checks still passes. |
+| `progress-oracle-sensitivity` | Removing readiness/fairness/closure or terminal-transition guards still passes. |
 
 Fixtures cover serial and parallel schedules, evaluator absence/batching, graph cycles, resource pressure/recovery, stop during backup, stale root-advance work, optional observation, deadlock/livelock/starvation and at least two mechanism-neutral scheduler models.
 
