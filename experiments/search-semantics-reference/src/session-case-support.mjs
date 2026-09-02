@@ -22,12 +22,30 @@ function sessionOptions(options = {}) {
   return { sessionIdentity, searchIdentity, searchIncarnation, ...rest };
 }
 
+function withCurrentAuthorityComposition(session) {
+  return Object.freeze({
+    ...session,
+    prepareReroot(input) {
+      return session.prepareReroot({
+        authority: session.snapshot().authority,
+        ...input,
+      });
+    },
+  });
+}
+
 export function liveSession(projection, options = {}) {
-  return createSessionOracle({ profile: getSessionProfile(projection, 'session.synthetic-live-session'), ...sessionOptions(options) });
+  return withCurrentAuthorityComposition(createSessionOracle({
+    profile: getSessionProfile(projection, 'session.synthetic-live-session'),
+    ...sessionOptions(options),
+  }));
 }
 
 export function restartSession(projection, options = {}) {
-  return createSessionOracle({ profile: getSessionProfile(projection, 'session.synthetic-live-session-restart'), ...sessionOptions(options) });
+  return withCurrentAuthorityComposition(createSessionOracle({
+    profile: getSessionProfile(projection, 'session.synthetic-live-session-restart'),
+    ...sessionOptions(options),
+  }));
 }
 
 export function establish(session, label = 'alpha') {
