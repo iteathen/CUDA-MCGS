@@ -56,6 +56,19 @@ const EXPECTED_CLEANUP_KINDS = Object.freeze([
   'coordination-record',
 ]);
 
+const TEARDOWN_FACT_FIELDS = Object.freeze([
+  'workFinalized',
+  'protectionsReleased',
+  'ownerResourcesReleased',
+  'opaqueCudaReleased',
+  'transfersBorrowsReleased',
+  'cachesArtifactsDisposed',
+  'localStateDisposed',
+  'processesDeviceResourcesReleased',
+  'credentialsDisposed',
+  'externalCoordinationDisposed',
+]);
+
 function clone(value) {
   return canonicalClone(value, 'framework lifecycle case value');
 }
@@ -233,18 +246,7 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
     assert.equal(released.opaqueOperations, 0);
     assert.deepEqual(released.createdOwners, []);
     assert.deepEqual(released.releasedOwners, [...fixture.profile.ownerOrder].reverse());
-    for (const field of [
-      'workFinalized',
-      'protectionsReleased',
-      'ownerResourcesReleased',
-      'opaqueCudaReleased',
-      'transfersBorrowsReleased',
-      'cachesArtifactsDisposed',
-      'localStateDisposed',
-      'processesDeviceResourcesReleased',
-      'credentialsDisposed',
-      'externalCoordinationDisposed',
-    ]) assert.equal(released.teardownFacts[field], true);
+    for (const field of TEARDOWN_FACT_FIELDS) assert.equal(released.teardownFacts[field], true);
     assertFrameworkCleanupReadback(released);
     return { releasedOwners: released.releasedOwners, cleanupReadback: released.cleanupReadback.length };
   }, ['FRAMEWORK-LIFE-008']);
@@ -300,15 +302,11 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
     const incomplete = teardownFacts(fixture.profile);
     incomplete.cleanupDispositions.pop();
     assert.throws(() => teardownFramework(terminal, incomplete), { code: 'FRAMEWORK_CLEANUP_FACTS' });
-    const unreleasedProtection = teardownFacts(fixture.profile);
-    unreleasedProtection.protectionsReleased = false;
-    assert.throws(() => teardownFramework(terminal, unreleasedProtection), { code: 'FRAMEWORK_TEARDOWN_INCOMPLETE' });
-    const liveCredential = teardownFacts(fixture.profile);
-    liveCredential.credentialsDisposed = false;
-    assert.throws(() => teardownFramework(terminal, liveCredential), { code: 'FRAMEWORK_TEARDOWN_INCOMPLETE' });
-    const liveCoordination = teardownFacts(fixture.profile);
-    liveCoordination.externalCoordinationDisposed = false;
-    assert.throws(() => teardownFramework(terminal, liveCoordination), { code: 'FRAMEWORK_TEARDOWN_INCOMPLETE' });
+    for (const field of TEARDOWN_FACT_FIELDS) {
+      const incompleteReadback = teardownFacts(fixture.profile);
+      incompleteReadback[field] = false;
+      assert.throws(() => teardownFramework(terminal, incompleteReadback), { code: 'FRAMEWORK_TEARDOWN_INCOMPLETE' });
+    }
     const released = teardownFramework(terminal, teardownFacts(fixture.profile));
     assert.equal(assertFrameworkCleanupReadback(released), true);
     return { phase: released.phase, cleanupReadback: released.cleanupReadback.length };
@@ -351,6 +349,9 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
     const noPersistedCleanup = clone(fixture.persistenceProfile);
     noPersistedCleanup.cleanup.records = noPersistedCleanup.cleanup.records.filter(({ kind }) => kind !== 'persisted-artifact');
     assert.throws(() => normalizeFrameworkLifecycleProfile(noPersistedCleanup), { code: 'FRAMEWORK_PERSIST_CLEANUP_GAP' });
+    const missingRollback = clone(fixture.persistenceProfile);
+    missingRollback.persistence.rollback = '';
+    assert.throws(() => normalizeFrameworkLifecycleProfile(missingRollback), { code: 'FRAMEWORK_PERSIST_ROLLBACK' });
     return { persistence: normalized.persistence.kind };
   }, ['FRAMEWORK-PERSIST-001']);
 
@@ -379,7 +380,7 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
     stalePackage.packageIdentity = 'package.stale';
     assert.deepEqual(restoreFrameworkPersistence(fixture.persistenceProfile, stalePackage), { status: 'quarantined', ignitable: false, authoritative: false });
     const forbidden = clone(fixture.validPersistenceSnapshot);
-    forbidden.durableAuthorityKinds = ['raw-pointer'];
+    forbidden.durableAuthorityKinds = ['in-flight-transaction'];
     assert.deepEqual(restoreFrameworkPersistence(fixture.persistenceProfile, forbidden), { status: 'quarantined', ignitable: false, authoritative: false });
     return { invalidRestores: 5 };
   }, ['FRAMEWORK-PERSIST-002']);
