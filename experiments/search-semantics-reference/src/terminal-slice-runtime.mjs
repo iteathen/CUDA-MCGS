@@ -175,14 +175,17 @@ function runSetup({
   let frameworkRunning = null;
   let evaluatorReady = null;
   let outputInitialized = null;
-  let workLease = null;
+  let workLeases = [];
   let completedWork = null;
 
   const workClass = ordinaryWorkClass(progressProfile);
-  assert.equal(workClass.resources.length, 1, 'terminal slice requires an existing ordinary one-resource work class');
+  assert(workClass.resources.length > 0, 'terminal slice ordinary work must declare its Resource classes');
   assert.equal(workClass.reserve, null, 'terminal slice ordinary work must not consume a protected reserve');
-  const resourceClass = resourceProfile.classes.find(({ id }) => id === workClass.resources[0]);
-  assert(resourceClass, `Resource profile lacks Progress-required class ${workClass.resources[0]}`);
+  const resourceClasses = workClass.resources.map((classId) => {
+    const entry = resourceProfile.classes.find(({ id }) => id === classId);
+    assert(entry, `Resource profile lacks Progress-required class ${classId}`);
+    return entry;
+  });
 
   const owners = [
     ['framework.owner', { kind: 'admitted' }],
@@ -209,16 +212,23 @@ function runSetup({
     'policy.owner': () => publicOwnerResult(policy.assertAccounting(), 'policy.owner.accounting-ready'),
     'resource.owner': ({ context }) => {
       if (context.eventId === 'resource.owner.activate') return publicOwnerResult(resource.activate(), 'resource.owner.active');
-      const input = leaseInput(resourceClass, scheduleId, { quantity: '1' });
-      const reserved = resource.reserveResource(input);
-      assert.equal(reserved.kind, 'claimed');
-      workLease = input;
+      const inputs = resourceClasses.map((resourceClass, index) => leaseInput(resourceClass, `${scheduleId}-${index + 1}`, { quantity: '1' }));
+      const claimed = [];
+      for (const input of inputs) {
+        const reserved = resource.reserveResource(input);
+        if (reserved.kind !== 'claimed') {
+          for (const previous of claimed.reverse()) resource.releaseResource(leaseRef(previous));
+        }
+        assert.equal(reserved.kind, 'claimed');
+        claimed.push(input);
+      }
+      workLeases = claimed;
       return publicOwnerResult({
         approved: true,
-        token: `resource:${input.leaseId}:${input.generation}`,
-        classes: [resourceClass.id],
+        token: `resource:${scheduleId}:${claimed.map(({ leaseId, generation }) => `${leaseId}/${generation}`).join('|')}`,
+        classes: resourceClasses.map(({ id }) => id),
         reserve: null,
-        leaseReference: leaseRef(input),
+        leaseReferences: claimed.map((input) => leaseRef(input)),
       }, 'resource.owner.work-admission');
     },
     'progress.owner': ({ context }) => {
@@ -273,11 +283,11 @@ function runSetup({
     events: scheduleEvents(order, evaluatorSelected),
   }, transitions, composerEvidence.representationCompositionEvidenceKey.sha256);
 
-  assert(workLease, 'schedule did not reserve Progress work resources');
+  assert.equal(workLeases.length, resourceClasses.length, 'schedule did not reserve every Progress-required Resource class');
   assert(completedWork, 'schedule did not complete Progress work');
   assert(outputInitialized, 'schedule did not initialize Output');
   assert(frameworkRunning, 'schedule did not ignite Framework');
-  return { result, frameworkRunning, evaluatorReady, outputInitialized, workLease };
+  return { result, frameworkRunning, evaluatorReady, outputInitialized, workLeases };
 }
 
 function finishTerminalSlice({
@@ -300,7 +310,9 @@ function finishTerminalSlice({
   const workFact = factValue(setup.result, 'progress.owner.work-complete');
   assert.equal(workFact.kind, 'completed');
 
-  resource.releaseResource(setup.workLease ? leaseRef(setup.workLease) : factValue(setup.result, 'resource.owner.work-admission').leaseReference);
+  const workLeaseReferences = setup.workLeases?.map((input) => leaseRef(input))
+    ?? factValue(setup.result, 'resource.owner.work-admission').leaseReferences;
+  for (const reference of workLeaseReferences) resource.releaseResource(reference);
 
   const policyStop = policy.requestStop({ cause: 'policy-budget-satisfied', ready: true });
   assert.equal(policy.beginDrain().kind, 'draining');
