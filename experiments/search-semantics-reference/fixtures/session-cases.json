@@ -1,0 +1,26 @@
+{
+  "schema": "cuda-mcgs.reference-session-fixtures/0.1.0",
+  "directRequirementCount": 38,
+  "expectedCases": [
+    "session-initial-root-validation-and-replay",
+    "session-advance-rejects-reroot-work-without-mutation",
+    "session-advance-shared-transposition-occurrence-only",
+    "session-attention-observation-schedule-invariant",
+    "session-reroot-prepare-abort-preserves-authority",
+    "session-reroot-commit-and-postcommit-quarantine",
+    "session-reroot-pressure-and-attention-deletion",
+    "session-observation-readonly-stale-and-borrow-teardown",
+    "session-attention-does-not-change-authority",
+    "session-counter-exhaustion-prevents-alias",
+    "session-cancellation-idempotent-terminal-cleanup",
+    "session-cancellation-aborts-prepared-reroot",
+    "session-absent-terminal-slice-remains-zero-residue"
+  ],
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-session-profile-projection/0.2.0",
+    "profileIds": [
+      "session.synthetic-live-session",
+      "session.synthetic-live-session-restart"
+    ]
+  }
+}
