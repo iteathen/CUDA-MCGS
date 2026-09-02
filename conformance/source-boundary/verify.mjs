@@ -22,7 +22,7 @@ const cases = [
   ["native subprocess", "components/search/index.mjs", 'import { spawn } from "node:child_process";\n', ["SUBPROCESS_RUNTIME"]],
   ["process builtin subprocess", "components/search/index.mjs", 'const cp = process.getBuiltinModule("node:child_process"); cp.execFile("worker");\n', ["UNINSPECTABLE_MODULE_ACQUISITION"]],
   ["createRequire loader", "components/search/index.mjs", 'import { createRequire } from "node:module"; const load = createRequire(import.meta.url);\n', ["UNINSPECTABLE_MODULE_ACQUISITION"]],
-  ["module require loader", "components/search/index.mjs", 'const cp = module.require("node:child_process");\n', ["UNINSPECTABLE_MODULE_ACQUISITION"]],
+  ["module require loader", "components/search/index.mjs", 'const cp = module.require("node:child_process");\n', ["SUBPROCESS_RUNTIME", "UNINSPECTABLE_MODULE_ACQUISITION"]],
   ["dynamic require loader", "components/search/index.mjs", 'const moduleName = "node:child_process"; const cp = require(moduleName);\n', ["UNINSPECTABLE_MODULE_ACQUISITION"]],
   ["dynamic import loader", "components/search/index.mjs", 'const moduleName = "node:child_process"; const cp = await import(moduleName);\n', ["UNINSPECTABLE_MODULE_ACQUISITION"]],
   ["direct native loader", "components/search/index.mjs", 'process.dlopen(module, "addon.node");\n', ["DIRECT_NATIVE_ACCESS"]],
