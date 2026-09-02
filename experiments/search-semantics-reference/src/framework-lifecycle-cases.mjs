@@ -63,7 +63,8 @@ const TEARDOWN_FACT_FIELDS = Object.freeze([
   'opaqueCudaReleased',
   'transfersBorrowsReleased',
   'cachesArtifactsDisposed',
-  'localStateDisposed',
+  'localFilesDisposed',
+  'gitStateDisposed',
   'processesDeviceResourcesReleased',
   'credentialsDisposed',
   'externalCoordinationDisposed',
@@ -102,6 +103,15 @@ function cancellationFacts() {
   };
 }
 
+function rollbackFacts() {
+  return {
+    taskCreatedStateDisposedOrQuarantined: true,
+    protectedPreExistingStatePreserved: true,
+    protectedUserStatePreserved: true,
+    protectedSharedStatePreserved: true,
+  };
+}
+
 function teardownFacts(profile) {
   return {
     workFinalized: true,
@@ -110,7 +120,8 @@ function teardownFacts(profile) {
     opaqueCudaReleased: true,
     transfersBorrowsReleased: true,
     cachesArtifactsDisposed: true,
-    localStateDisposed: true,
+    localFilesDisposed: true,
+    gitStateDisposed: true,
     processesDeviceResourcesReleased: true,
     credentialsDisposed: true,
     externalCoordinationDisposed: true,
@@ -155,12 +166,20 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
 
   defineCase('framework-initialization-reverse-rollback', () => {
     const admitted = admitFramework(fixture.profile);
-    const failed = initializeFramework(admitted, 'resource');
+    const facts = rollbackFacts();
+    const failed = initializeFramework(admitted, 'resource', facts);
     assert.equal(failed.phase, 'framework-initialization-failed');
     assert.equal(failed.ignitable, false);
     assert.deepEqual(failed.createdOwners, []);
     assert.deepEqual(failed.releasedOwners, ['evaluator', 'policy', 'graph', 'domain']);
     assert.equal(failed.evidencePreserved, true);
+    assert.deepEqual(failed.rollbackFacts, facts);
+    const protectedStateLost = rollbackFacts();
+    protectedStateLost.protectedSharedStatePreserved = false;
+    assert.throws(
+      () => initializeFramework(admitFramework(fixture.profile), 'resource', protectedStateLost),
+      { code: 'FRAMEWORK_ROLLBACK_PROTECTED_STATE' },
+    );
     return { releasedOwners: failed.releasedOwners };
   }, ['FRAMEWORK-LIFE-002', 'FRAMEWORK-CLEANUP-002']);
 
@@ -287,11 +306,13 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
   }, ['FRAMEWORK-CLEANUP-001']);
 
   defineCase('framework-partial-failure-preserves-evidence', () => {
-    const failed = initializeFramework(admitFramework(fixture.profile), 'progress');
+    const facts = rollbackFacts();
+    const failed = initializeFramework(admitFramework(fixture.profile), 'progress', facts);
     assert.equal(failed.phase, 'framework-initialization-failed');
     assert.equal(failed.evidencePreserved, true);
     assert.deepEqual(failed.createdOwners, []);
     assert.deepEqual(failed.releasedOwners, ['resource', 'evaluator', 'policy', 'graph', 'domain']);
+    assert.deepEqual(failed.rollbackFacts, facts);
     return { rollbackCount: failed.releasedOwners.length };
   }, ['FRAMEWORK-LIFE-002', 'FRAMEWORK-CLEANUP-002']);
 
