@@ -321,18 +321,25 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     const replayed = replay(input.commandId, 'observation-request', input);
     if (replayed) return replayed;
     const publication = input.outputPublication;
+    const selected = profile.observations.profiles.find(({ outputProfile }) => outputProfile === publication?.outputProfile);
+    if (!selected) fail('SESSION_REFERENCE_OBSERVATION_PROFILE', 'observation publication must match one exact normalized Output observation profile');
     if (publication?.ready !== true || publication?.readOnly !== true || publication?.searchProgressMutated === true) {
       fail('SESSION_REFERENCE_OBSERVATION_PUBLICATION', 'Session observation requires an immutable ready Output publication and cannot progress search');
     }
     if (publication.rootEpoch !== authority.rootEpoch) {
-      return freeze({ kind: 'stale-rejected', code: 'session-observation-stale', authorityUnchanged: true }, 'Session observation stale rejection');
+      return freeze({ kind: 'stale-rejected', code: selected.stale, authorityUnchanged: true }, 'Session observation stale rejection');
     }
     const requestId = text(input.requestId, 'requestId');
     if (observations.has(requestId)) fail('SESSION_REFERENCE_OBSERVATION_REQUEST', `duplicate observation request ${requestId}`);
+    const pendingRequests = [...observations.values()].filter((request) => !request.released).length;
+    if (BigInt(pendingRequests) >= dec(selected.maxPendingRequests, 'observation maxPendingRequests')) {
+      return freeze({ kind: 'pressure', code: selected.pressure, authorityUnchanged: true }, 'Session observation pressure');
+    }
     preflightCounters(['command', 'observation-generation']);
     commitCounters(['command', 'observation-generation']);
     observations.set(requestId, {
       requestId,
+      observationProfileId: selected.id,
       generation: counterText('observation-generation'),
       publication: freeze(publication, 'Output observation publication'),
       borrows: new Set(),
@@ -341,6 +348,7 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     return record(input.commandId, 'observation-request', input, {
       kind: 'ready',
       requestId,
+      observationProfileId: selected.id,
       generation: counterText('observation-generation'),
       outputPublication: publication,
       authority,
@@ -354,9 +362,10 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     if (!request || request.released) fail('SESSION_REFERENCE_OBSERVATION_REQUEST', 'observation request is not borrowable');
     const id = text(borrowId, 'borrowId');
     if (request.borrows.has(id)) return freeze({ kind: 'borrowed', requestId, borrowId: id, publication: request.publication }, 'Session observation borrow');
-    const selected = profile.observations.profiles.find(({ id: profileId }) => profileId === request.publication.outputProfile) ?? profile.observations.profiles[0];
+    const selected = profile.observations.profiles.find(({ id: profileId }) => profileId === request.observationProfileId);
+    if (!selected) fail('SESSION_REFERENCE_OBSERVATION_PROFILE', 'observation request lost its normalized profile binding');
     const maxBorrows = dec(selected.maxBorrows, 'observation maxBorrows');
-    if (BigInt(request.borrows.size) >= maxBorrows) return freeze({ kind: 'pressure', code: 'session-observation-capacity' }, 'Session observation pressure');
+    if (BigInt(request.borrows.size) >= maxBorrows) return freeze({ kind: 'pressure', code: selected.pressure }, 'Session observation pressure');
     request.borrows.add(id);
     return freeze({ kind: 'borrowed', requestId, borrowId: id, publication: request.publication }, 'Session observation borrow');
   }
@@ -392,9 +401,9 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
   }
 
   function completeSession(input) {
-    if (!['active', 'external-wait', 'cancelling'].includes(lifecycle)) fail('SESSION_REFERENCE_COMPLETION_PHASE', `Session cannot complete from ${lifecycle}`);
     const replayed = replay(input.commandId, 'complete', input);
     if (replayed) return replayed;
+    if (!['active', 'external-wait', 'cancelling'].includes(lifecycle)) fail('SESSION_REFERENCE_COMPLETION_PHASE', `Session cannot complete from ${lifecycle}`);
     if (reroot !== null) fail('SESSION_REFERENCE_COMPLETION_REROOT', 'Session cannot complete with a prepared reroot transaction');
     if (input.progressClosed !== true || input.terminalOutputReady !== true || input.staleWorkDisposed !== true) {
       fail('SESSION_REFERENCE_COMPLETION_PENDING', 'Session completion requires Progress closure, terminal Output readiness, and stale-work disposition');
@@ -445,6 +454,7 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
       attention,
       observations: [...observations.values()].map((request) => ({
         requestId: request.requestId,
+        observationProfileId: request.observationProfileId,
         generation: request.generation,
         publication: request.publication,
         borrowIds: [...request.borrows].sort(),
