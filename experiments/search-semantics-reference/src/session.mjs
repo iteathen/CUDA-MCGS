@@ -321,12 +321,17 @@ export function createSessionOracle({ profile, counterStarts = {} } = {}) {
     const replayed = replay(input.commandId, 'observation-request', input);
     if (replayed) return replayed;
     const publication = input.outputPublication;
-    const selected = profile.observations.profiles.find(({ outputProfile }) => outputProfile === publication?.outputProfile);
-    if (!selected) fail('SESSION_REFERENCE_OBSERVATION_PROFILE', 'observation publication must match one exact normalized Output observation profile');
-    if (publication?.ready !== true || publication?.readOnly !== true || publication?.searchProgressMutated === true) {
-      fail('SESSION_REFERENCE_OBSERVATION_PUBLICATION', 'Session observation requires an immutable ready Output publication and cannot progress search');
+    const selected = input.outputProfile === undefined && profile.observations.profiles.length === 1
+      ? profile.observations.profiles[0]
+      : profile.observations.profiles.find(({ outputProfile }) => outputProfile === input.outputProfile);
+    if (!selected) fail('SESSION_REFERENCE_OBSERVATION_PROFILE', 'observation request must select one exact normalized Output observation profile');
+    if (selected.readOnly !== true || selected.hostProgress !== 'none' || selected.runtimeSchema !== 'prohibited') {
+      fail('SESSION_REFERENCE_OBSERVATION_PROFILE', 'normalized Output observation profile must remain read-only, bounded, and host-progress independent');
     }
-    if (publication.rootEpoch !== authority.rootEpoch) {
+    if (publication?.kind !== 'ready' || !publication.metadata || typeof publication.metadata !== 'object') {
+      fail('SESSION_REFERENCE_OBSERVATION_PUBLICATION', 'Session observation requires an Output-owned immutable ready publication fact');
+    }
+    if (publication.metadata.rootEpoch !== authority.rootEpoch) {
       return freeze({ kind: 'stale-rejected', code: selected.stale, authorityUnchanged: true }, 'Session observation stale rejection');
     }
     const requestId = text(input.requestId, 'requestId');

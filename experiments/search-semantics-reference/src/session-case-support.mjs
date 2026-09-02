@@ -52,17 +52,36 @@ export function readyOutputPublication(session, identity = 'observation.syntheti
   const snapshot = session.snapshot();
   const authority = snapshot.authority;
   assert(authority);
-  const observationProfile = session.profile.observations?.profiles?.[0];
-  assert(observationProfile, 'Session profile must select an observation profile');
-  return {
-    outputProfile: observationProfile.outputProfile,
-    publicationIdentity: identity,
-    ready: true,
-    readOnly: true,
-    searchProgressMutated: false,
-    rootEpoch: authority.rootEpoch,
-    rootIncarnation: authority.rootIncarnation,
+  const publication = {
+    kind: 'ready',
+    slotId: identity,
+    incarnation: '1',
+    profileId: 'output.synthetic-live-session',
+    schemaId: 'output-schema.synthetic-live-session.live',
+    searchIncarnation: '1',
+    sequence: '1',
+    payload: [],
+    envelope: null,
+    metadata: {
+      searchIdentity: 'search.synthetic',
+      sessionIdentity: 'session.synthetic',
+      searchIncarnation: '1',
+      profileIdentity: 'output.synthetic-live-session',
+      rootEpoch: authority.rootEpoch,
+      workEpoch: '1',
+      sequence: '1',
+      consistency: 'versioned-cut',
+      sourceVersions: [],
+      sourceDispositions: [],
+      lossAccounting: { dropped: '0', coalesced: '0', lostSequences: [] },
+    },
   };
+  Object.defineProperty(publication, 'rootEpoch', {
+    enumerable: false,
+    get() { return publication.metadata.rootEpoch; },
+    set(value) { publication.metadata.rootEpoch = value; },
+  });
+  return publication;
 }
 
 export function advanceInput(label = 'beta', overrides = {}) {

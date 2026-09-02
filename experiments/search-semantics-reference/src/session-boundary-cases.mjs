@@ -7,50 +7,8 @@ import {
   expectCode,
   getSessionProfile,
   liveSession,
+  readyOutputPublication,
 } from './session-case-support.mjs';
-
-function publication(session, outputProfile, publicationIdentity) {
-  const authority = session.snapshot().authority;
-  assert(authority);
-  return {
-    outputProfile,
-    publicationIdentity,
-    ready: true,
-    readOnly: true,
-    searchProgressMutated: false,
-    rootEpoch: authority.rootEpoch,
-    rootIncarnation: authority.rootIncarnation,
-  };
-}
-
-function outputReadyPublicationFact(session, publicationIdentity) {
-  const authority = session.snapshot().authority;
-  assert(authority);
-  return {
-    kind: 'ready',
-    slotId: publicationIdentity,
-    incarnation: '1',
-    profileId: 'output.synthetic-live-session',
-    schemaId: 'output-schema.synthetic-live-session.live',
-    searchIncarnation: '1',
-    sequence: '1',
-    payload: [],
-    envelope: null,
-    metadata: {
-      searchIdentity: 'search.synthetic',
-      sessionIdentity: 'session.synthetic',
-      searchIncarnation: '1',
-      profileIdentity: 'output.synthetic-live-session',
-      rootEpoch: authority.rootEpoch,
-      workEpoch: '1',
-      sequence: '1',
-      consistency: 'versioned-cut',
-      sourceVersions: [],
-      sourceDispositions: [],
-      lossAccounting: { dropped: '0', coalesced: '0', lostSequences: [] },
-    },
-  };
-}
 
 export function registerSessionBoundaryCases({ defineCase, sessionProjection }) {
   defineCase('session-observation-profile-and-capacity-guard', () => {
@@ -64,7 +22,8 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     expectCode(() => session.requestObservation({
       commandId: 'observation-foreign-profile',
       requestId: 'observation-foreign-profile',
-      outputPublication: publication(session, 'output-observation.foreign.live', 'publication.foreign'),
+      outputProfile: 'output-observation.foreign.live',
+      outputPublication: readyOutputPublication(session, 'publication.foreign'),
     }), 'SESSION_REFERENCE_OBSERVATION_PROFILE');
     assert.deepEqual(session.snapshot(), beforeMismatch, 'foreign Output profile rejection must not mutate Session state');
 
@@ -74,7 +33,8 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
       const result = session.requestObservation({
         commandId: `observation-capacity-${index}`,
         requestId: `observation-capacity-${index}`,
-        outputPublication: publication(session, observationProfile.outputProfile, `publication.capacity.${index}`),
+        outputProfile: observationProfile.outputProfile,
+        outputPublication: readyOutputPublication(session, `publication.capacity.${index}`),
       });
       assert.equal(result.kind, 'ready');
     }
@@ -82,7 +42,8 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     const pressure = session.requestObservation({
       commandId: 'observation-capacity-overflow',
       requestId: 'observation-capacity-overflow',
-      outputPublication: publication(session, observationProfile.outputProfile, 'publication.capacity.overflow'),
+      outputProfile: observationProfile.outputProfile,
+      outputPublication: readyOutputPublication(session, 'publication.capacity.overflow'),
     });
     assert.equal(pressure.kind, 'pressure');
     assert.equal(pressure.code, observationProfile.pressure);
@@ -96,7 +57,7 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     assert(observationProfile);
     const session = liveSession(sessionProjection);
     establish(session, 'output-publication-fact');
-    const outputPublication = outputReadyPublicationFact(session, 'observation-output-publication-fact');
+    const outputPublication = readyOutputPublication(session, 'observation-output-publication-fact');
 
     const result = session.requestObservation({
       commandId: 'observation-output-publication-fact',
