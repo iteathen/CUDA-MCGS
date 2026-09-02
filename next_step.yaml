@@ -1,8 +1,8 @@
 {
-  "schema_version": 88,
+  "schema_version": 89,
   "updated": "2026-09-02",
-  "status": "ref_framework_life_01_semantically_qualified_current_state_reconciliation_pending_final_head_gate",
-  "objective": "Freeze REF-FRAMEWORK-LIFE-01 as one exact documentation-inclusive candidate, rerun exact-head qualification and complete-diff author review, then stop for fresh repository-owner authorization before any guarded integration.",
+  "status": "ref_framework_life_01_frozen_candidate_live_head_gate_before_owner_authorization",
+  "objective": "Treat PR #185 as semantically frozen. Read the live PR head, exact base and required checks; if that same head is fully green and a fresh complete-diff author review has no blocker, present that exact head/base for fresh repository-owner authorization. Do not merge before that authorization.",
   "ownership_boundary": "Framework owns only cross-owner top-level lifecycle coordination for the 15 direct SPEC-0000 ENGINE-REFERENCE routes: admission, initialization/reverse rollback, ignition/device closure, first cause, completion/cancellation, terminal borrow/teardown, optional persistence contract and complete cleanup/readback. Domain, Graph, Policy, Evaluator, Resource, Progress and Output retain private semantic state; CUDA-JS owns generic CUDA mechanisms; CUDA-JS-Tensor owns generic dense Tensor math; downstream products own chess/UCI/model/Book Forge/Timing Evidence/tablebase/product meaning.",
   "authority": [
     "AGENTS.md",
@@ -26,7 +26,8 @@
     "branch": "ref/framework-life-01",
     "pr": 185,
     "issue": 183,
-    "semantic_head_before_this_reconciliation": "7eb25f17481fea6a925d6d0e29baa06473ee2bff"
+    "semantic_head": "7eb25f17481fea6a925d6d0e29baa06473ee2bff",
+    "live_head_rule": "The current PR/ref readback, not a self-referential SHA in this file, is the exact documentation-inclusive authorization subject. Any head/base change requires requalification and review."
   },
   "red_evidence": [
     {
@@ -60,24 +61,23 @@
     "repository_matrix": "Governance, Windows/Ubuntu Search IR, all Graph lanes, Policy, Evaluator, Resource, Progress, Output and aggregate verify all succeeded"
   },
   "deliverables": [
-    "Complete this current-state-only repository reconciliation without changing Framework semantics.",
-    "Run the permanent Framework workflow and full repository matrix on the resulting exact documentation-inclusive head.",
-    "Review the complete ten-file PR diff on that same exact head for duplicate authority, ownership leakage, stale provenance, failure/cleanup holes, resource/concurrency assumptions and unnecessary architecture.",
-    "Update #183, #36, #142, #32 and PR #185 to the final exact head/evidence without changing the repository head.",
-    "Stop and present the exact head/base for fresh repository-owner authorization; do not merge from this execution request alone."
+    "Keep semantic/reference source frozen unless a new exact-head review finds a real SPEC-0000 blocker.",
+    "Read the live PR #185 head/base and confirm the permanent Framework workflow plus full repository matrix are green on that exact head.",
+    "Confirm the complete ten-file PR diff has no blocking author-review finding; do not represent author review as independent review.",
+    "Reconcile #183, #36, #142, #32 and PR #185 to the exact live head/evidence without changing the repository head.",
+    "Stop and present the exact live head/base for fresh repository-owner authorization."
   ],
   "validation": [
-    "The resulting exact head remains based on experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe.",
-    "Framework reference discovers/executes/passes exactly 18/18 cases and maps all 15/15 direct SPEC-0000 routes.",
-    "Composer remains 881/881 and its representation/composition evidence remains exactly a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe.",
-    "Full repository matrix passes Governance, Windows/Ubuntu Search IR, Graph, Policy, Evaluator, Resource, Progress, Output and aggregate verify.",
-    "Fresh author-side complete-diff review has no blocking finding on the exact final head.",
+    "Live PR base is exactly experimental/portfolio@d8b2f617abcc4a02719499b2beb6c1b15b9896fe.",
+    "Live PR head passes the permanent Framework workflow with exactly 18/18 Framework cases, all 15/15 direct SPEC-0000 routes and Composer 881/881.",
+    "Composer representation/composition evidence remains exactly a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe unless authoritative upstream content actually changes.",
+    "Live PR head passes the full repository matrix: Governance, Windows/Ubuntu Search IR, Graph, Policy, Evaluator, Resource, Progress, Output and aggregate verify.",
+    "Fresh author-side complete-diff review has no blocking finding on that same live head.",
     "Protected main remains separate; no #122/native/performance/product claim is made."
   ],
   "blockers": [
-    "The documentation-inclusive exact head must still pass exact-head CI after this reconciliation commit.",
-    "Fresh complete-diff author review is required after that exact-head CI.",
-    "Fresh repository-owner authorization for the exact final head/base is required before integration.",
+    "Fresh repository-owner authorization for the exact live head/base is required before integration.",
+    "The live head/base/checks must be re-read immediately before authorization/merge; any material movement invalidates the frozen subject.",
     "#184 remains blocked until #183 is authorized, guarded-integrated and read back."
   ],
   "do_not": [
