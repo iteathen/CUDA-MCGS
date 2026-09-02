@@ -13,11 +13,8 @@ import {
 } from './output-case-support.mjs';
 import {
   admitFramework,
-  igniteFramework,
   initializeFramework,
   normalizeFrameworkLifecycleProfile,
-  recordStopCause,
-  requestFrameworkCancellation,
 } from './framework-lifecycle.mjs';
 import { closeProgressThenClassifyOutput } from './terminal-slice.mjs';
 import {
@@ -32,17 +29,6 @@ function rollbackFacts() {
     protectedPreExistingStatePreserved: true,
     protectedUserStatePreserved: true,
     protectedSharedStatePreserved: true,
-  };
-}
-
-function cancellationFacts() {
-  return {
-    reservationAccountingConserved: true,
-    resourceAccountingConserved: true,
-    ownerRulesApplied: true,
-    partialBackupPublished: false,
-    prematureTeardown: false,
-    workDispositions: ['abandon', 'must-drain', 'release'],
   };
 }
 
@@ -138,32 +124,29 @@ export function registerTerminalSliceCases({
   });
 
   defineCase('terminal-slice-cancellation-drains-and-cleans', () => {
-    const profile = normalizeFrameworkLifecycleProfile(frameworkFixture.profile);
-    const running = igniteFramework(initializeFramework(admitFramework(profile)));
-    const stopped = recordStopCause(running, 'semantic-failure');
-    const cancelled = requestFrameworkCancellation(stopped, cancellationFacts());
-    assert.equal(cancelled.status, 'framework-cancelling');
-    assert.equal(cancelled.stopCause, 'semantic-failure');
-    assert.deepEqual(cancelled.cancellationFacts.workDispositions, ['abandon', 'must-drain', 'release']);
-
-    const completed = runCompleteTerminalSlice({
+    const cancelled = runCompleteTerminalSlice({
       composerEvidence,
       domainFixture,
       frameworkFixture,
       projections,
       family: 'absent',
-      scheduleId: 'terminal-cancellation-cleanup-proof',
+      scheduleId: 'terminal-cancellation-drain',
       order: terminalSliceScheduleOrders().resourceInterleaved,
+      termination: 'cancelled',
     });
-    assert.equal(completed.resourceConservation.kind, 'conserved');
-    assert.equal(completed.progressClosure.kind, 'terminal');
-    assert.equal(completed.evaluatorResidue, 0);
-    return {
-      cancellationStatus: cancelled.status,
-      stopCause: cancelled.stopCause,
-      workDispositions: cancelled.cancellationFacts.workDispositions,
-      cleanupMeaning: terminalSliceMeaning(completed),
-    };
+    assert.equal(cancelled.termination, 'cancelled');
+    assert.equal(cancelled.frameworkStopCause, 'external-cancellation');
+    assert.deepEqual(cancelled.cancellationWorkDispositions, { ordinary: 'abandoned', mustDrain: 'completed' });
+    assert.equal(cancelled.policyTerminal.cause, 'cancelled');
+    assert.equal(cancelled.policyTerminal.classification, 'cancelled');
+    assert.equal(cancelled.progressClosure.kind, 'terminal');
+    assert.equal(cancelled.outputEnvelope.completionClass, 'failed');
+    assert.equal(cancelled.outputEnvelope.firstStopCause, 'progress-cancelled');
+    assert.equal(cancelled.resourceConservation.kind, 'conserved');
+    assert.equal(cancelled.evaluatorResidue, 0);
+    assert.equal(cancelled.outputCleanup.filter(({ disposition }) => disposition === 'pending').length, 0);
+    assert(cancelled.frameworkCleanupReadback.length > 0);
+    return terminalSliceMeaning(cancelled);
   });
 
   defineCase('terminal-slice-initialization-failure-reverse-unwind', () => {
