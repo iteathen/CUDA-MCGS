@@ -29,6 +29,7 @@ function authorityMeaning(session) {
 function prepare(session, profile, label = 'beta') {
   return session.prepareReroot({
     commandId: `reroot-prepare-${label}`,
+    authority: session.snapshot().authority,
     transactionId: `reroot-${label}`,
     candidateRoot: candidateRoot(label),
     compoundAdmission: { approved: true, token: `admission-${label}` },
@@ -204,6 +205,7 @@ export function registerSessionCases({ defineCase, sessionProjection, terminalEv
     const before = session.snapshot();
     const pressure = session.prepareReroot({
       commandId: 'reroot-pressure',
+      authority: before.authority,
       transactionId: 'reroot-pressure',
       candidateRoot: candidateRoot('pressure'),
       compoundAdmission: { approved: false, code: 'reroot-capacity' },
