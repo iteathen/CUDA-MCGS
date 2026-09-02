@@ -75,6 +75,27 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     };
   }, ['SESSION-OBS-', 'SESSION-SEC-', 'SESSION-COMPAT-']);
 
+  defineCase('session-observation-rejects-foreign-output-provenance', () => {
+    const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
+    const observationProfile = profile.observations.profiles[0];
+    assert(observationProfile);
+    const session = liveSession(sessionProjection);
+    establish(session, 'foreign-output-provenance');
+    const foreignPublication = readyOutputPublication(session, 'publication.foreign-output-profile');
+    foreignPublication.profileId = 'output.synthetic-foreign';
+    foreignPublication.metadata.profileIdentity = 'output.synthetic-foreign';
+    const before = session.snapshot();
+
+    expectCode(() => session.requestObservation({
+      commandId: 'observation-foreign-output-provenance',
+      requestId: 'observation-foreign-output-provenance',
+      outputProfile: observationProfile.outputProfile,
+      outputPublication: foreignPublication,
+    }), 'SESSION_REFERENCE_OBSERVATION_PUBLICATION');
+    assert.deepEqual(session.snapshot(), before, 'foreign Output publication provenance must be rejected before Session request state mutates');
+    return { foreignOutputProfileRejected: true, expectedOutputProfile: profile.outputProfile.id };
+  }, ['SESSION-OBS-', 'SESSION-SEC-', 'SESSION-COMPAT-']);
+
   defineCase('session-completion-waits-for-live-observation-borrows', () => {
     const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
     const observationProfile = profile.observations.profiles[0];
