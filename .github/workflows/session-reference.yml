@@ -1,0 +1,68 @@
+name: Session behavioral reference
+
+on:
+  push:
+    branches:
+      - experimental/portfolio
+      - ref/session-01
+    paths:
+      - '.github/workflows/session-reference.yml'
+      - 'docs/specs/SPEC-0006-search-session-control-and-observation.md'
+      - 'experiments/search-ir-composer-reference/**'
+      - 'experiments/search-semantics-reference/fixtures/session-cases.json'
+      - 'experiments/search-semantics-reference/src/session*.mjs'
+      - 'experiments/search-semantics-reference/run-session.mjs'
+      - 'scripts/run-search-ir-composer-reference.mjs'
+      - 'scripts/export-search-ir-composer-*-profiles.mjs'
+      - 'scripts/run-session-reference.mjs'
+      - 'scripts/verify-session-advance-boundary.mjs'
+      - 'experiments/search-semantics-reference/src/output*.mjs'
+      - 'experiments/search-semantics-reference/src/progress*.mjs'
+      - 'experiments/search-semantics-reference/src/resource*.mjs'
+      - 'experiments/search-semantics-reference/src/graph-*.mjs'
+      - 'experiments/search-semantics-reference/src/terminal-slice*.mjs'
+  pull_request:
+    paths:
+      - '.github/workflows/session-reference.yml'
+      - 'docs/specs/SPEC-0006-search-session-control-and-observation.md'
+      - 'experiments/search-ir-composer-reference/**'
+      - 'experiments/search-semantics-reference/fixtures/session-cases.json'
+      - 'experiments/search-semantics-reference/src/session*.mjs'
+      - 'experiments/search-semantics-reference/run-session.mjs'
+      - 'scripts/run-search-ir-composer-reference.mjs'
+      - 'scripts/export-search-ir-composer-*-profiles.mjs'
+      - 'scripts/run-session-reference.mjs'
+      - 'scripts/verify-session-advance-boundary.mjs'
+      - 'experiments/search-semantics-reference/src/output*.mjs'
+      - 'experiments/search-semantics-reference/src/progress*.mjs'
+      - 'experiments/search-semantics-reference/src/resource*.mjs'
+      - 'experiments/search-semantics-reference/src/graph-*.mjs'
+      - 'experiments/search-semantics-reference/src/terminal-slice*.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26
+      - name: Compose normalized profiles
+        run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Export Session profiles
+        run: node scripts/export-search-ir-composer-session-profiles.mjs
+      - name: Verify Session advance boundary
+        run: node scripts/verify-session-advance-boundary.mjs
+      - name: Run Session reference
+        if: ${{ hashFiles('scripts/run-session-reference.mjs') != '' }}
+        run: node scripts/run-session-reference.mjs
+      - name: Upload Session evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: session-reference-evidence
+          if-no-files-found: warn
+          path: experiments/search-semantics-reference/build/session-evidence*.json
