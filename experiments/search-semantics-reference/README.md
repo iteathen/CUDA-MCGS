@@ -30,11 +30,11 @@ Issue #181 / branch `ref/session-01` constructs `REF-SESSION-01` from exact inte
 
 Exact semantic head before the current-state-only reconciliation:
 
-`2ed5bccd04ed95e96fc8bc2a5e957daef339db2e`
+`910f2eeb6ad665f7690ad4b05e9a2dcbfc55fd2c`
 
 Semantic tree:
 
-`3b57fb0998e8f7b271c58a90e2f5df3b5fa7798c`
+`d53a43950f5efbed6f28d3eb7140d5aeb84f1b08`
 
 Session owns only external command ordering/replay/idempotence/provenance, initial-root authority coordination, already-ready successor advance, reroot transaction coordination, attention provenance, bounded observation request/borrow coordination, cancellation/completion, finite counters and cleanup.
 
@@ -42,17 +42,17 @@ It does **not** own Domain root validity, Graph occurrence/storage/reclamation, 
 
 ## Current Session qualification
 
-Permanent Session workflow `33685204052` passed on semantic head `2ed5bccd…`:
+The exact semantic head `910f2eeb…` passed both the permanent push lane (`33688951561`) and PR lane (`33688958267`). The same PR head also passed Terminal Slice `33688958229`, Framework `33688958245`, and the full repository/documentation matrix `33688958297`.
 
 - CI self-verifier: pass;
 - Composer: `881/881`;
 - all required owner profile projections: pass;
 - Session advance boundary: pass;
-- terminal Session-absent coupled regression: `6/6`, evidence `6bf37be20b02051f30aafec4c50c1d3262af28b41bf537f8825679fa5667e4c3`;
-- Session cases: `20/20`;
+- terminal Session-absent coupled regression: `6/6`;
+- Session cases: `21/21`;
 - direct SPEC-0006 ENGINE-REFERENCE obligations: `38/38`;
-- Session evidence: `dc737cdf719e51298271209f63941f7c1e8af6426466a1f4dc7fdb7bc72018f3` (`8647` canonical bytes);
-- artifact `9867807703`, digest `sha256:03af6fbf452426726b5d1c08a80b952fb5f2f576578391db55da1edbd7fa74e6`.
+- Session evidence: `a6e5247464ecee9860aa6321bcd8eca4891078d70d27450c35e082896ee2e3bd` (`15716` canonical bytes);
+- PR artifact `9869244684`, digest `sha256:af7c0b8ccf8fad78346016eaefdf495816d1f70ae5e77cb55b0a04be3f50c2e6`.
 
 The whole semantic diff is confined to the Session Composer projection/export, Session owner-local oracle/cases/runner, public wrappers and permanent Session CI gate. No native code, private sibling-owner interpreter, product fixture or host progression loop was introduced.
 
@@ -65,9 +65,10 @@ Useful review-discovered red seams are retained in the permanent bank/gates:
 3. completion could publish terminal provenance with a live observation borrow — `f7a78dda0e9be4bd52a8dd28db82710be059c5e2`, run `33683367794`;
 4. cancellation could mutate prepared reroot state before command admission succeeded — `f4a8d21dd2c53dceba3ec1cdbdbf371f05598f94`, run `33684006773`;
 5. the permanent Session gate could conditionally skip its runner and merely warn on missing evidence — `46d105821be7a49063f0bc91cce0ebe4acf570a7`, run `33684533233`;
-6. malformed untrusted command identity could mutate counters before semantic validation — `d74ab8b9efd5df68e47d7099081c58f743dea12a`, run `33684937813`.
+6. malformed untrusted command identity could mutate counters before semantic validation — `d74ab8b9efd5df68e47d7099081c58f743dea12a`, run `33684937813`;
+7. a same-epoch publication from a foreign Output profile could be admitted as current Session observation evidence — `3f0e86f871795a5c26a7277210e2685f4264cb80`, run `33688752675`, artifact `9869167043`, digest `sha256:dfc5da2562a399e0550b6af7e139c1bc65e5b4508f87b0d93fe409e8c01e4c48`.
 
-Neither the cases nor their owner boundaries were weakened for green.
+The green repair keeps the selected Session observation profile as coordination authority while requiring the Output-owned ready publication to bind to the normalized top-level Output profile and maintain self-consistent public provenance before Session request state can mutate.
 
 ## Run
 
@@ -86,9 +87,9 @@ Generated `build/` evidence is disposable. Checked-in fixtures/source, workflow 
 
 ## Current gate
 
-This README and the other current-state files are intentionally updated after semantic qualification. Their commit advances the candidate head without changing Session semantics.
+This README and the other current-state files are intentionally updated after the review-discovered semantic repair. Their commit advances the candidate head without changing the qualified Session behavior above.
 
-The resulting documentation-inclusive #181 PR head must pass both the permanent Session workflow and full repository/documentation PR matrix, then receive a fresh complete-diff author review. Stop after that at the exact-head repository-owner authorization boundary. The known draft-state connector defect may require a same-head/same-base transport only **after** authorization; transport does not substitute for review or authorization.
+The resulting documentation-inclusive #181 PR head must rerun the permanent Session, Terminal Slice, Framework and full repository/documentation PR gates, then receive a fresh complete-diff author review. Stop after that at the exact-head repository-owner authorization boundary. The known draft-state connector defect may require a same-head/same-base transport only **after** authorization; transport does not substitute for review or authorization.
 
 ## Next semantic seam
 
