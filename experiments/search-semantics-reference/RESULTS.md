@@ -22,13 +22,13 @@ Candidate/reference integration remains distinct from protected #122 acceptance,
 
 Exact semantic head before this current-state-only reconciliation:
 
-`2ed5bccd04ed95e96fc8bc2a5e957daef339db2e`
+`910f2eeb6ad665f7690ad4b05e9a2dcbfc55fd2c`
 
 Semantic tree:
 
-`3b57fb0998e8f7b271c58a90e2f5df3b5fa7798c`
+`d53a43950f5efbed6f28d3eb7140d5aeb84f1b08`
 
-The semantic diff from the exact base is 29 commits ahead / 0 behind and is confined to Session profile projection/export, owner-local Session semantics/cases/runner, public script wrappers and the permanent Session CI gate.
+The semantic diff is confined to Session profile projection/export, owner-local Session semantics/cases/runner, public script wrappers and the permanent Session CI gate.
 
 ## Retained Session red proofs
 
@@ -40,36 +40,34 @@ The semantic diff from the exact base is 29 commits ahead / 0 behind and is conf
 | Cancellation aborted prepared reroot state before command admission succeeded | `f4a8d21dd2c53dceba3ec1cdbdbf371f05598f94` | `33684006773` | artifact `9867359227` |
 | Permanent Session runner was conditionally skippable and missing evidence only warned | `46d105821be7a49063f0bc91cce0ebe4acf570a7` | `33684533233` | workflow log; failure occurs before Session evidence generation |
 | Malformed untrusted command identity mutated counters before semantic validation | `d74ab8b9efd5df68e47d7099081c58f743dea12a` | `33684937813` | artifact `9867706099`; `sha256:0aae20cbc391c87b86a82e11d1a1cd09027f0a37abf319da91516b11a4a62409` |
+| Same-epoch foreign Output-profile publication could be admitted as current Session observation provenance | `3f0e86f871795a5c26a7277210e2685f4264cb80` | `33688752675` | artifact `9869167043`; `sha256:dfc5da2562a399e0550b6af7e139c1bc65e5b4508f87b0d93fe409e8c01e4c48` |
 
-The green repair line preserves these falsifiers. It keeps advance within the existing root incarnation, consumes Output-owned ready-publication metadata plus the normalized selected Output observation profile, requires observation-borrow quiescence before terminal provenance, admits cancellation before reroot mutation, makes the Session CI lane non-bypassable, and validates command content/identities before any state mutation.
+The green repair line preserves these falsifiers. It keeps advance within the existing root incarnation, consumes Output-owned ready-publication facts, binds a publication to the normalized top-level Output profile and self-consistent public provenance before Session state mutation, requires observation-borrow quiescence before terminal provenance, admits cancellation before reroot mutation, makes the Session CI lane non-bypassable, and validates command content/identities before any state mutation.
 
-## Semantic qualification at 2ed5bccd…
+## Semantic qualification at 910f2eeb…
 
-Permanent Session workflow `33685204052` succeeded.
+Permanent Session push workflow `33688951561` succeeded. The exact same semantic head also passed the PR Session workflow `33688958267`, Terminal Slice `33688958229`, Framework lifecycle `33688958245`, and full repository/documentation matrix `33688958297`.
 
 ### Composer and projections
 
 - Composer capsule: `cuda-mcgs-search-ir-composer-reference-v0.2.0`;
 - Composer cases: `881/881`;
-- representation/composition evidence: `a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe`;
-- Composer canonical bytes: `727811`;
 - Domain, Graph, Policy, Evaluator, Resource, Progress, Output and Session profile exports: pass.
 
 ### Coupled terminal regression
 
 - terminal Session-absent cases: `6/6`;
-- terminal evidence: `6bf37be20b02051f30aafec4c50c1d3262af28b41bf537f8825679fa5667e4c3`;
 - exact Session residue remains zero and no host progress loop is required.
 
 ### Session behavioral reference
 
-- expected/discovered/executed/passed: `20/20/20/20`;
+- expected/discovered/executed/passed: `21/21/21/21`;
 - failed/skipped/undiscovered: `0`;
 - direct SPEC-0006 ENGINE-REFERENCE routes executed/covered: `38/38`;
-- Session evidence: `dc737cdf719e51298271209f63941f7c1e8af6426466a1f4dc7fdb7bc72018f3`;
-- Session canonical bytes: `8647`;
-- artifact: `9867807703`;
-- artifact SHA-256: `03af6fbf452426726b5d1c08a80b952fb5f2f576578391db55da1edbd7fa74e6`.
+- Session evidence: `a6e5247464ecee9860aa6321bcd8eca4891078d70d27450c35e082896ee2e3bd`;
+- Session canonical bytes: `15716`;
+- PR artifact: `9869244684`;
+- artifact SHA-256: `af7c0b8ccf8fad78346016eaefdf495816d1f70ae5e77cb55b0a04be3f50c2e6`.
 
 ### Permanent gate integrity
 
@@ -80,21 +78,20 @@ Permanent Session workflow `33685204052` succeeded.
 
 ## Ownership review result at semantic head
 
-The complete executable Session brick remains bounded to Session authority. It consumes the normalized Composer Session profile and public sibling-owner facts. It does not duplicate Domain root validity, Graph storage/reclamation, Resource accounting, Progress scheduling/closure, Output payload/snapshot/publication semantics, Framework lifecycle or CUDA-JS mechanism authority.
+The executable Session brick remains bounded to Session authority. It consumes the normalized Composer Session profile and public sibling-owner facts. It does not duplicate Domain root validity, Graph storage/reclamation, Resource accounting, Progress scheduling/closure, Output payload/snapshot/publication semantics, Framework lifecycle or CUDA-JS mechanism authority.
 
-The case bank includes materially different selected Session profiles, attention/observation schedule permutation, advance/reroot distinction, shared-transposition occurrence behavior, reroot abort/commit/quarantine, observation freshness/pressure/borrow lifecycle, cancellation/completion, finite exhaustion, command replay, admission-before-mutation and the exact Session-absent terminal regression.
+The case bank includes materially different selected Session profiles, attention/observation schedule permutation, advance/reroot distinction, shared-transposition occurrence behavior, reroot abort/commit/quarantine, observation freshness/profile/provenance/pressure/borrow lifecycle, cancellation/completion, finite exhaustion, command replay, admission-before-mutation and the exact Session-absent terminal regression.
 
 No native source, private runtime access, product/chess/UCI/model semantics, second root-control authority or host observe-decide-write/relaunch progression loop was introduced.
 
-A fresh whole-diff author review of the semantic head found no blocking semantic or ownership defect. This is author review, not independent repository-owner authorization.
-
 ## Documentation-inclusive final gate
 
-This RESULTS file and the other current-state trackers are intentionally reconciled after semantic qualification. That state-only commit changes the candidate head but not Session semantics.
+This RESULTS file and the other current-state trackers are intentionally reconciled after semantic qualification and review-discovered provenance remediation. That state-only reconciliation changes the candidate head but not the qualified Session semantics above.
 
 The resulting exact #181 review head must still pass:
 
 - the permanent Session PR workflow;
+- Terminal Slice and Framework lifecycle PR workflows;
 - the full repository/documentation PR matrix;
 - a fresh complete-diff author review on that exact head.
 
