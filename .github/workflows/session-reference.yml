@@ -21,6 +21,7 @@ on:
       - 'scripts/run-terminal-slice-reference.mjs'
       - 'scripts/run-session-reference.mjs'
       - 'scripts/verify-session-advance-boundary.mjs'
+      - 'scripts/verify-session-ci-gate.mjs'
   pull_request:
     paths:
       - '.github/workflows/session-reference.yml'
@@ -38,6 +39,7 @@ on:
       - 'scripts/run-terminal-slice-reference.mjs'
       - 'scripts/run-session-reference.mjs'
       - 'scripts/verify-session-advance-boundary.mjs'
+      - 'scripts/verify-session-ci-gate.mjs'
 
 permissions:
   contents: read
@@ -50,6 +52,8 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26
+      - name: Verify Session CI gate
+        run: node scripts/verify-session-ci-gate.mjs
       - name: Compose normalized profiles
         run: node scripts/run-search-ir-composer-reference.mjs
       - name: Export Domain profiles
