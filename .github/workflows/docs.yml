@@ -329,6 +329,28 @@ jobs:
             experiments/search-ir-composer-reference/build/resource-profiles.json
             experiments/search-semantics-reference/build/resource-evidence.json
 
+  progress-reference:
+    name: Progress reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Composer and Progress reference
+        # Progress owns scheduler-neutral work/readiness/accounting, fairness, no-progress, stop/drain/closure, epoch and cleanup semantics only. Resource admission facts, shared stop-disposition normalization and native/CUDA realization remain separate owners.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-progress-profiles.mjs
+          node scripts/run-progress-reference.mjs
+      - name: Retain Progress evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: progress-reference
+          path: |
+            experiments/search-ir-composer-reference/build/progress-profiles.json
+            experiments/search-semantics-reference/build/progress-evidence.json
+
   verify:
     name: verify
     if: ${{ always() }}
@@ -346,6 +368,7 @@ jobs:
       - policy-reference
       - evaluator-reference
       - resource-reference
+      - progress-reference
     runs-on: ubuntu-latest
     steps:
       - name: Require every merge-gate job to succeed
@@ -363,9 +386,10 @@ jobs:
           POLICY_RESULT: ${{ needs.policy-reference.result }}
           EVALUATOR_RESULT: ${{ needs.evaluator-reference.result }}
           RESOURCE_RESULT: ${{ needs.resource-reference.result }}
+          PROGRESS_RESULT: ${{ needs.progress-reference.result }}
         run: |
           set -euo pipefail
-          names=(GOVERNANCE SEARCH_IR GRAPH_NODE GRAPH_EDGE GRAPH_REF GRAPH_PATH GRAPH_ROOT GRAPH_RECLAIM GRAPH_ADVANCE_OCCURRENCE GRAPH_CLEANUP POLICY EVALUATOR RESOURCE)
+          names=(GOVERNANCE SEARCH_IR GRAPH_NODE GRAPH_EDGE GRAPH_REF GRAPH_PATH GRAPH_ROOT GRAPH_RECLAIM GRAPH_ADVANCE_OCCURRENCE GRAPH_CLEANUP POLICY EVALUATOR RESOURCE PROGRESS)
           results=(
             "$GOVERNANCE_RESULT"
             "$SEARCH_IR_RESULT"
@@ -380,6 +404,7 @@ jobs:
             "$POLICY_RESULT"
             "$EVALUATOR_RESULT"
             "$RESOURCE_RESULT"
+            "$PROGRESS_RESULT"
           )
           failed=0
           for index in "${!results[@]}"; do
