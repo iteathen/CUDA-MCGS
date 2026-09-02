@@ -29,6 +29,7 @@ assert.equal(established.kind, 'accepted');
 const before = session.snapshot();
 assert.throws(() => session.applyAdvance({
   commandId: 'advance-reroot-only',
+  authority: before.authority,
   successor: {
     rootIdentity: 'root.synthetic.beta',
     occurrenceReference: { slot: 'node-2', generation: '1' },
@@ -46,5 +47,53 @@ assert.throws(() => session.applyAdvance({
   },
 }), { code: 'SESSION_REFERENCE_ADVANCE_REROOT_ONLY' });
 assert.deepEqual(session.snapshot(), before, 'rejected reroot-only advance must not mutate Session authority or counters');
+
+const originalAuthority = session.snapshot().authority;
+const firstAdvance = session.applyAdvance({
+  commandId: 'advance-current-authority',
+  authority: originalAuthority,
+  successor: {
+    rootIdentity: 'root.synthetic.gamma',
+    occurrenceReference: { slot: 'node-3', generation: '1' },
+    realizedTransition: true,
+    successorReady: true,
+    nodeInvalidated: false,
+  },
+  requestedWork: {
+    materialization: false,
+    compoundAdmission: false,
+    reuseClassification: false,
+    transform: false,
+    reset: false,
+    reclamation: false,
+    eagerCleanup: false,
+  },
+});
+assert.equal(firstAdvance.kind, 'advanced');
+const beforeStale = session.snapshot();
+const staleAdvance = session.applyAdvance({
+  commandId: 'advance-stale-authority',
+  authority: originalAuthority,
+  successor: {
+    rootIdentity: 'root.synthetic.delta',
+    occurrenceReference: { slot: 'node-4', generation: '1' },
+    realizedTransition: true,
+    successorReady: true,
+    nodeInvalidated: false,
+  },
+  requestedWork: {
+    materialization: false,
+    compoundAdmission: false,
+    reuseClassification: false,
+    transform: false,
+    reset: false,
+    reclamation: false,
+    eagerCleanup: false,
+  },
+});
+assert.equal(staleAdvance.kind, 'rejected');
+assert.equal(staleAdvance.code, 'session-command-stale');
+assert.equal(staleAdvance.authorityUnchanged, true);
+assert.deepEqual(session.snapshot(), beforeStale, 'stale advance authority must not mutate Session authority or counters');
 
 console.log('session_advance_boundary=pass');
