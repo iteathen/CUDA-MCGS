@@ -187,15 +187,16 @@ export function registerTerminalSliceCases({
       scheduleId: 'terminal-absence-zero-residue',
       order: terminalSliceScheduleOrders().ownerMajor,
     });
+    const unresolvedOutputResidue = result.outputCleanup.filter(({ disposition }) => disposition === 'pending').length;
     assert.equal(result.evaluatorSelection, 'absent');
     assert.equal(result.evaluatorResidue, 0);
     assert.equal(result.firstProductSpecificResidue, 0);
     assert.equal(result.hostProgressRequired, false);
-    assert.equal(result.outputCleanup.runtimeResidue, 0);
+    assert.equal(unresolvedOutputResidue, 0);
     return {
       evaluatorSelection: result.evaluatorSelection,
       evaluatorResidue: result.evaluatorResidue,
-      outputResidue: result.outputCleanup.runtimeResidue,
+      unresolvedOutputResidue,
       firstProductSpecificResidue: result.firstProductSpecificResidue,
       hostProgressRequired: result.hostProgressRequired,
     };
