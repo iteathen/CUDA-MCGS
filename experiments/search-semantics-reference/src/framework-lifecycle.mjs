@@ -53,6 +53,12 @@ const REQUIRED_PLAN_FIELDS = Object.freeze([
   'packageCompatible',
   'cleanupReady',
 ]);
+const ROLLBACK_BOOLEAN_FIELDS = Object.freeze([
+  'taskCreatedStateDisposedOrQuarantined',
+  'protectedPreExistingStatePreserved',
+  'protectedUserStatePreserved',
+  'protectedSharedStatePreserved',
+]);
 const TEARDOWN_BOOLEAN_FIELDS = Object.freeze([
   'workFinalized',
   'protectionsReleased',
@@ -60,7 +66,8 @@ const TEARDOWN_BOOLEAN_FIELDS = Object.freeze([
   'opaqueCudaReleased',
   'transfersBorrowsReleased',
   'cachesArtifactsDisposed',
-  'localStateDisposed',
+  'localFilesDisposed',
+  'gitStateDisposed',
   'processesDeviceResourcesReleased',
   'credentialsDisposed',
   'externalCoordinationDisposed',
@@ -139,6 +146,18 @@ function normalizePersistence(input) {
   };
 }
 
+function normalizeRollbackFacts(facts) {
+  if (facts === null) fail('FRAMEWORK_ROLLBACK_FACTS', 'failed initialization requires public rollback and protected-state preservation facts');
+  exactKeys(facts, ROLLBACK_BOOLEAN_FIELDS, 'FRAMEWORK_ROLLBACK_FIELDS', 'initialization rollback facts');
+  if (facts.taskCreatedStateDisposedOrQuarantined !== true) {
+    fail('FRAMEWORK_ROLLBACK_TASK_STATE', 'failed initialization must dispose or quarantine task-created state');
+  }
+  for (const field of ['protectedPreExistingStatePreserved', 'protectedUserStatePreserved', 'protectedSharedStatePreserved']) {
+    if (facts[field] !== true) fail('FRAMEWORK_ROLLBACK_PROTECTED_STATE', `${field} must remain preserved during failed initialization rollback`);
+  }
+  return clone(facts);
+}
+
 export function normalizeFrameworkLifecycleProfile(input) {
   exactKeys(
     input,
@@ -190,6 +209,7 @@ export function admitFramework(input) {
     cleanupManifest: clone(profile.cleanup.records),
     cleanupReadback: [],
     evidencePreserved: true,
+    rollbackFacts: null,
     stopCause: null,
     cancellationRequested: false,
     cancellationFacts: null,
@@ -201,13 +221,15 @@ export function admitFramework(input) {
   };
 }
 
-export function initializeFramework(state, failureOwner = null) {
+export function initializeFramework(state, failureOwner = null, rollbackFacts = null) {
   if (state.phase !== 'plans-admitted') fail('FRAMEWORK_INITIALIZE_PHASE', 'framework must be plans-admitted before initialization');
   const next = clone(state);
   next.createdOwners = [];
   next.releasedOwners = [];
+  next.rollbackFacts = null;
   for (const owner of next.profile.ownerOrder) {
     if (owner === failureOwner) {
+      const normalizedRollbackFacts = normalizeRollbackFacts(rollbackFacts);
       next.releasedOwners = [...next.createdOwners].reverse();
       next.dispositions.push(...next.releasedOwners.map((releasedOwner) => ({ owner: releasedOwner, disposition: 'rollback-release' })));
       next.createdOwners = [];
@@ -215,6 +237,7 @@ export function initializeFramework(state, failureOwner = null) {
       next.status = 'framework-initialization-failed';
       next.ignitable = false;
       next.evidencePreserved = true;
+      next.rollbackFacts = normalizedRollbackFacts;
       return next;
     }
     next.createdOwners.push(owner);
