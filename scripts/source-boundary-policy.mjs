@@ -120,6 +120,20 @@ function inspectPackageJson(relativePath, text, violations) {
   }
 }
 
+function inspectProductionModuleAcquisition(relativePath, text, violations) {
+  if (!isProductionRuntimePath(relativePath)) return;
+  const checks = [
+    [/\b(?:globalThis\.)?process(?:\.|\?\.)getBuiltinModule\s*\(/, "process.getBuiltinModule bypasses statically inspectable module imports"],
+    [/\bcreateRequire\b/, "createRequire constructs a runtime module loader outside the static import surface"],
+    [/\b(?:module|process\.mainModule)\.require\s*\(/, "module.require bypasses the statically inspected require surface"],
+    [/\brequire\s*\(\s*(?!["'])/, "dynamic require specifier is not statically inspectable"],
+    [/\bimport\s*\(\s*(?!["'])/, "dynamic import specifier is not statically inspectable"],
+  ];
+  for (const [pattern, detail] of checks) {
+    if (pattern.test(text)) push(violations, "UNINSPECTABLE_MODULE_ACQUISITION", relativePath, detail);
+  }
+}
+
 export function violationsForFile(relativePath, text = "") {
   const normalizedPath = slash(relativePath);
   const lowerPath = normalizedPath.toLowerCase();
@@ -173,6 +187,8 @@ export function violationsForFile(relativePath, text = "") {
       push(violations, "SUBPROCESS_RUNTIME", normalizedPath, "production search components/adapters/examples may not create a subprocess execution path");
     }
   }
+
+  inspectProductionModuleAcquisition(normalizedPath, text, violations);
 
   const mechanismChecks = [
     ["DIRECT_NATIVE_ACCESS", /\b(?:process\.dlopen|process\.binding|Deno\.dlopen|Bun\.ffi)\b/, "direct native loader/binding access"],
