@@ -154,11 +154,11 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
 
   function applyAdvance(input) {
     requireActive();
-    const replayed = replay(input.commandId, 'advance', input);
-    if (replayed) return replayed;
     if (!input.authority || typeof input.authority !== 'object' || Array.isArray(input.authority)) {
       fail('SESSION_REFERENCE_ADVANCE_AUTHORITY', 'advance requires current Session root authority provenance');
     }
+    const replayed = replay(input.commandId, 'advance', input);
+    if (replayed) return replayed;
     if (!same(input.authority, authority, 'Session advance authority provenance')) {
       return freeze({ kind: 'rejected', code: 'session-command-stale', authorityUnchanged: true }, 'Session stale advance rejection');
     }
@@ -201,11 +201,11 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
   function prepareReroot(input) {
     requireActive();
     if (profile.reroot?.kind !== 'selected') fail('SESSION_REFERENCE_REROOT_ABSENT', 'selected Session profile has no reroot operation');
-    const replayed = replay(input.commandId, 'reroot-prepare', input);
-    if (replayed) return replayed;
     if (!input.authority || typeof input.authority !== 'object' || Array.isArray(input.authority)) {
       fail('SESSION_REFERENCE_REROOT_AUTHORITY', 'reroot requires current Session root authority provenance');
     }
+    const replayed = replay(input.commandId, 'reroot-prepare', input);
+    if (replayed) return replayed;
     if (!same(input.authority, authority, 'Session reroot authority provenance')) {
       return freeze({ kind: 'rejected', code: 'session-command-stale', authorityUnchanged: true }, 'Session stale reroot rejection');
     }
