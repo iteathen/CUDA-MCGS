@@ -38,6 +38,7 @@ export const DIRECT_FRAMEWORK_REQUIREMENTS = Object.freeze([
 
 const EXPECTED_CLEANUP_KINDS = Object.freeze([
   'normalized-profile',
+  'generated-source',
   'generated-package',
   'cache-artifact',
   'allocation',
@@ -48,6 +49,10 @@ const EXPECTED_CLEANUP_KINDS = Object.freeze([
   'borrow',
   'diagnostic',
   'persisted-artifact',
+  'local-state',
+  'process',
+  'transfer',
+  'credential',
   'coordination-record',
 ]);
 
@@ -75,7 +80,8 @@ function completionFacts(profile) {
 
 function cancellationFacts() {
   return {
-    accountingConserved: true,
+    reservationAccountingConserved: true,
+    resourceAccountingConserved: true,
     ownerRulesApplied: true,
     partialBackupPublished: false,
     prematureTeardown: false,
@@ -85,10 +91,16 @@ function cancellationFacts() {
 
 function teardownFacts(profile) {
   return {
-    opaqueCudaReleased: true,
-    ownerResourcesReleased: true,
-    protectionsReleased: true,
     workFinalized: true,
+    protectionsReleased: true,
+    ownerResourcesReleased: true,
+    opaqueCudaReleased: true,
+    transfersBorrowsReleased: true,
+    cachesArtifactsDisposed: true,
+    localStateDisposed: true,
+    processesDeviceResourcesReleased: true,
+    credentialsDisposed: true,
+    externalCoordinationDisposed: true,
     cleanupDispositions: profile.cleanup.records.map(({ id, plannedDisposition }) => ({ id, disposition: plannedDisposition })),
   };
 }
@@ -101,6 +113,7 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
   defineCase('framework-profile-strict-normalization', () => {
     const normalized = normalizeFrameworkLifecycleProfile(fixture.profile);
     assert.equal(normalized.engineIdentity, fixture.profile.engineIdentity);
+    assert.equal(normalized.semanticIdentity, fixture.profile.semanticIdentity);
     assert.equal(normalized.profileIdentity, fixture.profile.profileIdentity);
     assert.equal(normalized.packageIdentity, fixture.profile.packageIdentity);
     assert.deepEqual(normalized.resultVisibleOwners, fixture.profile.resultVisibleOwners);
@@ -188,8 +201,10 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
     assert.equal(twice.stopCause, 'semantic-failure');
     assert.equal(twice.status, 'framework-cancelling');
     assert.deepEqual(twice.cancellationFacts, facts);
-    const lostAccounting = { ...facts, accountingConserved: false };
-    assert.throws(() => requestFrameworkCancellation(stopped, lostAccounting), { code: 'FRAMEWORK_CANCELLATION_ACCOUNTING' });
+    const lostReservationAccounting = { ...facts, reservationAccountingConserved: false };
+    assert.throws(() => requestFrameworkCancellation(stopped, lostReservationAccounting), { code: 'FRAMEWORK_CANCELLATION_ACCOUNTING' });
+    const lostResourceAccounting = { ...facts, resourceAccountingConserved: false };
+    assert.throws(() => requestFrameworkCancellation(stopped, lostResourceAccounting), { code: 'FRAMEWORK_CANCELLATION_ACCOUNTING' });
     const partialBackup = { ...facts, partialBackupPublished: true };
     assert.throws(() => requestFrameworkCancellation(stopped, partialBackup), { code: 'FRAMEWORK_CANCELLATION_PARTIAL_BACKUP' });
     const premature = { ...facts, prematureTeardown: true };
@@ -218,10 +233,18 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
     assert.equal(released.opaqueOperations, 0);
     assert.deepEqual(released.createdOwners, []);
     assert.deepEqual(released.releasedOwners, [...fixture.profile.ownerOrder].reverse());
-    assert.equal(released.teardownFacts.workFinalized, true);
-    assert.equal(released.teardownFacts.protectionsReleased, true);
-    assert.equal(released.teardownFacts.ownerResourcesReleased, true);
-    assert.equal(released.teardownFacts.opaqueCudaReleased, true);
+    for (const field of [
+      'workFinalized',
+      'protectionsReleased',
+      'ownerResourcesReleased',
+      'opaqueCudaReleased',
+      'transfersBorrowsReleased',
+      'cachesArtifactsDisposed',
+      'localStateDisposed',
+      'processesDeviceResourcesReleased',
+      'credentialsDisposed',
+      'externalCoordinationDisposed',
+    ]) assert.equal(released.teardownFacts[field], true);
     assertFrameworkCleanupReadback(released);
     return { releasedOwners: released.releasedOwners, cleanupReadback: released.cleanupReadback.length };
   }, ['FRAMEWORK-LIFE-008']);
@@ -280,6 +303,12 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
     const unreleasedProtection = teardownFacts(fixture.profile);
     unreleasedProtection.protectionsReleased = false;
     assert.throws(() => teardownFramework(terminal, unreleasedProtection), { code: 'FRAMEWORK_TEARDOWN_INCOMPLETE' });
+    const liveCredential = teardownFacts(fixture.profile);
+    liveCredential.credentialsDisposed = false;
+    assert.throws(() => teardownFramework(terminal, liveCredential), { code: 'FRAMEWORK_TEARDOWN_INCOMPLETE' });
+    const liveCoordination = teardownFacts(fixture.profile);
+    liveCoordination.externalCoordinationDisposed = false;
+    assert.throws(() => teardownFramework(terminal, liveCoordination), { code: 'FRAMEWORK_TEARDOWN_INCOMPLETE' });
     const released = teardownFramework(terminal, teardownFacts(fixture.profile));
     assert.equal(assertFrameworkCleanupReadback(released), true);
     return { phase: released.phase, cleanupReadback: released.cleanupReadback.length };
@@ -315,6 +344,7 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
     assert.equal(normalized.persistence.kind, 'selected');
     assert.equal(normalized.persistence.authorization, 'owner-and-compatibility-gated');
     assert.equal(normalized.persistence.recovery, 'revalidate-or-quarantine');
+    assert.equal(normalized.persistence.rollback, 'quarantine-and-clean-initialize');
     assert.deepEqual(normalized.persistence.forbiddenDurableFields, ['raw-pointer', 'cuda-handle', 'in-flight-work', 'in-flight-transaction', 'active-borrow']);
     assert.equal(normalized.persistence.owner, 'framework.persistence.synthetic');
     assert(normalized.cleanup.records.some(({ kind, owner }) => kind === 'persisted-artifact' && owner === normalized.persistence.owner));
@@ -339,6 +369,9 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
     const staleGeneration = clone(fixture.validPersistenceSnapshot);
     staleGeneration.generationValid = false;
     assert.deepEqual(restoreFrameworkPersistence(fixture.persistenceProfile, staleGeneration), { status: 'quarantined', ignitable: false, authoritative: false });
+    const staleSemantic = clone(fixture.validPersistenceSnapshot);
+    staleSemantic.semanticIdentity = 'semantic.stale';
+    assert.deepEqual(restoreFrameworkPersistence(fixture.persistenceProfile, staleSemantic), { status: 'quarantined', ignitable: false, authoritative: false });
     const staleProfile = clone(fixture.validPersistenceSnapshot);
     staleProfile.profileIdentity = 'profile.stale';
     assert.deepEqual(restoreFrameworkPersistence(fixture.persistenceProfile, staleProfile), { status: 'quarantined', ignitable: false, authoritative: false });
@@ -348,7 +381,7 @@ export function registerFrameworkLifecycleCases({ defineCase, fixture, plannedCo
     const forbidden = clone(fixture.validPersistenceSnapshot);
     forbidden.durableAuthorityKinds = ['raw-pointer'];
     assert.deepEqual(restoreFrameworkPersistence(fixture.persistenceProfile, forbidden), { status: 'quarantined', ignitable: false, authoritative: false });
-    return { invalidRestores: 4 };
+    return { invalidRestores: 5 };
   }, ['FRAMEWORK-PERSIST-002']);
 
   plannedCoverage();
