@@ -16,6 +16,7 @@
     "session-cancellation-aborts-prepared-reroot",
     "session-absent-terminal-slice-remains-zero-residue",
     "session-observation-profile-and-capacity-guard",
+    "session-advance-preserves-root-incarnation",
     "session-completion-command-replay-idempotent"
   ],
   "profileProjection": {

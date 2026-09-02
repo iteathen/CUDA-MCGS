@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 
 import {
+  advanceInput,
   cleanupFacts,
   establish,
   expectCode,
@@ -59,6 +60,25 @@ export function registerSessionBoundaryCases({ defineCase, sessionProjection }) 
     assert.deepEqual(session.snapshot(), beforePressure, 'observation pressure must consume no command, generation, or request state');
     return { outputProfile: observationProfile.outputProfile, maximumPendingRequests: observationProfile.maxPendingRequests, pressure: pressure.code };
   }, ['SESSION-OBS-', 'SESSION-SEC-', 'SESSION-LIFE-']);
+
+  defineCase('session-advance-preserves-root-incarnation', () => {
+    const session = liveSession(sessionProjection);
+    establish(session, 'advance-incarnation');
+    const before = session.snapshot();
+    const advanced = session.applyAdvance(advanceInput('advance-incarnation-successor'));
+    const after = session.snapshot();
+
+    assert.equal(advanced.kind, 'advanced');
+    assert.equal(advanced.authority.rootIncarnation, before.authority.rootIncarnation, 'advance must remain inside the current root incarnation');
+    assert.equal(after.counters['root-incarnation'], before.counters['root-incarnation'], 'advance must not consume the root-incarnation counter');
+    assert.notEqual(after.authority.rootEpoch, before.authority.rootEpoch, 'advance must publish a new root epoch');
+    assert.notEqual(advanced.advanceGeneration, before.counters['advance-generation'], 'advance must publish ordered advance provenance');
+    return {
+      rootIncarnation: after.authority.rootIncarnation,
+      rootEpoch: after.authority.rootEpoch,
+      advanceGeneration: advanced.advanceGeneration,
+    };
+  }, ['SESSION-ROOT-', 'SESSION-EPOCH-', 'SESSION-LIFE-']);
 
   defineCase('session-completion-command-replay-idempotent', () => {
     const profile = getSessionProfile(sessionProjection, 'session.synthetic-live-session');
