@@ -322,7 +322,7 @@ export function createProgressOracle({ profile, counterStarts = {}, mutations = 
     for (const item of work.values()) {
       if (terminal(item.state) || item.irreversibleResultVisible) continue;
       const disposition = workClass(item.classId).stopDisposition;
-      if (disposition === 'abandon') transitionTerminal(item, 'cancelled', 'stop-abandon');
+      if (disposition === 'abandon') transitionTerminal(item, 'abandoned', 'stop-abandon');
       else if (disposition === 'cancel') transitionTerminal(item, 'cancelled', 'stop-cancel');
       else if (disposition === 'stale-dispose') transitionTerminal(item, 'stale-disposed', 'stop-stale');
     }
