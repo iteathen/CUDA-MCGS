@@ -9,7 +9,9 @@
     "stage-first-product-deletion-and-zero-capability-absence",
     "stage-mutation-sensitivity-detects-boundary-drift",
     "stage-second-profile-remains-semantically-distinct",
-    "stage-portable-reference-does-not-claim-native-support"
+    "stage-portable-reference-does-not-claim-native-support",
+    "stage-declared-outcome-release-contract-is-enforced",
+    "stage-undeclared-owner-facts-are-rejected"
   ],
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-stage-profile-projection/0.2.0",
