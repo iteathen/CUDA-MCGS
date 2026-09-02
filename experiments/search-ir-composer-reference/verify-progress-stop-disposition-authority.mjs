@@ -35,6 +35,8 @@ const fixtureSource = await readFile(path.join(experimentRoot, 'src', 'progress-
 const schema = await readJson(path.join(schemaRoot, 'progress-profile.schema.json'));
 const specBytes = await readFile(path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0012-device-owned-search-progress.md'));
 const spec = specBytes.toString('utf8');
+const specSha256 = sourceTextSha256(specBytes);
+console.log(`progress_spec_source_sha256=${specSha256}`);
 
 const terminalStateEnums = [];
 function collectEnums(value) {
@@ -155,6 +157,4 @@ expectNormalizationReachabilityFailure((classes) => classes[0], 'stale-disposed'
 expectNormalizationReachabilityFailure((classes) => classes.find(({ kind }) => kind === 'must-drain'), 'quarantined');
 expectNormalizationReachabilityFailure((classes) => classes.find(({ stopDisposition }) => stopDisposition === 'abandon'), 'abandoned');
 
-const specSha256 = sourceTextSha256(specBytes);
 console.log(`progress_terminal_state_authority=pass ordinary=${ordinaryReachable.join(',')} result_visible=${requiredProgressTerminalStates('must-drain', 'drain').join(',')} normalization_falsifiers=completed,stale-disposed,quarantined,abandoned`);
-console.log(`progress_spec_source_sha256=${specSha256}`);
