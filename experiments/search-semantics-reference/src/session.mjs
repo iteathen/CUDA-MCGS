@@ -203,6 +203,12 @@ export function createSessionOracle({ profile, sessionIdentity, searchIdentity, 
     if (profile.reroot?.kind !== 'selected') fail('SESSION_REFERENCE_REROOT_ABSENT', 'selected Session profile has no reroot operation');
     const replayed = replay(input.commandId, 'reroot-prepare', input);
     if (replayed) return replayed;
+    if (!input.authority || typeof input.authority !== 'object' || Array.isArray(input.authority)) {
+      fail('SESSION_REFERENCE_REROOT_AUTHORITY', 'reroot requires current Session root authority provenance');
+    }
+    if (!same(input.authority, authority, 'Session reroot authority provenance')) {
+      return freeze({ kind: 'rejected', code: 'session-command-stale', authorityUnchanged: true }, 'Session stale reroot rejection');
+    }
     if (reroot !== null) fail('SESSION_REFERENCE_REROOT_BUSY', 'a reroot transaction is already prepared');
     if (input.compoundAdmission?.approved !== true) {
       const pressureOutcome = profile.reroot.profile.pressureOutcome;
