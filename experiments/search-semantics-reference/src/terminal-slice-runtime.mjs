@@ -196,20 +196,26 @@ function completionFacts(profile, progressClosure, ownerOutcomes) {
 
 function scheduleEvents(order, evaluatorSelected) {
   const byName = {
-    framework: { id: 'framework.owner.ignite', owner: 'framework.owner', after: [], reads: [], input: {} },
-    domain: { id: 'domain.owner.root', owner: 'domain.owner', after: ['framework.owner.ignite'], reads: [], input: {} },
-    graph: { id: 'graph.owner.cleanup-ready', owner: 'graph.owner', after: ['framework.owner.ignite'], reads: [], input: {} },
-    policy: { id: 'policy.owner.accounting', owner: 'policy.owner', after: ['framework.owner.ignite'], reads: [], input: {} },
-    evaluator: { id: 'evaluator.owner.ready', owner: 'evaluator.owner', after: ['framework.owner.ignite'], reads: [], input: {} },
+    framework: { id: 'framework.owner.initialize', owner: 'framework.owner', after: [], reads: [], input: {} },
+    domain: { id: 'domain.owner.root', owner: 'domain.owner', after: ['framework.owner.initialize'], reads: [], input: {} },
+    policy: { id: 'policy.owner.accounting', owner: 'policy.owner', after: ['framework.owner.initialize'], reads: [], input: {} },
+    output: { id: 'output.owner.initialize', owner: 'output.owner', after: ['framework.owner.initialize'], reads: [], input: {} },
+    ignite: {
+      id: 'framework.owner.ignite',
+      owner: 'framework.owner',
+      after: ['domain.owner.root', 'policy.owner.accounting', 'output.owner.initialize'],
+      reads: ['domain.owner.root-ready', 'policy.owner.accounting-ready', 'output.owner.initialized'],
+      input: {},
+    },
     resource: { id: 'resource.owner.activate', owner: 'resource.owner', after: ['framework.owner.ignite'], reads: [], input: {} },
-    output: { id: 'output.owner.initialize', owner: 'output.owner', after: ['framework.owner.ignite'], reads: [], input: {} },
     progress: { id: 'progress.owner.activate', owner: 'progress.owner', after: ['resource.owner.activate'], reads: [], input: {} },
+    evaluator: { id: 'evaluator.owner.ready', owner: 'evaluator.owner', after: ['framework.owner.ignite'], reads: [], input: {} },
     reserve: { id: 'resource.owner.reserve-work', owner: 'resource.owner', after: ['resource.owner.activate'], reads: [], input: {} },
     work: {
       id: 'progress.owner.complete-work',
       owner: 'progress.owner',
-      after: ['progress.owner.activate', 'resource.owner.reserve-work'],
-      reads: ['resource.owner.work-admission'],
+      after: ['domain.owner.root', 'progress.owner.activate', 'resource.owner.reserve-work'],
+      reads: ['domain.owner.root-ready', 'resource.owner.work-admission'],
       input: {},
     },
   };
@@ -278,14 +284,13 @@ function prepareCancellationObligations({ resource, resourceProfile, progress, p
   assert.equal(progress.claimReady({ ...workRef(mustDrain), claimId: 'cancellation-must-drain-claim' }).kind, 'claimed');
   assert.equal(progress.beginResultVisibleTransition(workRef(mustDrain)).kind, 'must-drain');
 
-  return { ordinaryClass, ordinary, ordinaryResources, mustDrainClass, mustDrain, mustDrainResources };
+  return { ordinary, ordinaryResources, mustDrain, mustDrainResources };
 }
 
 function runSetup({
   composerEvidence,
   domainOracle,
   domainRoot,
-  graphProfile,
   policy,
   evaluator,
   evaluatorProfile,
@@ -316,9 +321,8 @@ function runSetup({
   });
 
   const owners = [
-    ['framework.owner', { kind: 'admitted' }],
+    ['framework.owner', frameworkAdmitted],
     ['domain.owner', { kind: 'not-run' }],
-    ['graph.owner', { kind: 'not-run' }],
     ['policy.owner', { kind: 'not-run' }],
     ...(evaluatorSelected ? [['evaluator.owner', { kind: 'not-run' }]] : []),
     ['resource.owner', { kind: 'not-run' }],
@@ -327,16 +331,29 @@ function runSetup({
   ].map(([id, initialState]) => ({ id, initialState }));
 
   const transitions = {
-    'framework.owner': () => {
-      frameworkRunning = igniteFramework(initializeFramework(frameworkAdmitted));
-      return publicOwnerResult({ phase: frameworkRunning.phase, status: frameworkRunning.status }, 'framework.owner.running');
+    'framework.owner': ({ state, context }) => {
+      if (context.eventId === 'framework.owner.initialize') {
+        const initialized = initializeFramework(state);
+        assert.equal(initialized.phase, 'initialized');
+        assert.equal(initialized.ignitable, true);
+        return {
+          state: initialized,
+          publications: [{ id: 'framework.owner.initialized', value: { phase: initialized.phase, ignitable: initialized.ignitable } }],
+        };
+      }
+      const domainReady = context.facts['domain.owner.root-ready'];
+      const policyReady = context.facts['policy.owner.accounting-ready'];
+      const outputReady = context.facts['output.owner.initialized'];
+      assert(domainReady?.identity?.verification?.sha256, 'Framework ignition requires a public validated Domain root fact');
+      assert.equal(policyReady?.outstandingReservations, '0', 'Framework ignition requires Policy admission/accounting readiness');
+      assert.equal(outputReady?.kind, 'initialized', 'Framework ignition requires Output pre-ignition initialization');
+      frameworkRunning = igniteFramework(state);
+      return {
+        state: frameworkRunning,
+        publications: [{ id: 'framework.owner.running', value: { phase: frameworkRunning.phase, status: frameworkRunning.status } }],
+      };
     },
     'domain.owner': () => publicOwnerResult(domainOracle.validateRoot(domainRoot), 'domain.owner.root-ready'),
-    'graph.owner': () => {
-      assert(['materialized', 'stateless'].includes(graphProfile.mode));
-      const result = reconcileGraphArenaRelease({ ledger: CLEAN_GRAPH_LEDGER, resourceDestructionStarted: false });
-      return publicOwnerResult(result, 'graph.owner.cleanup-ready');
-    },
     'policy.owner': () => publicOwnerResult(policy.assertAccounting(), 'policy.owner.accounting-ready'),
     'resource.owner': ({ context }) => {
       if (context.eventId === 'resource.owner.activate') return publicOwnerResult(resource.activate(), 'resource.owner.active');
@@ -362,12 +379,18 @@ function runSetup({
     'progress.owner': ({ context }) => {
       if (context.eventId === 'progress.owner.activate') return publicOwnerResult(progress.activate({ rootEpoch: '1', workEpoch: '1' }), 'progress.owner.active');
       const admission = context.facts['resource.owner.work-admission'];
-      const input = workInput(workClass, scheduleId, { resourceAdmission: {
-        approved: admission.approved,
-        token: admission.token,
-        classes: admission.classes,
-        reserve: admission.reserve,
-      } });
+      const domainSource = context.facts['domain.owner.root-ready'];
+      const domainIdentity = domainSource?.identity?.verification?.sha256;
+      assert(domainIdentity, 'Progress work must consume an immutable public Domain identity fact');
+      const input = workInput(workClass, scheduleId, {
+        payloadRef: `domain:${domainIdentity}`,
+        resourceAdmission: {
+          approved: admission.approved,
+          token: admission.token,
+          classes: admission.classes,
+          reserve: admission.reserve,
+        },
+      });
       assert.equal(progress.admitWork(input).kind, 'admitted');
       assert.equal(progress.publishReady({
         ...workRef(input),
@@ -441,7 +464,6 @@ function finishTerminalSlice({
   assert(['complete', 'cancelled'].includes(termination), `unsupported terminal-slice termination ${termination}`);
   const cancelled = termination === 'cancelled';
   const domainFact = factValue(setup.result, 'domain.owner.root-ready');
-  const graphFact = factValue(setup.result, 'graph.owner.cleanup-ready');
   const outputInitializationFact = factValue(setup.result, 'output.owner.initialized');
   const workFact = factValue(setup.result, 'progress.owner.work-complete');
   assert.equal(workFact.kind, 'completed');
@@ -486,9 +508,7 @@ function finishTerminalSlice({
       operationId: 'cancellation-must-drain-complete',
       resultVisible: true,
     }).kind, 'completed');
-    for (const input of [...cancellation.ordinaryResources.inputs, ...cancellation.mustDrainResources.inputs]) {
-      resource.releaseResource(leaseRef(input));
-    }
+    for (const input of [...cancellation.ordinaryResources.inputs, ...cancellation.mustDrainResources.inputs]) resource.releaseResource(leaseRef(input));
     const afterDrain = progress.observeProgress();
     cancellationWorkDispositions = {
       ordinary: afterDrain.work.find(({ workId }) => workId === cancellation.ordinary.workId)?.state,
@@ -526,6 +546,9 @@ function finishTerminalSlice({
   const resourceConservation = resource.assertConservation();
   assert.equal(resourceConservation.kind, 'conserved');
 
+  assert(['materialized', 'stateless'].includes(graphProfile.mode));
+  const graphFact = reconcileGraphArenaRelease({ ledger: CLEAN_GRAPH_LEDGER, resourceDestructionStarted: false });
+  assert.equal(graphFact.kind, 'ready-for-resource-destruction');
   const ownerTransitionsReady = policyTerminal.kind === 'terminal'
     && graphFact.kind === 'ready-for-resource-destruction'
     && evaluatorCleanup.runtimeResidue === 0;
@@ -711,7 +734,6 @@ export function runCompleteTerminalSlice({
     composerEvidence,
     domainOracle,
     domainRoot,
-    graphProfile,
     policy,
     evaluator,
     evaluatorProfile,
@@ -770,7 +792,7 @@ export function terminalSliceMeaning(result) {
 
 export function terminalSliceScheduleOrders() {
   return {
-    ownerMajor: ['framework', 'domain', 'graph', 'policy', 'evaluator', 'resource', 'output', 'progress', 'reserve', 'work'],
-    resourceInterleaved: ['framework', 'resource', 'progress', 'reserve', 'domain', 'output', 'graph', 'evaluator', 'policy', 'work'],
+    ownerMajor: ['framework', 'domain', 'policy', 'output', 'ignite', 'resource', 'progress', 'evaluator', 'reserve', 'work'],
+    resourceInterleaved: ['framework', 'output', 'domain', 'policy', 'ignite', 'resource', 'progress', 'reserve', 'evaluator', 'work'],
   };
 }
