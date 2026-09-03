@@ -28,72 +28,88 @@ The exact direct families are:
 - `CHANNEL-CANCEL-`: 7
 - `CHANNEL-CONFORMANCE-`: 3
 
-The existing owner-local oracle already exercises finite slots, generation/correlation, logical release/acquire, claims/borrows, pending-worker release, producer service, no-progress, pressure, stale generation, cancellation, expiry, reclamation, counter exhaustion, deletion and cleanup. Therefore the smallest complete ownership-sized work is to bind the 41 routes to that exact owner evidence and add only missing owner-local falsifiers.
-
 SPEC-0011 remains aggregate finite-resource authority. SPEC-0012 remains global readiness/progress/fairness/no-progress authority. CUDA-JS remains the owner of native device publication/synchronization lowering and compatible-pair qualification. No native/CUDA implementation is authorized here.
 
-## Demonstrated semantic defect
+## First demonstrated semantic defect
 
-The gap audit found one real defect in the existing bounded Channel oracle. `simulateChannelTrace()` previously treated every `cancel` on a non-free/non-reclaimable item as a new cancellation and assigned `slot.disposition = 'cancelled'`.
+The initial gap audit found a real defect in the existing bounded Channel oracle. `simulateChannelTrace()` treated every `cancel` on a non-free/non-reclaimable item as a new cancellation and assigned `slot.disposition = 'cancelled'`.
 
-That allowed cancellation after an already authoritative terminal failure/stop disposition to erase the first cause. This contradicted both:
+That allowed cancellation after an already authoritative terminal failure/stop disposition to erase the first cause. This contradicted SPEC-0004 `CHANNEL-CANCEL-002` and the normalized profile's own `terminally-disposed -> ignore-authoritative-terminal` cancellation rule.
 
-- SPEC-0004 `CHANNEL-CANCEL-002`, which requires idempotent cancellation without erasing an earlier authoritative failure/stop cause; and
-- the normalized Channel profile's own `terminally-disposed -> ignore-authoritative-terminal` cancellation rule.
+The owner-local repair makes cancellation on `terminally-disposed` a no-effect observation that retains the existing disposition. Permanent case `channel-reference-cancel-preserves-authoritative-first-cause` covers repeated cancellation after `channel-internal-failure`. Permanent case `channel-reference-escape-service-while-pending` also proves the existing progress classifier services a declared escape while a required consumer is pending and no producer is runnable.
 
-The owner-local repair makes cancellation on `terminally-disposed` a no-effect observation that retains the existing disposition. Permanent case `channel-reference-cancel-preserves-authoritative-first-cause` covers repeated cancellation after `channel-internal-failure`.
+## Initial construction red
 
-A second missing sensitivity case, `channel-reference-escape-service-while-pending`, now proves the existing progress classifier services a declared escape while a required consumer is pending and no producer is runnable.
-
-## Construction red and repair evidence
-
-Permanent Channel workflow run `33699198942` on construction head `8526b990c4940012e623c07a107c466c7c86e8d8` executed all 883 Composer cases. Every individual semantic case passed, including both new Channel cases, but the capsule intentionally failed its exact discovery assertion because the explicit expected count still declared 881:
+Permanent Channel workflow run `33699198942` on construction head `8526b990c4940012e623c07a107c466c7c86e8d8` executed all 883 Composer cases. Every individual semantic case passed, including both new Channel cases, but the capsule failed its exact discovery assertion because the explicit expected count still declared 881:
 
 ```text
 AssertionError: Expected 881 cases, discovered 883
 883 !== 881
 ```
 
-This was classified as discovery bookkeeping rather than a semantic failure. The exact expected/not-discovered count was then reconciled to 883 without weakening discovery or skip checks.
+This was discovery bookkeeping rather than a semantic failure. The exact expected/not-discovered count was reconciled to 883 without weakening discovery or skip checks.
 
-Temporary write-transport workflow/script used only because the connected GitHub contents API has no patch operation for the two very large owner files. The transport performed exact single-occurrence replacements, `git diff --check`, committed only the intended owner source/case changes, and was deleted immediately after the count reconciliation. It is not a permanent execution path or semantic authority.
+## Whole-diff reassessment and review-discovered gaps
 
-## Permanent evidence design
+A fresh base-to-head review of the first evidence version found that the family-level route manifest was too coarse for SPEC-0004's acceptance rule that every normative requirement map to strict normalization plus an independent reference case or explicit cross-spec proof. The same review also found three genuine owner-local behavioral evidence gaps:
+
+1. **Full item identity:** the trace validated generation but operation records did not carry correlation/version/freshness, so `CHANNEL-ITEM-001/007` and `CHANNEL-CONSUMER-001/005` could not be honestly claimed as behaviorally exercised.
+2. **Request/result lifecycle:** the required evaluator-like profile declared `in-progress` and `result-ready`, but the bounded trace did not execute request claim → result initialization → result publication → result claim/consume.
+3. **Optional unavailable-result path:** selected fixtures covered required pending and advisory fallback but not the explicit optional `skip` path called for by the Channel conformance contract.
+
+Those were owner gaps, not justification for a second interpreter. The repair stayed inside the existing Channel brick:
+
+- trace slots now carry finite correlation, profile version and opaque freshness with rejection of foreign/stale values;
+- the bounded trace executes the request/result states and preserves release/acquire checks on both publication boundaries;
+- required unavailable work becomes bounded pending, advisory follows owner fallback, and the materially different second selected profile now exercises optional skip;
+- additional tests cover duplicate publication/result publication, mutation after ready, mutable-lease retention while pending, cancellation across live states, publication coherence and producer preconditions;
+- the Channel profile schema now admits `optional` dependency requirements with a required skip escape.
+
+## Review-gap red-before-green evidence
+
+The first review-gap transport run `33700521171` proposed an exact 899-case capsule. All 899 cases were discovered; 895 passed and four failed because the new freshness validator checked an `initialize` operation before `initialize` had assigned its freshness value. No semantic patch was committed from that red.
+
+The temporary patch was corrected so freshness is assigned by initialization before later access validates it. Run `33700867462` then passed the full focused Composer capsule:
+
+- expected/discovered/executed/passed: `899/899/899/899`;
+- failures: `0`;
+- required/conditional/optional skips: `0`;
+- not-discovered: `0`;
+- 989 requirement dispositions classified, pending `0`;
+- Composer evidence `c9763298fdea261065559207dc052939d39795552586370463226ad0242fc60a5`;
+- canonical bytes `50559`.
+
+Only the four intended permanent owner/schema files were committed from that green run as `559f1cc12120c39a1dd509d563dcf994864f9851`.
+
+## Cleanup of construction transport
+
+The connected GitHub contents API has no patch operation for the very large owner files, so narrow temporary Actions transports were used for exact single-occurrence replacements. Each transport ran `git diff --check`, showed the intended diff, ran the focused capsule before committing semantic changes, and committed only explicit files.
+
+All temporary construction/review transport workflows and patch scripts were deleted after their successful use. They are not permanent execution paths, semantic owners, or part of the intended PR result.
+
+## Permanent evidence design — requirement-level v0.2
 
 The permanent evidence layer consists of:
 
-- `fixtures/channel-evidence-routes.json`: exact six-family route manifest for all 41 direct requirements;
-- `run-channel-evidence.mjs`: reads the governing SPEC-0004 text, requirement coverage and generated Composer evidence, verifies exact direct-route closure, and binds the evidence identity to the owner-local Composer evidence and Channel profile/resource/progress/Stage/deletion identities;
+- `fixtures/channel-evidence-routes.json`: 41 explicit requirement→owner-case records plus the exact six family counts;
+- `run-channel-evidence.mjs`: reads the governing SPEC-0004 text, requirement coverage and generated Composer evidence; proves the exact direct requirement set, exact family classification, one unique route per requirement and passing status for every named owner-local case; and binds the evidence identity to the Composer evidence plus Channel resource/progress/Stage/deletion identities;
 - `scripts/run-channel-reference-evidence.mjs`: thin entrypoint;
 - `scripts/verify-channel-ci-gate.mjs`: proves the permanent runner is unconditional and evidence upload is required;
 - `.github/workflows/channel-reference.yml`: permanent Node 26 Channel evidence gate.
 
-The evidence adapter deliberately does not import `channel.mjs` or reconstruct Channel state. It consumes the generated owner evidence by identity and case status only.
+The evidence adapter deliberately does not import `channel.mjs` or reconstruct Channel state. It consumes generated owner evidence by identity and case status only. This preserves one visible semantic owner under LEGO.
 
-## Clean construction qualification checkpoint
-
-Before PR-current-state reconciliation, exact head `006cdc99f46fc7f1c952761ec082a6bf3ba2f624` passed permanent Channel workflow `33699406167`:
-
-- Composer: `883/883`, zero failures, zero skip classes, zero not-discovered;
-- 989 requirements classified, zero pending;
-- direct SPEC-0004 routes: `41/41` across the exact six families;
-- owner-local cases bound by the evidence manifest: 33/33 green;
-- Composer evidence: `2bb62db23d7fb3841c8ca3d6a39d6d8519c6ee07513fc7afa1463630bcee9c26`;
-- Channel evidence: `f6adb5f99ac397b9f09951c6ef13b0aa15846c37c5ae17d3e67213d9d8e9fb12`, 9357 canonical bytes;
-- artifact: `9872951636`;
-- artifact digest: `sha256:dd9c4fd33fd594a2708f1fef94eb091caf11aa95191f2fcb69d152877e79dbbf`.
-
-This is preserved construction evidence, not the final integration authorization subject. PR #191 exists specifically so the final reconciled head receives the existing PR-triggered Channel, Stage, Session, Terminal, Framework and full repository/documentation matrix on one exact subject.
+The v0.1 family-level evidence checkpoint on `006cdc99f46fc7f1c952761ec082a6bf3ba2f624` / run `33699406167` remains useful historical construction evidence but is superseded for final acceptance by the 899-case, requirement-level v0.2 gate.
 
 ## Final qualification and review gate
 
 Before this leaf is authorization-ready:
 
-1. PR #191 must pass the permanent Channel workflow on its final head with all 883 Composer cases, all 41 direct routes, zero skips/not-discovered and required evidence artifact;
+1. PR #191 must pass the permanent Channel workflow on one stable final head with Composer `899/899`, all 41 individual direct routes, exact six-family closure, zero skips/not-discovered and required evidence artifact;
 2. PR-triggered Stage, Session, Terminal, Framework and repository/governance gates must all pass on that same final head;
-3. exact final evidence identity and artifact digest must be recorded on PR #191 and issue #33;
-4. a fresh base-to-head author technical review must find no duplicate authority, ownership leakage, first-consumer assumption, stale identity, resource/cleanup hole, native escape or CI gap;
-5. temporary construction residue must remain absent and protected `main` must remain unchanged;
+3. exact final Channel evidence identity, canonical byte count, artifact and artifact digest must be recorded on PR #191 and issue #33;
+4. a fresh complete base-to-head author technical review must find no duplicate authority, ownership leakage, first-consumer assumption, stale identity, resource/cleanup hole, native escape or CI gap;
+5. temporary construction residue must remain absent and protected `main` plus the exact experimental base must remain unchanged;
 6. issue #33 and live tracking must freeze the exact reviewed head/tree/base without another source commit merely to copy CI metadata.
 
 If repository policy requires fresh exact-head owner authorization for experimental integration, stop at that exact qualified/reviewed head. General instruction to continue is not merge authorization.
