@@ -1,0 +1,187 @@
+{
+  "schema": "cuda-mcgs.reference-integration-fixtures/0.1.0",
+  "expectedDirectRequirements": 352,
+  "expectedChannelRequirements": 41,
+  "expectedReferenceRequirements": 393,
+  "expectedNativeDeferredRequirements": 52,
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 729040,
+    "sha256": "1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2"
+  },
+  "expectedCases": [
+    "integration-evidence-inputs-complete",
+    "integration-composer-identity-consistent",
+    "integration-reference-route-closure",
+    "integration-channel-owner-evidence-reused",
+    "integration-product-neutral-families-witnessed",
+    "integration-optional-deletion-witnessed",
+    "integration-schedule-concurrency-witnessed",
+    "integration-multi-device-independent-replicas",
+    "integration-native-deferred-remains-deferred",
+    "integration-product-vocabulary-not-owned",
+    "integration-evidence-identity-content-sensitive"
+  ],
+  "evidenceInputs": [
+    {
+      "id": "search-ir",
+      "path": "experiments/search-ir-reference/build/evidence.json",
+      "capsule": "cuda-mcgs-search-ir-reference-v0.1.0"
+    },
+    {
+      "id": "composer",
+      "path": "experiments/search-ir-composer-reference/build/evidence.json",
+      "capsule": "cuda-mcgs-search-ir-composer-reference-v0.2.0"
+    },
+    {
+      "id": "domain",
+      "path": "experiments/search-semantics-reference/build/evidence.json",
+      "capsule": "cuda-mcgs-search-semantics-reference-v0.2.0"
+    },
+    {
+      "id": "graph-node",
+      "path": "experiments/search-semantics-reference/build/graph-node-evidence.json",
+      "capsule": "cuda-mcgs-graph-node-reference-v0.2.0"
+    },
+    {
+      "id": "graph-edge",
+      "path": "experiments/search-semantics-reference/build/graph-edge-evidence.json",
+      "capsule": "cuda-mcgs-graph-edge-reference-v0.2.0"
+    },
+    {
+      "id": "graph-ref",
+      "path": "experiments/search-semantics-reference/build/graph-ref-evidence.json",
+      "capsule": "cuda-mcgs-graph-ref-reference-v0.2.0"
+    },
+    {
+      "id": "graph-path",
+      "path": "experiments/search-semantics-reference/build/graph-path-evidence.json",
+      "capsule": "cuda-mcgs-graph-path-reference-v0.2.0"
+    },
+    {
+      "id": "graph-root",
+      "path": "experiments/search-semantics-reference/build/graph-root-evidence.json",
+      "capsule": "cuda-mcgs-graph-root-reference-v0.2.0"
+    },
+    {
+      "id": "graph-reclaim",
+      "path": "experiments/search-semantics-reference/build/graph-reclaim-evidence.json",
+      "capsule": "cuda-mcgs-graph-reclaim-reference-v0.2.0"
+    },
+    {
+      "id": "graph-advance",
+      "path": "experiments/search-semantics-reference/build/graph-advance-occurrence-evidence.json",
+      "capsule": "cuda-mcgs-graph-advance-occurrence-closure-v0.2.0"
+    },
+    {
+      "id": "graph-cleanup",
+      "path": "experiments/search-semantics-reference/build/graph-cleanup-evidence.json",
+      "capsule": "cuda-mcgs-graph-cleanup-reference-v0.2.0"
+    },
+    {
+      "id": "policy",
+      "path": "experiments/search-semantics-reference/build/policy-evidence.json",
+      "capsule": "cuda-mcgs-policy-reference-v0.2.0"
+    },
+    {
+      "id": "evaluator",
+      "path": "experiments/search-semantics-reference/build/evaluator-evidence.json",
+      "capsule": "cuda-mcgs-evaluator-reference-v0.2.0"
+    },
+    {
+      "id": "resource",
+      "path": "experiments/search-semantics-reference/build/resource-evidence.json",
+      "capsule": "cuda-mcgs-resource-reference-v0.2.0"
+    },
+    {
+      "id": "progress",
+      "path": "experiments/search-semantics-reference/build/progress-evidence.json",
+      "capsule": "cuda-mcgs-progress-reference-v0.2.0"
+    },
+    {
+      "id": "output",
+      "path": "experiments/search-semantics-reference/build/output-evidence.json",
+      "capsule": "cuda-mcgs-output-reference-v0.2.0"
+    },
+    {
+      "id": "framework",
+      "path": "experiments/search-semantics-reference/build/framework-lifecycle-evidence.json",
+      "capsule": "cuda-mcgs-framework-lifecycle-reference-v0.2.0"
+    },
+    {
+      "id": "terminal",
+      "path": "experiments/search-semantics-reference/build/terminal-slice-evidence.json",
+      "capsule": "cuda-mcgs-terminal-slice-reference-v0.2.0"
+    },
+    {
+      "id": "session",
+      "path": "experiments/search-semantics-reference/build/session-evidence.json",
+      "capsule": "cuda-mcgs-session-reference-v0.1.0"
+    },
+    {
+      "id": "stage",
+      "path": "experiments/search-semantics-reference/build/stage-evidence.json",
+      "capsule": "cuda-mcgs-stage-reference-v0.1.0"
+    },
+    {
+      "id": "channel",
+      "path": "experiments/search-ir-composer-reference/build/channel-evidence.json",
+      "capsule": "cuda-mcgs-channel-reference-evidence-v0.2.0"
+    }
+  ],
+  "channelRequiredComposerFields": [
+    "channelResourcePlanIdentity",
+    "channelFirstProductDeletedResourcePlanIdentity",
+    "channelProgressPlanIdentity",
+    "channelFirstProductDeletedProgressPlanIdentity",
+    "channelStageProfileIdentity",
+    "channelDeletedStageProfileIdentity",
+    "channelProfileIdentities",
+    "channelFirstProductDeletedIdentity"
+  ],
+  "witnesses": {
+    "productNeutral": [
+      { "evidence": "domain", "case": "domain-stochastic-transition-explicit-input" },
+      { "evidence": "domain", "case": "domain-action-lazy-sampled" },
+      { "evidence": "policy", "case": "policy-vector-non-zero-sum-perspective" },
+      { "evidence": "evaluator", "case": "evaluator-batch-independent-equivalence" },
+      { "evidence": "output", "case": "output-no-ranked-action" },
+      { "evidence": "terminal", "case": "terminal-slice-evaluator-absent-full-lifecycle" },
+      { "evidence": "terminal", "case": "terminal-slice-evaluator-selected-schedule-invariant" },
+      { "evidence": "stage", "case": "stage-second-profile-remains-semantically-distinct" }
+    ],
+    "deletion": [
+      { "evidence": "domain", "case": "domain-product-extension-deletion" },
+      { "evidence": "evaluator", "case": "evaluator-absent-zero-residue" },
+      { "evidence": "resource", "case": "resource-absent-owner-zero-residue" },
+      { "evidence": "progress", "case": "progress-owner-deletion-zero-residue" },
+      { "evidence": "output", "case": "output-live-absent-zero-residue" },
+      { "evidence": "output", "case": "output-product-capability-deletion" },
+      { "evidence": "framework", "case": "framework-persistence-absent-zero-residue" },
+      { "evidence": "terminal", "case": "terminal-slice-absence-zero-residue" },
+      { "evidence": "session", "case": "session-absent-terminal-slice-remains-zero-residue" },
+      { "evidence": "session", "case": "session-reroot-pressure-and-attention-deletion" },
+      { "evidence": "stage", "case": "stage-first-product-deletion-and-zero-capability-absence" }
+    ],
+    "schedules": [
+      { "evidence": "domain", "case": "declared-schedule-order-explicit" },
+      { "evidence": "graph-node", "case": "graph-node-competing-claimers-schedule-invariant" },
+      { "evidence": "resource", "case": "resource-schedule-invariant-conservation" },
+      { "evidence": "progress", "case": "progress-scheduler-semantic-parity" },
+      { "evidence": "terminal", "case": "terminal-slice-evaluator-selected-schedule-invariant" },
+      { "evidence": "session", "case": "session-attention-observation-schedule-invariant" },
+      { "evidence": "stage", "case": "stage-legal-schedules-preserve-per-item-semantics" }
+    ]
+  },
+  "multiDevice": {
+    "deviceSlots": ["device.slot.0", "device.slot.1"],
+    "terminalCase": "terminal-slice-evaluator-selected-schedule-invariant"
+  },
+  "forbiddenProductTokens": [
+    "chess",
+    "uci",
+    "book forge",
+    "timing evidence",
+    "tablebase"
+  ]
+}
