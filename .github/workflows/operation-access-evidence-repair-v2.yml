@@ -1,0 +1,194 @@
+name: Operation access evidence repair v2
+
+on:
+  push:
+    branches:
+      - impl/199-operation-local-access-projection
+    paths:
+      - '.github/workflows/operation-access-evidence-repair-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: impl/199-operation-local-access-projection
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Rebind dependency-ordered evidence
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readdirSync, readFileSync, writeFileSync, statSync, unlinkSync } from 'node:fs';
+          import { spawnSync } from 'node:child_process';
+          import path from 'node:path';
+
+          const root = process.cwd();
+          const fixtureDir = path.join(root, 'experiments/search-semantics-reference/fixtures');
+          const composerBuild = path.join(root, 'experiments/search-ir-composer-reference/build');
+          const gatePath = path.join(root, 'experiments/search-semantics-reference/run-integration-gate.mjs');
+          const helperPaths = [
+            path.join(root, '.github/workflows/operation-access-evidence-scan.yml'),
+            path.join(root, '.github/workflows/operation-access-evidence-repair-v2.yml'),
+          ];
+
+          const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
+          const writeJson = (p, v) => writeFileSync(p, `${JSON.stringify(v, null, 2)}\n`);
+          const run = (p) => {
+            console.log(`evidence_step=${p}`);
+            const r = spawnSync(process.execPath, [path.join(root, p)], { cwd: root, stdio: 'inherit', env: process.env });
+            if (r.error) throw r.error;
+            if (r.status !== 0) throw new Error(`${p} failed with ${r.status}`);
+          };
+          const identityOf = (id, evidence) => id === 'composer'
+            ? evidence.representationCompositionEvidenceKey
+            : (id === 'search-ir' ? evidence.searchIrIdentity : evidence.evidenceIdentity);
+
+          const gateText = readFileSync(gatePath, 'utf8');
+          const marker = 'const frozenEvidenceIdentities = ';
+          const endMarker = ';\n\nconst requiredComposerWitnesses';
+          const start = gateText.indexOf(marker);
+          const end = gateText.indexOf(endMarker, start + marker.length);
+          if (start < 0 || end < 0) throw new Error('frozen evidence block not found');
+          const frozenBlock = gateText.slice(start + marker.length, end);
+          const old = {};
+          const identityPattern = /"([^"]+)"\s*:\s*\{\s*"algorithm"\s*:\s*"sha256"\s*,\s*"byteLength"\s*:\s*(\d+)\s*,\s*"sha256"\s*:\s*"([0-9a-f]{64})"\s*\}/g;
+          for (const match of frozenBlock.matchAll(identityPattern)) {
+            old[match[1]] = { algorithm: 'sha256', byteLength: Number(match[2]), sha256: match[3] };
+          }
+          if (Object.keys(old).length !== 21) throw new Error(`expected 21 frozen identities, found ${Object.keys(old).length}`);
+
+          const fixturePaths = readdirSync(fixtureDir).filter((n) => n.endsWith('.json')).sort().map((n) => path.join(fixtureDir, n));
+          const fixtures = new Map(fixturePaths.map((p) => [p, readJson(p)]));
+          const flush = () => { for (const [p, v] of fixtures) writeJson(p, v); };
+          const sameIdentity = (v, i) => v && typeof v === 'object' && !Array.isArray(v)
+            && v.algorithm === i.algorithm && v.byteLength === i.byteLength && v.sha256 === i.sha256;
+          function replaceIdentity(v, prior, next) {
+            let changed = false;
+            if (sameIdentity(v, prior)) {
+              v.algorithm = next.algorithm; v.byteLength = next.byteLength; v.sha256 = next.sha256; changed = true;
+            }
+            if (Array.isArray(v)) for (const item of v) changed = replaceIdentity(item, prior, next) || changed;
+            else if (v && typeof v === 'object') for (const item of Object.values(v)) changed = replaceIdentity(item, prior, next) || changed;
+            return changed;
+          }
+          function rebind(prior, next, id) {
+            const changed = [];
+            for (const [p, v] of fixtures) if (replaceIdentity(v, prior, next)) changed.push(path.basename(p));
+            console.log(`evidence_rebind=${id} files=${changed.sort().join(',') || 'none'}`);
+            flush();
+          }
+
+          run('scripts/run-search-ir-reference.mjs');
+          run('scripts/run-search-ir-composer-reference.mjs');
+          for (const p of [
+            'scripts/export-search-ir-composer-domain-profiles.mjs',
+            'scripts/export-search-ir-composer-evaluator-profiles.mjs',
+            'scripts/export-search-ir-composer-graph-profiles.mjs',
+            'scripts/export-search-ir-composer-output-profiles.mjs',
+            'scripts/export-search-ir-composer-policy-profiles.mjs',
+            'scripts/export-search-ir-composer-progress-profiles.mjs',
+            'scripts/export-search-ir-composer-resource-profiles.mjs',
+            'scripts/export-search-ir-composer-session-profiles.mjs',
+            'scripts/export-search-ir-composer-stage-profiles.mjs',
+          ]) run(p);
+
+          const integration = fixtures.get(path.join(fixtureDir, 'integration-cases.json'));
+          const descriptors = new Map(integration.evidenceInputs.map((e) => [e.id, e]));
+          const current = {};
+          for (const id of ['search-ir', 'composer']) {
+            current[id] = identityOf(id, readJson(path.join(root, descriptors.get(id).path)));
+            rebind(old[id], current[id], id);
+          }
+
+          const projectionBySchema = new Map();
+          function collectGenerated(v) {
+            if (Array.isArray(v)) { for (const x of v) collectGenerated(x); return; }
+            if (!v || typeof v !== 'object') return;
+            if (typeof v.schema === 'string' && v.projectionIdentity) projectionBySchema.set(v.schema, v.projectionIdentity);
+            for (const x of Object.values(v)) collectGenerated(x);
+          }
+          function walkBuild(dir) {
+            for (const n of readdirSync(dir)) {
+              const p = path.join(dir, n);
+              if (statSync(p).isDirectory()) walkBuild(p);
+              else if (n.endsWith('.json')) collectGenerated(readJson(p));
+            }
+          }
+          walkBuild(composerBuild);
+          function refreshProjection(v) {
+            let changed = false;
+            if (Array.isArray(v)) { for (const x of v) changed = refreshProjection(x) || changed; return changed; }
+            if (!v || typeof v !== 'object') return false;
+            const p = typeof v.schema === 'string' ? projectionBySchema.get(v.schema) : null;
+            if (p && Object.hasOwn(v, 'algorithm') && Object.hasOwn(v, 'byteLength') && Object.hasOwn(v, 'sha256')) {
+              if (v.algorithm !== p.algorithm || v.byteLength !== p.byteLength || v.sha256 !== p.sha256) {
+                v.algorithm = p.algorithm; v.byteLength = p.byteLength; v.sha256 = p.sha256; changed = true;
+              }
+            }
+            for (const x of Object.values(v)) changed = refreshProjection(x) || changed;
+            return changed;
+          }
+          const projectionFiles = [];
+          for (const [p, v] of fixtures) if (refreshProjection(v)) projectionFiles.push(path.basename(p));
+          console.log(`projection_rebind_files=${projectionFiles.sort().join(',') || 'none'}`);
+          flush();
+
+          const owners = [
+            ['domain', 'scripts/run-search-semantics-reference.mjs'],
+            ['graph-node', 'scripts/run-graph-node-reference.mjs'],
+            ['graph-edge', 'scripts/run-graph-edge-reference.mjs'],
+            ['graph-ref', 'scripts/run-graph-ref-reference.mjs'],
+            ['graph-path', 'scripts/run-graph-path-reference.mjs'],
+            ['graph-root', 'scripts/run-graph-root-reference.mjs'],
+            ['graph-reclaim', 'scripts/run-graph-reclaim-reference.mjs'],
+            ['graph-advance', 'scripts/run-graph-advance-occurrence-reference.mjs'],
+            ['graph-cleanup', 'scripts/run-graph-cleanup-reference.mjs'],
+            ['policy', 'scripts/run-policy-reference.mjs'],
+            ['evaluator', 'scripts/run-evaluator-reference.mjs'],
+            ['resource', 'scripts/run-resource-reference.mjs'],
+            ['progress', 'scripts/run-progress-reference.mjs'],
+            ['output', 'scripts/run-output-reference.mjs'],
+            ['framework', 'scripts/run-framework-lifecycle-reference.mjs'],
+            ['terminal', 'scripts/run-terminal-slice-reference.mjs'],
+            ['session', 'scripts/run-session-reference.mjs'],
+            ['stage', 'scripts/run-stage-reference.mjs'],
+            ['channel', 'scripts/run-channel-reference-evidence.mjs'],
+          ];
+          for (const [id, command] of owners) {
+            run(command);
+            current[id] = identityOf(id, readJson(path.join(root, descriptors.get(id).path)));
+            rebind(old[id], current[id], id);
+          }
+
+          const ordered = {};
+          for (const id of Object.keys(old)) {
+            if (!current[id]) throw new Error(`missing regenerated identity ${id}`);
+            ordered[id] = current[id];
+          }
+          writeFileSync(gatePath, gateText.slice(0, start + marker.length) + JSON.stringify(ordered, null, 2) + gateText.slice(end));
+          run('experiments/search-semantics-reference/run-integration-gate.mjs');
+
+          const stale = old.composer.sha256;
+          const staleActive = [...fixturePaths, gatePath].filter((p) => readFileSync(p, 'utf8').includes(stale));
+          if (staleActive.length) throw new Error(`stale Composer anchors remain: ${staleActive.join(',')}`);
+          for (const p of helperPaths) unlinkSync(p);
+          NODE
+      - name: Full local qualification
+        run: |
+          git diff --check
+          ./scripts/verify-docs.sh
+          node scripts/run-engine-reference-integration.mjs
+      - name: Commit and push clean evidence rebind
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -s -m 'Evidence: rebind operation-local access identities'
+          git push origin HEAD:impl/199-operation-local-access-projection
