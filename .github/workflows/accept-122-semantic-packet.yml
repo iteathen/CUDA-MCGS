@@ -70,6 +70,32 @@ jobs:
             exit "$status"
           fi
           cat /tmp/accept-122-verify.log
+      - name: Trace Graph NODE fixture across integration precursors
+        run: |
+          check_fixture() {
+            label="$1"
+            LABEL="$label" node --input-type=module -e "import {readFileSync} from 'node:fs'; const f=JSON.parse(readFileSync('experiments/search-semantics-reference/fixtures/graph-node-cases.json','utf8')); const expected='d8b6890ae4fc18e39618cd172e59fd0dedad465e48ae80e5442142235be7c4b4'; if (f.composerEvidence?.sha256 !== expected) throw new Error('Graph NODE fixture reset after '+process.env.LABEL+': '+JSON.stringify(f.composerEvidence)); console.log('graph_node_fixture_state=accepted after='+process.env.LABEL);"
+          }
+          check_fixture verify-docs
+          commands=(
+            scripts/run-search-ir-reference.mjs
+            scripts/run-search-ir-composer-reference.mjs
+            scripts/export-search-ir-composer-domain-profiles.mjs
+            scripts/export-search-ir-composer-graph-profiles.mjs
+            scripts/export-search-ir-composer-policy-profiles.mjs
+            scripts/export-search-ir-composer-evaluator-profiles.mjs
+            scripts/export-search-ir-composer-resource-profiles.mjs
+            scripts/export-search-ir-composer-progress-profiles.mjs
+            scripts/export-search-ir-composer-output-profiles.mjs
+            scripts/export-search-ir-composer-session-profiles.mjs
+            scripts/export-search-ir-composer-stage-profiles.mjs
+            scripts/run-search-semantics-reference.mjs
+          )
+          for command in "${commands[@]}"; do
+            echo "trace_step=$command"
+            node "$command" >/tmp/accept-122-trace.log 2>&1 || { tail -n 120 /tmp/accept-122-trace.log; exit 1; }
+            check_fixture "$command"
+          done
       - name: Run complete CUDA-free owner and integration packet
         run: node scripts/run-engine-reference-integration.mjs
       - name: Commit exact generated acceptance subject
