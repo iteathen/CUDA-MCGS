@@ -1,6 +1,8 @@
 # SPEC-0005 addendum: Operation-local resource access for runtime realization
 
-**Status:** Accepted when protected-integrated under #199
+**Status:** Accepted
+
+**Acceptance gate:** Protected integration under #199
 
 **Version:** 0.1.0
 
