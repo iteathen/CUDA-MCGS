@@ -241,11 +241,11 @@ function normalizeProgress(input, channelId, workClassId, roleById) {
     exactKeys(entry, ['id', 'producerRoles', 'requirement', 'producerChannel', 'escapes', 'holdsWorker', 'holdsMutableLease', 'maxWaitTransitions', 'fallback'], 'CHANNEL_DEPENDENCY_FIELDS', `${channelId} dependency ${index}`);
     const id = assertNamespacedId(entry.id, 'CHANNEL_PROGRESS_DEPENDENCY', `${channelId} dependency ${index} id`);
     if (!Array.isArray(entry.producerRoles) || entry.producerRoles.length === 0 || new Set(entry.producerRoles).size !== entry.producerRoles.length || entry.producerRoles.some((role) => roleById.get(role)?.kind !== 'producer')) fail('CHANNEL_PROGRESS_DEPENDENCY', `${id} producer roles are invalid`);
-    const requirement = assertEnum(entry.requirement, ['required', 'advisory'], 'CHANNEL_PROGRESS_DEPENDENCY', `${id} requirement`);
+    const requirement = assertEnum(entry.requirement, ['required', 'optional', 'advisory'], 'CHANNEL_PROGRESS_DEPENDENCY', `${id} requirement`);
     const producerChannel = entry.producerChannel === null ? null : assertNamespacedId(entry.producerChannel, 'CHANNEL_PROGRESS_DEPENDENCY', `${id} producerChannel`);
     if (!Array.isArray(entry.escapes) || entry.escapes.length === 0 || new Set(entry.escapes).size !== entry.escapes.length) fail('CHANNEL_PROGRESS_DEPENDENCY', `${id} escapes are invalid`);
     const escapes = [...entry.escapes].sort(compareRaw);
-    if (entry.holdsWorker !== false || entry.holdsMutableLease !== false || (requirement === 'required' && !['failure', 'cancel', 'stop', 'stale'].every((escape) => escapes.includes(escape)))) fail('CHANNEL_PROGRESS_DEPENDENCY', `${id} can retain a worker/resource or lacks a required escape`);
+    if (entry.holdsWorker !== false || entry.holdsMutableLease !== false || (requirement === 'required' && !['failure', 'cancel', 'stop', 'stale'].every((escape) => escapes.includes(escape))) || (requirement === 'optional' && !escapes.includes('skip'))) fail('CHANNEL_PROGRESS_DEPENDENCY', `${id} can retain a worker/resource or lacks its selected escape`);
     const fallback = entry.fallback === null ? null : normalizeSchemaReference(entry.fallback, `${id} fallback`);
     if ((requirement === 'advisory') !== (fallback !== null)) fail('CHANNEL_PROGRESS_DEPENDENCY', `${id} fallback differs from requirement`);
     return { id, producerRoles: [...entry.producerRoles].sort(compareRaw), requirement, producerChannel, escapes, holdsWorker: false, holdsMutableLease: false, maxWaitTransitions: positiveDecimal(entry.maxWaitTransitions, 'CHANNEL_PROGRESS_DEPENDENCY', `${id} maxWaitTransitions`), fallback };
@@ -510,30 +510,78 @@ export function simulateChannelTrace(profile, channelId, operations) {
   if (!channel) fail('CHANNEL_REFERENCE_PROFILE', `unknown channel ${channelId}`);
   const capacity = BigInt(channel.capacity.slots); const slots = new Map();
   const generationMaximum = [BigInt(channel.itemIdentity.generation.maximum), BigInt(channel.counters.find(({ kind }) => kind === 'generation').maximum)].reduce((left, right) => left < right ? left : right);
+  const correlationMaximum = [BigInt(channel.itemIdentity.correlation.maximum), BigInt(channel.counters.find(({ kind }) => kind === 'correlation').maximum)].reduce((left, right) => left < right ? left : right);
   const pendingMaximum = BigInt(channel.capacity.maxPending);
-  const freeSlot = (index) => ({ index, state: 'free', generation: 0n, initialized: false, released: false, acquired: false, claims: 0n, disposition: null, used: false });
-  const events = []; let pending = 0n;
+  const freeSlot = (index) => ({ index, state: 'free', generation: 0n, correlation: null, version: channel.version, freshness: null, initialized: false, resultInitialized: false, released: false, acquired: false, claims: 0n, disposition: null, used: false });
+  const events = []; let pending = 0n; let nextCorrelation = 0n;
   const slotFor = (operation) => {
     if (!Number.isSafeInteger(operation.slot) || operation.slot < 0 || BigInt(operation.slot) >= capacity) fail('CHANNEL_REFERENCE_SLOT', 'operation names an invalid slot');
     const slot = slots.get(operation.slot) ?? freeSlot(operation.slot); slots.set(operation.slot, slot);
     if (operation.generation !== undefined && BigInt(operation.generation) !== slot.generation) fail('CHANNEL_REFERENCE_STALE', 'operation generation is stale');
+    if (operation.correlation !== undefined && (slot.correlation === null || BigInt(operation.correlation) !== slot.correlation)) fail('CHANNEL_REFERENCE_CORRELATION', 'operation correlation is foreign or stale');
+    if (operation.version !== undefined && operation.version !== slot.version) fail('CHANNEL_REFERENCE_VERSION', 'operation version is incompatible');
+    if (operation.kind !== 'initialize' && operation.freshness !== undefined && operation.freshness !== slot.freshness) fail('CHANNEL_REFERENCE_FRESHNESS', 'operation freshness is stale');
     return slot;
+  };
+  const requireIdentity = (slot) => {
+    if (slot.correlation === null || slot.version !== channel.version || typeof slot.freshness !== 'string' || slot.freshness.length === 0) fail('CHANNEL_REFERENCE_IDENTITY', 'item identity is incomplete before access');
   };
   const conserve = () => {
     if (BigInt(slots.size) > capacity || pending > pendingMaximum || [...slots.values()].some(({ claims }) => claims < 0n || claims > BigInt(channel.claim.maxClaims))) fail('CHANNEL_REFERENCE_CONSERVATION', 'channel accounting is not conserved');
   };
   for (const operation of operations) {
-    if (operation.kind === 'await-unavailable') { if (pending === pendingMaximum) fail('CHANNEL_REFERENCE_PENDING', 'pending descriptor capacity is exhausted'); pending += 1n; events.push({ kind: 'pending', workerReleased: true, mutableLeaseReleased: true }); conserve(); continue; }
+    if (operation.kind === 'await-unavailable') {
+      if (channel.consumption.class === 'required') {
+        if (pending === pendingMaximum) fail('CHANNEL_REFERENCE_PENDING', 'pending descriptor capacity is exhausted');
+        pending += 1n; events.push({ kind: 'pending', workerReleased: true, mutableLeaseReleased: true });
+      } else if (channel.consumption.class === 'optional') events.push({ kind: 'skipped', workerReleased: true, mutableLeaseReleased: true });
+      else events.push({ kind: 'fallback', workerReleased: true, mutableLeaseReleased: true });
+      conserve(); continue;
+    }
     if (operation.kind === 'reserve') {
       const slot = slotFor(operation); if (slot.state !== 'free') { events.push({ kind: 'pressure', published: false }); conserve(); continue; }
       if (slot.used) { if (slot.generation >= generationMaximum) fail('CHANNEL_REFERENCE_COUNTER_EXHAUSTED', 'generation space is exhausted before reuse'); slot.generation += 1n; }
-      slot.used = true; slot.state = 'reserved-unpublished'; slot.initialized = false; slot.released = false; slot.acquired = false; slot.claims = 0n; slot.disposition = null; events.push({ kind: 'reserved', slot: slot.index, generation: slot.generation.toString() }); conserve(); continue;
+      if (nextCorrelation > correlationMaximum) fail('CHANNEL_REFERENCE_COUNTER_EXHAUSTED', 'correlation space is exhausted before alias');
+      slot.used = true; slot.state = 'reserved-unpublished'; slot.correlation = nextCorrelation; nextCorrelation += 1n; slot.version = channel.version; slot.freshness = null;
+      slot.initialized = false; slot.resultInitialized = false; slot.released = false; slot.acquired = false; slot.claims = 0n; slot.disposition = null;
+      events.push({ kind: 'reserved', slot: slot.index, generation: slot.generation.toString(), correlation: slot.correlation.toString(), version: slot.version }); conserve(); continue;
     }
     const slot = slotFor(operation);
-    if (operation.kind === 'initialize') { if (slot.state !== 'reserved-unpublished') fail('CHANNEL_REFERENCE_STATE', 'initialize requires reserved-unpublished'); slot.initialized = true; events.push({ kind: 'initialized' }); }
-    else if (operation.kind === 'publish') { if (slot.state !== 'reserved-unpublished' || !slot.initialized) fail('CHANNEL_REFERENCE_UNINITIALIZED', 'ready publication precedes complete initialization'); if (operation.release !== true) fail('CHANNEL_REFERENCE_RELEASE', 'ready publication lacks logical release'); slot.released = true; slot.state = 'ready'; events.push({ kind: 'ready' }); }
-    else if (operation.kind === 'claim') { const additionalBorrow = channel.claim.mode === 'finite-multi-consumer-immutable-borrow' && slot.state === 'owned-or-borrowed'; if ((!['ready', 'result-ready'].includes(slot.state) && !additionalBorrow) || !slot.released) fail('CHANNEL_REFERENCE_STATE', 'claim requires released ready state'); if (operation.acquire !== true) fail('CHANNEL_REFERENCE_ACQUIRE', 'claim lacks matching logical acquire'); if (channel.claim.mode === 'single-consumer-transfer' && slot.claims !== 0n) fail('CHANNEL_REFERENCE_CLAIM', 'single-consumer item already claimed'); if (slot.claims >= BigInt(channel.claim.maxClaims)) fail('CHANNEL_REFERENCE_CLAIM', 'claim/borrow bound is exhausted'); slot.claims += 1n; slot.acquired = true; slot.state = 'owned-or-borrowed'; events.push({ kind: 'claimed', claims: slot.claims.toString() }); }
-    else if (operation.kind === 'consume') { if (slot.state !== 'owned-or-borrowed' || !slot.acquired || !slot.initialized) fail('CHANNEL_REFERENCE_ACQUIRE', 'payload consumption lacks initialized acquired ownership'); events.push({ kind: 'consumed' }); }
+    if (operation.kind === 'initialize') {
+      if (slot.state !== 'reserved-unpublished') fail('CHANNEL_REFERENCE_STATE', 'initialize requires reserved-unpublished');
+      if (operation.freshness !== undefined && (typeof operation.freshness !== 'string' || operation.freshness.length === 0)) fail('CHANNEL_REFERENCE_FRESHNESS', 'freshness must be a nonempty opaque owner key');
+      slot.initialized = true; slot.freshness = operation.freshness ?? `freshness.${channel.id}.${slot.correlation}`; events.push({ kind: 'initialized', freshness: slot.freshness });
+    }
+    else if (operation.kind === 'publish') {
+      if (slot.state !== 'reserved-unpublished') fail('CHANNEL_REFERENCE_STATE', 'ready publication requires reserved-unpublished');
+      if (!slot.initialized) fail('CHANNEL_REFERENCE_UNINITIALIZED', 'ready publication precedes complete initialization');
+      if (operation.release !== true) fail('CHANNEL_REFERENCE_RELEASE', 'ready publication lacks logical release');
+      slot.released = true; slot.state = 'ready'; events.push({ kind: 'ready' });
+    }
+    else if (operation.kind === 'claim-request') {
+      if (!channel.stateGraph.states.includes('in-progress') || slot.state !== 'ready' || !slot.released || slot.claims !== 0n) fail('CHANNEL_REFERENCE_STATE', 'request claim requires one released ready request');
+      requireIdentity(slot); if (operation.acquire !== true) fail('CHANNEL_REFERENCE_ACQUIRE', 'request claim lacks matching logical acquire');
+      slot.claims = 1n; slot.acquired = true; slot.released = false; slot.state = 'in-progress'; events.push({ kind: 'request-claimed', claims: '1' });
+    }
+    else if (operation.kind === 'initialize-result') {
+      if (slot.state !== 'in-progress' || slot.claims !== 1n || !slot.acquired) fail('CHANNEL_REFERENCE_STATE', 'result initialization requires owned in-progress request');
+      slot.resultInitialized = true; events.push({ kind: 'result-initialized' });
+    }
+    else if (operation.kind === 'publish-result') {
+      if (slot.state !== 'in-progress') fail('CHANNEL_REFERENCE_STATE', 'result publication requires in-progress request');
+      if (!slot.resultInitialized) fail('CHANNEL_REFERENCE_UNINITIALIZED', 'result publication precedes complete result initialization');
+      if (operation.release !== true) fail('CHANNEL_REFERENCE_RELEASE', 'result publication lacks logical release');
+      slot.claims = 0n; slot.acquired = false; slot.released = true; slot.state = 'result-ready'; events.push({ kind: 'result-ready' });
+    }
+    else if (operation.kind === 'claim') {
+      const additionalBorrow = channel.claim.mode === 'finite-multi-consumer-immutable-borrow' && slot.state === 'owned-or-borrowed';
+      if ((!['ready', 'result-ready'].includes(slot.state) && !additionalBorrow) || !slot.released) fail('CHANNEL_REFERENCE_STATE', 'claim requires released ready state');
+      requireIdentity(slot); if (operation.acquire !== true) fail('CHANNEL_REFERENCE_ACQUIRE', 'claim lacks matching logical acquire');
+      if (channel.claim.mode === 'single-consumer-transfer' && slot.claims !== 0n) fail('CHANNEL_REFERENCE_CLAIM', 'single-consumer item already claimed');
+      if (slot.claims >= BigInt(channel.claim.maxClaims)) fail('CHANNEL_REFERENCE_CLAIM', 'claim/borrow bound is exhausted');
+      slot.claims += 1n; slot.acquired = true; slot.state = 'owned-or-borrowed'; events.push({ kind: 'claimed', claims: slot.claims.toString(), correlation: slot.correlation.toString(), version: slot.version, freshness: slot.freshness });
+    }
+    else if (operation.kind === 'consume') { if (slot.state !== 'owned-or-borrowed' || !slot.acquired || !slot.initialized) fail('CHANNEL_REFERENCE_ACQUIRE', 'payload consumption lacks initialized acquired ownership'); requireIdentity(slot); events.push({ kind: 'consumed' }); }
     else if (operation.kind === 'release') { if (!['owned-or-borrowed', 'terminally-disposed'].includes(slot.state) || slot.claims === 0n) fail('CHANNEL_REFERENCE_STATE', 'release lacks a live claim/borrow'); const terminal = slot.state === 'terminally-disposed'; slot.claims -= 1n; slot.acquired = slot.claims > 0n; if (!terminal) slot.state = slot.claims === 0n ? 'ready' : 'owned-or-borrowed'; events.push({ kind: 'released', claims: slot.claims.toString() }); }
     else if (operation.kind === 'complete') { if (!['owned-or-borrowed', 'ready', 'result-ready'].includes(slot.state) || slot.claims > 1n) fail('CHANNEL_REFERENCE_STATE', 'completion has ambiguous ownership'); slot.claims = 0n; slot.state = 'terminally-disposed'; slot.disposition = operation.disposition ?? 'success'; events.push({ kind: 'completed', disposition: slot.disposition }); }
     else if (operation.kind === 'cancel') {
@@ -543,11 +591,11 @@ export function simulateChannelTrace(profile, channelId, operations) {
     }
     else if (operation.kind === 'expire') { if (['free', 'terminally-disposed', 'reclaimable'].includes(slot.state)) fail('CHANNEL_REFERENCE_STATE', 'expiry requires live work'); slot.state = 'terminally-disposed'; slot.disposition = 'expired'; events.push({ kind: 'expired', claims: slot.claims.toString() }); }
     else if (operation.kind === 'late-complete') { if (slot.state !== 'terminally-disposed') fail('CHANNEL_REFERENCE_STATE', 'late completion is not late'); events.push({ kind: 'late-ignored', disposition: slot.disposition }); }
-    else if (operation.kind === 'reclaim') { if (slot.state !== 'terminally-disposed' || slot.claims !== 0n) fail('CHANNEL_REFERENCE_RECLAIM', 'reclaim requires terminal zero-reference state'); slot.state = 'reclaimable'; slot.initialized = false; slot.released = false; slot.acquired = false; events.push({ kind: 'reclaimable' }); slot.state = 'free'; events.push({ kind: 'free' }); }
+    else if (operation.kind === 'reclaim') { if (slot.state !== 'terminally-disposed' || slot.claims !== 0n) fail('CHANNEL_REFERENCE_RECLAIM', 'reclaim requires terminal zero-reference state'); slot.state = 'reclaimable'; slot.initialized = false; slot.resultInitialized = false; slot.released = false; slot.acquired = false; events.push({ kind: 'reclaimable' }); slot.state = 'free'; events.push({ kind: 'free' }); }
     else fail('CHANNEL_REFERENCE_OPERATION', `unknown reference operation ${operation.kind}`);
     conserve();
   }
-  return { slots: [...slots.values()].sort((left, right) => left.index - right.index).map(({ generation, claims, ...slot }) => ({ ...slot, generation: generation.toString(), claims: claims.toString() })), events, pending: pending.toString(), conservation: capacity.toString() };
+  return { slots: [...slots.values()].sort((left, right) => left.index - right.index).map(({ generation, correlation, claims, ...slot }) => ({ ...slot, generation: generation.toString(), correlation: correlation === null ? null : correlation.toString(), claims: claims.toString() })), events, pending: pending.toString(), conservation: capacity.toString() };
 }
 
 export function classifyChannelProgress(profile, channelId, { pendingConsumers, producerRunnable, escapeRunnable }) {

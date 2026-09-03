@@ -135,7 +135,7 @@
       "required": ["id", "producerRoles", "requirement", "producerChannel", "escapes", "holdsWorker", "holdsMutableLease", "maxWaitTransitions", "fallback"],
       "properties": {
         "id": { "$ref": "#/$defs/namespacedId" }, "producerRoles": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/namespacedId" } },
-        "requirement": { "enum": ["required", "advisory"] }, "producerChannel": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/namespacedId" }] },
+        "requirement": { "enum": ["required", "optional", "advisory"] }, "producerChannel": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/namespacedId" }] },
         "escapes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" } },
         "holdsWorker": { "const": false }, "holdsMutableLease": { "const": false }, "maxWaitTransitions": { "$ref": "#/$defs/decimalUint" },
         "fallback": { "oneOf": [{ "type": "null" }, { "$ref": "primitives.schema.json#/$defs/schemaReference" }] }
