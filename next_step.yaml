@@ -1,8 +1,8 @@
 {
-  "schema_version": 102,
+  "schema_version": 103,
   "updated": "2026-09-02",
-  "status": "ref_channel_evidence_01_pr_qualification_review_and_authorization_gate",
-  "objective": "Qualify and review the final PR #191 REF-CHANNEL-EVIDENCE-01 head against exact experimental base ce21cc38..., then stop for fresh repository-owner exact-head authorization if required. Do not merge a newly produced head merely because construction was authorized to continue.",
+  "status": "ref_channel_evidence_01_requirement_level_pr_qualification_review_and_authorization_gate",
+  "objective": "Qualify and review the stable PR #191 REF-CHANNEL-EVIDENCE-01 head against exact experimental base ce21cc38..., proving the 899-case Composer capsule and exact 41 requirement-level Channel routes. Then stop for fresh repository-owner exact-head authorization if required; do not merge a newly produced head merely because construction was authorized to continue.",
   "ownership_boundary": "SPEC-0004 owns optional internal Channel item/publication/ownership-transfer meaning through the existing Composer-owned schema, normalizer and bounded logical oracle. SPEC-0011 owns aggregate finite resources and pressure; SPEC-0012 owns global readiness/progress/fairness/no-progress/closure. CUDA-JS owns generic native publication/synchronization/runtime lowering and exact compatible-pair qualification. No second Channel interpreter, scheduler, native path or product semantics are authorized.",
   "authority": [
     "AGENTS.md",
@@ -17,6 +17,8 @@
     "docs/specs/SPEC-0004-async-stage-channels.md",
     "experiments/search-ir-composer-reference/src/channel.mjs",
     "experiments/search-ir-composer-reference/src/channel-fixtures.mjs",
+    "experiments/search-ir-composer-reference/fixtures/channel-evidence-routes.json",
+    "experiments/search-ir-composer-reference/run-channel-evidence.mjs",
     "https://github.com/iteathen/CUDA-MCGS/issues/33",
     "https://github.com/iteathen/CUDA-MCGS/pull/191"
   ],
@@ -28,7 +30,7 @@
     "active_branch": "ref/channel-evidence-01",
     "review_pr": 191,
     "exact_channel_base": "ce21cc382bedb28647c244df1c53bf0d6c98cff0",
-    "clean_construction_qualification_head": "006cdc99f46fc7f1c952761ec082a6bf3ba2f624"
+    "owner_gap_semantic_commit": "559f1cc12120c39a1dd509d563dcf994864f9851"
   },
   "direct_engine_reference_routes": {
     "total": 41,
@@ -40,55 +42,76 @@
       "CHANNEL-CANCEL-": 7,
       "CHANNEL-CONFORMANCE-": 3
     },
-    "implementation": "Reuse the Composer-owned Channel oracle. The route manifest/evidence adapter may bind cases and identities but must not copy the Channel state machine into search-semantics-reference."
+    "implementation": "Reuse the Composer-owned Channel oracle. The permanent manifest contains one explicit requirement-to-case record for every direct route, and the evidence adapter proves the exact requirement set, family classification and passing case identities without importing or copying the Channel state machine."
   },
-  "demonstrated_correction": {
-    "finding": "Cancellation on an already terminal Channel item could overwrite an authoritative failure/stop disposition with cancelled.",
-    "governing_requirement": "CHANNEL-CANCEL-002 plus normalized terminally-disposed ignore-authoritative-terminal rule",
-    "repair": "Cancellation on terminally-disposed is idempotent no-effect and preserves the existing first cause.",
-    "permanent_falsifier": "channel-reference-cancel-preserves-authoritative-first-cause",
-    "additional_sensitivity": "channel-reference-escape-service-while-pending"
-  },
+  "demonstrated_corrections": [
+    {
+      "finding": "Cancellation on an already terminal Channel item could overwrite an authoritative failure/stop disposition with cancelled.",
+      "governing_requirement": "CHANNEL-CANCEL-002 plus normalized terminally-disposed ignore-authoritative-terminal rule",
+      "repair": "Cancellation on terminally-disposed is idempotent no-effect and preserves the existing first cause.",
+      "permanent_falsifier": "channel-reference-cancel-preserves-authoritative-first-cause"
+    },
+    {
+      "finding": "The bounded trace validated generation but did not carry correlation/version/freshness, so complete item identity and consumer validation were not behaviorally exercised.",
+      "repair": "Trace reserve/claim/consume paths now carry and reject foreign/stale correlation, version and freshness alongside generation.",
+      "falsifiers": ["reject-channel-reference-wrong-correlation", "reject-channel-reference-wrong-version", "reject-channel-reference-wrong-freshness", "reject-channel-reference-foreign-channel"]
+    },
+    {
+      "finding": "The required request/result profile declared in-progress/result-ready states but the bounded trace did not execute the full request-to-result lifecycle.",
+      "repair": "Trace now executes request claim, result initialization/publication, result claim/consume and terminal reclamation.",
+      "permanent_case": "channel-reference-request-result-correlation"
+    },
+    {
+      "finding": "Selected Channel fixtures covered required pending and advisory fallback but not the SPEC-0004 optional skip path.",
+      "repair": "The materially different second selected profile is optional secondary work with explicit skip escape; first profile retains required evaluator-like plus advisory secondary work.",
+      "permanent_case": "channel-secondary-work-optional-skip",
+      "falsifier": "reject-channel-optional-skip-gap"
+    }
+  ],
   "preserved_red_evidence": [
     {
       "head": "8526b990c4940012e623c07a107c466c7c86e8d8",
       "workflow": 33699198942,
       "finding": "All 883 Composer cases individually passed, then exact discovery failed because the declared expected count remained 881.",
       "disposition": "Discovery bookkeeping corrected to 883 without weakening discovery or skip assertions."
+    },
+    {
+      "workflow": 33700521171,
+      "finding": "The proposed 899-case bank discovered all 899 cases; 895 passed and four failed because freshness validation ran on initialize before initialize assigned freshness.",
+      "disposition": "No semantic patch was committed. The validator ordering was corrected in the temporary construction patch and rerun."
     }
   ],
-  "construction_qualification": {
-    "head": "006cdc99f46fc7f1c952761ec082a6bf3ba2f624",
-    "channel_workflow": 33699406167,
-    "composer_cases": "883/883",
-    "direct_spec_0004_routes": "41/41",
-    "route_families": 6,
-    "bound_owner_cases": 33,
-    "composer_evidence": "2bb62db23d7fb3841c8ca3d6a39d6d8519c6ee07513fc7afa1463630bcee9c26",
-    "channel_evidence": "f6adb5f99ac397b9f09951c6ef13b0aa15846c37c5ae17d3e67213d9d8e9fb12",
-    "channel_canonical_bytes": 9357,
-    "artifact": 9872951636,
-    "artifact_digest": "sha256:dd9c4fd33fd594a2708f1fef94eb091caf11aa95191f2fcb69d152877e79dbbf",
+  "owner_gap_qualification": {
+    "workflow": 33700867462,
+    "semantic_commit": "559f1cc12120c39a1dd509d563dcf994864f9851",
+    "composer_cases": "899/899",
+    "classified_requirements": 989,
+    "pending_requirements": 0,
+    "composer_evidence": "c9763298fdea261065559207dc052939d39795552586370463226ad0242fc60a5",
+    "composer_canonical_bytes": 50559,
     "skip_classes": 0,
     "not_discovered": 0
   },
   "cleanup": {
-    "temporary_construction_workflow": "removed",
-    "temporary_patch_script": "removed",
+    "temporary_initial_construction_transport": "removed",
+    "temporary_review_gap_workflow": "removed",
+    "temporary_review_gap_patch_script": "removed",
+    "temporary_review_gap_patch_fix": "removed",
     "generated_build_evidence": "ignored and uncommitted",
     "native_or_private_runtime_residue": "none authorized or introduced"
   },
   "final_qualification": [
     "Use PR #191 against exact base experimental/portfolio@ce21cc382bedb28647c244df1c53bf0d6c98cff0 so existing pull_request triggers run Channel, Stage, Session, Terminal, Framework and full documentation/repository qualification on the same final head.",
-    "Require Composer exact discovery 883/883 with zero failures/skips/not-discovered and Channel direct routes 41/41.",
-    "Require the Channel artifact on the final exact head and record its evidence identity/digest on PR #191 and issue #33.",
+    "Require Composer exact discovery 899/899 with zero failures/skips/not-discovered.",
+    "Require Channel evidence schema v0.2 to map exactly 41 unique direct SPEC-0004 requirements across the six exact families; every requirement must have nonempty unique owner-local cases and every named case must be green in generated Composer evidence.",
+    "Require the Channel artifact on the final exact head and record its evidence identity/canonical bytes/artifact digest on PR #191 and issue #33.",
     "Perform fresh full base-to-head author review for duplicate authority, ownership leakage, first-consumer assumptions, concurrency gaps, stale identity/provenance, resource/cleanup holes, native escape and CI gaps.",
-    "Verify temporary construction files are absent and protected main is unchanged."
+    "Verify temporary construction files are absent and protected main plus the experimental base remain unchanged."
   ],
   "blockers": [],
   "current_gate": [
-    "Let PR #191 coupled workflows qualify this reconciled candidate head.",
-    "Repair only demonstrated failures in their natural owner; do not weaken valid tests.",
+    "Let PR #191 coupled workflows qualify this reconciled requirement-level candidate head.",
+    "Repair only demonstrated failures in their natural owner; do not weaken valid tests or route mappings.",
     "Complete fresh whole-diff author review after the final head is stable.",
     "Record the exact final reviewed/qualified head, tree, run IDs and artifact on PR #191 and issue #33 without another repository commit solely for copying CI metadata.",
     "Stop before integration for fresh repository-owner exact-head authorization if the project gate remains applicable."
@@ -97,7 +120,7 @@
     "Do not create a second Channel schema/normalizer/reference interpreter.",
     "Do not let Channel absorb SPEC-0011 resource authority or SPEC-0012 global progress authority.",
     "Do not add CUDA-MCGS native/PTX/CUDA code, private CUDA-JS access or a host-owned progression loop.",
-    "Do not reinterpret the 881-versus-883 discovery red as a semantic failure or weaken exact case discovery.",
+    "Do not weaken exact case discovery, requirement-level route closure, or skip assertions to restore green CI.",
     "Do not claim native Channel support, physical GPU evidence, performance or exact compatible-pair qualification from CUDA-free reference evidence.",
     "Do not merge PR #191 without fresh exact-head authorization when that gate applies."
   ],
