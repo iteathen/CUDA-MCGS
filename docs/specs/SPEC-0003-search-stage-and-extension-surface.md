@@ -1,8 +1,10 @@
 # SPEC-0003: Search Stages and Stage Extension Surfaces
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.3.0
+**Version:** 0.3.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS optional stage/surface/capability semantics
 
@@ -10,11 +12,11 @@
 
 **Consumers:** Search IR, Search Composer, optional Async Stage Channels, capability/product providers, finite-resource and device-progress composition, restricted Device-JS Search Program generation, conformance and package identity
 
-This proposal defines the optional LEGO brick through which selected behavior may attach at stable operational checkpoints without exposing partial mutation, taking ownership from universal core contracts or promoting the first product into the framework. It defines semantic composition boundaries, not a workflow engine, fixed search pipeline, scheduler, CUDA ABI or production implementation.
+This specification defines the optional LEGO brick through which selected behavior may attach at stable operational checkpoints without exposing partial mutation, taking ownership from universal core contracts or promoting the first product into the framework. It defines semantic composition boundaries, not a workflow engine, fixed search pipeline, scheduler, CUDA ABI or production implementation.
 
 ## 1. Authority, identity and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0003@0.3.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0003@0.3.0`.
 
 Normative authority and dependencies are:
 
@@ -32,7 +34,7 @@ EXT-AUTH-001. This specification applies only when a finite engine profile selec
 
 EXT-AUTH-002. Selecting the extension substrate does not amend or supersede a source-owner contract. Domain, graph, policy, evaluator, output, resource, progress and optional Search Session meaning remains authoritative under its owning selected profile.
 
-EXT-AUTH-003. This proposal is not production implementation authority. Its acceptance requires the schema/reference evidence in Section 15; native profile qualification remains separately gated.
+EXT-AUTH-003. This specification is not production implementation authority. Its acceptance requires the schema/reference evidence in Section 15; native profile qualification remains separately gated.
 
 ## 2. Purpose, required outcome and exclusions
 
@@ -275,7 +277,7 @@ EXT-CONFORMANCE-003. Native qualification later owns actual CUDA publication sco
 
 ## 15. Semantic acceptance blockers
 
-This proposal cannot become accepted until:
+Acceptance under #122 required:
 
 - every normative requirement above maps to a strict normalized schema/validator and independent CUDA-free reference case or explicit cross-specification proof;
 - SPEC-0004 and SPEC-0005 are decision-complete and their requirement IDs/dependencies agree with this contract;
@@ -286,3 +288,6 @@ This proposal cannot become accepted until:
 - `ENGINE-CONTRACT-ACCEPTANCE-01` accepts this specification atomically with its schemas, reference evidence and coupled proposal dependencies on one exact revision.
 
 Native CUDA-JS-generated artifact disappearance, publication/race behavior, representative cost/occupancy/performance and exact compatible-pair teardown remain mandatory only for production profiles that claim them. They are not circular prerequisites for backend-neutral semantic acceptance.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

@@ -236,8 +236,9 @@ export function registerGraphNodeCases({ defineCase, fixture, projection, compos
     const conflicting = clone(payload(candidate));
     conflicting.state.semantic = 'other';
     assert.throws(() => oracle.publishNode({ claimId: claim.claimId, payload: conflicting }), { code: 'GRAPH_NODE_PUBLICATION_CONFLICT' });
-    assert.equal(oracle.observeClaim(claim.claimId).kind, 'ready');
-    return { retained: canonicalIdentity(oracle.readyPayload(claim.claimId)) };
+    assert.deepEqual(oracle.observeClaim(claim.claimId), { kind: 'quarantined', code: 'publication-conflict', evidenceValid: false });
+    assert.throws(() => oracle.readyPayload(claim.claimId), { code: 'GRAPH_NODE_ARENA_QUARANTINED' });
+    return { conflict: 'fatal', dependentEvidenceValid: false };
   }, ['GRAPH-NODE-006']);
 
   defineCase('graph-node-oracle-sensitivity-collision-verification', () => {

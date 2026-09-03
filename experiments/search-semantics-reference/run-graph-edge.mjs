@@ -33,7 +33,7 @@ assert.deepEqual(nodeEvidence.summary, { expected: 13, discovered: 13, executed:
 assert.equal(nodeEvidence.graphNodeRequirementCoverage.executedRequirementCount, 11);
 
 const expectedCaseIds = assertUniqueStrings(fixture.expectedCases, 'GRAPH_EDGE_EXPECTED_CASES', 'Graph EDGE expectedCases');
-const classification = coverage.classifications.find((entry) => entry.contract === 'SPEC-0010' && entry.requirementPrefix === 'GRAPH-EDGE-' && entry.primaryDisposition === 'engine-reference-oracle' && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01');
+const classification = coverage.classifications.find((entry) => entry.contract === 'SPEC-0010' && entry.requirementPrefix === 'GRAPH-EDGE-' && entry.primaryDisposition === 'engine-reference-oracle' && entry.evidenceOwner === 'ENGINE-REFERENCE-01');
 assert(classification);
 assert.equal(classification.requirementCount, 10);
 const requirementIds = assertUniqueStrings([...spec.matchAll(/^(GRAPH-EDGE-\d{3})\./gm)].map((match) => match[1]), 'GRAPH_EDGE_REQUIREMENT_SOURCE', 'Graph EDGE requirements');

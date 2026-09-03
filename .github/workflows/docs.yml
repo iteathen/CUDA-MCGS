@@ -13,8 +13,8 @@ jobs:
     name: Governance verification
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
       - name: Verify documentation and agent governance
@@ -28,14 +28,14 @@ jobs:
         os: [windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
       - name: Run deterministic CUDA-MCGS Search IR reference capsule
         run: node scripts/run-search-ir-reference.mjs
       - name: Retain platform evidence
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: search-ir-reference-${{ matrix.os }}
           path: experiments/search-ir-reference/build/evidence.json
@@ -44,8 +44,8 @@ jobs:
     name: Graph NODE reference
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
       - name: Run exact Composer, Graph projection, and NODE reference
@@ -54,7 +54,7 @@ jobs:
           node scripts/export-search-ir-composer-graph-profiles.mjs
           node scripts/run-graph-node-reference.mjs
       - name: Retain Graph NODE evidence
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: graph-node-reference
           path: |
@@ -65,8 +65,8 @@ jobs:
     name: Graph EDGE reference
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
       - name: Run qualified NODE input and EDGE reference
@@ -76,7 +76,7 @@ jobs:
           node scripts/run-graph-node-reference.mjs
           node scripts/run-graph-edge-reference.mjs
       - name: Retain Graph EDGE evidence
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: graph-edge-reference
           path: experiments/search-semantics-reference/build/graph-edge-evidence.json
@@ -85,8 +85,8 @@ jobs:
     name: Graph REF reference
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
       - name: Run exact Composer, Graph projection, NODE, and REF reference
@@ -96,7 +96,7 @@ jobs:
           node scripts/run-graph-node-reference.mjs
           node scripts/run-graph-ref-reference.mjs
       - name: Retain Graph REF evidence
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: graph-ref-reference
           path: |
@@ -108,8 +108,8 @@ jobs:
     name: Graph PATH reference
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
       - name: Run exact Composer, Graph projection, NODE, REF, and PATH reference
@@ -120,7 +120,7 @@ jobs:
           node scripts/run-graph-ref-reference.mjs
           node scripts/run-graph-path-reference.mjs
       - name: Retain Graph PATH evidence
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: graph-path-reference
           path: |
@@ -133,8 +133,8 @@ jobs:
     name: Graph ROOT reference
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
       - name: Run exact Composer through ROOT reference
@@ -147,7 +147,7 @@ jobs:
           node scripts/run-graph-path-reference.mjs
           node scripts/run-graph-root-reference.mjs
       - name: Retain Graph ROOT evidence
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: graph-root-reference
           path: |
@@ -157,6 +157,221 @@ jobs:
             experiments/search-semantics-reference/build/graph-ref-evidence.json
             experiments/search-semantics-reference/build/graph-path-evidence.json
             experiments/search-semantics-reference/build/graph-root-evidence.json
+
+  graph-reclaim-reference:
+    name: Graph RECLAIM reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Composer through RECLAIM reference
+        # RECLAIM consumes the exact Graph semantic packet and proves only lifecycle/quiescence/reuse meaning. Resource/Progress retain global admission/scheduling authority and native CUDA mechanism qualification remains downstream.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-graph-profiles.mjs
+          node scripts/run-graph-node-reference.mjs
+          node scripts/run-graph-edge-reference.mjs
+          node scripts/run-graph-ref-reference.mjs
+          node scripts/run-graph-path-reference.mjs
+          node scripts/run-graph-root-reference.mjs
+          node scripts/run-graph-reclaim-reference.mjs
+      - name: Retain Graph RECLAIM evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: graph-reclaim-reference
+          path: |
+            experiments/search-ir-composer-reference/build/graph-profiles.json
+            experiments/search-ir-composer-reference/build/root-control.json
+            experiments/search-semantics-reference/build/graph-node-evidence.json
+            experiments/search-semantics-reference/build/graph-edge-evidence.json
+            experiments/search-semantics-reference/build/graph-ref-evidence.json
+            experiments/search-semantics-reference/build/graph-path-evidence.json
+            experiments/search-semantics-reference/build/graph-root-evidence.json
+            experiments/search-semantics-reference/build/graph-reclaim-evidence.json
+
+  graph-advance-occurrence-reference:
+    name: Graph ADVANCE occurrence closure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Graph packet through ADVANCE occurrence closure
+        # This is an integration falsifier over accepted Session provenance plus PATH/ROOT/REF/RECLAIM. It adds no Session authority and selects no native/CUDA lifetime mechanism.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-graph-profiles.mjs
+          node scripts/run-graph-node-reference.mjs
+          node scripts/run-graph-edge-reference.mjs
+          node scripts/run-graph-ref-reference.mjs
+          node scripts/run-graph-path-reference.mjs
+          node scripts/run-graph-root-reference.mjs
+          node scripts/run-graph-reclaim-reference.mjs
+          node scripts/run-graph-advance-occurrence-reference.mjs
+      - name: Retain Graph ADVANCE occurrence evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: graph-advance-occurrence-reference
+          path: |
+            experiments/search-ir-composer-reference/build/graph-profiles.json
+            experiments/search-ir-composer-reference/build/root-control.json
+            experiments/search-semantics-reference/build/graph-node-evidence.json
+            experiments/search-semantics-reference/build/graph-edge-evidence.json
+            experiments/search-semantics-reference/build/graph-ref-evidence.json
+            experiments/search-semantics-reference/build/graph-path-evidence.json
+            experiments/search-semantics-reference/build/graph-root-evidence.json
+            experiments/search-semantics-reference/build/graph-reclaim-evidence.json
+            experiments/search-semantics-reference/build/graph-advance-occurrence-evidence.json
+
+  graph-cleanup-reference:
+    name: Graph CLEANUP reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Graph packet through CLEANUP reference
+        # CLEANUP composes qualified Graph owner evidence and proves only Graph cleanup meaning. Resource/CUDA-JS retain concrete resource-destruction and native realization authority.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-graph-profiles.mjs
+          node scripts/run-graph-node-reference.mjs
+          node scripts/run-graph-edge-reference.mjs
+          node scripts/run-graph-ref-reference.mjs
+          node scripts/run-graph-path-reference.mjs
+          node scripts/run-graph-root-reference.mjs
+          node scripts/run-graph-reclaim-reference.mjs
+          node scripts/run-graph-advance-occurrence-reference.mjs
+          node scripts/run-graph-cleanup-reference.mjs
+      - name: Retain Graph CLEANUP evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: graph-cleanup-reference
+          path: |
+            experiments/search-ir-composer-reference/build/graph-profiles.json
+            experiments/search-ir-composer-reference/build/root-control.json
+            experiments/search-semantics-reference/build/graph-node-evidence.json
+            experiments/search-semantics-reference/build/graph-edge-evidence.json
+            experiments/search-semantics-reference/build/graph-ref-evidence.json
+            experiments/search-semantics-reference/build/graph-path-evidence.json
+            experiments/search-semantics-reference/build/graph-root-evidence.json
+            experiments/search-semantics-reference/build/graph-reclaim-evidence.json
+            experiments/search-semantics-reference/build/graph-advance-occurrence-evidence.json
+            experiments/search-semantics-reference/build/graph-cleanup-evidence.json
+
+  policy-reference:
+    name: Policy reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Composer and Policy reference
+        # Policy consumes normalized Domain roles and Graph-ready/reference facts. Evaluator, Resource, Progress, Output, Session and native/CUDA realization remain separate owners.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-policy-profiles.mjs
+          node scripts/run-policy-reference.mjs
+      - name: Retain Policy evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: policy-reference
+          path: |
+            experiments/search-ir-composer-reference/build/policy-profiles.json
+            experiments/search-semantics-reference/build/policy-evidence.json
+
+  evaluator-reference:
+    name: Evaluator reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Composer and Evaluator reference
+        # Evaluator consumes exact normalized profiles plus injected owner facts. Resource, Progress, Session, Output and native/CUDA realization remain separate owners.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-evaluator-profiles.mjs
+          node scripts/run-evaluator-reference.mjs
+      - name: Retain Evaluator evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: evaluator-reference
+          path: |
+            experiments/search-ir-composer-reference/build/evaluator-profiles.json
+            experiments/search-semantics-reference/build/evaluator-evidence.json
+
+  resource-reference:
+    name: Resource reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Composer and Resource reference
+        # Resource owns finite admission/accounting, pressure, exhaustion and cleanup semantics. Contributor policy, Progress scheduling and native/CUDA realization remain separate owners.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-resource-profiles.mjs
+          node scripts/run-resource-reference.mjs
+      - name: Retain Resource evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: resource-reference
+          path: |
+            experiments/search-ir-composer-reference/build/resource-profiles.json
+            experiments/search-semantics-reference/build/resource-evidence.json
+
+  progress-reference:
+    name: Progress reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Composer and Progress reference
+        # Progress owns scheduler-neutral work/readiness/accounting, fairness, no-progress, stop/drain/closure, epoch and cleanup semantics only. Resource admission facts, shared stop-disposition normalization and native/CUDA realization remain separate owners.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-progress-profiles.mjs
+          node scripts/run-progress-reference.mjs
+      - name: Retain Progress evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: progress-reference
+          path: |
+            experiments/search-ir-composer-reference/build/progress-profiles.json
+            experiments/search-semantics-reference/build/progress-evidence.json
+
+  output-reference:
+    name: Output reference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run exact Composer and Output reference
+        # Output owns terminal envelope/capture, optional observation, consistency, publication/borrow, lifecycle and cleanup semantics only. Policy payload meaning, Resource capacity, Progress closure/scheduling, Session control and native/CUDA realization remain separate owners.
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-output-profiles.mjs
+          node scripts/run-output-reference.mjs
+      - name: Retain Output evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: output-reference
+          path: |
+            experiments/search-ir-composer-reference/build/output-profiles.json
+            experiments/search-semantics-reference/build/output-evidence.json
 
   verify:
     name: verify
@@ -169,6 +384,14 @@ jobs:
       - graph-ref-reference
       - graph-path-reference
       - graph-root-reference
+      - graph-reclaim-reference
+      - graph-advance-occurrence-reference
+      - graph-cleanup-reference
+      - policy-reference
+      - evaluator-reference
+      - resource-reference
+      - progress-reference
+      - output-reference
     runs-on: ubuntu-latest
     steps:
       - name: Require every merge-gate job to succeed
@@ -180,9 +403,17 @@ jobs:
           GRAPH_REF_RESULT: ${{ needs.graph-ref-reference.result }}
           GRAPH_PATH_RESULT: ${{ needs.graph-path-reference.result }}
           GRAPH_ROOT_RESULT: ${{ needs.graph-root-reference.result }}
+          GRAPH_RECLAIM_RESULT: ${{ needs.graph-reclaim-reference.result }}
+          GRAPH_ADVANCE_OCCURRENCE_RESULT: ${{ needs.graph-advance-occurrence-reference.result }}
+          GRAPH_CLEANUP_RESULT: ${{ needs.graph-cleanup-reference.result }}
+          POLICY_RESULT: ${{ needs.policy-reference.result }}
+          EVALUATOR_RESULT: ${{ needs.evaluator-reference.result }}
+          RESOURCE_RESULT: ${{ needs.resource-reference.result }}
+          PROGRESS_RESULT: ${{ needs.progress-reference.result }}
+          OUTPUT_RESULT: ${{ needs.output-reference.result }}
         run: |
           set -euo pipefail
-          names=(GOVERNANCE SEARCH_IR GRAPH_NODE GRAPH_EDGE GRAPH_REF GRAPH_PATH GRAPH_ROOT)
+          names=(GOVERNANCE SEARCH_IR GRAPH_NODE GRAPH_EDGE GRAPH_REF GRAPH_PATH GRAPH_ROOT GRAPH_RECLAIM GRAPH_ADVANCE_OCCURRENCE GRAPH_CLEANUP POLICY EVALUATOR RESOURCE PROGRESS OUTPUT)
           results=(
             "$GOVERNANCE_RESULT"
             "$SEARCH_IR_RESULT"
@@ -191,6 +422,14 @@ jobs:
             "$GRAPH_REF_RESULT"
             "$GRAPH_PATH_RESULT"
             "$GRAPH_ROOT_RESULT"
+            "$GRAPH_RECLAIM_RESULT"
+            "$GRAPH_ADVANCE_OCCURRENCE_RESULT"
+            "$GRAPH_CLEANUP_RESULT"
+            "$POLICY_RESULT"
+            "$EVALUATOR_RESULT"
+            "$RESOURCE_RESULT"
+            "$PROGRESS_RESULT"
+            "$OUTPUT_RESULT"
           )
           failed=0
           for index in "${!results[@]}"; do

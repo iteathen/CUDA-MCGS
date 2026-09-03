@@ -1,0 +1,68 @@
+name: Engine reference integration
+
+on:
+  push:
+    branches:
+      - ref/integrate-01
+      - experimental/portfolio
+    paths:
+      - '.github/workflows/engine-reference-integration.yml'
+      - 'docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md'
+      - 'docs/development/2026-09-02-ref-integrate-01-assessment-and-plan.md'
+      - 'docs/development/2026-09-03-engine-contract-acceptance-01-assessment-and-plan.md'
+      - 'docs/specs/**'
+      - 'schemas/search-ir/0.2.0/**'
+      - 'experiments/search-ir-reference/**'
+      - 'experiments/search-ir-composer-reference/**'
+      - 'experiments/search-semantics-reference/**'
+      - 'scripts/run-search-ir-reference.mjs'
+      - 'scripts/run-search-ir-composer-reference.mjs'
+      - 'scripts/export-search-ir-composer-*-profiles.mjs'
+      - 'scripts/run-*-reference.mjs'
+      - 'scripts/run-engine-reference-integration.mjs'
+  pull_request:
+    branches:
+      - main
+      - experimental/portfolio
+    paths:
+      - '.github/workflows/engine-reference-integration.yml'
+      - 'docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md'
+      - 'docs/development/2026-09-02-ref-integrate-01-assessment-and-plan.md'
+      - 'docs/development/2026-09-03-engine-contract-acceptance-01-assessment-and-plan.md'
+      - 'docs/specs/**'
+      - 'schemas/search-ir/0.2.0/**'
+      - 'experiments/search-ir-reference/**'
+      - 'experiments/search-ir-composer-reference/**'
+      - 'experiments/search-semantics-reference/**'
+      - 'scripts/run-search-ir-reference.mjs'
+      - 'scripts/run-search-ir-composer-reference.mjs'
+      - 'scripts/export-search-ir-composer-*-profiles.mjs'
+      - 'scripts/run-*-reference.mjs'
+      - 'scripts/run-engine-reference-integration.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reference:
+    name: Final CUDA-free reference packet
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run complete owner evidence chain and final integration verifier
+        run: node scripts/run-engine-reference-integration.mjs
+      - name: Retain final packet and owner evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: engine-reference-integration-evidence
+          if-no-files-found: warn
+          path: |
+            experiments/search-ir-reference/build/evidence.json
+            experiments/search-ir-composer-reference/build/evidence.json
+            experiments/search-ir-composer-reference/build/channel-evidence.json
+            experiments/search-semantics-reference/build/*evidence*.json

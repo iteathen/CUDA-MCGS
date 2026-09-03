@@ -1,0 +1,40 @@
+{
+  "schema": "cuda-mcgs.reference-policy-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 709315,
+    "sha256": "d8b6890ae4fc18e39618cd172e59fd0dedad465e48ae80e5442142235be7c4b4"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-policy-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 123822,
+    "sha256": "8a8fb66d1f9e51ac416638bb18ee4ac28a2da489e24b6c306b5863a26e2b94ea"
+  },
+  "expectedCases": [
+    "policy-profile-matrix",
+    "policy-transposition-edge-local-records",
+    "policy-reservation-not-completed",
+    "policy-reservation-failure-conservation",
+    "policy-reservation-pressure",
+    "policy-path-relation-after-identity",
+    "policy-vector-non-zero-sum-perspective",
+    "policy-evaluator-mode-matrix",
+    "policy-chance-custom-role",
+    "policy-lazy-sampled-widening-and-proposal-ownership",
+    "policy-no-ranked-output",
+    "policy-ordered-noncommutative-backup",
+    "policy-repeated-node-occurrence-backup",
+    "policy-backup-prefix-must-drain",
+    "policy-stale-epoch-publication",
+    "policy-statistics-overflow",
+    "policy-first-stop-cause-drain",
+    "policy-schedule-bounded-overshoot",
+    "policy-advance-no-reclassification",
+    "policy-reroot-explicit-reuse",
+    "policy-generation-exhaustion",
+    "policy-cleanup-complete-disposition",
+    "policy-cleanup-quarantine",
+    "policy-oracle-sensitivity-backup"
+  ]
+}

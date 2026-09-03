@@ -1,0 +1,56 @@
+{
+  "schema": "cuda-mcgs.reference-graph-advance-occurrence-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 709315,
+    "sha256": "d8b6890ae4fc18e39618cd172e59fd0dedad465e48ae80e5442142235be7c4b4"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 140229,
+    "sha256": "b074600f829b632195d58bd971b134a7a367e9d45abb8126d9b7d690174dce2d"
+  },
+  "nodeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10047,
+    "sha256": "a72e1f0a71caff8ae2b05447474ccc3575687a254d374312b0fcb0e8ab28f2bb"
+  },
+  "edgeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 11661,
+    "sha256": "5d11400d7d74f7655832a50bf4d12529db4987091937cfbfdd6d02f6066e5b24"
+  },
+  "refEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9139,
+    "sha256": "28081b601a0c9b4f62802a2eeb162a7ace9823ecafc611eba9c206cdfc96374b"
+  },
+  "pathEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9530,
+    "sha256": "1cacbae76b7e95324acc1bb54e2ad3fde58c54c380751658cdc3b9a4f29f3fba"
+  },
+  "rootControlProjection": {
+    "algorithm": "sha256",
+    "byteLength": 10489,
+    "sha256": "905afe42cde06c122801120640ef42539dea076599322356de9f3e721d35ac6a"
+  },
+  "rootEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10008,
+    "sha256": "2bf43fb4bd1024d0d16c12668e8bf04eaa3340b8b0825900c15905d4896c8bda"
+  },
+  "reclaimEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 12127,
+    "sha256": "079cb0057a7806183e0e9420bd96e1e0583d3c2579ae2a8d739a5737f1869751"
+  },
+  "expectedCases": [
+    "graph-advance-occurrence-upstream-evidence-and-control-exact",
+    "graph-advance-occurrence-authority-commit-has-zero-eager-cleanup",
+    "graph-advance-occurrence-lazy-checkpoint-releases-only-sibling-occurrence",
+    "graph-advance-occurrence-retirement-order-blocks-new-protection-while-old-work-drains",
+    "graph-advance-occurrence-retained-borrow-gates-quiescence-and-reuse-is-generation-safe"
+  ]
+}

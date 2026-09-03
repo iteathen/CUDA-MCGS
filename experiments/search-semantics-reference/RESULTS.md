@@ -2,83 +2,123 @@
 
 **Status:** Informational
 
-**Updated:** 2026-08-27
+**Updated:** 2026-09-02
 
-## Current candidate
+## Authority and exact integration input
 
-`ref/graph-root-01` extends `REF-GRAPH-01` through `GRAPH-ROOT-001..006`. ROOT is hosted-qualified but is **not** protected-main integrated until its PR is squash-merged and the exact squash SHA passes protected-main readback.
+Protected semantic authority remains:
 
-Protected base for this candidate is `main@e4069458ece47bbea0c2770204fa21fffbde6bb6` (PATH integration, PR #137).
+`main@3ecac11e3576bd063760bc9572f79bea78acd031`
 
-Hosted ROOT qualification run `33107176873` passed the complete Composer → Domain → NODE → EDGE → REF → PATH → ROOT chain plus `./scripts/verify-docs.sh`, then removed all temporary migration/correction tooling before publishing durable semantic commit `d6b091e7c1afc6c09eb7e562cd7f72eb2773874d`.
+`REF-INTEGRATE-01` starts from the exact integrated candidate:
 
-## Exact candidate evidence
+`experimental/portfolio@85c20d794746031d201f72bc78fce25ff9f69c3d`
 
-Composer:
+tree:
 
-- `879/879` cases;
-- framework selection `de3b9a89f0570752230a6914bcb3c5374f73e5e59c424752819c0892e1f21ea5` (`10422` canonical bytes);
-- representation/composition `ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529` (`719510` canonical bytes).
+`5eadec7f403a388ea096f983ebf2e87eca2465f0`
 
-Domain:
+This input already contains the candidate-integrated Domain, complete Graph chain, Policy, Evaluator, Resource, Progress, Output, Framework lifecycle, terminal slice, Session, Stage, and Channel owner-evidence leaves. Candidate/reference state remains distinct from protected #122 acceptance and all native/product claims.
 
-- projection `e9df2902e6edaad40c6abf0b85eeecb06e94b4d5598d9c0b9c7238fa20c3edaa` (`69524` canonical bytes);
-- evidence `f186412a9b8d964c7f92e4c4000942768fa0ae81d62349c2528fd3aba12aa5e7` (`30372` canonical bytes);
-- `49/49`, direct `47/47`.
+## Final reference packet accounting
 
-Graph projection:
+The governing coverage classification yields:
 
-- `89ee04a47d8516ad02e33e884d8f35db9573840f58db140c6cbafe79178e7fd7` (`139099` canonical bytes).
+| Lane | Reference requirements |
+| --- | ---: |
+| Framework / SPEC-0000 | 15 |
+| Stage / SPEC-0003 | 8 |
+| Session / SPEC-0006 | 38 |
+| Domain / SPEC-0007 | 47 |
+| Policy / SPEC-0008 | 43 |
+| Evaluator / SPEC-0009 | 37 |
+| Graph/storage / SPEC-0010 | 48 |
+| Resource / SPEC-0011 | 34 |
+| Progress / SPEC-0012 | 31 |
+| Output / SPEC-0013 | 51 |
+| direct non-Channel subtotal | **352** |
+| Channel / SPEC-0004 owner evidence | **41** |
+| CUDA-free reference total | **393** |
 
-Graph owner evidence:
+A separate **52** requirements remain `native-compatible-pair-qualification` and must stay deferred. The final verifier fails if those routes are promoted into reference evidence.
 
-- NODE `4299dccecd33f6ef38c50f144e84316d00c7046a81ed6206b6e2e645b6683f74`, `13/13`, direct `11/11`;
-- EDGE `54b83935d320e6bd656c740ec2f3d8be062e3932bdf6e748c8315f26245faf58`, `16/16`, direct `10/10`;
-- REF `e3370158d1234dd3642d11c4458c9c390abcc3f62a04a75dd68d00faf6c4676d`, `14/14`, direct `8/8`;
-- PATH `af8f140e45f7c2942ec4b09b7d752f49b3eeb28f1cdc5b8c3b74887d34dd4318`, `14/14`, direct `8/8`;
-- generated root-control projection `2c71df25fff213f515aae02a01e210292a8e9b76fc84e14ab6cafb251fbbc9f1`;
-- ROOT `7e4fe6bf748ec110bebc1798d7742e03b89909df84da709f2fdeb51a42311ed0` (`10008` canonical bytes), `14/14`, direct `6/6`.
+## Preserved construction red
 
-Selected normalized profile identities:
+Run `33707203690` on head `6b5cb57521ba3a656e7e75ab2902d1630691eb41` regenerated the complete upstream owner evidence chain successfully and then failed exactly at the real missing final contract:
 
-- Graph `450fd5f79d4c0f2ee98f5854008c4c58f57a6c6424e144aa4ae2ad34fdcbcd61`;
-- Policy `1f4097bde39f3f072ace983ba99fc3167625b2ff5db841f6a7792cf9aec37aaf`;
-- Resource `8a722bcd7ae6b0ec86f4d589ea0ee3df8291c64a6d95b10e3dde2a3defe66481`;
-- Progress `7f3fcb4229bb7694b60469d3edba6302e5584bf87ef1284856a73f1b677ce8e8`;
-- Output `3bdc5d9c8fc63fb1bd34a6d93d7fc034518d4e7abb2b41f49406aaf8641b98a5`.
+`INTEGRATION_FIXTURE_MISSING`
 
-## ROOT behavior proved
+Artifact: `9875632375`.
 
-The ROOT capsule proves only Graph-owned root storage/protection behavior:
+No owner semantic test was weakened or changed to obtain green.
 
-- root anchors are finite typed references and are protected before publication;
-- Session/current-root/epoch authority remains outside Graph;
-- released anchor slots reuse only through explicit terminal-to-free lifecycle plus REF generation advancement;
-- a ready successor may be anchored for `advance` without retained-state reclassification, reclamation or eager cleanup;
-- `reroot` resolves/protects the replacement before Session authority commit and leaves the old anchor valid until commit;
-- replacement pressure cannot mutate the prior accepted root;
-- owner retain/retain-if-key-valid/transform/reset/invalidate disposition is delegated over opaque owner records;
-- old-epoch work may retain an independent protection after root authority changes;
-- superseding one occurrence cannot invalidate a still-valid shared transposed node;
-- `attention` changes have zero Graph ROOT effect;
-- publication-before-protection and eager-old-root-release mutations are detected.
+## First green and review finding
 
-## Graph profile corrections discovered by ROOT
+Run `33707424655` on `ebff2a14ac8c67e3a4145fd835d4d791bcf65458` produced the first green `11/11` final packet with exact `352 + 41 = 393` route closure and `52` native-deferred requirements.
 
-ROOT falsification closed three Graph-owned representation gaps:
+Fresh review then found a genuine integration-evidence defect: the planned mutation matrix was not complete. The verifier asserted the live state but did not explicitly demonstrate rejection of every required cross-owner corruption class. This was repaired only in the integration evidence boundary; no semantic owner was changed.
 
-1. materialized root-anchor storage has explicit finite `resource-root-anchor-slots` funding using the existing `protection-capacity` pressure family;
-2. aggregate protection-capacity slot resources must cover both protection-record and root-anchor layouts;
-3. root-anchor and protection-record terminal states have explicit private reset-to-free transitions. Ready protection records still require their normal release transition before reset; ROOT does not bypass REF lifecycle authority.
+## Mutation-qualified checkpoint
 
-These changes intentionally rebound all proposal-derived Composer/Graph/downstream evidence identities above.
+Checkpoint:
 
-## Permanent qualification path
+`a58997d444e33bc1697c2cd92249ecd8f5017aa0`
 
-The branch adds a permanent `Graph ROOT reference` job to `.github/workflows/docs.yml`. It replays Composer → Graph projection → NODE → REF → PATH → ROOT and retains `root-control.json` plus the owner evidence artifacts. EDGE remains an independent regression job.
+Focused workflow:
 
-Before integration, the final documentation-bearing PR head must pass the complete ordinary workflow: verify, Windows/Ubuntu Search IR, NODE, EDGE, REF, PATH and ROOT.
+`33707930265` — success
 
-## Claim limits
+Artifact:
 
-This candidate does **not** prove `GRAPH-RECLAIM-*`, a reclamation mechanism, native/CUDA execution, physical scheduling, production implementation, performance, contract acceptance, SDK/release readiness or multi-GPU support. RECLAIM remains blocked until ROOT is squash-merged and reproduced on protected main.
+`9875893868`
+
+digest:
+
+`sha256:c3a8c7a4dc1bf363c0eacd335ed2282bb62dac7ec0ffa0e4ff9e17af45997404`
+
+### Baseline packet
+
+- capsule `cuda-mcgs-engine-reference-integration-v0.1.0`;
+- cases `11/11`;
+- failures/skips/not-discovered `0`;
+- direct reference requirements `352`;
+- Channel reference requirements `41`;
+- total CUDA-free reference requirements `393`;
+- native-deferred requirements `52`;
+- Composer composition evidence `1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2`, `729040` canonical bytes;
+- final integration evidence `85373be650852a997cb4d57f5fbc6b972e0c5e5925cff496933bb1a47b078a46`, `14594` canonical bytes.
+
+The baseline witnesses 21 exact evidence inputs, 11 product-neutral witnesses, 19 deletion/zero-residue witnesses, 7 schedule/concurrency witnesses, two finite independent semantic replicas, Channel owner-evidence reuse, native-deferred closure, no product vocabulary ownership, and content-sensitive final identity.
+
+### Mutation gate
+
+- capsule `cuda-mcgs-engine-reference-integration-gate-v0.1.0`;
+- mutations `7/7` detected;
+- failures/skips/not-discovered `0`;
+- gate evidence `183f753e2595c3401e2642563edaa84ffbfd20083d6f44fc0bb259d60da58046`, `4542` canonical bytes.
+
+The seven detected corruptions are:
+
+1. missing owner evidence;
+2. substituted/stale owner evidence identity;
+3. missing required product-neutral/deletion/schedule witness;
+4. native-deferred route falsely promoted;
+5. Channel route loss;
+6. finite replica semantic divergence;
+7. final evidence-identity mutation.
+
+All file mutations are CI-local. The gate restores them in `finally`, revalidates the frozen input evidence set, reruns the baseline verifier, and requires the exact baseline integration identity to be restored.
+
+## Ownership result
+
+The final verifier reads generated evidence packets and requirement classification only. It does not import or recreate Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session, Stage, Channel, or Framework semantics. Channel remains the existing Composer-owned logical oracle plus its thin evidence adapter. CUDA-JS remains native publication/synchronization/runtime and exact compatible-pair authority.
+
+Finite device-slot replication is evidence packaging only. It establishes that the one-device semantic packet is not labeled by device identity and that downstream packet aggregation waits for terminal replicas; it does not define multi-GPU coordination or claim multi-device support.
+
+## Current qualification gate
+
+The current-state documentation transition changes the branch head but not owner semantics or the final evidence algorithms. The actual draft `REF-INTEGRATE-01` PR against `experimental/portfolio` must trigger the final integration workflow and full repository/documentation matrix on one exact candidate head.
+
+After those workflows pass, perform a fresh whole-diff author review and freeze the exact PR head/tree, run IDs, artifact digest, baseline identity, and mutation-gate identity on #36/PR discussion. Then stop for fresh repository-owner exact-head authorization before candidate integration.
+
+After authorized #36 integration/readback, the next transaction is #122 protected atomic semantic acceptance. Protected `main` must not be rewritten as though candidate integration were already accepted.

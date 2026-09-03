@@ -1,0 +1,57 @@
+{
+  "schema": "cuda-mcgs.reference-graph-cleanup-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 709315,
+    "sha256": "d8b6890ae4fc18e39618cd172e59fd0dedad465e48ae80e5442142235be7c4b4"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 140229,
+    "sha256": "b074600f829b632195d58bd971b134a7a367e9d45abb8126d9b7d690174dce2d"
+  },
+  "nodeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10047,
+    "sha256": "a72e1f0a71caff8ae2b05447474ccc3575687a254d374312b0fcb0e8ab28f2bb"
+  },
+  "edgeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 11661,
+    "sha256": "5d11400d7d74f7655832a50bf4d12529db4987091937cfbfdd6d02f6066e5b24"
+  },
+  "refEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9139,
+    "sha256": "28081b601a0c9b4f62802a2eeb162a7ace9823ecafc611eba9c206cdfc96374b"
+  },
+  "pathEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9530,
+    "sha256": "1cacbae76b7e95324acc1bb54e2ad3fde58c54c380751658cdc3b9a4f29f3fba"
+  },
+  "rootEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10008,
+    "sha256": "2bf43fb4bd1024d0d16c12668e8bf04eaa3340b8b0825900c15905d4896c8bda"
+  },
+  "reclaimEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 12127,
+    "sha256": "079cb0057a7806183e0e9420bd96e1e0583d3c2579ae2a8d739a5737f1869751"
+  },
+  "advanceOccurrenceEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 4195,
+    "sha256": "af06ec183144c74d4bc4f15c2044620c80f1a6a5782af5fca64f6d6bbfddc6d8"
+  },
+  "expectedCases": [
+    "graph-cleanup-upstream-evidence-exact",
+    "graph-cleanup-terminal-dispositions-have-no-abandoned-owner-local-obligation",
+    "graph-cleanup-semantic-inconsistency-quarantines-and-invalidates-dependent-node-evidence",
+    "graph-cleanup-arena-release-reconciles-all-graph-owned-transients-before-resource-destruction",
+    "graph-cleanup-retained-artifact-provenance-is-explicit-compatible-or-absent",
+    "graph-cleanup-requirement-coverage-exact"
+  ]
+}

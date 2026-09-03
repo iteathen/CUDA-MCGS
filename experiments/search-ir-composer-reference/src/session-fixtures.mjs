@@ -372,7 +372,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, output
   return {
     schema: 'cuda-mcgs.session-profile/0.2.0',
     representation: 'cuda-mcgs.search-ir/0.2.0',
-    status: 'proposal-evidence',
+    status: 'accepted',
     contract: catalogContract(inspected, 'SPEC-0006'),
     id: `session.${profile}`,
     version: VERSION,

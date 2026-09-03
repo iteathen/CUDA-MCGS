@@ -1,8 +1,10 @@
 # SPEC-0011: Finite Search-Resource Composition and Exhaustion
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.1.0
+**Version:** 0.1.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS universal finite search-resource semantics
 
@@ -10,11 +12,11 @@
 
 **Consumers:** device-progress and Search Session contracts; Search IR; Search Composer; every selected semantic/product/capability contributor; deterministic reference and native conformance
 
-This proposal defines the product-neutral resource brick that normalizes selected owner contributions into one finite pre-ignition plan and owns admission, partitions/reserves, accounting, watermarks, pressure and exhaustion meaning. It does not allocate CUDA memory, choose graph/cache eviction, select search/scheduling policy, permit host spill or encode a first GPU's limits.
+This specification defines the product-neutral resource brick that normalizes selected owner contributions into one finite pre-ignition plan and owns admission, partitions/reserves, accounting, watermarks, pressure and exhaustion meaning. It does not allocate CUDA memory, choose graph/cache eviction, select search/scheduling policy, permit host spill or encode a first GPU's limits.
 
 ## 1. Authority, identity, and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0011@0.1.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0011@0.1.0`.
 
 Every concrete CUDA-MCGS engine has exactly one immutable normalized search-resource profile before ignition. It includes every selected domain, graph, policy, evaluator, output, progress, session, extension, product, diagnostic and safety contribution. An absent owner contributes exact zero solely owned resource state.
 
@@ -27,11 +29,11 @@ Normative dependencies are:
 - [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) for the maintained-source and CUDA-JS escalation boundary;
 - accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) for immutable capacities, accounting conservation, typed exhaustion, stop and partial-result foundations;
 - accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for foundational normalized Search IR/reference meaning;
-- proposal [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md), [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md), [`SPEC-0009`](SPEC-0009-evaluator-contract.md), [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md) and [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md) for selected owner contributions and owner-specific pressure dispositions.
+- accepted [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md), [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md), [`SPEC-0009`](SPEC-0009-evaluator-contract.md), [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md) and [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md) for selected owner contributions and owner-specific pressure dispositions.
 
-Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for reroot-admission reserve and restart. CUDA-JS resource/allocation contracts are peer mechanism dependencies selected later, not resource-policy owners.
+Accepted [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for reroot-admission reserve and restart. CUDA-JS resource/allocation contracts are peer mechanism dependencies selected later, not resource-policy owners.
 
-Accepted authority governs conflicts. This proposal neither supersedes another specification nor authorizes production implementation.
+Accepted authority governs conflicts. This specification neither supersedes another specification nor authorizes production implementation.
 
 ## 2. Purpose, reading map, and required outcome
 
@@ -327,9 +329,9 @@ These examples do not select capacities, percentages, eviction, widening, schedu
 
 ## 16. Acceptance blockers and downstream invalidation
 
-This proposal is decision-complete only when review finds no unresolved contribution, unit/formula, layout/alias, feasibility, admission/conservation, reserve, pressure/exhaustion, identity range, lifecycle, compatibility, security or cleanup ambiguity.
+Acceptance review under #122 found no unresolved contribution, unit/formula, layout/alias, feasibility, admission/conservation, reserve, pressure/exhaustion, identity range, lifecycle, compatibility, security or cleanup ambiguity.
 
-Acceptance remains blocked until:
+Acceptance under #122 required:
 
 1. normalized Search IR/schema represents every RESOURCE-IR obligation and rejects ambiguity/overflow/hidden capacity;
 2. deterministic reference executes all required fixtures/cases and conservation/reserve oracle-sensitivity mutation;
@@ -344,3 +346,6 @@ Production resource lowering remains prohibited until that acceptance. Native al
 A change to resource ownership, contribution/unit/formula, plan/layout/alias, capacity/reserve, admission/lease/accounting, watermark/pressure, exhaustion/counter or lifecycle invalidates affected progress/session contracts, Search IR/schema/normalizers, every contributor's generated layout, packages, persisted state and reference/native approvals. The ENGINE-CONTRACT-01 integration spine records and reconciles invalidation before dependents continue.
 
 Implementation, test, review, persistence, security, generated/JIT/ABI, performance and cleanup work triggers the specialist doctrine routed from root `AGENTS.md` and `agent_files/AGENTS.md`.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

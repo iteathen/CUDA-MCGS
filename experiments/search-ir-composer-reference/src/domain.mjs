@@ -97,7 +97,7 @@ function normalizeStringSet(input, { code, label, allowed = null, minimum = 0, n
 function normalizeDomainContract(input, catalogById) {
   exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'DOMAIN_CONTRACT_FIELDS', 'domain contract');
   if (input.kind !== 'catalog' || input.id !== DOMAIN_CONTRACT) fail('DOMAIN_CONTRACT_ID', `domain contract must be ${DOMAIN_CONTRACT}`);
-  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-0007@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'DOMAIN_CONTRACT_ID', 'domain contract identity');
+  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-0007@[0-9]+\.[0-9]+\.[0-9]+$/, 'DOMAIN_CONTRACT_ID', 'domain contract identity');
   assertSha256(input.sha256, 'DOMAIN_CONTRACT_DIGEST', 'domain contract sha256');
   const expected = catalogById.get(DOMAIN_CONTRACT);
   if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) {
@@ -110,7 +110,7 @@ function normalizeExternalContract(input, catalogById, label) {
   if (input?.kind === 'catalog') {
     exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'DOMAIN_EXTERNAL_CONTRACT_FIELDS', label);
     assertString(input.id, /^SPEC-[0-9]{4}$/, 'DOMAIN_EXTERNAL_CONTRACT_ID', `${label} id`);
-    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'DOMAIN_EXTERNAL_CONTRACT_ID', `${label} identity`);
+    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'DOMAIN_EXTERNAL_CONTRACT_ID', `${label} identity`);
     assertSha256(input.sha256, 'DOMAIN_EXTERNAL_CONTRACT_DIGEST', `${label} sha256`);
     const expected = catalogById.get(input.id);
     if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) {
@@ -591,7 +591,7 @@ function productKey(product) {
 export function normalizeDomainProfile(input, inspectedCatalog) {
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'valueSchemas', 'identity', 'history', 'rootForms', 'roles', 'actionSources', 'transitionModes', 'ports', 'resources', 'failures', 'diagnostics', 'compatibility', 'programContribution', 'productData'], 'DOMAIN_ROOT_FIELDS', 'domain profile');
   if (input.schema !== DOMAIN_PROFILE_SCHEMA || input.representation !== SEARCH_IR_REPRESENTATION) fail('DOMAIN_SCHEMA', 'unsupported domain profile schema/representation');
-  if (input.status !== 'proposal-evidence') fail('DOMAIN_STATUS', 'domain profile must remain proposal evidence');
+  if (input.status !== 'accepted') fail('DOMAIN_STATUS', 'domain profile must remain proposal evidence');
   assertNamespacedId(input.id, 'DOMAIN_PROFILE_ID', 'domain profile id');
   assertVersion(input.version, 'DOMAIN_PROFILE_VERSION', 'domain profile version');
   const contracts = inspectedCatalog?.contractSet?.contracts;

@@ -64,7 +64,7 @@ function normalizeContract(input, catalogById, label) {
   if (input?.kind === 'catalog') {
     exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'EXT_CONTRACT_FIELDS', label);
     assertString(input.id, /^SPEC-[0-9]{4}$/, 'EXT_CONTRACT_ID', `${label} id`);
-    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'EXT_CONTRACT_ID', `${label} specificationIdentity`);
+    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'EXT_CONTRACT_ID', `${label} specificationIdentity`);
     assertSha256(input.sha256, 'EXT_CONTRACT_DIGEST', `${label} sha256`);
     const expected = catalogById.get(input.id);
     if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) fail('EXT_CONTRACT_DRIFT', `${label} differs from frozen catalog`);
@@ -347,7 +347,7 @@ function normalizeProductData(input, index) {
 export function normalizeStageProfile(input, inspectedCatalog, resourceResult, progressResult, knownProfiles = []) {
   if (input === null) return { normalized: null, identity: null };
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'generatorIdentity', 'resourcePlan', 'progressPlan', 'resourceContribution', 'progressContribution', 'owners', 'entryStage', 'stages', 'surfaces', 'capabilities', 'permissions', 'counters', 'statuses', 'lifecycle', 'diagnostics', 'compatibility', 'cleanup', 'programContribution', 'productData'], 'EXT_ROOT_FIELDS', 'stage profile');
-  if (input.schema !== STAGE_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('EXT_SCHEMA', 'unsupported stage schema/representation/status');
+  if (input.schema !== STAGE_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('EXT_SCHEMA', 'unsupported stage schema/representation/status');
   assertNamespacedId(input.id, 'EXT_PROFILE_ID', 'stage profile id'); assertVersion(input.version, 'EXT_PROFILE_VERSION', 'stage profile version');
   const generatorIdentity = normalizeContentIdentity(input.generatorIdentity, 'EXT_GENERATOR_IDENTITY', 'stage generatorIdentity');
   const contracts = inspectedCatalog?.contractSet?.contracts; if (!contracts) fail('EXT_CATALOG', 'inspected catalog is required');

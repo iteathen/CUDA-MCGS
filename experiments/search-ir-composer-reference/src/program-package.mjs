@@ -19,11 +19,11 @@ import {
 const PROFILE_SCHEMA = 'cuda-mcgs.program-package-profile/0.2.0';
 const SEARCH_PROGRAM_SCHEMA = 'cuda-mcgs.search-program/0.2.0';
 const EXECUTION_PACKAGE_SCHEMA = 'cuda-mcgs.execution-package/0.2.0';
-const CUDA_JS_PROJECTION_SCHEMA = 'cuda-mcgs.cuda-js-request-projection/0.2.0';
+const CUDA_JS_ADAPTER_REQUIREMENTS_SCHEMA = 'cuda-mcgs.cuda-js-adapter-requirements/0.2.0';
 const COMPATIBLE_PAIR_SCHEMA = 'cuda-mcgs.compatible-pair-record/0.2.0';
 const REPRESENTATION = 'cuda-mcgs.search-ir/0.2.0';
 const COMPOSE_CONTRACT = 'SPEC-0005';
-const DEVICE_TYPES = new Set(['bool', 'u32', 'i32', 'u64', 'f32', 'ptr<bool>', 'ptr<u32>', 'ptr<i32>', 'ptr<u64>', 'ptr<f32>']);
+const RESTRICTED_SOURCE_TYPES = new Set(['bool', 'u32', 'i32', 'u64', 'f32', 'ptr<bool>', 'ptr<u32>', 'ptr<i32>', 'ptr<u64>', 'ptr<f32>']);
 const RETURN_TYPES = new Set(['void', 'bool', 'u32', 'i32', 'u64', 'f32']);
 const HELPER_REQUIREMENTS = new Map([
   ['gpu.atomic.load-acquire-device', 'cuda-js.device-publication-release-acquire/0.1.0'],
@@ -171,19 +171,18 @@ function normalizeSourceUnit(input, index, context) {
 function normalizeParameter(input, functionName, index) {
   exactKeys(input, ['name', 'type'], 'COMPOSE_PARAMETER_FIELDS', `${functionName} parameter ${index}`);
   assertString(input.name, /^[A-Za-z_$][A-Za-z0-9_$]*$/, 'COMPOSE_PARAMETER_NAME', `${functionName} parameter ${index} name`);
-  if (!DEVICE_TYPES.has(input.type)) fail('COMPOSE_PARAMETER_TYPE', `${functionName} parameter ${input.name} has an unsupported type`);
+  if (!RESTRICTED_SOURCE_TYPES.has(input.type)) fail('COMPOSE_PARAMETER_TYPE', `${functionName} parameter ${input.name} has an unsupported type`);
   return { name: input.name, type: input.type };
 }
 
 function normalizeFunction(input, index, context) {
-  exactKeys(input, ['name', 'kind', 'parameters', 'returns', 'sourceUnit', 'ownerProfile', 'semanticRole', 'calls', 'helpers'], 'COMPOSE_FUNCTION_FIELDS', `function ${index}`);
+  exactKeys(input, ['name', 'executionRole', 'parameters', 'returns', 'sourceUnit', 'ownerProfile', 'semanticRole', 'calls', 'helpers'], 'COMPOSE_FUNCTION_FIELDS', `function ${index}`);
   assertString(input.name, /^[A-Za-z_$][A-Za-z0-9_$]*$/, 'COMPOSE_FUNCTION_NAME', `function ${index} name`);
-  const kind = assertEnum(input.kind, ['kernel', 'device'], 'COMPOSE_FUNCTION_KIND', `${input.name} kind`);
+  const executionRole = assertEnum(input.executionRole, ['runtime-entry', 'device-callable'], 'COMPOSE_FUNCTION_ROLE', `${input.name} executionRole`);
   if (!Array.isArray(input.parameters)) fail('COMPOSE_PARAMETER_COUNT', `${input.name} parameters must be an array`);
   const parameters = input.parameters.map((parameter, parameterIndex) => normalizeParameter(parameter, input.name, parameterIndex));
   uniqueBy(parameters, 'name', 'COMPOSE_PARAMETER_DUPLICATE', `${input.name} parameter`);
-  if (!RETURN_TYPES.has(input.returns) || (kind === 'kernel' && input.returns !== 'void')) fail('COMPOSE_FUNCTION_RETURN', `${input.name} has an incompatible return type`);
-  if (kind === 'kernel' && parameters.some(({ type }) => type === 'bool')) fail('COMPOSE_PARAMETER_TYPE', `${input.name} uses unsupported bool kernel ABI`);
+  if (!RETURN_TYPES.has(input.returns) || (executionRole === 'runtime-entry' && input.returns !== 'void')) fail('COMPOSE_FUNCTION_RETURN', `${input.name} has an incompatible MCGS Search Program return contract`);
   assertNamespacedId(input.sourceUnit, 'COMPOSE_FUNCTION_SOURCE', `${input.name} sourceUnit`);
   assertNamespacedId(input.ownerProfile, 'COMPOSE_FUNCTION_OWNER', `${input.name} ownerProfile`);
   assertNamespacedId(input.semanticRole, 'COMPOSE_FUNCTION_ROLE', `${input.name} semanticRole`);
@@ -197,7 +196,7 @@ function normalizeFunction(input, index, context) {
     if (!HELPER_SOURCE_NAMES.has(helper)) fail('COMPOSE_HELPER_UNSUPPORTED', `${input.name} uses unsupported helper ${helper}`);
     if (!sourceUnit.source.includes(HELPER_SOURCE_NAMES.get(helper))) fail('COMPOSE_HELPER_MAPPING', `${input.name} helper is absent from its source unit`);
   }
-  return { name: input.name, kind, parameters, returns: input.returns, sourceUnit: input.sourceUnit, ownerProfile: input.ownerProfile, semanticRole: input.semanticRole, calls, helpers };
+  return { name: input.name, executionRole, parameters, returns: input.returns, sourceUnit: input.sourceUnit, ownerProfile: input.ownerProfile, semanticRole: input.semanticRole, calls, helpers };
 }
 
 function validateCallGraph(functions, maximumDepth) {
@@ -205,7 +204,7 @@ function validateCallGraph(functions, maximumDepth) {
   for (const entry of functions) for (const call of entry.calls) {
     const target = byName.get(call);
     if (!target) fail('COMPOSE_FUNCTION_CALL', `${entry.name} calls undeclared ${call}`);
-    if (target.kind === 'kernel') fail('COMPOSE_FUNCTION_CALL', `${entry.name} calls kernel ${call}`);
+    if (target.executionRole === 'runtime-entry') fail('COMPOSE_FUNCTION_CALL', `${entry.name} calls kernel ${call}`);
   }
   const visiting = new Set(); const memo = new Map();
   function depth(name) {
@@ -279,17 +278,17 @@ function expectedRequirementKeys(context) {
 }
 
 function normalizeResource(input, index, context) {
-  exactKeys(input, ['id', 'ownerProfile', 'providerRequirement', 'kind', 'unit', 'capacity', 'alignment', 'memorySpaces', 'access'], 'COMPOSE_RESOURCE_FIELDS', `resource ${index}`);
+  exactKeys(input, ['id', 'ownerProfile', 'providerRequirement', 'materialization', 'unit', 'capacity', 'alignment', 'memorySpaces', 'access'], 'COMPOSE_RESOURCE_FIELDS', `resource ${index}`);
   assertNamespacedId(input.id, 'COMPOSE_RESOURCE_ID', `resource ${index} id`);
   if (input.ownerProfile !== context.resourceResult.normalized.id) fail('COMPOSE_RESOURCE_OWNER', `${input.id} has the wrong resource-plan owner`);
   const provider = context.providerById.get(input.providerRequirement);
   if (!provider) fail('COMPOSE_RESOURCE_PROVIDER', `${input.id} names unknown provider requirement`);
-  const kind = assertEnum(input.kind, ['device-memory', 'semantic-only'], 'COMPOSE_RESOURCE_KIND', `${input.id} kind`);
-  const expectedKind = provider.unit === 'bytes' && provider.memorySpaces.some((space) => ['device-search', 'device-publication'].includes(space)) ? 'device-memory' : 'semantic-only';
-  if (kind !== expectedKind || input.unit !== provider.unit || input.capacity !== provider.capacity || input.alignment !== provider.alignment) fail('COMPOSE_RESOURCE_PROVIDER', `${input.id} differs from ${provider.id}`);
+  const materialization = assertEnum(input.materialization, ['resident-storage', 'semantic-only'], 'COMPOSE_RESOURCE_MATERIALIZATION', `${input.id} materialization`);
+  const expectedMaterialization = provider.unit === 'bytes' && provider.memorySpaces.some((space) => ['device-search', 'device-publication'].includes(space)) ? 'resident-storage' : 'semantic-only';
+  if (materialization !== expectedMaterialization || input.unit !== provider.unit || input.capacity !== provider.capacity || input.alignment !== provider.alignment) fail('COMPOSE_RESOURCE_PROVIDER', `${input.id} differs from ${provider.id}`);
   const memorySpaces = [...input.memorySpaces].sort(compareRaw); const access = [...input.access].sort(compareRaw);
   if (memorySpaces.join('\0') !== [...provider.memorySpaces].sort(compareRaw).join('\0') || access.join('\0') !== [...provider.access].sort(compareRaw).join('\0')) fail('COMPOSE_RESOURCE_PROVIDER', `${input.id} access differs from ${provider.id}`);
-  return { id: input.id, ownerProfile: input.ownerProfile, providerRequirement: input.providerRequirement, kind, unit: input.unit, capacity: normalizeDecimalUint(input.capacity), alignment: positiveDecimal(input.alignment, 'COMPOSE_RESOURCE_ALIGNMENT', `${input.id} alignment`), memorySpaces, access };
+  return { id: input.id, ownerProfile: input.ownerProfile, providerRequirement: input.providerRequirement, materialization, unit: input.unit, capacity: normalizeDecimalUint(input.capacity), alignment: positiveDecimal(input.alignment, 'COMPOSE_RESOURCE_ALIGNMENT', `${input.id} alignment`), memorySpaces, access };
 }
 
 function normalizeBinding(input, operationId, index, parameters, resources) {
@@ -299,7 +298,7 @@ function normalizeBinding(input, operationId, index, parameters, resources) {
   if (input.source?.kind === 'resource') {
     exactKeys(input.source, ['kind', 'resource'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} resource`);
     const resource = resources.get(input.source.resource);
-    if (!resource || resource.kind !== 'device-memory' || !parameter.type.startsWith('ptr<')) fail('COMPOSE_OPERATION_BINDING', `${operationId} resource binding is incompatible`);
+    if (!resource || resource.materialization !== 'resident-storage' || !parameter.type.startsWith('ptr<')) fail('COMPOSE_OPERATION_BINDING', `${operationId} resource binding is incompatible`);
     return { parameter: input.parameter, source: { kind: 'resource', resource: input.source.resource } };
   }
   exactKeys(input.source, ['kind', 'schema'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} scalar`);
@@ -313,15 +312,15 @@ function normalizeDim3(input, label) {
 }
 
 function normalizeOperation(input, index, context) {
-  exactKeys(input, ['id', 'entryPoint', 'bindings', 'grid', 'block', 'dynamicSharedBytes', 'maxPending', 'lifecycle'], 'COMPOSE_OPERATION_FIELDS', `operation ${index}`);
+  exactKeys(input, ['id', 'entryPoint', 'bindings', 'grid', 'block', 'dynamicSharedBytes', 'maxPending'], 'COMPOSE_OPERATION_FIELDS', `operation ${index}`);
   assertNamespacedId(input.id, 'COMPOSE_OPERATION_ID', `operation ${index} id`);
   const entryPoint = context.functionByName.get(input.entryPoint);
-  if (!entryPoint || entryPoint.kind !== 'kernel') fail('COMPOSE_OPERATION_ENTRY', `${input.id} entry point is not a kernel`);
+  if (!entryPoint || entryPoint.executionRole !== 'runtime-entry') fail('COMPOSE_OPERATION_ENTRY', `${input.id} entry point is not a kernel`);
   if (!Array.isArray(input.bindings)) fail('COMPOSE_OPERATION_BINDING', `${input.id} bindings must be an array`);
   const bindings = input.bindings.map((binding, bindingIndex) => normalizeBinding(binding, input.id, bindingIndex, entryPoint.parameters, context.resourceById)).sort((left, right) => compareRaw(left.parameter, right.parameter));
   uniqueBy(bindings, 'parameter', 'COMPOSE_OPERATION_BINDING', `${input.id} binding`);
   if (bindings.length !== entryPoint.parameters.length) fail('COMPOSE_OPERATION_BINDING', `${input.id} does not bind every parameter`);
-  return { id: input.id, entryPoint: input.entryPoint, bindings, grid: normalizeDim3(input.grid, `${input.id} grid`), block: normalizeDim3(input.block, `${input.id} block`), dynamicSharedBytes: normalizeDecimalUint(input.dynamicSharedBytes), maxPending: positiveDecimal(input.maxPending, 'COMPOSE_OPERATION_PENDING', `${input.id} maxPending`), lifecycle: normalizeSchemaReference(input.lifecycle, `${input.id} lifecycle`) };
+  return { id: input.id, entryPoint: input.entryPoint, bindings, grid: normalizeDim3(input.grid, `${input.id} grid`), block: normalizeDim3(input.block, `${input.id} block`), dynamicSharedBytes: normalizeDecimalUint(input.dynamicSharedBytes), maxPending: positiveDecimal(input.maxPending, 'COMPOSE_OPERATION_PENDING', `${input.id} maxPending`) };
 }
 
 function normalizeManifests(input) {
@@ -382,7 +381,7 @@ function semanticEngineIdentity(semanticEngine) {
 
 export function normalizeProgramPackageProfile(input, inspected, suppliedContext) {
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'semanticEngine', 'generator', 'sourceUnits', 'functions', 'programUnits', 'publicRequirements', 'resources', 'operations', 'manifests', 'provenance', 'compatibility', 'deletion'], 'COMPOSE_ROOT_FIELDS', 'program/package profile');
-  if (input.schema !== PROFILE_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('COMPOSE_SCHEMA', 'unsupported program/package schema/representation/status');
+  if (input.schema !== PROFILE_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('COMPOSE_SCHEMA', 'unsupported program/package schema/representation/status');
   assertNamespacedId(input.id, 'COMPOSE_PROFILE_ID', 'program/package profile id'); assertVersion(input.version, 'COMPOSE_PROFILE_VERSION', 'program/package profile version');
   const generator = normalizeProgramGenerator(input.generator);
   const profileResults = suppliedContext.profileResults ?? [];
@@ -469,7 +468,7 @@ export function normalizeProgramPackageProfile(input, inspected, suppliedContext
 
   const operations = input.operations.map((entry, index) => normalizeOperation(entry, index, context)).sort((left, right) => compareRaw(left.id, right.id));
   uniqueBy(operations, 'id', 'COMPOSE_OPERATION_DUPLICATE', 'operation');
-  const kernels = functions.filter(({ kind }) => kind === 'kernel');
+  const kernels = functions.filter(({ executionRole }) => executionRole === 'runtime-entry');
   if (operations.length !== kernels.length || kernels.some(({ name }) => !operations.some(({ entryPoint }) => entryPoint === name))) fail('COMPOSE_OPERATION_COVERAGE', 'every kernel requires one operation blueprint');
   const manifests = normalizeManifests(input.manifests); const provenance = normalizeProvenance(input.provenance, 'composition profile provenance'); const compatibility = normalizeCompatibility(input.compatibility, context);
   context.operations = operations;
@@ -484,10 +483,10 @@ export function composeSearchProgram(profileResult) {
   const source = profile.sourceUnits.map(({ source: unitSource }) => unitSource).join('');
   if (BigInt(Buffer.byteLength(source, 'utf8')) > BigInt(profile.generator.maxSourceBytes)) fail('COMPOSE_SOURCE_BOUNDS', 'composed source exceeds maxSourceBytes');
   const functions = profile.functions.map((entry) => ({ ...entry, parameters: entry.parameters.map((parameter) => ({ ...parameter })), calls: [...entry.calls], helpers: [...entry.helpers] }));
-  const entryPoints = functions.filter(({ kind }) => kind === 'kernel').map(({ name, semanticRole }) => ({ role: semanticRole, function: name })).sort((left, right) => compareRaw(left.role, right.role));
+  const entryPoints = functions.filter(({ executionRole }) => executionRole === 'runtime-entry').map(({ name, semanticRole }) => ({ role: semanticRole, function: name })).sort((left, right) => compareRaw(left.role, right.role));
   const normalized = {
     schema: SEARCH_PROGRAM_SCHEMA,
-    status: 'proposal-evidence',
+    status: 'accepted',
     language: 'restricted-device-js',
     semanticEngineIdentity: identityReference(profileResult.semanticEngineIdentity),
     compositionProfileIdentity: identityReference(profileResult.identity),
@@ -500,7 +499,7 @@ export function composeSearchProgram(profileResult) {
     entryPoints,
     publicRequirements: profile.publicRequirements.map((entry) => ({ contract: { ...entry.contract }, consumers: [...entry.consumers], qualification: entry.qualification })),
     resources: profile.resources.map((entry) => ({ ...entry, memorySpaces: [...entry.memorySpaces], access: [...entry.access] })),
-    operations: profile.operations.map((entry) => ({ ...entry, bindings: structuredClone(entry.bindings), grid: [...entry.grid], block: [...entry.block], lifecycle: { ...entry.lifecycle } })),
+    operations: profile.operations.map((entry) => ({ ...entry, bindings: structuredClone(entry.bindings), grid: [...entry.grid], block: [...entry.block],  })),
     manifests: structuredClone(profile.manifests),
     provenance: structuredClone(profile.provenance),
     deletion: structuredClone(profile.deletion),
@@ -508,8 +507,8 @@ export function composeSearchProgram(profileResult) {
   return { normalized, identity: canonicalIdentity(normalized) };
 }
 
-function projectCudaJsRequest(program) {
-  const resources = program.resources.filter(({ kind }) => kind === 'device-memory');
+function buildCudaJsAdapterRequirements(program) {
+  const resources = program.resources.filter(({ materialization }) => materialization === 'resident-storage');
   const resourceNames = new Map(resources.map((entry, index) => [entry.id, `resource-${index}`]));
   const operations = program.operations.map((entry, index) => ({
     id: `operation-${index}`,
@@ -517,15 +516,15 @@ function projectCudaJsRequest(program) {
     bindings: entry.bindings.map((binding) => binding.source.kind === 'resource'
       ? { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource) } }
       : { parameter: binding.parameter, source: { kind: 'scalar', schema: { ...binding.source.schema } } }),
-    grid: [...entry.grid], block: [...entry.block], dynamicSharedBytes: entry.dynamicSharedBytes, maxPending: entry.maxPending,
+    launchPolicy: { grid: [...entry.grid], block: [...entry.block], dynamicSharedBytes: entry.dynamicSharedBytes, maxPending: entry.maxPending },
   }));
   return {
-    schema: CUDA_JS_PROJECTION_SCHEMA,
-    requirements: program.publicRequirements.map(({ contract }) => ({ ...contract })),
-    deviceProgram: { source: program.source, functions: program.functions.map(({ name, kind, parameters, returns }) => ({ name, kind, parameters: parameters.map((parameter) => ({ ...parameter })), returns })) },
-    resources: resources.map((entry, index) => ({ id: `resource-${index}`, kind: 'device-memory', byteLength: entry.capacity, alignment: entry.alignment, access: [...entry.access] })),
-    operations,
-    lifecycle: { compile: 'pre-ignition', allocate: 'pre-ignition', load: 'pre-ignition', admit: 'pre-ignition', ignite: 'single-device-owned-transition', cancel: 'public-lifecycle-operation', complete: 'public-lifecycle-operation', teardown: 'public-lifecycle-operation' },
+    schema: CUDA_JS_ADAPTER_REQUIREMENTS_SCHEMA,
+    publicContracts: program.publicRequirements.map(({ contract }) => ({ ...contract })),
+    searchProgram: { source: program.source, functions: program.functions.map(({ name, executionRole, parameters, returns }) => ({ name, executionRole, parameters: parameters.map((parameter) => ({ ...parameter })), returns })) },
+    resourceRequirements: resources.map((entry, index) => ({ id: `resource-${index}`, byteLength: entry.capacity, alignment: entry.alignment, memorySpaces: [...entry.memorySpaces], accessRequirements: [...entry.access] })),
+    operationRequirements: operations,
+    searchLifecycle: { ignition: 'device-owned', cancellation: 'bounded-external-intent', completion: 'device-owned-closure' },
   };
 }
 
@@ -535,7 +534,7 @@ export function buildExecutionPackage(profileResult, programResult) {
   if (program.compositionProfileIdentity.sha256 !== profileResult.identity.sha256) fail('COMPOSE_PACKAGE_INPUT', 'Search Program does not match composition profile');
   const normalized = {
     schema: EXECUTION_PACKAGE_SCHEMA,
-    status: 'proposal-evidence',
+    status: 'accepted',
     semantic: {
       engineIdentity: identityReference(profileResult.semanticEngineIdentity),
       selectedProfiles: structuredClone(profile.semanticEngine.profiles),
@@ -547,8 +546,8 @@ export function buildExecutionPackage(profileResult, programResult) {
       stageProfile: structuredClone(profile.semanticEngine.stageProfile),
       channelProfile: structuredClone(profile.semanticEngine.channelProfile),
     },
-    program: { schema: program.schema, identity: identityReference(programResult.identity), sourceIdentity: { ...program.sourceIdentity }, functions: program.functions.map(({ name, kind, parameters, returns }) => ({ name, kind, parameters: structuredClone(parameters), returns })) },
-    cudaJs: projectCudaJsRequest(program),
+    program: { schema: program.schema, identity: identityReference(programResult.identity), sourceIdentity: { ...program.sourceIdentity }, functions: program.functions.map(({ name, executionRole, parameters, returns }) => ({ name, executionRole, parameters: structuredClone(parameters), returns })) },
+    cudaJsAdapter: buildCudaJsAdapterRequirements(program),
     manifests: structuredClone(profile.manifests),
     compatibility: structuredClone(profile.compatibility),
     provenance: structuredClone(profile.provenance),
@@ -574,7 +573,7 @@ export function normalizeCudaJsRealization(input, packageResult) {
   exactKeys(input, ['status', 'deviceProgram', 'artifacts', 'resources', 'operations', 'runtime', 'cleanup'], 'COMPOSE_REALIZATION_FIELDS', 'CUDA-JS success');
   if (input.status !== 'success') fail('COMPOSE_REALIZATION_STATUS', 'CUDA-JS realization status is invalid');
   for (const key of ['artifacts', 'resources', 'operations']) if (!Array.isArray(input[key])) fail('COMPOSE_REALIZATION_FIELDS', `${key} must be an array`);
-  if (input.artifacts.length === 0 || input.operations.length !== packageResult.normalized.cudaJs.operations.length || input.resources.length !== packageResult.normalized.cudaJs.resources.length) fail('COMPOSE_REALIZATION_COVERAGE', 'CUDA-JS realization does not cover package resources/operations');
+  if (input.artifacts.length === 0 || input.operations.length !== packageResult.normalized.cudaJsAdapter.operationRequirements.length || input.resources.length !== packageResult.normalized.cudaJsAdapter.resourceRequirements.length) fail('COMPOSE_REALIZATION_COVERAGE', 'CUDA-JS realization does not cover package resources/operations');
   exactKeys(input.cleanup, ['status', 'disposition'], 'COMPOSE_REALIZATION_CLEANUP_FIELDS', 'CUDA-JS cleanup');
   if (input.cleanup.status !== 'retained-evidence') fail('COMPOSE_REALIZATION_CLEANUP', 'reference realization must retain bounded evidence');
   const normalized = {
@@ -601,7 +600,7 @@ export function normalizeCompatiblePair(input, packageResult, programResult, rea
   exactKeys(input.cudaJs, ['repository', 'revision', 'package', 'apiSchema', 'capabilities', 'deviceProgram', 'artifacts', 'resources', 'operations', 'runtime'], 'COMPOSE_PAIR_CUDA_JS_FIELDS', 'compatible pair CUDA-JS');
   if (input.cudaJs.repository !== 'iteathen/CUDA-JS' || input.cudaJs.revision !== expectedMcgs.cudaJs.revision || input.cudaJs.package !== expectedMcgs.cudaJs.package || input.cudaJs.apiSchema !== expectedMcgs.apiSchema) fail('COMPOSE_PAIR_CUDA_JS', 'CUDA-JS pair identity differs from package requirements');
   const capabilities = input.cudaJs.capabilities.map((entry, index) => normalizeSchemaReference(entry, `pair capability ${index}`)).sort((left, right) => compareRaw(schemaKey(left), schemaKey(right)));
-  const expectedCapabilities = packageResult.normalized.cudaJs.requirements;
+  const expectedCapabilities = packageResult.normalized.cudaJsAdapter.publicContracts;
   if (capabilities.length !== expectedCapabilities.length || capabilities.some((entry, index) => schemaKey(entry) !== schemaKey(expectedCapabilities[index]))) fail('COMPOSE_PAIR_CAPABILITY', 'pair capabilities differ from package requirements');
   const matchIdentityList = (inputValues, actualValues, label) => {
     const values = inputValues.map((entry, index) => normalizeOpaqueIdentity(entry, `${label} ${index}`));
@@ -657,6 +656,6 @@ export const programPackageConstants = Object.freeze({
   profileSchema: PROFILE_SCHEMA,
   searchProgramSchema: SEARCH_PROGRAM_SCHEMA,
   executionPackageSchema: EXECUTION_PACKAGE_SCHEMA,
-  cudaJsProjectionSchema: CUDA_JS_PROJECTION_SCHEMA,
+  cudaJsAdapterRequirementsSchema: CUDA_JS_ADAPTER_REQUIREMENTS_SCHEMA,
   compatiblePairSchema: COMPATIBLE_PAIR_SCHEMA,
 });

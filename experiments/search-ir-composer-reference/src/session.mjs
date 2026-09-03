@@ -75,7 +75,7 @@ function normalizeContract(input, catalogById, label) {
   if (input?.kind === 'catalog') {
     exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'SESSION_CONTRACT_FIELDS', label);
     assertString(input.id, /^SPEC-[0-9]{4}$/, 'SESSION_CONTRACT_ID', `${label} id`);
-    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'SESSION_CONTRACT_ID', `${label} specificationIdentity`);
+    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'SESSION_CONTRACT_ID', `${label} specificationIdentity`);
     assertSha256(input.sha256, 'SESSION_CONTRACT_DIGEST', `${label} sha256`);
     const expected = catalogById.get(input.id);
     if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) fail('SESSION_CONTRACT_DRIFT', `${label} differs from frozen catalog`);
@@ -441,7 +441,7 @@ function normalizeProductData(input, index) {
 
 export function normalizeSessionProfile(input, inspectedCatalog, resourceResult, progressResult, outputResult) {
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'resourcePlan', 'progressPlan', 'outputProfile', 'resourceContribution', 'progressContribution', 'identity', 'commands', 'root', 'advance', 'reroot', 'owners', 'attention', 'observations', 'reclamation', 'counters', 'lifecycle', 'ports', 'statuses', 'permissions', 'security', 'compatibility', 'cleanup', 'programContribution', 'productData'], 'SESSION_ROOT_FIELDS', 'session profile');
-  if (input.schema !== SESSION_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('SESSION_SCHEMA', 'unsupported session schema/representation/status');
+  if (input.schema !== SESSION_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('SESSION_SCHEMA', 'unsupported session schema/representation/status');
   assertNamespacedId(input.id, 'SESSION_PROFILE_ID', 'session profile id');
   assertVersion(input.version, 'SESSION_PROFILE_VERSION', 'session profile version');
   const contracts = inspectedCatalog?.contractSet?.contracts;

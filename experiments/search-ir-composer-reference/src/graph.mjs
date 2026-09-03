@@ -34,8 +34,9 @@ const REQUIRED_RESOURCE_PRESSURES = ['action-byte-capacity', 'edge-capacity', 'n
 const REQUIRED_FAILURES = [
   'action-byte-capacity', 'arena-incarnation-mismatch', 'cancelled', 'edge-capacity', 'generation-exhausted', 'graph-internal-failure',
   'invalid-graph-profile', 'invalid-reference', 'node-capacity', 'owner-lifecycle-failure', 'path-capacity', 'path-depth', 'protection-capacity', 'publication-conflict',
-  'reclamation-not-quiescent', 'reference-kind-mismatch', 'stale-reference', 'state-byte-capacity', 'transposition-capacity', 'transposition-probe-exhausted',
+  'reference-kind-mismatch', 'stale-reference', 'state-byte-capacity', 'transposition-capacity', 'transposition-probe-exhausted',
 ];
+const REQUIRED_RECLAIM_FAILURES = ['reclamation-not-quiescent', 'reclamation-scratch-capacity', 'retirement-capacity'];
 const REGION_CONTRACT = new Map([
   ['domain-state', 'SPEC-0007'], ['domain-action', 'SPEC-0007'], ['domain-history', 'SPEC-0007'], ['policy-record', 'SPEC-0008'],
   ['evaluator-record', 'SPEC-0009'], ['output-record', 'SPEC-0013'], ['extension-record', 'SPEC-0003'],
@@ -68,7 +69,7 @@ function stringSet(input, { code, label, allowed = null, namespaced = false, min
 function normalizeCatalogContract(input, catalogById, expectedId, code, label) {
   exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], `${code}_FIELDS`, label);
   if (input.kind !== 'catalog' || input.id !== expectedId) fail(`${code}_ID`, `${label} must select ${expectedId}`);
-  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, `${code}_ID`, `${label} identity`);
+  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, `${code}_ID`, `${label} identity`);
   assertSha256(input.sha256, `${code}_DIGEST`, `${label} sha256`);
   const expected = catalogById.get(expectedId);
   if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) fail(`${code}_DRIFT`, `${label} differs from the frozen contract set`);
@@ -411,6 +412,18 @@ function normalizeReclamation(input, objectById) {
   exactKeys(input, ['kind', 'retirementObject', 'protectionSources', 'maxWorkUnits', 'maxScratchBytes', 'quiescence', 'transpositionRemoval', 'generationAdvance', 'failureStates'], 'GRAPH_RECLAIM_FIELDS', 'reclamation');
   if (input.kind !== 'enabled' || input.generationAdvance !== 'before-slot-reuse') fail('GRAPH_RECLAIM_KIND', 'reclamation must advance generation before reuse');
   if (objectById.get(input.retirementObject)?.role !== 'retirement-record') fail('GRAPH_RECLAIM_OBJECT', 'reclamation retirementObject has the wrong role');
+  const retirementObject = objectById.get(input.retirementObject);
+  const hasPrivateReset = (from) => retirementObject.lifecycle.transitions.some((transition) =>
+    transition.from === from && transition.to === retirementObject.lifecycle.initialState && transition.visibility === 'private');
+  for (const ready of retirementObject.lifecycle.readyStates) {
+    if (!retirementObject.lifecycle.transitions.some((transition) => transition.from === ready
+      && retirementObject.lifecycle.terminalStates.includes(transition.to) && transition.visibility === 'terminal-publication')) {
+      fail('GRAPH_RECLAIM_LIFECYCLE', `retirement-record ready state ${ready} has no terminal release`);
+    }
+  }
+  for (const terminal of retirementObject.lifecycle.terminalStates) {
+    if (!hasPrivateReset(terminal)) fail('GRAPH_RECLAIM_LIFECYCLE', `retirement-record terminal state ${terminal} cannot return to free`);
+  }
   const protectionSources = stringSet(input.protectionSources, {
     code: 'GRAPH_RECLAIM_PROTECTION', label: 'reclamation protectionSources',
     allowed: ['active-path', 'external-reference', 'in-flight', 'owner-lease', 'publication-waiter', 'retained-borrow', 'root-anchor'], minimum: 1,
@@ -586,7 +599,7 @@ function assertStateless(profile) {
 export function normalizeGraphProfile(input, inspectedCatalog, domainProfileResult) {
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'domainProfile', 'mode', 'arena', 'referenceEncoding', 'objectKinds', 'layouts', 'ownerRegions', 'transposition', 'path', 'rootProtection', 'reclamation', 'publications', 'ports', 'resources', 'failures', 'diagnostics', 'compatibility', 'programContribution'], 'GRAPH_ROOT_FIELDS', 'graph profile');
   if (input.schema !== GRAPH_PROFILE_SCHEMA || input.representation !== REPRESENTATION) fail('GRAPH_SCHEMA', 'unsupported graph profile schema/representation');
-  if (input.status !== 'proposal-evidence') fail('GRAPH_STATUS', 'graph profile must remain proposal evidence');
+  if (input.status !== 'accepted') fail('GRAPH_STATUS', 'graph profile must remain proposal evidence');
   assertNamespacedId(input.id, 'GRAPH_PROFILE_ID', 'graph profile id');
   assertVersion(input.version, 'GRAPH_PROFILE_VERSION', 'graph profile version');
   const contracts = inspectedCatalog?.contractSet?.contracts;
@@ -691,6 +704,9 @@ export function normalizeGraphProfile(input, inspectedCatalog, domainProfileResu
     if ((transposition.kind === 'verified-sharing') !== roles.has('transposition-entry')) fail('GRAPH_TRANSPOSITION_RESIDUE', 'transposition entry presence differs from sharing selection');
     if ((reclamation.kind === 'enabled') !== roles.has('retirement-record')) fail('GRAPH_RECLAIM_RESIDUE', 'retirement record presence differs from reclamation selection');
     for (const required of REQUIRED_FAILURES) if (!failureCodes.has(required)) fail('GRAPH_FAILURE_REQUIRED', `required failure ${required} is absent`);
+    for (const required of REQUIRED_RECLAIM_FAILURES) {
+      if (failureCodes.has(required) !== (reclamation.kind === 'enabled')) fail('GRAPH_RECLAIM_RESIDUE', `failure ${required} presence differs from reclamation selection`);
+    }
     const portIds = new Set(ports.map(({ id }) => id));
     for (const required of BASE_PORTS) if (!portIds.has(required)) fail('GRAPH_PORT_REQUIRED', `required port ${required} is absent`);
     for (const port of RECLAIM_PORTS) if (portIds.has(port) !== (reclamation.kind === 'enabled')) fail('GRAPH_RECLAIM_RESIDUE', `port ${port} presence differs from reclamation selection`);
@@ -698,8 +714,35 @@ export function normalizeGraphProfile(input, inspectedCatalog, domainProfileResu
     const pressureOutcomes = new Set(resources.map(({ pressureOutcome }) => pressureOutcome));
     for (const required of REQUIRED_RESOURCE_PRESSURES) if (!pressureOutcomes.has(required)) fail('GRAPH_RESOURCE_REQUIRED', `graph resources omit ${required}`);
     if (pressureOutcomes.has('transposition-capacity') !== (transposition.kind === 'verified-sharing')) fail('GRAPH_TRANSPOSITION_RESIDUE', 'transposition resource presence differs from sharing selection');
-    if (pressureOutcomes.has('reclamation-not-quiescent') !== (reclamation.kind === 'enabled')) fail('GRAPH_RECLAIM_RESIDUE', 'reclamation resource presence differs from reclamation selection');
+    for (const required of ['reclamation-not-quiescent', 'reclamation-scratch-capacity', 'retirement-capacity']) {
+      if (pressureOutcomes.has(required) !== (reclamation.kind === 'enabled')) fail('GRAPH_RECLAIM_RESIDUE', `reclamation resource ${required} presence differs from reclamation selection`);
+    }
     const roleObject = new Map(objectKinds.map((object) => [object.role, object.id]));
+    if (reclamation.kind === 'enabled') {
+      const retirementLayout = layoutByObject.get(roleObject.get('retirement-record'));
+      const retirementRecordCapacity = resources
+        .filter(({ unit, pressureOutcome, scope }) => unit === 'records' && pressureOutcome === 'retirement-capacity' && scope === 'per-engine')
+        .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+      const retirementByteCapacity = resources
+        .filter(({ unit, pressureOutcome, scope }) => unit === 'bytes' && pressureOutcome === 'retirement-capacity' && scope === 'per-engine')
+        .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+      const reclaimScratchCapacity = resources
+        .filter(({ unit, pressureOutcome, scope }) => unit === 'bytes' && pressureOutcome === 'reclamation-scratch-capacity' && scope === 'per-engine')
+        .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+      const reclaimWorkCapacity = resources
+        .filter(({ unit, pressureOutcome, scope }) => unit === 'work-units' && pressureOutcome === 'reclamation-not-quiescent' && scope === 'per-engine')
+        .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
+      if (compareDecimalUint(retirementRecordCapacity, retirementLayout.capacity) < 0
+          || compareDecimalUint(retirementByteCapacity, retirementLayout.bytePool) < 0) {
+        fail('GRAPH_RESOURCE_CAPACITY', 'retirement-capacity resources cannot cover retirement-record layout capacity/bytePool');
+      }
+      if (compareDecimalUint(reclaimScratchCapacity, reclamation.maxScratchBytes) < 0) {
+        fail('GRAPH_RESOURCE_CAPACITY', 'reclamation scratch resources cannot cover maxScratchBytes');
+      }
+      if (compareDecimalUint(reclaimWorkCapacity, reclamation.maxWorkUnits) < 0) {
+        fail('GRAPH_RESOURCE_CAPACITY', 'reclamation work resources cannot cover maxWorkUnits');
+      }
+    }
     const edgeSlotCapacity = resources
       .filter(({ unit, pressureOutcome, scope }) => unit === 'slots' && pressureOutcome === 'edge-capacity' && scope === 'per-engine')
       .reduce((total, { maximum }) => addDecimalUint(total, maximum), '0');
@@ -758,4 +801,5 @@ export const graphConstants = Object.freeze({
   basePorts: Object.freeze([...BASE_PORTS]),
   reclaimPorts: Object.freeze([...RECLAIM_PORTS]),
   requiredFailures: Object.freeze([...REQUIRED_FAILURES]),
+  requiredReclaimFailures: Object.freeze([...REQUIRED_RECLAIM_FAILURES]),
 });

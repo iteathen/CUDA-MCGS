@@ -114,8 +114,8 @@ function baseChannel(profile, channelToken, requirement, semanticOwner, roles, s
       workClass: selected.workClass, descriptors: descriptors(profile, channelToken, options.workUnits),
       dependencies: [{
         id: `channel-dependency.${profile}.${channelToken}.producer`, producerRoles: roles.filter(({ kind }) => kind === 'producer').map(({ id }) => id),
-        requirement: consumptionClass === 'advisory' ? 'advisory' : 'required', producerChannel: null,
-        escapes: consumptionClass === 'advisory' ? ['failure', 'cancel', 'stop', 'fallback', 'stale'] : ['failure', 'cancel', 'stop', 'stale'],
+        requirement: consumptionClass, producerChannel: null,
+        escapes: consumptionClass === 'advisory' ? ['failure', 'cancel', 'stop', 'fallback', 'stale'] : consumptionClass === 'optional' ? ['failure', 'cancel', 'stop', 'skip', 'stale'] : ['failure', 'cancel', 'stop', 'stale'],
         holdsWorker: false, holdsMutableLease: false, maxWaitTransitions: '4096', fallback: consumptionClass === 'advisory' ? schemaReference(`cuda-mcgs.synthetic-${profile}-${channelToken}-owner-fallback`) : null,
       }],
       noProgress: { classifier: schemaReference(`cuda-mcgs.synthetic-${profile}-${channelToken}-no-progress-classifier`), producerService: 'required-before-no-progress', typedOutcome: 'channel-no-progress', hostDecision: 'none' },
@@ -161,7 +161,7 @@ function buildRequired(profile, stageResult, resourceResult, progressResult) {
   });
 }
 
-function buildSecondary(profile, channelToken, stageResult, resourceResult, progressResult) {
+function buildSecondary(profile, channelToken, stageResult, resourceResult, progressResult, consumption = 'advisory') {
   const ids = stageIds(); const graph = owner(stageResult, 'SPEC-0010'); const classes = classMap(resourceResult);
   const channelOwner = progressResult.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0004');
   const workClass = progressResult.normalized.workClasses.find(({ owner: id }) => id === channelOwner.id).id;
@@ -170,7 +170,7 @@ function buildSecondary(profile, channelToken, stageResult, resourceResult, prog
     { id: `channel-role.${profile}.secondary-consumer`, kind: 'consumer', capability: ids.auditCapability, stage: ids.commitStage, surface: ids.exitSurface, actions: ['observe'], multiplicity: '4' },
   ];
   return baseChannel(profile, channelToken, schemaReference('cuda-mcgs.channel-requirement.audit-feed'), graph.id, roles, { workClass }, {
-    requestResult: true, consumption: 'advisory', payloads: [payload(profile, channelToken, 'request', 'request', graph.id, '256'), payload(profile, channelToken, 'result', 'result', graph.id, '128')],
+    requestResult: true, consumption, payloads: [payload(profile, channelToken, 'request', 'request', graph.id, '256'), payload(profile, channelToken, 'result', 'result', graph.id, '128')],
     claim: { mode: 'finite-multi-consumer-immutable-borrow', maxClaims: '4', ownership: 'immutable-borrow', referenceAccounting: 'exact' },
     ordering: { kind: 'unordered', rule: null },
     capacity: { slots: '64', highAt: '32', criticalAt: '48', exhaustedAt: '64', maxReservations: '64', maxPending: '64', maxRetries: '4', maxAgeEpochs: '1024', cancellationObservationWorkUnits: '8' },
@@ -188,13 +188,13 @@ function statuses() {
 
 function buildProfile(profile, inspected, resourceResult, progressResult, stageResult, options = {}) {
   const required = options.required === true ? buildRequired(profile, stageResult, resourceResult, progressResult) : null;
-  const secondary = buildSecondary(profile, options.secondaryToken ?? 'synthetic-audit-feed', stageResult, resourceResult, progressResult);
+  const secondary = buildSecondary(profile, options.secondaryToken ?? 'synthetic-audit-feed', stageResult, resourceResult, progressResult, options.secondaryConsumption ?? 'advisory');
   const channels = [required, secondary].filter(Boolean);
   const selectedOwnerIds = new Set(channels.map(({ semanticOwner }) => semanticOwner));
   const selectedOwners = stageResult.normalized.owners.filter(({ id }) => selectedOwnerIds.has(id)).map(({ id, contract, profile: reference }) => ({ id, contract, profile: reference }));
   const resourceOwner = resourceResult.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0004');
   return {
-    schema: 'cuda-mcgs.channel-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence', contract: catalogContract(inspected, 'SPEC-0004'),
+    schema: 'cuda-mcgs.channel-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted', contract: catalogContract(inspected, 'SPEC-0004'),
     id: `channel.${profile}`, version: VERSION, generatorIdentity: contentIdentity(`${profile}:channel-profile-generator-v1`),
     resourcePlan: profileReference(resourceResult), progressPlan: profileReference(progressResult), stageProfile: profileReference(stageResult),
     resourceContribution: resourceOwner.profile, progressContribution: resourceOwner.profile, owners: selectedOwners, channels, statuses: statuses(),
@@ -210,7 +210,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, stageR
 export function buildChannelProfiles(inspected, resourceResult, progressResult, selectedStageResult, secondaryResourceResult, secondaryProgressResult, secondaryStageResult) {
   return [
     buildProfile('synthetic-evaluator-and-audit', inspected, resourceResult, progressResult, selectedStageResult, { required: true }),
-    buildProfile('synthetic-secondary-work', inspected, secondaryResourceResult, secondaryProgressResult, secondaryStageResult, { secondaryToken: 'synthetic-secondary-broadcast' }),
+    buildProfile('synthetic-secondary-work', inspected, secondaryResourceResult, secondaryProgressResult, secondaryStageResult, { secondaryToken: 'synthetic-secondary-broadcast', secondaryConsumption: 'optional' }),
   ];
 }
 

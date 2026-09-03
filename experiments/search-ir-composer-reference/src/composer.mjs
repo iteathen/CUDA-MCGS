@@ -15,7 +15,7 @@ import {
 const RESOLVED_INPUT_SCHEMA = 'cuda-mcgs.resolved-composer-input/0.2.0';
 const SEARCH_IR_REPRESENTATION = 'cuda-mcgs.search-ir/0.2.0';
 const PROGRAM_PACKAGE_SCHEMA = 'cuda-mcgs.program-package-profile/0.2.0';
-const STATUS = 'proposal-evidence';
+const STATUS = 'accepted';
 const PROFILE_TEMPLATE_FIELDS = [
   'schema',
   'representation',

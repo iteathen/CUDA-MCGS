@@ -309,7 +309,7 @@ function buildProfile(profile, inspected, domainResult, graphResult, domainSchem
     ...(evaluatorProfile ? [evaluatorProfile] : []),
   ];
   return {
-    schema: 'cuda-mcgs.policy-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence', contract: catalogContract(inspected),
+    schema: 'cuda-mcgs.policy-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted', contract: catalogContract(inspected),
     id: `policy.${profile}`, version: VERSION,
     domainProfile: domainReference(domainResult, domainSchemaSha), graphProfile: graphReference(graphResult, graphSchemaSha), evaluatorMode: options.evaluatorMode,
     roleHandlers: roleHandlers(domainResult, graphResult.normalized.mode), records: profileRecords,

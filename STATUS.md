@@ -1,83 +1,27 @@
 # CUDA-MCGS Status
 
-**Status:** Informational
+**Status:** Active
 
-**Updated:** 2026-09-03
+## ENGINE-CONTRACT-ACCEPTANCE-01 transition
 
-## Current repository state
+The protected baseline before #122 is `main@2a6bc8e1da9df85b3367f3f92bb3cec6f16ea241`. The active branch `accept/122-semantic-packet` is the ancestry-correct acceptance subject: it preserves the exact qualified #36 reference lineage at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841` and the later protected #193 CUDA-JS execution-boundary audit. Protected authority does not change until the exact reviewed acceptance head is integrated and read back.
 
-CUDA-MCGS is a public protected pre-release universal GPU-resident MCGS framework. Protected semantic authority remains product-neutral and device-resident by design. There is still no accepted production CUDA-MCGS runtime adapter, qualified CUDA-MCGS/CUDA-JS native compatible pair, stable public SDK, or product release.
+## Accepted semantic packet
 
-The current CUDA portfolio boundary audit is complete through CUDA-MCGS #193. The durable matrix is recorded in [`docs/architecture/2026-09-03-cuda-js-execution-boundary-audit.md`](docs/architecture/2026-09-03-cuda-js-execution-boundary-audit.md).
+The candidate promotes one product-neutral packet containing 12 contracts (SPEC-0000 and SPEC-0003 through SPEC-0013), 989 classified requirements, and the complete CUDA-free owner/reference evidence chain. Disposition is exactly 937 `accepted-reference` requirements plus 52 `deferred-native` compatible-pair requirements, with 0 pending requirements. The final reference route packet remains 352 direct non-Channel requirements plus 41 Channel requirements = 393/393.
 
-Audit sources:
+The Search IR 0.2 catalog, owner/profile schemas, deterministic Composer, restricted Search Program and MCGS execution-package/adapter-requirement boundary move together. The proposal-era locally invented CUDA-JS request projection is removed. CUDA-MCGS owns search semantics, finite requirements, semantic access and selected geometry/concurrency policy; `integration.cuda-js` will translate those requirements into supported public CUDA-JS objects. CUDA-JS remains sole owner of lower request vocabulary, provider facts, limits, validation, errors and lower resource lifecycle.
 
-- CUDA-MCGS protected semantic source: `f32724e88cc340c63382def1e5138be43e8e147f`;
-- CUDA-JS public lower source: `0.1.0-alpha.17@bc2700f2e5c654567c2e17bf8d67b882351b8681`;
-- CUDA-JS-Tensor independent consumer source: `ea591487c79ec1b3c1e184f4ddae761bd1d41bef`;
-- CUDA-NN independent consumer source: `ac97fee981b7789e11af2ec4a7ca40799eb08ddd`.
+## Qualification state
 
-## CUDA-JS execution boundary
+The generated accepted subject `d5b9fe9baa24dbafd51a9f90ed84e8d227f0e6fe` (tree `8d93d1ba5f2ecc1eb5990fa53ea256e1ad16f754`) passed the asserted acceptance run `33776887304` on 2026-09-03. That run proved the accepted Composer capsule at 882/882, regenerated every owner/reference input, passed governance/source-boundary verification, passed the full CUDA-free integration chain, retained the seven-entry final mutation matrix, closed all 393 reference routes, and retained exactly 52 native-deferred requirements.
 
-The repository split survives the audit without a new universal abstraction.
-
-CUDA-MCGS owns:
-
-- Search IR and reusable search semantics;
-- Graph/Policy/Evaluator/Resource/Progress/Output/Session/Stage/Channel meaning;
-- Search Program semantic roles and deterministic restricted Device-JS generation;
-- finite search-resource composition, pressure/exhaustion and search lifecycle;
-- selected search physical-profile policy, including explicit geometry/topology where materially chosen;
-- mapping lower CUDA-JS capability/failure facts into MCGS semantic dispositions;
-- the future `integration.cuda-js` adapter that translates MCGS-owned meaning into public lower requests.
-
-CUDA-JS owns:
-
-- device/target/runtime/context/compiler/linker/artifact/module/function mechanisms;
-- allocation/view and generic physical resource lifecycle;
-- launch validity/device limits, operation/prepared-DAG mechanics, hazards, synchronization and publication primitives;
-- provider/native resource identity, capability facts, errors, health and cleanup;
-- generated PTX/LTO/cubin/native realization and exact lower compatibility facts.
-
-CUDA-JS #180 concluded that the existing compiler/module/function/provider-plan/prepared-DAG LEGO pieces are the correct preparation seam; CUDA-MCGS does not need a new `PreparedExecutable` transaction. CUDA-JS #181 retained explicit expert grid/block control; CUDA-MCGS ADR-0023 independently requires selected search profiles to own their physical topology policy rather than imposing one universal scheduler.
-
-## Proposal-schema finding
-
-The current `schemas/search-ir/0.2.0/execution-package.schema.json` and `program-package-profile.schema.json` are proposal/reference evidence. Their lower-facing projections currently spell CUDA-JS-shaped function parameter kinds, device-memory request shapes, access vocabulary, grid/block/shared-memory records, pending-operation fields and lifecycle labels.
-
-Those schemas are not accepted CUDA-JS API authority and must not become one during a future semantic-acceptance transaction. The #193 audit classifies every such field as one of:
-
-- genuine MCGS semantic/resource requirement;
-- MCGS selected-profile policy over a generic primitive;
-- MCGS adapter translation whose validation authority remains public CUDA-JS;
-- opaque/mechanically lower-bound compatibility evidence;
-- copied lower schema/limit/provider/lifecycle fact to remove before acceptance.
-
-The proposal schemas themselves were deliberately not edited by #193 because they are coupled to the separately held future semantic-acceptance transaction. The required correction is recorded on the owning audit instead of mutating that held work.
-
-## Production-adapter gate
-
-CUDA-MCGS #125 remains the correct future owner for production `integration.cuda-js`, but it is not dependency-ready. It remains blocked by its separately held semantic prerequisite and by the requirement that the future accepted execution-package surface obey the #193 ownership matrix.
-
-When that prerequisite is explicitly resumed and separately completed, #125 must:
-
-1. consume only versioned public CUDA-JS package/capability contracts;
-2. translate accepted MCGS resource/search/profile meaning into lower requests without copied CUDA-JS schemas or limits;
-3. retain selected MCGS geometry/topology policy while letting CUDA-JS validate physical legality;
-4. compose the existing lower compiler/module/function/provider-plan/prepared-DAG LEGO resources rather than creating a second runtime lifecycle;
-5. use no native/private/deep-import workaround;
-6. qualify the resulting exact compatible pair before any native/support claim.
+The one-shot acceptance workflow and migration helpers were then removed from the branch. The cleaned subject must pass the repository's permanent exact-head PR/governance checks and the permanent `Engine reference integration` workflow before protected integration. The generated-subject qualification is construction evidence, not a substitute for that cleaned-head gate.
 
 ## Claim limits
 
-- The #193 audit is architecture/package-projection evidence, not native CUDA evidence.
-- Proposal/reference schemas remain non-production until their own acceptance transaction completes.
-- No production adapter, native CUDA-MCGS implementation, performance claim or stable SDK claim follows from #193.
-- Prior CUDA-JS-Tensor native evidence does not qualify CUDA-MCGS.
-- A future compatible-pair record binds exact MCGS and CUDA-JS identities; it does not transfer lower resource/operation ownership into MCGS.
+#122 establishes no native GPU correctness, physical publication/memory-ordering support, performance, stable SDK, multi-GPU support, UCI/chess/product behavior, external-consumer release, or exact CUDA-JS compatible-pair support claim. The later adapter currently targets public `cuda-js@0.1.0-alpha.17` / `bc2700f2e5c654567c2e17bf8d67b882351b8681`, subject to live-state revalidation when #125 begins.
 
-## Current critical path
+## Next dependency seam
 
-There is no dependency-ready production connector step in this refactor while the semantic prerequisite for #125 remains explicitly held. Do not start #125, add a native/private CUDA path, or silently accept the current lower-facing proposal schema copies.
-
-If that held semantic work is explicitly resumed and completes under its own authority, re-read the accepted execution-package surface against the protected #193 matrix, correct any remaining lower-facing ownership inversion as part of that acceptance, then begin #125 against the exact public CUDA-JS contract.
+Complete exact-head permanent qualification and review of the cleaned #122 subject, then guarded protected integration and commit/tree readback. Only after that readback does #125 `integration.cuda-js` become dependency-ready. #125 must compose existing public CUDA-JS LEGO resources and must not create a second runtime lifecycle, private/deep-import path, or native CUDA-MCGS escape hatch.

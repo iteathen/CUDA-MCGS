@@ -120,7 +120,7 @@ function normalizeContract(input, catalogById, label) {
   if (input?.kind === 'catalog') {
     exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'OUTPUT_CONTRACT_FIELDS', label);
     assertString(input.id, /^SPEC-[0-9]{4}$/, 'OUTPUT_CONTRACT_ID', `${label} id`);
-    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'OUTPUT_CONTRACT_ID', `${label} identity`);
+    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'OUTPUT_CONTRACT_ID', `${label} identity`);
     assertSha256(input.sha256, 'OUTPUT_CONTRACT_DIGEST', `${label} sha256`);
     const expected = catalogById.get(input.id);
     if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) fail('OUTPUT_CONTRACT_DRIFT', `${label} differs from frozen catalog`);
@@ -463,7 +463,7 @@ function normalizeProductData(input, index) {
 
 export function normalizeOutputProfile(input, inspectedCatalog, resourceResult, progressResult) {
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'resourcePlan', 'progressPlan', 'resourceContribution', 'progressContribution', 'contributors', 'terminalEnvelope', 'schemas', 'fields', 'terminal', 'observations', 'workspace', 'snapshot', 'publication', 'lifecycle', 'ports', 'statuses', 'permissions', 'consumerPolicy', 'diagnostics', 'compatibility', 'cleanup', 'programContribution', 'productData'], 'OUTPUT_ROOT_FIELDS', 'output profile');
-  if (input.schema !== OUTPUT_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('OUTPUT_SCHEMA', 'unsupported output schema/representation/status');
+  if (input.schema !== OUTPUT_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('OUTPUT_SCHEMA', 'unsupported output schema/representation/status');
   assertNamespacedId(input.id, 'OUTPUT_PROFILE_ID', 'output profile id'); assertVersion(input.version, 'OUTPUT_PROFILE_VERSION', 'output profile version');
   const contracts = inspectedCatalog?.contractSet?.contracts; if (!contracts) fail('OUTPUT_CATALOG', 'inspected catalog is required'); const catalogById = new Map(contracts.map((entry) => [entry.id, entry]));
   const contract = normalizeContract(input.contract, catalogById, 'output contract'); if (contract.id !== OUTPUT_CONTRACT) fail('OUTPUT_CONTRACT_ID', `output contract must select ${OUTPUT_CONTRACT}`);

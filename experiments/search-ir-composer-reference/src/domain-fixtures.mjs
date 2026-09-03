@@ -174,7 +174,7 @@ function common(profile, catalogById, overrides = {}) {
   return {
     schema: 'cuda-mcgs.domain-profile/0.2.0',
     representation: 'cuda-mcgs.search-ir/0.2.0',
-    status: 'proposal-evidence',
+    status: 'accepted',
     contract: catalogContract(catalogById, 'SPEC-0007'),
     id: `domain.${profile}`,
     version: VERSION,

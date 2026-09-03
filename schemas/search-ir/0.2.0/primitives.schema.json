@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/primitives.schema.json",
   "title": "CUDA-MCGS Search IR 0.2.0 shared representation primitives",
-  "description": "Representation-only primitives shared by proposal Search IR owner schemas. Semantic meaning remains with the referencing owner contract.",
+  "description": "Representation-only primitives shared by accepted Search IR owner schemas. Semantic meaning remains with the referencing owner contract.",
   "$defs": {
     "kebabId": {
       "type": "string",
@@ -28,59 +28,123 @@
     "contentIdentity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["algorithm", "sha256"],
+      "required": [
+        "algorithm",
+        "sha256"
+      ],
       "properties": {
-        "algorithm": { "const": "sha256" },
-        "sha256": { "$ref": "#/$defs/sha256" }
+        "algorithm": {
+          "const": "sha256"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
       }
     },
     "schemaReference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "version", "sha256"],
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z][a-z0-9.-]+/[0-9]+\\.[0-9]+\\.[0-9]+$" },
-        "version": { "$ref": "#/$defs/version" },
-        "sha256": { "$ref": "#/$defs/sha256" }
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]+/[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
       }
     },
     "catalogContractReference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "id", "specificationIdentity", "sha256"],
+      "required": [
+        "kind",
+        "id",
+        "specificationIdentity",
+        "sha256"
+      ],
       "properties": {
-        "kind": { "const": "catalog" },
-        "id": { "type": "string", "pattern": "^SPEC-[0-9]{4}$" },
-        "specificationIdentity": { "type": "string", "pattern": "^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\\.[0-9]+\\.[0-9]+-draft$" },
-        "sha256": { "$ref": "#/$defs/sha256" }
+        "kind": {
+          "const": "catalog"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^SPEC-[0-9]{4}$"
+        },
+        "specificationIdentity": {
+          "type": "string",
+          "pattern": "^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
       }
     },
     "namespacedContractReference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "id", "version", "schema", "sha256"],
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "schema",
+        "sha256"
+      ],
       "properties": {
-        "kind": { "const": "namespaced" },
-        "id": { "$ref": "#/$defs/namespacedId" },
-        "version": { "$ref": "#/$defs/version" },
-        "schema": { "type": "string", "pattern": "^[a-z][a-z0-9.-]+/[0-9]+\\.[0-9]+\\.[0-9]+$" },
-        "sha256": { "$ref": "#/$defs/sha256" }
+        "kind": {
+          "const": "namespaced"
+        },
+        "id": {
+          "$ref": "#/$defs/namespacedId"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]+/[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
       }
     },
     "contractReference": {
       "oneOf": [
-        { "$ref": "#/$defs/catalogContractReference" },
-        { "$ref": "#/$defs/namespacedContractReference" }
+        {
+          "$ref": "#/$defs/catalogContractReference"
+        },
+        {
+          "$ref": "#/$defs/namespacedContractReference"
+        }
       ]
     },
     "publicReference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["ownerProfile", "id", "version"],
+      "required": [
+        "ownerProfile",
+        "id",
+        "version"
+      ],
       "properties": {
-        "ownerProfile": { "$ref": "#/$defs/namespacedId" },
-        "id": { "$ref": "#/$defs/namespacedId" },
-        "version": { "$ref": "#/$defs/version" }
+        "ownerProfile": {
+          "$ref": "#/$defs/namespacedId"
+        },
+        "id": {
+          "$ref": "#/$defs/namespacedId"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        }
       }
     }
   }

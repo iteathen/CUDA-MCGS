@@ -1,0 +1,63 @@
+name: Stage behavioral reference
+
+on:
+  push:
+    branches:
+      - experimental/portfolio
+      - ref/stage-01
+    paths:
+      - '.github/workflows/stage-reference.yml'
+      - 'docs/specs/SPEC-0003-search-stage-and-extension-surface.md'
+      - 'docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md'
+      - 'schemas/search-ir/0.2.0/requirement-coverage.json'
+      - 'schemas/search-ir/0.2.0/stage-profile.schema.json'
+      - 'experiments/search-ir-composer-reference/**'
+      - 'experiments/search-semantics-reference/fixtures/stage-cases.json'
+      - 'experiments/search-semantics-reference/src/**'
+      - 'experiments/search-semantics-reference/run-stage.mjs'
+      - 'scripts/run-search-ir-composer-reference.mjs'
+      - 'scripts/export-search-ir-composer-stage-profiles.mjs'
+      - 'scripts/run-stage-reference.mjs'
+      - 'scripts/verify-stage-ci-gate.mjs'
+  pull_request:
+    paths:
+      - '.github/workflows/stage-reference.yml'
+      - 'docs/specs/SPEC-0003-search-stage-and-extension-surface.md'
+      - 'docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md'
+      - 'schemas/search-ir/0.2.0/requirement-coverage.json'
+      - 'schemas/search-ir/0.2.0/stage-profile.schema.json'
+      - 'experiments/search-ir-composer-reference/**'
+      - 'experiments/search-semantics-reference/fixtures/stage-cases.json'
+      - 'experiments/search-semantics-reference/src/**'
+      - 'experiments/search-semantics-reference/run-stage.mjs'
+      - 'scripts/run-search-ir-composer-reference.mjs'
+      - 'scripts/export-search-ir-composer-stage-profiles.mjs'
+      - 'scripts/run-stage-reference.mjs'
+      - 'scripts/verify-stage-ci-gate.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26
+      - name: Verify Stage CI gate
+        run: node scripts/verify-stage-ci-gate.mjs
+      - name: Compose normalized profiles
+        run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Export Stage profiles
+        run: node scripts/export-search-ir-composer-stage-profiles.mjs
+      - name: Run Stage reference
+        run: node scripts/run-stage-reference.mjs
+      - name: Upload Stage evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: stage-reference-evidence
+          if-no-files-found: error
+          path: experiments/search-semantics-reference/build/stage-evidence*.json

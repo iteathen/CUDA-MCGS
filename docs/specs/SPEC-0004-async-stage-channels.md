@@ -1,8 +1,10 @@
 # SPEC-0004: Nonblocking Async Stage Channels
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.3.0
+**Version:** 0.3.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS optional internal channel item/publication/ownership-transfer semantics
 
@@ -10,11 +12,11 @@
 
 **Consumers:** selected Search Stages/surfaces/capabilities, evaluator-like and secondary work adapters, finite-resource and device-progress composition, Search IR, Search Composer, restricted Device-JS programs, conformance and package identity
 
-This proposal defines an optional finite internal device-resident dataflow brick. It lets selected producers publish work/data for later selected consumers without keeping a worker blocked or exporting source-owner meaning into the channel. It is not the external Search Session sideband, a scheduler, an output transport, a CUDA queue implementation or a production runtime.
+This specification defines an optional finite internal device-resident dataflow brick. It lets selected producers publish work/data for later selected consumers without keeping a worker blocked or exporting source-owner meaning into the channel. It is not the external Search Session sideband, a scheduler, an output transport, a CUDA queue implementation or a production runtime.
 
 ## 1. Authority, identity and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0004@0.3.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0004@0.3.0`.
 
 Normative authority and dependencies are:
 
@@ -25,7 +27,7 @@ Normative authority and dependencies are:
 - [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) for JavaScript/restricted Device-JS CUDA-MCGS source and CUDA-JS capability escalation;
 - accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) for publication and finite-resource foundations;
 - accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for normalized Search IR/reference foundations; and
-- decision-complete proposal [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) for optional stage/checkpoint/surface/capability permissions.
+- decision-complete accepted [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) for optional stage/checkpoint/surface/capability permissions.
 
 Decision-complete core proposals [`SPEC-0000`](SPEC-0000-framework-requirements.md), [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md), [`SPEC-0011`](SPEC-0011-finite-search-resources.md), [`SPEC-0012`](SPEC-0012-device-owned-search-progress.md) and [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md) are coupled proposal inputs. They become normative dependencies through the later atomic semantic-acceptance gate. [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) is downstream composition adjacency. Accepted authority governs conflicts.
 
@@ -33,7 +35,7 @@ CHANNEL-AUTH-001. This specification applies only to channels selected by an ext
 
 CHANNEL-AUTH-002. A channel transports source-owner payloads and effects but does not own their domain/policy/evaluator/output/product meaning. Selection requires an explicit semantic owner for each payload/effect.
 
-CHANNEL-AUTH-003. This proposal does not authorize native implementation. Backend-neutral acceptance and concrete CUDA publication/operation qualification are separate gates.
+CHANNEL-AUTH-003. This specification does not authorize native implementation. Backend-neutral acceptance and concrete CUDA publication/operation qualification are separate gates.
 
 ## 2. Governing invariant, purpose and exclusions
 
@@ -281,7 +283,7 @@ CHANNEL-CONFORMANCE-003. Native qualification separately proves public CUDA-JS r
 
 ## 16. Semantic acceptance blockers
 
-This proposal cannot become accepted until:
+Acceptance under #122 required:
 
 - every normative requirement maps to strict normalized schema/validation and an independent CUDA-free reference case or explicit cross-specification proof;
 - SPEC-0005 is decision-complete and its composition/package requirements agree with selected channel identity/deletion;
@@ -291,3 +293,6 @@ This proposal cannot become accepted until:
 - `ENGINE-CONTRACT-ACCEPTANCE-01` accepts this contract atomically with its schemas, reference evidence and coupled proposal dependencies on one exact revision.
 
 CUDA-JS #123 and an exact compatible pair remain mandatory before claiming a native internal-channel profile. Native publication/race, device progress/resource/performance, cancellation and platform evidence qualify concrete production profiles after semantic acceptance; they are not circular prerequisites for accepting backend-neutral channel meaning.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

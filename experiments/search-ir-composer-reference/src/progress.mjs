@@ -20,7 +20,13 @@ const PROGRESS_SCHEMA = 'cuda-mcgs.progress-profile/0.2.0';
 const REPRESENTATION = 'cuda-mcgs.search-ir/0.2.0';
 const PROGRESS_CONTRACT = 'SPEC-0012';
 const WORK_KINDS = ['ordinary', 'producer-unblocking', 'must-drain', 'terminal-output', 'external-control', 'resource-recovery'];
+const RESULT_VISIBLE_WORK_KINDS = new Set(['must-drain', 'terminal-output']);
 const TERMINAL_STATES = ['completed', 'failed', 'cancelled', 'abandoned', 'stale-disposed', 'quarantined'];
+const STOP_TERMINAL_STATES = new Map([
+  ['abandon', 'abandoned'],
+  ['cancel', 'cancelled'],
+  ['stale-dispose', 'stale-disposed'],
+]);
 const NO_PROGRESS_OUTCOMES = [
   'terminal-quiescent', 'legitimate-external-wait', 'recoverable-resource-wait', 'producer-pending', 'deadlock',
   'livelock', 'starvation', 'orphaned-work', 'stale-only', 'counter-exhausted',
@@ -39,6 +45,31 @@ const CLEANUP_KINDS = [
 function assertEnum(value, allowed, code, label) {
   if (!allowed.includes(value)) fail(code, `${label} is invalid`);
   return value;
+}
+
+export function assertProgressStopDispositionTerminalState(stopDisposition, terminalStates, label = 'progress work class') {
+  const requiredTerminal = STOP_TERMINAL_STATES.get(stopDisposition) ?? null;
+  if (requiredTerminal && !terminalStates.includes(requiredTerminal)) {
+    fail('PROGRESS_WORK_TERMINAL', `${label} stop disposition ${stopDisposition} requires ${requiredTerminal} terminal state`);
+  }
+  return requiredTerminal;
+}
+
+export function requiredProgressTerminalStates(kind, stopDisposition) {
+  if (!WORK_KINDS.includes(kind)) fail('PROGRESS_WORK_KIND', `progress work kind ${kind} is invalid`);
+  if (!['service', 'drain', 'abandon', 'cancel', 'stale-dispose'].includes(stopDisposition)) fail('PROGRESS_WORK_STOP', `progress stop disposition ${stopDisposition} is invalid`);
+  const required = new Set(['completed', 'failed', 'cancelled', 'stale-disposed']);
+  if (RESULT_VISIBLE_WORK_KINDS.has(kind)) required.add('quarantined');
+  const stopTerminal = STOP_TERMINAL_STATES.get(stopDisposition) ?? null;
+  if (stopTerminal) required.add(stopTerminal);
+  return [...required].sort(compareRaw);
+}
+
+export function assertProgressTerminalStateReachability(kind, stopDisposition, terminalStates, label = 'progress work class') {
+  const required = requiredProgressTerminalStates(kind, stopDisposition);
+  const missing = required.filter((state) => !terminalStates.includes(state));
+  if (missing.length !== 0) fail('PROGRESS_WORK_TERMINAL', `${label} omits reachable terminal disposition(s): ${missing.join(', ')}`);
+  return required;
 }
 
 function positiveDecimal(value, code, label) {
@@ -102,7 +133,7 @@ function normalizeContract(input, catalogById, label) {
   if (input?.kind === 'catalog') {
     exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'PROGRESS_CONTRACT_FIELDS', label);
     assertString(input.id, /^SPEC-[0-9]{4}$/, 'PROGRESS_CONTRACT_ID', `${label} id`);
-    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'PROGRESS_CONTRACT_ID', `${label} identity`);
+    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'PROGRESS_CONTRACT_ID', `${label} identity`);
     assertSha256(input.sha256, 'PROGRESS_CONTRACT_DIGEST', `${label} sha256`);
     const expected = catalogById.get(input.id);
     if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) fail('PROGRESS_CONTRACT_DRIFT', `${label} differs from frozen catalog`);
@@ -187,16 +218,17 @@ function normalizeWorkClass(input, index, contributorById, resourceClassById, re
   exactKeys(input, ['id', 'version', 'owner', 'kind', 'payload', 'inputStates', 'outputStates', 'readiness', 'resources', 'reserve', 'bounds', 'fairness', 'batch', 'claim', 'step', 'retry', 'cancellation', 'stale', 'stopDisposition', 'terminalStates', 'status', 'cleanup'], 'PROGRESS_WORK_FIELDS', `work class ${index}`);
   assertNamespacedId(input.id, 'PROGRESS_WORK_ID', `work class ${index} id`);
   assertVersion(input.version, 'PROGRESS_WORK_VERSION', `${input.id} version`);
+  const kind = assertEnum(input.kind, WORK_KINDS, 'PROGRESS_WORK_KIND', `${input.id} kind`);
   const owner = contributorById.get(input.owner);
   if (!owner || !owner.workClasses.includes(input.id)) fail('PROGRESS_WORK_OWNER', `${input.id} owner is invalid`);
   const resources = namespacedSet(input.resources, 'PROGRESS_WORK_RESOURCE', `${input.id} resources`);
   for (const resource of resources) if (resourceClassById.get(resource)?.contributor !== owner.id) fail('PROGRESS_WORK_RESOURCE', `${input.id} resource is absent or owned by another contributor`);
   const reserve = input.reserve === null ? null : (assertNamespacedId(input.reserve, 'PROGRESS_WORK_RESERVE', `${input.id} reserve`), input.reserve);
   if (reserve && (!reserveById.has(reserve) || !reserveById.get(reserve).eligibleOwners.includes(owner.id))) fail('PROGRESS_WORK_RESERVE', `${input.id} reserve is absent or unavailable to its owner`);
-  const requiredReservePurpose = input.kind === 'terminal-output' ? 'terminal-result'
-    : (['producer-unblocking', 'must-drain', 'resource-recovery'].includes(input.kind) ? 'progress-cleanup' : null);
+  const requiredReservePurpose = kind === 'terminal-output' ? 'terminal-result'
+    : (['producer-unblocking', 'must-drain', 'resource-recovery'].includes(kind) ? 'progress-cleanup' : null);
   if (requiredReservePurpose && reserveById.get(reserve)?.purpose !== requiredReservePurpose) fail('PROGRESS_WORK_RESERVE', `${input.id} requires the ${requiredReservePurpose} reserve`);
-  if (input.kind === 'resource-recovery' && resources.length === 0) fail('PROGRESS_WORK_RESOURCE', `${input.id} recovery must name its owned resource state`);
+  if (kind === 'resource-recovery' && resources.length === 0) fail('PROGRESS_WORK_RESOURCE', `${input.id} recovery must name its owned resource state`);
   exactKeys(input.retry, ['staleSafe', 'idempotence'], 'PROGRESS_RETRY_FIELDS', `${input.id} retry`);
   if (input.retry.staleSafe !== true) fail('PROGRESS_RETRY_STALE', `${input.id} retry must be stale-safe`);
   assertNamespacedId(input.fairness, 'PROGRESS_WORK_FAIRNESS', `${input.id} fairness`);
@@ -206,15 +238,15 @@ function normalizeWorkClass(input, index, contributorById, resourceClassById, re
   for (const [label, publication] of [['readiness', readiness.publication], ['step', step.publication]]) {
     if (!owner.publicTransitions.some((transition) => schemaKey(transition) === schemaKey(publication))) fail('PROGRESS_WORK_PUBLICATION', `${input.id} ${label} publication is not an owner public transition`);
   }
-  const terminalStates = enumSet(input.terminalStates, TERMINAL_STATES, 'PROGRESS_WORK_TERMINAL', `${input.id} terminalStates`, 3);
-  for (const required of ['failed', 'cancelled']) if (!terminalStates.includes(required)) fail('PROGRESS_WORK_TERMINAL', `${input.id} omits ${required} terminal disposition`);
+  const terminalStates = enumSet(input.terminalStates, TERMINAL_STATES, 'PROGRESS_WORK_TERMINAL', `${input.id} terminalStates`, 4);
   const stopDisposition = assertEnum(input.stopDisposition, ['service', 'drain', 'abandon', 'cancel', 'stale-dispose'], 'PROGRESS_WORK_STOP', `${input.id} stopDisposition`);
-  const requiredStopDisposition = ['must-drain', 'terminal-output'].includes(input.kind) ? 'drain'
-    : (['producer-unblocking', 'resource-recovery'].includes(input.kind) ? 'service' : null);
+  const requiredStopDisposition = ['must-drain', 'terminal-output'].includes(kind) ? 'drain'
+    : (['producer-unblocking', 'resource-recovery'].includes(kind) ? 'service' : null);
   if (requiredStopDisposition && stopDisposition !== requiredStopDisposition) fail('PROGRESS_WORK_STOP', `${input.id} must use ${requiredStopDisposition} after stop`);
+  assertProgressTerminalStateReachability(kind, stopDisposition, terminalStates, input.id);
   return {
     id: input.id, version: input.version, owner: input.owner,
-    kind: assertEnum(input.kind, WORK_KINDS, 'PROGRESS_WORK_KIND', `${input.id} kind`),
+    kind,
     payload: normalizeSchemaReference(input.payload, `${input.id} payload`),
     inputStates: namespacedSet(input.inputStates, 'PROGRESS_WORK_STATE', `${input.id} inputStates`, 1),
     outputStates: namespacedSet(input.outputStates, 'PROGRESS_WORK_STATE', `${input.id} outputStates`, 1),
@@ -455,7 +487,7 @@ function normalizeProductData(input, index) {
 
 export function normalizeProgressProfile(input, inspectedCatalog, resourceResult, profileResults = []) {
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'resourcePlan', 'resourceContribution', 'contributors', 'workClasses', 'dependencies', 'fairnessClasses', 'noProgress', 'stop', 'closure', 'lifecycle', 'ports', 'statuses', 'diagnostics', 'compatibility', 'cleanup', 'programContribution', 'productData'], 'PROGRESS_ROOT_FIELDS', 'progress profile');
-  if (input.schema !== PROGRESS_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('PROGRESS_SCHEMA', 'unsupported progress schema/representation/status');
+  if (input.schema !== PROGRESS_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('PROGRESS_SCHEMA', 'unsupported progress schema/representation/status');
   assertNamespacedId(input.id, 'PROGRESS_PROFILE_ID', 'progress profile id'); assertVersion(input.version, 'PROGRESS_PROFILE_VERSION', 'progress profile version');
   const contracts = inspectedCatalog?.contractSet?.contracts; if (!contracts) fail('PROGRESS_CATALOG', 'inspected catalog is required');
   const catalogById = new Map(contracts.map((contract) => [contract.id, contract]));

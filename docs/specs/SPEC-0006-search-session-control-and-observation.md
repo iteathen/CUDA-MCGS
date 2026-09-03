@@ -1,18 +1,20 @@
 # SPEC-0006: Search Session Root, Advance, Reroot, Attention, and Observation
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.2.0
+**Version:** 0.2.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS optional Search Session external lifecycle semantics
 
 **Consumers:** framework contract; Search IR; Search Composer; CUDA-MCGS-to-CUDA-JS package; reference/native conformance; domain/search products
 
-This proposal defines the optional universal external-lifecycle brick for a long-lived Search Session. It distinguishes four different authority/control operations: initial `root`, minimum-work `advance` to an already-ready realized successor, general `reroot`, and non-structural `attention`. It also coordinates finite command identity, stale-work generations, cancellation/completion, and bounded observation request/borrow while device-owned search continues. It does not define source-owner search semantics, an observation payload, ranked moves, chess, a scheduler, or one sideband mechanism.
+This specification defines the optional universal external-lifecycle brick for a long-lived Search Session. It distinguishes four different authority/control operations: initial `root`, minimum-work `advance` to an already-ready realized successor, general `reroot`, and non-structural `attention`. It also coordinates finite command identity, stale-work generations, cancellation/completion, and bounded observation request/borrow while device-owned search continues. It does not define source-owner search semantics, an observation payload, ranked moves, chess, a scheduler, or one sideband mechanism.
 
 ## 1. Authority, applicability, and normative references
 
-Specification identity is `CUDA-MCGS-SPEC-0006@0.2.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0006@0.2.0`.
 
 A concrete engine selects either `session-absent` or one normalized Search Session profile. `session-absent` retains the ordinary one-shot engine/search/terminal-result lifecycle owned by the framework/output contracts and contributes exact zero live-session command, advance, reroot, attention, observation-request, session-generation, sideband, or retained-session state.
 
@@ -24,7 +26,7 @@ A concrete engine selects either `session-absent` or one normalized Search Sessi
 - [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) owns accepted foundational Search IR representation/reference semantics within its scope.
 - [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md), [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md), [`SPEC-0009`](SPEC-0009-evaluator-contract.md), [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md), [`SPEC-0011`](SPEC-0011-finite-search-resources.md), [`SPEC-0012`](SPEC-0012-device-owned-search-progress.md), and [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md) own/propose adjacent domain, policy, evaluator, graph, resource, progress, and output meaning.
 
-Accepted authority governs conflicts. This proposal does not authorize production implementation.
+Accepted authority governs conflicts. This specification does not authorize production implementation.
 
 ## 2. Scope and non-goals
 
@@ -233,6 +235,9 @@ A later native SESSION-002-class experiment may exercise actual concurrent GPU w
 
 ## 17. Acceptance blockers
 
-This proposal cannot become accepted until the integrated owner contracts are reconciled, four-operation Session schema/normalization/reference evidence is decision-complete, finite root/reroot pressure and independent operation deletion are proven, device-owned progress and stale/superseded work are proven, and the CUDA-MCGS-to-CUDA-JS package identifies generic mechanisms without importing them into Session meaning.
+This specification cannot become accepted until the integrated owner contracts are reconciled, four-operation Session schema/normalization/reference evidence is decision-complete, finite root/reroot pressure and independent operation deletion are proven, device-owned progress and stale/superseded work are proven, and the CUDA-MCGS-to-CUDA-JS package identifies generic mechanisms without importing them into Session meaning.
 
 Production Session lowering remains prohibited until semantic acceptance. Changing root/advance/reroot/attention authority, operation ordering, reroot prepare/commit/abort, stale/reuse coordination, observation, cancellation/completion/teardown, permissions, or compatibility invalidates affected Search IR/normalizers/generated packages/product adapters/reference approvals. Historical artifacts retain their exact original terminology as provenance.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

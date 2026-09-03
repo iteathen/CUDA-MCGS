@@ -4,8 +4,8 @@ import { compareRaw } from './validation.mjs';
 
 const VERSION = '0.1.0';
 const AUTHORITY_REVISION = '711a0570115ecf08d005a07408ee77f3c6671cba';
-const CUDA_JS_REVISION = '05008fb988558e909cb3802fa12a73d612e70bf0';
-const CUDA_JS_PACKAGE = 'cuda-js@0.1.0-alpha.7';
+const CUDA_JS_REVISION = 'bc2700f2e5c654567c2e17bf8d67b882351b8681';
+const CUDA_JS_PACKAGE = 'cuda-js@0.1.0-alpha.17';
 
 function sha256(value) {
   return createHash('sha256').update(value, 'utf8').digest('hex');
@@ -66,7 +66,7 @@ function ownerSource(profileResult, semanticOwner, kind, suffix = '') {
     },
     function: {
       name: functionName,
-      kind: 'device',
+      executionRole: 'device-callable',
       parameters: [],
       returns: 'u32',
       sourceUnit: `source.${idToken(owner)}.${idToken(semanticOwner)}${suffix ? `-${idToken(suffix)}` : ''}`,
@@ -130,7 +130,7 @@ function sourceAndFunctions(context, profileId, label) {
   const entrySource = 'function engine_step(output) { output[gpu.thread.globalX()] = 0; }\n';
   const entryUnitId = `source.${label}.engine-entry`;
   sourceUnits.push({ id: entryUnitId, ownerProfile: profileId, semanticOwner: profileId, kind: 'composer-entry', source: entrySource, sourceIdentity: sourceIdentity(entrySource), contributionIdentity: contentIdentity(`${label}:composer-entry-contribution`), functions: ['engine_step'], provenance: provenance(`${label}-composer-entry`) });
-  functions.push({ name: 'engine_step', kind: 'kernel', parameters: [{ name: 'output', type: 'ptr<u32>' }], returns: 'void', sourceUnit: entryUnitId, ownerProfile: profileId, semanticRole: 'engine.execute', calls: [], helpers: ['gpu.thread.global-x'] });
+  functions.push({ name: 'engine_step', executionRole: 'runtime-entry', parameters: [{ name: 'output', type: 'ptr<u32>' }], returns: 'void', sourceUnit: entryUnitId, ownerProfile: profileId, semanticRole: 'engine.execute', calls: [], helpers: ['gpu.thread.global-x'] });
 
   const programUnits = ordinaryFunctions.map((name) => {
     const fn = functions.find((entry) => entry.name === name);
@@ -168,7 +168,7 @@ function resourceRequirements(context) {
     id: `package-resource.${idToken(provider.id)}`,
     ownerProfile: context.resourceResult.normalized.id,
     providerRequirement: provider.id,
-    kind: provider.unit === 'bytes' && provider.memorySpaces.some((space) => ['device-search', 'device-publication'].includes(space)) ? 'device-memory' : 'semantic-only',
+    materialization: provider.unit === 'bytes' && provider.memorySpaces.some((space) => ['device-search', 'device-publication'].includes(space)) ? 'resident-storage' : 'semantic-only',
     unit: provider.unit,
     capacity: provider.capacity,
     alignment: provider.alignment,
@@ -195,13 +195,13 @@ export function buildProgramPackageProfile(inspected, context, label) {
   const source = sourceAndFunctions(context, profileId, label);
   const requirements = publicRequirements(context, profileId);
   const resources = resourceRequirements(context);
-  const outputResource = resources.find(({ kind }) => kind === 'device-memory');
-  if (!outputResource) throw new Error(`${label} fixture has no device-memory resource`);
+  const outputResource = resources.find(({ materialization }) => materialization === 'resident-storage');
+  if (!outputResource) throw new Error(`${label} fixture has no resident-storage resource`);
   const semanticOwners = new Set([profileId, ...profiles.map(({ id }) => id)]);
   for (const capability of context.stageResult?.normalized.capabilities ?? []) semanticOwners.add(capability.id);
   for (const channel of context.channelResult?.normalized.channels ?? []) semanticOwners.add(channel.id);
   const input = {
-    schema: 'cuda-mcgs.program-package-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence', contract: catalogContract(inspected, 'SPEC-0005'), id: profileId, version: VERSION,
+    schema: 'cuda-mcgs.program-package-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted', contract: catalogContract(inspected, 'SPEC-0005'), id: profileId, version: VERSION,
     semanticEngine: {
       contractSet: identityReference(inspected.identities.contractSet), authority: { repository: 'iteathen/CUDA-MCGS', revision: AUTHORITY_REVISION }, profiles,
       resourcePlan: profileReference(context.resourceResult), progressPlan: profileReference(context.progressResult), outputProfile: profileReference(context.outputResult),
@@ -211,7 +211,7 @@ export function buildProgramPackageProfile(inspected, context, label) {
     },
     generator: { id: 'composer.reference-search-program', version: VERSION, revision: AUTHORITY_REVISION, language: 'restricted-device-js', canonicalization: 'utf8-lf-source-units-by-js-code-unit-v1', maxSourceBytes: '1048576', maxFunctions: '1024', maxCallDepth: '64' },
     sourceUnits: source.sourceUnits, functions: source.functions, programUnits: source.programUnits, publicRequirements: requirements, resources,
-    operations: [{ id: `operation.${label}.engine-step`, entryPoint: 'engine_step', bindings: [{ parameter: 'output', source: { kind: 'resource', resource: outputResource.id } }], grid: ['1', '1', '1'], block: ['64', '1', '1'], dynamicSharedBytes: '0', maxPending: '1', lifecycle: schemaReference('cuda-js.operation-lifecycle') }],
+    operations: [{ id: `operation.${label}.engine-step`, entryPoint: 'engine_step', bindings: [{ parameter: 'output', source: { kind: 'resource', resource: outputResource.id } }], grid: ['1', '1', '1'], block: ['64', '1', '1'], dynamicSharedBytes: '0', maxPending: '1' }],
     manifests: { result: schemaReference('cuda-mcgs.package-result'), observation: schemaReference('cuda-mcgs.package-observation'), diagnostic: schemaReference('cuda-mcgs.package-diagnostic'), cancellation: schemaReference('cuda-mcgs.package-cancellation'), completion: schemaReference('cuda-mcgs.package-completion'), cleanup: schemaReference('cuda-mcgs.package-cleanup') },
     provenance: provenance(`${label}-package`),
     compatibility: { cudaJs: { repository: 'iteathen/CUDA-JS', revision: CUDA_JS_REVISION, package: CUDA_JS_PACKAGE }, apiSchema: '1', capabilityNegotiation: 'pre-allocation-fail-closed', fallback: 'none', requiredEvidence: [schemaReference('cuda-mcgs.reference-composition-evidence'), schemaReference('cuda-js.compatible-pair-evidence')] },
@@ -226,8 +226,8 @@ export function buildCudaJsRealizationFixture(packageResult, label, artifactCoun
     status: 'success',
     deviceProgram: contentIdentity(`${label}:cuda-js-device-program`),
     artifacts: Array.from({ length: artifactCount }, (_, index) => contentIdentity(`${label}:opaque-artifact:${index}`)),
-    resources: packageResult.normalized.cudaJs.resources.map((_, index) => contentIdentity(`${label}:opaque-resource:${index}`)),
-    operations: packageResult.normalized.cudaJs.operations.map((_, index) => contentIdentity(`${label}:opaque-operation:${index}`)),
+    resources: packageResult.normalized.cudaJsAdapter.resourceRequirements.map((_, index) => contentIdentity(`${label}:opaque-resource:${index}`)),
+    operations: packageResult.normalized.cudaJsAdapter.operationRequirements.map((_, index) => contentIdentity(`${label}:opaque-operation:${index}`)),
     runtime: contentIdentity(`${label}:opaque-runtime`),
     cleanup: { status: 'retained-evidence', disposition: schemaReference('cuda-js.reference-cleanup-disposition') },
   };
@@ -240,8 +240,8 @@ export function buildCudaJsFailureFixture(label, errorClass = 'unsupported-capab
 export function buildCompatiblePairFixture(packageResult, programResult, realizationResult, label) {
   return {
     schema: 'cuda-mcgs.compatible-pair-record/0.2.0', status: 'reference-fixture',
-    cudaMcgs: { repository: 'iteathen/CUDA-MCGS', revision: AUTHORITY_REVISION, package: 'cuda-mcgs@0.0.0-proposal', searchIr: { ...packageResult.normalized.semantic.engineIdentity }, searchProgram: identityReference(programResult.identity), executionPackage: identityReference(packageResult.identity) },
-    cudaJs: { repository: 'iteathen/CUDA-JS', revision: CUDA_JS_REVISION, package: CUDA_JS_PACKAGE, apiSchema: '1', capabilities: packageResult.normalized.cudaJs.requirements.map((entry) => ({ ...entry })), deviceProgram: { ...realizationResult.normalized.deviceProgram }, artifacts: realizationResult.normalized.artifacts.map((entry) => ({ ...entry })), resources: realizationResult.normalized.resources.map((entry) => ({ ...entry })), operations: realizationResult.normalized.operations.map((entry) => ({ ...entry })), runtime: { ...realizationResult.normalized.runtime } },
+    cudaMcgs: { repository: 'iteathen/CUDA-MCGS', revision: AUTHORITY_REVISION, package: 'cuda-mcgs@0.2.0-semantic-reference', searchIr: { ...packageResult.normalized.semantic.engineIdentity }, searchProgram: identityReference(programResult.identity), executionPackage: identityReference(packageResult.identity) },
+    cudaJs: { repository: 'iteathen/CUDA-JS', revision: CUDA_JS_REVISION, package: CUDA_JS_PACKAGE, apiSchema: '1', capabilities: packageResult.normalized.cudaJsAdapter.publicContracts.map((entry) => ({ ...entry })), deviceProgram: { ...realizationResult.normalized.deviceProgram }, artifacts: realizationResult.normalized.artifacts.map((entry) => ({ ...entry })), resources: realizationResult.normalized.resources.map((entry) => ({ ...entry })), operations: realizationResult.normalized.operations.map((entry) => ({ ...entry })), runtime: { ...realizationResult.normalized.runtime } },
     environment: { platform: contentIdentity(`${label}:platform`), architecture: contentIdentity(`${label}:architecture`), device: contentIdentity(`${label}:device`), toolchain: contentIdentity(`${label}:toolchain`) },
     evidence: [contentIdentity(`${label}:reference-evidence`)],
     claim: { scope: 'CUDA-free opaque-realization reference fixture only', qualification: 'reference-only', native: false },

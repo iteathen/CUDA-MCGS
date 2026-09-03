@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/resolved-composer-input.schema.json",
-  "title": "CUDA-MCGS canonical resolved Composer input proposal evidence",
+  "title": "CUDA-MCGS canonical resolved Composer input accepted semantic/reference contract",
   "description": "Closed pre-admission envelope for one complete Program Package profile and its material resolution-rule provenance. Caller invocation history is deliberately outside semantic identity.",
   "type": "object",
   "additionalProperties": false,
@@ -9,7 +9,7 @@
   "properties": {
     "schema": { "const": "cuda-mcgs.resolved-composer-input/0.2.0" },
     "representation": { "const": "cuda-mcgs.search-ir/0.2.0" },
-    "status": { "const": "proposal-evidence" },
+    "status": { "const": "accepted" },
     "profile": { "$ref": "program-package-profile.schema.json" },
     "resolution": {
       "type": "object",

@@ -1,8 +1,10 @@
 # SPEC-0012: Device-Owned Search Progress and Closure
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.1.0
+**Version:** 0.1.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS universal device-owned progress semantics
 
@@ -10,17 +12,17 @@
 
 **Consumers:** Search Session and framework contracts; Search IR; Search Composer; every selected work producer/consumer; deterministic reference and native conformance
 
-This proposal defines the product-neutral progress brick that owns device-side work readiness, service/fairness, typed no-progress, stopping/drain and closure semantics. It does not select a persistent kernel, queue, CUDA Graph, cooperative launch, stream topology, exact interleaving or host relaunch loop.
+This specification defines the product-neutral progress brick that owns device-side work readiness, service/fairness, typed no-progress, stopping/drain and closure semantics. It does not select a persistent kernel, queue, CUDA Graph, cooperative launch, stream topology, exact interleaving or host relaunch loop.
 
 ## 1. Authority, identity, and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0012@0.1.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0012@0.1.0`.
 
 Every finite engine selects exactly one normalized progress profile covering every selected domain, graph, policy, evaluator, output, resource, session and capability/product work class. A removed owner contributes no work class, readiness edge, resource or dispatcher residue.
 
-Normative dependencies are ADR-0002, ADR-0003, ADR-0005, ADR-0018 and ADR-0019; accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md); and integrated proposals [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md), [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md), [`SPEC-0009`](SPEC-0009-evaluator-contract.md), [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md), [`SPEC-0011`](SPEC-0011-finite-search-resources.md) and [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md).
+Normative dependencies are ADR-0002, ADR-0003, ADR-0005, ADR-0018 and ADR-0019; accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md); and accepted [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md), [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md), [`SPEC-0009`](SPEC-0009-evaluator-contract.md), [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md), [`SPEC-0011`](SPEC-0011-finite-search-resources.md) and [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md).
 
-Proposal [`SPEC-0004`](SPEC-0004-async-stage-channels.md) is informative extension-dataflow adjacency; it does not own engine-wide progress. Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative external-lifecycle adjacency. Accepted authority governs conflicts. This proposal authorizes no production implementation.
+Accepted [`SPEC-0004`](SPEC-0004-async-stage-channels.md) is informative extension-dataflow adjacency; it does not own engine-wide progress. Accepted [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative external-lifecycle adjacency. Accepted authority governs conflicts. This specification authorizes no production implementation.
 
 ## 2. Purpose and reading map
 
@@ -48,7 +50,7 @@ Deleting chess, evaluator, live observation, optional capabilities, a queue impl
 
 A **work class** is a normalized owner-defined finite transition kind with input readiness, output/terminal states, resource needs, cancellation points and service contract. A **work incarnation** is one stale-safe admitted instance.
 
-`pending` means a declared prerequisite is not ready and a producer/escape remains possible. `ready` means all service prerequisites and resources required to claim are available. `claimed/running` means one device participant owns the service attempt. `terminal` means completed, failed, cancelled, abandoned or stale-disposed exactly once.
+`pending` means a declared prerequisite is not ready and a producer/escape remains possible. `ready` means all service prerequisites and resources required to claim are available. `claimed/running` means one device participant owns the service attempt. `terminal` means completed, failed, cancelled, abandoned, stale-disposed or, for irreversible result-visible work, quarantined exactly once. `quarantined` is the typed fatal terminal disposition used when such work cannot safely report completion.
 
 A **progress step** is a finite owner transition that completes work, changes a dependency/readiness/resource fact, advances a bounded continuation, or contributes to stop/drain/closure. A **service opportunity** is a scheduler-neutral chance for a ready class/item to attempt such a step.
 
@@ -80,7 +82,7 @@ PROGRESS-GRAPH-005. A removed owner/capability deletes its classes/edges/counter
 
 PROGRESS-WORK-001. Admission validates class/profile, owner payload reference/incarnation, root/work epoch, required resources and representable identity before publishing a work incarnation.
 
-PROGRESS-WORK-002. Admission/accounting conserves `admitted = pending + ready + claimed/running + terminal`; failed admission is not live work and each admitted item reaches exactly one terminal disposition.
+PROGRESS-WORK-002. Admission/accounting conserves `admitted = pending + ready + claimed/running + terminal`; failed admission is not live work and each admitted item reaches exactly one terminal disposition. Each normalized work-class declaration includes every terminal disposition reachable from that class's generic Progress operations, result-visibility semantics and selected stop disposition; `service` and `drain` stop behavior do not invent an additional terminal state.
 
 PROGRESS-WORK-003. Ready publication follows complete prerequisite writes with required visibility. Queue presence, reserved resources, non-null payload or producer start never imply ready.
 
@@ -178,7 +180,7 @@ Required cases include:
 
 | Case ID | Required falsifier |
 |---|---|
-| `progress-profile-strict-normalization` | Missing producer/escape/fairness/closure is accepted. |
+| `progress-profile-strict-normalization` | Missing producer/escape/fairness/closure or reachable terminal disposition is accepted. |
 | `progress-ready-after-publication` | Work runs on incomplete payload. |
 | `progress-pending-yields-worker` | Waiter spins while blocking producer. |
 | `progress-accounting-conservation` | Admitted work disappears/duplicates. |
@@ -196,7 +198,7 @@ Required cases include:
 | `progress-closure-complete` | Terminal publishes with live work/waiter/resource. |
 | `progress-scheduler-semantic-parity` | Two mechanisms violate stable invariants. |
 | `progress-owner-deletion-zero-residue` | Removed evaluator/observation/capability leaves work. |
-| `progress-oracle-sensitivity` | Removing readiness/fairness/closure checks still passes. |
+| `progress-oracle-sensitivity` | Removing readiness/fairness/closure or terminal-transition guards still passes. |
 
 Fixtures cover serial and parallel schedules, evaluator absence/batching, graph cycles, resource pressure/recovery, stop during backup, stale root-advance work, optional observation, deadlock/livelock/starvation and at least two mechanism-neutral scheduler models.
 
@@ -217,3 +219,6 @@ Production lowering remains prohibited. Native mechanism/performance evidence qu
 Changing work ownership/readiness/dependency, fairness, no-progress, stop/drain/closure, epoch or resource meaning invalidates session/framework contracts, Search IR/normalizers, generated packages, scheduler evidence and approvals. The integration spine reconciles invalidation.
 
 Implementation, testing, review, security, generated/JIT/ABI, performance and cleanup trigger specialist doctrine from root agent authority.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

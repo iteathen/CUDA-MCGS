@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/compatible-pair-record.schema.json",
-  "title": "CUDA-MCGS and CUDA-JS exact compatible-pair record proposal evidence",
+  "title": "CUDA-MCGS and CUDA-JS exact compatible-pair evidence record",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "status", "cudaMcgs", "cudaJs", "environment", "evidence", "claim", "cleanup"],

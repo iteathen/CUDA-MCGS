@@ -122,6 +122,7 @@ function buildWorkClass(profile, contributor, resourcePlan, transitionsByOwner) 
   const id = workId(profile, contributor.id);
   const evaluator = contributor.contract.id === 'SPEC-0009';
   const continuing = evaluator || kind === 'must-drain';
+  const disposition = stopDisposition(kind);
   return {
     id, version: VERSION, owner: contributor.id, kind,
     payload: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(contributor.id)}-payload`),
@@ -151,8 +152,8 @@ function buildWorkClass(profile, contributor, resourcePlan, transitionsByOwner) 
     retry: { staleSafe: true, idempotence: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(contributor.id)}-retry-idempotence`) },
     cancellation: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(contributor.id)}-cancellation`),
     stale: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(contributor.id)}-stale-disposition`),
-    stopDisposition: stopDisposition(kind),
-    terminalStates: ['completed', 'failed', 'cancelled', 'stale-disposed', 'quarantined'],
+    stopDisposition: disposition,
+    terminalStates: ['completed', 'failed', 'cancelled', ...(disposition === 'abandon' ? ['abandoned'] : []), 'stale-disposed', 'quarantined'],
     status: 'progress-work-complete',
     cleanup: schemaReference(`cuda-mcgs.synthetic-${profile}-${ownerToken(contributor.id)}-work-cleanup`),
   };
@@ -233,7 +234,7 @@ function buildProfile(profile, inspected, resourceResult, options = {}) {
   const hasLiveOutput = resourcePlan.classes.some(({ contributor: owner, id }) => owner === outputContributor.id && id.endsWith('class-live-observation'));
   const selectedProgressContribution = resourcePlan.contributors.find(({ contract }) => contract.id === 'SPEC-0012');
   return {
-    schema: 'cuda-mcgs.progress-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence',
+    schema: 'cuda-mcgs.progress-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted',
     contract: catalogContract(inspected, 'SPEC-0012'), id: `progress.${profile}`, version: VERSION,
     resourcePlan: profileReference(resourceResult), resourceContribution: selectedProgressContribution.profile,
     contributors, workClasses, dependencies, fairnessClasses,

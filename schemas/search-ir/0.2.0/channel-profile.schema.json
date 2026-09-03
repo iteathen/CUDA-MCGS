@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/channel-profile.schema.json",
-  "title": "CUDA-MCGS Async Stage Channel profile proposal evidence",
+  "title": "CUDA-MCGS Async Stage Channel profile accepted semantic/reference contract",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -11,7 +11,7 @@
   "properties": {
     "schema": { "const": "cuda-mcgs.channel-profile/0.2.0" },
     "representation": { "const": "cuda-mcgs.search-ir/0.2.0" },
-    "status": { "const": "proposal-evidence" },
+    "status": { "const": "accepted" },
     "contract": { "$ref": "#/$defs/catalogContract" },
     "id": { "$ref": "#/$defs/namespacedId" },
     "version": { "$ref": "primitives.schema.json#/$defs/semanticVersion" },
@@ -135,7 +135,7 @@
       "required": ["id", "producerRoles", "requirement", "producerChannel", "escapes", "holdsWorker", "holdsMutableLease", "maxWaitTransitions", "fallback"],
       "properties": {
         "id": { "$ref": "#/$defs/namespacedId" }, "producerRoles": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/namespacedId" } },
-        "requirement": { "enum": ["required", "advisory"] }, "producerChannel": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/namespacedId" }] },
+        "requirement": { "enum": ["required", "optional", "advisory"] }, "producerChannel": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/namespacedId" }] },
         "escapes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" } },
         "holdsWorker": { "const": false }, "holdsMutableLease": { "const": false }, "maxWaitTransitions": { "$ref": "#/$defs/decimalUint" },
         "fallback": { "oneOf": [{ "type": "null" }, { "$ref": "primitives.schema.json#/$defs/schemaReference" }] }

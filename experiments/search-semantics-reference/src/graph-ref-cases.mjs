@@ -179,6 +179,10 @@ export function registerGraphRefCases({ defineCase, fixture, projection, nodeEvi
     assert.equal(protectedResult.kind, 'protected');
     assert.deepEqual(oracle.beginRetirementBarrier({ expectedKind: 'state-node', reference }), { kind: 'blocked', protections: 1 });
     assert.equal(oracle.observeRetirementBarrier(reference), false);
+    assert.deepEqual(
+      oracle.acquireProtection({ expectedKind: 'state-node', owner: 'late-after-retirement-intent', reference }),
+      { kind: 'invalid', code: 'invalid-reference' },
+    );
     assert.equal(oracle.releaseProtection({ token: protectedResult.token }).kind, 'released');
     expectInvalid(oracle.releaseProtection({ token: protectedResult.token }), 'stale-reference');
     assert.equal(oracle.beginRetirementBarrier({ expectedKind: 'state-node', reference }).kind, 'retirement-barrier');

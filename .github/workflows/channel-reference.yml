@@ -1,0 +1,61 @@
+name: Channel reference evidence
+
+on:
+  push:
+    branches:
+      - experimental/portfolio
+      - ref/channel-evidence-01
+    paths:
+      - '.github/workflows/channel-reference.yml'
+      - 'docs/development/2026-09-02-ref-channel-evidence-01-assessment-and-plan.md'
+      - 'docs/specs/SPEC-0004-async-stage-channels.md'
+      - 'schemas/search-ir/0.2.0/requirement-coverage.json'
+      - 'schemas/search-ir/0.2.0/channel-profile.schema.json'
+      - 'experiments/search-ir-composer-reference/fixtures/channel-evidence-routes.json'
+      - 'experiments/search-ir-composer-reference/src/channel.mjs'
+      - 'experiments/search-ir-composer-reference/src/channel-fixtures.mjs'
+      - 'experiments/search-ir-composer-reference/run.mjs'
+      - 'experiments/search-ir-composer-reference/run-channel-evidence.mjs'
+      - 'scripts/run-search-ir-composer-reference.mjs'
+      - 'scripts/run-channel-reference-evidence.mjs'
+      - 'scripts/verify-channel-ci-gate.mjs'
+  pull_request:
+    paths:
+      - '.github/workflows/channel-reference.yml'
+      - 'docs/development/2026-09-02-ref-channel-evidence-01-assessment-and-plan.md'
+      - 'docs/specs/SPEC-0004-async-stage-channels.md'
+      - 'schemas/search-ir/0.2.0/requirement-coverage.json'
+      - 'schemas/search-ir/0.2.0/channel-profile.schema.json'
+      - 'experiments/search-ir-composer-reference/fixtures/channel-evidence-routes.json'
+      - 'experiments/search-ir-composer-reference/src/channel.mjs'
+      - 'experiments/search-ir-composer-reference/src/channel-fixtures.mjs'
+      - 'experiments/search-ir-composer-reference/run.mjs'
+      - 'experiments/search-ir-composer-reference/run-channel-evidence.mjs'
+      - 'scripts/run-search-ir-composer-reference.mjs'
+      - 'scripts/run-channel-reference-evidence.mjs'
+      - 'scripts/verify-channel-ci-gate.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26
+      - name: Verify Channel CI gate
+        run: node scripts/verify-channel-ci-gate.mjs
+      - name: Compose normalized profiles
+        run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Run Channel evidence
+        run: node scripts/run-channel-reference-evidence.mjs
+      - name: Upload Channel evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: channel-reference-evidence
+          if-no-files-found: error
+          path: experiments/search-ir-composer-reference/build/channel-evidence*.json

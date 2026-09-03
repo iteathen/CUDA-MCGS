@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cuda-mcgs.dev/schemas/search-ir/0.2.0/session-profile.schema.json",
-  "title": "CUDA-MCGS Search Session four-operation profile proposal evidence",
+  "title": "CUDA-MCGS Search Session four-operation profile accepted semantic/reference contract",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -14,7 +14,7 @@
   "properties": {
     "schema": { "const": "cuda-mcgs.session-profile/0.2.0" },
     "representation": { "const": "cuda-mcgs.search-ir/0.2.0" },
-    "status": { "const": "proposal-evidence" },
+    "status": { "const": "accepted" },
     "contract": { "$ref": "#/$defs/catalogContract" },
     "id": { "$ref": "#/$defs/namespacedId" },
     "version": { "$ref": "primitives.schema.json#/$defs/semanticVersion" },

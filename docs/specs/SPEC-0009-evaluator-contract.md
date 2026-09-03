@@ -1,8 +1,10 @@
 # SPEC-0009: Evaluator Capabilities, Resident Execution, and Result Readiness
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.1.0
+**Version:** 0.1.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS universal evaluator semantics
 
@@ -10,11 +12,11 @@
 
 **Consumers:** search policy, result/observation, finite-resource, device-progress and Search Session contracts; Search IR; Search Composer; domain/product adapters; graph owner-region composition; deterministic reference and native conformance
 
-This proposal defines the product-neutral evaluator brick that owns selected evaluator capabilities, finite requests, input encoding, device-resident execution meaning, batching, workspace, internal result readiness, caches, reroot reuse classification, and advance compatibility/provenance. It does not require a neural model, scalar value, action ranking, a host inference loop, one batch layout, an external output payload, a CUDA mechanism or an evaluator at all.
+This specification defines the product-neutral evaluator brick that owns selected evaluator capabilities, finite requests, input encoding, device-resident execution meaning, batching, workspace, internal result readiness, caches, reroot reuse classification, and advance compatibility/provenance. It does not require a neural model, scalar value, action ranking, a host inference loop, one batch layout, an external output payload, a CUDA mechanism or an evaluator at all.
 
 ## 1. Authority, identity, and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0009@0.1.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0009@0.1.0`.
 
 Every concrete finite CUDA-MCGS engine declares evaluator selection as either `absent` or one normalized evaluator profile. A selected profile may contain one or more non-overlapping capabilities. Examples include candidate proposal, estimate, distribution, proof, constraint, feature or namespaced product capabilities; the names do not assign policy or product meaning by implication.
 
@@ -27,13 +29,13 @@ Normative dependencies are:
 - [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) for JavaScript/restricted Device-JS production ownership and CUDA-JS capability escalation;
 - accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) for evaluator-output publication, finite resources, stopping and valid-partial foundations;
 - accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for foundational normalized Search IR/reference meaning within its current scope;
-- proposal [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md) for state-view, history, role, action and terminal-outcome meaning;
-- proposal [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md) for evaluator request/use, source adaptation, policy values and backup meaning; and
-- proposal [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md) for graph objects, typed references, opaque owner regions, publication and reclamation.
+- accepted [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md) for state-view, history, role, action and terminal-outcome meaning;
+- accepted [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md) for evaluator request/use, source adaptation, policy values and backup meaning; and
+- accepted [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md) for graph objects, typed references, opaque owner regions, publication and reclamation.
 
-Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for root epochs and reuse. The Search Stage/Async Channel proposals are possible later composition/lowering inputs, not prerequisites for this core semantic contract. Product evaluator specifications, experiments, model formats and implementations remain evidence beneath this proposal.
+Accepted [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for root epochs and reuse. The Search Stage/Async Channel proposals are possible later composition/lowering inputs, not prerequisites for this core semantic contract. Product evaluator specifications, experiments, model formats and implementations remain evidence beneath this proposal.
 
-Accepted authority governs conflicts. This proposal neither supersedes another specification nor authorizes production implementation.
+Accepted authority governs conflicts. This specification neither supersedes another specification nor authorizes production implementation.
 
 ## 2. Purpose, reading map, and required outcome
 
@@ -473,9 +475,9 @@ These examples do not select a neural framework, tensor layout, batch size, cach
 
 ## 20. Acceptance blockers and downstream invalidation
 
-This proposal is decision-complete only when review finds no unresolved capability, input/key, request, output/perspective, artifact/state, batching/workspace, publication/cache, progress, reuse, range, lifecycle, compatibility, security or cleanup ambiguity.
+Acceptance review under #122 found no unresolved capability, input/key, request, output/perspective, artifact/state, batching/workspace, publication/cache, progress, reuse, range, lifecycle, compatibility, security or cleanup ambiguity.
 
-Acceptance remains blocked until:
+Acceptance under #122 required:
 
 1. normalized Search IR/schema represents every EVAL-IR obligation and rejects semantic ambiguity;
 2. the deterministic reference executes all required fixtures/cases and readiness/cache-key oracle-sensitivity mutation;
@@ -490,3 +492,6 @@ Production evaluator lowering remains prohibited until that acceptance. Native D
 A change to evaluator ownership, capability/mode, input/key, request/result lifecycle, output perspective/schema, resident artifact/state, batching/workspace, publication/cache, failure/cancellation or reuse invalidates affected policy adapters/statistics, output/resource/progress/session contracts, Search IR/schema/normalizers, graph owner layouts, generated packages, persisted sessions/caches, reference/native evidence and review approvals. The ENGINE-CONTRACT-01 integration spine records and reconciles invalidation before dependents continue.
 
 Implementation, test, review, persistence, security, generated/JIT/ABI, performance/search-quality and cleanup work triggers the specialist doctrine routed from root `AGENTS.md` and `agent_files/AGENTS.md`.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

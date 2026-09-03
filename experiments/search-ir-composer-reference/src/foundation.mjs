@@ -95,7 +95,7 @@ function normalizeCatalogContract(input, catalogById, role, label) {
   exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'FOUNDATION_CONTRACT_FIELDS', label);
   if (input.kind !== 'catalog') fail('FOUNDATION_CONTRACT_KIND', `${label} must be a catalog contract`);
   assertString(input.id, /^SPEC-[0-9]{4}$/, 'FOUNDATION_CONTRACT_ID', `${label} id`);
-  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'FOUNDATION_CONTRACT_IDENTITY', `${label} specificationIdentity`);
+  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'FOUNDATION_CONTRACT_IDENTITY', `${label} specificationIdentity`);
   assertSha256(input.sha256, 'FOUNDATION_CONTRACT_DIGEST', `${label} sha256`);
   const expectedContractId = CATALOG_ROLE_CONTRACT.get(role);
   if (expectedContractId !== input.id) fail('FOUNDATION_ROLE_CONTRACT', `${role} must select ${expectedContractId}`);
@@ -243,7 +243,7 @@ export function normalizeFrameworkSelection(input, inspectedCatalog) {
   if (input.schema !== FRAMEWORK_SELECTION_SCHEMA || input.representation !== SEARCH_IR_REPRESENTATION) {
     fail('FOUNDATION_SCHEMA', 'unsupported framework-selection schema/representation');
   }
-  if (input.status !== 'proposal-evidence') fail('FOUNDATION_STATUS', 'framework selection must remain proposal evidence');
+  if (input.status !== 'accepted') fail('FOUNDATION_STATUS', 'framework selection must remain proposal evidence');
   const contractSet = inspectedCatalog?.contractSet;
   if (!contractSet) fail('FOUNDATION_CATALOG', 'inspected contract set is required');
   const catalogById = new Map(contractSet.contracts.map((contract) => [contract.id, contract]));

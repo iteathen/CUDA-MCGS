@@ -2,115 +2,91 @@
 
 **Status:** Informational
 
-This CUDA-free experiment is the behavioral reference/conformance capsule for `ENGINE-REFERENCE-01`. It is deliberately split into owner-local LEGO bricks rather than one reference engine. Current completed Graph bricks are NODE/transposition, EDGE/expansion, REF/reference-protection and PATH/occurrences. The current hosted-qualified candidate adds ROOT/protected-anchor semantics; RECLAIM and later owners remain unfinished.
+This CUDA-free experiment is the behavioral/reference evidence lane for `ENGINE-REFERENCE-01`. Semantic owners keep their own bounded oracles; the final integration layer consumes their canonical evidence and verifies cross-owner closure without becoming another interpreter.
 
-## Current ROOT candidate
+## Authority and current candidate base
 
-Branch: `ref/graph-root-01`  
-Protected base: `main@e4069458ece47bbea0c2770204fa21fffbde6bb6`  
-Hosted semantic checkpoint: `d6b091e7c1afc6c09eb7e562cd7f72eb2773874d`  
-Qualification run: `33107176873`
+Protected semantic authority remains:
 
-ROOT is not protected-main integrated until the final PR is squash-merged and reproduced on the squash SHA.
+`main@3ecac11e3576bd063760bc9572f79bea78acd031`
 
-Exact candidate evidence:
+The exact integrated candidate/reference input to `REF-INTEGRATE-01` is:
 
-- Composer `879/879`; representation/composition `ca5119c2d50e6ba218ab962ede9ad94d8c90f1d031b008ab74d92166d0ef4529`;
-- Domain `49/49`, direct `47/47`; evidence `f186412a9b8d964c7f92e4c4000942768fa0ae81d62349c2528fd3aba12aa5e7`;
-- Graph projection `89ee04a47d8516ad02e33e884d8f35db9573840f58db140c6cbafe79178e7fd7`;
-- NODE `13/13`, direct `11/11`, evidence `4299dccecd33f6ef38c50f144e84316d00c7046a81ed6206b6e2e645b6683f74`;
-- EDGE `16/16`, direct `10/10`, evidence `54b83935d320e6bd656c740ec2f3d8be062e3932bdf6e748c8315f26245faf58`;
-- REF `14/14`, direct `8/8`, evidence `e3370158d1234dd3642d11c4458c9c390abcc3f62a04a75dd68d00faf6c4676d`;
-- PATH `14/14`, direct `8/8`, evidence `af8f140e45f7c2942ec4b09b7d752f49b3eeb28f1cdc5b8c3b74887d34dd4318`;
-- root-control projection `2c71df25fff213f515aae02a01e210292a8e9b76fc84e14ab6cafb251fbbc9f1`;
-- ROOT `14/14`, direct `6/6`, evidence `7e4fe6bf748ec110bebc1798d7742e03b89909df84da709f2fdeb51a42311ed0`.
+`experimental/portfolio@85c20d794746031d201f72bc78fce25ff9f69c3d`
 
-See [`RESULTS.md`](RESULTS.md) for canonical byte counts, selected profile identities and claim limits.
+tree `5eadec7f403a388ea096f983ebf2e87eca2465f0`.
 
-## Owner boundaries
+That candidate already contains the qualified Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Framework, terminal, Session, Stage, and Channel reference leaves. Candidate integration is not protected #122 acceptance, native CUDA qualification, production readiness, or product support.
 
-### Neutral harness and Domain
+## Active final reference leaf
 
-The neutral harness owns deterministic schedule/evidence mechanics only. Domain owns state/history/equality/action/transition/terminal/path-relation meaning. Graph never interprets Domain bytes.
+Issue #36 / `REF-INTEGRATE-01` uses branch `ref/integrate-01`.
 
-### Graph NODE
+The final verifier is intentionally thin:
 
-Owns state-node/transposition claim, collision verification, finite local admission and ready/failed publication.
+- `run-integration.mjs` consumes generated owner evidence only;
+- `run-integration-gate.mjs` freezes the exact input evidence identities and executes integration-boundary mutations;
+- `integration-cases.json` names required product-neutral, deletion, schedule, and replica-neutrality witnesses already owned by existing capsules;
+- `run-engine-reference-integration.mjs` regenerates the complete evidence chain before running the final gate;
+- `engine-reference-integration.yml` qualifies the packet on Node 26 and retains the evidence artifact.
 
-### Graph EDGE
+No Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session, Stage, Channel, or Framework state machine is reimplemented here. No native/CUDA/private CUDA-JS path is introduced.
 
-Owns parent-local edge/action/child-link and expansion generation/batch storage/publication. It does not own Policy selection or multiplicity meaning.
+## Final packet contract
 
-### Graph REF
+The final packet must prove exactly:
 
-Owns typed reference validation, arena/incarnation/generation validity, stale rejection, finite protection admission, generation-safe protection tokens and protect-vs-retire ordering.
+- `352` direct non-Channel `ENGINE-REFERENCE-01` behavioral requirements;
+- `41` SPEC-0004 Channel requirements through the existing Channel owner evidence;
+- `393` CUDA-free reference requirements total;
+- `52` native-compatible-pair requirements still deferred;
+- one exact Composer composition identity across all consumers;
+- exact presence of all required owner evidence packets;
+- materially different product-neutral instances;
+- optional owner/capability/product deletion and zero-residue behavior;
+- materially different legal schedule witnesses;
+- finite independent semantic replicas whose opaque device labels do not alter one-device meaning;
+- content-sensitive final evidence identity;
+- no product-specific or native-support claim.
 
-### Graph PATH
+Multi-device evidence is deliberately limited to device-count-neutral semantic packaging. It does not define cross-device coordination, aggregation semantics beyond terminal-only evidence packaging, or multi-GPU support.
 
-Owns finite path/occurrence storage, ordered occurrence access, REF-mediated validation/protection/generation, protection-before-visibility and identity-before-Domain-path-relation ordering. It does not decide cycle/repetition response.
+## Red-before-green evidence
 
-### Graph ROOT
+The first final-verifier checkpoint intentionally omitted the integration witness fixture. Run `33707203690` at head `6b5cb57521ba3a656e7e75ab2902d1630691eb41` regenerated every upstream owner capsule successfully and then failed exactly with `INTEGRATION_FIXTURE_MISSING`. The retained artifact is `9875632375`.
 
-Owns finite protected root-anchor storage and its Graph-local lifecycle. It consumes REF for node protection/generation and consumes a generated projection of the already-normalized Session root/advance/reroot/attention contract.
+The first green packet run `33707424655` then exposed a review-level evidence gap: the live packet was asserted, but the promised integration mutation matrix did not explicitly demonstrate rejection of all required corruption classes. No owner semantic defect was found.
 
-ROOT explicitly does **not** own current-root selection, root epoch, operation choice, retained-state classification or reclamation. Those facts remain with Session/owning semantic components.
+The repaired gate on checkpoint `a58997d444e33bc1697c2cd92249ecd8f5017aa0` passed run `33707930265`:
 
-## ROOT profile corrections
+- baseline integration cases `11/11`;
+- direct routes `352`;
+- Channel routes `41`;
+- reference total `393`;
+- native deferred `52`;
+- integration-boundary mutations `7/7` detected;
+- baseline integration evidence `85373be650852a997cb4d57f5fbc6b972e0c5e5925cff496933bb1a47b078a46`, `14594` canonical bytes;
+- mutation-gate evidence `183f753e2595c3401e2642563edaa84ffbfd20083d6f44fc0bb259d60da58046`, `4542` canonical bytes;
+- artifact `9875893868`, digest `sha256:c3a8c7a4dc1bf363c0eacd335ed2282bb62dac7ec0ffa0e4ff9e17af45997404`.
 
-ROOT falsification found and corrected three representation gaps:
-
-- root-anchor storage now has explicit finite resource funding;
-- total protection-capacity slots must fund both protection-record and root-anchor storage;
-- root-anchor and protection-record terminal states explicitly reset privately to `free` before generation-safe reuse.
-
-The normalizer rejects missing funding or missing reset semantics. No new ROOT-specific pressure code was invented; the existing `protection-capacity` family remains authoritative.
+The mutation matrix detects missing owner evidence, substituted owner identity, missing required witness, false native-route promotion, Channel route loss, divergent replica semantics, and final evidence-identity corruption. File mutations occur only in the disposable CI workspace, are restored in `finally`, and the exact baseline packet is rerun afterward.
 
 ## Run
 
-Use Node.js 26 or newer.
-
-Full ROOT dependency chain:
+Use Node.js 26 or newer:
 
 ```bash
-node scripts/run-search-ir-composer-reference.mjs
-node scripts/export-search-ir-composer-graph-profiles.mjs
-node scripts/run-graph-node-reference.mjs
-node scripts/run-graph-ref-reference.mjs
-node scripts/run-graph-path-reference.mjs
-node scripts/run-graph-root-reference.mjs
+node scripts/run-engine-reference-integration.mjs
 ```
 
-The permanent `Graph ROOT reference` CI job runs this chain and retains the generated root-control projection and Graph evidence artifacts. EDGE remains a separate required regression job.
+This regenerates the owner evidence chain and runs both the final packet verifier and mutation gate.
 
-Focused ROOT examples:
+## Current gate
 
-```bash
-node scripts/run-graph-root-reference.mjs --case graph-root-reroot-resolves-and-protects-before-authority-commit
-node scripts/run-graph-root-reference.mjs --case graph-root-old-work-protection-survives-authority-change
-node scripts/run-graph-root-reference.mjs --case graph-root-oracle-sensitivity-eager-prior-release
-```
+Current-state documentation is being reconciled on `ref/integrate-01`. The real draft PR against `experimental/portfolio` is the next qualification surface because it triggers both the dedicated final integration gate and the full repository/documentation matrix on the same candidate head.
 
-Generated machine evidence under `build/` is disposable. Checked-in fixtures/source and exact retained identities are the durable coordinates.
-
-## ROOT case bank
-
-The bounded 14-case ROOT capsule covers all six direct requirements:
-
-- exact upstream Composer/Graph/NODE/REF/PATH/root-control binding;
-- root/advance/reroot/attention separation;
-- initial protected anchor with Session-owned current root;
-- generation-safe anchor reuse;
-- advance over a ready successor without reroot/reclamation work;
-- replacement resolve/protect before authority commit;
-- replacement pressure preserving the prior root;
-- opaque owner reroot-disposition delegation;
-- old-work protection surviving authority change;
-- shared transposed-node survival after one occurrence is superseded;
-- attention with zero Graph effect;
-- visible-before-protection mutation detection;
-- eager-prior-root-release mutation detection; and
-- direct `GRAPH-ROOT-*` coverage accounting.
+After all exact-head PR workflows and a fresh complete author review are green, freeze the exact head/tree and stop for fresh repository-owner exact-head authorization before candidate integration. Authorization previously supplied for PR #191 does not authorize #36.
 
 ## Claim limits
 
-Passing ROOT proves only the bounded CUDA-free semantic facts above. It does not prove `GRAPH-RECLAIM-*`, native CUDA, a production graph implementation, physical scheduling, performance, contract acceptance, release readiness or multi-GPU support. RECLAIM starts only after ROOT is integrated and read back from protected main.
+This is CUDA-free, product-neutral reference evidence. It does not establish protected #122 semantic acceptance, native Device-JS/CUDA lowering, release/acquire races, physical GPU progress, multi-GPU support, performance, production readiness, release readiness, stable SDK compatibility, or downstream product semantics.

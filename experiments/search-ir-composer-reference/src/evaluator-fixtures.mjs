@@ -342,7 +342,7 @@ function buildProfile(profile, inspected, domainResult, graphResult, domainSchem
   const keyFacts = [...new Set([...inputs.flatMap(({ keyFacts }) => keyFacts), ...(options.artifact ? ['artifact-generation'] : []), ...(options.mutable ? ['state-generation'] : []), ...(options.sensitive ? ['batch-context'] : [])])];
   const cacheSelected = options.cache === true;
   return {
-    schema: 'cuda-mcgs.evaluator-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence',
+    schema: 'cuda-mcgs.evaluator-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted',
     contract: catalogContract(inspected, 'SPEC-0009'), policyContract: catalogContract(inspected, 'SPEC-0008'),
     id: `evaluator.${profile}`, version: VERSION,
     mode: options.proposal ? (options.value ? 'combined' : 'proposal-only') : 'evaluation-only',
@@ -371,7 +371,7 @@ export function buildEvaluatorProfiles(inspected, domainResults, graphResults, d
     { input: buildProfile('synthetic-proposal-only-stateless', inspected, domainResults[2], graphResults[3], domainSchemaSha, graphSchemaSha, { proposal: true, value: null, maximumItems: '1' }), domain: domainResults[2], graph: graphResults[3] },
     { input: buildProfile('synthetic-proof-evaluation-only', inspected, domainResults[2], graphResults[2], domainSchemaSha, graphSchemaSha, { proposal: false, value: 'proof', artifact: true, artifactKind: 'table', workspace: true, maximumItems: '1' }), domain: domainResults[2], graph: graphResults[2] },
     { input: buildProfile('synthetic-analytic-evaluation-only', inspected, domainResults[0], graphResults[0], domainSchemaSha, graphSchemaSha, { proposal: false, value: 'scalar', maximumItems: '1' }), domain: domainResults[0], graph: graphResults[0] },
-    { input: buildProfile('synthetic-batch-sensitive-resumable', inspected, domainResults[1], graphResults[1], domainSchemaSha, graphSchemaSha, { proposal: false, value: 'distribution', history: true, root: true, artifact: true, mutable: true, workspace: true, sensitive: true, resumable: true, maximumItems: '4', equivalence: 'stochastic-distributional' }), domain: domainResults[1], graph: graphResults[1] },
+    { input: buildProfile('synthetic-batch-sensitive-resumable', inspected, domainResults[1], graphResults[1], domainSchemaSha, graphSchemaSha, { proposal: false, value: 'distribution', history: true, root: true, artifact: true, mutable: true, workspace: true, cache: true, sensitive: true, resumable: true, maximumItems: '4', equivalence: 'stochastic-distributional' }), domain: domainResults[1], graph: graphResults[1] },
   ];
 }
 

@@ -1,6 +1,6 @@
 # Specifications
 
-> **Current proposal reconciliation:** Graph NODE, EDGE, REF, PATH and ROOT are protected-main integrated. ROOT protected evidence first landed through PR #138; Graph RECLAIM is the next candidate owner leaf but is blocked at representation preflight until retirement-record storage, reclamation scratch, and generation-safe retirement-record reuse are explicitly represented and falsified.
+> **Current semantic authority:** #122 accepts the qualified 989-requirement universal packet derived from #36 while preserving the #193 CUDA-JS ownership boundary. Native compatible-pair qualification remains deferred.
 
 **Status:** Informational
 
@@ -26,7 +26,7 @@ The extension substrate is universal; a selected capability's payload is not aut
 
 [`ADR-0020`](../decisions/ADR-0020-complete-library-and-resolved-defaults.md) establishes the public-library direction: the complete composable surface is authoritative, while convenience calls and presets resolve into the same canonical normalized framework profile. Defaults must be owned, bounded, deterministic, inspectable, overridable and identity-bearing when material. Public API naming and production facade implementation remain downstream of behavioral reference evidence and integrated semantic acceptance.
 
-## Current accepted contracts
+## Foundational accepted contracts
 
 - [`SPEC-0001-device-search-publication-and-resources.md`](SPEC-0001-device-search-publication-and-resources.md) — backend-neutral publication, graph identity/edge ownership, path-cycle ordering, finite-resource exhaustion, partial-result validity and scheduler-neutral conformance, version 0.1.0.
 - [`SPEC-0002-search-ir-and-reference-semantics.md`](SPEC-0002-search-ir-and-reference-semantics.md) — foundational Search IR 0.1.0 representation, strict normalization, canonical identity and deterministic CUDA-free reference semantics for the SPEC-0001 boundary.
@@ -37,7 +37,7 @@ These accepted contracts do not require a ranked-action output. Their references
 
 ### Universal MCGS core
 
-Universal proposal and evidence families include:
+Universal accepted and evidence families include:
 
 - normalized Search IR and specialization identity;
 - domain/state/action/transition/identity/history contract;
@@ -65,7 +65,7 @@ Universal proposal and evidence families include:
 
 Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider implementation, NVRTC/nvJitLink plumbing, stream/event wrappers, Node event-loop delivery and generic context teardown are CUDA-JS specification families.
 
-## Current universal proposals
+## Accepted universal 0.2 contracts
 
 - [`SPEC-0000-framework-requirements.md`](SPEC-0000-framework-requirements.md) — LEGO owner/dependency map, normalized framework profile, top-level lifecycle, deletion, package boundary and integrated conformance obligations.
 - [`SPEC-0003-search-stage-and-extension-surface.md`](SPEC-0003-search-stage-and-extension-surface.md) — universal Search Stage/surface/base-context/capability composition semantics and product-capability isolation.
@@ -80,9 +80,9 @@ Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider 
 - [`SPEC-0012-device-owned-search-progress.md`](SPEC-0012-device-owned-search-progress.md) — scheduler-neutral device-side work readiness, finite service/fairness, typed deadlock/livelock/starvation, stop/drain and closure semantics without host progression or physical topology selection.
 - [`SPEC-0013-result-and-observation-publication.md`](SPEC-0013-result-and-observation-publication.md) — mandatory bounded terminal envelopes plus optional immutable read-only live observations, with explicit snapshot consistency, slot/borrow lifecycle, pressure/drop semantics and exact terminal-only sideband deletion.
 
-These proposals do not authorize production lowering. The complete Search IR may represent namespaced consumer-supplied specialization inputs without promoting one product's fields into universal core meaning.
+These accepted semantic contracts do not by themselves authorize production lowering. The complete Search IR may represent namespaced consumer-supplied specialization inputs without promoting one product's fields into universal core meaning.
 
-SPEC-0000 and SPEC-0006 through SPEC-0013 form the decision-complete 741-requirement core proposal packet. SPEC-0003 through SPEC-0005 form the decision-complete 248-requirement optional extension packet. The combined 989 proposal requirements remain unaccepted until strict schema/normalizer/Composer and consolidated CUDA-free reference evidence pass atomically at the integrated acceptance gate.
+SPEC-0000 and SPEC-0006 through SPEC-0013 form the decision-complete 741-requirement core proposal packet. SPEC-0003 through SPEC-0005 form the decision-complete 248-requirement optional extension packet. The combined 989 requirements are accepted semantic/reference authority under #122: 937 are accepted-reference and 52 native-compatible-pair requirements remain explicitly deferred. The #36 consolidated CUDA-free packet is the acceptance evidence; native/runtime/performance/product qualification remains downstream.
 
 ## External product specifications and historical provenance
 

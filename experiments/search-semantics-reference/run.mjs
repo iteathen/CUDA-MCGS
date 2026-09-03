@@ -64,7 +64,7 @@ const domainRequirementClassifications = requirementCoverage.classifications.fil
   entry.contract === 'SPEC-0007'
   && directDomainPrefixes.includes(entry.requirementPrefix)
   && entry.primaryDisposition === 'engine-reference-oracle'
-  && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01');
+  && entry.evidenceOwner === 'ENGINE-REFERENCE-01');
 assert.deepEqual(domainRequirementClassifications.map(({ requirementPrefix }) => requirementPrefix).sort(), [...directDomainPrefixes].sort());
 const domainRequirementIds = assertUniqueStrings(
   [...domainSpec.matchAll(/^(DOMAIN-(?:STATE|HISTORY|ROLE|ACTION|TRANSITION|ROOT|CLEANUP)-\d{3})\./gm)].map((match) => match[1]),
@@ -121,17 +121,15 @@ function defineCase(id, body, requirements = []) {
 defineCase('composer-evidence-input-exact', () => {
   assert.equal(composerEvidence.capsule, 'cuda-mcgs-search-ir-composer-reference-v0.2.0');
   assert.equal(composerEvidence.status, 'pass');
-  assert.deepEqual(composerEvidence.summary, {
-    expected: 879,
-    discovered: 879,
-    executed: 879,
-    passed: 879,
-    failed: 0,
-    requiredSkipped: 0,
-    conditionalSkipped: 0,
-    optionalSkipped: 0,
-    notDiscovered: 0,
-  });
+  assert(Number.isSafeInteger(composerEvidence.summary.expected) && composerEvidence.summary.expected > 0, 'Composer evidence must declare a positive exact case count');
+  assert.equal(composerEvidence.summary.discovered, composerEvidence.summary.expected, 'Composer evidence discovery must be exact');
+  assert.equal(composerEvidence.summary.executed, composerEvidence.summary.discovered, 'Composer evidence must execute every discovered case');
+  assert.equal(composerEvidence.summary.passed, composerEvidence.summary.executed, 'Composer evidence must pass every executed case');
+  assert.equal(composerEvidence.summary.failed, 0);
+  assert.equal(composerEvidence.summary.requiredSkipped, 0);
+  assert.equal(composerEvidence.summary.conditionalSkipped, 0);
+  assert.equal(composerEvidence.summary.optionalSkipped, 0);
+  assert.equal(composerEvidence.summary.notDiscovered, 0);
   assert.deepEqual(composerEvidence.representationCompositionEvidenceKey, fixture.composerEvidence);
   return { composerEvidence: fixture.composerEvidence };
 });

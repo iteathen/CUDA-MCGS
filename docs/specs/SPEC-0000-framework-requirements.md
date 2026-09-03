@@ -1,24 +1,26 @@
 # CUDA-MCGS Framework Composition and Ownership Map
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.1.0
+**Version:** 0.1.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS universal framework composition, ownership and conformance map
 
 **Consumers:** Search IR; Search Composer; CUDA-MCGS-to-CUDA-JS packaging; extension contracts; externally owned product contracts; deterministic reference, native and compatible-pair conformance
 
-This proposal defines how independently owned CUDA-MCGS semantic contracts compose into finite specialized GPU-resident engines. It owns the cross-contract map, dependency law, engine identity, top-level lifecycle coordination, deletion requirements and integrated conformance obligations. It does **not** redefine domain, graph, policy, evaluator, output, resource, progress, Search Session, extension, external product or CUDA-JS meaning.
+This specification defines how independently owned CUDA-MCGS semantic contracts compose into finite specialized GPU-resident engines. It owns the cross-contract map, dependency law, engine identity, top-level lifecycle coordination, deletion requirements and integrated conformance obligations. It does **not** redefine domain, graph, policy, evaluator, output, resource, progress, Search Session, extension, external product or CUDA-JS meaning.
 
 > **For one normalized engine identity, every material fact, mutation and lifecycle has one visible semantic owner; composition connects only versioned public ports, rejects missing/ambiguous/cyclic authority, specializes away unselected owners and capabilities, and leaves active search device-owned after ignition.**
 
 ## 1. Authority, identity and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0000@0.1.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0000@0.1.0`.
 
 Accepted [`ADR-0002`](../decisions/ADR-0002-universal-contracts-specialized-engines.md), [`ADR-0003`](../decisions/ADR-0003-device-resident-active-search.md), [`ADR-0005`](../decisions/ADR-0005-lego-design-hierarchy.md), [`ADR-0014`](../decisions/ADR-0014-extract-cuda-js-runtime.md), [`ADR-0018`](../decisions/ADR-0018-universal-core-extension-product-layering.md), [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md), [`ADR-0024`](../decisions/ADR-0024-framework-only-production-ownership.md), [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) govern this proposal.
 
-The integrated semantic owner proposals consumed by this map are:
+The accepted semantic owner specifications consumed by this map are:
 
 - optional Search Session [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md);
 - domain [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md);
@@ -29,9 +31,9 @@ The integrated semantic owner proposals consumed by this map are:
 - device-owned progress [`SPEC-0012`](SPEC-0012-device-owned-search-progress.md); and
 - result/observation output [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md).
 
-Extension-substrate proposals [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) are optional downstream composition adjacency. Production product contracts are externally owned specialization inputs, not CUDA-MCGS specification authority.
+Accepted extension-substrate specifications [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md), [`SPEC-0004`](SPEC-0004-async-stage-channels.md) and [`SPEC-0005`](SPEC-0005-stage-ptx-and-search-image-composition.md) are optional downstream composition adjacency. Production product contracts are externally owned specialization inputs, not CUDA-MCGS specification authority.
 
-Accepted authority governs conflicts. This proposal neither accepts the listed proposals nor authorizes production implementation.
+Accepted authority governs conflicts. This specification neither accepts the listed proposals nor authorizes production implementation.
 
 FRAMEWORK-AUTH-001. A concrete engine selects one normalized framework profile and exact compatible versions/digests of every selected owner contract. A proposal label, matching filename or matching JavaScript object shape is not compatibility.
 
@@ -330,7 +332,7 @@ Native qualification additionally proves actual publication/memory ordering, con
 
 ## 15. Acceptance blockers and downstream handoff
 
-This proposal cannot become accepted until:
+Acceptance under #122 required:
 
 - SPEC-0006 through SPEC-0013 have no unresolved ownership contradiction with this map;
 - the extension-substrate proposals are reconciled as optional downstream composition without making core meaning depend on them;
@@ -344,3 +346,6 @@ Production framework lowering remains prohibited until that integrated acceptanc
 A change to this framework's owner map, dependency law, normalized profile, lifecycle coordination, deletion rule, device boundary, package identity, compatibility or cleanup semantics invalidates affected owner/extension/external-product inputs, Search IR/schema/normalizers, generated packages, persisted state, reference/native evidence and approvals. The `ENGINE-CONTRACT-01` integration spine records and reconciles the change before dependents continue.
 
 Implementation, testing, review, persistence, security, generated/JIT/ABI, performance/search-quality and cleanup work triggers the specialist doctrine routed from root `AGENTS.md` and `agent_files/AGENTS.md`.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

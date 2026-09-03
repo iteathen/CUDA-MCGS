@@ -102,6 +102,16 @@ function lifecycle(profile, role, reclamation) {
     states = ['empty', 'claimed', 'ready', 'failed', 'tombstone'];
     transitions = [transition('empty', 'claimed', 'private'), transition('claimed', 'ready', 'release-publication'), transition('claimed', 'failed', 'terminal-publication'), transition('claimed', 'tombstone', 'terminal-publication')];
     readyStates = ['ready']; terminalStates = ['failed', 'tombstone'];
+  } else if (role === 'retirement-record') {
+    states = ['free', 'ready', 'released', 'failed'];
+    transitions = [
+      transition('free', 'ready', 'release-publication'),
+      transition('ready', 'released', 'terminal-publication'),
+      transition('free', 'failed', 'terminal-publication'),
+      transition('released', 'free', 'private'),
+      transition('failed', 'free', 'private'),
+    ];
+    readyStates = ['ready']; terminalStates = ['failed', 'released'];
   } else if (role === 'root-anchor' || role === 'protection-record') {
     states = ['free', 'ready', 'released', 'failed'];
     transitions = [
@@ -244,14 +254,19 @@ function publications(profile, { reclamation = false, transposition = true } = {
     .map((_, readyIndex) => publication(profile, object, producer, consumer, readyIndex)));
 }
 
-function failures() {
+function failures({ reclamation = false } = {}) {
   const kinds = {
     'action-byte-capacity': 'capacity', 'arena-incarnation-mismatch': 'input', cancelled: 'cancellation', 'edge-capacity': 'capacity',
     'generation-exhausted': 'exhaustion', 'graph-internal-failure': 'internal', 'invalid-graph-profile': 'input', 'invalid-reference': 'input',
     'node-capacity': 'capacity', 'owner-lifecycle-failure': 'compatibility', 'path-capacity': 'capacity', 'path-depth': 'capacity',
-    'protection-capacity': 'capacity', 'publication-conflict': 'publication', 'reclamation-not-quiescent': 'quiescence', 'reference-kind-mismatch': 'input', 'stale-reference': 'input',
+    'protection-capacity': 'capacity', 'publication-conflict': 'publication', 'reference-kind-mismatch': 'input', 'stale-reference': 'input',
     'state-byte-capacity': 'capacity', 'transposition-capacity': 'capacity', 'transposition-probe-exhausted': 'capacity',
   };
+  if (reclamation) Object.assign(kinds, {
+    'reclamation-not-quiescent': 'quiescence',
+    'reclamation-scratch-capacity': 'capacity',
+    'retirement-capacity': 'capacity',
+  });
   return Object.entries(kinds).map(([code, kind]) => ({ code, kind, diagnostic: true }));
 }
 
@@ -302,7 +317,12 @@ function resources(profile, { reclamation = false, transposition = true } = {}) 
     { id: `graph.${profile}.resource-protection-slots`, unit: 'slots', minimum: '1', maximum: '8192', alignment: '8', scope: 'per-engine', pressureOutcome: 'protection-capacity' },
   ];
   if (transposition) result.push({ id: `graph.${profile}.resource-transposition`, unit: 'slots', minimum: '1', maximum: '8192', alignment: '8', scope: 'per-engine', pressureOutcome: 'transposition-capacity' });
-  if (reclamation) result.push({ id: `graph.${profile}.resource-reclaim-work`, unit: 'work-units', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'reclamation-not-quiescent' });
+  if (reclamation) result.push(
+    { id: `graph.${profile}.resource-retirement-records`, unit: 'records', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'retirement-capacity' },
+    { id: `graph.${profile}.resource-retirement-bytes`, unit: 'bytes', minimum: '1', maximum: '262144', alignment: '8', scope: 'per-engine', pressureOutcome: 'retirement-capacity' },
+    { id: `graph.${profile}.resource-reclaim-scratch`, unit: 'bytes', minimum: '1', maximum: '65536', alignment: '8', scope: 'per-engine', pressureOutcome: 'reclamation-scratch-capacity' },
+    { id: `graph.${profile}.resource-reclaim-work`, unit: 'work-units', minimum: '1', maximum: '4096', alignment: '8', scope: 'per-engine', pressureOutcome: 'reclamation-not-quiescent' },
+  );
   return result;
 }
 
@@ -310,7 +330,7 @@ function materialized(profile, inspected, domainResult, domainSchemaSha, { recla
   const catalogById = new Map(inspected.contractSet.contracts.map((contract) => [contract.id, contract]));
   const objects = objectKinds(profile, { reclamation, transposition });
   return {
-    schema: 'cuda-mcgs.graph-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence',
+    schema: 'cuda-mcgs.graph-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted',
     contract: catalogContract(catalogById, 'SPEC-0010'), id: `graph.${profile}`, version: VERSION,
     domainProfile: domainReference(domainResult, domainSchemaSha), mode: 'materialized',
     arena: { kind: 'finite', incarnationScope: 'engine-incarnation', maxIncarnations: '18446744073709551615', exhaustion: 'generation-exhausted' },
@@ -344,7 +364,7 @@ function materialized(profile, inspected, domainResult, domainSchemaSha, { recla
     publications: publications(profile, { reclamation, transposition }),
     ports: ports(profile, { reclamation }),
     resources: resources(profile, { reclamation, transposition }),
-    failures: failures(),
+    failures: failures({ reclamation }),
     diagnostics: { authority: 'non-authoritative', maxRecords: '256', maxBytes: '32768', overflow: 'count', rawAddresses: false },
     compatibility: { domainIdentityRequired: true, persistence: { kind: 'none' } },
     programContribution: {
@@ -358,7 +378,7 @@ function materialized(profile, inspected, domainResult, domainSchemaSha, { recla
 function stateless(inspected, domainResult, domainSchemaSha) {
   const catalogById = new Map(inspected.contractSet.contracts.map((contract) => [contract.id, contract]));
   return {
-    schema: 'cuda-mcgs.graph-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence',
+    schema: 'cuda-mcgs.graph-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted',
     contract: catalogContract(catalogById, 'SPEC-0010'), id: 'graph.synthetic-stateless', version: VERSION,
     domainProfile: domainReference(domainResult, domainSchemaSha), mode: 'stateless', arena: { kind: 'none' }, referenceEncoding: { kind: 'none' },
     objectKinds: [], layouts: [], ownerRegions: [], transposition: { kind: 'none' }, path: { kind: 'none' }, rootProtection: { kind: 'none' },

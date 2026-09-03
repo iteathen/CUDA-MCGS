@@ -188,11 +188,11 @@ export function assertComposedDeletion(beforeComposition, afterComposition, opti
       fail('COMPOSE_DELETION_PROGRAM_DRIFT', `${field} changed despite an identical package call surface`);
     }
   }
-  if (!exact(beforeComposition.executionPackage.normalized.cudaJs.lifecycle, afterComposition.executionPackage.normalized.cudaJs.lifecycle)) {
-    fail('COMPOSE_DELETION_PUBLIC_CONTRACT', 'public CUDA-JS lifecycle projection changed during semantic owner deletion');
+  if (!exact(beforeComposition.executionPackage.normalized.cudaJsAdapter.searchLifecycle, afterComposition.executionPackage.normalized.cudaJsAdapter.searchLifecycle)) {
+    fail('COMPOSE_DELETION_PUBLIC_CONTRACT', 'MCGS adapter search lifecycle requirements changed during semantic owner deletion');
   }
-  if (!exact(afterComposition.executionPackage.normalized.cudaJs.requirements, afterProgram.publicRequirements.map(({ contract }) => contract))) {
-    fail('COMPOSE_DELETION_PUBLIC_CONTRACT', 'public CUDA-JS requirements do not match the recomposed Search Program');
+  if (!exact(afterComposition.executionPackage.normalized.cudaJsAdapter.publicContracts, afterProgram.publicRequirements.map(({ contract }) => contract))) {
+    fail('COMPOSE_DELETION_PUBLIC_CONTRACT', 'MCGS adapter public contracts do not match the recomposed Search Program');
   }
 
   assertIdentityChanged(beforeComposition.resolvedInput.identity, afterComposition.resolvedInput.identity, 'resolved Composer input identity');

@@ -9,7 +9,7 @@
   "properties": {
     "schema": { "const": "cuda-mcgs.domain-profile/0.2.0" },
     "representation": { "const": "cuda-mcgs.search-ir/0.2.0" },
-    "status": { "const": "proposal-evidence" },
+    "status": { "const": "accepted" },
     "contract": { "$ref": "primitives.schema.json#/$defs/catalogContractReference" },
     "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
     "version": { "$ref": "primitives.schema.json#/$defs/version" },

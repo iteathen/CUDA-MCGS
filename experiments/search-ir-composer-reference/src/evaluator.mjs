@@ -85,7 +85,7 @@ function normalizeProfileReference(input, label) {
 function normalizeCatalogContract(input, catalogById, expectedId, label) {
   exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'EVALUATOR_CONTRACT_FIELDS', label);
   if (input.kind !== 'catalog' || input.id !== expectedId) fail('EVALUATOR_CONTRACT_ID', `${label} must select ${expectedId}`);
-  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'EVALUATOR_CONTRACT_ID', `${label} identity`);
+  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'EVALUATOR_CONTRACT_ID', `${label} identity`);
   assertSha256(input.sha256, 'EVALUATOR_CONTRACT_DIGEST', `${label} sha256`);
   const expected = catalogById.get(expectedId);
   if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) fail('EVALUATOR_CONTRACT_DRIFT', `${label} differs from the frozen catalog`);
@@ -601,7 +601,7 @@ function normalizeProductData(input, index) {
 
 export function normalizeEvaluatorProfile(input, inspectedCatalog, domainResult, graphResult) {
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'policyContract', 'id', 'version', 'mode', 'domainProfile', 'graphProfile', 'capabilities', 'inputs', 'outputs', 'artifacts', 'mutableState', 'request', 'batching', 'workspaces', 'publications', 'cache', 'execution', 'lifecycle', 'cleanup', 'ports', 'resources', 'statuses', 'reuse', 'diagnostics', 'compatibility', 'programContribution', 'productData'], 'EVALUATOR_ROOT_FIELDS', 'evaluator profile');
-  if (input.schema !== EVALUATOR_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('EVALUATOR_SCHEMA', 'unsupported evaluator schema/representation/status');
+  if (input.schema !== EVALUATOR_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('EVALUATOR_SCHEMA', 'unsupported evaluator schema/representation/status');
   assertNamespacedId(input.id, 'EVALUATOR_PROFILE_ID', 'evaluator profile id');
   assertVersion(input.version, 'EVALUATOR_PROFILE_VERSION', 'evaluator profile version');
   const contracts = inspectedCatalog?.contractSet?.contracts;
