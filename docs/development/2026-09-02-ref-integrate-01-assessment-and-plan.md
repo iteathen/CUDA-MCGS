@@ -1,5 +1,7 @@
 # REF-INTEGRATE-01 assessment and execution plan
 
+**Status:** Proposal
+
 **Date:** 2026-09-02
 
 **Parent:** #36 `ENGINE-REFERENCE-01`
