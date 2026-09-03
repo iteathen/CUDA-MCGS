@@ -8,6 +8,7 @@
 - Base: `experimental/portfolio@ce21cc382bedb28647c244df1c53bf0d6c98cff0`
 - Base tree: `8409e51a2df117f06f471833966517a9472fb388`
 - Working branch: `ref/channel-evidence-01`
+- Draft review PR: #191
 - Parent issue: #33 `CUDA-MCGS nonblocking Async Stage Channels`
 - Upstream Stage integration: #30 complete on `ce21cc38…`
 - Downstream: #36 `REF-INTEGRATE-01`, then #122 atomic protected semantic acceptance
@@ -69,15 +70,30 @@ The permanent evidence layer consists of:
 
 The evidence adapter deliberately does not import `channel.mjs` or reconstruct Channel state. It consumes the generated owner evidence by identity and case status only.
 
-## Qualification still required
+## Clean construction qualification checkpoint
 
-Before this leaf is review/authorization-ready:
+Before PR-current-state reconciliation, exact head `006cdc99f46fc7f1c952761ec082a6bf3ba2f624` passed permanent Channel workflow `33699406167`:
 
-1. permanent Channel workflow must pass on one exact final head with all 883 Composer cases, all 41 direct routes, zero skips/not-discovered and required evidence artifact;
-2. relevant coupled Stage/Session/Terminal/Framework and repository/governance gates must remain green where triggered/applicable;
-3. exact evidence identity and artifact digest must be recorded;
-4. full base-to-head technical review must find no duplicate authority, ownership leakage, stale identity, resource/cleanup hole or native escape;
-5. temporary construction residue must remain absent;
-6. issue #33 and current-state surfaces must be reconciled without claiming protected semantic acceptance.
+- Composer: `883/883`, zero failures, zero skip classes, zero not-discovered;
+- 989 requirements classified, zero pending;
+- direct SPEC-0004 routes: `41/41` across the exact six families;
+- owner-local cases bound by the evidence manifest: 33/33 green;
+- Composer evidence: `2bb62db23d7fb3841c8ca3d6a39d6d8519c6ee07513fc7afa1463630bcee9c26`;
+- Channel evidence: `f6adb5f99ac397b9f09951c6ef13b0aa15846c37c5ae17d3e67213d9d8e9fb12`, 9357 canonical bytes;
+- artifact: `9872951636`;
+- artifact digest: `sha256:dd9c4fd33fd594a2708f1fef94eb091caf11aa95191f2fcb69d152877e79dbbf`.
+
+This is preserved construction evidence, not the final integration authorization subject. PR #191 exists specifically so the final reconciled head receives the existing PR-triggered Channel, Stage, Session, Terminal, Framework and full repository/documentation matrix on one exact subject.
+
+## Final qualification and review gate
+
+Before this leaf is authorization-ready:
+
+1. PR #191 must pass the permanent Channel workflow on its final head with all 883 Composer cases, all 41 direct routes, zero skips/not-discovered and required evidence artifact;
+2. PR-triggered Stage, Session, Terminal, Framework and repository/governance gates must all pass on that same final head;
+3. exact final evidence identity and artifact digest must be recorded on PR #191 and issue #33;
+4. a fresh base-to-head author technical review must find no duplicate authority, ownership leakage, first-consumer assumption, stale identity, resource/cleanup hole, native escape or CI gap;
+5. temporary construction residue must remain absent and protected `main` must remain unchanged;
+6. issue #33 and live tracking must freeze the exact reviewed head/tree/base without another source commit merely to copy CI metadata.
 
 If repository policy requires fresh exact-head owner authorization for experimental integration, stop at that exact qualified/reviewed head. General instruction to continue is not merge authorization.
