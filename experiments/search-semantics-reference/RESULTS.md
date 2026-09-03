@@ -4,71 +4,121 @@
 
 **Updated:** 2026-09-02
 
-## Prerequisite state
+## Authority and exact integration input
 
-Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd031`.
+Protected semantic authority remains:
 
-The exact Stage base is integrated candidate `experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a`. Session #181 is integrated/read back there; candidate evidence remains distinct from protected #122 acceptance and native/product claims.
+`main@3ecac11e3576bd063760bc9572f79bea78acd031`
 
-## Qualified Stage semantic checkpoint
+`REF-INTEGRATE-01` starts from the exact integrated candidate:
 
-`REF-STAGE-01` / #30:
-
-`9ae16e7360226e35a69a1436a1f773dada592c95`
+`experimental/portfolio@85c20d794746031d201f72bc78fce25ff9f69c3d`
 
 tree:
 
-`2f979d5d53b4e2aca60b8952315ae72753c545c1`
+`5eadec7f403a388ea096f983ebf2e87eca2465f0`
 
-Stage workflow `33696515582` passed.
+This input already contains the candidate-integrated Domain, complete Graph chain, Policy, Evaluator, Resource, Progress, Output, Framework lifecycle, terminal slice, Session, Stage, and Channel owner-evidence leaves. Candidate/reference state remains distinct from protected #122 acceptance and all native/product claims.
 
-### Stage semantic result
+## Final reference packet accounting
 
-- Stage cases: `10/10`;
-- direct SPEC-0003 ENGINE-REFERENCE routes: `8/8`;
-- failures/skips/not-discovered: `0`;
-- Stage profile projection: `919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28`;
-- Stage evidence: `7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea`;
-- canonical bytes: `9395`;
-- semantic-checkpoint artifact: `9871959921`, digest `sha256:796f945b704c47a55f3fd06b66224171f4c7a74d987ddeb53a11e667d168c636`.
+The governing coverage classification yields:
 
-The 10 permanent cases cover declared normalized outcomes/source owners, pending ownership release, Resource/Progress delegation, materially different legal schedule orderings with invariant per-item semantics, first-product deletion, whole-substrate absence, mutation sensitivity, a distinct second Stage profile, portable/native claim limits, normalized release closure, and undeclared-owner-fact rejection.
+| Lane | Reference requirements |
+| --- | ---: |
+| Framework / SPEC-0000 | 15 |
+| Stage / SPEC-0003 | 8 |
+| Session / SPEC-0006 | 38 |
+| Domain / SPEC-0007 | 47 |
+| Policy / SPEC-0008 | 43 |
+| Evaluator / SPEC-0009 | 37 |
+| Graph/storage / SPEC-0010 | 48 |
+| Resource / SPEC-0011 | 34 |
+| Progress / SPEC-0012 | 31 |
+| Output / SPEC-0013 | 51 |
+| direct non-Channel subtotal | **352** |
+| Channel / SPEC-0004 owner evidence | **41** |
+| CUDA-free reference total | **393** |
 
-## Documentation-inclusive PR checkpoint
+A separate **52** requirements remain `native-compatible-pair-qualification` and must stay deferred. The final verifier fails if those routes are promoted into reference evidence.
 
-PR #190 head `385594ab40feeb31bea933ceed0155b9a091e996` changed no Stage semantic/test/projection/workflow source after the semantic checkpoint and passed all required exact-head workflows:
+## Preserved construction red
 
-- Stage `33696784971` — success;
-- Session `33696784953` — success;
-- Terminal `33696784966` — success;
-- Framework `33696784943` — success;
-- full repository/documentation matrix `33696784987` — success, including Governance, Windows/Ubuntu Search IR and aggregate `verify`.
+Run `33707203690` on head `6b5cb57521ba3a656e7e75ab2902d1630691eb41` regenerated the complete upstream owner evidence chain successfully and then failed exactly at the real missing final contract:
 
-The Stage evidence identity remained `7f608810…`; regenerated exact-PR-head artifact `9872056402` has archive digest `sha256:4d7334fdd4aa6806762b01040e7eb75143a0c955542b6eacc3891b381e2f80a4`.
+`INTEGRATION_FIXTURE_MISSING`
 
-Fresh author-side base-to-head review of all 16 changed files found no blocking semantic, ownership, evidence, governance or cleanup defect. The review confirmed that projection reconstruction goes only through existing Composer normalizers and exact published identities, the Stage oracle owns no aggregate Resource or global Progress semantics, native/CUDA mechanisms remain deferred to CUDA-JS, and no generated build artifact is checked in.
+Artifact: `9875632375`.
 
-## Retained red-before-green evidence
+No owner semantic test was weakened or changed to obtain green.
 
-| Finding | Red head | Workflow | Artifact |
-| --- | --- | ---: | ---: |
-| pending outcome retained worker/mutable lease/reservation | `2a12ca82dd9e99981dc3ed52623ea46d12930819` | `33695493706` | `9871610435` |
-| non-pending release contract not enforced; undeclared owner fact accepted | `4ebfd3f0802f1cb746aaad986ce97cd92c04bc57` | `33696328927` | `9871897062` |
+## First green and review finding
 
-No red was weakened to obtain green.
+Run `33707424655` on `ebff2a14ac8c67e3a4145fd835d4d791bcf65458` produced the first green `11/11` final packet with exact `352 + 41 = 393` route closure and `52` native-deferred requirements.
 
-## Diagnostic-only intermediate failure
+Fresh review then found a genuine integration-evidence defect: the planned mutation matrix was not complete. The verifier asserted the live state but did not explicitly demonstrate rejection of every required cross-owner corruption class. This was repaired only in the integration evidence boundary; no semantic owner was changed.
 
-Run `33696000529` at `1a1e21c1…` failed two expanded tests because they selected canonically sorted Stage arrays by assumed indices. The semantic oracle was unchanged. The harness was corrected to select normalized `entryStage` and checkpoint identities; this run is diagnostic history, not conformance evidence.
+## Mutation-qualified checkpoint
 
-## Ownership and evidence result
+Checkpoint:
 
-The executable Stage reference consumes existing Composer-normalized Stage structure and public sibling-owner facts. It does not reconstruct Domain/Graph/Policy/Evaluator meaning, Resource accounting, Progress scheduling, Output/Session/Framework authority, or CUDA-JS lowering/runtime behavior.
+`a58997d444e33bc1697c2cd92249ecd8f5017aa0`
 
-The Stage case registration wrapper pins transitive core/review case source hashes, preserving content-sensitive evidence despite the review-time case split.
+Focused workflow:
 
-## Current gate
+`33707930265` — success
 
-This final current-state reconciliation changes only `STATUS.md`, `next_step.yaml`, this `README.md`, and this `RESULTS.md`. Its exact branch head must rerun the same coupled Stage/Session/Terminal/Framework/full-repository gates. If green, the only remaining pre-integration gate is fresh repository-owner authorization for the exact PR #190 head/base.
+Artifact:
 
-After authorized #30 integration/readback: #33 Channel evidence → #36 final reference integration → #122 protected atomic acceptance.
+`9875893868`
+
+digest:
+
+`sha256:c3a8c7a4dc1bf363c0eacd335ed2282bb62dac7ec0ffa0e4ff9e17af45997404`
+
+### Baseline packet
+
+- capsule `cuda-mcgs-engine-reference-integration-v0.1.0`;
+- cases `11/11`;
+- failures/skips/not-discovered `0`;
+- direct reference requirements `352`;
+- Channel reference requirements `41`;
+- total CUDA-free reference requirements `393`;
+- native-deferred requirements `52`;
+- Composer composition evidence `1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2`, `729040` canonical bytes;
+- final integration evidence `85373be650852a997cb4d57f5fbc6b972e0c5e5925cff496933bb1a47b078a46`, `14594` canonical bytes.
+
+The baseline witnesses 21 exact evidence inputs, 11 product-neutral witnesses, 19 deletion/zero-residue witnesses, 7 schedule/concurrency witnesses, two finite independent semantic replicas, Channel owner-evidence reuse, native-deferred closure, no product vocabulary ownership, and content-sensitive final identity.
+
+### Mutation gate
+
+- capsule `cuda-mcgs-engine-reference-integration-gate-v0.1.0`;
+- mutations `7/7` detected;
+- failures/skips/not-discovered `0`;
+- gate evidence `183f753e2595c3401e2642563edaa84ffbfd20083d6f44fc0bb259d60da58046`, `4542` canonical bytes.
+
+The seven detected corruptions are:
+
+1. missing owner evidence;
+2. substituted/stale owner evidence identity;
+3. missing required product-neutral/deletion/schedule witness;
+4. native-deferred route falsely promoted;
+5. Channel route loss;
+6. finite replica semantic divergence;
+7. final evidence-identity mutation.
+
+All file mutations are CI-local. The gate restores them in `finally`, revalidates the frozen input evidence set, reruns the baseline verifier, and requires the exact baseline integration identity to be restored.
+
+## Ownership result
+
+The final verifier reads generated evidence packets and requirement classification only. It does not import or recreate Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session, Stage, Channel, or Framework semantics. Channel remains the existing Composer-owned logical oracle plus its thin evidence adapter. CUDA-JS remains native publication/synchronization/runtime and exact compatible-pair authority.
+
+Finite device-slot replication is evidence packaging only. It establishes that the one-device semantic packet is not labeled by device identity and that downstream packet aggregation waits for terminal replicas; it does not define multi-GPU coordination or claim multi-device support.
+
+## Current qualification gate
+
+The current-state documentation transition changes the branch head but not owner semantics or the final evidence algorithms. The actual draft `REF-INTEGRATE-01` PR against `experimental/portfolio` must trigger the final integration workflow and full repository/documentation matrix on one exact candidate head.
+
+After those workflows pass, perform a fresh whole-diff author review and freeze the exact PR head/tree, run IDs, artifact digest, baseline identity, and mutation-gate identity on #36/PR discussion. Then stop for fresh repository-owner exact-head authorization before candidate integration.
+
+After authorized #36 integration/readback, the next transaction is #122 protected atomic semantic acceptance. Protected `main` must not be rewritten as though candidate integration were already accepted.

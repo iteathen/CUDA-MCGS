@@ -1,9 +1,9 @@
 {
   "schema_version": 104,
   "updated": "2026-09-02",
-  "status": "ref_channel_evidence_01_final_exact_head_qualification_review_and_authorization_gate",
-  "objective": "Qualify and review the cleaned PR #191 REF-CHANNEL-EVIDENCE-01 head against exact experimental base ce21cc38..., proving the 899-case Composer capsule, exact 41 requirement-level Channel routes, and all coupled reference provenance. Then stop for fresh repository-owner exact-head authorization if required; do not merge a newly produced head merely because construction was authorized to continue.",
-  "ownership_boundary": "SPEC-0004 owns optional internal Channel item/publication/ownership-transfer meaning through the existing Composer-owned schema, normalizer and bounded logical oracle. SPEC-0011 owns aggregate finite resources and pressure; SPEC-0012 owns global readiness/progress/fairness/no-progress/closure. CUDA-JS owns generic native publication/synchronization/runtime lowering and exact compatible-pair qualification. Composer owns its exact case discovery/evidence identity; downstream reference fixtures consume explicit producer identities but do not become semantic owners. No second Channel interpreter, scheduler, native path or product semantics are authorized.",
+  "status": "ref_integrate_01_final_packet_pr_qualification_and_authorization_gate",
+  "objective": "Qualify and review one exact REF-INTEGRATE-01 candidate against experimental/portfolio@85c20d794746031d201f72bc78fce25ff9f69c3d, proving exact 352 direct plus 41 Channel reference-route closure, 52 native-deferred requirements, frozen owner evidence identities, product-neutral/deletion/schedule/replica witnesses, and the seven-entry integration mutation matrix. Then stop for fresh repository-owner exact-head authorization before candidate integration if that gate remains applicable.",
+  "ownership_boundary": "REF-INTEGRATE-01 owns only cross-owner evidence reconciliation and the final CUDA-free reference packet identity. Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Framework, Session, Stage and Channel retain their semantic authority; SPEC-0004/Composer remains the Channel logical oracle, SPEC-0011 owns aggregate finite resources, SPEC-0012 owns global progress/closure, CUDA-JS owns native publication/synchronization/runtime and exact compatible-pair qualification, CUDA-JS-Tensor owns generic dense tensor mathematics, and downstream repositories own product meaning. No second interpreter, native path, scheduler topology or product semantics are authorized.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
@@ -13,145 +13,111 @@
     "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
     "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
     "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
-    "docs/development/2026-09-02-ref-channel-evidence-01-assessment-and-plan.md",
-    "docs/development/2026-09-02-ref-channel-evidence-01-coupled-qualification.md",
-    "docs/specs/SPEC-0004-async-stage-channels.md",
-    "experiments/search-ir-composer-reference/src/channel.mjs",
-    "experiments/search-ir-composer-reference/src/channel-fixtures.mjs",
-    "experiments/search-ir-composer-reference/fixtures/channel-evidence-routes.json",
-    "experiments/search-ir-composer-reference/run-channel-evidence.mjs",
-    "https://github.com/iteathen/CUDA-MCGS/issues/33",
-    "https://github.com/iteathen/CUDA-MCGS/pull/191"
+    "docs/development/2026-09-02-ref-integrate-01-assessment-and-plan.md",
+    "schemas/search-ir/0.2.0/requirement-coverage.json",
+    "experiments/search-semantics-reference/run-integration.mjs",
+    "experiments/search-semantics-reference/run-integration-gate.mjs",
+    "experiments/search-semantics-reference/fixtures/integration-cases.json",
+    "https://github.com/iteathen/CUDA-MCGS/issues/36",
+    "https://github.com/iteathen/CUDA-MCGS/issues/122"
   ],
   "state": {
     "protected_authority": "main@3ecac11e3576bd063760bc9572f79bea78acd031",
-    "integrated_candidate_portfolio": "experimental/portfolio@ce21cc382bedb28647c244df1c53bf0d6c98cff0",
-    "integrated_candidate_tree": "8409e51a2df117f06f471833966517a9472fb388",
-    "active_issue": 33,
-    "active_branch": "ref/channel-evidence-01",
-    "review_pr": 191,
-    "exact_channel_base": "ce21cc382bedb28647c244df1c53bf0d6c98cff0",
-    "owner_gap_semantic_commit": "559f1cc12120c39a1dd509d563dcf994864f9851",
-    "exporter_complete_pass_commit": "5cbedcac097cc349b4137b3642f2c5f393f096a8",
-    "framework_provenance_rebind_commit": "8b853352bdbbd05e1ed4773cecb3d3c728aac557",
-    "reference_provenance_rebind_commit": "8a88eb37809c978cf30ba7e3fa08dc7001be80c1"
+    "integrated_candidate_portfolio": "experimental/portfolio@85c20d794746031d201f72bc78fce25ff9f69c3d",
+    "integrated_candidate_tree": "5eadec7f403a388ea096f983ebf2e87eca2465f0",
+    "active_issue": 36,
+    "active_focus_branch": "REF-INTEGRATE-01",
+    "active_git_branch": "ref/integrate-01",
+    "review_pr": null,
+    "focused_qualification_checkpoint": "a58997d444e33bc1697c2cd92249ecd8f5017aa0",
+    "focused_qualification_workflow": 33707930265,
+    "focused_artifact": 9875893868,
+    "focused_artifact_digest": "sha256:c3a8c7a4dc1bf363c0eacd335ed2282bb62dac7ec0ffa0e4ff9e17af45997404",
+    "baseline_integration_evidence": "85373be650852a997cb4d57f5fbc6b972e0c5e5925cff496933bb1a47b078a46",
+    "baseline_integration_canonical_bytes": 14594,
+    "integration_gate_evidence": "183f753e2595c3401e2642563edaa84ffbfd20083d6f44fc0bb259d60da58046",
+    "integration_gate_canonical_bytes": 4542
   },
-  "direct_engine_reference_routes": {
-    "total": 41,
-    "families": {
-      "CHANNEL-ITEM-": 10,
-      "CHANNEL-PRODUCER-": 7,
-      "CHANNEL-CONSUMER-": 7,
-      "CHANNEL-PUBLISH-": 7,
-      "CHANNEL-CANCEL-": 7,
-      "CHANNEL-CONFORMANCE-": 3
-    },
-    "implementation": "Reuse the Composer-owned Channel oracle. The permanent manifest contains one explicit requirement-to-case record for every direct route, and the evidence adapter proves the exact requirement set, family classification and passing case identities without importing or copying the Channel state machine."
+  "reference_route_accounting": {
+    "direct_non_channel": 352,
+    "channel_owner_evidence": 41,
+    "cuda_free_reference_total": 393,
+    "native_compatible_pair_deferred": 52,
+    "composer_cases": 899,
+    "composer_requirements_classified": 989,
+    "composer_pending": 0,
+    "composer_evidence": "1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2",
+    "composer_canonical_bytes": 729040
   },
-  "demonstrated_corrections": [
-    {
-      "finding": "Cancellation on an already terminal Channel item could overwrite an authoritative failure/stop disposition with cancelled.",
-      "governing_requirement": "CHANNEL-CANCEL-002 plus normalized terminally-disposed ignore-authoritative-terminal rule",
-      "repair": "Cancellation on terminally-disposed is idempotent no-effect and preserves the existing first cause.",
-      "permanent_falsifier": "channel-reference-cancel-preserves-authoritative-first-cause"
-    },
-    {
-      "finding": "The bounded trace validated generation but did not carry correlation/version/freshness, so complete item identity and consumer validation were not behaviorally exercised.",
-      "repair": "Trace reserve/claim/consume paths now carry and reject foreign/stale correlation, version and freshness alongside generation.",
-      "falsifiers": ["reject-channel-reference-wrong-correlation", "reject-channel-reference-wrong-version", "reject-channel-reference-wrong-freshness", "reject-channel-reference-foreign-channel"]
-    },
-    {
-      "finding": "The required request/result profile declared in-progress/result-ready states but the bounded trace did not execute the full request-to-result lifecycle.",
-      "repair": "Trace now executes request claim, result initialization/publication, result claim/consume and terminal reclamation.",
-      "permanent_case": "channel-reference-request-result-correlation"
-    },
-    {
-      "finding": "Selected Channel fixtures covered required pending and advisory fallback but not the SPEC-0004 optional skip path.",
-      "repair": "The materially different second selected profile is optional secondary work with explicit skip escape; first profile retains required evaluator-like plus advisory secondary work.",
-      "permanent_case": "channel-secondary-work-optional-skip",
-      "falsifier": "reject-channel-optional-skip-gap"
-    }
-  ],
   "preserved_red_evidence": [
     {
-      "head": "8526b990c4940012e623c07a107c466c7c86e8d8",
-      "workflow": 33699198942,
-      "finding": "All 883 Composer cases individually passed, then exact discovery failed because the declared expected count remained 881.",
-      "disposition": "Discovery bookkeeping corrected to 883 without weakening discovery or skip assertions."
+      "head": "6b5cb57521ba3a656e7e75ab2902d1630691eb41",
+      "workflow": 33707203690,
+      "artifact": 9875632375,
+      "finding": "Every upstream owner evidence capsule passed, then the final verifier failed exactly with INTEGRATION_FIXTURE_MISSING.",
+      "disposition": "Added only the checked-in final integration witness contract; no owner semantic code changed."
     },
     {
-      "workflow": 33700521171,
-      "finding": "The proposed 899-case bank discovered all 899 cases; 895 passed and four failed because freshness validation ran on initialize before initialize assigned freshness.",
-      "disposition": "No semantic patch was committed. The validator ordering was corrected in the temporary construction patch and rerun."
-    },
-    {
-      "workflow": 33703864307,
-      "finding": "The first dependency-ordered provenance rebind stopped with 18 neutral-harness failures after Domain cases passed because the neutral runner duplicated the old 881 Composer summary and its declared schedules still carried the prior Composer evidence-key SHA.",
-      "disposition": "No provenance fixture commit was made. The harness producer check was made count-neutral and the three schedule evidence keys were regenerated from current Composer evidence before rerunning the complete chain."
+      "head": "ebff2a14ac8c67e3a4145fd835d4d791bcf65458",
+      "workflow": 33707424655,
+      "finding": "The first final packet passed 11/11 with exact 393 reference routes and 52 native-deferred routes, but author review found the promised cross-owner mutation matrix was incomplete.",
+      "disposition": "Added an integration-only mutation gate, froze the exact owner evidence set/identities, bound existing Composer universality/deletion cases, and did not modify any semantic owner."
     }
   ],
-  "owner_gap_qualification": {
-    "workflow": 33700867462,
-    "semantic_commit": "559f1cc12120c39a1dd509d563dcf994864f9851",
-    "composer_cases": "899/899",
-    "classified_requirements": 989,
-    "pending_requirements": 0,
-    "composer_evidence": "c9763298fdea261065559207dc052939d39795552586370463226ad0242fc60a5",
-    "composer_canonical_bytes": 50559,
-    "skip_classes": 0,
-    "not_discovered": 0
-  },
-  "coupled_qualification_repairs": {
-    "composer_evidence_current": "1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2",
-    "composer_evidence_current_bytes": 729040,
-    "profile_exporters": "All nine profile exporters consume a shared complete-pass predicate instead of duplicating the Composer case count; guarded run 33701820741 passed every exporter before commit 5cbedcac097cc349b4137b3642f2c5f393f096a8.",
-    "framework": "Framework producer-summary and fixture evidence were regenerated from current Composer evidence; guarded run 33703061059 passed before commit 8b853352bdbbd05e1ed4773cecb3d3c728aac557.",
-    "reference_provenance": "Guarded run 33704058479 regenerated Composer/profile projections, rebound direct producer identities, then derived each Graph downstream evidence key from freshly passing upstream evidence through CLEANUP. Domain/neutral harness, Graph NODE/EDGE/REF/PATH/ROOT/RECLAIM/ADVANCE/CLEANUP, Policy, Evaluator, Resource, Progress and Output all passed before commit 8a88eb37809c978cf30ba7e3fa08dc7001be80c1."
-  },
+  "mutation_matrix": [
+    "missing owner evidence",
+    "substituted/stale owner evidence identity",
+    "missing required product-neutral/deletion/schedule witness",
+    "native-deferred route falsely promoted",
+    "Channel route loss",
+    "finite replica semantic divergence",
+    "final evidence identity mutation"
+  ],
   "deliverables": [
-    "Existing Composer-owned Channel normalizer and bounded logical trace extended only for demonstrated SPEC-0004 identity, request/result, optional-skip and first-cause gaps.",
-    "Permanent 899-case Composer capsule with exact discovery and zero skip/not-discovered tolerance.",
-    "Requirement-level Channel evidence manifest with one explicit owner-case binding for each of the 41 direct SPEC-0004 ENGINE-REFERENCE requirements.",
-    "Permanent Channel evidence adapter, thin entrypoint, self-gate and required evidence artifact workflow without a second Channel interpreter.",
-    "Complete producer-pass validation shared by all nine Composer profile exporters without duplicating Composer case-count authority.",
-    "Framework and search-semantics producer bindings regenerated from current Composer evidence rather than mechanically editing stale hashes.",
-    "Dependency-ordered reference fixture provenance rebind through Domain/neutral, Graph NODE-to-CLEANUP, Policy, Evaluator, Resource, Progress and Output, derived from freshly generated passing artifacts.",
-    "Preserved red-before-green and qualification-failure evidence, with all temporary write/audit/rebind transports removed after use."
+    "Thin final integration verifier consuming only generated owner evidence and coverage classification.",
+    "Checked-in integration witness manifest with exact owner evidence inputs plus product-neutral, deletion/absence, schedule and finite replica-neutrality witnesses.",
+    "Integration mutation gate that freezes all required owner evidence identities, detects seven cross-owner corruption classes, restores every ephemeral mutation and reproves the exact baseline packet.",
+    "Single orchestration entrypoint that regenerates the complete owner evidence chain before the final verifier/gate.",
+    "Dedicated Node 26 Engine reference integration workflow with retained final packet artifacts.",
+    "Preserved clean red-before-green evidence and review-discovered mutation-matrix repair without semantic-owner changes.",
+    "Current-state README, RESULTS, STATUS and next-step records reconciled to the #36 frontier without claiming protected #122 acceptance."
   ],
   "validation": [
-    "Composer exact discovery must remain 899/899 with zero failures, all skip classes zero and not-discovered zero; downstream exporters may require complete producer success but must not duplicate the magic case count.",
-    "Channel evidence schema v0.2 must map exactly 41 unique direct SPEC-0004 requirements across the six exact families; every requirement must have nonempty unique owner-local cases and every named case must be green.",
-    "Guarded reference provenance run 33704058479 proved the regenerated producer/evidence identity chain through all affected direct references and Graph CLEANUP before permanent fixture retention.",
-    "PR #191 final exact head must pass Channel, Stage, Session, Terminal, Framework and the full documentation/repository matrix, including Governance, Ubuntu/Windows Search IR and every Graph/Policy/Evaluator/Resource/Progress/Output lane.",
-    "The final Channel artifact identity, canonical bytes and artifact digest must be recorded on PR #191 and issue #33 from that same exact head.",
-    "Fresh complete base-to-head author review is required after the final head stabilizes; any material source, evidence-binding or base change invalidates the review and requires requalification.",
-    "Temporary construction/audit/rebind files must be absent; protected main and exact experimental base must remain unchanged."
+    "The final baseline packet must pass exact 11/11 discovery/execution with 352 direct non-Channel routes, 41 Channel routes, 393 total reference routes, 52 native-deferred routes, zero failures, all skip classes zero and not-discovered zero.",
+    "All required owner evidence packets must be present exactly once and match the frozen identities produced by the exact integrated candidate input; every Composer-consuming packet must agree on Composer evidence 1bf7703f....",
+    "The final witness manifest must bind existing owner-local product-neutral, deletion/absence and legal schedule cases rather than recreate owner semantics.",
+    "The mutation gate must detect all seven declared integration corruptions, restore every CI-local file mutation, rerun the baseline verifier and reproduce the exact baseline integration identity before passing.",
+    "Channel integration must consume owner evidence only; no second Channel state machine or resource/progress authority may appear.",
+    "Finite replica evidence must remain semantic packaging only and must not claim or define multi-GPU coordination/support.",
+    "The real draft #36 PR must run the dedicated Engine reference integration gate and full repository/documentation matrix on the same exact final head; coupled owner workflows must also remain green where path-triggered/applicable.",
+    "Fresh complete base-to-head author review is required after the final head stabilizes; any material source, evidence-binding or base change invalidates affected review/qualification.",
+    "Generated build evidence must remain ignored/uncommitted, mutation backups must not survive CI, protected main must remain unchanged, and candidate integration must not be mislabeled protected acceptance."
   ],
   "cleanup": {
-    "temporary_initial_construction_transport": "removed",
-    "temporary_review_gap_transport": "removed",
-    "temporary_exporter_repair_transport": "removed",
-    "temporary_framework_repair_transport": "removed",
-    "temporary_reference_provenance_audit": "removed",
-    "temporary_reference_provenance_rebind": "removed",
     "generated_build_evidence": "ignored and uncommitted",
-    "native_or_private_runtime_residue": "none authorized or introduced"
+    "mutation_files": "CI-local only; restored in finally and baseline identity reproved",
+    "temporary_mutation_backups": "must be absent after gate completion",
+    "native_or_private_runtime_residue": "none authorized or introduced",
+    "merged_channel_source_branch": "retained as audit/recovery state because the connected GitHub write surface does not expose branch deletion; not used as the #36 base",
+    "protected_main": "protect unchanged"
   },
   "blockers": [],
   "current_gate": [
-    "Let PR #191 coupled workflows qualify this cleaned candidate head.",
-    "Repair only demonstrated failures in their natural owner; do not weaken valid tests, exact discovery, requirement-level route closure or provenance checks.",
-    "Complete fresh whole-diff author review after the final head is stable.",
-    "Record the exact final reviewed/qualified head, tree, run IDs and Channel artifact/evidence identity on PR #191 and issue #33 without another repository commit solely for copying CI metadata.",
-    "Stop before integration for fresh repository-owner exact-head authorization if the project gate remains applicable."
+    "Create the real draft REF-INTEGRATE-01 PR from ref/integrate-01 to experimental/portfolio after current-state reconciliation.",
+    "Require all exact-head PR qualification, including the dedicated final packet gate and full repository/documentation matrix; repair only demonstrated defects in their natural owner/evidence boundary.",
+    "Perform a fresh complete final whole-diff author review and cleanup reconciliation on the stable PR head.",
+    "Record the exact final reviewed/qualified head, tree, run IDs, artifact digest, baseline packet identity and mutation-gate identity on the PR and issue #36 without adding a self-referential metadata-only commit.",
+    "Stop before candidate integration for fresh repository-owner exact-head authorization if the project gate remains applicable."
   ],
   "do_not": [
-    "Do not create a second Channel schema/normalizer/reference interpreter.",
-    "Do not let Channel absorb SPEC-0011 resource authority or SPEC-0012 global progress authority.",
-    "Do not add CUDA-MCGS native/PTX/CUDA code, private CUDA-JS access or a host-owned progression loop.",
-    "Do not weaken exact case discovery, requirement-level route closure, skip assertions or provenance checks to restore green CI.",
-    "Do not claim native Channel support, physical GPU evidence, performance or exact compatible-pair qualification from CUDA-free reference evidence.",
-    "Do not merge PR #191 without fresh exact-head authorization when that gate applies."
+    "Do not build another semantic interpreter or move owner semantics into the final integration verifier.",
+    "Do not create a second Channel schema/normalizer/state machine or let Channel absorb Resource/Progress authority.",
+    "Do not add CUDA-MCGS native/PTX/CUDA code, FFI/private CUDA-JS access, native addon or host-owned progression.",
+    "Do not weaken exact route counts, frozen owner identities, witness requirements, mutation detection, skip assertions or native-deferred classification to restore green CI.",
+    "Do not claim multi-GPU support from finite replica-neutrality evidence.",
+    "Do not claim native Channel/CUDA support, physical GPU evidence, performance, production/release readiness or exact compatible-pair qualification from this packet.",
+    "Do not modify protected main or treat candidate integration as #122 acceptance.",
+    "Do not merge #36 using the prior authorization for PR #191; a new exact-head authorization is required when that gate applies."
   ],
-  "next_after_authorized_integration": "#36 REF-INTEGRATE-01, then #122 protected atomic semantic acceptance."
+  "next_after_authorized_integration": "#122 protected atomic semantic acceptance; keep native qualification distinct and owner-local."
 }

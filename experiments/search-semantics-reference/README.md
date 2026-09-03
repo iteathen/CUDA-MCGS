@@ -2,82 +2,91 @@
 
 **Status:** Informational
 
-This CUDA-free experiment is the behavioral/reference evidence lane for `ENGINE-REFERENCE-01`. Each brick consumes Composer-normalized identities and public owner facts, proves one semantic boundary, and leaves native/CUDA realization downstream.
+This CUDA-free experiment is the behavioral/reference evidence lane for `ENGINE-REFERENCE-01`. Semantic owners keep their own bounded oracles; the final integration layer consumes their canonical evidence and verifies cross-owner closure without becoming another interpreter.
 
-## Authority and integrated base
+## Authority and current candidate base
 
-Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd031`.
+Protected semantic authority remains:
 
-The integrated candidate/reference base is `experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a`; #181 Session is already integrated there. Candidate integration is not protected #122 acceptance.
+`main@3ecac11e3576bd063760bc9572f79bea78acd031`
 
-## Active Stage brick
+The exact integrated candidate/reference input to `REF-INTEGRATE-01` is:
 
-Issue #30 / PR #190 / `ref/stage-01` adds only the missing Stage behavioral evidence from the existing normalized Stage authority.
+`experimental/portfolio@85c20d794746031d201f72bc78fce25ff9f69c3d`
 
-Qualified semantic checkpoint:
+tree `5eadec7f403a388ea096f983ebf2e87eca2465f0`.
 
-`9ae16e7360226e35a69a1436a1f773dada592c95`
+That candidate already contains the qualified Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Framework, terminal, Session, Stage, and Channel reference leaves. Candidate integration is not protected #122 acceptance, native CUDA qualification, production readiness, or product support.
 
-tree `2f979d5d53b4e2aca60b8952315ae72753c545c1`.
+## Active final reference leaf
 
-Documentation-inclusive review checkpoint:
+Issue #36 / `REF-INTEGRATE-01` uses branch `ref/integrate-01`.
 
-`385594ab40feeb31bea933ceed0155b9a091e996`.
+The final verifier is intentionally thin:
 
-Stage owns per-work-item stable checkpoint invocation and declared local outcome semantics. Resource pressure/admission remains SPEC-0011, global scheduling/fairness remains SPEC-0012, all source-domain semantics remain with their owners, and CUDA-JS retains Device-JS lowering/native artifact/runtime mechanisms.
+- `run-integration.mjs` consumes generated owner evidence only;
+- `run-integration-gate.mjs` freezes the exact input evidence identities and executes integration-boundary mutations;
+- `integration-cases.json` names required product-neutral, deletion, schedule, and replica-neutrality witnesses already owned by existing capsules;
+- `run-engine-reference-integration.mjs` regenerates the complete evidence chain before running the final gate;
+- `engine-reference-integration.yml` qualifies the packet on Node 26 and retains the evidence artifact.
 
-## Qualification and review
+No Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session, Stage, Channel, or Framework state machine is reimplemented here. No native/CUDA/private CUDA-JS path is introduced.
 
-The semantic Stage workflow `33696515582` established the stable evidence identity. The documentation-inclusive PR checkpoint then passed all coupled exact-head gates:
+## Final packet contract
 
-- Stage `33696784971`;
-- Session `33696784953`;
-- Terminal `33696784966`;
-- Framework `33696784943`;
-- full repository/documentation matrix `33696784987`, including Governance, Windows/Ubuntu Search IR and aggregate `verify`.
+The final packet must prove exactly:
 
-The Stage result remains:
+- `352` direct non-Channel `ENGINE-REFERENCE-01` behavioral requirements;
+- `41` SPEC-0004 Channel requirements through the existing Channel owner evidence;
+- `393` CUDA-free reference requirements total;
+- `52` native-compatible-pair requirements still deferred;
+- one exact Composer composition identity across all consumers;
+- exact presence of all required owner evidence packets;
+- materially different product-neutral instances;
+- optional owner/capability/product deletion and zero-residue behavior;
+- materially different legal schedule witnesses;
+- finite independent semantic replicas whose opaque device labels do not alter one-device meaning;
+- content-sensitive final evidence identity;
+- no product-specific or native-support claim.
 
-- cases `10/10`;
-- direct SPEC-0003 ENGINE-REFERENCE routes `8/8`;
-- no skips/not-discovered;
-- projection `919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28`;
-- evidence `7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea` over `9395` canonical bytes;
-- exact-PR-checkpoint artifact `9872056402`, digest `sha256:4d7334fdd4aa6806762b01040e7eb75143a0c955542b6eacc3891b381e2f80a4`.
+Multi-device evidence is deliberately limited to device-count-neutral semantic packaging. It does not define cross-device coordination, aggregation semantics beyond terminal-only evidence packaging, or multi-GPU support.
 
-Fresh base-to-head author review of all 16 changed files found no blocking semantic, ownership, evidence, governance or cleanup defect. No generated `build/` output is checked in, no second Stage normalizer exists, and no Resource/Progress/CUDA-JS/product authority was imported.
+## Red-before-green evidence
 
-## Retained Stage reds
+The first final-verifier checkpoint intentionally omitted the integration witness fixture. Run `33707203690` at head `6b5cb57521ba3a656e7e75ab2902d1630691eb41` regenerated every upstream owner capsule successfully and then failed exactly with `INTEGRATION_FIXTURE_MISSING`. The retained artifact is `9875632375`.
 
-- `2a12ca82…` / run `33695493706` / artifact `9871610435`: pending outcome retained worker/lease/reservation and was incorrectly accepted.
-- `4ebfd3f0…` / run `33696328927` / artifact `9871897062`: a non-pending outcome could contradict normalized worker/lease release and an invocation could carry an undeclared owner fact.
+The first green packet run `33707424655` then exposed a review-level evidence gap: the live packet was asserted, but the promised integration mutation matrix did not explicitly demonstrate rejection of all required corruption classes. No owner semantic defect was found.
 
-Both failures are durable falsifiers. The intermediate run `33696000529` is diagnostic only; it exposed brittle canonical-array-index assumptions in tests and was corrected by selecting normalized `entryStage`/checkpoint identities without changing Stage semantics.
+The repaired gate on checkpoint `a58997d444e33bc1697c2cd92249ecd8f5017aa0` passed run `33707930265`:
 
-## Evidence integrity
+- baseline integration cases `11/11`;
+- direct routes `352`;
+- Channel routes `41`;
+- reference total `393`;
+- native deferred `52`;
+- integration-boundary mutations `7/7` detected;
+- baseline integration evidence `85373be650852a997cb4d57f5fbc6b972e0c5e5925cff496933bb1a47b078a46`, `14594` canonical bytes;
+- mutation-gate evidence `183f753e2595c3401e2642563edaa84ffbfd20083d6f44fc0bb259d60da58046`, `4542` canonical bytes;
+- artifact `9875893868`, digest `sha256:c3a8c7a4dc1bf363c0eacd335ed2282bb62dac7ec0ffa0e4ff9e17af45997404`.
 
-The Stage registration module pins the content hashes of both core and review case modules, so a transitive case-source change cannot silently preserve the evidence registration identity.
-
-Generated `build/` evidence remains disposable; checked-in sources/cases, workflow artifacts and evidence identities are durable coordinates.
+The mutation matrix detects missing owner evidence, substituted owner identity, missing required witness, false native-route promotion, Channel route loss, divergent replica semantics, and final evidence-identity corruption. File mutations occur only in the disposable CI workspace, are restored in `finally`, and the exact baseline packet is rerun afterward.
 
 ## Run
 
 Use Node.js 26 or newer:
 
 ```bash
-node scripts/run-search-ir-composer-reference.mjs
-node scripts/export-search-ir-composer-stage-profiles.mjs
-node scripts/run-stage-reference.mjs
+node scripts/run-engine-reference-integration.mjs
 ```
 
-The permanent Stage lane also runs `scripts/verify-stage-ci-gate.mjs`.
+This regenerates the owner evidence chain and runs both the final packet verifier and mutation gate.
 
 ## Current gate
 
-This tracker-only finalization changes no semantic/test/projection/workflow source. Require its exact-head coupled workflows to remain green, then stop for fresh repository-owner authorization of the exact PR #190 head/base before any integration.
+Current-state documentation is being reconciled on `ref/integrate-01`. The real draft PR against `experimental/portfolio` is the next qualification surface because it triggers both the dedicated final integration gate and the full repository/documentation matrix on the same candidate head.
 
-Only after guarded Stage integration/readback does #33 Channel become dependency-ready.
+After all exact-head PR workflows and a fresh complete author review are green, freeze the exact head/tree and stop for fresh repository-owner exact-head authorization before candidate integration. Authorization previously supplied for PR #191 does not authorize #36.
 
 ## Claim limits
 
-This is CUDA-free product-neutral reference evidence. It does not establish protected proposal acceptance, Device-JS lowering, PTX/cubin/native artifacts, CUDA publication races, occupancy/performance, stable SDK support, or product semantics.
+This is CUDA-free, product-neutral reference evidence. It does not establish protected #122 semantic acceptance, native Device-JS/CUDA lowering, release/acquire races, physical GPU progress, multi-GPU support, performance, production readiness, release readiness, stable SDK compatibility, or downstream product semantics.
