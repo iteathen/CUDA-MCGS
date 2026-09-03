@@ -1,0 +1,97 @@
+{
+  "schema": "cuda-mcgs.channel-evidence-routes/0.1.0",
+  "contract": "SPEC-0004",
+  "ownerExperiment": "experiments/search-ir-composer-reference",
+  "directRequirementCount": 41,
+  "routes": [
+    {
+      "requirementPrefix": "CHANNEL-ITEM-",
+      "requirementCount": 10,
+      "cases": [
+        "channel-state-graph-terminal-and-reuse-closure",
+        "channel-finite-counter-no-wrap-closure",
+        "channel-reference-serial-publication",
+        "channel-reference-multiborrow-accounting",
+        "channel-reference-stale-generation-rejected",
+        "reject-channel-reference-borrow-bound",
+        "reject-channel-reference-generation-exhaustion-before-alias",
+        "reject-channel-reference-uninitialized-publication",
+        "reject-channel-reference-live-reclaim"
+      ]
+    },
+    {
+      "requirementPrefix": "CHANNEL-PRODUCER-",
+      "requirementCount": 7,
+      "cases": [
+        "channel-stage-grants-consumed-exactly",
+        "channel-reference-serial-publication",
+        "channel-reference-capacity-pressure-zero-publication",
+        "channel-reference-producer-service-while-pending",
+        "reject-channel-hidden-growth",
+        "reject-channel-reference-uninitialized-publication"
+      ]
+    },
+    {
+      "requirementPrefix": "CHANNEL-CONSUMER-",
+      "requirementCount": 7,
+      "cases": [
+        "channel-evaluator-request-result-required",
+        "channel-secondary-work-advisory-multiborrow",
+        "channel-reference-required-pending-releases-worker",
+        "channel-reference-stale-generation-rejected",
+        "channel-reference-escape-service-while-pending",
+        "reject-channel-consumption-timeout-switching",
+        "reject-channel-pending-holds-worker"
+      ]
+    },
+    {
+      "requirementPrefix": "CHANNEL-PUBLISH-",
+      "requirementCount": 7,
+      "cases": [
+        "channel-logical-release-acquire-publication",
+        "channel-reference-serial-publication",
+        "reject-channel-publication-release-gap",
+        "reject-channel-publication-scope-gap",
+        "reject-channel-publication-private-recipe",
+        "reject-channel-reference-missing-release",
+        "reject-channel-reference-missing-acquire",
+        "reject-channel-reference-uninitialized-publication"
+      ]
+    },
+    {
+      "requirementPrefix": "CHANNEL-CANCEL-",
+      "requirementCount": 7,
+      "cases": [
+        "channel-cleanup-lifecycle-closure",
+        "channel-reference-cancel-late-completion-no-resurrection",
+        "channel-reference-cancel-preserves-authoritative-first-cause",
+        "channel-reference-expiry-terminal",
+        "channel-reference-stale-generation-rejected",
+        "channel-reference-cancellation-preserves-borrow-accounting",
+        "reject-channel-cancellation-state-gap",
+        "reject-channel-reclamation-reference-gap",
+        "reject-channel-reference-live-reclaim"
+      ]
+    },
+    {
+      "requirementPrefix": "CHANNEL-CONFORMANCE-",
+      "requirementCount": 3,
+      "cases": [
+        "channel-reference-serial-publication",
+        "channel-reference-multiborrow-accounting",
+        "channel-reference-required-pending-releases-worker",
+        "channel-reference-producer-service-while-pending",
+        "channel-reference-escape-service-while-pending",
+        "channel-reference-typed-no-progress",
+        "channel-reference-cancel-preserves-authoritative-first-cause",
+        "channel-reference-cancel-late-completion-no-resurrection",
+        "channel-reference-stale-generation-rejected",
+        "channel-reference-capacity-pressure-zero-publication",
+        "reject-channel-reference-missing-release",
+        "reject-channel-reference-missing-acquire",
+        "reject-channel-reference-generation-exhaustion-before-alias",
+        "reject-channel-reference-live-reclaim"
+      ]
+    }
+  ]
+}
