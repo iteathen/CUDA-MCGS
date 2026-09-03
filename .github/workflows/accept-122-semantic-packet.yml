@@ -9,6 +9,7 @@ on:
       - 'scripts/accept-122-semantic-packet.mjs'
       - 'scripts/accept-122-catalog-guards.mjs'
       - 'scripts/accept-122-contract-identities.mjs'
+      - 'scripts/accept-122-reference-fixture-guards.mjs'
 
 permissions:
   contents: write
@@ -51,6 +52,8 @@ jobs:
         run: node scripts/accept-122-catalog-guards.mjs
       - name: Migrate accepted contract-reference identities
         run: node scripts/accept-122-contract-identities.mjs
+      - name: Reconcile accepted reference fixtures and assertions
+        run: node scripts/accept-122-reference-fixture-guards.mjs
       - name: Verify governance and source boundary
         run: ./scripts/verify-docs.sh
       - name: Run complete CUDA-free owner and integration packet
