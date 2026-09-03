@@ -40,6 +40,23 @@ export function assertInteger(value, minimum, code, label) {
   if (!Number.isSafeInteger(value) || value < minimum) fail(code, `${label} is invalid`);
 }
 
+export function assertCompletePassSummary(summary, label = 'evidence summary') {
+  const fields = ['expected', 'discovered', 'executed', 'passed', 'failed', 'requiredSkipped', 'conditionalSkipped', 'optionalSkipped', 'notDiscovered'];
+  exactKeys(summary, fields, 'EVIDENCE_SUMMARY_FIELDS', label);
+  for (const field of fields) assertInteger(summary[field], 0, 'EVIDENCE_SUMMARY_RANGE', `${label} ${field}`);
+  if (summary.expected === 0
+      || summary.expected !== summary.discovered
+      || summary.discovered !== summary.executed
+      || summary.executed !== summary.passed
+      || summary.failed !== 0
+      || summary.requiredSkipped !== 0
+      || summary.conditionalSkipped !== 0
+      || summary.optionalSkipped !== 0
+      || summary.notDiscovered !== 0) {
+    fail('EVIDENCE_SUMMARY_INCOMPLETE', `${label} is not a complete pass`);
+  }
+}
+
 export function assertExactArray(actual, expected, code, label) {
   if (!Array.isArray(actual)
       || actual.length !== expected.length

@@ -3,6 +3,8 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { assertCompletePassSummary } from './src/validation.mjs';
+
 import { canonicalIdentity, inspectCatalog, sourceTextSha256 } from './src/catalog.mjs';
 import { normalizeDomainProfile } from './src/domain.mjs';
 import { buildDomainProfiles } from './src/domain-fixtures.mjs';
@@ -34,17 +36,7 @@ try {
 
 assert.equal(composerEvidence.capsule, 'cuda-mcgs-search-ir-composer-reference-v0.2.0');
 assert.equal(composerEvidence.status, 'pass');
-assert.deepEqual(composerEvidence.summary, {
-  expected: 881,
-  discovered: 881,
-  executed: 881,
-  passed: 881,
-  failed: 0,
-  requiredSkipped: 0,
-  conditionalSkipped: 0,
-  optionalSkipped: 0,
-  notDiscovered: 0,
-});
+assertCompletePassSummary(composerEvidence.summary, 'Composer evidence summary');
 
 const contractSetInput = await readJson(path.join(schemaRoot, 'contract-set.json'));
 const coverageInput = await readJson(path.join(schemaRoot, 'requirement-coverage.json'));
