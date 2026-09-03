@@ -1,68 +1,75 @@
 {
-  "schema_version": 108,
+  "schema_version": 109,
   "updated": "2026-09-03",
-  "status": "runtime_adapter_blocked_on_cuda_js_193",
-  "objective": "Implement the accepted execution-package to public CUDA-JS adapter under #125 once every demonstrated lower capability needed for pre-ignition admission is available through public CUDA-JS contracts. Do not reopen completed semantic construction or add private/native escape paths.",
-  "ownership_boundary": "CUDA-MCGS owns search semantics, finite search resource/pressure policy, deterministic restricted Search Program generation, selected search physical-profile policy and adapter translation. CUDA-JS owns actual lower request vocabulary, lower compatibility facts, generic device/context/memory/compiler/artifact/module/function/operation/provider resources, errors/health and lower lifecycle. CUDA-JS-Tensor owns generic Tensor mathematics. Product semantics remain downstream.",
+  "status": "runtime_adapter_blocked_on_operation_access_projection",
+  "objective": "Close the MCGS-owned operation-local resource-access representation gap under #199 so #125 can remain a mechanical public CUDA-JS adapter. Preserve historical 0.2.0 package evidence, fail closed on non-realizable bindings, and do not add source interpretation or private/native escape paths.",
+  "ownership_boundary": "CUDA-MCGS owns search semantics, finite search resource/pressure policy, deterministic restricted Search Program generation, selected search physical-profile policy, operation-local execution-package meaning and adapter translation. CUDA-JS owns actual lower request vocabulary, lower compatibility facts, generic device/context/memory/compiler/artifact/module/function/operation/provider resources, errors/health and lower lifecycle. CUDA-JS-Tensor owns generic Tensor mathematics. Product semantics remain downstream.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
     "agent_files/AI_RULES.md",
     "agent_files/DESIGN_ALIGNMENT_CARD.md",
+    "agent_files/general_foundation/COMPATIBILITY_AND_EVOLUTION.md",
     "docs/PROJECT_CHARTER.md",
     "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
     "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
     "docs/decisions/ADR-0023-parallel-first-native-execution.md",
     "docs/decisions/ADR-0024-framework-only-production-ownership.md",
     "docs/architecture/2026-09-03-cuda-js-execution-boundary-audit.md",
-    "docs/specs/README.md",
-    "https://github.com/iteathen/CUDA-MCGS/issues/125",
-    "https://github.com/iteathen/CUDA-JS/issues/193"
+    "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
+    "docs/specs/SPEC-0005-operation-local-resource-access-addendum.md",
+    "https://github.com/iteathen/CUDA-MCGS/issues/199",
+    "https://github.com/iteathen/CUDA-MCGS/issues/125"
   ],
   "protected_state": {
-    "main": "2d7ec1205e7969c29c83ec3c8e98c940e0c38e59",
-    "tree": "87c76a72107e55a729a18a101b28fdf17b43387e",
+    "main": "d0ddaeba8708df1d462c935621d35556a1d82c3f",
+    "tree": "f6517d684f26d08c2a7e7266ea9b8257a3c996ec",
+    "semantic_acceptance_commit": "2d7ec1205e7969c29c83ec3c8e98c940e0c38e59",
     "semantic_acceptance_issue": 122,
     "semantic_acceptance": "completed",
     "accepted_reference_requirements": 937,
     "native_compatible_pair_deferred": 52,
     "composer_requirements_classified": 989,
     "composer_pending": 0,
-    "cuda_free_reference_routes": 393
+    "cuda_free_reference_routes": 393,
+    "cuda_js_lower_baseline": "49a2f77d2c8364d67030fbc1c2e870e58e70d334",
+    "cuda_js_package": "cuda-js@0.1.0-alpha.18"
   },
   "current_focus": {
     "repository": "iteathen/CUDA-MCGS",
-    "issue": 125,
-    "name": "public CUDA-JS runtime adapter",
-    "state": "blocked on demonstrated lower CUDA-JS #193 ordinary base-allocation alignment capability",
-    "next_action": "Do not implement an alignment assumption or private/native workaround in CUDA-MCGS. Allow CUDA-JS #193 / draft PR #194 to pass its normal authority integration gate and public implementation/package evidence. Then resume #125 by validating every accepted execution-package requirement before partial realization and route any further genuine generic lower gap to CUDA-JS with the same consumer-backed test.",
-    "exit": "#125 provides one replaceable public-only adapter with portable fake-runtime lifecycle/failure evidence, exact finite pre-ignition admission, no private/deep imports, and no second runtime or semantic interpreter."
+    "issue": 199,
+    "name": "operation-local resource access projection",
+    "state": "authority construction; #125 blocked until authority and schema/reference evidence are protected-integrated",
+    "next_action": "Protect-integrate the SPEC-0005 access addendum, then add red-before-green schema/reference evidence. Newly composed runtime-realizable resource bindings must project ordinary read/write/read-write access from the MCGS operation owner. Historical 0.2.0 packages without access remain valid reference evidence but fail integration.cuda-js preflight. Atomic/publication access must not be guessed or weakened.",
+    "exit": "The first engine_step(output) package projects explicit write access without source inspection; incompatible/missing/scalar/over-envelope cases fail closed; canonical identity changes with operation-local access; #125 has one deterministic package fact to map to the lower public runtime."
   },
   "completed_prerequisites": [
     "#122 protected semantic/reference acceptance and readback completed",
     "#49 production source/private-runtime boundary gate completed and permanently enforced",
     "#193 CUDA-JS execution-boundary audit completed",
+    "CUDA-JS #193 authority and alpha.18 implementation protected-integrated at 49a2f77d2c8364d67030fbc1c2e870e58e70d334",
     "Graph #24 and Channel #33 semantic/reference obligations absorbed into the accepted packet and closed completed",
-    "snapshot/portfolio issue #142 retired; #32 now records durable v0 outcomes only"
+    "snapshot/portfolio issue #142 retired; #32 records durable v0 outcomes only"
   ],
   "blockers": [
-    "CUDA-JS #193 must expose and protect-integrate the generic ordinary base-allocation alignment fact before #125 can truthfully admit the accepted 8/256-byte resource requirements.",
-    "Any further generic lower capability discovered by #125 must be resolved by its natural library owner before the adapter may assume or privately implement it."
+    "#199 authority and schema/reference evidence must make operation-local resource access explicit before #125 can construct public CUDA-JS access declarations without interpreting source.",
+    "Any future generic lower capability discovered by #125 must be resolved by its natural library owner before the adapter may assume or privately implement it."
   ],
   "deliverables": [
-    "One CUDA-MCGS-owned integration.cuda-js adapter that translates accepted execution-package meaning through versioned public CUDA-JS contracts only.",
-    "Pre-ignition capability/resource admission that fails closed before partial realization when any lower requirement is unsupported.",
-    "Portable fake-runtime lifecycle/failure evidence proving the adapter is replaceable and does not own search semantics or lower CUDA lifecycle.",
-    "A public-path compatible-pair input for CUDA-JS #32 with exact package/artifact/resource identity and truthful cleanup disposition."
+    "An accepted SPEC-0005 addendum assigning operation-local ordinary resource access to the MCGS operation binding owner.",
+    "A compatible additive 0.2.0 representation field for resource bindings, with historical packages preserved but non-realizable when the fact is absent.",
+    "Red-before-green Composer/reference conformance for write/read/read-write, resource-envelope subset checks, scalar rejection and atomic/publication fail-closed behavior.",
+    "After #199, one CUDA-MCGS-owned integration.cuda-js adapter translating accepted execution-package meaning through versioned public CUDA-JS contracts only."
   ],
   "validation": [
-    "Only public cuda-js package entries are consumed; private/deep/sibling/native escape paths remain rejected by the permanent source-boundary gate.",
-    "Every accepted finite execution-package requirement is checked before partial realization, including ordinary allocation alignment.",
-    "Selected target controls compile/link/load/artifact identity consistently and no lower fact is copied into MCGS as a second authority.",
-    "Pressure, cancellation, deferred failure, timeout/abandonment, health, close and orphan dispositions preserve both owners' truth.",
-    "Deleting/replacing integration.cuda-js leaves Search IR/Composer/reference owners coherent; deleting CUDA-MCGS leaves CUDA-JS unchanged."
+    "Resource-level accessRequirements remain broad provider/capability envelopes and are never reused as operation-local effect truth.",
+    "The Composer does not parse restricted Device-JS source to derive access; the MCGS operation definition owns the fact directly.",
+    "Operation-local access participates in canonical identity and is projected mechanically into execution-package adapter requirements.",
+    "Missing/unsupported access and atomic/publication effects without sufficient accepted detail reject before allocation/ignition.",
+    "Only public cuda-js package contracts are consumed by #125; private/deep/sibling/native escape paths remain rejected by the permanent source-boundary gate."
   ],
   "after_current_focus": [
+    "#125 implements one replaceable public CUDA-JS runtime adapter against cuda-js@0.1.0-alpha.18",
     "CUDA-JS #32 freezes and qualifies one exact CUDA-MCGS/CUDA-JS compatible pair through #125",
     "#109 completes one canonical public resolver/facade surface",
     "#123 proves external-engine embedding through public contracts",
@@ -77,8 +84,10 @@
     "Dormant roadmap possibilities are not active backlog until a concrete consumer/profile activates them."
   ],
   "do_not": [
-    "Do not promote any of the 52 deferred-native requirements from semantic/reference evidence alone.",
-    "Do not let CUDA-MCGS define CUDA-JS private request field names, provider limits, lower resource lifecycle or native mechanisms.",
+    "Do not rewrite #122 historical package identities merely to make them runtime-realizable on a newer CUDA-JS peer.",
+    "Do not infer operation-local access from broad resource accessRequirements, Device-JS source, function names/types or CUDA-JS private implementation.",
+    "Do not weaken atomic/publication effects to ordinary read-write.",
+    "Do not let CUDA-MCGS define CUDA-JS private request fields, provider limits, lower resource lifecycle or native mechanisms.",
     "Do not add maintained C/C++/CUDA/PTX/native addon/direct FFI/subprocess-native production escape paths.",
     "Do not create a second preparation transaction or logical-work launch resolver merely to reduce adapter code.",
     "Do not claim native, performance, product, stable SDK or multi-GPU support before their exact owner evidence gates pass."
