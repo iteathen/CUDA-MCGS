@@ -26,7 +26,11 @@ const catalogById = new Map(contractSet.contracts.map((entry) => [entry.id, entr
 const frameworkPath = 'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json';
 const framework = JSON.parse(await read(frameworkPath));
 if (framework.status !== 'accepted') fail(`framework status is ${framework.status}, expected accepted`);
-framework.contractSet.identity = canonicalIdentity(normalizeContractSet(contractSet));
+const fullCatalogIdentity = canonicalIdentity(normalizeContractSet(contractSet));
+framework.contractSet.identity = {
+  algorithm: fullCatalogIdentity.algorithm,
+  sha256: fullCatalogIdentity.sha256,
+};
 function rebindCatalogReference(reference) {
   const accepted = catalogById.get(reference.id);
   if (!accepted) fail(`fixture names unknown catalog contract ${reference.id}`);
