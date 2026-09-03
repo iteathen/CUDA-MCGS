@@ -1,9 +1,9 @@
 {
-  "schema_version": 105,
+  "schema_version": 106,
   "updated": "2026-09-03",
-  "status": "engine_contract_acceptance_01_candidate_qualification",
-  "objective": "Promote the exact qualified 989-requirement universal semantic/reference packet to one accepted #122 subject while preserving protected #193 ownership corrections, then qualify/review/guardedly integrate and read back protected authority before #125 begins.",
-  "ownership_boundary": "MCGS owns search semantics, Search IR, deterministic restricted Search Program generation, finite resource/pressure policy, semantic access and selected physical-profile policy. integration.cuda-js owns translation/orchestration only. CUDA-JS owns actual lower request vocabulary, limits, provider facts, validation, errors and resource lifecycle. Native/private CUDA-MCGS mechanisms remain prohibited.",
+  "status": "engine_contract_acceptance_01_clean_subject_ready_for_exact_head_qualification",
+  "objective": "Qualify and review the cleaned accepted #122 semantic/reference subject on its exact head, then guardedly integrate it into protected main and read back the resulting commit/tree before #125 begins.",
+  "ownership_boundary": "MCGS owns search semantics, Search IR, deterministic restricted Search Program generation, finite resource/pressure policy, semantic access and selected physical-profile policy. integration.cuda-js owns translation/orchestration only. CUDA-JS owns actual lower request vocabulary, limits, provider facts, validation, errors and lower resource lifecycle. Native/private CUDA-MCGS mechanisms remain prohibited.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
@@ -22,9 +22,12 @@
     "https://github.com/iteathen/CUDA-MCGS/issues/122"
   ],
   "state": {
-    "protected_authority": "main@2a6bc8e1da9df85b3367f3f92bb3cec6f16ea241",
+    "protected_baseline_before_transition": "main@2a6bc8e1da9df85b3367f3f92bb3cec6f16ea241",
     "qualified_reference_candidate": "experimental/portfolio@0cd3dafdbfa683048b0a0f39de21a671fd9ef841",
-    "active_issue": 122,
+    "qualified_generated_acceptance_subject": "d5b9fe9baa24dbafd51a9f90ed84e8d227f0e6fe",
+    "qualified_generated_acceptance_tree": "8d93d1ba5f2ecc1eb5990fa53ea256e1ad16f754",
+    "generated_acceptance_qualification_run": 33776887304,
+    "transition_issue": 122,
     "active_focus_branch": "ENGINE-CONTRACT-ACCEPTANCE-01",
     "active_git_branch": "accept/122-semantic-packet",
     "review_pr": null,
@@ -39,18 +42,10 @@
     "composer_requirements_classified": 989,
     "composer_pending": 0
   },
-  "preserved_red_evidence": [
-    {
-      "head": "6b5cb57521ba3a656e7e75ab2902d1630691eb41",
-      "finding": "Final integration verifier failed exactly on missing integration fixture before #36 green construction.",
-      "disposition": "Preserved as #36 red-before-green provenance."
-    },
-    {
-      "head": "ebff2a14ac8c67e3a4145fd835d4d791bcf65458",
-      "finding": "Initial final packet exposed incomplete promised integration mutation coverage.",
-      "disposition": "Seven-entry mutation gate added before #36 final qualification."
-    }
-  ],
+  "qualification_provenance": {
+    "generated_subject": "Acceptance construction run 33776887304 passed governance/source-boundary verification, the 882/882 accepted Composer capsule, every owner/reference runner, the 393-route final integration packet and the seven-entry final mutation matrix.",
+    "cleaned_subject": "The one-shot acceptance workflow and accept-122 migration helpers are removed. Permanent exact-head qualification is the remaining pre-integration gate."
+  },
   "mutation_matrix": [
     "missing owner evidence",
     "substituted/stale owner evidence identity",
@@ -61,32 +56,34 @@
     "final evidence identity mutation"
   ],
   "deliverables": [
-    "Accepted metadata/identity for SPEC-0000 and SPEC-0003 through SPEC-0013 without changing qualified owner semantics.",
-    "Accepted Search IR 0.2 catalog/profile/program/package authority with 989/989 classified requirements and exactly 52 native-deferred routes.",
-    "CUDA-JS ownership correction: MCGS adapter requirements replace the locally invented lower request projection/lifecycle.",
-    "Exact preserved #36 owner/reference packet and #193 governance/source-boundary changes on one ancestry-correct subject.",
-    "Registry, specification index, status and next-step state reconciled to the acceptance candidate."
+    "SPEC-0000 and SPEC-0003 through SPEC-0013 carry accepted metadata/identities without changing the qualified owner semantics.",
+    "Search IR 0.2 catalog/profile/program/package authority records 989/989 classified requirements, 937 accepted-reference and exactly 52 deferred-native requirements.",
+    "MCGS adapter requirements replace the locally invented CUDA-JS request projection/lifecycle while preserving MCGS-owned semantic access and selected policy.",
+    "The exact #36 owner/reference packet and #193 governance/source-boundary corrections coexist on one ancestry-correct acceptance subject.",
+    "One-shot migration transport is removed; only permanent repository evidence and controls remain."
   ],
   "validation": [
-    "All accepted spec/catalog/schema/normalizer identities agree and no proposal-only authority marker remains in active accepted metadata.",
-    "Composer and final engine reference packet regenerate on accepted identities with 393/393 CUDA-free routes and 52 deferred-native requirements.",
-    "All seven integration mutations still fail and exact baseline regeneration succeeds.",
+    "Permanent PR/governance checks pass on the exact cleaned acceptance head.",
+    "Permanent Engine reference integration passes on the exact cleaned acceptance head with 393/393 CUDA-free routes and 52 deferred-native requirements.",
+    "All seven integration mutations still fail closed and exact baseline regeneration succeeds.",
     "MCGS execution package contains no locally normative CUDA-JS compile/load/allocate/teardown state machine, device-memory request kind or CUDA-JS request-projection schema.",
-    "Restricted source roles and MCGS selected geometry/concurrency remain explicit; actual lower realization stays adapter/CUDA-JS-owned.",
-    "Full repository/documentation and applicable owner workflows pass on the exact PR head before integration."
+    "Restricted source roles and MCGS-selected geometry/concurrency remain explicit; actual lower realization stays adapter/CUDA-JS-owned.",
+    "Base-to-head review finds no migration helper/workflow residue and no protected-main change outside reviewed integration."
   ],
   "cleanup": {
     "generated_build_evidence": "ignored and uncommitted",
-    "temporary_acceptance_migration": "remove migration script/workflow after successful transformation and requalify the cleaned head",
+    "temporary_acceptance_migration": "removed from cleaned acceptance branch",
     "native_or_private_runtime_residue": "none authorized or introduced",
-    "protected_main": "unchanged until guarded reviewed merge"
+    "protected_main": "unchanged until guarded reviewed integration"
   },
-  "blockers": [],
+  "blockers": [
+    "Protected integration/readback is not complete. Any repository-owner exact-head integration authorization required by governance must be obtained before merge."
+  ],
   "current_gate": [
-    "Run the asserted acceptance migration and complete CUDA-free integration qualification on the generated subject.",
-    "Remove temporary migration transport, rerun exact-head PR qualification and perform complete base-to-head review.",
-    "Record exact reviewed head/tree/checks on #122 and PR.",
-    "Guardedly integrate into protected main only after repository-owner exact-head authorization when required, then read back commit/tree.",
+    "Create/review the cleaned #122 pull request against protected main.",
+    "Run permanent documentation/governance and Engine reference integration qualification on the exact PR head.",
+    "Record exact reviewed head/tree/checks on #122 and the PR.",
+    "Guardedly integrate into protected main only after all required authorization, then read back the protected commit/tree.",
     "Close #122 only after protected readback; only then reassess #125 as dependency-ready."
   ],
   "do_not": [
@@ -96,5 +93,5 @@
     "Do not claim native, performance, product, stable SDK, multi-GPU or external-consumer support from #122.",
     "Do not start #125 before protected #122 readback."
   ],
-  "next_after_authorized_integration": "#125 public CUDA-JS runtime adapter assessment against the exact protected #122 surface and live public CUDA-JS head."
+  "next_after_protected_readback": "#125 public CUDA-JS runtime adapter assessment against the exact protected #122 surface and live public CUDA-JS head."
 }
