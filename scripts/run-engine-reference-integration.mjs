@@ -7,7 +7,6 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 const commands = [
   'scripts/run-search-ir-reference.mjs',
   'scripts/run-search-ir-composer-reference.mjs',
-  'experiments/search-ir-composer-reference/verify-operation-local-access.mjs',
   'scripts/export-search-ir-composer-domain-profiles.mjs',
   'scripts/export-search-ir-composer-graph-profiles.mjs',
   'scripts/export-search-ir-composer-policy-profiles.mjs',

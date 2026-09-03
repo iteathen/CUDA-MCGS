@@ -274,6 +274,14 @@
                 "resource": {
                   "type": "string",
                   "pattern": "^resource-[0-9]+$"
+                },
+                "access": {
+                  "enum": [
+                    "read",
+                    "write",
+                    "read-write"
+                  ],
+                  "description": "MCGS-owned ordinary operation-local access intent. Atomic/publication effects require a later accepted extension and cannot be weakened to this field."
                 }
               }
             },

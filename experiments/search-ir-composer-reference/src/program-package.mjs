@@ -296,11 +296,20 @@ function normalizeBinding(input, operationId, index, parameters, resources) {
   const parameter = parameters.find(({ name }) => name === input.parameter);
   if (!parameter) fail('COMPOSE_OPERATION_BINDING', `${operationId} binds unknown parameter ${input.parameter}`);
   if (input.source?.kind === 'resource') {
-    exactKeys(input.source, ['kind', 'resource'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} resource`);
+    const hasAccess = Object.hasOwn(input.source, 'access');
+    exactKeys(input.source, hasAccess ? ['kind', 'resource', 'access'] : ['kind', 'resource'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} resource`);
     const resource = resources.get(input.source.resource);
     if (!resource || resource.materialization !== 'resident-storage' || !parameter.type.startsWith('ptr<')) fail('COMPOSE_OPERATION_BINDING', `${operationId} resource binding is incompatible`);
-    return { parameter: input.parameter, source: { kind: 'resource', resource: input.source.resource } };
+    const source = { kind: 'resource', resource: input.source.resource };
+    if (hasAccess) {
+      const access = assertEnum(input.source.access, ['read', 'write', 'read-write'], 'COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} access`);
+      if ((access === 'read' || access === 'read-write') && !resource.access.includes('read')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} read access exceeds the resource envelope`);
+      if ((access === 'write' || access === 'read-write') && !resource.access.includes('write')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} write access exceeds the resource envelope`);
+      source.access = access;
+    }
+    return { parameter: input.parameter, source };
   }
+  if (Object.hasOwn(input.source ?? {}, 'access')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} scalar binding cannot carry access`);
   exactKeys(input.source, ['kind', 'schema'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} scalar`);
   if (input.source.kind !== 'scalar' || parameter.type.startsWith('ptr<')) fail('COMPOSE_OPERATION_BINDING', `${operationId} scalar binding is incompatible`);
   return { parameter: input.parameter, source: { kind: 'scalar', schema: normalizeSchemaReference(input.source.schema, `${operationId} ${input.parameter} scalar schema`) } };
@@ -510,11 +519,16 @@ export function composeSearchProgram(profileResult) {
 function buildCudaJsAdapterRequirements(program) {
   const resources = program.resources.filter(({ materialization }) => materialization === 'resident-storage');
   const resourceNames = new Map(resources.map((entry, index) => [entry.id, `resource-${index}`]));
+  for (const operation of program.operations) for (const binding of operation.bindings) {
+    if (binding.source.kind === 'resource' && !Object.hasOwn(binding.source, 'access')) {
+      fail('COMPOSE_OPERATION_ACCESS_REQUIRED', `${operation.id} ${binding.parameter} lacks operation-local resource access`);
+    }
+  }
   const operations = program.operations.map((entry, index) => ({
     id: `operation-${index}`,
     function: entry.entryPoint,
     bindings: entry.bindings.map((binding) => binding.source.kind === 'resource'
-      ? { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource) } }
+      ? { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource), access: binding.source.access } }
       : { parameter: binding.parameter, source: { kind: 'scalar', schema: { ...binding.source.schema } } }),
     launchPolicy: { grid: [...entry.grid], block: [...entry.block], dynamicSharedBytes: entry.dynamicSharedBytes, maxPending: entry.maxPending },
   }));
