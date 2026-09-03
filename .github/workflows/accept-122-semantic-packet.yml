@@ -26,6 +26,25 @@ jobs:
         run: node scripts/accept-122-semantic-packet.mjs
       - name: Mark durable assessment informational
         run: sed -i 's/^\*\*Status:\*\* Active$/\*\*Status:\*\* Informational/' docs/development/2026-09-03-engine-contract-acceptance-01-assessment-and-plan.md
+      - name: Migrate structured-data authority guards
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const file = 'scripts/check-structured-data.mjs';
+          let text = readFileSync(file, 'utf8');
+          text = text.replaceAll('proposalContractSet', 'acceptedContractSet').replaceAll('proposalCoverage', 'acceptedCoverage');
+          text = text.replaceAll('Search IR 0.2.0 proposal contract set', 'Search IR 0.2.0 accepted contract set');
+          text = text.replaceAll('Search IR 0.2.0 proposal requirement coverage', 'Search IR 0.2.0 accepted requirement coverage');
+          text = text.replace('|| acceptedContractSet.status !== "proposal-evidence"', '|| acceptedContractSet.status !== "accepted"');
+          text = text.replace('Search IR 0.2.0 contract set must remain bounded proposal evidence for 12 contracts and 989 requirements', 'Search IR 0.2.0 contract set must be accepted authority for exactly 12 contracts and 989 requirements');
+          const oldCoverage = `if (acceptedCoverage.schema !== "cuda-mcgs.search-ir.requirement-coverage/0.2.0"\n      || acceptedCoverage.contractSet !== acceptedContractSet.schema\n      || !Number.isSafeInteger(acceptedCoverage.totals?.classified)\n      || !Number.isSafeInteger(acceptedCoverage.totals?.pending)\n      || acceptedCoverage.totals.classified + acceptedCoverage.totals.pending !== 989) {\n    throw new Error("Search IR 0.2.0 coverage must partition exactly 989 classified/pending requirements");\n  }`;
+          const newCoverage = `const nativeDeferred = acceptedCoverage.classifications\n    .filter(({ evidenceStatus }) => evidenceStatus === "deferred-native")\n    .reduce((sum, entry) => sum + entry.requirementCount, 0);\n  const acceptedReference = acceptedCoverage.classifications\n    .filter(({ evidenceStatus }) => evidenceStatus === "accepted-reference")\n    .reduce((sum, entry) => sum + entry.requirementCount, 0);\n  if (acceptedCoverage.schema !== "cuda-mcgs.search-ir.requirement-coverage/0.2.0"\n      || acceptedCoverage.contractSet !== acceptedContractSet.schema\n      || acceptedCoverage.totals?.classified !== 989\n      || acceptedCoverage.totals?.pending !== 0\n      || acceptedReference !== 937\n      || nativeDeferred !== 52\n      || acceptedCoverage.contracts.some(({ currentDisposition, completionStatus }) => currentDisposition !== "accepted-reference" || completionStatus !== "accepted")) {\n    throw new Error("Search IR 0.2.0 coverage must prove 989 classified / 0 pending with 937 accepted-reference and 52 deferred-native requirements");\n  }`;
+          if (!text.includes(oldCoverage)) throw new Error('structured-data coverage guard drifted');
+          text = text.replace(oldCoverage, newCoverage);
+          text = text.replace('|| domainProfileSchema.properties?.representation?.const !== "cuda-mcgs.search-ir/0.2.0"', '|| domainProfileSchema.properties?.representation?.const !== "cuda-mcgs.search-ir/0.2.0"\n      || domainProfileSchema.properties?.status?.const !== "accepted"');
+          text = text.replace('Search IR 0.2.0 domain profile must remain closed proposal evidence with restricted Device-JS program contribution only', 'Search IR 0.2.0 domain profile must remain closed accepted semantic authority with restricted Device-JS program contribution only');
+          writeFileSync(file, text, 'utf8');
+          NODE
       - name: Verify governance and source boundary
         run: ./scripts/verify-docs.sh
       - name: Run complete CUDA-free owner and integration packet
