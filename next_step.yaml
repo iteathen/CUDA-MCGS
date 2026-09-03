@@ -1,8 +1,8 @@
 {
-  "schema_version": 106,
+  "schema_version": 107,
   "updated": "2026-09-03",
-  "status": "engine_contract_acceptance_01_clean_subject_ready_for_exact_head_qualification",
-  "objective": "Qualify and review the cleaned accepted #122 semantic/reference subject on its exact head, then guardedly integrate it into protected main and read back the resulting commit/tree before #125 begins.",
+  "status": "engine_contract_acceptance_01_pr_197_exact_head_qualification",
+  "objective": "Qualify and review PR #197's cleaned accepted #122 semantic/reference subject on its exact head, then guardedly integrate it into protected main and read back the resulting commit/tree before #125 begins.",
   "ownership_boundary": "MCGS owns search semantics, Search IR, deterministic restricted Search Program generation, finite resource/pressure policy, semantic access and selected physical-profile policy. integration.cuda-js owns translation/orchestration only. CUDA-JS owns actual lower request vocabulary, limits, provider facts, validation, errors and lower resource lifecycle. Native/private CUDA-MCGS mechanisms remain prohibited.",
   "authority": [
     "AGENTS.md",
@@ -19,7 +19,8 @@
     "docs/specs/README.md",
     "schemas/search-ir/0.2.0/contract-set.json",
     "schemas/search-ir/0.2.0/requirement-coverage.json",
-    "https://github.com/iteathen/CUDA-MCGS/issues/122"
+    "https://github.com/iteathen/CUDA-MCGS/issues/122",
+    "https://github.com/iteathen/CUDA-MCGS/pull/197"
   ],
   "state": {
     "protected_baseline_before_transition": "main@2a6bc8e1da9df85b3367f3f92bb3cec6f16ea241",
@@ -30,7 +31,7 @@
     "transition_issue": 122,
     "active_focus_branch": "ENGINE-CONTRACT-ACCEPTANCE-01",
     "active_git_branch": "accept/122-semantic-packet",
-    "review_pr": null,
+    "review_pr": 197,
     "lower_reference": "cuda-js@0.1.0-alpha.17@bc2700f2e5c654567c2e17bf8d67b882351b8681"
   },
   "reference_route_accounting": {
@@ -44,7 +45,7 @@
   },
   "qualification_provenance": {
     "generated_subject": "Acceptance construction run 33776887304 passed governance/source-boundary verification, the 882/882 accepted Composer capsule, every owner/reference runner, the 393-route final integration packet and the seven-entry final mutation matrix.",
-    "cleaned_subject": "The one-shot acceptance workflow and accept-122 migration helpers are removed. Permanent exact-head qualification is the remaining pre-integration gate."
+    "cleaned_subject": "The one-shot acceptance workflow and accept-122 migration helpers are removed. Permanent PR #197 exact-head qualification is the remaining pre-integration gate."
   },
   "mutation_matrix": [
     "missing owner evidence",
@@ -63,8 +64,8 @@
     "One-shot migration transport is removed; only permanent repository evidence and controls remain."
   ],
   "validation": [
-    "Permanent PR/governance checks pass on the exact cleaned acceptance head.",
-    "Permanent Engine reference integration passes on the exact cleaned acceptance head with 393/393 CUDA-free routes and 52 deferred-native requirements.",
+    "Permanent PR/governance checks pass on the exact PR #197 head.",
+    "Permanent Engine reference integration passes on the exact PR #197 head with 393/393 CUDA-free routes and 52 deferred-native requirements.",
     "All seven integration mutations still fail closed and exact baseline regeneration succeeds.",
     "MCGS execution package contains no locally normative CUDA-JS compile/load/allocate/teardown state machine, device-memory request kind or CUDA-JS request-projection schema.",
     "Restricted source roles and MCGS-selected geometry/concurrency remain explicit; actual lower realization stays adapter/CUDA-JS-owned.",
@@ -77,12 +78,12 @@
     "protected_main": "unchanged until guarded reviewed integration"
   },
   "blockers": [
+    "PR #197 exact-head permanent qualification/review is not complete.",
     "Protected integration/readback is not complete. Any repository-owner exact-head integration authorization required by governance must be obtained before merge."
   ],
   "current_gate": [
-    "Create/review the cleaned #122 pull request against protected main.",
-    "Run permanent documentation/governance and Engine reference integration qualification on the exact PR head.",
-    "Record exact reviewed head/tree/checks on #122 and the PR.",
+    "Run permanent documentation/governance and Engine reference integration qualification on the exact PR #197 head.",
+    "Perform complete base-to-head review of PR #197 and record the exact reviewed head/tree/checks on #122 and the PR.",
     "Guardedly integrate into protected main only after all required authorization, then read back the protected commit/tree.",
     "Close #122 only after protected readback; only then reassess #125 as dependency-ready."
   ],
