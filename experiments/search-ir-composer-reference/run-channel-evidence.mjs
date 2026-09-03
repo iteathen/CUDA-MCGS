@@ -31,7 +31,7 @@ const composerEvidence = await readJson(
 const coverage = await readJson(coveragePath);
 const specText = await readFile(specPath, 'utf8');
 
-assert.equal(routes.schema, 'cuda-mcgs.channel-evidence-routes/0.1.0');
+assert.equal(routes.schema, 'cuda-mcgs.channel-evidence-routes/0.2.0');
 assert.equal(routes.contract, 'SPEC-0004');
 assert.equal(routes.ownerExperiment, 'experiments/search-ir-composer-reference');
 assert.equal(routes.directRequirementCount, 41);
@@ -55,7 +55,7 @@ const requirementIds = [...new Set(specText.match(/\bCHANNEL(?:-[A-Z]+)*-[0-9]{3
 const directRequirements = requirementIds.filter((id) => classificationFor(id).primaryDisposition === 'engine-reference-oracle');
 assert.equal(directRequirements.length, routes.directRequirementCount, 'direct Channel engine-reference requirement count drifted');
 
-const expectedPrefixes = [
+const expectedFamilies = [
   ['CHANNEL-ITEM-', 10],
   ['CHANNEL-PRODUCER-', 7],
   ['CHANNEL-CONSUMER-', 7],
@@ -63,30 +63,52 @@ const expectedPrefixes = [
   ['CHANNEL-CANCEL-', 7],
   ['CHANNEL-CONFORMANCE-', 3],
 ];
+assert(Array.isArray(routes.families), 'Channel route manifest families must be an array');
 assert.deepEqual(
-  routes.routes.map(({ requirementPrefix, requirementCount }) => [requirementPrefix, requirementCount]),
-  expectedPrefixes,
-  'Channel direct-route manifest must preserve the six exact owner families',
+  routes.families.map(({ requirementPrefix, requirementCount }) => [requirementPrefix, requirementCount]),
+  expectedFamilies,
+  'Channel route manifest must preserve the six exact owner families',
 );
+assert.equal(new Set(routes.families.map(({ requirementPrefix }) => requirementPrefix)).size, routes.families.length, 'Channel route families must be unique');
 
+assert(Array.isArray(routes.requirements), 'Channel route manifest requirements must be an array');
+assert.equal(routes.requirements.length, routes.directRequirementCount, 'Channel route manifest must contain one record per direct requirement');
+const manifestRequirementIds = routes.requirements.map(({ id }) => id);
+assert.equal(new Set(manifestRequirementIds).size, manifestRequirementIds.length, 'Channel route manifest requirement IDs must be unique');
+assert.deepEqual([...manifestRequirementIds].sort(), directRequirements, 'Channel route manifest must match the exact direct requirement set');
+
+const actualFamilyCounts = new Map(routes.families.map(({ requirementPrefix }) => [requirementPrefix, 0]));
 const composerCases = new Map(composerEvidence.cases.map((entry) => [entry.id, entry.status]));
 const caseIds = new Set();
 const routeEvidence = [];
 const mappedRequirements = new Set();
-for (const route of routes.routes) {
-  assert(Array.isArray(route.cases) && route.cases.length > 0, `${route.requirementPrefix} must name owner-local evidence cases`);
-  assert.equal(new Set(route.cases).size, route.cases.length, `${route.requirementPrefix} contains duplicate case IDs`);
-  const requirements = directRequirements.filter((id) => classificationFor(id).requirementPrefix === route.requirementPrefix);
-  assert.equal(requirements.length, route.requirementCount, `${route.requirementPrefix} requirement count drifted`);
+
+for (const route of routes.requirements) {
+  assert(typeof route.id === 'string', 'Channel route requirement ID must be a string');
+  const classification = classificationFor(route.id);
+  assert.equal(classification.primaryDisposition, 'engine-reference-oracle', `${route.id} is not an engine-reference route`);
+  const matchingFamilies = routes.families.filter(({ requirementPrefix }) => route.id.startsWith(requirementPrefix));
+  assert.equal(matchingFamilies.length, 1, `${route.id} must belong to exactly one direct Channel family`);
+  assert.equal(classification.requirementPrefix, matchingFamilies[0].requirementPrefix, `${route.id} coverage family differs from route manifest`);
+  actualFamilyCounts.set(classification.requirementPrefix, actualFamilyCounts.get(classification.requirementPrefix) + 1);
+
+  assert(Array.isArray(route.cases) && route.cases.length > 0, `${route.id} must name owner-local evidence cases`);
+  assert.equal(new Set(route.cases).size, route.cases.length, `${route.id} contains duplicate case IDs`);
   for (const id of route.cases) {
-    assert.equal(composerCases.get(id), 'pass', `${route.requirementPrefix} requires passing Composer owner case ${id}`);
+    assert.equal(composerCases.get(id), 'pass', `${route.id} requires passing Composer owner case ${id}`);
     caseIds.add(id);
   }
-  for (const id of requirements) mappedRequirements.add(id);
-  routeEvidence.push({ requirementPrefix: route.requirementPrefix, requirements, cases: route.cases });
+  mappedRequirements.add(route.id);
+  routeEvidence.push({ id: route.id, requirementPrefix: classification.requirementPrefix, cases: route.cases });
 }
+
+assert.deepEqual(
+  routes.families.map(({ requirementPrefix }) => [requirementPrefix, actualFamilyCounts.get(requirementPrefix)]),
+  expectedFamilies,
+  'Channel requirement-level route counts drifted from the six exact families',
+);
 assert.equal(mappedRequirements.size, directRequirements.length, 'every direct Channel requirement must map to exact owner-local evidence');
-assert.deepEqual([...mappedRequirements].sort(), directRequirements, 'Channel evidence route mapping must be exact');
+assert.deepEqual([...mappedRequirements].sort(), directRequirements, 'Channel evidence requirement mapping must be exact');
 
 for (const field of [
   'channelResourcePlanIdentity',
@@ -116,7 +138,7 @@ const sources = {};
 for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
 
 const evidenceSubject = {
-  schema: 'cuda-mcgs.channel-reference-evidence-key/0.1.0',
+  schema: 'cuda-mcgs.channel-reference-evidence-key/0.2.0',
   contract: routes.contract,
   ownerExperiment: routes.ownerExperiment,
   composerEvidence: composerEvidence.representationCompositionEvidenceKey,
@@ -129,14 +151,15 @@ const evidenceSubject = {
   channelProfileIdentities: composerEvidence.channelProfileIdentities,
   channelFirstProductDeletedIdentity: composerEvidence.channelFirstProductDeletedIdentity,
   directRequirements,
+  families: routes.families,
   routeEvidence,
   caseIds: [...caseIds].sort(),
   sources,
 };
 const evidenceIdentity = canonicalIdentity(evidenceSubject);
 const evidence = {
-  schemaVersion: 1,
-  capsule: 'cuda-mcgs-channel-reference-evidence-v0.1.0',
+  schemaVersion: 2,
+  capsule: 'cuda-mcgs-channel-reference-evidence-v0.2.0',
   scope: 'owner-local-channel-evidence-reuse',
   status: 'pass',
   generatedAt: new Date().toISOString(),
@@ -144,11 +167,12 @@ const evidence = {
   composerEvidence: composerEvidence.representationCompositionEvidenceKey,
   evidenceIdentity,
   directRequirements,
-  routes: routeEvidence,
+  families: routes.families,
+  requirements: routeEvidence,
   summary: {
     directRequirements: directRequirements.length,
     directRequirementsMapped: mappedRequirements.size,
-    routeFamilies: routeEvidence.length,
+    routeFamilies: routes.families.length,
     ownerCases: caseIds.size,
     ownerCasesPassed: [...caseIds].filter((id) => composerCases.get(id) === 'pass').length,
     requiredSkipped: 0,
