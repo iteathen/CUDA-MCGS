@@ -7,6 +7,7 @@ on:
       - ref/channel-evidence-01
     paths:
       - '.github/workflows/channel-reference.yml'
+      - 'docs/development/2026-09-02-ref-channel-evidence-01-assessment-and-plan.md'
       - 'docs/specs/SPEC-0004-async-stage-channels.md'
       - 'schemas/search-ir/0.2.0/requirement-coverage.json'
       - 'schemas/search-ir/0.2.0/channel-profile.schema.json'
@@ -21,6 +22,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/channel-reference.yml'
+      - 'docs/development/2026-09-02-ref-channel-evidence-01-assessment-and-plan.md'
       - 'docs/specs/SPEC-0004-async-stage-channels.md'
       - 'schemas/search-ir/0.2.0/requirement-coverage.json'
       - 'schemas/search-ir/0.2.0/channel-profile.schema.json'
