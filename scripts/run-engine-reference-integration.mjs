@@ -48,4 +48,4 @@ for (const relative of commands) {
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
 
-await import('../experiments/search-semantics-reference/run-integration.mjs');
+await import('../experiments/search-semantics-reference/run-integration-gate.mjs');
