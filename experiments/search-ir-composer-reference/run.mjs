@@ -5954,6 +5954,22 @@ await runCase('channel-reference-cancel-late-completion-no-resurrection', () => 
   assert(result.events.some(({ kind }) => kind === 'late-ignored')); assert.equal(result.slots[0].state, 'free');
 });
 
+await runCase('channel-reference-cancel-preserves-authoritative-first-cause', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  const result = simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 },
+    { kind: 'initialize', slot: 0, generation: 0 },
+    { kind: 'publish', slot: 0, generation: 0, release: true },
+    { kind: 'complete', slot: 0, generation: 0, disposition: 'channel-internal-failure' },
+    { kind: 'cancel', slot: 0, generation: 0 },
+    { kind: 'cancel', slot: 0, generation: 0 },
+  ]);
+  assert.equal(result.slots[0].disposition, 'channel-internal-failure');
+  const ignored = result.events.filter(({ kind }) => kind === 'cancel-no-effect');
+  assert.equal(ignored.length, 2);
+  assert(ignored.every(({ disposition }) => disposition === 'channel-internal-failure'));
+});
+
 await runCase('channel-reference-expiry-terminal', () => {
   const channel = channelProfiles[1].normalized.channels[0];
   const result = simulateChannelTrace(channelProfiles[1].normalized, channel.id, [
@@ -5965,6 +5981,11 @@ await runCase('channel-reference-expiry-terminal', () => {
 await runCase('channel-reference-producer-service-while-pending', () => {
   const channel = channelProfiles[0].normalized.channels[0];
   assert.equal(classifyChannelProgress(channelProfiles[0].normalized, channel.id, { pendingConsumers: true, producerRunnable: true, escapeRunnable: false }), 'service-producer');
+});
+
+await runCase('channel-reference-escape-service-while-pending', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.equal(classifyChannelProgress(channelProfiles[0].normalized, channel.id, { pendingConsumers: true, producerRunnable: false, escapeRunnable: true }), 'service-escape');
 });
 
 await runCase('channel-reference-typed-no-progress', () => {
