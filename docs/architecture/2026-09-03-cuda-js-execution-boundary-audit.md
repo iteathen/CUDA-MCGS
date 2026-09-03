@@ -1,5 +1,7 @@
 # CUDA-MCGS / CUDA-JS execution-boundary audit — 2026-09-03
 
+**Status:** Informational
+
 **Owner:** CUDA-MCGS issue #193  
 **Audit source:** `iteathen/CUDA-MCGS@f32724e88cc340c63382def1e5138be43e8e147f`  
 **Lower source:** `iteathen/CUDA-JS@bc2700f2e5c654567c2e17bf8d67b882351b8681` (`cuda-js@0.1.0-alpha.17`)  
