@@ -1,81 +1,83 @@
 {
-  "schema_version": 75,
-  "updated": "2026-09-01",
-  "status": "issue_44_protected_main_promotion_pending_pr_qualification_and_independent_review",
-  "objective": "Promote the already-reviewed framework-only production-ownership authority to protected main without importing unrelated experimental portfolio history, then resume semantic/reference work in dependency order before any production lowering.",
-  "ownership_boundary": "CUDA-MCGS production owns reusable product-neutral MCGS semantics, normalized composition, finite resources, public integration seams and removable conformance evidence. Production domain/search products remain independently owned. CUDA-JS owns generic CUDA lowering/runtime mechanisms. Native/private CUDA access inside CUDA-MCGS remains a library-coverage diagnostic rather than an authorized escape path.",
-  "protected_base": {
-    "cuda_mcgs_main": "6fcb2e336c5d31ec7eae16b39166147d846ca19c",
-    "meaning": "Current protected main, including the evidence-first README from PR #164. This README is intentionally preserved by the #44 promotion."
-  },
-  "promotion_candidate": {
-    "branch": "architecture/44-protected-main-promotion",
-    "source_issue": 44,
-    "source_pr": 146,
-    "source_pr_head": "830efb541fdcb93ec1b822aec92bfb23f73f2a6b",
-    "source_portfolio_merge": "a1be8a596bb5ccc97736365dfbc49419ec0f76aa",
-    "reconstruction_commit": "870599d7a63651b854a92249437612759ca5d649",
-    "construction": "Fresh branch from current protected main. Reuses the accepted #146 non-README blobs exactly, deletes the active CHESS-0001 product spec exactly as #146 did, and preserves current main README. Does not merge experimental/portfolio.",
-    "authority_status": "candidate-until-protected-readback"
-  },
+  "schema_version": 76,
+  "updated": "2026-09-03",
+  "status": "cuda_js_execution_boundary_audited_production_adapter_blocked",
+  "objective": "Keep the protected CUDA-MCGS/CUDA-JS ownership seam stable after #193 and do not begin production lowering until the separately held semantic prerequisite is explicitly resumed and completed under its own authority.",
+  "ownership_boundary": "CUDA-MCGS owns reusable search semantics, Search IR, generated Search Program meaning, finite search-resource/progress/session/stage/channel semantics and selected search physical-profile policy. CUDA-JS owns generic device/target/compiler/artifact/memory/view/launch/operation/prepared-DAG/synchronization/publication/provider/native-resource mechanisms and compatibility facts. The future MCGS adapter translates between those owners without becoming a second runtime lifecycle.",
   "authority": [
-    "AGENTS.md",
-    "docs/PROJECT_CHARTER.md",
-    "docs/decisions/ADR-0018-universal-core-extension-product-layering.md",
-    "docs/decisions/ADR-0024-framework-only-production-ownership.md",
-    "docs/specs/SPEC-0000-framework-requirements.md",
-    "https://github.com/iteathen/CUDA-MCGS/issues/44"
+    "CUDA-MCGS protected semantic source f32724e88cc340c63382def1e5138be43e8e147f",
+    "CUDA-MCGS ADR-0014 extract CUDA-JS runtime",
+    "CUDA-MCGS ADR-0019 public CUDA-JS capability escalation",
+    "CUDA-MCGS ADR-0023 parallel-first native execution with selected-profile topology",
+    "CUDA-MCGS accepted SPEC-0001 device search publication/resources and accepted SPEC-0002 Search IR/reference semantics",
+    "CUDA-JS 0.1.0-alpha.17 protected-main revision bc2700f2e5c654567c2e17bf8d67b882351b8681",
+    "docs/architecture/2026-09-03-cuda-js-execution-boundary-audit.md"
   ],
   "deliverables": [
-    "framework-only production ownership present on protected main",
-    "historical repository-local CHESS-0001 specification archived and absent from active specs",
-    "structural project-organization enforcement against active repository-local product specs",
-    "current protected evidence-first README preserved",
-    "normal required workflow green on one exact promotion head",
-    "independent review and guarded merge",
-    "protected-main readback before #44 closure"
+    "Protect-integrate the #193 CUDA-JS execution-boundary audit matrix and reconciled control state.",
+    "Keep current 0.2.0 lower-facing execution/program schemas classified as proposal/reference evidence until their separately authorized semantic-acceptance transaction.",
+    "Leave production adapter #125 explicitly blocked until its semantic prerequisite is separately resumed/completed and the accepted package surface conforms to the #193 ownership matrix."
   ],
-  "current_focus": {
-    "id": "ISSUE-44-PROTECTED-PROMOTION",
-    "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/44",
-    "next_action": "Run the complete required workflow on the exact promotion PR head, audit the diff, obtain independent review, perform only a guarded authorized merge, and verify protected-main readback before closing #44.",
-    "after_integration": "Disposition stale #44 authority candidates #126/#132 without losing unique research evidence, then resume issue #36 semantic/reference integration in dependency order. Production lowering remains blocked on #122.",
-    "exit": "ADR-0024 and the framework-only production boundary are present on protected main, required CI is green on the protected revision, protected readback confirms the intended files, and stale competing #44 authority packets have durable disposition."
-  },
-  "parallel_state": {
-    "progress_reference_pr": 167,
-    "progress_reference_status": "draft-blocked-on-shared-authority-acceptance",
-    "shared_progress_authority_issue": 168,
-    "shared_progress_authority_pr": 169,
-    "shared_progress_authority_status": "author-qualified-draft-pending-independent-review",
-    "rule": "These experimental semantic branches are not imported into the #44 protected-main promotion."
-  },
   "validation": [
-    "normal repository pull-request workflow only",
-    "required aggregate verify context",
-    "governance verification",
-    "Ubuntu and Windows Search IR reference cells",
-    "all Graph owner lanes present on the target branch",
-    "exact-head diff audit against protected main",
-    "protected target readback after merge"
+    "Run the repository documentation workflow on the exact PR head.",
+    "Require Governance verification, Search IR reference on Windows and Ubuntu, and all Graph NODE/EDGE/REF/PATH/ROOT reference jobs to pass.",
+    "Review the final PR diff and verify that only the audit document, STATUS.md, and next_step.yaml changed; no proposal schema, semantic specification, production code, native source, or held-work artifact may change.",
+    "Use an expected-head guarded protected merge and read protected main plus issue #193 back after integration."
   ],
   "blockers": [
-    "#44 is not complete until independent review, guarded merge, and protected-main readback succeed.",
-    "Production lowering remains blocked until #122 atomic semantic acceptance.",
-    "PR #169 and PR #167 remain separate unprotected semantic work and require their own independent acceptance path."
+    "Production adapter #125 is not dependency-ready because its separately held semantic prerequisite has not been explicitly resumed/completed.",
+    "The current 0.2.0 lower-facing proposal projections cannot become protected authority unchanged; their CUDA-JS-shaped enums/records must be removed, mechanically lower-bound, or explicitly classified as adapter translation during that future acceptance transaction."
+  ],
+  "audit": {
+    "issue": 193,
+    "source_revision": "f32724e88cc340c63382def1e5138be43e8e147f",
+    "document": "docs/architecture/2026-09-03-cuda-js-execution-boundary-audit.md",
+    "cuda_js": "cuda-js@0.1.0-alpha.17 protected-main revision bc2700f2e5c654567c2e17bf8d67b882351b8681",
+    "tensor_falsifier": "iteathen/CUDA-JS-Tensor@ea591487c79ec1b3c1e184f4ddae761bd1d41bef",
+    "nn_falsifier": "iteathen/cuda-nn@ac97fee981b7789e11af2ec4a7ca40799eb08ddd",
+    "disposition": "No new preparation transaction, launch resolver, universal scheduler, provider registry or GPU IR. Existing public CUDA-JS LEGO resources are sufficient; the remaining correction is proposal-schema ownership/projection before future semantic acceptance."
+  },
+  "current_focus": {
+    "id": "NO-DEPENDENCY-READY-PRODUCTION-ADAPTER",
+    "tracker": "https://github.com/iteathen/CUDA-MCGS/issues/125",
+    "state": "blocked",
+    "next_action": "Do not start #125 while its semantic prerequisite is held. If the project owner explicitly resumes that prerequisite and it later completes under its own authority, re-read the accepted execution-package/program-profile surface against the #193 matrix, remove or mechanically bind any remaining copied CUDA-JS request vocabulary/limits/provider/lifecycle facts, then implement #125 using only versioned public CUDA-JS contracts.",
+    "exit": "The separately held semantic prerequisite is protected-integrated, the accepted execution-package surface conforms to the #193 ownership matrix, and #125 is dependency-ready against one exact public CUDA-JS pair."
+  },
+  "field_rules": [
+    "Search Program source/function roles and semantic dependencies remain MCGS-owned; CUDA-JS owns Device-JS translation/compilation and lower type/parameter capability vocabulary.",
+    "MCGS resource sizes/capacities/semantic placement/access/pressure remain MCGS-owned; CUDA-JS owns physical allocation/view limits and provider/native alignment facts.",
+    "Explicit grid/block/dynamic-shared values may remain selected MCGS profile policy; CUDA-JS owns device legality and finite launch limits.",
+    "Requested search concurrency may remain MCGS policy; actual admitted lower operation capacity comes from public CUDA-JS capability facts.",
+    "The adapter may compose compile/link/load/function/provider-plan/prepared-DAG resources and reverse cleanup; each lower resource lifecycle/error/health state remains CUDA-JS-owned.",
+    "Proposal schemas may not become a second normative definition of CUDA-JS request shapes, enums, limits or lifecycle."
+  ],
+  "production_adapter": {
+    "issue": 125,
+    "status": "blocked",
+    "requirements_after_unblock": [
+      "accepted execution-package semantics with lower-facing fields reconciled to #193",
+      "versioned public cuda-js package contracts only",
+      "no deep/private imports or generated-artifact inspection",
+      "no native C/C++/CUDA/PTX/FFI workaround",
+      "fake-runtime portable lifecycle tests",
+      "exact compatible-pair/native qualification before native/support claims"
+    ]
+  },
+  "qualification_limits": [
+    "#193 is architecture/package-projection evidence only; it proves no native CUDA-MCGS correctness or performance.",
+    "The current 0.2.0 execution/program schemas remain proposal/reference evidence, not accepted production authority.",
+    "A future compatible-pair record binds exact MCGS and CUDA-JS identities but does not transfer lower ownership into MCGS."
   ],
   "do_not": [
-    "merge experimental/portfolio wholesale into main",
-    "replace the newer protected README with the older #146 README",
-    "treat PR #146's experimental/portfolio merge as protected-main acceptance",
-    "import unrelated Graph/Policy/Evaluator/Progress implementation history into the #44 promotion",
-    "merge the #44 promotion without independent review",
-    "close #44 before protected-main readback",
-    "begin production lowering before #122",
-    "add native/private CUDA paths to CUDA-MCGS"
+    "start or implement #125 while its semantic prerequisite remains held",
+    "accept current duplicated lower CUDA-JS enums/shapes as MCGS normative authority merely because they exist in proposal JSON Schema",
+    "add native/private CUDA paths to CUDA-MCGS",
+    "invent a PreparedExecutable, logical-work resolver, universal scheduler or provider registry without new contradictory evidence",
+    "move Search IR/Graph/Policy/Evaluator/Progress/Session/Stage/Channel semantics into CUDA-JS"
   ],
   "cleanup_debt": [
-    "PR #126 and PR #132 are stale competing #44 authority candidates and require explicit disposition after the protected successor exists.",
-    "Historical experimental/portfolio commits remain historical evidence only; they are not a shortcut for protected-main promotion."
+    "The current 0.2.0 lower-facing proposal projections must be reconciled during the future semantic-acceptance transaction before they can become protected authority.",
+    "Historical experimental/portfolio branches remain evidence only unless separately reviewed and integrated through protected governance."
   ]
 }
