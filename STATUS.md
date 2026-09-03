@@ -53,7 +53,22 @@ No native code, CUDA source/PTX, private CUDA-JS access, scheduler topology, hos
 - Review-gap run `33700521171`: the proposed 899-case bank discovered all 899 cases; 895 passed and four failed because the new freshness validation was applied to `initialize` before `initialize` assigned freshness. No semantic patch was committed from that red.
 - Corrected review-gap run `33700867462`: focused Composer qualification passed `899/899`, all skip classes `0`, not-discovered `0`, 989 requirement dispositions classified with pending `0`; Composer evidence `c9763298fdea261065559207dc052939d39795552586370463226ad0242fc60a5`, `50559` canonical bytes. Only the four intended owner/schema files were then committed as `559f1cc12120c39a1dd509d563dcf994864f9851`.
 
-Both temporary patch transports used to update very large owner files were deleted after their successful construction use. They are not part of the proposed permanent result.
+All temporary patch transports used to update very large owner files were deleted after their successful construction use. They are not part of the proposed permanent result.
+
+## Coupled qualification repairs
+
+The first full PR qualification exposed two non-Channel defects in downstream qualification surfaces after the Composer case bank grew from 881 to 899:
+
+1. seven profile exporters duplicated the old exact `881/881` Composer summary, while the Session and Stage exporters performed only a partial producer-summary check;
+2. the Framework lifecycle reference duplicated the same old `881/881` summary and pinned the previous Composer evidence identity in its checked-in fixture and derived synthetic semantic identities.
+
+These were classified as qualification/provenance defects rather than Channel semantic failures because the exact 899-case Composer capsule passed before each downstream failure.
+
+The permanent repair keeps exact discovery-count authority only in the Composer capsule. A shared private validation helper now requires each profile exporter to consume a complete producer pass without duplicating a magic case count, and all nine exporters were qualified together before commit `5cbedcac097cc349b4137b3642f2c5f393f096a8`.
+
+Framework was repaired separately: its runner now requires a complete Composer pass without duplicating the case count, and its fixture is rebound from the newly generated Composer `representationCompositionEvidenceKey` rather than by blind hash editing. The generated identity was `1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2`, `729040` canonical bytes; the fixture's three `semanticIdentity` values were regenerated from the same evidence SHA. Guarded transport run `33703061059` regenerated Composer evidence, applied the rebind, and passed the Framework lifecycle reference before permanent commit `8b853352bdbbd05e1ed4773cecb3d3c728aac557` was created.
+
+The exporter and Framework repair transports/scripts were removed after successful use. They are not permanent workflow paths.
 
 ## Current permanent evidence design
 
@@ -65,11 +80,13 @@ Permanent pieces are:
 - `experiments/search-ir-composer-reference/fixtures/channel-evidence-routes.json` — 41 explicit requirement→case bindings;
 - `experiments/search-ir-composer-reference/run-channel-evidence.mjs` — identity/case-status evidence adapter, not a semantic interpreter;
 - `scripts/run-channel-reference-evidence.mjs` and `scripts/verify-channel-ci-gate.mjs` — permanent entry/gate checks;
-- `.github/workflows/channel-reference.yml` — permanent Node 26 Channel evidence workflow.
+- `.github/workflows/channel-reference.yml` — permanent Node 26 Channel evidence workflow;
+- `experiments/search-ir-composer-reference/src/validation.mjs` plus the nine profile exporters — producer-complete-pass validation without a duplicated Composer count;
+- `experiments/search-semantics-reference/run-framework-lifecycle.mjs` and its fixture — Framework producer evidence binding regenerated from the current Composer evidence identity.
 
 ## Current gate
 
-PR #191 must qualify one stable final head through the permanent Channel gate plus the PR-triggered Stage, Session, Terminal, Framework and full repository/documentation gates. The Channel gate must prove Composer `899/899`, zero failures/skips/not-discovered, exact requirement-level `41/41` mapping, and a required artifact.
+PR #191 must qualify one cleaned stable final head through the permanent Channel gate plus the PR-triggered Stage, Session, Terminal, Framework and full repository/documentation gates. The Channel gate must prove Composer `899/899`, zero failures/skips/not-discovered, exact requirement-level `41/41` mapping, and a required artifact.
 
 After those workflows are green on one exact SHA, perform a fresh base-to-head technical review and verify temporary construction residue is absent, protected `main` and the experimental base remain unchanged, and no owner leakage/native escape was introduced.
 
