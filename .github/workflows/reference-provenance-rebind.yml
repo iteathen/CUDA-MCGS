@@ -86,14 +86,15 @@ jobs:
             echo 'stale Composer evidence identity remains in reference fixtures' >&2
             exit 1
           fi
-          git diff --stat -- experiments/search-semantics-reference/fixtures
-          git diff -- experiments/search-semantics-reference/fixtures
+          git diff --stat -- experiments/search-semantics-reference/run.mjs experiments/search-semantics-reference/fixtures
+          git diff -- experiments/search-semantics-reference/run.mjs experiments/search-semantics-reference/fixtures
       - name: Commit only regenerated reference provenance
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add \
+            experiments/search-semantics-reference/run.mjs \
             experiments/search-semantics-reference/fixtures/domain-cases.json \
             experiments/search-semantics-reference/fixtures/evaluator-cases.json \
             experiments/search-semantics-reference/fixtures/graph-advance-occurrence-cases.json \
