@@ -21,6 +21,7 @@ on:
       - 'scripts/run-engine-reference-integration.mjs'
   pull_request:
     branches:
+      - main
       - experimental/portfolio
     paths:
       - '.github/workflows/engine-reference-integration.yml'
