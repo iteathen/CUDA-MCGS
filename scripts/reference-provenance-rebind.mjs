@@ -3,6 +3,7 @@ import fs from 'node:fs';
 const fixtureRoot = 'experiments/search-semantics-reference/fixtures';
 const composerRoot = 'experiments/search-ir-composer-reference/build';
 const semanticsBuild = 'experiments/search-semantics-reference/build';
+const harnessRunnerPath = 'experiments/search-semantics-reference/run.mjs';
 
 const old = Object.freeze({
   composer: { byteLength: 727811, sha256: 'a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe' },
@@ -42,6 +43,41 @@ function replaceIdentityField(file, field, expected, next) {
   const replacement = `${match[1]}${next.byteLength}${match[3]}${next.sha256}${match[5]}`;
   fs.writeFileSync(path, input.replace(expression, replacement));
 }
+function rebindNeutralScheduleEvidenceKeys(nextSha) {
+  const path = `${fixtureRoot}/neutral-schedules.json`;
+  const input = fs.readFileSync(path, 'utf8');
+  const needle = `"evidenceKey": "${old.composer.sha256}"`;
+  const count = input.split(needle).length - 1;
+  if (count !== 3) throw new Error(`neutral-schedules.json: expected exactly 3 prior schedule evidence keys, found ${count}`);
+  fs.writeFileSync(path, input.split(needle).join(`"evidenceKey": "${nextSha}"`));
+}
+function patchHarnessProducerSummary() {
+  const before = `  assert.deepEqual(composerEvidence.summary, {
+    expected: 881,
+    discovered: 881,
+    executed: 881,
+    passed: 881,
+    failed: 0,
+    requiredSkipped: 0,
+    conditionalSkipped: 0,
+    optionalSkipped: 0,
+    notDiscovered: 0,
+  });`;
+  const after = `  assert(Number.isSafeInteger(composerEvidence.summary.expected) && composerEvidence.summary.expected > 0, 'Composer evidence must declare a positive exact case count');
+  assert.equal(composerEvidence.summary.discovered, composerEvidence.summary.expected, 'Composer evidence discovery must be exact');
+  assert.equal(composerEvidence.summary.executed, composerEvidence.summary.discovered, 'Composer evidence must execute every discovered case');
+  assert.equal(composerEvidence.summary.passed, composerEvidence.summary.executed, 'Composer evidence must pass every executed case');
+  assert.equal(composerEvidence.summary.failed, 0);
+  assert.equal(composerEvidence.summary.requiredSkipped, 0);
+  assert.equal(composerEvidence.summary.conditionalSkipped, 0);
+  assert.equal(composerEvidence.summary.optionalSkipped, 0);
+  assert.equal(composerEvidence.summary.notDiscovered, 0);`;
+  const input = fs.readFileSync(harnessRunnerPath, 'utf8');
+  const first = input.indexOf(before);
+  if (first === -1) throw new Error('search-semantics harness stale Composer-summary block not found');
+  if (input.indexOf(before, first + before.length) !== -1) throw new Error('search-semantics harness stale Composer-summary block is not unique');
+  fs.writeFileSync(harnessRunnerPath, input.slice(0, first) + after + input.slice(first + before.length));
+}
 
 const composerEvidence = readJson(`${composerRoot}/evidence.json`);
 if (composerEvidence.capsule !== 'cuda-mcgs-search-ir-composer-reference-v0.2.0' || composerEvidence.status !== 'pass') throw new Error('current Composer evidence is not the expected passing capsule');
@@ -62,6 +98,8 @@ if (stage === 'direct') {
     'progress-cases.json', 'resource-cases.json',
   ];
   for (const file of composerFixtures) replaceIdentityField(file, 'composerEvidence', old.composer, currentComposer);
+  rebindNeutralScheduleEvidenceKeys(currentComposer.sha256);
+  patchHarnessProducerSummary();
 
   replaceIdentityField('domain-cases.json', 'profileProjection', old.domainProjection, projection('domain'));
   replaceIdentityField('evaluator-cases.json', 'profileProjection', old.evaluatorProjection, projection('evaluator'));
