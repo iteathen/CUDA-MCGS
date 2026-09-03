@@ -1,5 +1,13 @@
 ## Objective, authority, and ownership boundary
 
+## Portfolio readiness transition
+
+State the highest-risk unproven boundary addressed, its blocker class before this PR, the exact evidence supporting the transition, remaining unproven boundaries, and the downstream composed capability newly unblocked.
+
+Blocker class: security/correctness defect / missing foundational capability / qualification-evidence-infrastructure gap / missing vertical composition proof / measured performance-concurrency bottleneck / convenience-API expansion / community-presentation polish.
+
+Confirm that architectural disposition, implementation status, qualification/support status, and priority remain separate; an absent physical GPU/Linux host/CI/compatible-pair environment is not represented as a code defect without independent falsification; cross-repository needs are expressed as public capability edges with consumer acceptance criteria; and added specification, scheduler/concurrency machinery, optimization, or API breadth is required by the next executable boundary or measured need rather than a theoretical ceiling. If existing abstractions were materially unexercised, state the thin public-contract vertical falsifier used before expanding architecture.
+
 ## Product area, component, manifest, and dependency direction
 
 ## Selective specification and agent-file reading
