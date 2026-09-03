@@ -5783,7 +5783,7 @@ await runCase('channel-absence-zero-residue', () => {
 await runCase('channel-profile-second-instance-distinct', () => {
   assert.equal(new Set(channelProfiles.map(({ identity }) => identity.sha256)).size, 2);
   assert.deepEqual(channelProfiles.map(({ normalized }) => normalized.channels.length), [2, 1]);
-  assert.deepEqual(channelProfiles.map(({ normalized }) => normalized.channels[0].consumption.class), ['advisory', 'advisory']);
+  assert.deepEqual(channelProfiles.map(({ normalized }) => normalized.channels[0].consumption.class), ['advisory', 'optional']);
   assert(channelProfiles[0].normalized.channels.some(({ consumption }) => consumption.class === 'required'));
 });
 
@@ -5809,11 +5809,24 @@ await runCase('channel-evaluator-request-result-required', () => {
 });
 
 await runCase('channel-secondary-work-advisory-multiborrow', () => {
-  const channel = channelProfiles[1].normalized.channels[0];
-  assert.equal(channel.consumption.class, 'advisory');
+  const channel = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'advisory');
   assert.equal(channel.consumption.unavailable, 'owner-fallback');
   assert.equal(channel.claim.mode, 'finite-multi-consumer-immutable-borrow');
   assert.equal(channel.claim.referenceAccounting, 'exact');
+  const unavailable = simulateChannelTrace(channelProfiles[0].normalized, channel.id, [{ kind: 'await-unavailable' }]);
+  assert.deepEqual(unavailable.events[0], { kind: 'fallback', workerReleased: true, mutableLeaseReleased: true });
+});
+
+await runCase('channel-secondary-work-optional-skip', () => {
+  const channel = channelProfiles[1].normalized.channels[0];
+  assert.equal(channel.consumption.class, 'optional');
+  assert.equal(channel.consumption.unavailable, 'skip');
+  assert.equal(channel.progress.dependencies[0].requirement, 'optional');
+  assert.equal(channel.progress.dependencies[0].fallback, null);
+  assert(channel.progress.dependencies[0].escapes.includes('skip'));
+  const unavailable = simulateChannelTrace(channelProfiles[1].normalized, channel.id, [{ kind: 'await-unavailable' }]);
+  assert.deepEqual(unavailable.events[0], { kind: 'skipped', workerReleased: true, mutableLeaseReleased: true });
+  assert.equal(unavailable.pending, '0');
 });
 
 await runCase('channel-first-product-deletion-zero-owned-residue', () => {
@@ -5905,6 +5918,44 @@ await runCase('channel-cleanup-lifecycle-closure', () => {
   }
 });
 
+await runCase('channel-producer-publication-preconditions', () => {
+  for (const channel of channelProfiles[0].normalized.channels) {
+    const producers = channel.roles.filter(({ kind }) => kind === 'producer');
+    assert(producers.length > 0 && producers.every(({ actions }) => actions.includes('produce') && actions.includes('release')));
+    assert(channel.payloads.every(({ sourceValidity }) => sourceValidity && sourceValidity.id));
+    assert.equal(channel.resources.rollback, 'zero-published-effect');
+    assert(channel.lifecycle.reclamation.preconditions.includes('source-leases-ended'));
+  }
+});
+
+await runCase('channel-publication-coherence-contract', () => {
+  for (const channel of channelProfiles[0].normalized.channels) {
+    assert(channel.publication.publicationWord && channel.publication.publicationWord.id);
+    assert.equal(channel.publication.payloadBeforeReady, true);
+    assert.equal(channel.publication.consumeAfterAcquire, true);
+    assert(channel.payloads.every(({ immutableAtReady }) => immutableAtReady === true));
+  }
+});
+
+await runCase('channel-consumption-failure-owned', () => {
+  const ownerIds = new Set(channelProfiles[0].normalized.owners.map(({ id }) => id));
+  for (const channel of channelProfiles[0].normalized.channels) {
+    assert(ownerIds.has(channel.semanticOwner));
+    assert(channel.consumption.failure && channel.consumption.failure.id);
+  }
+});
+
+await runCase('channel-cancellation-disposition-table-complete', () => {
+  for (const channel of channelProfiles[0].normalized.channels) {
+    const disposition = new Map(channel.lifecycle.cancellation.map(({ state, disposition: value }) => [state, value]));
+    assert.deepEqual([...disposition.keys()].sort(), [...channel.stateGraph.states].sort());
+    assert.equal(disposition.get('free'), 'no-effect');
+    assert.equal(disposition.get('terminally-disposed'), 'ignore-authoritative-terminal');
+    assert.equal(disposition.get('reclaimable'), 'reclaim');
+    assert.equal(channel.lifecycle.expiry.source, 'engine-epoch-budget');
+  }
+});
+
 await runCase('channel-reference-serial-publication', () => {
   const channel = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'required');
   const result = simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
@@ -5912,6 +5963,26 @@ await runCase('channel-reference-serial-publication', () => {
     { kind: 'claim', slot: 0, generation: 0, acquire: true }, { kind: 'consume', slot: 0, generation: 0 }, { kind: 'complete', slot: 0, generation: 0 }, { kind: 'reclaim', slot: 0, generation: 0 },
   ]);
   assert.equal(result.slots[0].state, 'free'); assert.equal(result.conservation, channel.capacity.slots);
+});
+
+await runCase('channel-reference-request-result-correlation', () => {
+  const channel = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'required');
+  const freshness = 'owner-freshness.request-0';
+  const result = simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, generation: 0, freshness }, { kind: 'publish', slot: 0, generation: 0, release: true },
+    { kind: 'claim-request', slot: 0, generation: 0, correlation: 0, version: channel.version, freshness, acquire: true },
+    { kind: 'initialize-result', slot: 0, generation: 0, correlation: 0, version: channel.version, freshness },
+    { kind: 'publish-result', slot: 0, generation: 0, correlation: 0, version: channel.version, freshness, release: true },
+    { kind: 'claim', slot: 0, generation: 0, correlation: 0, version: channel.version, freshness, acquire: true },
+    { kind: 'consume', slot: 0, generation: 0, correlation: 0, version: channel.version, freshness },
+    { kind: 'complete', slot: 0, generation: 0, correlation: 0, version: channel.version, freshness },
+    { kind: 'reclaim', slot: 0, generation: 0, correlation: 0, version: channel.version, freshness },
+  ]);
+  assert(result.events.some(({ kind }) => kind === 'request-claimed'));
+  assert(result.events.some(({ kind }) => kind === 'result-ready'));
+  assert(result.events.some(({ kind }) => kind === 'consumed'));
+  assert.equal(result.slots[0].state, 'free');
+  assert.equal(result.slots[0].correlation, '0');
 });
 
 await runCase('channel-reference-required-pending-releases-worker', () => {
@@ -5954,6 +6025,36 @@ await runCase('channel-reference-cancel-late-completion-no-resurrection', () => 
   assert(result.events.some(({ kind }) => kind === 'late-ignored')); assert.equal(result.slots[0].state, 'free');
 });
 
+await runCase('channel-reference-cancel-preserves-authoritative-first-cause', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  const result = simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 },
+    { kind: 'initialize', slot: 0, generation: 0 },
+    { kind: 'publish', slot: 0, generation: 0, release: true },
+    { kind: 'complete', slot: 0, generation: 0, disposition: 'channel-internal-failure' },
+    { kind: 'cancel', slot: 0, generation: 0 },
+    { kind: 'cancel', slot: 0, generation: 0 },
+  ]);
+  assert.equal(result.slots[0].disposition, 'channel-internal-failure');
+  const ignored = result.events.filter(({ kind }) => kind === 'cancel-no-effect');
+  assert.equal(ignored.length, 2);
+  assert(ignored.every(({ disposition }) => disposition === 'channel-internal-failure'));
+});
+
+await runCase('channel-reference-cancellation-state-matrix', () => {
+  const channel = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'required');
+  const freshness = 'owner-freshness.cancel-matrix';
+  const traces = [
+    simulateChannelTrace(channelProfiles[0].normalized, channel.id, [{ kind: 'cancel', slot: 0 }]),
+    simulateChannelTrace(channelProfiles[0].normalized, channel.id, [{ kind: 'reserve', slot: 0 }, { kind: 'cancel', slot: 0, generation: 0 }]),
+    simulateChannelTrace(channelProfiles[0].normalized, channel.id, [{ kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, freshness }, { kind: 'publish', slot: 0, release: true }, { kind: 'cancel', slot: 0 }]),
+    simulateChannelTrace(channelProfiles[0].normalized, channel.id, [{ kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, freshness }, { kind: 'publish', slot: 0, release: true }, { kind: 'claim-request', slot: 0, acquire: true }, { kind: 'cancel', slot: 0 }]),
+    simulateChannelTrace(channelProfiles[0].normalized, channel.id, [{ kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, freshness }, { kind: 'publish', slot: 0, release: true }, { kind: 'claim-request', slot: 0, acquire: true }, { kind: 'initialize-result', slot: 0 }, { kind: 'publish-result', slot: 0, release: true }, { kind: 'cancel', slot: 0 }]),
+  ];
+  assert.equal(traces[0].events.at(-1).kind, 'cancel-no-effect');
+  for (const trace of traces.slice(1)) { assert.equal(trace.slots[0].state, 'terminally-disposed'); assert.equal(trace.slots[0].disposition, 'cancelled'); }
+});
+
 await runCase('channel-reference-expiry-terminal', () => {
   const channel = channelProfiles[1].normalized.channels[0];
   const result = simulateChannelTrace(channelProfiles[1].normalized, channel.id, [
@@ -5965,6 +6066,11 @@ await runCase('channel-reference-expiry-terminal', () => {
 await runCase('channel-reference-producer-service-while-pending', () => {
   const channel = channelProfiles[0].normalized.channels[0];
   assert.equal(classifyChannelProgress(channelProfiles[0].normalized, channel.id, { pendingConsumers: true, producerRunnable: true, escapeRunnable: false }), 'service-producer');
+});
+
+await runCase('channel-reference-escape-service-while-pending', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.equal(classifyChannelProgress(channelProfiles[0].normalized, channel.id, { pendingConsumers: true, producerRunnable: false, escapeRunnable: true }), 'service-escape');
 });
 
 await runCase('channel-reference-typed-no-progress', () => {
@@ -6112,13 +6218,23 @@ await runCase('reject-channel-pending-holds-worker', () => {
   assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRESS_DEPENDENCY' });
 });
 
+await runCase('reject-channel-pending-holds-mutable-lease', () => {
+  const mutated = clone(channelProfileInputs[0]); mutated.channels[0].progress.dependencies[0].holdsMutableLease = true;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRESS_DEPENDENCY' });
+});
+
 await runCase('reject-channel-required-escape-gap', () => {
   const mutated = clone(channelProfileInputs[0]); const required = mutated.channels.find(({ consumption }) => consumption.class === 'required'); required.progress.dependencies[0].escapes = ['cancel'];
   assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRESS_DEPENDENCY' });
 });
 
 await runCase('reject-channel-advisory-fallback-gap', () => {
-  const mutated = clone(channelProfileInputs[1]); mutated.channels[0].progress.dependencies[0].fallback = null;
+  const mutated = clone(channelProfileInputs[0]); const advisory = mutated.channels.find(({ consumption }) => consumption.class === 'advisory'); advisory.progress.dependencies[0].fallback = null;
+  assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRESS_DEPENDENCY' });
+});
+
+await runCase('reject-channel-optional-skip-gap', () => {
+  const mutated = clone(channelProfileInputs[1]); mutated.channels[0].progress.dependencies[0].escapes = mutated.channels[0].progress.dependencies[0].escapes.filter((escape) => escape !== 'skip');
   assert.throws(() => normalizeChannelProfile(mutated, inspected, channelDeletedResourceResult, channelDeletedProgressResult, channelDeletedStageResult), { code: 'CHANNEL_PROGRESS_DEPENDENCY' });
 });
 
@@ -6182,6 +6298,52 @@ await runCase('reject-channel-private-program-requirement', () => {
 await runCase('reject-channel-runtime-registry', () => {
   const mutated = clone(channelProfileInputs[0]); mutated.programContribution.runtimeRegistry = true;
   assert.throws(() => normalizeChannelProfile(mutated, inspected, channelResourceResult, channelProgressResult, channelStageResult), { code: 'CHANNEL_PROGRAM_BOUNDARY' });
+});
+
+await runCase('reject-channel-reference-foreign-channel', () => {
+  assert.throws(() => simulateChannelTrace(channelProfiles[0].normalized, 'channel.foreign', []), { code: 'CHANNEL_REFERENCE_PROFILE' });
+});
+
+await runCase('reject-channel-reference-wrong-correlation', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.throws(() => simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, freshness: 'freshness.correct' }, { kind: 'publish', slot: 0, release: true }, { kind: 'claim', slot: 0, correlation: 1, acquire: true },
+  ]), { code: 'CHANNEL_REFERENCE_CORRELATION' });
+});
+
+await runCase('reject-channel-reference-wrong-version', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.throws(() => simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, freshness: 'freshness.correct' }, { kind: 'publish', slot: 0, release: true }, { kind: 'claim', slot: 0, version: '0.1.1', acquire: true },
+  ]), { code: 'CHANNEL_REFERENCE_VERSION' });
+});
+
+await runCase('reject-channel-reference-wrong-freshness', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.throws(() => simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0, freshness: 'freshness.correct' }, { kind: 'publish', slot: 0, release: true }, { kind: 'claim', slot: 0, freshness: 'freshness.stale', acquire: true },
+  ]), { code: 'CHANNEL_REFERENCE_FRESHNESS' });
+});
+
+await runCase('reject-channel-reference-duplicate-publication', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.throws(() => simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0 }, { kind: 'publish', slot: 0, release: true }, { kind: 'publish', slot: 0, release: true },
+  ]), { code: 'CHANNEL_REFERENCE_STATE' });
+});
+
+await runCase('reject-channel-reference-duplicate-result-publication', () => {
+  const channel = channelProfiles[0].normalized.channels.find(({ consumption }) => consumption.class === 'required');
+  assert.throws(() => simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0 }, { kind: 'publish', slot: 0, release: true }, { kind: 'claim-request', slot: 0, acquire: true }, { kind: 'initialize-result', slot: 0 }, { kind: 'publish-result', slot: 0, release: true }, { kind: 'publish-result', slot: 0, release: true },
+  ]), { code: 'CHANNEL_REFERENCE_STATE' });
+});
+
+await runCase('reject-channel-reference-ready-mutation', () => {
+  const channel = channelProfiles[0].normalized.channels[0];
+  assert.throws(() => simulateChannelTrace(channelProfiles[0].normalized, channel.id, [
+    { kind: 'reserve', slot: 0 }, { kind: 'initialize', slot: 0 }, { kind: 'publish', slot: 0, release: true }, { kind: 'initialize', slot: 0 },
+  ]), { code: 'CHANNEL_REFERENCE_STATE' });
 });
 
 await runCase('reject-channel-reference-missing-release', () => {
@@ -6287,7 +6449,7 @@ await runCase('integration-requirement-disposition-handoff', () => {
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 881,
+  expected: 899,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -6295,7 +6457,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 881 - cases.length,
+  notDiscovered: 899 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 

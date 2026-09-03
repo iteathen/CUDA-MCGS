@@ -8,75 +8,93 @@
 
 Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd031`.
 
-The integrated CUDA-free candidate/reference line is `experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a`. Candidate/reference integration is not protected #122 acceptance, native CUDA qualification, production readiness, or product support.
+The integrated CUDA-free candidate/reference line remains `experimental/portfolio@ce21cc382bedb28647c244df1c53bf0d6c98cff0`, tree `8409e51a2df117f06f471833966517a9472fb388`. Candidate/reference integration is not protected #122 semantic acceptance, native CUDA qualification, production readiness, or product support.
 
-`REF-SESSION-01` / #181 is complete and integrated through PR #189. Its integrated tree equals the authorized reviewed Session tree and its post-integration Session, Terminal and Framework gates passed.
+`REF-SESSION-01` / #181 and `REF-STAGE-01` / #30 are complete and integrated on that experimental line. Protected `main` was not changed by either integration.
 
-## Active candidate — #30 / REF-STAGE-01
+## Active candidate — #33 / REF-CHANNEL-EVIDENCE-01
 
-Branch: `ref/stage-01`
+Branch: `ref/channel-evidence-01`
 
-Exact base: `experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a`
+Exact construction base: `experimental/portfolio@ce21cc382bedb28647c244df1c53bf0d6c98cff0`
 
-Review PR: #190
+Draft review PR: #191
 
-Qualified Stage semantic checkpoint:
+The Channel leaf is an evidence reuse/gap-audit over the existing Composer-owned Channel schema, normalizer and bounded logical oracle. It does not create a second Channel interpreter. SPEC-0004 retains internal Channel item/publication/ownership-transfer semantics; SPEC-0011 retains aggregate resource normalization/accounting/pressure; SPEC-0012 retains global readiness/progress/fairness/no-progress/closure; CUDA-JS retains generic native publication/synchronization/runtime lowering and exact compatible-pair qualification.
 
-`9ae16e7360226e35a69a1436a1f773dada592c95`
+The governing ENGINE-REFERENCE coverage assigns exactly 41 SPEC-0004 routes to `engine-reference-oracle`:
 
-tree:
+- `CHANNEL-ITEM-`: 10;
+- `CHANNEL-PRODUCER-`: 7;
+- `CHANNEL-CONSUMER-`: 7;
+- `CHANNEL-PUBLISH-`: 7;
+- `CHANNEL-CANCEL-`: 7;
+- `CHANNEL-CONFORMANCE-`: 3.
 
-`2f979d5d53b4e2aca60b8952315ae72753c545c1`
+The permanent route manifest is requirement-level: one explicit evidence record for each of those 41 requirements. The Channel evidence adapter proves the manifest's requirement set, six family counts, coverage classification and every named owner-local case against generated Composer evidence without importing or reimplementing the Channel state machine.
 
-Documentation-inclusive review checkpoint:
+## Demonstrated Channel corrections and completed gap audit
 
-`385594ab40feeb31bea933ceed0155b9a091e996`
+The first audit defect was cancellation first-cause loss: cancelling an already `terminally-disposed` item could replace an authoritative failure/stop disposition with `cancelled`. `simulateChannelTrace()` now makes that cancellation idempotent no-effect and preserves the first authoritative disposition. Permanent case `channel-reference-cancel-preserves-authoritative-first-cause` falsifies the old behavior.
 
-The single commit between those checkpoints changes only `STATUS.md`, `next_step.yaml`, and this experiment's `README.md`/`RESULTS.md`. No Stage semantic, test, runner, projection or workflow source changed after `9ae16e73…`.
+Fresh whole-diff review then demonstrated three additional evidence gaps in the owner-local oracle rather than in a second reference layer:
 
-Stage consumes the existing Composer-normalized Stage profiles rather than creating another schema/normalizer. It owns only per-work-item stable checkpoint invocation and declared local outcome semantics. Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session and Framework remain separate semantic owners; CUDA-JS retains Device-JS lowering, generated CUDA/native artifacts, linking/loading and generic runtime mechanisms.
+1. trace operations validated generation but did not carry correlation/version/freshness, so full item identity and consumer validation could not be behaviorally claimed;
+2. the request/result Channel profile declared `in-progress` and `result-ready` but the bounded trace did not execute that request→result lifecycle;
+3. selected fixtures exercised required and advisory unavailable-result behavior but not the SPEC-0004 optional `skip` path.
 
-No native code, PTX backend, runtime extension registry, global scheduler, product semantics, or host progression loop was introduced.
+Those gaps were closed inside the existing Channel owner. The bounded trace now checks generation, correlation, version and freshness; executes request claim/result initialization/result publication/result claim/consume; preserves duplicate/stale rejection; and distinguishes required pending, optional skip and advisory fallback. The second selected profile is now optional secondary work, while the first still supplies required evaluator-like plus advisory secondary work. Additional cancellation-state, publication, producer-precondition and sensitivity cases remain owner-local.
 
-## Exact PR qualification at 385594ab…
+No native code, CUDA source/PTX, private CUDA-JS access, scheduler topology, host progression loop, product meaning, hidden queue or duplicate resource/progress authority was introduced.
 
-All required PR workflows passed on the same documentation-inclusive head:
+## Preserved red-before-green evidence
 
-- Stage behavioral reference `33696784971` — success;
-- Session behavioral reference `33696784953` — success;
-- Terminal slice reference `33696784966` — success;
-- Framework lifecycle reference `33696784943` — success;
-- full repository/documentation matrix `33696784987` — success, including Governance, Ubuntu/Windows Search IR, Graph lanes, Policy, Evaluator, Resource, Progress, Output and aggregate `verify`.
+- Run `33699198942` on construction head `8526b990c4940012e623c07a107c466c7c86e8d8`: all 883 individual Composer cases passed, then exact discovery correctly failed because the declared expected count still said 881. The count was reconciled to 883 without weakening discovery or skip checks.
+- Review-gap run `33700521171`: the proposed 899-case bank discovered all 899 cases; 895 passed and four failed because the new freshness validation was applied to `initialize` before `initialize` assigned freshness. No semantic patch was committed from that red.
+- Corrected review-gap run `33700867462`: focused Composer qualification passed `899/899`, all skip classes `0`, not-discovered `0`, 989 requirement dispositions classified with pending `0`; Composer evidence `c9763298fdea261065559207dc052939d39795552586370463226ad0242fc60a5`, `50559` canonical bytes. Only the four intended owner/schema files were then committed as `559f1cc12120c39a1dd509d563dcf994864f9851`.
+- First dependency-ordered reference provenance run `33703864307`: direct producer identities were regenerated in the working copy and all Domain cases passed, but the neutral harness produced 18 failures because it still duplicated the old 881 Composer summary and its three declared schedules still carried the prior Composer evidence-key SHA. No fixture/provenance commit was made from that red.
 
-The Stage run proved:
+All temporary construction/diagnostic transports were deleted after their bounded use. They are not part of the proposed permanent result.
 
-- Stage CI self-gate: pass;
-- Composer and exact Stage projection/export: pass;
-- Stage behavioral reference: `10/10`;
-- direct SPEC-0003 ENGINE-REFERENCE routes: `8/8`;
-- required/conditional/optional skips: `0`;
-- Stage profile projection: `919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28`;
-- Stage evidence: `7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea` (`9395` canonical bytes);
-- exact-PR-head artifact: `9872056402`;
-- artifact digest: `sha256:4d7334fdd4aa6806762b01040e7eb75143a0c955542b6eacc3891b381e2f80a4`.
+## Coupled qualification and provenance repairs
 
-Fresh base-to-head author review of all 16 changed files found no blocking semantic, ownership, evidence, governance or cleanup defect. This is author review, not repository-owner authorization.
+The first full PR qualification exposed downstream qualification defects after the Composer case bank grew to 899: seven profile exporters duplicated the old exact `881/881` Composer summary, Session/Stage exporters checked only part of producer completeness, and Framework duplicated the old count while pinning the prior Composer evidence identity.
 
-## Preserved decisive Stage reds
+The permanent exporter repair keeps exact discovery-count authority only in the Composer capsule. A shared private validation helper requires each of the nine profile exporters to consume a complete producer pass without duplicating the magic case count; guarded run `33701820741` passed all nine before permanent commit `5cbedcac097cc349b4137b3642f2c5f393f096a8`.
 
-- pending outcome retained worker/mutable lease/reservation state: `2a12ca82dd9e99981dc3ed52623ea46d12930819`, run `33695493706`, artifact `9871610435`;
-- normalized non-pending outcome release was not enforced and undeclared owner facts were accepted: `4ebfd3f0802f1cb746aaad986ce97cd92c04bc57`, run `33696328927`, artifact `9871897062`.
+Framework was repaired separately: its runner consumes a complete Composer pass without duplicating the count, and its fixture plus three derived synthetic semantic identities were regenerated from the actual current Composer `representationCompositionEvidenceKey`, not by blind hash editing. Guarded run `33703061059` passed before permanent commit `8b853352bdbbd05e1ed4773cecb3d3c728aac557`.
 
-Both are permanent checked-in falsifiers. No falsifier was weakened for green.
+The full repository matrix then exposed the remaining checked-in reference fixtures as stale provenance. A read-only audit run `33703526051` regenerated the current Composer/profile identities. The corrected dependency-ordered rebind run `33704058479` regenerated direct producer bindings, repaired the neutral harness producer-completeness/evidence-key binding, qualified Domain/neutral plus Graph NODE, Policy, Evaluator, Resource, Progress and Output, then derived and qualified Graph EDGE → REF → PATH → ROOT → RECLAIM → ADVANCE occurrence → CLEANUP from each freshly passing upstream evidence artifact. It rejected any residual old Composer identity before commit.
 
-The expanded-case failure at `1a1e21c1…` / run `33696000529` remains diagnostic only: it exposed brittle test selection by canonical array index, and was corrected by selecting normalized `entryStage`/checkpoint identity without changing Stage semantics.
+That complete provenance transition was retained as `8a88eb37809c978cf30ba7e3fa08dc7001be80c1`. The current Composer composition-evidence identity is `1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2`, `729040` canonical bytes. These changes rebind evidence/projection provenance; they do not alter Domain, Graph, Policy, Evaluator, Resource, Progress or Output semantics.
+
+All exporter, Framework, provenance-audit and provenance-rebind transport workflows/scripts were removed after successful use. `next_step.yaml` has also been restored to its governance-required `deliverables` and `validation` shape rather than weakening governance checks.
+
+## Current permanent evidence design
+
+Permanent pieces are:
+
+- `experiments/search-ir-composer-reference/src/channel.mjs` — sole Channel normalizer/bounded logical trace owner;
+- `experiments/search-ir-composer-reference/src/channel-fixtures.mjs` — owner-local required/advisory/optional selected fixtures;
+- `experiments/search-ir-composer-reference/run.mjs` — exact 899-case consolidated Composer capsule;
+- `experiments/search-ir-composer-reference/fixtures/channel-evidence-routes.json` — 41 explicit requirement→case bindings;
+- `experiments/search-ir-composer-reference/run-channel-evidence.mjs` — identity/case-status evidence adapter, not a semantic interpreter;
+- `scripts/run-channel-reference-evidence.mjs` and `scripts/verify-channel-ci-gate.mjs` — permanent entry/gate checks;
+- `.github/workflows/channel-reference.yml` — permanent Node 26 Channel evidence workflow;
+- `experiments/search-ir-composer-reference/src/validation.mjs` plus the nine profile exporters — producer-complete-pass validation without duplicated Composer count authority;
+- `experiments/search-semantics-reference/run-framework-lifecycle.mjs` plus its fixture — current Framework producer-evidence binding;
+- the search-semantics neutral harness and affected reference fixtures — explicit current Composer/projection/downstream-evidence provenance generated from the qualified dependency chain.
 
 ## Current gate
 
-This final tracker reconciliation must change only the four current-state documents above and must itself receive exact-head Stage plus full coupled/repository qualification. After that readback, the only remaining pre-integration gate is **fresh repository-owner authorization of the exact PR #190 head against exact base `f79845b3…`**.
+PR #191 must qualify one cleaned stable final head through the permanent Channel gate plus the PR-triggered Stage, Session, Terminal, Framework and full repository/documentation gates. The Channel gate must prove Composer `899/899`, zero failures/skips/not-discovered, exact requirement-level `41/41` mapping, and a required artifact.
 
-Do not integrate #30 or start #33 Channel before that authorization and guarded Stage integration/readback.
+After those workflows are green on one exact SHA, perform a fresh base-to-head technical review and verify temporary construction residue is absent, protected `main` and the experimental base remain unchanged, and no owner leakage/native escape was introduced.
+
+The exact final reviewed/qualified head, tree, workflow IDs and artifact/evidence identity are recorded on PR #191 and issue #33 after those checks complete. Those live tracking surfaces freeze the authorization subject without another repository commit merely to copy CI metadata into this informational file.
+
+If the final PR head/base changes materially after review, requalify/review. If repository-owner exact-head authorization remains required, stop before integration and request authorization for that exact PR head/tree/base. General instruction to continue is not authorization to merge a newly produced head.
 
 ## Remaining reference sequence
 
-#30 Stage → #33 Channel evidence → #36 final reference integration → #122 protected atomic semantic acceptance.
+#33 Channel evidence → #36 `REF-INTEGRATE-01` → #122 protected atomic semantic acceptance.

@@ -2,49 +2,49 @@
   "schema": "cuda-mcgs.reference-graph-cleanup-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 727811,
-    "sha256": "a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe"
+    "byteLength": 729040,
+    "sha256": "1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 140331,
-    "sha256": "7dc0b6a20f0d7a7557189d9103c76bf62280749b3ea1ccc004e7035e8e0a1f38"
+    "sha256": "baa5d68d9cb01a7c6fe665ec569cad0d76d5c3f7200069f3f1642f603a8b4fef"
   },
   "nodeEvidence": {
     "algorithm": "sha256",
     "byteLength": 10047,
-    "sha256": "1be613c600397b03f3b5cfca71e981b2bf9a6994df851885895b6bd1b4dd5ec0"
+    "sha256": "6d4cf5a8e3ff3e67a15872535ffd21bb35ab85340344fc1fe165a8d349af5609"
   },
   "edgeEvidence": {
     "algorithm": "sha256",
     "byteLength": 11661,
-    "sha256": "b937b4f37e6005becc2a321fbafa17607a673d85e6501665995b6037f7f5a337"
+    "sha256": "e68def2acdae419b5154fee823d5cd7b827594f1d4e4c5660bf2276451dcda2c"
   },
   "refEvidence": {
     "algorithm": "sha256",
     "byteLength": 9139,
-    "sha256": "51c8ffe0b623769d25545bc8a220a2f65dfaa1829b31e70467d401b5197940a8"
+    "sha256": "ebe8bfa97932485b327981c66118081791d1693935024f7096a0eec56821ba1c"
   },
   "pathEvidence": {
     "algorithm": "sha256",
     "byteLength": 9530,
-    "sha256": "c51090a355cdb2dd66ca3ae7bb5c941afa9dd443d2abdba0fc64ec542923d5a6"
+    "sha256": "b775f75c24927f3336cb9da6de25b0032c14ff6336c031d8b8f82fafa7e47a05"
   },
   "rootEvidence": {
     "algorithm": "sha256",
     "byteLength": 10008,
-    "sha256": "8024881908220370398ca2beb3f5f0e36777f22fe566b93f9b182b128058bf75"
+    "sha256": "010fd4e7e3e96e380af820cfc950208d5c60decc83aeed3b7c5353679056bf4f"
   },
   "reclaimEvidence": {
     "algorithm": "sha256",
     "byteLength": 12127,
-    "sha256": "61566d43586168066574028e55041509fa28491c56dfd51601173145fb6922dd"
+    "sha256": "aefb4b89b4b7187f260b015035ef334878e3234083ae104a92eb8025d801bb78"
   },
   "advanceOccurrenceEvidence": {
     "algorithm": "sha256",
     "byteLength": 4195,
-    "sha256": "9491d4979dd88b1140b836496f31a4dee5af4aab5ad41bec85dde21baf0552a7"
+    "sha256": "eab52018dd15f47553c7d5443488667da1caf5988c8e47d8b0033c343a0a4c66"
   },
   "expectedCases": [
     "graph-cleanup-upstream-evidence-exact",

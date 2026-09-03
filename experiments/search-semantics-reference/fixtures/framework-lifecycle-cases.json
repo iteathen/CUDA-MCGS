@@ -2,8 +2,8 @@
   "schema": "cuda-mcgs.reference-framework-lifecycle-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 727811,
-    "sha256": "a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe"
+    "byteLength": 729040,
+    "sha256": "1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2"
   },
   "expectedCases": [
     "framework-profile-strict-normalization",
@@ -28,7 +28,7 @@
   "profile": {
     "schema": "cuda-mcgs.framework-lifecycle-profile/0.1.0",
     "engineIdentity": "engine.synthetic-terminal-v1",
-    "semanticIdentity": "semantic.a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe",
+    "semanticIdentity": "semantic.1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2",
     "profileIdentity": "profile.synthetic-terminal-v1",
     "packageIdentity": "package.synthetic-terminal-v1",
     "ownerOrder": [
@@ -86,7 +86,7 @@
   "persistenceProfile": {
     "schema": "cuda-mcgs.framework-lifecycle-profile/0.1.0",
     "engineIdentity": "engine.synthetic-persistent-v1",
-    "semanticIdentity": "semantic.a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe",
+    "semanticIdentity": "semantic.1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2",
     "profileIdentity": "profile.synthetic-persistent-v1",
     "packageIdentity": "package.synthetic-persistent-v1",
     "ownerOrder": [
@@ -158,7 +158,7 @@
   },
   "validPersistenceSnapshot": {
     "engineIdentity": "engine.synthetic-persistent-v1",
-    "semanticIdentity": "semantic.a6abe9cb7b22f15b4e57fb89cbe0dd0a22e8539beff3e98f9f18f67c421e2bfe",
+    "semanticIdentity": "semantic.1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2",
     "profileIdentity": "profile.synthetic-persistent-v1",
     "packageIdentity": "package.synthetic-persistent-v1",
     "compatibilityIdentity": "persist.synthetic-v1",
