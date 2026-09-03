@@ -6308,7 +6308,7 @@ await runCase('integration-requirement-disposition-handoff', () => {
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 881,
+  expected: 883,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -6316,7 +6316,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 881 - cases.length,
+  notDiscovered: 883 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
