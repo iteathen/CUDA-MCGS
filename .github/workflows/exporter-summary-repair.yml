@@ -6,6 +6,7 @@ on:
       - ref/channel-evidence-01
     paths:
       - '.github/workflows/exporter-summary-repair.yml'
+      - 'scripts/exporter-summary-repair.mjs'
 
 permissions:
   contents: write
