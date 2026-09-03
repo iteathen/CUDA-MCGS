@@ -1,8 +1,10 @@
 # SPEC-0013: Bounded Result and Observation Publication
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.1.0
+**Version:** 0.1.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS universal external result/observation publication semantics
 
@@ -10,11 +12,11 @@
 
 **Consumers:** finite-resource, device-progress and Search Session contracts; Search IR; Search Composer; product/output adapters; deterministic reference and native conformance
 
-This proposal defines the product-neutral output brick that owns immutable bounded terminal-result envelopes and optional read-only live-observation publication. It does not require ranked actions, a scalar score, an evaluator, a game, a live session, one consistency model, a host polling loop or a CUDA mailbox/transfer mechanism.
+This specification defines the product-neutral output brick that owns immutable bounded terminal-result envelopes and optional read-only live-observation publication. It does not require ranked actions, a scalar score, an evaluator, a game, a live session, one consistency model, a host polling loop or a CUDA mailbox/transfer mechanism.
 
 ## 1. Authority, identity, and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0013@0.1.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0013@0.1.0`.
 
 Every concrete finite CUDA-MCGS engine selects exactly one terminal-result profile. Its universal envelope is mandatory even when its semantic payload is empty. Live observation is independently optional and selects zero or more namespaced observation profiles; selecting none contributes exact zero live-observation residue.
 
@@ -27,14 +29,14 @@ Normative dependencies are:
 - [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) for JavaScript/restricted Device-JS production ownership and CUDA-JS capability escalation;
 - accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) for publication, stopping, completion classes, valid partial results, resource status and bounded diagnostics;
 - accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for foundational normalized Search IR/reference meaning within its current scope;
-- proposal [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md) for terminal domain outcomes and state/action identities;
-- proposal [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md) for ready policy facts, stopping and optional order/ranking meaning;
-- proposal [`SPEC-0009`](SPEC-0009-evaluator-contract.md) for internal evaluator-result readiness; and
-- proposal [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md) for graph references, owner regions, protection and reclamation.
+- accepted [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md) for terminal domain outcomes and state/action identities;
+- accepted [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md) for ready policy facts, stopping and optional order/ranking meaning;
+- accepted [`SPEC-0009`](SPEC-0009-evaluator-contract.md) for internal evaluator-result readiness; and
+- accepted [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md) for graph references, owner regions, protection and reclamation.
 
-Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for live request/borrow/root-epoch coordination. Product output specifications such as chess ranking remain downstream. Search Stage/Async Channel and CUDA-JS mailbox/transfer contracts are possible later realizations, not this core meaning.
+Accepted [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for live request/borrow/root-epoch coordination. Product output specifications such as chess ranking remain downstream. Search Stage/Async Channel and CUDA-JS mailbox/transfer contracts are possible later realizations, not this core meaning.
 
-Accepted authority governs conflicts. This proposal neither supersedes another specification nor authorizes production implementation.
+Accepted authority governs conflicts. This specification neither supersedes another specification nor authorizes production implementation.
 
 ## 2. Purpose, reading map, and required outcome
 
@@ -391,9 +393,9 @@ These examples do not select a best-action schema, scalar score, evaluator, obse
 
 ## 16. Acceptance blockers and downstream invalidation
 
-This proposal is decision-complete only when review finds no unresolved envelope, field-owner/source, schema, completion/partial-result, consistency, publication/borrow, observation, pressure, root/reuse, range, lifecycle, compatibility, security or cleanup ambiguity.
+Acceptance review under #122 found no unresolved envelope, field-owner/source, schema, completion/partial-result, consistency, publication/borrow, observation, pressure, root/reuse, range, lifecycle, compatibility, security or cleanup ambiguity.
 
-Acceptance remains blocked until:
+Acceptance under #122 required:
 
 1. normalized Search IR/schema represents every OUTPUT-IR obligation and rejects semantic ambiguity;
 2. the deterministic reference executes all required fixtures/cases and publication/consistency oracle-sensitivity mutation;
@@ -408,3 +410,6 @@ Production output lowering remains prohibited until that acceptance. Native Devi
 A change to output ownership, envelope/completion class, field binding/schema/perspective, consistency/cut, publication/borrow, observation trigger/cadence, pressure/drop, root/reuse, permission or encoding invalidates affected resource/progress/session contracts, Search IR/schema/normalizers, product consumers, generated packages, persisted payloads and reference/native approvals. The ENGINE-CONTRACT-01 integration spine records and reconciles invalidation before dependents continue.
 
 Implementation, test, review, persistence, security, generated/JIT/ABI, performance and cleanup work triggers the specialist doctrine routed from root `AGENTS.md` and `agent_files/AGENTS.md`.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

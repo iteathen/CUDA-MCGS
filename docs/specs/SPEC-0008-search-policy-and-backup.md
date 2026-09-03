@@ -1,8 +1,10 @@
 # SPEC-0008: Search Policy, Statistics, Backup, and Stopping
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.1.0
+**Version:** 0.1.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS universal search-policy semantics
 
@@ -10,11 +12,11 @@
 
 **Consumers:** evaluator, result/observation, finite-resource, device-progress and Search Session contracts; Search IR; Search Composer; domain/product adapters; graph owner-region composition; deterministic reference and native conformance
 
-This proposal defines the product-neutral policy brick that owns search decisions, policy records, in-flight reservations, action admission/widening, value interpretation, backup, stopping-budget semantics, reroot reuse classification, and advance compatibility/provenance. It defines a family of finite policy profiles, not UCT/PUCT, AlphaZero, rollouts, scalar zero-sum value, ranked output, a scheduler or a production implementation.
+This specification defines the product-neutral policy brick that owns search decisions, policy records, in-flight reservations, action admission/widening, value interpretation, backup, stopping-budget semantics, reroot reuse classification, and advance compatibility/provenance. It defines a family of finite policy profiles, not UCT/PUCT, AlphaZero, rollouts, scalar zero-sum value, ranked output, a scheduler or a production implementation.
 
 ## 1. Authority, identity, and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0008@0.1.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0008@0.1.0`.
 
 Every concrete finite CUDA-MCGS engine selects exactly one composed search-policy profile. A policy-only, proof, optimization, evaluation-only, rollout-like, best-first or custom search may specialize away inapplicable ports/records, but it must still declare how admitted work progresses, what constitutes a completed contribution and how stop/partial-result validity is determined.
 
@@ -27,12 +29,12 @@ Normative dependencies are:
 - [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) for JavaScript/restricted Device-JS production ownership and CUDA-JS capability escalation;
 - accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) for parent-edge ownership, path-cycle ordering, reservation/completed-work distinction, stopping and partial-result foundations;
 - accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for foundational normalized Search IR/reference meaning within its current scope;
-- proposal [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md) for domain roles/actions/history/path-relation/terminal-outcome meaning; and
-- proposal [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md) for graph objects, opaque owner regions, paths, typed references, publication and reclamation.
+- accepted [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md) for domain roles/actions/history/path-relation/terminal-outcome meaning; and
+- accepted [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md) for graph objects, opaque owner regions, paths, typed references, publication and reclamation.
 
-Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for root epochs and reuse. Product policies, experiments and implementations remain evidence beneath this proposal.
+Accepted [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for root epochs and reuse. Product policies, experiments and implementations remain evidence beneath this proposal.
 
-Accepted authority governs conflicts. This proposal neither supersedes another specification nor authorizes production implementation.
+Accepted authority governs conflicts. This specification neither supersedes another specification nor authorizes production implementation.
 
 ## 2. Purpose, reading map, and required outcome
 
@@ -418,9 +420,9 @@ These examples do not select UCT/PUCT, a rollout, neural model, value width, tie
 
 ## 20. Acceptance blockers and downstream invalidation
 
-This proposal is decision-complete only when review finds no unresolved owner, record/accounting, role/selection, reservation, widening, value/perspective, cycle, backup, stopping, reuse, range, lifecycle, compatibility, security or cleanup ambiguity.
+Acceptance review under #122 found no unresolved owner, record/accounting, role/selection, reservation, widening, value/perspective, cycle, backup, stopping, reuse, range, lifecycle, compatibility, security or cleanup ambiguity.
 
-Acceptance remains blocked until:
+Acceptance under #122 required:
 
 1. normalized Search IR/schema represents every POLICY-IR obligation and rejects semantic ambiguity;
 2. the deterministic reference executes all required fixtures/cases and backup oracle-sensitivity mutation;
@@ -434,3 +436,6 @@ Production policy lowering remains prohibited until that acceptance. Native conc
 A change to policy ownership, record units/scopes, role handling, selection/admission, reservation, value/perspective/source conversion, cycle response, backup algebra/order/idempotence, stopping or reuse invalidates affected evaluator/output/resource/progress/session contracts, Search IR/schema/normalizers, graph owner layouts, reference/native evidence, generated packages, persisted sessions/caches and review approvals. The ENGINE-CONTRACT-01 integration spine records and reconciles invalidation before dependents continue.
 
 Implementation, test, review, persistence, security, generated/JIT/ABI, performance/search-quality and cleanup work triggers the specialist doctrine routed from root `AGENTS.md` and `agent_files/AGENTS.md`.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

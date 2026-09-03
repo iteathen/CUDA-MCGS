@@ -69,7 +69,7 @@ function stringSet(input, { code, label, allowed = null, namespaced = false, min
 function normalizeCatalogContract(input, catalogById, expectedId, code, label) {
   exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], `${code}_FIELDS`, label);
   if (input.kind !== 'catalog' || input.id !== expectedId) fail(`${code}_ID`, `${label} must select ${expectedId}`);
-  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, `${code}_ID`, `${label} identity`);
+  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, `${code}_ID`, `${label} identity`);
   assertSha256(input.sha256, `${code}_DIGEST`, `${label} sha256`);
   const expected = catalogById.get(expectedId);
   if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) fail(`${code}_DRIFT`, `${label} differs from the frozen contract set`);
@@ -599,7 +599,7 @@ function assertStateless(profile) {
 export function normalizeGraphProfile(input, inspectedCatalog, domainProfileResult) {
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'domainProfile', 'mode', 'arena', 'referenceEncoding', 'objectKinds', 'layouts', 'ownerRegions', 'transposition', 'path', 'rootProtection', 'reclamation', 'publications', 'ports', 'resources', 'failures', 'diagnostics', 'compatibility', 'programContribution'], 'GRAPH_ROOT_FIELDS', 'graph profile');
   if (input.schema !== GRAPH_PROFILE_SCHEMA || input.representation !== REPRESENTATION) fail('GRAPH_SCHEMA', 'unsupported graph profile schema/representation');
-  if (input.status !== 'proposal-evidence') fail('GRAPH_STATUS', 'graph profile must remain proposal evidence');
+  if (input.status !== 'accepted') fail('GRAPH_STATUS', 'graph profile must remain proposal evidence');
   assertNamespacedId(input.id, 'GRAPH_PROFILE_ID', 'graph profile id');
   assertVersion(input.version, 'GRAPH_PROFILE_VERSION', 'graph profile version');
   const contracts = inspectedCatalog?.contractSet?.contracts;

@@ -234,7 +234,7 @@ function buildProfile(profile, inspected, resourceResult, options = {}) {
   const hasLiveOutput = resourcePlan.classes.some(({ contributor: owner, id }) => owner === outputContributor.id && id.endsWith('class-live-observation'));
   const selectedProgressContribution = resourcePlan.contributors.find(({ contract }) => contract.id === 'SPEC-0012');
   return {
-    schema: 'cuda-mcgs.progress-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence',
+    schema: 'cuda-mcgs.progress-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted',
     contract: catalogContract(inspected, 'SPEC-0012'), id: `progress.${profile}`, version: VERSION,
     resourcePlan: profileReference(resourceResult), resourceContribution: selectedProgressContribution.profile,
     contributors, workClasses, dependencies, fairnessClasses,

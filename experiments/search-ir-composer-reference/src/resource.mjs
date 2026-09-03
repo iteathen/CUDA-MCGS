@@ -98,7 +98,7 @@ function normalizeContract(input, catalogById, label) {
   if (input?.kind === 'catalog') {
     exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'RESOURCE_CONTRACT_FIELDS', label);
     assertString(input.id, /^SPEC-[0-9]{4}$/, 'RESOURCE_CONTRACT_ID', `${label} id`);
-    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'RESOURCE_CONTRACT_ID', `${label} identity`);
+    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'RESOURCE_CONTRACT_ID', `${label} identity`);
     assertSha256(input.sha256, 'RESOURCE_CONTRACT_DIGEST', `${label} sha256`);
     const expected = catalogById.get(input.id);
     if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) fail('RESOURCE_CONTRACT_DRIFT', `${label} differs from frozen catalog`);
@@ -517,7 +517,7 @@ function normalizeProductData(input, index) {
 
 export function normalizeResourceProfile(input, inspectedCatalog, profileResults = []) {
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'contributors', 'classes', 'pools', 'partitions', 'reserves', 'admissionGroups', 'ledgers', 'watermarks', 'exhaustion', 'lifecycle', 'ports', 'statuses', 'providerRequirements', 'diagnostics', 'compatibility', 'cleanup', 'programContribution', 'productData'], 'RESOURCE_ROOT_FIELDS', 'resource profile');
-  if (input.schema !== RESOURCE_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('RESOURCE_SCHEMA', 'unsupported resource schema/representation/status');
+  if (input.schema !== RESOURCE_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('RESOURCE_SCHEMA', 'unsupported resource schema/representation/status');
   assertNamespacedId(input.id, 'RESOURCE_PROFILE_ID', 'resource profile id');
   assertVersion(input.version, 'RESOURCE_PROFILE_VERSION', 'resource profile version');
   const contracts = inspectedCatalog?.contractSet?.contracts;

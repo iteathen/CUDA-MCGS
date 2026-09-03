@@ -72,7 +72,7 @@ assert.equal(expectedCaseIds.length, 6);
 const classification = requirementCoverage.classifications.find((entry) =>
   entry.contract === 'SPEC-0010'
   && entry.requirementPrefix === 'GRAPH-CLEANUP-'
-  && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01');
+  && entry.evidenceOwner === 'ENGINE-REFERENCE-01');
 assert(classification, 'GRAPH-CLEANUP- requirement classification is missing');
 assert.equal(classification.requirementCount, 4);
 const cleanupRequirementIds = assertUniqueStrings(

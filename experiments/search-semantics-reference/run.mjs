@@ -64,7 +64,7 @@ const domainRequirementClassifications = requirementCoverage.classifications.fil
   entry.contract === 'SPEC-0007'
   && directDomainPrefixes.includes(entry.requirementPrefix)
   && entry.primaryDisposition === 'engine-reference-oracle'
-  && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01');
+  && entry.evidenceOwner === 'ENGINE-REFERENCE-01');
 assert.deepEqual(domainRequirementClassifications.map(({ requirementPrefix }) => requirementPrefix).sort(), [...directDomainPrefixes].sort());
 const domainRequirementIds = assertUniqueStrings(
   [...domainSpec.matchAll(/^(DOMAIN-(?:STATE|HISTORY|ROLE|ACTION|TRANSITION|ROOT|CLEANUP)-\d{3})\./gm)].map((match) => match[1]),

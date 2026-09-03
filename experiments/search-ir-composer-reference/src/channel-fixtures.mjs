@@ -194,7 +194,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, stageR
   const selectedOwners = stageResult.normalized.owners.filter(({ id }) => selectedOwnerIds.has(id)).map(({ id, contract, profile: reference }) => ({ id, contract, profile: reference }));
   const resourceOwner = resourceResult.normalized.contributors.find(({ contract }) => contract.id === 'SPEC-0004');
   return {
-    schema: 'cuda-mcgs.channel-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence', contract: catalogContract(inspected, 'SPEC-0004'),
+    schema: 'cuda-mcgs.channel-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted', contract: catalogContract(inspected, 'SPEC-0004'),
     id: `channel.${profile}`, version: VERSION, generatorIdentity: contentIdentity(`${profile}:channel-profile-generator-v1`),
     resourcePlan: profileReference(resourceResult), progressPlan: profileReference(progressResult), stageProfile: profileReference(stageResult),
     resourceContribution: resourceOwner.profile, progressContribution: resourceOwner.profile, owners: selectedOwners, channels, statuses: statuses(),

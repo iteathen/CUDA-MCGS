@@ -1,67 +1,54 @@
 {
-  "schema_version": 104,
-  "updated": "2026-09-02",
-  "status": "ref_integrate_01_final_packet_pr_qualification_and_authorization_gate",
-  "objective": "Qualify and review one exact REF-INTEGRATE-01 candidate against experimental/portfolio@85c20d794746031d201f72bc78fce25ff9f69c3d, proving exact 352 direct plus 41 Channel reference-route closure, 52 native-deferred requirements, frozen owner evidence identities, product-neutral/deletion/schedule/replica witnesses, and the seven-entry integration mutation matrix. Then stop for fresh repository-owner exact-head authorization before candidate integration if that gate remains applicable.",
-  "ownership_boundary": "REF-INTEGRATE-01 owns only cross-owner evidence reconciliation and the final CUDA-free reference packet identity. Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Framework, Session, Stage and Channel retain their semantic authority; SPEC-0004/Composer remains the Channel logical oracle, SPEC-0011 owns aggregate finite resources, SPEC-0012 owns global progress/closure, CUDA-JS owns native publication/synchronization/runtime and exact compatible-pair qualification, CUDA-JS-Tensor owns generic dense tensor mathematics, and downstream repositories own product meaning. No second interpreter, native path, scheduler topology or product semantics are authorized.",
+  "schema_version": 105,
+  "updated": "2026-09-03",
+  "status": "engine_contract_acceptance_01_candidate_qualification",
+  "objective": "Promote the exact qualified 989-requirement universal semantic/reference packet to one accepted #122 subject while preserving protected #193 ownership corrections, then qualify/review/guardedly integrate and read back protected authority before #125 begins.",
+  "ownership_boundary": "MCGS owns search semantics, Search IR, deterministic restricted Search Program generation, finite resource/pressure policy, semantic access and selected physical-profile policy. integration.cuda-js owns translation/orchestration only. CUDA-JS owns actual lower request vocabulary, limits, provider facts, validation, errors and resource lifecycle. Native/private CUDA-MCGS mechanisms remain prohibited.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
     "agent_files/AI_RULES.md",
     "agent_files/DESIGN_ALIGNMENT_CARD.md",
-    "agent_files/general_foundation/PRINCIPLES.md",
-    "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
-    "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
-    "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
-    "docs/development/2026-09-02-ref-integrate-01-assessment-and-plan.md",
+    "docs/PROJECT_CHARTER.md",
+    "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
+    "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
+    "docs/decisions/ADR-0023-parallel-first-native-execution.md",
+    "docs/decisions/ADR-0024-framework-only-production-ownership.md",
+    "docs/architecture/2026-09-03-cuda-js-execution-boundary-audit.md",
+    "docs/development/2026-09-03-engine-contract-acceptance-01-assessment-and-plan.md",
+    "docs/specs/README.md",
+    "schemas/search-ir/0.2.0/contract-set.json",
     "schemas/search-ir/0.2.0/requirement-coverage.json",
-    "experiments/search-semantics-reference/run-integration.mjs",
-    "experiments/search-semantics-reference/run-integration-gate.mjs",
-    "experiments/search-semantics-reference/fixtures/integration-cases.json",
-    "https://github.com/iteathen/CUDA-MCGS/issues/36",
     "https://github.com/iteathen/CUDA-MCGS/issues/122"
   ],
   "state": {
-    "protected_authority": "main@3ecac11e3576bd063760bc9572f79bea78acd031",
-    "integrated_candidate_portfolio": "experimental/portfolio@85c20d794746031d201f72bc78fce25ff9f69c3d",
-    "integrated_candidate_tree": "5eadec7f403a388ea096f983ebf2e87eca2465f0",
-    "active_issue": 36,
-    "active_focus_branch": "REF-INTEGRATE-01",
-    "active_git_branch": "ref/integrate-01",
+    "protected_authority": "main@2a6bc8e1da9df85b3367f3f92bb3cec6f16ea241",
+    "qualified_reference_candidate": "experimental/portfolio@0cd3dafdbfa683048b0a0f39de21a671fd9ef841",
+    "active_issue": 122,
+    "active_focus_branch": "ENGINE-CONTRACT-ACCEPTANCE-01",
+    "active_git_branch": "accept/122-semantic-packet",
     "review_pr": null,
-    "focused_qualification_checkpoint": "a58997d444e33bc1697c2cd92249ecd8f5017aa0",
-    "focused_qualification_workflow": 33707930265,
-    "focused_artifact": 9875893868,
-    "focused_artifact_digest": "sha256:c3a8c7a4dc1bf363c0eacd335ed2282bb62dac7ec0ffa0e4ff9e17af45997404",
-    "baseline_integration_evidence": "85373be650852a997cb4d57f5fbc6b972e0c5e5925cff496933bb1a47b078a46",
-    "baseline_integration_canonical_bytes": 14594,
-    "integration_gate_evidence": "183f753e2595c3401e2642563edaa84ffbfd20083d6f44fc0bb259d60da58046",
-    "integration_gate_canonical_bytes": 4542
+    "lower_reference": "cuda-js@0.1.0-alpha.17@bc2700f2e5c654567c2e17bf8d67b882351b8681"
   },
   "reference_route_accounting": {
     "direct_non_channel": 352,
     "channel_owner_evidence": 41,
     "cuda_free_reference_total": 393,
+    "accepted_reference_requirements": 937,
     "native_compatible_pair_deferred": 52,
-    "composer_cases": 899,
     "composer_requirements_classified": 989,
-    "composer_pending": 0,
-    "composer_evidence": "1bf7703fc7758c18f0f74e7573eb126410f8ad09b1e60145cbeaccdef20e10e2",
-    "composer_canonical_bytes": 729040
+    "composer_pending": 0
   },
   "preserved_red_evidence": [
     {
       "head": "6b5cb57521ba3a656e7e75ab2902d1630691eb41",
-      "workflow": 33707203690,
-      "artifact": 9875632375,
-      "finding": "Every upstream owner evidence capsule passed, then the final verifier failed exactly with INTEGRATION_FIXTURE_MISSING.",
-      "disposition": "Added only the checked-in final integration witness contract; no owner semantic code changed."
+      "finding": "Final integration verifier failed exactly on missing integration fixture before #36 green construction.",
+      "disposition": "Preserved as #36 red-before-green provenance."
     },
     {
       "head": "ebff2a14ac8c67e3a4145fd835d4d791bcf65458",
-      "workflow": 33707424655,
-      "finding": "The first final packet passed 11/11 with exact 393 reference routes and 52 native-deferred routes, but author review found the promised cross-owner mutation matrix was incomplete.",
-      "disposition": "Added an integration-only mutation gate, froze the exact owner evidence set/identities, bound existing Composer universality/deletion cases, and did not modify any semantic owner."
+      "finding": "Initial final packet exposed incomplete promised integration mutation coverage.",
+      "disposition": "Seven-entry mutation gate added before #36 final qualification."
     }
   ],
   "mutation_matrix": [
@@ -74,50 +61,40 @@
     "final evidence identity mutation"
   ],
   "deliverables": [
-    "Thin final integration verifier consuming only generated owner evidence and coverage classification.",
-    "Checked-in integration witness manifest with exact owner evidence inputs plus product-neutral, deletion/absence, schedule and finite replica-neutrality witnesses.",
-    "Integration mutation gate that freezes all required owner evidence identities, detects seven cross-owner corruption classes, restores every ephemeral mutation and reproves the exact baseline packet.",
-    "Single orchestration entrypoint that regenerates the complete owner evidence chain before the final verifier/gate.",
-    "Dedicated Node 26 Engine reference integration workflow with retained final packet artifacts.",
-    "Preserved clean red-before-green evidence and review-discovered mutation-matrix repair without semantic-owner changes.",
-    "Current-state README, RESULTS, STATUS and next-step records reconciled to the #36 frontier without claiming protected #122 acceptance."
+    "Accepted metadata/identity for SPEC-0000 and SPEC-0003 through SPEC-0013 without changing qualified owner semantics.",
+    "Accepted Search IR 0.2 catalog/profile/program/package authority with 989/989 classified requirements and exactly 52 native-deferred routes.",
+    "CUDA-JS ownership correction: MCGS adapter requirements replace the locally invented lower request projection/lifecycle.",
+    "Exact preserved #36 owner/reference packet and #193 governance/source-boundary changes on one ancestry-correct subject.",
+    "Registry, specification index, status and next-step state reconciled to the acceptance candidate."
   ],
   "validation": [
-    "The final baseline packet must pass exact 11/11 discovery/execution with 352 direct non-Channel routes, 41 Channel routes, 393 total reference routes, 52 native-deferred routes, zero failures, all skip classes zero and not-discovered zero.",
-    "All required owner evidence packets must be present exactly once and match the frozen identities produced by the exact integrated candidate input; every Composer-consuming packet must agree on Composer evidence 1bf7703f....",
-    "The final witness manifest must bind existing owner-local product-neutral, deletion/absence and legal schedule cases rather than recreate owner semantics.",
-    "The mutation gate must detect all seven declared integration corruptions, restore every CI-local file mutation, rerun the baseline verifier and reproduce the exact baseline integration identity before passing.",
-    "Channel integration must consume owner evidence only; no second Channel state machine or resource/progress authority may appear.",
-    "Finite replica evidence must remain semantic packaging only and must not claim or define multi-GPU coordination/support.",
-    "The real draft #36 PR must run the dedicated Engine reference integration gate and full repository/documentation matrix on the same exact final head; coupled owner workflows must also remain green where path-triggered/applicable.",
-    "Fresh complete base-to-head author review is required after the final head stabilizes; any material source, evidence-binding or base change invalidates affected review/qualification.",
-    "Generated build evidence must remain ignored/uncommitted, mutation backups must not survive CI, protected main must remain unchanged, and candidate integration must not be mislabeled protected acceptance."
+    "All accepted spec/catalog/schema/normalizer identities agree and no proposal-only authority marker remains in active accepted metadata.",
+    "Composer and final engine reference packet regenerate on accepted identities with 393/393 CUDA-free routes and 52 deferred-native requirements.",
+    "All seven integration mutations still fail and exact baseline regeneration succeeds.",
+    "MCGS execution package contains no locally normative CUDA-JS compile/load/allocate/teardown state machine, device-memory request kind or CUDA-JS request-projection schema.",
+    "Restricted source roles and MCGS selected geometry/concurrency remain explicit; actual lower realization stays adapter/CUDA-JS-owned.",
+    "Full repository/documentation and applicable owner workflows pass on the exact PR head before integration."
   ],
   "cleanup": {
     "generated_build_evidence": "ignored and uncommitted",
-    "mutation_files": "CI-local only; restored in finally and baseline identity reproved",
-    "temporary_mutation_backups": "must be absent after gate completion",
+    "temporary_acceptance_migration": "remove migration script/workflow after successful transformation and requalify the cleaned head",
     "native_or_private_runtime_residue": "none authorized or introduced",
-    "merged_channel_source_branch": "retained as audit/recovery state because the connected GitHub write surface does not expose branch deletion; not used as the #36 base",
-    "protected_main": "protect unchanged"
+    "protected_main": "unchanged until guarded reviewed merge"
   },
   "blockers": [],
   "current_gate": [
-    "Create the real draft REF-INTEGRATE-01 PR from ref/integrate-01 to experimental/portfolio after current-state reconciliation.",
-    "Require all exact-head PR qualification, including the dedicated final packet gate and full repository/documentation matrix; repair only demonstrated defects in their natural owner/evidence boundary.",
-    "Perform a fresh complete final whole-diff author review and cleanup reconciliation on the stable PR head.",
-    "Record the exact final reviewed/qualified head, tree, run IDs, artifact digest, baseline packet identity and mutation-gate identity on the PR and issue #36 without adding a self-referential metadata-only commit.",
-    "Stop before candidate integration for fresh repository-owner exact-head authorization if the project gate remains applicable."
+    "Run the asserted acceptance migration and complete CUDA-free integration qualification on the generated subject.",
+    "Remove temporary migration transport, rerun exact-head PR qualification and perform complete base-to-head review.",
+    "Record exact reviewed head/tree/checks on #122 and PR.",
+    "Guardedly integrate into protected main only after repository-owner exact-head authorization when required, then read back commit/tree.",
+    "Close #122 only after protected readback; only then reassess #125 as dependency-ready."
   ],
   "do_not": [
-    "Do not build another semantic interpreter or move owner semantics into the final integration verifier.",
-    "Do not create a second Channel schema/normalizer/state machine or let Channel absorb Resource/Progress authority.",
-    "Do not add CUDA-MCGS native/PTX/CUDA code, FFI/private CUDA-JS access, native addon or host-owned progression.",
-    "Do not weaken exact route counts, frozen owner identities, witness requirements, mutation detection, skip assertions or native-deferred classification to restore green CI.",
-    "Do not claim multi-GPU support from finite replica-neutrality evidence.",
-    "Do not claim native Channel/CUDA support, physical GPU evidence, performance, production/release readiness or exact compatible-pair qualification from this packet.",
-    "Do not modify protected main or treat candidate integration as #122 acceptance.",
-    "Do not merge #36 using the prior authorization for PR #191; a new exact-head authorization is required when that gate applies."
+    "Do not promote any of the 52 native-compatible-pair routes to accepted-reference.",
+    "Do not let MCGS define CUDA-JS request field names, provider limits, compiler/resource lifecycle or private/native mechanisms.",
+    "Do not change qualified search semantics merely to make acceptance metadata fit.",
+    "Do not claim native, performance, product, stable SDK, multi-GPU or external-consumer support from #122.",
+    "Do not start #125 before protected #122 readback."
   ],
-  "next_after_authorized_integration": "#122 protected atomic semantic acceptance; keep native qualification distinct and owner-local."
+  "next_after_authorized_integration": "#125 public CUDA-JS runtime adapter assessment against the exact protected #122 surface and live public CUDA-JS head."
 }

@@ -197,7 +197,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, knownP
   const requirements = new Map(); for (const selectedCapability of capabilities) for (const requirement of selectedCapability.requirements) requirements.set(requirement.id, requirement);
 
   return {
-    schema: 'cuda-mcgs.stage-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence', contract: catalogContract(inspected, 'SPEC-0003'), id: `extension.${profile}`, version: VERSION, generatorIdentity: contentIdentity(`${profile}:stage-profile-generator-v1`),
+    schema: 'cuda-mcgs.stage-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted', contract: catalogContract(inspected, 'SPEC-0003'), id: `extension.${profile}`, version: VERSION, generatorIdentity: contentIdentity(`${profile}:stage-profile-generator-v1`),
     resourcePlan: profileReference(resourceResult), progressPlan: profileReference(progressResult), resourceContribution: stageOwner.profile, progressContribution: stageOwner.profile,
     owners, entryStage: stages[0].id, stages, surfaces, capabilities, permissions, counters, statuses: statusVocabulary(),
     lifecycle: { states: LIFECYCLE_STATES, schedulerOwner: 'SPEC-0012', runtimeDiscovery: false, hostProgress: 'none', pendingWorkerRetention: 'none', persistence: 'none', cancellation: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-lifecycle-cancellation`), stop: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-lifecycle-stop`), teardown: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-lifecycle-teardown`), release: schemaReference(`cuda-mcgs.synthetic-${profile}-extension-lifecycle-release`) },

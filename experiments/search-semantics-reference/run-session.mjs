@@ -59,7 +59,7 @@ function classificationFor(requirementId) {
 const requirementIds = [...new Set(specText.match(/\bSESSION(?:-[A-Z]+)*-\d{3}\b/g) ?? [])].sort();
 const directRequirements = requirementIds.filter((id) => {
   const route = classificationFor(id);
-  return route.primaryDisposition === 'engine-reference-oracle' && route.plannedEvidenceOwner === 'ENGINE-REFERENCE-01';
+  return route.primaryDisposition === 'engine-reference-oracle' && route.evidenceOwner === 'ENGINE-REFERENCE-01';
 });
 assert.equal(directRequirements.length, fixture.directRequirementCount, `Session direct engine-reference requirement count must remain ${fixture.directRequirementCount}`);
 

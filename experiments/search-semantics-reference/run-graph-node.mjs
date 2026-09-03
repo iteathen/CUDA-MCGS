@@ -51,7 +51,7 @@ const classification = requirementCoverage.classifications.find((entry) =>
   entry.contract === 'SPEC-0010'
   && entry.requirementPrefix === 'GRAPH-NODE-'
   && entry.primaryDisposition === 'engine-reference-oracle'
-  && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01');
+  && entry.evidenceOwner === 'ENGINE-REFERENCE-01');
 assert(classification, 'GRAPH-NODE- requirement classification is missing');
 assert.equal(classification.requirementCount, 11);
 const graphNodeRequirementIds = assertUniqueStrings(

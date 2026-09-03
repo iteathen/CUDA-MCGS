@@ -85,7 +85,7 @@ const classification = requirementCoverage.classifications.find((entry) =>
   entry.contract === 'SPEC-0010'
   && entry.requirementPrefix === 'GRAPH-RECLAIM-'
   && entry.primaryDisposition === 'engine-reference-oracle'
-  && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01'
+  && entry.evidenceOwner === 'ENGINE-REFERENCE-01'
   && entry.supportingDispositions.includes('semantic-normalizer')
   && entry.supportingDispositions.includes('native-compatible-pair-qualification'));
 assert(classification, 'GRAPH-RECLAIM- requirement classification is missing');

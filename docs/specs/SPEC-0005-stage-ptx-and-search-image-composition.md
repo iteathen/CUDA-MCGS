@@ -1,8 +1,10 @@
 # SPEC-0005: Restricted Device-JS and Search Image Composition
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.4.0
+**Version:** 0.4.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Stable path note:** The historical filename remains for link compatibility. Stage PTX is not a CUDA-MCGS-owned production input.
 
@@ -12,11 +14,11 @@
 
 **Consumers:** Search IR, Search Composer, selected stage/capability/channel/product providers, resource/progress/package planning, public CUDA-JS Device-JS/compiler/runtime contracts, conformance, compatible-pair qualification and release
 
-This proposal defines how CUDA-MCGS deterministically composes selected semantic owners and optional capabilities into restricted Device-JS Search Program inputs and a finite execution package while treating every CUDA-specific generated/native realization as an opaque CUDA-JS-owned output. It does not make one native artifact topology, extension capability or product part of universal MCGS meaning.
+This specification defines how CUDA-MCGS deterministically composes selected semantic owners and optional capabilities into restricted Device-JS Search Program inputs and a finite execution package while treating every CUDA-specific generated/native realization as an opaque CUDA-JS-owned output. It does not make one native artifact topology, extension capability or product part of universal MCGS meaning.
 
 ## 1. Authority, identity and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0005@0.4.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0005@0.4.0`.
 
 Normative authority and dependencies are:
 
@@ -29,13 +31,13 @@ Normative authority and dependencies are:
 - accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for publication/resource/Search IR/reference foundations; and
 - decision-complete proposals [`SPEC-0003`](SPEC-0003-search-stage-and-extension-surface.md) and [`SPEC-0004`](SPEC-0004-async-stage-channels.md) for selected stage/capability/channel meaning.
 
-Decision-complete proposal [`SPEC-0000`](SPEC-0000-framework-requirements.md) owns the cross-owner framework/package map; SPEC-0006 through SPEC-0013 own their source semantics. They become normative dependencies through the later atomic semantic-acceptance gate. Versioned accepted public CUDA-JS contracts own restricted Device-JS syntax/typing/lowering, compiler/linker/cache/artifacts, resources, operations, errors, platform behavior and teardown. Accepted authority governs conflicts.
+Decision-complete accepted [`SPEC-0000`](SPEC-0000-framework-requirements.md) owns the cross-owner framework/package map; SPEC-0006 through SPEC-0013 own their source semantics. They become normative dependencies through the later atomic semantic-acceptance gate. Versioned accepted public CUDA-JS contracts own restricted Device-JS syntax/typing/lowering, compiler/linker/cache/artifacts, resources, operations, errors, platform behavior and teardown. Accepted authority governs conflicts.
 
 COMPOSE-AUTH-001. This specification applies to every finite CUDA-MCGS engine package and to extension-specific composition only when capabilities are selected. Core Search Program/package composition remains meaningful without the optional extension substrate.
 
 COMPOSE-AUTH-002. CUDA-MCGS owns semantic/source/package inputs through public contracts. CUDA-JS exclusively owns CUDA C++/PTX/cubin/LTO/native generation, compiler/runtime mechanisms and artifact identity. Neither side interprets the other's private semantic key space.
 
-COMPOSE-AUTH-003. This proposal is not production implementation authority. Schema/reference acceptance, public CUDA-JS capability qualification and an exact compatible pair remain separate gates.
+COMPOSE-AUTH-003. This specification is not production implementation authority. Schema/reference acceptance, public CUDA-JS capability qualification and an exact compatible pair remain separate gates.
 
 ## 2. Governing source/artifact invariant
 
@@ -261,7 +263,7 @@ COMPOSE-CONFORMANCE-003. Native qualification separately proves installed-packag
 
 ## 15. Semantic acceptance blockers
 
-This proposal cannot become accepted until:
+Acceptance under #122 required:
 
 - every normative requirement maps to strict schema/normalization and an independent CUDA-free reference case or explicit cross-specification proof;
 - SPEC-0003/0004 and the core proposal packet agree with package/source-owner/deletion boundaries;
@@ -271,3 +273,6 @@ This proposal cannot become accepted until:
 - `ENGINE-CONTRACT-ACCEPTANCE-01` accepts this contract atomically with its schema/reference evidence and coupled proposal dependencies on one exact revision.
 
 A concrete production profile additionally requires exact CUDA-MCGS Search IR/Search Program/package identity, independently qualified selected CUDA-JS capabilities, opaque generated artifact/resource/operation evidence, native deletion, representative cost when claimed, failure/cancellation/teardown and exact compatible-pair parity. Windows/Linux and other platform support remain separately scoped. These native gates do not become circular prerequisites for backend-neutral semantic acceptance.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

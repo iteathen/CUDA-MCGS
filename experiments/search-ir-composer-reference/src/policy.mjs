@@ -80,7 +80,7 @@ function normalizeProfileReference(input, label) {
 function normalizeCatalogContract(input, catalogById) {
   exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'POLICY_CONTRACT_FIELDS', 'policy contract');
   if (input.kind !== 'catalog' || input.id !== POLICY_CONTRACT) fail('POLICY_CONTRACT_ID', `policy contract must select ${POLICY_CONTRACT}`);
-  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'POLICY_CONTRACT_ID', 'policy contract identity');
+  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'POLICY_CONTRACT_ID', 'policy contract identity');
   assertSha256(input.sha256, 'POLICY_CONTRACT_DIGEST', 'policy contract sha256');
   const expected = catalogById.get(POLICY_CONTRACT);
   if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) fail('POLICY_CONTRACT_DRIFT', 'policy contract differs from the frozen catalog');
@@ -569,7 +569,7 @@ function normalizeProductData(input, index) {
 
 export function normalizePolicyProfile(input, inspectedCatalog, domainResult, graphResult) {
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'domainProfile', 'graphProfile', 'evaluatorMode', 'roleHandlers', 'records', 'selection', 'reservation', 'admission', 'value', 'cycle', 'backup', 'stop', 'reuse', 'ports', 'resources', 'statuses', 'diagnostics', 'compatibility', 'programContribution', 'productData'], 'POLICY_ROOT_FIELDS', 'policy profile');
-  if (input.schema !== POLICY_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('POLICY_SCHEMA', 'unsupported policy schema/representation/status');
+  if (input.schema !== POLICY_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('POLICY_SCHEMA', 'unsupported policy schema/representation/status');
   assertNamespacedId(input.id, 'POLICY_PROFILE_ID', 'policy profile id');
   assertVersion(input.version, 'POLICY_PROFILE_VERSION', 'policy profile version');
   const contracts = inspectedCatalog?.contractSet?.contracts;

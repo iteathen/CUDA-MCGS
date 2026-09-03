@@ -133,7 +133,7 @@ function normalizeContract(input, catalogById, label) {
   if (input?.kind === 'catalog') {
     exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'PROGRESS_CONTRACT_FIELDS', label);
     assertString(input.id, /^SPEC-[0-9]{4}$/, 'PROGRESS_CONTRACT_ID', `${label} id`);
-    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'PROGRESS_CONTRACT_ID', `${label} identity`);
+    assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'PROGRESS_CONTRACT_ID', `${label} identity`);
     assertSha256(input.sha256, 'PROGRESS_CONTRACT_DIGEST', `${label} sha256`);
     const expected = catalogById.get(input.id);
     if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) fail('PROGRESS_CONTRACT_DRIFT', `${label} differs from frozen catalog`);
@@ -487,7 +487,7 @@ function normalizeProductData(input, index) {
 
 export function normalizeProgressProfile(input, inspectedCatalog, resourceResult, profileResults = []) {
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'resourcePlan', 'resourceContribution', 'contributors', 'workClasses', 'dependencies', 'fairnessClasses', 'noProgress', 'stop', 'closure', 'lifecycle', 'ports', 'statuses', 'diagnostics', 'compatibility', 'cleanup', 'programContribution', 'productData'], 'PROGRESS_ROOT_FIELDS', 'progress profile');
-  if (input.schema !== PROGRESS_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('PROGRESS_SCHEMA', 'unsupported progress schema/representation/status');
+  if (input.schema !== PROGRESS_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('PROGRESS_SCHEMA', 'unsupported progress schema/representation/status');
   assertNamespacedId(input.id, 'PROGRESS_PROFILE_ID', 'progress profile id'); assertVersion(input.version, 'PROGRESS_PROFILE_VERSION', 'progress profile version');
   const contracts = inspectedCatalog?.contractSet?.contracts; if (!contracts) fail('PROGRESS_CATALOG', 'inspected catalog is required');
   const catalogById = new Map(contracts.map((contract) => [contract.id, contract]));

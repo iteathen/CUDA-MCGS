@@ -1,8 +1,10 @@
 # SPEC-0012: Device-Owned Search Progress and Closure
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.1.0
+**Version:** 0.1.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS universal device-owned progress semantics
 
@@ -10,17 +12,17 @@
 
 **Consumers:** Search Session and framework contracts; Search IR; Search Composer; every selected work producer/consumer; deterministic reference and native conformance
 
-This proposal defines the product-neutral progress brick that owns device-side work readiness, service/fairness, typed no-progress, stopping/drain and closure semantics. It does not select a persistent kernel, queue, CUDA Graph, cooperative launch, stream topology, exact interleaving or host relaunch loop.
+This specification defines the product-neutral progress brick that owns device-side work readiness, service/fairness, typed no-progress, stopping/drain and closure semantics. It does not select a persistent kernel, queue, CUDA Graph, cooperative launch, stream topology, exact interleaving or host relaunch loop.
 
 ## 1. Authority, identity, and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0012@0.1.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0012@0.1.0`.
 
 Every finite engine selects exactly one normalized progress profile covering every selected domain, graph, policy, evaluator, output, resource, session and capability/product work class. A removed owner contributes no work class, readiness edge, resource or dispatcher residue.
 
-Normative dependencies are ADR-0002, ADR-0003, ADR-0005, ADR-0018 and ADR-0019; accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md); and integrated proposals [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md), [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md), [`SPEC-0009`](SPEC-0009-evaluator-contract.md), [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md), [`SPEC-0011`](SPEC-0011-finite-search-resources.md) and [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md).
+Normative dependencies are ADR-0002, ADR-0003, ADR-0005, ADR-0018 and ADR-0019; accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md); and accepted [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md), [`SPEC-0008`](SPEC-0008-search-policy-and-backup.md), [`SPEC-0009`](SPEC-0009-evaluator-contract.md), [`SPEC-0010`](SPEC-0010-graph-storage-and-reclamation.md), [`SPEC-0011`](SPEC-0011-finite-search-resources.md) and [`SPEC-0013`](SPEC-0013-result-and-observation-publication.md).
 
-Proposal [`SPEC-0004`](SPEC-0004-async-stage-channels.md) is informative extension-dataflow adjacency; it does not own engine-wide progress. Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative external-lifecycle adjacency. Accepted authority governs conflicts. This proposal authorizes no production implementation.
+Accepted [`SPEC-0004`](SPEC-0004-async-stage-channels.md) is informative extension-dataflow adjacency; it does not own engine-wide progress. Accepted [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative external-lifecycle adjacency. Accepted authority governs conflicts. This specification authorizes no production implementation.
 
 ## 2. Purpose and reading map
 
@@ -217,3 +219,6 @@ Production lowering remains prohibited. Native mechanism/performance evidence qu
 Changing work ownership/readiness/dependency, fairness, no-progress, stop/drain/closure, epoch or resource meaning invalidates session/framework contracts, Search IR/normalizers, generated packages, scheduler evidence and approvals. The integration spine reconciles invalidation.
 
 Implementation, testing, review, security, generated/JIT/ABI, performance and cleanup trigger specialist doctrine from root agent authority.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

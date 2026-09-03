@@ -1,6 +1,6 @@
 # ENGINE-CONTRACT-ACCEPTANCE-01 assessment and execution plan
 
-**Status:** Active
+**Status:** Informational
 
 **Tracker:** #122
 

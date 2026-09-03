@@ -330,7 +330,7 @@ function materialized(profile, inspected, domainResult, domainSchemaSha, { recla
   const catalogById = new Map(inspected.contractSet.contracts.map((contract) => [contract.id, contract]));
   const objects = objectKinds(profile, { reclamation, transposition });
   return {
-    schema: 'cuda-mcgs.graph-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence',
+    schema: 'cuda-mcgs.graph-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted',
     contract: catalogContract(catalogById, 'SPEC-0010'), id: `graph.${profile}`, version: VERSION,
     domainProfile: domainReference(domainResult, domainSchemaSha), mode: 'materialized',
     arena: { kind: 'finite', incarnationScope: 'engine-incarnation', maxIncarnations: '18446744073709551615', exhaustion: 'generation-exhausted' },
@@ -378,7 +378,7 @@ function materialized(profile, inspected, domainResult, domainSchemaSha, { recla
 function stateless(inspected, domainResult, domainSchemaSha) {
   const catalogById = new Map(inspected.contractSet.contracts.map((contract) => [contract.id, contract]));
   return {
-    schema: 'cuda-mcgs.graph-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence',
+    schema: 'cuda-mcgs.graph-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted',
     contract: catalogContract(catalogById, 'SPEC-0010'), id: 'graph.synthetic-stateless', version: VERSION,
     domainProfile: domainReference(domainResult, domainSchemaSha), mode: 'stateless', arena: { kind: 'none' }, referenceEncoding: { kind: 'none' },
     objectKinds: [], layouts: [], ownerRegions: [], transposition: { kind: 'none' }, path: { kind: 'none' }, rootProtection: { kind: 'none' },

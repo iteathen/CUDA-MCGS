@@ -9,7 +9,7 @@
   "properties": {
     "schema": { "const": "cuda-mcgs.framework-selection/0.2.0" },
     "representation": { "const": "cuda-mcgs.search-ir/0.2.0" },
-    "status": { "const": "proposal-evidence" },
+    "status": { "const": "accepted" },
     "contractSet": {
       "type": "object",
       "additionalProperties": false,

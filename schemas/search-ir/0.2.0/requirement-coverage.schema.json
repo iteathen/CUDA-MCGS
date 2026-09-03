@@ -1,14 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/requirement-coverage.schema.json",
-  "title": "CUDA-MCGS Search IR 0.2.0 proposal requirement coverage",
+  "title": "CUDA-MCGS Search IR 0.2.0 accepted requirement coverage",
   "description": "Closed owner-routing skeleton expanded from normative requirement IDs by the reference catalog capsule.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "contractSet", "allowedFinalDispositions", "contracts", "classifications", "totals"],
+  "required": [
+    "schema",
+    "contractSet",
+    "allowedFinalDispositions",
+    "contracts",
+    "classifications",
+    "totals"
+  ],
   "properties": {
-    "schema": { "const": "cuda-mcgs.search-ir.requirement-coverage/0.2.0" },
-    "contractSet": { "const": "cuda-mcgs.search-ir.contract-set/0.2.0" },
+    "schema": {
+      "const": "cuda-mcgs.search-ir.requirement-coverage/0.2.0"
+    },
+    "contractSet": {
+      "const": "cuda-mcgs.search-ir.contract-set/0.2.0"
+    },
     "allowedFinalDispositions": {
       "const": [
         "structural-schema",
@@ -24,21 +35,42 @@
       "type": "array",
       "minItems": 12,
       "maxItems": 12,
-      "items": { "$ref": "#/$defs/coverage" }
+      "items": {
+        "$ref": "#/$defs/coverage"
+      }
     },
     "classifications": {
       "type": "array",
-      "items": { "$ref": "#/$defs/classification" }
+      "items": {
+        "$ref": "#/$defs/classification"
+      }
     },
     "totals": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["contracts", "requirements", "classified", "pending"],
+      "required": [
+        "contracts",
+        "requirements",
+        "classified",
+        "pending"
+      ],
       "properties": {
-        "contracts": { "const": 12 },
-        "requirements": { "const": 989 },
-        "classified": { "type": "integer", "minimum": 0, "maximum": 989 },
-        "pending": { "type": "integer", "minimum": 0, "maximum": 989 }
+        "contracts": {
+          "const": 12
+        },
+        "requirements": {
+          "const": 989
+        },
+        "classified": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 989
+        },
+        "pending": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 989
+        }
       }
     }
   },
@@ -46,24 +78,70 @@
     "coverage": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["contract", "requirementPrefix", "primaryOwner", "plannedLeaf", "currentDisposition", "completionStatus"],
+      "required": [
+        "contract",
+        "requirementPrefix",
+        "primaryOwner",
+        "evidenceOwner",
+        "currentDisposition",
+        "completionStatus"
+      ],
       "properties": {
-        "contract": { "type": "string", "pattern": "^SPEC-[0-9]{4}$" },
-        "requirementPrefix": { "type": "string", "pattern": "^[A-Z][A-Z0-9-]*-$" },
-        "primaryOwner": { "type": "string", "minLength": 1 },
-        "plannedLeaf": { "type": "string", "pattern": "^IR-[A-Z-]+-01$" },
-        "currentDisposition": { "enum": ["pending-owner-classification", "section-classified"] },
-        "completionStatus": { "enum": ["pending", "in-progress"] }
+        "contract": {
+          "type": "string",
+          "pattern": "^SPEC-[0-9]{4}$"
+        },
+        "requirementPrefix": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9-]*-$"
+        },
+        "primaryOwner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "currentDisposition": {
+          "enum": [
+            "accepted-reference"
+          ]
+        },
+        "completionStatus": {
+          "enum": [
+            "accepted"
+          ]
+        },
+        "evidenceOwner": {
+          "type": "string",
+          "pattern": "^IR-[A-Z-]+-01$"
+        }
       }
     },
     "classification": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["contract", "requirementPrefix", "requirementCount", "primaryDisposition", "supportingDispositions", "plannedEvidenceOwner", "evidenceStatus", "evidenceRefs", "classificationStatus"],
+      "required": [
+        "contract",
+        "requirementPrefix",
+        "requirementCount",
+        "primaryDisposition",
+        "supportingDispositions",
+        "evidenceOwner",
+        "evidenceStatus",
+        "evidenceRefs",
+        "classificationStatus"
+      ],
       "properties": {
-        "contract": { "type": "string", "pattern": "^SPEC-[0-9]{4}$" },
-        "requirementPrefix": { "type": "string", "pattern": "^[A-Z][A-Z0-9-]*-$" },
-        "requirementCount": { "type": "integer", "minimum": 1 },
+        "contract": {
+          "type": "string",
+          "pattern": "^SPEC-[0-9]{4}$"
+        },
+        "requirementPrefix": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9-]*-$"
+        },
+        "requirementCount": {
+          "type": "integer",
+          "minimum": 1
+        },
         "primaryDisposition": {
           "enum": [
             "structural-schema",
@@ -78,17 +156,32 @@
         "supportingDispositions": {
           "type": "array",
           "uniqueItems": true,
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
-        "plannedEvidenceOwner": { "type": "string", "pattern": "^(?:IR|ENGINE)-[A-Z0-9-]+-01$" },
-        "evidenceStatus": { "enum": ["partial", "pending", "deferred"] },
+        "evidenceStatus": {
+          "enum": [
+            "accepted-reference",
+            "deferred-native"
+          ]
+        },
         "evidenceRefs": {
           "type": "array",
           "minItems": 1,
           "uniqueItems": true,
-          "items": { "type": "string", "pattern": "^(?:schema|normalizer|case|proof|planned):[a-zA-Z0-9./_-]+$" }
+          "items": {
+            "type": "string",
+            "pattern": "^(?:schema|normalizer|case|proof|planned):[a-zA-Z0-9./_-]+$"
+          }
         },
-        "classificationStatus": { "const": "classified" }
+        "classificationStatus": {
+          "const": "classified"
+        },
+        "evidenceOwner": {
+          "type": "string",
+          "pattern": "^(?:IR|ENGINE)-[A-Z0-9-]+-01$"
+        }
       }
     }
   }

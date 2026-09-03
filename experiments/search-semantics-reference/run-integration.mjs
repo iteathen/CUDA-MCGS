@@ -136,7 +136,7 @@ defineCase('integration-reference-route-closure', () => {
     if (id === 'composer' || id === 'search-ir' || id === 'terminal' || id === 'graph-advance') continue;
     for (const requirementId of coverageRequirements(evidence)) {
       const route = classificationFor(requirementId);
-      const isDirect = route.primaryDisposition === 'engine-reference-oracle' && route.plannedEvidenceOwner === 'ENGINE-REFERENCE-01' && route.contract !== 'SPEC-0004';
+      const isDirect = route.primaryDisposition === 'engine-reference-oracle' && route.evidenceOwner === 'ENGINE-REFERENCE-01' && route.contract !== 'SPEC-0004';
       if (isDirect) ownerRequirementIds.add(requirementId);
     }
   }
@@ -149,7 +149,7 @@ defineCase('integration-reference-route-closure', () => {
   assert.equal(channelReferenceIds.length, fixture.expectedChannelRequirements, 'Channel reference route count drifted');
   assert.equal(new Set([...directReferenceIds, ...channelReferenceIds]).size, fixture.expectedReferenceRequirements, 'total reference requirement closure drifted');
 
-  const expectedDirectByClassification = coverage.classifications.filter((entry) => entry.primaryDisposition === 'engine-reference-oracle' && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01' && entry.contract !== 'SPEC-0004');
+  const expectedDirectByClassification = coverage.classifications.filter((entry) => entry.primaryDisposition === 'engine-reference-oracle' && entry.evidenceOwner === 'ENGINE-REFERENCE-01' && entry.contract !== 'SPEC-0004');
   for (const route of expectedDirectByClassification) {
     const actual = directReferenceIds.filter((id) => id.startsWith(route.requirementPrefix)).length;
     assert.equal(actual, route.requirementCount, `${route.contract}:${route.requirementPrefix} direct route closure drifted`);
@@ -219,7 +219,7 @@ defineCase('integration-native-deferred-remains-deferred', () => {
   const nativeRoutes = coverage.classifications.filter(({ primaryDisposition }) => primaryDisposition === 'native-compatible-pair-qualification');
   const nativeCount = nativeRoutes.reduce((sum, route) => sum + route.requirementCount, 0);
   assert.equal(nativeCount, fixture.expectedNativeDeferredRequirements, 'native-deferred requirement accounting drifted');
-  for (const route of nativeRoutes) assert.equal(route.evidenceStatus, 'deferred', `${route.contract}:${route.requirementPrefix} native route must remain deferred`);
+  for (const route of nativeRoutes) assert.equal(route.evidenceStatus, 'deferred-native', `${route.contract}:${route.requirementPrefix} native route must remain deferred`);
   const referenceSet = new Set([...directReferenceIds, ...channelReferenceIds]);
   for (const id of referenceSet) assert.notEqual(classificationFor(id).primaryDisposition, 'native-compatible-pair-qualification');
   return { nativeDeferred: nativeCount };

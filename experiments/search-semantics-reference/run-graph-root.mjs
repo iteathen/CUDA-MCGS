@@ -76,7 +76,7 @@ const classification = requirementCoverage.classifications.find((entry) =>
   entry.contract === 'SPEC-0010'
   && entry.requirementPrefix === 'GRAPH-ROOT-'
   && entry.primaryDisposition === 'engine-reference-oracle'
-  && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01'
+  && entry.evidenceOwner === 'ENGINE-REFERENCE-01'
   && entry.supportingDispositions.includes('semantic-normalizer')
   && entry.supportingDispositions.includes('cross-specification-proof'));
 assert(classification, 'GRAPH-ROOT- requirement classification is missing');

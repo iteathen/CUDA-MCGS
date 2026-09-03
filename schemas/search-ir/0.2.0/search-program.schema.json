@@ -1,28 +1,153 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/search-program.schema.json",
-  "title": "CUDA-MCGS canonical restricted Device-JS Search Program proposal evidence",
+  "title": "CUDA-MCGS canonical accepted restricted Device-JS Search Program",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "status", "language", "semanticEngineIdentity", "compositionProfileIdentity", "generator", "source", "sourceIdentity", "sourceMap", "functions", "programUnits", "entryPoints", "publicRequirements", "resources", "operations", "manifests", "provenance", "deletion"],
+  "required": [
+    "schema",
+    "status",
+    "language",
+    "semanticEngineIdentity",
+    "compositionProfileIdentity",
+    "generator",
+    "source",
+    "sourceIdentity",
+    "sourceMap",
+    "functions",
+    "programUnits",
+    "entryPoints",
+    "publicRequirements",
+    "resources",
+    "operations",
+    "manifests",
+    "provenance",
+    "deletion"
+  ],
   "properties": {
-    "schema": { "const": "cuda-mcgs.search-program/0.2.0" },
-    "status": { "const": "proposal-evidence" },
-    "language": { "const": "restricted-device-js" },
-    "semanticEngineIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
-    "compositionProfileIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
-    "generator": { "$ref": "program-package-profile.schema.json#/$defs/generator" },
-    "source": { "type": "string", "minLength": 1 },
-    "sourceIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
-    "sourceMap": { "type": "array", "minItems": 1, "items": { "type": "object", "additionalProperties": false, "required": ["id", "ownerProfile", "semanticOwner", "sourceIdentity", "functions"], "properties": { "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" }, "ownerProfile": { "$ref": "primitives.schema.json#/$defs/namespacedId" }, "semanticOwner": { "$ref": "primitives.schema.json#/$defs/namespacedId" }, "sourceIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" }, "functions": { "type": "array", "minItems": 1, "items": { "type": "string" } } } } },
-    "functions": { "type": "array", "minItems": 1, "items": { "$ref": "program-package-profile.schema.json#/$defs/function" } },
-    "programUnits": { "type": "array", "minItems": 1, "items": { "$ref": "program-package-profile.schema.json#/$defs/programUnit" } },
-    "entryPoints": { "type": "array", "minItems": 1, "items": { "type": "object", "additionalProperties": false, "required": ["role", "function"], "properties": { "role": { "$ref": "primitives.schema.json#/$defs/namespacedId" }, "function": { "type": "string" } } } },
-    "publicRequirements": { "type": "array", "minItems": 2, "items": { "$ref": "program-package-profile.schema.json#/$defs/publicRequirement" } },
-    "resources": { "type": "array", "items": { "$ref": "program-package-profile.schema.json#/$defs/resource" } },
-    "operations": { "type": "array", "minItems": 1, "items": { "$ref": "program-package-profile.schema.json#/$defs/operation" } },
-    "manifests": { "$ref": "program-package-profile.schema.json#/$defs/manifests" },
-    "provenance": { "$ref": "program-package-profile.schema.json#/$defs/provenance" },
-    "deletion": { "$ref": "program-package-profile.schema.json#/$defs/deletion" }
+    "schema": {
+      "const": "cuda-mcgs.search-program/0.2.0"
+    },
+    "status": {
+      "const": "accepted"
+    },
+    "language": {
+      "const": "restricted-device-js"
+    },
+    "semanticEngineIdentity": {
+      "$ref": "primitives.schema.json#/$defs/contentIdentity"
+    },
+    "compositionProfileIdentity": {
+      "$ref": "primitives.schema.json#/$defs/contentIdentity"
+    },
+    "generator": {
+      "$ref": "program-package-profile.schema.json#/$defs/generator"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceIdentity": {
+      "$ref": "primitives.schema.json#/$defs/contentIdentity"
+    },
+    "sourceMap": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "ownerProfile",
+          "semanticOwner",
+          "sourceIdentity",
+          "functions"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "primitives.schema.json#/$defs/namespacedId"
+          },
+          "ownerProfile": {
+            "$ref": "primitives.schema.json#/$defs/namespacedId"
+          },
+          "semanticOwner": {
+            "$ref": "primitives.schema.json#/$defs/namespacedId"
+          },
+          "sourceIdentity": {
+            "$ref": "primitives.schema.json#/$defs/contentIdentity"
+          },
+          "functions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "functions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "program-package-profile.schema.json#/$defs/function"
+      }
+    },
+    "programUnits": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "program-package-profile.schema.json#/$defs/programUnit"
+      }
+    },
+    "entryPoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "role",
+          "function"
+        ],
+        "properties": {
+          "role": {
+            "$ref": "primitives.schema.json#/$defs/namespacedId"
+          },
+          "function": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "publicRequirements": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "$ref": "program-package-profile.schema.json#/$defs/publicRequirement"
+      }
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "$ref": "program-package-profile.schema.json#/$defs/resource"
+      }
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "program-package-profile.schema.json#/$defs/operation"
+      }
+    },
+    "manifests": {
+      "$ref": "program-package-profile.schema.json#/$defs/manifests"
+    },
+    "provenance": {
+      "$ref": "program-package-profile.schema.json#/$defs/provenance"
+    },
+    "deletion": {
+      "$ref": "program-package-profile.schema.json#/$defs/deletion"
+    }
   }
 }

@@ -342,7 +342,7 @@ function buildProfile(profile, inspected, domainResult, graphResult, domainSchem
   const keyFacts = [...new Set([...inputs.flatMap(({ keyFacts }) => keyFacts), ...(options.artifact ? ['artifact-generation'] : []), ...(options.mutable ? ['state-generation'] : []), ...(options.sensitive ? ['batch-context'] : [])])];
   const cacheSelected = options.cache === true;
   return {
-    schema: 'cuda-mcgs.evaluator-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence',
+    schema: 'cuda-mcgs.evaluator-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted',
     contract: catalogContract(inspected, 'SPEC-0009'), policyContract: catalogContract(inspected, 'SPEC-0008'),
     id: `evaluator.${profile}`, version: VERSION,
     mode: options.proposal ? (options.value ? 'combined' : 'proposal-only') : 'evaluation-only',

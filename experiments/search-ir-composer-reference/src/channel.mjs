@@ -90,7 +90,7 @@ function normalizeCatalogContract(input, catalogById, label) {
   exactKeys(input, ['kind', 'id', 'specificationIdentity', 'sha256'], 'CHANNEL_CONTRACT_FIELDS', label);
   if (input.kind !== 'catalog') fail('CHANNEL_CONTRACT_KIND', `${label} must be catalog-owned`);
   assertString(input.id, /^SPEC-[0-9]{4}$/, 'CHANNEL_CONTRACT_ID', `${label} id`);
-  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'CHANNEL_CONTRACT_ID', `${label} specificationIdentity`);
+  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'CHANNEL_CONTRACT_ID', `${label} specificationIdentity`);
   assertSha256(input.sha256, 'CHANNEL_CONTRACT_DIGEST', `${label} sha256`);
   const expected = catalogById.get(input.id);
   if (!expected || expected.specificationIdentity !== input.specificationIdentity || expected.sha256 !== input.sha256) fail('CHANNEL_CONTRACT_DRIFT', `${label} differs from frozen catalog`);
@@ -463,7 +463,7 @@ function normalizeProductData(input, index) {
 export function normalizeChannelProfile(input, inspectedCatalog, resourceResult, progressResult, stageResult) {
   if (input === null) return { normalized: null, identity: null };
   exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'generatorIdentity', 'resourcePlan', 'progressPlan', 'stageProfile', 'resourceContribution', 'progressContribution', 'owners', 'channels', 'statuses', 'lifecycle', 'diagnostics', 'compatibility', 'cleanup', 'programContribution', 'productData'], 'CHANNEL_ROOT_FIELDS', 'channel profile');
-  if (input.schema !== CHANNEL_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'proposal-evidence') fail('CHANNEL_SCHEMA', 'unsupported channel schema/representation/status');
+  if (input.schema !== CHANNEL_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('CHANNEL_SCHEMA', 'unsupported channel schema/representation/status');
   const contracts = inspectedCatalog?.contractSet?.contracts; if (!contracts) fail('CHANNEL_CATALOG', 'inspected catalog is required');
   const catalogById = new Map(contracts.map((entry) => [entry.id, entry]));
   const contract = normalizeCatalogContract(input.contract, catalogById, 'channel contract');

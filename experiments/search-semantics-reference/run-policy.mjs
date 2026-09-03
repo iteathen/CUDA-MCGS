@@ -63,7 +63,7 @@ for (const [requirementPrefix, requirementCount] of ownedPrefixes) {
     entry.contract === 'SPEC-0008'
     && entry.requirementPrefix === requirementPrefix
     && entry.primaryDisposition === 'engine-reference-oracle'
-    && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01');
+    && entry.evidenceOwner === 'ENGINE-REFERENCE-01');
   assert(classification, `${requirementPrefix} requirement classification is missing`);
   assert.equal(classification.requirementCount, requirementCount);
 }

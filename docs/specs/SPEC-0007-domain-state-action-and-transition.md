@@ -1,8 +1,10 @@
 # SPEC-0007: Domain State, Action, and Transition Contract
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.1.0
+**Version:** 0.1.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS universal domain semantics
 
@@ -10,11 +12,11 @@
 
 **Consumers:** graph/storage, search policy, evaluator, result/observation, finite-resource, device-progress and Search Session contracts; Search IR; Search Composer; domain/product adapters; deterministic reference and native conformance
 
-This proposal defines the product-neutral domain brick that tells CUDA-MCGS what a state, action, transition, domain identity, relevant history, node role and terminal domain outcome mean. It defines semantic ports and finite-profile obligations, not a game API, storage layout, evaluator, policy, scheduler, CUDA ABI or production implementation.
+This specification defines the product-neutral domain brick that tells CUDA-MCGS what a state, action, transition, domain identity, relevant history, node role and terminal domain outcome mean. It defines semantic ports and finite-profile obligations, not a game API, storage layout, evaluator, policy, scheduler, CUDA ABI or production implementation.
 
 ## 1. Authority, identity, and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0007@0.1.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0007@0.1.0`.
 
 This specification applies when a finite CUDA-MCGS engine selects a domain profile. Every concrete engine selects exactly one domain profile identity; a composed multi-domain product must define a new domain profile that owns how its subdomains interact rather than switching undeclared domain meaning during active search.
 
@@ -28,9 +30,9 @@ Normative dependencies are:
 - accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) for publication, identity verification, graph/path ordering, finite resources, stopping and partial-result foundations; and
 - accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for foundational normalized Search IR and deterministic reference meaning within its current scope.
 
-Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for external root updates and domain observations. Product specifications, examples, experiments and implementations are evidence beneath this proposal and cannot amend it by usage.
+Accepted [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) is informative adjacency for external root updates and domain observations. Product specifications, examples, experiments and implementations are evidence beneath this specification and cannot amend it by usage.
 
-Accepted authority governs any conflict. This proposal does not supersede another specification and is not production implementation authority.
+Accepted authority governs any conflict. This specification does not supersede another specification and is not production implementation authority.
 
 ## 2. Purpose, reading map, and required outcome
 
@@ -423,9 +425,9 @@ These examples illustrate profile variation only. They do not select representat
 
 ## 20. Acceptance blockers and downstream invalidation
 
-This proposal is decision-complete only when review finds no unresolved owner, identity/equality, history, action-production, transition, role/outcome, range, lifecycle, failure, compatibility, security or cleanup ambiguity.
+Acceptance review under #122 found no unresolved owner, identity/equality, history, action-production, transition, role/outcome, range, lifecycle, failure, compatibility, security or cleanup ambiguity.
 
-Acceptance remains blocked until:
+Acceptance under #122 required:
 
 1. the normalized Search IR/schema represents every DOMAIN-IR obligation and rejects semantic ambiguity;
 2. the consolidated deterministic reference executes all required cases, including the three materially different fixtures and oracle-sensitivity mutation;
@@ -439,3 +441,6 @@ Production domain lowering remains prohibited until that acceptance. Native publ
 A change to this specification's owner, identity/equality, history participation, action/transition meaning, role/outcome meaning, range/precision, lifecycle/failure, normalized identity or conformance oracle invalidates affected downstream specifications, Search IR/schema, normalizers, reference/native evidence, generated Search Images/packages, compatibility manifests, graph state, caches, persisted sessions and review approvals. The parent ENGINE-CONTRACT-01 integration spine must record and reconcile the invalidation before dependent work continues.
 
 Implementation, test, review, persistence, security, generated/JIT/ABI, performance and cleanup work triggers the corresponding specialist doctrine routed from root `AGENTS.md` and `agent_files/AGENTS.md`.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

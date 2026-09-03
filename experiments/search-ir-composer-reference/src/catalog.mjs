@@ -37,28 +37,28 @@ function normalizeArtifact(input, index) {
 }
 
 function normalizeContract(input, index) {
-  exactKeys(input, ['id', 'specificationIdentity', 'draftVersion', 'status', 'semanticOwner', 'sourcePath', 'sha256', 'requirementPrefix', 'requirementCount', 'plannedLeaf'], 'CATALOG_CONTRACT_FIELDS', `contract ${index}`);
+  exactKeys(input, ['id', 'specificationIdentity', 'version', 'status', 'semanticOwner', 'sourcePath', 'sha256', 'requirementPrefix', 'requirementCount', 'evidenceOwner'], 'CATALOG_CONTRACT_FIELDS', `contract ${index}`);
   assertString(input.id, /^SPEC-[0-9]{4}$/, 'CATALOG_CONTRACT_ID', `contract ${index} id`);
-  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+-draft$/, 'CATALOG_SPEC_IDENTITY', `${input.id} specificationIdentity`);
-  assertString(input.draftVersion, /^[0-9]+\.[0-9]+\.[0-9]+$/, 'CATALOG_VERSION', `${input.id} draftVersion`);
-  if (input.status !== 'Proposal') fail('CATALOG_STATUS', `${input.id} must remain Proposal`);
+  assertString(input.specificationIdentity, /^CUDA-MCGS-SPEC-[0-9]{4}@[0-9]+\.[0-9]+\.[0-9]+$/, 'CATALOG_SPEC_IDENTITY', `${input.id} specificationIdentity`);
+  assertString(input.version, /^[0-9]+\.[0-9]+\.[0-9]+$/, 'CATALOG_VERSION', `${input.id} version`);
+  if (input.status !== 'Accepted') fail('CATALOG_STATUS', `${input.id} must be Accepted`);
   if (typeof input.semanticOwner !== 'string' || input.semanticOwner.length === 0) fail('CATALOG_OWNER', `${input.id} semanticOwner is invalid`);
   assertString(input.sourcePath, /^docs\/specs\/SPEC-[0-9]{4}-[a-z0-9-]+\.md$/, 'CATALOG_SOURCE_PATH', `${input.id} sourcePath`);
   assertString(input.sha256, /^[0-9a-f]{64}$/, 'CATALOG_DIGEST', `${input.id} sha256`);
   assertString(input.requirementPrefix, /^[A-Z][A-Z0-9-]*-$/, 'CATALOG_REQUIREMENT_PREFIX', `${input.id} requirementPrefix`);
   assertInteger(input.requirementCount, 1, 'CATALOG_REQUIREMENT_COUNT', `${input.id} requirementCount`);
-  assertString(input.plannedLeaf, /^IR-[A-Z-]+-01$/, 'CATALOG_PLANNED_LEAF', `${input.id} plannedLeaf`);
+  assertString(input.evidenceOwner, /^IR-[A-Z-]+-01$/, 'CATALOG_PLANNED_LEAF', `${input.id} evidenceOwner`);
   return {
     id: input.id,
     specificationIdentity: input.specificationIdentity,
-    draftVersion: input.draftVersion,
+    version: input.version,
     status: input.status,
     semanticOwner: input.semanticOwner,
     sourcePath: input.sourcePath,
     sha256: input.sha256,
     requirementPrefix: input.requirementPrefix,
     requirementCount: input.requirementCount,
-    plannedLeaf: input.plannedLeaf,
+    evidenceOwner: input.evidenceOwner,
   };
 }
 
@@ -66,7 +66,7 @@ export function normalizeContractSet(input) {
   exactKeys(input, ['schema', 'representation', 'status', 'authorityBaseline', 'sourceDigest', 'foundation', 'contracts', 'totals'], 'CATALOG_ROOT_FIELDS', 'contract set');
   if (input.schema !== CONTRACT_SET_SCHEMA) fail('CATALOG_SCHEMA', 'unsupported contract-set schema');
   if (input.representation !== REPRESENTATION) fail('CATALOG_REPRESENTATION', 'unsupported Search IR representation');
-  if (input.status !== 'proposal-evidence') fail('CATALOG_STATUS', 'contract set must remain proposal evidence');
+  if (input.status !== 'accepted') fail('CATALOG_STATUS', 'contract set must be accepted authority');
   assertString(input.authorityBaseline, /^[0-9a-f]{40}$/, 'CATALOG_BASELINE', 'authorityBaseline');
   if (input.sourceDigest !== 'sha256-utf8-lf-v1') fail('CATALOG_DIGEST_CONTRACT', 'unsupported source digest contract');
 
@@ -82,7 +82,7 @@ export function normalizeContractSet(input) {
   uniqueBy(artifacts, 'role', 'CATALOG_FOUNDATION_DUPLICATE', 'foundation artifact role');
 
   if (!Array.isArray(input.contracts) || input.contracts.length !== 12) {
-    fail('CATALOG_CONTRACT_COUNT', 'contract set must contain exactly twelve proposal contracts');
+    fail('CATALOG_CONTRACT_COUNT', 'contract set must contain exactly twelve accepted contracts');
   }
   const contracts = input.contracts.map(normalizeContract).sort((left, right) => compareRaw(left.id, right.id));
   uniqueBy(contracts, 'id', 'CATALOG_CONTRACT_DUPLICATE', 'contract');
@@ -109,21 +109,19 @@ export function normalizeContractSet(input) {
 }
 
 function normalizeCoverageEntry(input, index) {
-  exactKeys(input, ['contract', 'requirementPrefix', 'primaryOwner', 'plannedLeaf', 'currentDisposition', 'completionStatus'], 'COVERAGE_ENTRY_FIELDS', `coverage ${index}`);
+  exactKeys(input, ['contract', 'requirementPrefix', 'primaryOwner', 'evidenceOwner', 'currentDisposition', 'completionStatus'], 'COVERAGE_ENTRY_FIELDS', `coverage ${index}`);
   assertString(input.contract, /^SPEC-[0-9]{4}$/, 'COVERAGE_CONTRACT', `coverage ${index} contract`);
   assertString(input.requirementPrefix, /^[A-Z][A-Z0-9-]*-$/, 'COVERAGE_PREFIX', `${input.contract} requirementPrefix`);
   if (typeof input.primaryOwner !== 'string' || input.primaryOwner.length === 0) fail('COVERAGE_OWNER', `${input.contract} primaryOwner is invalid`);
-  assertString(input.plannedLeaf, /^IR-[A-Z-]+-01$/, 'COVERAGE_LEAF', `${input.contract} plannedLeaf`);
-  const validRouteState = (input.currentDisposition === 'pending-owner-classification' && input.completionStatus === 'pending')
-    || (input.currentDisposition === 'section-classified' && input.completionStatus === 'in-progress');
-  if (!validRouteState) {
-    fail('COVERAGE_PREMATURE_COMPLETION', `${input.contract} has an invalid route-level classification state`);
+  assertString(input.evidenceOwner, /^IR-[A-Z-]+-01$/, 'COVERAGE_LEAF', `${input.contract} evidenceOwner`);
+  if (input.currentDisposition !== 'accepted-reference' || input.completionStatus !== 'accepted') {
+    fail('COVERAGE_ACCEPTANCE_STATE', `${input.contract} is not accepted reference authority`);
   }
   return { ...input };
 }
 
 function normalizeClassification(input, index) {
-  exactKeys(input, ['contract', 'requirementPrefix', 'requirementCount', 'primaryDisposition', 'supportingDispositions', 'plannedEvidenceOwner', 'evidenceStatus', 'evidenceRefs', 'classificationStatus'], 'COVERAGE_CLASSIFICATION_FIELDS', `classification ${index}`);
+  exactKeys(input, ['contract', 'requirementPrefix', 'requirementCount', 'primaryDisposition', 'supportingDispositions', 'evidenceOwner', 'evidenceStatus', 'evidenceRefs', 'classificationStatus'], 'COVERAGE_CLASSIFICATION_FIELDS', `classification ${index}`);
   assertString(input.contract, /^SPEC-[0-9]{4}$/, 'COVERAGE_CLASSIFICATION_CONTRACT', `classification ${index} contract`);
   assertString(input.requirementPrefix, /^[A-Z][A-Z0-9-]*-$/, 'COVERAGE_CLASSIFICATION_PREFIX', `${input.contract} classification prefix`);
   assertInteger(input.requirementCount, 1, 'COVERAGE_CLASSIFICATION_COUNT', `${input.requirementPrefix} requirementCount`);
@@ -133,8 +131,10 @@ function normalizeClassification(input, index) {
       || new Set(input.supportingDispositions).size !== input.supportingDispositions.length) {
     fail('COVERAGE_CLASSIFICATION_DISPOSITION', `${input.requirementPrefix} supporting dispositions are invalid`);
   }
-  assertString(input.plannedEvidenceOwner, /^(?:IR|ENGINE)-[A-Z0-9-]+-01$/, 'COVERAGE_CLASSIFICATION_OWNER', `${input.requirementPrefix} plannedEvidenceOwner`);
-  assertString(input.evidenceStatus, /^(?:partial|pending|deferred)$/, 'COVERAGE_CLASSIFICATION_STATUS', `${input.requirementPrefix} evidenceStatus`);
+  assertString(input.evidenceOwner, /^(?:IR|ENGINE)-[A-Z0-9-]+-01$/, 'COVERAGE_CLASSIFICATION_OWNER', `${input.requirementPrefix} evidenceOwner`);
+  assertString(input.evidenceStatus, /^(?:accepted-reference|deferred-native)$/, 'COVERAGE_CLASSIFICATION_STATUS', `${input.requirementPrefix} evidenceStatus`);
+  const expectedEvidenceStatus = input.primaryDisposition === 'native-compatible-pair-qualification' ? 'deferred-native' : 'accepted-reference';
+  if (input.evidenceStatus !== expectedEvidenceStatus) fail('COVERAGE_CLASSIFICATION_STATUS', `${input.requirementPrefix} evidence status does not match its final disposition`);
   if (input.classificationStatus !== 'classified') fail('COVERAGE_CLASSIFICATION_STATUS', `${input.requirementPrefix} classificationStatus is invalid`);
   if (!Array.isArray(input.evidenceRefs) || input.evidenceRefs.length === 0
       || input.evidenceRefs.some((reference) => typeof reference !== 'string' || !/^(?:schema|normalizer|case|proof|planned):[a-zA-Z0-9./_-]+$/.test(reference))
@@ -147,7 +147,7 @@ function normalizeClassification(input, index) {
     requirementCount: input.requirementCount,
     primaryDisposition: input.primaryDisposition,
     supportingDispositions: [...input.supportingDispositions].sort(compareRaw),
-    plannedEvidenceOwner: input.plannedEvidenceOwner,
+    evidenceOwner: input.evidenceOwner,
     evidenceStatus: input.evidenceStatus,
     evidenceRefs: [...input.evidenceRefs].sort(compareRaw),
     classificationStatus: input.classificationStatus,
@@ -229,10 +229,10 @@ export async function inspectCatalog(repositoryRoot, contractSetInput, coverageI
     if (sourceTextSha256(bytes) !== contract.sha256) fail('CATALOG_SOURCE_DRIFT', `${contract.id} source digest changed`);
     const text = bytes.toString('utf8');
     const status = metadata(text, /^\*\*Status:\*\* ([^\r\n]+)$/m, 'CATALOG_METADATA', `${contract.id} status`);
-    const draftVersion = metadata(text, /^\*\*Draft version:\*\* ([^\r\n]+)$/m, 'CATALOG_METADATA', `${contract.id} version`);
+    const version = metadata(text, /^\*\*Version:\*\* ([^\r\n]+)$/m, 'CATALOG_METADATA', `${contract.id} version`);
     const semanticOwner = metadata(text, /^\*\*Owner:\*\* ([^\r\n]+)$/m, 'CATALOG_METADATA', `${contract.id} owner`);
     const specificationIdentity = metadata(text, /^Specification identity is `([^`]+)`\.$/m, 'CATALOG_METADATA', `${contract.id} identity`);
-    if (status !== contract.status || draftVersion !== contract.draftVersion
+    if (status !== contract.status || version !== contract.version
         || semanticOwner !== contract.semanticOwner || specificationIdentity !== contract.specificationIdentity) {
       fail('CATALOG_METADATA_DRIFT', `${contract.id} checked-in metadata differs from the catalog`);
     }
@@ -250,7 +250,7 @@ export async function inspectCatalog(repositoryRoot, contractSetInput, coverageI
     if (!route) fail('COVERAGE_MISSING', `${contract.id} has no coverage route`);
     if (route.requirementPrefix !== contract.requirementPrefix
         || route.primaryOwner !== contract.semanticOwner
-        || route.plannedLeaf !== contract.plannedLeaf) {
+        || route.evidenceOwner !== contract.evidenceOwner) {
       fail('COVERAGE_ROUTE_DRIFT', `${contract.id} coverage route differs from its catalog owner`);
     }
 
@@ -262,10 +262,9 @@ export async function inspectCatalog(repositoryRoot, contractSetInput, coverageI
         id,
         contract: contract.id,
         primaryOwner: route.primaryOwner,
-        plannedLeaf: route.plannedLeaf,
         currentDisposition: classification?.primaryDisposition ?? route.currentDisposition,
         supportingDispositions: classification?.supportingDispositions ?? [],
-        plannedEvidenceOwner: classification?.plannedEvidenceOwner ?? route.plannedLeaf,
+        evidenceOwner: classification?.evidenceOwner ?? route.evidenceOwner,
         evidenceStatus: classification?.evidenceStatus ?? 'pending',
         evidenceRefs: classification?.evidenceRefs ?? [],
         classificationStatus: classification?.classificationStatus ?? 'pending',
@@ -293,10 +292,20 @@ export async function inspectCatalog(repositoryRoot, contractSetInput, coverageI
     fail('COVERAGE_TOTALS', `expanded coverage is ${classified} classified and ${pending} pending`);
   }
   for (const route of coverage.contracts) {
-    const routeHasClassification = coverage.classifications.some(({ contract }) => contract === route.contract);
-    const expectedState = routeHasClassification ? ['section-classified', 'in-progress'] : ['pending-owner-classification', 'pending'];
-    if (route.currentDisposition !== expectedState[0] || route.completionStatus !== expectedState[1]) {
-      fail('COVERAGE_ROUTE_STATE', `${route.contract} route state disagrees with its classifications`);
+    const expanded = requirements.filter(({ contract }) => contract === route.contract);
+    if (route.currentDisposition !== 'accepted-reference' || route.completionStatus !== 'accepted') {
+      fail('COVERAGE_ROUTE_STATE', `${route.contract} route is not accepted reference authority`);
+    }
+    if (expanded.length === 0 || expanded.some(({ classificationStatus }) => classificationStatus !== 'classified')) {
+      fail('COVERAGE_ROUTE_STATE', `${route.contract} has an unclassified accepted requirement`);
+    }
+    for (const requirement of expanded) {
+      const expectedEvidenceStatus = requirement.currentDisposition === 'native-compatible-pair-qualification'
+        ? 'deferred-native'
+        : 'accepted-reference';
+      if (requirement.evidenceStatus !== expectedEvidenceStatus) {
+        fail('COVERAGE_ROUTE_STATE', `${requirement.id} evidence status disagrees with its final disposition`);
+      }
     }
   }
 

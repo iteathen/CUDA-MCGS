@@ -319,7 +319,7 @@ if (options.session) {
   const providerRequirements = pools.map((entry) => providerRequirement(profile, entry));
   const contributorProfiles = contributors.map(({ profile: reference }) => reference);
   return {
-    schema: 'cuda-mcgs.resource-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'proposal-evidence',
+    schema: 'cuda-mcgs.resource-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted',
     contract: catalogContract(inspected, 'SPEC-0011'), id: `resource.${profile}`, version: VERSION,
     contributors, classes, pools, partitions, reserves, admissionGroups, ledgers, watermarks,
     exhaustion: {

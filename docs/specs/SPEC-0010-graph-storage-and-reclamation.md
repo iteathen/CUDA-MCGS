@@ -1,8 +1,10 @@
 # SPEC-0010: Graph Storage, References, Transpositions, Paths, and Reclamation
 
-**Status:** Proposal
+**Status:** Accepted
 
-**Draft version:** 0.1.0
+**Version:** 0.1.0
+
+**Accepted:** 2026-09-03 under #122 ENGINE-CONTRACT-ACCEPTANCE-01.
 
 **Owner:** CUDA-MCGS universal graph/storage semantics
 
@@ -10,11 +12,11 @@
 
 **Consumers:** search policy, evaluator, finite-resource, device-progress, result/observation and Search Session contracts; Search IR; Search Composer; domain/product adapters; deterministic reference and native conformance
 
-This proposal defines the backend-neutral graph/storage brick that owns graph objects, typed references, transposition publication, active paths, storage incarnations and safe reclamation. It stores domain/policy/evaluator/output-owned values through declared layouts without interpreting their meaning and does not select a table, arena, allocator, scheduler, CUDA primitive or native implementation.
+This specification defines the backend-neutral graph/storage brick that owns graph objects, typed references, transposition publication, active paths, storage incarnations and safe reclamation. It stores domain/policy/evaluator/output-owned values through declared layouts without interpreting their meaning and does not select a table, arena, allocator, scheduler, CUDA primitive or native implementation.
 
 ## 1. Authority, identity, and applicability
 
-Specification identity is `CUDA-MCGS-SPEC-0010@0.1.0-draft`.
+Specification identity is `CUDA-MCGS-SPEC-0010@0.1.0`.
 
 This specification applies when a finite CUDA-MCGS engine materializes or retains searched states, parent-local transitions, active paths or transposition identity. A profile that deliberately materializes no reusable graph still selects the zero/minimal applicable graph profile and proves that all inapplicable storage disappears without weakening reference/publication/resource obligations for retained work.
 
@@ -27,11 +29,11 @@ Normative dependencies are:
 - [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) for JavaScript/restricted Device-JS production ownership and CUDA-JS capability escalation;
 - accepted [`SPEC-0001`](SPEC-0001-device-search-publication-and-resources.md) for publication, state-node/parent-edge ownership, identity-before-cycle ordering, finite-resource and stop foundations;
 - accepted [`SPEC-0002`](SPEC-0002-search-ir-and-reference-semantics.md) for foundational normalized Search IR/reference meaning within its current scope; and
-- proposal [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md) for domain state/action identity, relevant history, roles, transitions and terminal outcomes.
+- accepted [`SPEC-0007`](SPEC-0007-domain-state-action-and-transition.md) for domain state/action identity, relevant history, roles, transitions and terminal outcomes.
 
-Proposal [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) and retained SESSION-001 results are informative adjacency for advance/reroot authority, reclamation and stale-reference evidence. Implementations, experiments and products remain evidence beneath this proposal.
+Accepted [`SPEC-0006`](SPEC-0006-search-session-control-and-observation.md) and retained SESSION-001 results are informative adjacency for advance/reroot authority, reclamation and stale-reference evidence. Implementations, experiments and products remain evidence beneath this proposal.
 
-Accepted authority governs conflicts. This proposal does not supersede another specification and is not production implementation authority.
+Accepted authority governs conflicts. This specification does not supersede another specification and is not production implementation authority.
 
 ## 2. Purpose, reading map, and required outcome
 
@@ -428,9 +430,9 @@ These examples do not select a hash table, arena, reclamation algorithm, width, 
 
 ## 20. Acceptance blockers and downstream invalidation
 
-This proposal is decision-complete only when review finds no unresolved owner, reference, identity/publication, edge/path, range, concurrency, pressure, reclamation, compatibility, security, persistence or cleanup ambiguity.
+Acceptance review under #122 found no unresolved owner, reference, identity/publication, edge/path, range, concurrency, pressure, reclamation, compatibility, security, persistence or cleanup ambiguity.
 
-Acceptance remains blocked until:
+Acceptance under #122 required:
 
 1. normalized Search IR/schema represents every GRAPH-IR obligation and rejects semantic ambiguity;
 2. the deterministic reference executes the required fixtures/cases and generation oracle-sensitivity mutation;
@@ -444,3 +446,6 @@ Production graph lowering or mechanism selection remains prohibited until that a
 A change to graph ownership, reference/incarnation/generation, identity verification, object lifecycle, edge/path meaning, transposition scope, owner-region layout, capacity/pressure, reclamation/protection, compatibility or oracle invalidates affected domain/policy/evaluator/output/resource/progress/session contracts, Search IR/schema/normalizers, reference/native evidence, generated packages, persisted graphs/caches and review approvals. The ENGINE-CONTRACT-01 integration spine records and reconciles invalidation before dependents continue.
 
 Implementation, test, review, persistence, security, generated/JIT/ABI, performance and cleanup work triggers the specialist doctrine routed from root `AGENTS.md` and `agent_files/AGENTS.md`.
+
+
+> **#122 acceptance record (2026-09-03):** The semantic/reference conditions in this specification were discharged by the exact #36 CUDA-free packet at `0cd3dafdbfa683048b0a0f39de21a671fd9ef841`, the #193 CUDA-JS ownership-boundary audit, and the atomic #122 acceptance review. Any clause that explicitly requires native compatible-pair, physical memory-ordering/concurrency, performance, platform-support, or downstream product evidence remains a separate deferred qualification gate and is not claimed by semantic acceptance.

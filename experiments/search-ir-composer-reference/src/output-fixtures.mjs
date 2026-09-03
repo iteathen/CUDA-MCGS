@@ -266,7 +266,7 @@ function buildProfile(profile, inspected, resourceResult, progressResult, option
   return {
     schema: 'cuda-mcgs.output-profile/0.2.0',
     representation: 'cuda-mcgs.search-ir/0.2.0',
-    status: 'proposal-evidence',
+    status: 'accepted',
     contract: catalogContract(inspected, 'SPEC-0013'),
     id: `output.${profile}`,
     version: VERSION,

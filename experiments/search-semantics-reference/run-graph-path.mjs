@@ -63,7 +63,7 @@ const classification = requirementCoverage.classifications.find((entry) =>
   entry.contract === 'SPEC-0010'
   && entry.requirementPrefix === 'GRAPH-PATH-'
   && entry.primaryDisposition === 'engine-reference-oracle'
-  && entry.plannedEvidenceOwner === 'ENGINE-REFERENCE-01'
+  && entry.evidenceOwner === 'ENGINE-REFERENCE-01'
   && entry.supportingDispositions.includes('semantic-normalizer'));
 assert(classification, 'GRAPH-PATH- requirement classification is missing');
 assert.equal(classification.requirementCount, 8);

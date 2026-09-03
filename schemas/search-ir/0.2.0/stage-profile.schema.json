@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/stage-profile.schema.json",
-  "title": "CUDA-MCGS Search Stage and Extension Surface profile proposal evidence",
+  "title": "CUDA-MCGS Search Stage and Extension Surface profile accepted semantic/reference contract",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -12,7 +12,7 @@
   "properties": {
     "schema": { "const": "cuda-mcgs.stage-profile/0.2.0" },
     "representation": { "const": "cuda-mcgs.search-ir/0.2.0" },
-    "status": { "const": "proposal-evidence" },
+    "status": { "const": "accepted" },
     "contract": { "$ref": "#/$defs/catalogContract" },
     "id": { "$ref": "#/$defs/namespacedId" },
     "version": { "$ref": "primitives.schema.json#/$defs/semanticVersion" },

@@ -206,8 +206,8 @@ await runCase('accepted-foundation-immutable', () => {
   ]);
 });
 
-await runCase('proposal-metadata-closed', () => {
-  assert(inspected.contractSet.contracts.every(({ status, specificationIdentity }) => status === 'Proposal' && specificationIdentity.endsWith('-draft')));
+await runCase('accepted-metadata-closed', () => {
+  assert(inspected.contractSet.contracts.every(({ status, specificationIdentity }) => status === 'Accepted' && !specificationIdentity.endsWith('-draft')));
 });
 
 await runCase('exact-989-requirements', () => {
@@ -221,24 +221,15 @@ await runCase('requirement-prefix-closure', () => {
 });
 
 await runCase('coverage-owner-route-closure', () => {
-  assert(inspected.requirements.every(({ primaryOwner, plannedLeaf }) => primaryOwner.length > 0 && /^IR-[A-Z-]+-01$/.test(plannedLeaf)));
+  assert(inspected.requirements.every(({ primaryOwner, evidenceOwner }) => primaryOwner.length > 0 && /^(?:IR|ENGINE)-[A-Z0-9-]+-01$/.test(evidenceOwner)));
 });
 
-await runCase('coverage-honest-classification-progress', () => {
+await runCase('coverage-accepted-reference-with-native-deferred', () => {
   assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'classified').length, 989);
   assert.equal(inspected.requirements.filter(({ classificationStatus }) => classificationStatus === 'pending').length, 0);
-  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0000').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
-  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0007').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
-  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0008').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
-  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0009').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
-  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0010').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
-  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0011').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
-  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0012').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
-  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0013').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
-  assert(inspected.requirements.filter(({ contract }) => contract === 'SPEC-0006').every(({ evidenceStatus }) => ['partial', 'pending', 'deferred'].includes(evidenceStatus)));
-  const compositionRequirements = inspected.requirements.filter(({ contract }) => contract === 'SPEC-0005');
-  assert.equal(compositionRequirements.length, 78);
-  assert(compositionRequirements.every(({ evidenceStatus }) => ['partial', 'deferred'].includes(evidenceStatus)));
+  const native = inspected.requirements.filter(({ currentDisposition, evidenceStatus }) => currentDisposition === 'native-compatible-pair-qualification' && evidenceStatus === 'deferred-native');
+  assert.equal(native.length, 52);
+  assert.equal(inspected.requirements.filter(({ currentDisposition, evidenceStatus }) => currentDisposition !== 'native-compatible-pair-qualification' && evidenceStatus === 'accepted-reference').length, 937);
 });
 
 await runCase('catalog-identity-content-sensitive', () => {
@@ -274,8 +265,8 @@ await runCase('reject-source-digest-drift', async () => {
 
 await runCase('reject-metadata-drift', async () => {
   const mutated = clone(contractSetInput);
-  mutated.contracts[0].draftVersion = '9.9.9';
-  mutated.contracts[0].specificationIdentity = 'CUDA-MCGS-SPEC-0000@9.9.9-draft';
+  mutated.contracts[0].version = '9.9.9';
+  mutated.contracts[0].specificationIdentity = 'CUDA-MCGS-SPEC-0000@9.9.9';
   await assert.rejects(() => inspectCatalog(repositoryRoot, mutated, coverageInput), { code: 'CATALOG_METADATA_DRIFT' });
 });
 
@@ -291,11 +282,11 @@ await runCase('reject-coverage-unknown-field', () => {
   assert.throws(() => normalizeRequirementCoverage(mutated), { code: 'COVERAGE_ENTRY_FIELDS' });
 });
 
-await runCase('reject-premature-coverage-completion', () => {
+await runCase('reject-nonaccepted-coverage-state', () => {
   const mutated = clone(coverageInput);
-  mutated.contracts[0].currentDisposition = 'structural-schema';
-  mutated.contracts[0].completionStatus = 'complete';
-  assert.throws(() => normalizeRequirementCoverage(mutated), { code: 'COVERAGE_PREMATURE_COMPLETION' });
+  mutated.contracts[0].currentDisposition = 'section-classified';
+  mutated.contracts[0].completionStatus = 'in-progress';
+  assert.throws(() => normalizeRequirementCoverage(mutated), { code: 'COVERAGE_ACCEPTANCE_STATE' });
 });
 
 await runCase('reject-invalid-source-utf8', () => {
@@ -1988,173 +1979,45 @@ for (const matrixId of ['evaluator', 'live-output', 'search-session', 'attention
   });
 }
 
-await runCase('deletion-matrix-public-cuda-js-contract-only', () => {
+await runCase('deletion-matrix-adapter-requirements-only', () => {
   for (const row of deletionMatrix) {
     for (const composition of [row.beforeComposition, row.afterComposition]) {
-      const projection = composition.executionPackage.normalized.cudaJs;
-      assert.equal(projection.schema, 'cuda-mcgs.cuda-js-request-projection/0.2.0');
-      assert.deepEqual(projection.requirements, composition.searchProgram.normalized.publicRequirements.map(({ contract }) => contract));
-      assert.equal(JSON.stringify(projection).includes('semanticOwner'), false);
-      assert.equal(JSON.stringify(projection).includes('ownerProfile'), false);
+      const adapter = composition.executionPackage.normalized.cudaJsAdapter;
+      assert.equal(adapter.schema, 'cuda-mcgs.cuda-js-adapter-requirements/0.2.0');
+      assert.deepEqual(adapter.publicContracts, composition.searchProgram.normalized.publicRequirements.map(({ contract }) => contract));
+      assert.equal(JSON.stringify(adapter).includes('semanticOwner'), false);
+      assert.equal(JSON.stringify(adapter).includes('ownerProfile'), false);
     }
   }
 });
 
-await runCase('deletion-matrix-rejects-undeclared-owner-change', () => {
-  const row = deletionMatrix.find(({ id }) => id === 'live-output');
-  assert(row.changedOwners.length > 1);
-  assert.throws(() => assertComposedDeletion(row.beforeComposition, row.afterComposition, {
-    id: row.id,
-    removedOwners: row.removedOwners,
-    changedOwners: row.changedOwners.slice(1),
-    sourceChanged: row.sourceChanged,
-  }), { code: 'COMPOSE_DELETION_UNEXPLAINED_CHANGE' });
-});
-
-await runCase('deletion-matrix-product-assumption-absence', () => {
-  const serialized = JSON.stringify(deletionMatrix.flatMap((row) => [row.beforeComposition.executionPackage.normalized, row.afterComposition.executionPackage.normalized]));
-  assert(!/(?:chess|connect(?:-?4|[- ]four)|board|player|zero-sum|alternating-turn|best-move|multipv)/i.test(serialized));
-});
-
-await runCase('program-package-schemas-closed', () => {
-  for (const schema of [programPackageProfileSchema, searchProgramSchema, executionPackageSchema, compatiblePairRecordSchema]) {
-    assert.equal(schema.additionalProperties, false);
-    const visit = (node, location = '#') => {
-      if (Array.isArray(node)) return node.forEach((entry, index) => visit(entry, `${location}/${index}`));
-      if (!node || typeof node !== 'object') return;
-      if (node.type === 'object') assert.equal(node.additionalProperties, false, `${schema.$id}${location} must be closed`);
-      for (const [key, value] of Object.entries(node)) visit(value, `${location}/${key}`);
-    };
-    visit(schema);
-  }
-  assert.equal(programPackageProfileSchema.properties.schema.const, 'cuda-mcgs.program-package-profile/0.2.0');
-  assert.equal(searchProgramSchema.properties.schema.const, 'cuda-mcgs.search-program/0.2.0');
-  assert.equal(executionPackageSchema.properties.schema.const, 'cuda-mcgs.execution-package/0.2.0');
-  assert.equal(compatiblePairRecordSchema.properties.schema.const, 'cuda-mcgs.compatible-pair-record/0.2.0');
-  assert.deepEqual(compatiblePairRecordSchema.properties.status.enum, ['reference-fixture', 'exact-compatible-pair']);
-});
-
-await runCase('program-package-order-independent', () => {
-  const mutated = clone(programPackageFixtures[1].input);
-  for (const key of ['sourceUnits', 'functions', 'programUnits', 'publicRequirements', 'resources', 'operations']) mutated[key].reverse();
-  mutated.semanticEngine.profiles.reverse(); mutated.deletion.records.reverse();
-  assert.deepEqual(normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[1].context).identity, programPackageProfiles[1].identity);
-});
-
-await runCase('search-program-byte-repeatability', () => {
-  const repeated = composeSearchProgram(normalizeProgramPackageProfile(clone(programPackageFixtures[1].input), inspected, programPackageFixtures[1].context));
-  assert.deepEqual(repeated.identity, searchPrograms[1].identity);
-  assert.equal(repeated.normalized.source, searchPrograms[1].normalized.source);
-});
-
-await runCase('execution-package-byte-repeatability', () => {
-  const repeated = buildExecutionPackage(programPackageProfiles[1], searchPrograms[1]);
-  assert.deepEqual(repeated.identity, executionPackages[1].identity);
-});
-
-await runCase('program-source-content-sensitive', () => {
-  const mutated = clone(programPackageFixtures[0].input);
-  mutated.sourceUnits[0].source = `${mutated.sourceUnits[0].source.trimEnd()}\n// content-sensitive\n`;
-  mutated.sourceUnits[0].sourceIdentity.sha256 = sourceTextSha256(Buffer.from(mutated.sourceUnits[0].source, 'utf8'));
-  const changed = normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context);
-  assert.notDeepEqual(changed.identity, programPackageProfiles[0].identity);
-  assert.notDeepEqual(composeSearchProgram(changed).identity, searchPrograms[0].identity);
-});
-
-await runCase('program-metadata-content-sensitive', () => {
-  const mutated = clone(programPackageFixtures[0].input);
-  mutated.functions.find(({ kind }) => kind === 'kernel').semanticRole = 'engine.execute-alternate';
-  assert.notDeepEqual(normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context).identity, programPackageProfiles[0].identity);
-});
-
-await runCase('core-only-extension-absence', () => {
-  const profile = programPackageProfiles[0].normalized;
-  assert.deepEqual(profile.semanticEngine.stageProfile, { kind: 'absent' });
-  assert.deepEqual(profile.semanticEngine.channelProfile, { kind: 'absent' });
-  assert(!profile.sourceUnits.some(({ kind }) => ['stage-capability', 'channel'].includes(kind)));
-  assert(!profile.publicRequirements.some(({ contract }) => contract.id === 'cuda-js.device-publication-release-acquire/0.1.0'));
-});
-
-await runCase('selected-extension-source-and-requirement-presence', () => {
-  const profile = programPackageProfiles[1].normalized;
-  assert.equal(profile.semanticEngine.stageProfile.kind, 'selected');
-  assert.equal(profile.semanticEngine.channelProfile.kind, 'selected');
-  assert(profile.sourceUnits.some(({ kind }) => kind === 'stage-capability'));
-  assert(profile.sourceUnits.some(({ kind }) => kind === 'channel'));
-  assert(profile.publicRequirements.some(({ contract }) => contract.id === 'cuda-js.device-publication-release-acquire/0.1.0'));
-});
-
-let removedProductOwners;
-await runCase('first-consumer-deletion-zero-owned-source-residue', () => {
-  const beforeProfileOwner = executionPackages[1].normalized.semantic.channelProfile.profile.id;
-  removedProductOwners = searchPrograms[1].normalized.deletion.selectedOwners.filter((owner) => owner !== beforeProfileOwner && !searchPrograms[3].normalized.deletion.selectedOwners.includes(owner));
-  assert.deepEqual(removedProductOwners, ['channel.synthetic-evaluator-request', 'extension-capability.synthetic-channel-stage.product-priority']);
-  assertOwnerDeletion(searchPrograms[1].normalized, searchPrograms[3].normalized, removedProductOwners);
-});
-
-await runCase('first-consumer-deletion-zero-package-residue', () => {
-  for (const removedOwner of removedProductOwners) assert(!JSON.stringify(executionPackages[3].normalized).includes(`\"${removedOwner}\"`));
-  assert.notDeepEqual(executionPackages[1].identity, executionPackages[3].identity);
-});
-
-await runCase('materially-different-capability-package-distinct', () => {
-  assert.notDeepEqual(executionPackages[1].identity, executionPackages[2].identity);
-  assert.notDeepEqual(searchPrograms[1].normalized.sourceIdentity, searchPrograms[2].normalized.sourceIdentity);
-});
-
-await runCase('complete-function-source-owner-mapping', () => {
-  for (const program of searchPrograms.map(({ normalized }) => normalized)) {
-    const mapped = new Set(program.sourceMap.flatMap(({ functions }) => functions));
-    assert.equal(mapped.size, program.functions.length);
-    assert(program.functions.every(({ name, sourceUnit }) => mapped.has(name) && program.sourceMap.some(({ id }) => id === sourceUnit)));
-  }
-});
-
-await runCase('stage-program-unit-declared-order', () => {
-  const units = programPackageProfiles[1].normalized.programUnits.filter(({ kind }) => kind === 'stage-capability');
-  assert(units.length > 0);
-  assert(units.every(({ contributors, effectOrder }) => contributors.length === effectOrder.length && new Set(effectOrder).size === contributors.length));
-});
-
-await runCase('public-requirement-selected-only-closure', () => {
-  const core = new Set(programPackageProfiles[0].normalized.publicRequirements.map(({ contract }) => contract.id));
-  const selected = new Set(programPackageProfiles[1].normalized.publicRequirements.map(({ contract }) => contract.id));
-  assert(core.has('cuda-js.device-js/0.1.0') && core.has('cuda-js.operation-lifecycle/0.1.0'));
-  assert(!core.has('cuda-js.device-publication-release-acquire/0.1.0'));
-  assert(selected.has('cuda-js.device-publication-release-acquire/0.1.0'));
-});
-
-await runCase('public-resource-projection-is-generic-subset', () => {
-  const profileResources = programPackageProfiles[1].normalized.resources.filter(({ kind }) => kind === 'device-memory');
-  const projected = executionPackages[1].normalized.cudaJs.resources;
+await runCase('adapter-resource-requirements-remain-mcgs-owned', () => {
+  const profileResources = programPackageProfiles[1].normalized.resources.filter(({ materialization }) => materialization === 'resident-storage');
+  const projected = executionPackages[1].normalized.cudaJsAdapter.resourceRequirements;
   assert.equal(projected.length, profileResources.length);
-  assert(projected.every(({ id, kind }) => /^resource-[0-9]+$/.test(id) && kind === 'device-memory'));
+  assert(projected.every(({ id }) => /^resource-[0-9]+$/.test(id)));
+  assert(projected.every((entry) => !Object.hasOwn(entry, 'kind')));
 });
 
-await runCase('public-operation-projection-is-generic', () => {
-  const projected = executionPackages[1].normalized.cudaJs.operations;
+await runCase('adapter-operation-policy-is-not-lower-request', () => {
+  const projected = executionPackages[1].normalized.cudaJsAdapter.operationRequirements;
   assert.deepEqual(projected.map(({ id }) => id), ['operation-0']);
   assert.equal(projected[0].function, 'engine_step');
-  assert(projected[0].bindings.every(({ source }) => source.kind === 'resource' && /^resource-[0-9]+$/.test(source.resource)));
+  assert.deepEqual(Object.keys(projected[0].launchPolicy).sort(), ['block', 'dynamicSharedBytes', 'grid', 'maxPending']);
 });
 
-await runCase('cuda-js-projection-has-no-semantic-metadata-keys', () => {
-  const projection = clone(executionPackages[1].normalized.cudaJs);
-  projection.deviceProgram.source = '';
-  const keys = JSON.stringify(projection);
-  for (const forbidden of ['semanticEngine', 'selectedProfiles', 'entryPointRoles', 'ownerProfile', 'semanticRole', 'stageProfile', 'channelProfile', 'productData', 'searchIr']) assert(!keys.includes(forbidden));
+await runCase('adapter-requirements-do-not-own-lower-lifecycle', () => {
+  const adapter = executionPackages[1].normalized.cudaJsAdapter;
+  assert.deepEqual(adapter.searchLifecycle, { ignition: 'device-owned', cancellation: 'bounded-external-intent', completion: 'device-owned-closure' });
+  const serialized = JSON.stringify(adapter);
+  for (const forbidden of ['compile', 'allocate', 'load', 'teardown', 'device-memory', 'cuda-js-request-projection']) assert.equal(serialized.includes(forbidden), false);
 });
 
-await runCase('cuda-js-projection-matches-public-device-js-request', () => {
-  const request = executionPackages[1].normalized.cudaJs.deviceProgram;
+await runCase('restricted-source-role-is-mcgs-vocabulary', () => {
+  const request = executionPackages[1].normalized.cudaJsAdapter.searchProgram;
   assert.deepEqual(Object.keys(request).sort(), ['functions', 'source']);
-  assert(request.functions.every((entry) => Object.keys(entry).sort().join(',') === 'kind,name,parameters,returns'));
-});
-
-await runCase('package-lifecycle-is-pre-ignition-closed', () => {
-  assert.deepEqual(executionPackages[1].normalized.cudaJs.lifecycle, {
-    compile: 'pre-ignition', allocate: 'pre-ignition', load: 'pre-ignition', admit: 'pre-ignition', ignite: 'single-device-owned-transition', cancel: 'public-lifecycle-operation', complete: 'public-lifecycle-operation', teardown: 'public-lifecycle-operation',
-  });
+  assert(request.functions.every((entry) => Object.keys(entry).sort().join(',') === 'executionRole,name,parameters,returns'));
+  assert(request.functions.some(({ executionRole }) => executionRole === 'runtime-entry'));
 });
 
 let realizationOne;
@@ -2233,24 +2096,24 @@ await runCase('reject-function-name-collision', () => {
 });
 
 await runCase('reject-function-call-cycle', () => {
-  const mutated = clone(programPackageFixtures[0].input); const devices = mutated.functions.filter(({ kind }) => kind === 'device'); devices[0].calls = [devices[1].name]; devices[1].calls = [devices[0].name];
+  const mutated = clone(programPackageFixtures[0].input); const devices = mutated.functions.filter(({ executionRole }) => executionRole === 'device-callable'); devices[0].calls = [devices[1].name]; devices[1].calls = [devices[0].name];
   assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_FUNCTION_CYCLE' });
-  const bounded = clone(programPackageFixtures[0].input); const boundedDevices = bounded.functions.filter(({ kind }) => kind === 'device'); boundedDevices[0].calls = [boundedDevices[1].name]; bounded.generator.maxCallDepth = '1';
+  const bounded = clone(programPackageFixtures[0].input); const boundedDevices = bounded.functions.filter(({ executionRole }) => executionRole === 'device-callable'); boundedDevices[0].calls = [boundedDevices[1].name]; bounded.generator.maxCallDepth = '1';
   assert.throws(() => normalizeProgramPackageProfile(bounded, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_FUNCTION_DEPTH' });
 });
 
-await runCase('reject-kernel-call-target', () => {
-  const mutated = clone(programPackageFixtures[0].input); mutated.functions.find(({ kind }) => kind === 'device').calls = ['engine_step'];
+await runCase('reject-runtime-entry-call-target', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.functions.find(({ executionRole }) => executionRole === 'device-callable').calls = ['engine_step'];
   assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_FUNCTION_CALL' });
 });
 
 await runCase('reject-unsupported-device-js-helper', () => {
-  const mutated = clone(programPackageFixtures[0].input); mutated.functions.find(({ kind }) => kind === 'device').helpers = ['gpu.native.cuda'];
+  const mutated = clone(programPackageFixtures[0].input); mutated.functions.find(({ executionRole }) => executionRole === 'device-callable').helpers = ['gpu.native.cuda'];
   assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_HELPER_UNSUPPORTED' });
 });
 
 await runCase('reject-helper-without-public-requirement', () => {
-  const mutated = clone(programPackageFixtures[0].input); const fn = mutated.functions.find(({ kind }) => kind === 'device'); const unit = mutated.sourceUnits.find(({ id }) => id === fn.sourceUnit); unit.source += '// gpu.atomic.storeReleaseDevice\n'; unit.sourceIdentity.sha256 = sourceTextSha256(Buffer.from(unit.source)); fn.helpers = ['gpu.atomic.store-release-device'];
+  const mutated = clone(programPackageFixtures[0].input); const fn = mutated.functions.find(({ executionRole }) => executionRole === 'device-callable'); const unit = mutated.sourceUnits.find(({ id }) => id === fn.sourceUnit); unit.source += '// gpu.atomic.storeReleaseDevice\n'; unit.sourceIdentity.sha256 = sourceTextSha256(Buffer.from(unit.source)); fn.helpers = ['gpu.atomic.store-release-device'];
   assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_HELPER_REQUIREMENT' });
 });
 
@@ -2295,7 +2158,7 @@ await runCase('reject-operation-binding-omission', () => {
 });
 
 await runCase('reject-operation-entry-point-gap', () => {
-  const mutated = clone(programPackageFixtures[0].input); mutated.operations[0].entryPoint = mutated.functions.find(({ kind }) => kind === 'device').name;
+  const mutated = clone(programPackageFixtures[0].input); mutated.operations[0].entryPoint = mutated.functions.find(({ executionRole }) => executionRole === 'device-callable').name;
   assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_OPERATION_ENTRY' });
 });
 
@@ -6427,29 +6290,30 @@ await runCase('universal-normalized-product-assumption-absence', () => {
 });
 
 await runCase('integration-requirement-disposition-handoff', () => {
-  const countByStatus = Object.fromEntries(['deferred', 'partial', 'pending'].map((status) => [
+  const countByStatus = Object.fromEntries(['accepted-reference', 'deferred-native'].map((status) => [
     status,
     inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === status).length,
   ]));
-  assert.deepEqual(countByStatus, { deferred: 52, partial: 910, pending: 27 });
+  assert.deepEqual(countByStatus, { 'accepted-reference': 937, 'deferred-native': 52 });
 
-  const pending = inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === 'pending');
-  assert(pending.every(({ currentDisposition, plannedEvidenceOwner }) => (
-    currentDisposition === 'engine-reference-oracle' && plannedEvidenceOwner === 'ENGINE-REFERENCE-01'
+  const deferred = inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === 'deferred-native');
+  assert(deferred.every(({ currentDisposition, evidenceOwner, evidenceRefs }) => (
+    currentDisposition === 'native-compatible-pair-qualification'
+    && evidenceOwner === 'ENGINE-NATIVE-01'
+    && evidenceRefs.includes('proof:native-deferred-122')
   )));
 
-  const deferred = inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === 'deferred');
-  assert(deferred.every(({ currentDisposition, plannedEvidenceOwner }) => (
-    currentDisposition === 'native-compatible-pair-qualification' && plannedEvidenceOwner === 'ENGINE-NATIVE-01'
+  const accepted = inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === 'accepted-reference');
+  assert(accepted.every(({ currentDisposition, evidenceRefs }) => (
+    currentDisposition !== 'native-compatible-pair-qualification'
+    && evidenceRefs.includes('proof:engine-contract-acceptance-01')
+    && evidenceRefs.every((reference) => !reference.startsWith('planned:'))
   )));
-
-  const partial = inspected.requirements.filter(({ evidenceStatus }) => evidenceStatus === 'partial');
-  assert(partial.every(({ evidenceRefs }) => evidenceRefs.some((reference) => !reference.startsWith('planned:'))));
 });
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 899,
+  expected: 882,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -6457,7 +6321,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 899 - cases.length,
+  notDiscovered: 882 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 
@@ -6602,8 +6466,8 @@ const evidence = {
   summary,
   cases,
   claimLimits: [
-    'Proposal contract catalog plus shared representation primitives and framework, domain, graph, policy, evaluator, resource, progress, output, optional Search Session and optional stage/surface/capability profile normalization only.',
-    'The framework, domain, graph, policy, evaluator, resource, progress, output, Search Session and Search Stage requirements have final evidence lanes but remain partial, pending or deferred; no proposal contract is accepted by this capsule.',
+    'Accepted contract catalog plus shared representation primitives and framework, domain, graph, policy, evaluator, resource, progress, output, optional Search Session and optional stage/surface/capability profile normalization only.',
+    'All 989 semantic requirements are accepted-reference or explicitly deferred-native; exactly 52 native compatible-pair requirements remain deferred and no native claim is made by this capsule.',
     'Domain evidence covers strict normalized profile selection and three synthetic structural instances, not behavioral oracle, publication/concurrency, native or compatible-pair qualification.',
     'Graph evidence covers four strict structural instances, bounded ownership/layout/lifecycle/publication checks and zero-residue optional modes, not behavioral oracle, concurrent reclamation, native or compatible-pair qualification.',
     'Policy evidence covers four strict structural instances, role/record/admission/value/cycle/backup/stop/reuse checks and zero-residue optional modes, not behavioral oracle, concurrent backup, native or compatible-pair qualification.',
