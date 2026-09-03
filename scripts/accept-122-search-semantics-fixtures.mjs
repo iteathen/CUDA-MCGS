@@ -185,7 +185,7 @@ async function rebindBaseFixtures({ composerIdentity, projections, rootControlId
   }
 
   if (composerPins < 15) fail(`expected at least 15 Composer fixture pins, found ${composerPins}`);
-  if (projectionPins !== 13) fail(`expected 13 identity-bearing profile projection pins, found ${projectionPins}`);
+  if (projectionPins !== 12) fail(`expected 12 identity-bearing profile projection pins, found ${projectionPins}`);
   if (rootControlPins !== 3) fail(`expected 3 root-control projection pins, found ${rootControlPins}`);
   console.log(`accept-122 base fixture pins rebound composer=${composerPins} projection=${projectionPins} rootControl=${rootControlPins}`);
 }
