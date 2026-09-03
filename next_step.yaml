@@ -1,9 +1,9 @@
 {
-  "schema_version": 101,
+  "schema_version": 102,
   "updated": "2026-09-02",
-  "status": "ref_stage_01_review_complete_pending_final_tracker_head_qualification_and_owner_authorization",
-  "objective": "Qualify the final tracker-only REF-STAGE-01 head, then stop for fresh repository-owner exact-head authorization. Do not integrate Stage or start Channel before authorization and guarded readback.",
-  "ownership_boundary": "Stage owns per-work-item stable checkpoint invocation and declared local outcome semantics only. Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session and Framework remain separate semantic owners. CUDA-JS owns Device-JS validation/lowering, PTX/cubin/LTO/native artifacts, linking/loading and generic runtime mechanisms; downstream products own product meaning.",
+  "status": "ref_channel_evidence_01_pr_qualification_review_and_authorization_gate",
+  "objective": "Qualify and review the final PR #191 REF-CHANNEL-EVIDENCE-01 head against exact experimental base ce21cc38..., then stop for fresh repository-owner exact-head authorization if required. Do not merge a newly produced head merely because construction was authorized to continue.",
+  "ownership_boundary": "SPEC-0004 owns optional internal Channel item/publication/ownership-transfer meaning through the existing Composer-owned schema, normalizer and bounded logical oracle. SPEC-0011 owns aggregate finite resources and pressure; SPEC-0012 owns global readiness/progress/fairness/no-progress/closure. CUDA-JS owns generic native publication/synchronization/runtime lowering and exact compatible-pair qualification. No second Channel interpreter, scheduler, native path or product semantics are authorized.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
@@ -13,80 +13,93 @@
     "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
     "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
     "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
-    "docs/specs/SPEC-0003-search-stage-and-extension-surface.md",
-    "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
-    "experiments/search-ir-composer-reference/src/stage.mjs",
-    "experiments/search-ir-composer-reference/src/stage-fixtures.mjs",
-    "https://github.com/iteathen/CUDA-MCGS/issues/30",
-    "https://github.com/iteathen/CUDA-MCGS/pull/190"
+    "docs/development/2026-09-02-ref-channel-evidence-01-assessment-and-plan.md",
+    "docs/specs/SPEC-0004-async-stage-channels.md",
+    "experiments/search-ir-composer-reference/src/channel.mjs",
+    "experiments/search-ir-composer-reference/src/channel-fixtures.mjs",
+    "https://github.com/iteathen/CUDA-MCGS/issues/33",
+    "https://github.com/iteathen/CUDA-MCGS/pull/191"
   ],
   "state": {
     "protected_authority": "main@3ecac11e3576bd063760bc9572f79bea78acd031",
-    "integrated_candidate_portfolio": "experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a",
-    "active_issue": 30,
-    "active_branch": "ref/stage-01",
-    "review_pr": 190,
-    "exact_stage_base": "f79845b3d45eb1e3b39d7be6128776a56cb4f54a",
-    "qualified_semantic_head": "9ae16e7360226e35a69a1436a1f773dada592c95",
-    "qualified_semantic_tree": "2f979d5d53b4e2aca60b8952315ae72753c545c1",
-    "documentation_review_checkpoint": "385594ab40feeb31bea933ceed0155b9a091e996"
+    "integrated_candidate_portfolio": "experimental/portfolio@ce21cc382bedb28647c244df1c53bf0d6c98cff0",
+    "integrated_candidate_tree": "8409e51a2df117f06f471833966517a9472fb388",
+    "active_issue": 33,
+    "active_branch": "ref/channel-evidence-01",
+    "review_pr": 191,
+    "exact_channel_base": "ce21cc382bedb28647c244df1c53bf0d6c98cff0",
+    "clean_construction_qualification_head": "006cdc99f46fc7f1c952761ec082a6bf3ba2f624"
   },
-  "pr_qualification": {
-    "stage_workflow": 33696784971,
-    "session_workflow": 33696784953,
-    "terminal_workflow": 33696784966,
-    "framework_workflow": 33696784943,
-    "documentation_workflow": 33696784987,
-    "stage_cases": "10/10",
-    "direct_spec_0003_routes": "8/8",
-    "stage_projection": "919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28",
-    "stage_evidence": "7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea",
-    "stage_canonical_bytes": 9395,
-    "artifact": 9872056402,
-    "artifact_digest": "sha256:4d7334fdd4aa6806762b01040e7eb75143a0c955542b6eacc3891b381e2f80a4"
+  "direct_engine_reference_routes": {
+    "total": 41,
+    "families": {
+      "CHANNEL-ITEM-": 10,
+      "CHANNEL-PRODUCER-": 7,
+      "CHANNEL-CONSUMER-": 7,
+      "CHANNEL-PUBLISH-": 7,
+      "CHANNEL-CANCEL-": 7,
+      "CHANNEL-CONFORMANCE-": 3
+    },
+    "implementation": "Reuse the Composer-owned Channel oracle. The route manifest/evidence adapter may bind cases and identities but must not copy the Channel state machine into search-semantics-reference."
   },
-  "review": {
-    "whole_diff": "complete-no-blocker",
-    "changed_files": 16,
-    "semantic_tail": "all Stage semantic/test/projection/workflow sources are frozen at 9ae16e73...; later branch changes are current-state documents only",
-    "ownership": "no duplicate Stage normalizer, Resource/Progress authority, CUDA-JS lowering/runtime authority, native code or product meaning introduced"
+  "demonstrated_correction": {
+    "finding": "Cancellation on an already terminal Channel item could overwrite an authoritative failure/stop disposition with cancelled.",
+    "governing_requirement": "CHANNEL-CANCEL-002 plus normalized terminally-disposed ignore-authoritative-terminal rule",
+    "repair": "Cancellation on terminally-disposed is idempotent no-effect and preserves the existing first cause.",
+    "permanent_falsifier": "channel-reference-cancel-preserves-authoritative-first-cause",
+    "additional_sensitivity": "channel-reference-escape-service-while-pending"
   },
   "preserved_red_evidence": [
-    {"finding":"pending Stage outcome retained worker, mutable lease or reservation","head":"2a12ca82dd9e99981dc3ed52623ea46d12930819","workflow":33695493706,"artifact":9871610435},
-    {"finding":"declared non-pending release contract not enforced and undeclared owner facts accepted","head":"4ebfd3f0802f1cb746aaad986ce97cd92c04bc57","workflow":33696328927,"artifact":9871897062}
+    {
+      "head": "8526b990c4940012e623c07a107c466c7c86e8d8",
+      "workflow": 33699198942,
+      "finding": "All 883 Composer cases individually passed, then exact discovery failed because the declared expected count remained 881.",
+      "disposition": "Discovery bookkeeping corrected to 883 without weakening discovery or skip assertions."
+    }
   ],
-  "diagnostic_history": [
-    {"head":"1a1e21c18f78119df5ec70da3ebf518b77dbd927","workflow":33696000529,"disposition":"test-selection assumptions used canonical stage-array indices instead of normalized entryStage/checkpoint identity; harness-only correction, not a conformance red"}
-  ],
-  "deliverables": [
-    "Composer-owned Stage profile projection/export bound to exact existing normalized Stage identities.",
-    "Owner-local Stage behavioral oracle, case support, case bank and runner under experiments/search-semantics-reference.",
-    "Permanent Stage CI self-gate and evidence artifact.",
-    "10-case Stage behavioral reference covering all 8 direct SPEC-0003 ENGINE-REFERENCE obligations.",
-    "Materially different legal schedule proof, first-product deletion, whole-substrate absence, mutation sensitivity and portable/native claim limits.",
-    "Preserved red-before-green evidence for pending ownership release and review-discovered release/owner-fact closure defects."
-  ],
-  "validation": [
-    "The final tracker-only head may differ from documentation review checkpoint 385594ab... only in STATUS.md, next_step.yaml and experiments/search-semantics-reference/README.md and RESULTS.md.",
-    "The final tracker-only head must pass Stage, Session, Terminal, Framework and full repository/documentation workflows on one exact head.",
-    "Stage must remain 10/10 with all 8 direct SPEC-0003 routes and no skips.",
-    "Fresh whole-diff author review is complete at 385594ab...; any semantic/test/workflow change after that invalidates review and requires another full review.",
-    "Any material base change invalidates review/authorization and requires requalification."
+  "construction_qualification": {
+    "head": "006cdc99f46fc7f1c952761ec082a6bf3ba2f624",
+    "channel_workflow": 33699406167,
+    "composer_cases": "883/883",
+    "direct_spec_0004_routes": "41/41",
+    "route_families": 6,
+    "bound_owner_cases": 33,
+    "composer_evidence": "2bb62db23d7fb3841c8ca3d6a39d6d8519c6ee07513fc7afa1463630bcee9c26",
+    "channel_evidence": "f6adb5f99ac397b9f09951c6ef13b0aa15846c37c5ae17d3e67213d9d8e9fb12",
+    "channel_canonical_bytes": 9357,
+    "artifact": 9872951636,
+    "artifact_digest": "sha256:dd9c4fd33fd594a2708f1fef94eb091caf11aa95191f2fcb69d152877e79dbbf",
+    "skip_classes": 0,
+    "not_discovered": 0
+  },
+  "cleanup": {
+    "temporary_construction_workflow": "removed",
+    "temporary_patch_script": "removed",
+    "generated_build_evidence": "ignored and uncommitted",
+    "native_or_private_runtime_residue": "none authorized or introduced"
+  },
+  "final_qualification": [
+    "Use PR #191 against exact base experimental/portfolio@ce21cc382bedb28647c244df1c53bf0d6c98cff0 so existing pull_request triggers run Channel, Stage, Session, Terminal, Framework and full documentation/repository qualification on the same final head.",
+    "Require Composer exact discovery 883/883 with zero failures/skips/not-discovered and Channel direct routes 41/41.",
+    "Require the Channel artifact on the final exact head and record its evidence identity/digest on PR #191 and issue #33.",
+    "Perform fresh full base-to-head author review for duplicate authority, ownership leakage, first-consumer assumptions, concurrency gaps, stale identity/provenance, resource/cleanup holes, native escape and CI gaps.",
+    "Verify temporary construction files are absent and protected main is unchanged."
   ],
   "blockers": [],
   "current_gate": [
-    "Qualify this final tracker-only head with Stage, Session, Terminal, Framework and full repository/documentation workflows.",
-    "Verify the final tracker-only tail changed no Stage semantic/test/projection/workflow source.",
-    "Update PR #190 and issue/current-state surfaces to the exact final head.",
-    "Stop for fresh repository-owner authorization of that exact reviewed head/base."
+    "Let PR #191 coupled workflows qualify this reconciled candidate head.",
+    "Repair only demonstrated failures in their natural owner; do not weaken valid tests.",
+    "Complete fresh whole-diff author review after the final head is stable.",
+    "Record the exact final reviewed/qualified head, tree, run IDs and artifact on PR #191 and issue #33 without another repository commit solely for copying CI metadata.",
+    "Stop before integration for fresh repository-owner exact-head authorization if the project gate remains applicable."
   ],
   "do_not": [
-    "Do not create a second Stage schema/normalizer, scheduler, workflow DSL or runtime extension registry.",
-    "Do not let Stage own Resource admission/accounting or Progress global scheduling/fairness.",
-    "Do not accept undeclared owner facts or outcomes that contradict normalized release semantics.",
-    "Do not add CUDA-MCGS PTX/native lowering or private CUDA-JS access.",
-    "Do not count the canonical-index harness failure as a conformance red.",
-    "Do not start #33 or integrate #30 before exact-head owner authorization and guarded readback."
+    "Do not create a second Channel schema/normalizer/reference interpreter.",
+    "Do not let Channel absorb SPEC-0011 resource authority or SPEC-0012 global progress authority.",
+    "Do not add CUDA-MCGS native/PTX/CUDA code, private CUDA-JS access or a host-owned progression loop.",
+    "Do not reinterpret the 881-versus-883 discovery red as a semantic failure or weaken exact case discovery.",
+    "Do not claim native Channel support, physical GPU evidence, performance or exact compatible-pair qualification from CUDA-free reference evidence.",
+    "Do not merge PR #191 without fresh exact-head authorization when that gate applies."
   ],
-  "next_after_authorized_integration": "#33 REF-CHANNEL-EVIDENCE-01, then #36 REF-INTEGRATE-01 and #122 protected atomic semantic acceptance."
+  "next_after_authorized_integration": "#36 REF-INTEGRATE-01, then #122 protected atomic semantic acceptance."
 }
