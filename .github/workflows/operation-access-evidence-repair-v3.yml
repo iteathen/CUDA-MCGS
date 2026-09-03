@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   repair:
+    if: github.repository == 'iteathen/CUDA-MCGS' && github.ref == 'refs/heads/impl/199-operation-local-access-projection'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -21,196 +22,42 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Rebind dependency-ordered evidence including literal pins
+      - name: Rerun proven v3 repair with corrected postcondition
         shell: bash
         run: |
           node --input-type=module <<'NODE'
-          import { readdirSync, readFileSync, writeFileSync, statSync, unlinkSync } from 'node:fs';
+          import { existsSync, unlinkSync } from 'node:fs';
           import { spawnSync } from 'node:child_process';
-          import path from 'node:path';
 
-          const root = process.cwd();
-          const fixtureDir = path.join(root, 'experiments/search-semantics-reference/fixtures');
-          const composerBuild = path.join(root, 'experiments/search-ir-composer-reference/build');
-          const gatePath = path.join(root, 'experiments/search-semantics-reference/run-integration-gate.mjs');
-          const helperPaths = [
-            path.join(root, '.github/workflows/operation-access-evidence-scan.yml'),
-            path.join(root, '.github/workflows/operation-access-evidence-repair-v2.yml'),
-            path.join(root, '.github/workflows/operation-access-evidence-repair-v3.yml'),
-          ];
+          const workflowPath = '.github/workflows/operation-access-evidence-repair-v3.yml';
+          const prior = spawnSync('git', ['show', `HEAD^:${workflowPath}`], { encoding: 'utf8' });
+          if (prior.status !== 0) throw new Error(`cannot read prior v3 workflow: ${prior.stderr}`);
+          const workflow = prior.stdout;
+          const startMarker = "          node --input-type=module <<'NODE'\n";
+          const endMarker = "\n          NODE\n      - name: Full local qualification";
+          const start = workflow.indexOf(startMarker);
+          const end = workflow.indexOf(endMarker, start + startMarker.length);
+          if (start < 0 || end < 0) throw new Error('cannot extract prior v3 repair script');
+          let script = workflow.slice(start + startMarker.length, end).split('\n').map((line) => line.startsWith('          ') ? line.slice(10) : line).join('\n');
 
-          const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
-          const writeJson = (p, v) => writeFileSync(p, `${JSON.stringify(v, null, 2)}\n`);
-          const run = (p) => {
-            console.log(`evidence_step=${p}`);
-            const result = spawnSync(process.execPath, [path.join(root, p)], { cwd: root, stdio: 'inherit', env: process.env });
-            if (result.error) throw result.error;
-            if (result.status !== 0) throw new Error(`${p} failed with ${result.status}`);
-          };
-          const identityOf = (id, evidence) => id === 'composer'
-            ? evidence.representationCompositionEvidenceKey
-            : (id === 'search-ir' ? evidence.searchIrIdentity : evidence.evidenceIdentity);
+          const pattern = /for \(const \[id, prior\] of Object\.entries\(old\)\) \{\n  const stale = \[\.\.\.fixturePaths, gatePath\]\.filter\(\(p\) => readFileSync\(p, 'utf8'\)\.includes\(prior\.sha256\)\);\n  if \(stale\.length\) throw new Error\(`stale \$\{id\} anchors remain: \$\{stale\.join\(','\)\}`\);\n\}/;
+          const replacement = [
+            "for (const [id, prior] of Object.entries(old)) {",
+            "  const next = current[id];",
+            "  if (!next) throw new Error(`missing regenerated identity ${id}`);",
+            "  if (prior.sha256 === next.sha256 && prior.byteLength === next.byteLength) continue;",
+            "  const stale = [...fixturePaths, gatePath].filter((p) => readFileSync(p, 'utf8').includes(prior.sha256));",
+            "  if (stale.length) throw new Error(`stale ${id} anchors remain: ${stale.join(',')}`);",
+            "}",
+          ].join('\n');
+          if (!pattern.test(script)) throw new Error('prior v3 stale-check seam not found');
+          script = script.replace(pattern, replacement);
 
-          const gateText = readFileSync(gatePath, 'utf8');
-          const marker = 'const frozenEvidenceIdentities = ';
-          const endMarker = ';\n\nconst requiredComposerWitnesses';
-          const start = gateText.indexOf(marker);
-          const end = gateText.indexOf(endMarker, start + marker.length);
-          if (start < 0 || end < 0) throw new Error('frozen evidence block not found');
-          const frozenBlock = gateText.slice(start + marker.length, end);
-          const old = {};
-          const identityPattern = /"([^"]+)"\s*:\s*\{\s*"algorithm"\s*:\s*"sha256"\s*,\s*"byteLength"\s*:\s*(\d+)\s*,\s*"sha256"\s*:\s*"([0-9a-f]{64})"\s*\}/g;
-          for (const match of frozenBlock.matchAll(identityPattern)) {
-            old[match[1]] = { algorithm: 'sha256', byteLength: Number(match[2]), sha256: match[3] };
-          }
-          if (Object.keys(old).length !== 21) throw new Error(`expected 21 frozen identities, found ${Object.keys(old).length}`);
-
-          const fixturePaths = readdirSync(fixtureDir).filter((name) => name.endsWith('.json')).sort().map((name) => path.join(fixtureDir, name));
-          const fixtures = new Map(fixturePaths.map((p) => [p, readJson(p)]));
-          const flush = () => { for (const [p, value] of fixtures) writeJson(p, value); };
-          const sameIdentity = (value, identity) => value && typeof value === 'object' && !Array.isArray(value)
-            && value.algorithm === identity.algorithm && value.byteLength === identity.byteLength && value.sha256 === identity.sha256;
-
-          function replaceReferences(value, prior, next) {
-            let changed = false;
-            if (sameIdentity(value, prior)) {
-              value.algorithm = next.algorithm;
-              value.byteLength = next.byteLength;
-              value.sha256 = next.sha256;
-              changed = true;
-            }
-            if (Array.isArray(value)) {
-              for (let index = 0; index < value.length; index += 1) {
-                if (value[index] === prior.sha256) {
-                  value[index] = next.sha256;
-                  changed = true;
-                } else {
-                  changed = replaceReferences(value[index], prior, next) || changed;
-                }
-              }
-            } else if (value && typeof value === 'object') {
-              for (const [key, item] of Object.entries(value)) {
-                if (item === prior.sha256) {
-                  value[key] = next.sha256;
-                  changed = true;
-                } else {
-                  changed = replaceReferences(item, prior, next) || changed;
-                }
-              }
-            }
-            return changed;
-          }
-
-          function rebind(prior, next, id) {
-            const changed = [];
-            for (const [p, value] of fixtures) if (replaceReferences(value, prior, next)) changed.push(path.basename(p));
-            console.log(`evidence_rebind=${id} files=${changed.sort().join(',') || 'none'}`);
-            flush();
-          }
-
-          run('scripts/run-search-ir-reference.mjs');
-          run('scripts/run-search-ir-composer-reference.mjs');
-          for (const exporter of [
-            'scripts/export-search-ir-composer-domain-profiles.mjs',
-            'scripts/export-search-ir-composer-evaluator-profiles.mjs',
-            'scripts/export-search-ir-composer-graph-profiles.mjs',
-            'scripts/export-search-ir-composer-output-profiles.mjs',
-            'scripts/export-search-ir-composer-policy-profiles.mjs',
-            'scripts/export-search-ir-composer-progress-profiles.mjs',
-            'scripts/export-search-ir-composer-resource-profiles.mjs',
-            'scripts/export-search-ir-composer-session-profiles.mjs',
-            'scripts/export-search-ir-composer-stage-profiles.mjs',
-          ]) run(exporter);
-
-          const integration = fixtures.get(path.join(fixtureDir, 'integration-cases.json'));
-          if (!integration) throw new Error('integration fixture missing');
-          const descriptors = new Map(integration.evidenceInputs.map((entry) => [entry.id, entry]));
-          const current = {};
-          for (const id of ['search-ir', 'composer']) {
-            const descriptor = descriptors.get(id);
-            if (!descriptor) throw new Error(`missing evidence descriptor ${id}`);
-            current[id] = identityOf(id, readJson(path.join(root, descriptor.path)));
-            rebind(old[id], current[id], id);
-          }
-
-          const projectionBySchema = new Map();
-          function collectGenerated(value) {
-            if (Array.isArray(value)) { for (const item of value) collectGenerated(item); return; }
-            if (!value || typeof value !== 'object') return;
-            if (typeof value.schema === 'string' && value.projectionIdentity) projectionBySchema.set(value.schema, value.projectionIdentity);
-            for (const item of Object.values(value)) collectGenerated(item);
-          }
-          function walkBuild(directory) {
-            for (const name of readdirSync(directory)) {
-              const p = path.join(directory, name);
-              if (statSync(p).isDirectory()) walkBuild(p);
-              else if (name.endsWith('.json')) collectGenerated(readJson(p));
-            }
-          }
-          walkBuild(composerBuild);
-          function refreshProjection(value) {
-            let changed = false;
-            if (Array.isArray(value)) { for (const item of value) changed = refreshProjection(item) || changed; return changed; }
-            if (!value || typeof value !== 'object') return false;
-            const projection = typeof value.schema === 'string' ? projectionBySchema.get(value.schema) : null;
-            if (projection && Object.hasOwn(value, 'algorithm') && Object.hasOwn(value, 'byteLength') && Object.hasOwn(value, 'sha256')) {
-              if (value.algorithm !== projection.algorithm || value.byteLength !== projection.byteLength || value.sha256 !== projection.sha256) {
-                value.algorithm = projection.algorithm;
-                value.byteLength = projection.byteLength;
-                value.sha256 = projection.sha256;
-                changed = true;
-              }
-            }
-            for (const item of Object.values(value)) changed = refreshProjection(item) || changed;
-            return changed;
-          }
-          const projectionFiles = [];
-          for (const [p, value] of fixtures) if (refreshProjection(value)) projectionFiles.push(path.basename(p));
-          console.log(`projection_rebind_files=${projectionFiles.sort().join(',') || 'none'}`);
-          flush();
-
-          const owners = [
-            ['domain', 'scripts/run-search-semantics-reference.mjs'],
-            ['graph-node', 'scripts/run-graph-node-reference.mjs'],
-            ['graph-edge', 'scripts/run-graph-edge-reference.mjs'],
-            ['graph-ref', 'scripts/run-graph-ref-reference.mjs'],
-            ['graph-path', 'scripts/run-graph-path-reference.mjs'],
-            ['graph-root', 'scripts/run-graph-root-reference.mjs'],
-            ['graph-reclaim', 'scripts/run-graph-reclaim-reference.mjs'],
-            ['graph-advance', 'scripts/run-graph-advance-occurrence-reference.mjs'],
-            ['graph-cleanup', 'scripts/run-graph-cleanup-reference.mjs'],
-            ['policy', 'scripts/run-policy-reference.mjs'],
-            ['evaluator', 'scripts/run-evaluator-reference.mjs'],
-            ['resource', 'scripts/run-resource-reference.mjs'],
-            ['progress', 'scripts/run-progress-reference.mjs'],
-            ['output', 'scripts/run-output-reference.mjs'],
-            ['framework', 'scripts/run-framework-lifecycle-reference.mjs'],
-            ['terminal', 'scripts/run-terminal-slice-reference.mjs'],
-            ['session', 'scripts/run-session-reference.mjs'],
-            ['stage', 'scripts/run-stage-reference.mjs'],
-            ['channel', 'scripts/run-channel-reference-evidence.mjs'],
-          ];
-          for (const [id, command] of owners) {
-            run(command);
-            const descriptor = descriptors.get(id);
-            if (!descriptor) throw new Error(`missing evidence descriptor ${id}`);
-            current[id] = identityOf(id, readJson(path.join(root, descriptor.path)));
-            rebind(old[id], current[id], id);
-          }
-
-          const ordered = {};
-          for (const id of Object.keys(old)) {
-            if (!current[id]) throw new Error(`missing regenerated identity ${id}`);
-            ordered[id] = current[id];
-          }
-          writeFileSync(gatePath, gateText.slice(0, start + marker.length) + JSON.stringify(ordered, null, 2) + gateText.slice(end));
-          run('experiments/search-semantics-reference/run-integration-gate.mjs');
-
-          for (const [id, prior] of Object.entries(old)) {
-            const stale = [...fixturePaths, gatePath].filter((p) => readFileSync(p, 'utf8').includes(prior.sha256));
-            if (stale.length) throw new Error(`stale ${id} anchors remain: ${stale.join(',')}`);
-          }
-          for (const helperPath of helperPaths) unlinkSync(helperPath);
+          const result = spawnSync(process.execPath, ['--input-type=module'], { cwd: process.cwd(), input: script, stdio: ['pipe', 'inherit', 'inherit'], env: process.env });
+          if (result.error) throw result.error;
+          if (result.status !== 0) process.exit(result.status ?? 1);
+          const v4 = '.github/workflows/operation-access-evidence-repair-v4.yml';
+          if (existsSync(v4)) unlinkSync(v4);
           NODE
       - name: Full local qualification
         shell: bash
