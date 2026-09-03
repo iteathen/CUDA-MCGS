@@ -24,6 +24,8 @@ jobs:
           node-version: 26.7.0
       - name: Apply asserted acceptance migration
         run: node scripts/accept-122-semantic-packet.mjs
+      - name: Mark durable assessment informational
+        run: sed -i 's/^\*\*Status:\*\* Active$/\*\*Status:\*\* Informational/' docs/development/2026-09-03-engine-contract-acceptance-01-assessment-and-plan.md
       - name: Verify governance and source boundary
         run: ./scripts/verify-docs.sh
       - name: Run complete CUDA-free owner and integration packet
