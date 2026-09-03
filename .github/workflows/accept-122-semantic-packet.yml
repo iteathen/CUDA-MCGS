@@ -1,0 +1,39 @@
+name: ENGINE-CONTRACT-ACCEPTANCE-01 migration
+
+on:
+  push:
+    branches:
+      - accept/122-semantic-packet
+    paths:
+      - '.github/workflows/accept-122-semantic-packet.yml'
+      - 'scripts/accept-122-semantic-packet.mjs'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate-and-qualify:
+    name: Migrate and qualify accepted semantic packet
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Apply asserted acceptance migration
+        run: node scripts/accept-122-semantic-packet.mjs
+      - name: Verify governance and source boundary
+        run: ./scripts/verify-docs.sh
+      - name: Run complete CUDA-free owner and integration packet
+        run: node scripts/run-engine-reference-integration.mjs
+      - name: Commit exact generated acceptance subject
+        run: |
+          git status --short
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'Spec: accept universal semantic packet for #122'
+          git push origin HEAD:accept/122-semantic-packet
