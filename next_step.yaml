@@ -4,6 +4,30 @@
   "status": "cuda_js_execution_boundary_audited_production_adapter_blocked",
   "objective": "Keep the protected CUDA-MCGS/CUDA-JS ownership seam stable after #193 and do not begin production lowering until the separately held semantic prerequisite is explicitly resumed and completed under its own authority.",
   "ownership_boundary": "CUDA-MCGS owns reusable search semantics, Search IR, generated Search Program meaning, finite search-resource/progress/session/stage/channel semantics and selected search physical-profile policy. CUDA-JS owns generic device/target/compiler/artifact/memory/view/launch/operation/prepared-DAG/synchronization/publication/provider/native-resource mechanisms and compatibility facts. The future MCGS adapter translates between those owners without becoming a second runtime lifecycle.",
+  "authority": [
+    "CUDA-MCGS protected semantic source f32724e88cc340c63382def1e5138be43e8e147f",
+    "CUDA-MCGS ADR-0014 extract CUDA-JS runtime",
+    "CUDA-MCGS ADR-0019 public CUDA-JS capability escalation",
+    "CUDA-MCGS ADR-0023 parallel-first native execution with selected-profile topology",
+    "CUDA-MCGS accepted SPEC-0001 device search publication/resources and accepted SPEC-0002 Search IR/reference semantics",
+    "CUDA-JS 0.1.0-alpha.17 protected-main revision bc2700f2e5c654567c2e17bf8d67b882351b8681",
+    "docs/architecture/2026-09-03-cuda-js-execution-boundary-audit.md"
+  ],
+  "deliverables": [
+    "Protect-integrate the #193 CUDA-JS execution-boundary audit matrix and reconciled control state.",
+    "Keep current 0.2.0 lower-facing execution/program schemas classified as proposal/reference evidence until their separately authorized semantic-acceptance transaction.",
+    "Leave production adapter #125 explicitly blocked until its semantic prerequisite is separately resumed/completed and the accepted package surface conforms to the #193 ownership matrix."
+  ],
+  "validation": [
+    "Run the repository documentation workflow on the exact PR head.",
+    "Require Governance verification, Search IR reference on Windows and Ubuntu, and all Graph NODE/EDGE/REF/PATH/ROOT reference jobs to pass.",
+    "Review the final PR diff and verify that only the audit document, STATUS.md, and next_step.yaml changed; no proposal schema, semantic specification, production code, native source, or held-work artifact may change.",
+    "Use an expected-head guarded protected merge and read protected main plus issue #193 back after integration."
+  ],
+  "blockers": [
+    "Production adapter #125 is not dependency-ready because its separately held semantic prerequisite has not been explicitly resumed/completed.",
+    "The current 0.2.0 lower-facing proposal projections cannot become protected authority unchanged; their CUDA-JS-shaped enums/records must be removed, mechanically lower-bound, or explicitly classified as adapter translation during that future acceptance transaction."
+  ],
   "audit": {
     "issue": 193,
     "source_revision": "f32724e88cc340c63382def1e5138be43e8e147f",
