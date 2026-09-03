@@ -97,7 +97,18 @@ jobs:
             check_fixture "$command"
           done
       - name: Run complete CUDA-free owner and integration packet
-        run: node scripts/run-engine-reference-integration.mjs
+        run: |
+          set +e
+          node scripts/run-engine-reference-integration.mjs > /tmp/accept-122-integration.log 2>&1
+          status=$?
+          if [ "$status" -ne 0 ]; then
+            echo '--- integration markers ---'
+            grep -nE 'integration_step=|AssertionError|Error:|ERR_|result=fail|capsule=' /tmp/accept-122-integration.log | tail -n 160 || true
+            echo '--- integration tail ---'
+            tail -n 180 /tmp/accept-122-integration.log
+            exit "$status"
+          fi
+          cat /tmp/accept-122-integration.log
       - name: Commit exact generated acceptance subject
         run: |
           git status --short
