@@ -45,7 +45,7 @@ const exporters = [
   'export-stage-profiles.mjs',
 ].map((name) => `experiments/search-ir-composer-reference/${name}`);
 
-const oldSummary = `assert.deepEqual(composerEvidence.summary, {
+const oldExactSummary = `assert.deepEqual(composerEvidence.summary, {
   expected: 881,
   discovered: 881,
   executed: 881,
@@ -56,12 +56,20 @@ const oldSummary = `assert.deepEqual(composerEvidence.summary, {
   optionalSkipped: 0,
   notDiscovered: 0,
 });`;
+const oldPartialSummary = `assert.equal(composerEvidence.summary.failed, 0);
+assert.equal(composerEvidence.summary.requiredSkipped, 0);
+assert.equal(composerEvidence.summary.notDiscovered, 0);`;
 const newSummary = `assertCompletePassSummary(composerEvidence.summary, 'Composer evidence summary');`;
 const importMarker = "import { fileURLToPath } from 'node:url';\n";
 const validationImport = "import { assertCompletePassSummary } from './src/validation.mjs';\n";
 
 for (const path of exporters) {
-  replaceExactlyOnce(path, oldSummary, newSummary);
+  const initial = fs.readFileSync(path, 'utf8');
+  const hasExact = initial.includes(oldExactSummary);
+  const hasPartial = initial.includes(oldPartialSummary);
+  if (hasExact === hasPartial) throw new Error(`${path}: expected exactly one known producer-summary contract`);
+  replaceExactlyOnce(path, hasExact ? oldExactSummary : oldPartialSummary, newSummary);
+
   const input = fs.readFileSync(path, 'utf8');
   if (input.includes(validationImport)) throw new Error(`${path}: validation import already exists unexpectedly`);
   const marker = input.indexOf(importMarker);
