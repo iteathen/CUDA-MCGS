@@ -52,6 +52,43 @@ for (const profile of framework.profiles) {
   const schemaFile = schemaByRole.get(profile.role);
   if (schemaFile) profile.schema.sha256 = sourceTextSha256(Buffer.from(await read(path.join('schemas/search-ir/0.2.0', schemaFile)), 'utf8'));
 }
+
+// These six selected-owner identities are the deterministic normalizer outputs observed after
+// accepted catalog/schema rebinding. Keep the prior hashes as explicit migration preconditions.
+const selectedOwnerIdentityMigration = new Map([
+  ['domain', {
+    before: '6ae172623f6aebd07db9f6516681748a583d0ef7aad176382569c19ac88ee159',
+    accepted: '3ca65c2a97b9e03ee75f8ea1a54e01c322e045aa70a5ffaba15a6c6a7b7b3e5d',
+  }],
+  ['graph', {
+    before: '11e049a08fca93816774e999aee9ed0a1d8132a622a3179aa8dd5d35353c666b',
+    accepted: '38d0fa1aa6bd24648c6d5dbcc19049dc97488a6666d3e75e5b97647d653e06a6',
+  }],
+  ['policy', {
+    before: '208700dcb5cd948d848911f6694652e4d8337432f3e3a3a7fc091cbe3228bb29',
+    accepted: '324358b2b345f3564c4973209d934736a05f69db050951c597af1bf2dd87b37f',
+  }],
+  ['resource', {
+    before: 'f81b91e0431719c3c2e6a944fae34a8d31557babc54abd6ea7049f3b705ac239',
+    accepted: 'e3bda8997637954f4104cd263687b2b61ba83948bafafc56c0980d1a31728bcd',
+  }],
+  ['progress', {
+    before: '4770f71432f3c429d19890bba745cb1e99fa34c6f59135441bb9e32c7e513194',
+    accepted: '545d0816839ad3cdd41369477abc223b623073e2d687c7d09ad2de21a61a169c',
+  }],
+  ['output', {
+    before: 'c58990316992eb1480a491f1f871a1d338d23e82708344939069627b2502b692',
+    accepted: '8730cee76f557a07e523a0e230c7dce7df927f92ac6a02587861eaa7471a7240',
+  }],
+]);
+for (const [role, migration] of selectedOwnerIdentityMigration) {
+  const profile = framework.profiles.find((entry) => entry.role === role);
+  if (!profile) fail(`framework fixture is missing selected ${role} profile`);
+  if (profile.identity?.algorithm !== 'sha256' || profile.identity.sha256 !== migration.before) {
+    fail(`${role} profile identity drifted before acceptance: ${profile.identity?.sha256}`);
+  }
+  profile.identity.sha256 = migration.accepted;
+}
 await write(frameworkPath, `${JSON.stringify(framework, null, 2)}\n`);
 
 // Deletion equivalence must compare MCGS-owned adapter requirements, never removed lower request/lifecycle vocabulary.
