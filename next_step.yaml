@@ -1,98 +1,54 @@
 {
-  "schema_version": 107,
+  "schema_version": 108,
   "updated": "2026-09-03",
-  "status": "engine_contract_acceptance_01_pr_197_exact_head_qualification",
-  "objective": "Qualify and review PR #197's cleaned accepted #122 semantic/reference subject on its exact head, then guardedly integrate it into protected main and read back the resulting commit/tree before #125 begins.",
-  "ownership_boundary": "MCGS owns search semantics, Search IR, deterministic restricted Search Program generation, finite resource/pressure policy, semantic access and selected physical-profile policy. integration.cuda-js owns translation/orchestration only. CUDA-JS owns actual lower request vocabulary, limits, provider facts, validation, errors and lower resource lifecycle. Native/private CUDA-MCGS mechanisms remain prohibited.",
-  "authority": [
-    "AGENTS.md",
-    "agent_files/AGENTS.md",
-    "agent_files/AI_RULES.md",
-    "agent_files/DESIGN_ALIGNMENT_CARD.md",
-    "docs/PROJECT_CHARTER.md",
-    "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
-    "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
-    "docs/decisions/ADR-0023-parallel-first-native-execution.md",
-    "docs/decisions/ADR-0024-framework-only-production-ownership.md",
-    "docs/architecture/2026-09-03-cuda-js-execution-boundary-audit.md",
-    "docs/development/2026-09-03-engine-contract-acceptance-01-assessment-and-plan.md",
-    "docs/specs/README.md",
-    "schemas/search-ir/0.2.0/contract-set.json",
-    "schemas/search-ir/0.2.0/requirement-coverage.json",
-    "https://github.com/iteathen/CUDA-MCGS/issues/122",
-    "https://github.com/iteathen/CUDA-MCGS/pull/197"
-  ],
-  "state": {
-    "protected_baseline_before_transition": "main@2a6bc8e1da9df85b3367f3f92bb3cec6f16ea241",
-    "qualified_reference_candidate": "experimental/portfolio@0cd3dafdbfa683048b0a0f39de21a671fd9ef841",
-    "qualified_generated_acceptance_subject": "d5b9fe9baa24dbafd51a9f90ed84e8d227f0e6fe",
-    "qualified_generated_acceptance_tree": "8d93d1ba5f2ecc1eb5990fa53ea256e1ad16f754",
-    "generated_acceptance_qualification_run": 33776887304,
-    "transition_issue": 122,
-    "active_focus_branch": "ENGINE-CONTRACT-ACCEPTANCE-01",
-    "active_git_branch": "accept/122-semantic-packet",
-    "review_pr": 197,
-    "lower_reference": "cuda-js@0.1.0-alpha.17@bc2700f2e5c654567c2e17bf8d67b882351b8681"
-  },
-  "reference_route_accounting": {
-    "direct_non_channel": 352,
-    "channel_owner_evidence": 41,
-    "cuda_free_reference_total": 393,
+  "status": "runtime_adapter_blocked_on_cuda_js_193",
+  "objective": "Implement the accepted execution-package to public CUDA-JS adapter under #125 once every demonstrated lower capability needed for pre-ignition admission is available through public CUDA-JS contracts. Do not reopen completed semantic construction or add private/native escape paths.",
+  "ownership_boundary": "CUDA-MCGS owns search semantics, finite search resource/pressure policy, deterministic restricted Search Program generation, selected search physical-profile policy and adapter translation. CUDA-JS owns actual lower request vocabulary, lower compatibility facts, generic device/context/memory/compiler/artifact/module/function/operation/provider resources, errors/health and lower lifecycle. CUDA-JS-Tensor owns generic Tensor mathematics. Product semantics remain downstream.",
+  "protected_state": {
+    "main": "2d7ec1205e7969c29c83ec3c8e98c940e0c38e59",
+    "tree": "87c76a72107e55a729a18a101b28fdf17b43387e",
+    "semantic_acceptance_issue": 122,
+    "semantic_acceptance": "completed",
     "accepted_reference_requirements": 937,
     "native_compatible_pair_deferred": 52,
     "composer_requirements_classified": 989,
-    "composer_pending": 0
+    "composer_pending": 0,
+    "cuda_free_reference_routes": 393
   },
-  "qualification_provenance": {
-    "generated_subject": "Acceptance construction run 33776887304 passed governance/source-boundary verification, the 882/882 accepted Composer capsule, every owner/reference runner, the 393-route final integration packet and the seven-entry final mutation matrix.",
-    "cleaned_subject": "The one-shot acceptance workflow and accept-122 migration helpers are removed. Permanent PR #197 exact-head qualification is the remaining pre-integration gate."
+  "current_focus": {
+    "repository": "iteathen/CUDA-MCGS",
+    "issue": 125,
+    "name": "public CUDA-JS runtime adapter",
+    "state": "blocked on demonstrated lower CUDA-JS #193 ordinary base-allocation alignment capability",
+    "next_action": "Do not implement an alignment assumption or private/native workaround in CUDA-MCGS. Allow CUDA-JS #193 / draft PR #194 to pass its normal authority integration gate and public implementation/package evidence. Then resume #125 by validating every accepted execution-package requirement before partial realization and route any further genuine generic lower gap to CUDA-JS with the same consumer-backed test.",
+    "exit": "#125 provides one replaceable public-only adapter with portable fake-runtime lifecycle/failure evidence, exact finite pre-ignition admission, no private/deep imports, and no second runtime or semantic interpreter."
   },
-  "mutation_matrix": [
-    "missing owner evidence",
-    "substituted/stale owner evidence identity",
-    "missing required product-neutral/deletion/schedule witness",
-    "native-deferred route falsely promoted",
-    "Channel route loss",
-    "finite replica semantic divergence",
-    "final evidence identity mutation"
+  "completed_prerequisites": [
+    "#122 protected semantic/reference acceptance and readback completed",
+    "#49 production source/private-runtime boundary gate completed and permanently enforced",
+    "#193 CUDA-JS execution-boundary audit completed",
+    "Graph #24 and Channel #33 semantic/reference obligations absorbed into the accepted packet and closed completed",
+    "snapshot/portfolio issue #142 retired; #32 now records durable v0 outcomes only"
   ],
-  "deliverables": [
-    "SPEC-0000 and SPEC-0003 through SPEC-0013 carry accepted metadata/identities without changing the qualified owner semantics.",
-    "Search IR 0.2 catalog/profile/program/package authority records 989/989 classified requirements, 937 accepted-reference and exactly 52 deferred-native requirements.",
-    "MCGS adapter requirements replace the locally invented CUDA-JS request projection/lifecycle while preserving MCGS-owned semantic access and selected policy.",
-    "The exact #36 owner/reference packet and #193 governance/source-boundary corrections coexist on one ancestry-correct acceptance subject.",
-    "One-shot migration transport is removed; only permanent repository evidence and controls remain."
+  "after_current_focus": [
+    "CUDA-JS #32 freezes and qualifies one exact CUDA-MCGS/CUDA-JS compatible pair through #125",
+    "#109 completes one canonical public resolver/facade surface",
+    "#123 proves external-engine embedding through public contracts",
+    "#124 plus CUDA-JS-Tensor #22 provides the optional first-real-model Tensor evaluator lane",
+    "#37 performs first native Linux qualification and representative performance after the exact pair and physical hardware are available",
+    "#105 reassesses independent multi-GPU replicas only after the exact single-device pair"
   ],
-  "validation": [
-    "Permanent PR/governance checks pass on the exact PR #197 head.",
-    "Permanent Engine reference integration passes on the exact PR #197 head with 393/393 CUDA-free routes and 52 deferred-native requirements.",
-    "All seven integration mutations still fail closed and exact baseline regeneration succeeds.",
-    "MCGS execution package contains no locally normative CUDA-JS compile/load/allocate/teardown state machine, device-memory request kind or CUDA-JS request-projection schema.",
-    "Restricted source roles and MCGS-selected geometry/concurrency remain explicit; actual lower realization stays adapter/CUDA-JS-owned.",
-    "Base-to-head review finds no migration helper/workflow residue and no protected-main change outside reviewed integration."
+  "issue_tracker_rule": [
+    "Issues own concrete actionable obligations, explicit blocked outcomes or concrete external evidence cells.",
+    "Protected STATUS.md and next_step.yaml own the live execution seam.",
+    "Completed semantic/implementation issues close instead of remaining open solely for generic future qualification.",
+    "Dormant roadmap possibilities are not active backlog until a concrete consumer/profile activates them."
   ],
-  "cleanup": {
-    "generated_build_evidence": "ignored and uncommitted",
-    "temporary_acceptance_migration": "removed from cleaned acceptance branch",
-    "native_or_private_runtime_residue": "none authorized or introduced",
-    "protected_main": "unchanged until guarded reviewed integration"
-  },
-  "blockers": [
-    "PR #197 exact-head permanent qualification/review is not complete.",
-    "Protected integration/readback is not complete. Any repository-owner exact-head integration authorization required by governance must be obtained before merge."
-  ],
-  "current_gate": [
-    "Run permanent documentation/governance and Engine reference integration qualification on the exact PR #197 head.",
-    "Perform complete base-to-head review of PR #197 and record the exact reviewed head/tree/checks on #122 and the PR.",
-    "Guardedly integrate into protected main only after all required authorization, then read back the protected commit/tree.",
-    "Close #122 only after protected readback; only then reassess #125 as dependency-ready."
-  ],
-  "do_not": [
-    "Do not promote any of the 52 native-compatible-pair routes to accepted-reference.",
-    "Do not let MCGS define CUDA-JS request field names, provider limits, compiler/resource lifecycle or private/native mechanisms.",
-    "Do not change qualified search semantics merely to make acceptance metadata fit.",
-    "Do not claim native, performance, product, stable SDK, multi-GPU or external-consumer support from #122.",
-    "Do not start #125 before protected #122 readback."
-  ],
-  "next_after_protected_readback": "#125 public CUDA-JS runtime adapter assessment against the exact protected #122 surface and live public CUDA-JS head."
+  "hard_constraints": [
+    "Do not promote any of the 52 deferred-native requirements from semantic/reference evidence alone.",
+    "Do not let CUDA-MCGS define CUDA-JS private request field names, provider limits, lower resource lifecycle or native mechanisms.",
+    "Do not add maintained C/C++/CUDA/PTX/native addon/direct FFI/subprocess-native production escape paths.",
+    "Do not create a second preparation transaction or logical-work launch resolver merely to reduce adapter code.",
+    "Do not claim native, performance, product, stable SDK or multi-GPU support before their exact owner evidence gates pass."
+  ]
 }
