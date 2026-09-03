@@ -8,75 +8,67 @@
 
 Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd031`.
 
-The integrated CUDA-free candidate/reference line is `experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a`. Candidate/reference integration is not protected #122 acceptance, native CUDA qualification, production readiness, or product support.
+The integrated CUDA-free candidate/reference line is `experimental/portfolio@ce21cc382bedb28647c244df1c53bf0d6c98cff0`, tree `8409e51a2df117f06f471833966517a9472fb388`. Candidate/reference integration is not protected #122 semantic acceptance, native CUDA qualification, production readiness, or product support.
 
-`REF-SESSION-01` / #181 is complete and integrated through PR #189. Its integrated tree equals the authorized reviewed Session tree and its post-integration Session, Terminal and Framework gates passed.
+`REF-SESSION-01` / #181 and `REF-STAGE-01` / #30 are complete and integrated on that experimental line. Protected `main` was not changed by either integration.
 
-## Active candidate — #30 / REF-STAGE-01
+## Active candidate — #33 / REF-CHANNEL-EVIDENCE-01
 
-Branch: `ref/stage-01`
+Branch: `ref/channel-evidence-01`
 
-Exact base: `experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a`
+Exact construction base: `experimental/portfolio@ce21cc382bedb28647c244df1c53bf0d6c98cff0`
 
-Review PR: #190
+Draft review PR: #191
 
-Qualified Stage semantic checkpoint:
+The Channel leaf is an evidence reuse/gap-audit over the existing Composer-owned Channel schema, normalizer and bounded logical oracle. It does not create a second Channel interpreter. SPEC-0004 retains internal Channel item/publication/ownership-transfer semantics; SPEC-0011 retains aggregate resource normalization/accounting/pressure; SPEC-0012 retains global readiness/progress/fairness/no-progress/closure; CUDA-JS retains generic native publication/synchronization/runtime lowering and exact compatible-pair qualification.
 
-`9ae16e7360226e35a69a1436a1f773dada592c95`
+The governing ENGINE-REFERENCE coverage assigns exactly 41 SPEC-0004 routes to `engine-reference-oracle`:
 
-tree:
+- `CHANNEL-ITEM-`: 10;
+- `CHANNEL-PRODUCER-`: 7;
+- `CHANNEL-CONSUMER-`: 7;
+- `CHANNEL-PUBLISH-`: 7;
+- `CHANNEL-CANCEL-`: 7;
+- `CHANNEL-CONFORMANCE-`: 3.
 
-`2f979d5d53b4e2aca60b8952315ae72753c545c1`
+The permanent `channel-evidence-routes.json` manifest and `run-channel-evidence.mjs` adapter bind those exact 41 routes to passing owner-local Composer cases and generated Composer identities without importing or reimplementing the Channel state machine.
 
-Documentation-inclusive review checkpoint:
+## Demonstrated Channel correction
 
-`385594ab40feeb31bea933ceed0155b9a091e996`
+The gap audit found one real owner-local semantic defect: cancelling an item that was already `terminally-disposed` could replace an authoritative failure/stop disposition with `cancelled`. That violated SPEC-0004 `CHANNEL-CANCEL-002` and the normalized profile's own `ignore-authoritative-terminal` rule.
 
-The single commit between those checkpoints changes only `STATUS.md`, `next_step.yaml`, and this experiment's `README.md`/`RESULTS.md`. No Stage semantic, test, runner, projection or workflow source changed after `9ae16e73…`.
+`simulateChannelTrace()` now treats cancellation of an already terminal item as idempotent no-effect and preserves the first authoritative disposition. Permanent case `channel-reference-cancel-preserves-authoritative-first-cause` falsifies the old behavior. Permanent case `channel-reference-escape-service-while-pending` additionally proves a pending required consumer can yield service to a declared runnable escape when no producer is runnable.
 
-Stage consumes the existing Composer-normalized Stage profiles rather than creating another schema/normalizer. It owns only per-work-item stable checkpoint invocation and declared local outcome semantics. Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session and Framework remain separate semantic owners; CUDA-JS retains Device-JS lowering, generated CUDA/native artifacts, linking/loading and generic runtime mechanisms.
+No native code, CUDA source/PTX, private CUDA-JS access, scheduler topology, host progression loop, product meaning, hidden queue or duplicate resource/progress authority was introduced.
 
-No native code, PTX backend, runtime extension registry, global scheduler, product semantics, or host progression loop was introduced.
+## Preserved red-before-green evidence
 
-## Exact PR qualification at 385594ab…
+Permanent Channel workflow run `33699198942` on construction head `8526b990c4940012e623c07a107c466c7c86e8d8` executed all 883 Composer cases successfully, including both new Channel cases, then failed the capsule's exact-discovery assertion because the declared count still said 881. The count was reconciled to 883 without weakening discovery or skip checks.
 
-All required PR workflows passed on the same documentation-inclusive head:
+Temporary write-transport tooling used only to make exact replacements in the two very large owner files was removed before qualification and is not part of PR #191.
 
-- Stage behavioral reference `33696784971` — success;
-- Session behavioral reference `33696784953` — success;
-- Terminal slice reference `33696784966` — success;
-- Framework lifecycle reference `33696784943` — success;
-- full repository/documentation matrix `33696784987` — success, including Governance, Ubuntu/Windows Search IR, Graph lanes, Policy, Evaluator, Resource, Progress, Output and aggregate `verify`.
+## Clean construction qualification checkpoint
 
-The Stage run proved:
+On `006cdc99f46fc7f1c952761ec082a6bf3ba2f624`, Channel workflow `33699406167` passed:
 
-- Stage CI self-gate: pass;
-- Composer and exact Stage projection/export: pass;
-- Stage behavioral reference: `10/10`;
-- direct SPEC-0003 ENGINE-REFERENCE routes: `8/8`;
-- required/conditional/optional skips: `0`;
-- Stage profile projection: `919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28`;
-- Stage evidence: `7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea` (`9395` canonical bytes);
-- exact-PR-head artifact: `9872056402`;
-- artifact digest: `sha256:4d7334fdd4aa6806762b01040e7eb75143a0c955542b6eacc3891b381e2f80a4`.
+- Composer `883/883`, failures `0`, all skip classes `0`, not-discovered `0`;
+- all 989 requirement dispositions classified, pending `0`;
+- direct SPEC-0004 Channel routes `41/41` across six exact families;
+- 33 bound owner-local evidence cases green;
+- Composer evidence `2bb62db23d7fb3841c8ca3d6a39d6d8519c6ee07513fc7afa1463630bcee9c26`;
+- Channel evidence `f6adb5f99ac397b9f09951c6ef13b0aa15846c37c5ae17d3e67213d9d8e9fb12`, `9357` canonical bytes;
+- artifact `9872951636`, digest `sha256:dd9c4fd33fd594a2708f1fef94eb091caf11aa95191f2fcb69d152877e79dbbf`.
 
-Fresh base-to-head author review of all 16 changed files found no blocking semantic, ownership, evidence, governance or cleanup defect. This is author review, not repository-owner authorization.
-
-## Preserved decisive Stage reds
-
-- pending outcome retained worker/mutable lease/reservation state: `2a12ca82dd9e99981dc3ed52623ea46d12930819`, run `33695493706`, artifact `9871610435`;
-- normalized non-pending outcome release was not enforced and undeclared owner facts were accepted: `4ebfd3f0802f1cb746aaad986ce97cd92c04bc57`, run `33696328927`, artifact `9871897062`.
-
-Both are permanent checked-in falsifiers. No falsifier was weakened for green.
-
-The expanded-case failure at `1a1e21c1…` / run `33696000529` remains diagnostic only: it exposed brittle test selection by canonical array index, and was corrected by selecting normalized `entryStage`/checkpoint identity without changing Stage semantics.
+That checkpoint proves construction coherence but is not the final authorization subject because this current-state reconciliation is part of the proposed PR.
 
 ## Current gate
 
-This final tracker reconciliation must change only the four current-state documents above and must itself receive exact-head Stage plus full coupled/repository qualification. After that readback, the only remaining pre-integration gate is **fresh repository-owner authorization of the exact PR #190 head against exact base `f79845b3…`**.
+PR #191 must qualify its final exact head through the permanent Channel gate plus all PR-triggered Stage, Session, Terminal, Framework and full repository/documentation gates. Then perform a fresh base-to-head author technical review and verify temporary construction residue is absent.
 
-Do not integrate #30 or start #33 Channel before that authorization and guarded Stage integration/readback.
+The exact final reviewed/qualified head, tree, workflow IDs and artifact identity are recorded on PR #191 and issue #33 after those checks complete; those live tracking surfaces freeze the authorization subject without requiring another repository commit merely to copy CI run IDs into this informational file.
+
+If the final PR head/base changes materially after review, requalify/review. If repository-owner exact-head authorization remains required, stop before integration and request authorization for that exact PR head/tree/base. General instruction to continue is not authorization to merge a newly produced head.
 
 ## Remaining reference sequence
 
-#30 Stage → #33 Channel evidence → #36 final reference integration → #122 protected atomic semantic acceptance.
+#33 Channel evidence → #36 `REF-INTEGRATE-01` → #122 protected atomic semantic acceptance.
