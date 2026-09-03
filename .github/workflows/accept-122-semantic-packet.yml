@@ -11,6 +11,7 @@ on:
       - 'scripts/accept-122-contract-identities.mjs'
       - 'scripts/accept-122-reference-fixture-guards.mjs'
       - 'scripts/accept-122-search-semantics-fixtures.mjs'
+      - 'scripts/accept-122-integration-gate-identities.mjs'
 
 permissions:
   contents: write
@@ -57,6 +58,8 @@ jobs:
         run: node scripts/accept-122-reference-fixture-guards.mjs
       - name: Rebind search-semantics accepted evidence bridge
         run: node scripts/accept-122-search-semantics-fixtures.mjs
+      - name: Refreeze accepted final integration identities
+        run: node scripts/accept-122-integration-gate-identities.mjs
       - name: Verify governance and source boundary
         run: |
           set +e
