@@ -50,6 +50,19 @@ CUDA-MCGS does **not** own generic Node.js/CUDA Driver bindings, CPU-call ABI ge
 
 Under [`ADR-0019`](decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md), maintained CUDA-MCGS production source is JavaScript only: ordinary Node.js plus restricted Device-JS submitted through public CUDA-JS contracts. It does not own or maintain C/C++, CUDA C++, native addons, direct FFI/Driver access, hand-authored PTX, embedded CUDA source, or a subprocess native search implementation. This does not restrict CUDA-JS: CUDA-JS may use JIT, native code and CUDA-specific implementation wherever needed or desired behind its consumer-neutral public contracts. Its generated device artifacts are opaque versioned outputs to CUDA-MCGS.
 
+### Optional reusable RNG and communication semantics
+
+Under [`ADR-0025`](decisions/ADR-0025-compose-rng-and-communication-semantic-owners.md), CUDA-MCGS may optionally consume public contracts from independent semantic owners when an accepted search profile requires them:
+
+- `iteathen/cuda-rng` owns reusable provider-neutral generator/profile, seed/sequence/offset, split/fork, distribution/sampling and reproducibility semantics;
+- `iteathen/cuda-comm` owns reusable provider-neutral group/team/rank, collective/P2P/PGAS/RMA communication semantics, ordering/completion/failure composition and communication equivalence.
+
+CUDA-MCGS retains the **search-specific meaning** layered above those capabilities: where stochastic choices participate in selection/expansion/domain/evaluator/search policy, search-visible RNG association and replay requirements, and multi-GPU search partition/replica/shard/progress/fairness/termination/result policy.
+
+CUDA-JS remains owner of the physical/native mechanisms used to realize those semantic dependencies: devices/contexts/memory/views/streams/operations/synchronization and bounded providers such as cuRAND/NCCL/NVSHMEM/RDMA when separately selected.
+
+The baseline CUDA-MCGS framework remains coherent without either optional semantic dependency. Neither `cuda-rng` nor `cuda-comm` depends on CUDA-MCGS, and neither becomes a back door for moving Search IR, Stage, Channel, evaluator, progress or session meaning out of this repository.
+
 ## Ecosystem language policy
 
 Python is prohibited throughout CUDA-MCGS, CUDA-JS, and every future project whose primary purpose is to build, test, package, release, operate, or extend the CUDA-MCGS ecosystem.
@@ -64,7 +77,7 @@ The framework defines universal search contracts, a universal extension/composit
 
 A behavior belongs in universal core meaning only when it is required to state correctness, lifecycle, finite resources, or composition across the intended MCGS equivalence class. Reuse by one product or several products does not automatically promote it. The second-instance and first-consumer-deletion tests apply before promotion.
 
-The external CUDA runtime contract and external-product boundary must not become back doors for embedding one domain, graph, search policy, evaluator, product output, or model into CUDA-MCGS foundations.
+The external CUDA runtime contract, optional RNG/communication semantic contracts and external-product boundary must not become back doors for embedding one domain, graph, search policy, evaluator, product output, or model into CUDA-MCGS foundations.
 
 ## Device-residency rule
 
@@ -76,6 +89,8 @@ Externally supplied domain facts such as a new accepted search root are inputs t
 
 An observation-to-host-decision-to-control-write, polling/relaunch, or callback loop that is required to advance internal search is non-conforming. Delayed or absent observation consumption must not block search progress.
 
+Optional `cuda-rng` or `cuda-comm` use may not weaken this rule. Any accepted stochastic or communication profile required for active-search progress must itself permit device-resident progress through the selected public lower-layer mechanisms rather than reintroducing a host coordinator.
+
 ## CUDA-JS capability escalation rule
 
 CUDA-MCGS uses an existing CUDA-JS public contract only when it expresses the needed generic GPU mechanism naturally, safely, with bounded resources/lifecycle, and without distorting search semantics. A requirement that would otherwise invite C/C++, CUDA-specific source, private imports, host progression, unsafe synchronization, artificial kernel fragmentation, or duplicated generic lifecycle is treated as a potential CUDA-JS capability gap rather than forced into CUDA-MCGS.
@@ -84,19 +99,19 @@ The inclination to reach for native code in CUDA-MCGS is enough to trigger this 
 
 A promoted CUDA-JS capability must be consumer-neutral, independently qualified, and explicit about ownership, exclusions, resources, synchronization, failure, cancellation, teardown, compatibility and first-consumer deletion. CUDA-MCGS retains universal search semantics and framework lifecycle; external products retain product policy/protocol/model/output meaning. If a need cannot be separated from product policy naturally, it remains downstream instead of being exported to CUDA-JS or promoted into CUDA-MCGS by convenience.
 
-Generic dense tensor mathematics belongs to CUDA-JS-Tensor or another natural mathematical owner when selected; evaluator/search meaning remains with its owning CUDA-MCGS contract or external product.
+Generic dense tensor mathematics belongs to CUDA-JS-Tensor or another natural mathematical owner when selected. Reusable RNG semantics belong to `cuda-rng`; reusable communication semantics belong to `cuda-comm`. Evaluator/search meaning remains with its owning CUDA-MCGS contract or external product.
 
 ## Resource rule
 
-Universality does not imply unbounded resources. Every concrete engine declares and enforces finite capacities derived from available GPU memory, resident evaluator/model, workspace, runtime/safety reserves, domain representation, graph/path/queue needs, selected extension state/channels, Search Session control/observation needs, and outputs.
+Universality does not imply unbounded resources. Every concrete engine declares and enforces finite capacities derived from available GPU memory, resident evaluator/model, workspace, runtime/safety reserves, domain representation, graph/path/queue needs, selected extension state/channels, Search Session control/observation needs, selected optional RNG/communication resources, and outputs.
 
-CUDA-MCGS owns the search-resource partition and pressure policy. CUDA-JS owns generic resource creation/lifetime behavior and reports capability/allocation outcomes through its versioned contract.
+CUDA-MCGS owns the search-resource partition and pressure policy. CUDA-JS owns generic resource creation/lifetime behavior and reports capability/allocation outcomes through its versioned contract. Optional semantic dependencies own their reusable semantic state machines and map lower resource truth without becoming search-resource policy owners.
 
 Resource exhaustion is specified behavior, not an undefined failure discovered mid-search. Initial root and reroot admission may not escape finite planning through surprise allocation. Advance is valid only for an already ready realized successor and may not allocate, resize or transform state.
 
 ## Initial exclusions
 
-The universal core must not assume a board, two players, alternating turns, zero-sum values, deterministic transitions, finite exhaustive actions, scalar evaluation, neural evaluator, tree/DAG, fixed-size state/output, ranked moves, unlimited growth, one CUDA execution mechanism, or one Node/CUDA binding backend unless a selected consumer/profile explicitly supplies that contract.
+The universal core must not assume a board, two players, alternating turns, zero-sum values, deterministic transitions, finite exhaustive actions, scalar evaluation, neural evaluator, tree/DAG, fixed-size state/output, ranked moves, unlimited growth, one CUDA execution mechanism, one RNG provider/distribution, one communication model, or one Node/CUDA binding backend unless a selected consumer/profile explicitly supplies that contract.
 
 The extension substrate must not assume that one current capability category, first product, or first domain is the permanent extension vocabulary.
 
