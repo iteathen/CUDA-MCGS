@@ -8,87 +8,67 @@
 
 Protected semantic authority remains `main@3ecac11e3576bd063760bc9572f79bea78acd031`.
 
-The integrated Session base remains `experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd`. Framework #183 and terminal slice #184 are already integrated on that candidate lineage; candidate/reference integration remains distinct from #122 protected acceptance and native/product claims.
+The exact Stage base is integrated candidate `experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a`. Session #181 is integrated/read back there; candidate evidence remains distinct from protected #122 acceptance and native/product claims.
 
-## Latest fully qualified Session content checkpoint
+## Qualified Stage semantic checkpoint
 
-`REF-SESSION-01` / #181:
+`REF-STAGE-01` / #30:
 
-`61fce562f97d475c140ac33e9e5c9f226abef570`
+`9ae16e7360226e35a69a1436a1f773dada592c95`
 
 tree:
 
-`d6681d2c441453266fcfd4b8c696db7bb72d1a64`
+`2f979d5d53b4e2aca60b8952315ae72753c545c1`
 
-The tree is exactly equal to `bc4902aad716cb8daf7dcafc0d5058c885399659`; the exploratory/revert commits between those heads have zero net file difference.
+Stage workflow `33696515582` passed.
 
-Exact-head PR workflows passed:
+### Stage semantic result
 
-- Session behavioral reference `33692905307`;
-- Terminal slice `33692905267`;
-- Framework lifecycle `33692905299`;
-- full repository/documentation matrix `33692905302`.
-
-### Composer and coupled prerequisites
-
-- Composer: `881/881`;
-- required owner projections: pass;
-- Session CI self-gate: pass;
-- advance/reroot/teardown boundary gate: pass;
-- terminal Session-absent reference: `6/6`;
-- terminal evidence: `c9c0b9b8847c5121bc6cce1ff3707e2c465a4fddd067a400693b235972254388`.
-
-### Session behavioral result
-
-- expected/discovered/executed/passed: `25/25/25/25`;
+- Stage cases: `10/10`;
+- direct SPEC-0003 ENGINE-REFERENCE routes: `8/8`;
 - failures/skips/not-discovered: `0`;
-- direct SPEC-0006 ENGINE-REFERENCE routes: `38/38` executed;
-- Session profile projection: `4bbead6230b841d42c6658397164900895a30391c69279be1fab84b3225f5106`;
-- Session evidence: `850ec70294295a605ee3f449c1dccb91d87795a00b6bf966cde36f8fcc76f6bf`;
-- canonical bytes: `18579`;
-- artifact: `9870707549`;
-- artifact digest: `sha256:381746482638e01643935b787d867a869c3969da10e68f293d2e1982ccac13d1`.
+- Stage profile projection: `919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28`;
+- Stage evidence: `7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea`;
+- canonical bytes: `9395`;
+- semantic-checkpoint artifact: `9871959921`, digest `sha256:796f945b704c47a55f3fd06b66224171f4c7a74d987ddeb53a11e667d168c636`.
 
-The permanent 25th case covers replay after typed terminal rejection: exact replay returns the original typed outcome; changed payload under the same command ID raises the Session replay conflict. This converts the valid review red at `31dd36d918c062750361b5ed9fe227854e2c9280` / run `33691410709` into durable checked-in evidence.
+The 10 permanent cases cover declared normalized outcomes/source owners, pending ownership release, Resource/Progress delegation, materially different legal schedule orderings with invariant per-item semantics, first-product deletion, whole-substrate absence, mutation sensitivity, a distinct second Stage profile, portable/native claim limits, normalized release closure, and undeclared-owner-fact rejection.
 
-## Invalid exploratory capacity probe
+## Documentation-inclusive PR checkpoint
 
-A review-time experiment at `87c135ba905ff340f575df3448463f727bdc7d33` added a 26th case that treated `profile.commands.capacity` as a lifetime replay ledger and counted rejected pre-ignition initial-root command identities against it. Run `33692373122` failed only that new case.
+PR #190 head `385594ab40feeb31bea933ceed0155b9a091e996` changed no Stage semantic/test/projection/workflow source after the semantic checkpoint and passed all required exact-head workflows:
 
-An attempted narrow repair at `7576aed00a14456ef9a029d436a651d87b0c2f11` made Session pressure legal observation requests before the Output observation profile reached its own pending-request capacity; run `33692621320` exposed that contradiction.
+- Stage `33696784971` — success;
+- Session `33696784953` — success;
+- Terminal `33696784966` — success;
+- Framework `33696784943` — success;
+- full repository/documentation matrix `33696784987` — success, including Governance, Windows/Ubuntu Search IR and aggregate `verify`.
 
-Reassessment against SPEC-0006 and the Composer profile established that the falsifier premise was invalid: `commands.capacity` is sourced from Progress external-wait `maxPendingCommands`; initial root is a separate pre-ignition lifecycle operation. Forward revert `61fce562…` removed the test and repair and restored the exact prior reviewed tree. These two runs are preserved as diagnostic history and are not counted as conformance reds.
+The Stage evidence identity remained `7f608810…`; regenerated exact-PR-head artifact `9872056402` has archive digest `sha256:4d7334fdd4aa6806762b01040e7eb75143a0c955542b6eacc3891b381e2f80a4`.
 
-## Retained valid review reds
+Fresh author-side base-to-head review of all 16 changed files found no blocking semantic, ownership, evidence, governance or cleanup defect. The review confirmed that projection reconstruction goes only through existing Composer normalizers and exact published identities, the Stage oracle owns no aggregate Resource or global Progress semantics, native/CUDA mechanisms remain deferred to CUDA-JS, and no generated build artifact is checked in.
 
-| Finding | Test-only/intermediate head | Workflow |
-| --- | --- | ---: |
-| advance changed root incarnation | `dc5b2c363933476b9580c267ba58c6f79ee56966` | `33682215069` |
-| Session invented Output publication truth | `1341d784329c03b7f697fa62a5dc6fba1237cd4f` | `33682862655` |
-| completion allowed a live observation borrow | `f7a78dda0e9be4bd52a8dd28db82710be059c5e2` | `33683367794` |
-| cancellation mutated reroot before command admission | `f4a8d21dd2c53dceba3ec1cdbdbf371f05598f94` | `33684006773` |
-| permanent Session CI runner could be skipped | `46d105821be7a49063f0bc91cce0ebe4acf570a7` | `33684533233` |
-| malformed command mutated before validation | `d74ab8b9efd5df68e47d7099081c58f743dea12a` | `33684937813` |
-| foreign Output profile provenance accepted | `3f0e86f871795a5c26a7277210e2685f4264cb80` | `33688752675` |
-| foreign Session provenance accepted | `d569fd1cbb3374697751e1b9772bd43c1fbd845b` | `33689574707` |
-| stale advance authority accepted | `3a00cacb58cc244b0b1918e3d40dc18ea3448875` | `33690115667` |
-| stale reroot authority accepted | `5e3864f854483d989815044ce7f5fd4aa36d4438` | `33690463348` |
-| strict reroot authority exposed ordinary case composition missing public authority | `9edc258b7aa3336a1c868c1d779baaecac0f3809` | `33690589366` |
-| invalid reroot authority leaked harness canonicalization instead of typed rejection | `2a6fe270d44a1cd91dd72de13b066200988f2c92` | `33690963232` |
-| changed replay after typed command rejection was accepted | `31dd36d918c062750361b5ed9fe227854e2c9280` | `33691410709` |
+## Retained red-before-green evidence
 
-No valid falsifier above was weakened to obtain the current green result.
+| Finding | Red head | Workflow | Artifact |
+| --- | --- | ---: | ---: |
+| pending outcome retained worker/mutable lease/reservation | `2a12ca82dd9e99981dc3ed52623ea46d12930819` | `33695493706` | `9871610435` |
+| non-pending release contract not enforced; undeclared owner fact accepted | `4ebfd3f0802f1cb746aaad986ce97cd92c04bc57` | `33696328927` | `9871897062` |
 
-## Ownership result
+No red was weakened to obtain green.
 
-The executable Session reference consumes Composer-normalized Session structure and public sibling-owner facts. It does not reconstruct Domain root validity, Graph storage/reclamation, Resource accounting, Progress scheduling/closure, Output payload/snapshot/publication meaning, Framework lifecycle, CUDA mechanisms, or product semantics.
+## Diagnostic-only intermediate failure
 
-The case bank covers initial root, advance/reroot separation, transposed occurrence behavior, stale authority, reroot prepare/abort/commit/quarantine, attention independence, Output/Session/search provenance, observation pressure/borrow lifecycle, cancellation/completion, finite counter exhaustion, command validation/replay, normalized teardown order, typed rejection replay, and exact Session absence.
+Run `33696000529` at `1a1e21c1…` failed two expanded tests because they selected canonically sorted Stage arrays by assumed indices. The semantic oracle was unchanged. The harness was corrected to select normalized `entryStage` and checkpoint identities; this run is diagnostic history, not conformance evidence.
+
+## Ownership and evidence result
+
+The executable Stage reference consumes existing Composer-normalized Stage structure and public sibling-owner facts. It does not reconstruct Domain/Graph/Policy/Evaluator meaning, Resource accounting, Progress scheduling, Output/Session/Framework authority, or CUDA-JS lowering/runtime behavior.
+
+The Stage case registration wrapper pins transitive core/review case source hashes, preserving content-sensitive evidence despite the review-time case split.
 
 ## Current gate
 
-The semantic/reference content has completed exact-head qualification and fresh whole-diff author review without a blocker. This tracker-only finalization must pass the permanent Session, Terminal, Framework and full repository/documentation workflows, and must differ from `61fce562…` only in current-state documentation.
+This final current-state reconciliation changes only `STATUS.md`, `next_step.yaml`, this `README.md`, and this `RESULTS.md`. Its exact branch head must rerun the same coupled Stage/Session/Terminal/Framework/full-repository gates. If green, the only remaining pre-integration gate is fresh repository-owner authorization for the exact PR #190 head/base.
 
-After that, stop for fresh repository-owner authorization of the exact final head against base `079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd` before any transport or merge.
-
-After authorized #181 integration/readback: #30 Stage → #33 Channel evidence → #36 final reference integration → #122 protected atomic acceptance.
+After authorized #30 integration/readback: #33 Channel evidence → #36 final reference integration → #122 protected atomic acceptance.

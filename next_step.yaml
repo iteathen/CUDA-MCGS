@@ -1,9 +1,9 @@
 {
-  "schema_version": 99,
+  "schema_version": 101,
   "updated": "2026-09-02",
-  "status": "ref_session_01_review_complete_pending_tracker_head_qualification_and_owner_authorization",
-  "objective": "Qualify the tracker-only final REF-SESSION-01 head, then stop for fresh repository-owner exact-head authorization. Do not start Stage or integrate Session before authorization.",
-  "ownership_boundary": "Session owns external command ordering/replay/idempotence/provenance, Session identity/incarnation, initial-root and advance authority coordination, reroot transaction coordination, attention provenance, bounded observation coordination, cancellation/completion, finite counters and Session cleanup. Domain, Graph, Resource, Progress, Output, Framework, CUDA-JS and product semantics remain with their natural owners.",
+  "status": "ref_stage_01_review_complete_pending_final_tracker_head_qualification_and_owner_authorization",
+  "objective": "Qualify the final tracker-only REF-STAGE-01 head, then stop for fresh repository-owner exact-head authorization. Do not integrate Stage or start Channel before authorization and guarded readback.",
+  "ownership_boundary": "Stage owns per-work-item stable checkpoint invocation and declared local outcome semantics only. Domain, Graph, Policy, Evaluator, Resource, Progress, Output, Session and Framework remain separate semantic owners. CUDA-JS owns Device-JS validation/lowering, PTX/cubin/LTO/native artifacts, linking/loading and generic runtime mechanisms; downstream products own product meaning.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
@@ -13,92 +13,80 @@
     "agent_files/general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md",
     "agent_files/general_foundation/CLEANUP_AND_DISPOSITION.md",
     "docs/development/2026-08-25-engine-reference-01-assessment-and-plan.md",
-    "docs/specs/SPEC-0006-search-session-control-and-observation.md",
-    "experiments/search-ir-composer-reference/src/session.mjs",
-    "experiments/search-ir-composer-reference/src/session-fixtures.mjs",
-    "https://github.com/iteathen/CUDA-MCGS/issues/181",
-    "https://github.com/iteathen/CUDA-MCGS/pull/189"
+    "docs/specs/SPEC-0003-search-stage-and-extension-surface.md",
+    "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
+    "experiments/search-ir-composer-reference/src/stage.mjs",
+    "experiments/search-ir-composer-reference/src/stage-fixtures.mjs",
+    "https://github.com/iteathen/CUDA-MCGS/issues/30",
+    "https://github.com/iteathen/CUDA-MCGS/pull/190"
   ],
   "state": {
     "protected_authority": "main@3ecac11e3576bd063760bc9572f79bea78acd031",
-    "integrated_candidate_portfolio": "experimental/portfolio@079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd",
-    "active_issue": 181,
-    "active_branch": "ref/session-01",
-    "review_pr": 189,
-    "exact_session_base": "079e80a4f30f34c1e534b3b6456d8a6f4d2d31cd",
-    "latest_fully_qualified_content_head": "61fce562f97d475c140ac33e9e5c9f226abef570",
-    "latest_fully_qualified_content_tree": "d6681d2c441453266fcfd4b8c696db7bb72d1a64",
-    "qualified_semantic_checkpoint": "51b596ecdc2da1ff2c9c69b4974858d9a42dec88"
+    "integrated_candidate_portfolio": "experimental/portfolio@f79845b3d45eb1e3b39d7be6128776a56cb4f54a",
+    "active_issue": 30,
+    "active_branch": "ref/stage-01",
+    "review_pr": 190,
+    "exact_stage_base": "f79845b3d45eb1e3b39d7be6128776a56cb4f54a",
+    "qualified_semantic_head": "9ae16e7360226e35a69a1436a1f773dada592c95",
+    "qualified_semantic_tree": "2f979d5d53b4e2aca60b8952315ae72753c545c1",
+    "documentation_review_checkpoint": "385594ab40feeb31bea933ceed0155b9a091e996"
   },
-  "exact_head_qualification": {
-    "session_workflow": 33692905307,
-    "terminal_workflow": 33692905267,
-    "framework_workflow": 33692905299,
-    "documentation_workflow": 33692905302,
-    "composer_cases": "881/881",
-    "session_cases": "25/25",
-    "direct_spec_0006_routes": "38/38",
-    "terminal_session_absent_cases": "6/6",
-    "session_evidence": "850ec70294295a605ee3f449c1dccb91d87795a00b6bf966cde36f8fcc76f6bf",
-    "session_canonical_bytes": 18579,
-    "artifact": 9870707549,
-    "artifact_digest": "sha256:381746482638e01643935b787d867a869c3969da10e68f293d2e1982ccac13d1"
+  "pr_qualification": {
+    "stage_workflow": 33696784971,
+    "session_workflow": 33696784953,
+    "terminal_workflow": 33696784966,
+    "framework_workflow": 33696784943,
+    "documentation_workflow": 33696784987,
+    "stage_cases": "10/10",
+    "direct_spec_0003_routes": "8/8",
+    "stage_projection": "919c3012b61aba22b374dca156762749f165e712907e341288dcc623d7d6cd28",
+    "stage_evidence": "7f6088100cff6aad53edfc928213070933c12c8f34386c08193aaf768f6c42ea",
+    "stage_canonical_bytes": 9395,
+    "artifact": 9872056402,
+    "artifact_digest": "sha256:4d7334fdd4aa6806762b01040e7eb75143a0c955542b6eacc3891b381e2f80a4"
   },
   "review": {
     "whole_diff": "complete-no-blocker",
-    "content_identity": "61fce562 tree equals bc4902aad716cb8daf7dcafc0d5058c885399659 tree exactly",
-    "invalid_exploration": {
-      "test_head": "87c135ba905ff340f575df3448463f727bdc7d33",
-      "test_workflow": 33692373122,
-      "attempted_repair_head": "7576aed00a14456ef9a029d436a651d87b0c2f11",
-      "attempted_repair_workflow": 33692621320,
-      "disposition": "rejected after reassessment; pending-command capacity was incorrectly interpreted as lifetime replay-ledger capacity; forward-reverted without rewriting history"
-    }
+    "changed_files": 16,
+    "semantic_tail": "all Stage semantic/test/projection/workflow sources are frozen at 9ae16e73...; later branch changes are current-state documents only",
+    "ownership": "no duplicate Stage normalizer, Resource/Progress authority, CUDA-JS lowering/runtime authority, native code or product meaning introduced"
   },
   "preserved_red_evidence": [
-    {"finding":"advance changed root incarnation","head":"dc5b2c363933476b9580c267ba58c6f79ee56966","workflow":33682215069},
-    {"finding":"Session invented Output publication truth","head":"1341d784329c03b7f697fa62a5dc6fba1237cd4f","workflow":33682862655},
-    {"finding":"completion allowed live observation borrow","head":"f7a78dda0e9be4bd52a8dd28db82710be059c5e2","workflow":33683367794},
-    {"finding":"cancellation mutated reroot before admission","head":"f4a8d21dd2c53dceba3ec1cdbdbf371f05598f94","workflow":33684006773},
-    {"finding":"Session CI runner could be skipped","head":"46d105821be7a49063f0bc91cce0ebe4acf570a7","workflow":33684533233},
-    {"finding":"malformed command mutated before validation","head":"d74ab8b9efd5df68e47d7099081c58f743dea12a","workflow":33684937813},
-    {"finding":"foreign Output profile provenance accepted","head":"3f0e86f871795a5c26a7277210e2685f4264cb80","workflow":33688752675},
-    {"finding":"foreign Session provenance accepted","head":"d569fd1cbb3374697751e1b9772bd43c1fbd845b","workflow":33689574707},
-    {"finding":"stale advance authority accepted","head":"3a00cacb58cc244b0b1918e3d40dc18ea3448875","workflow":33690115667},
-    {"finding":"stale reroot authority accepted","head":"5e3864f854483d989815044ce7f5fd4aa36d4438","workflow":33690463348},
-    {"finding":"strict reroot authority exposed stale case composition","head":"9edc258b7aa3336a1c868c1d779baaecac0f3809","workflow":33690589366},
-    {"finding":"invalid reroot authority leaked harness canonicalization instead of typed Session rejection","head":"2a6fe270d44a1cd91dd72de13b066200988f2c92","workflow":33690963232},
-    {"finding":"changed replay after typed command rejection was accepted","head":"31dd36d918c062750361b5ed9fe227854e2c9280","workflow":33691410709}
+    {"finding":"pending Stage outcome retained worker, mutable lease or reservation","head":"2a12ca82dd9e99981dc3ed52623ea46d12930819","workflow":33695493706,"artifact":9871610435},
+    {"finding":"declared non-pending release contract not enforced and undeclared owner facts accepted","head":"4ebfd3f0802f1cb746aaad986ce97cd92c04bc57","workflow":33696328927,"artifact":9871897062}
+  ],
+  "diagnostic_history": [
+    {"head":"1a1e21c18f78119df5ec70da3ebf518b77dbd927","workflow":33696000529,"disposition":"test-selection assumptions used canonical stage-array indices instead of normalized entryStage/checkpoint identity; harness-only correction, not a conformance red"}
   ],
   "deliverables": [
-    "Session profile projection/export consuming the existing Composer normalizer as structural authority.",
-    "Owner-local Session oracle, case support, permanent expected case bank and runner under experiments/search-semantics-reference.",
-    "Permanent Session CI gate coupled to Composer projections, Session advance/reroot/teardown boundary checks and terminal Session-absent regression.",
-    "25-case Session behavioral reference covering all 38 direct SPEC-0006 ENGINE-REFERENCE obligations.",
-    "Permanent rejected-command replay case proving original typed outcome replay and changed-input rejection.",
-    "PR #189 as the author-review record plus reconciled STATUS.md, next_step.yaml and experiment README/RESULTS."
+    "Composer-owned Stage profile projection/export bound to exact existing normalized Stage identities.",
+    "Owner-local Stage behavioral oracle, case support, case bank and runner under experiments/search-semantics-reference.",
+    "Permanent Stage CI self-gate and evidence artifact.",
+    "10-case Stage behavioral reference covering all 8 direct SPEC-0003 ENGINE-REFERENCE obligations.",
+    "Materially different legal schedule proof, first-product deletion, whole-substrate absence, mutation sensitivity and portable/native claim limits.",
+    "Preserved red-before-green evidence for pending ownership release and review-discovered release/owner-fact closure defects."
   ],
   "validation": [
-    "The exact final head must pass Session behavioral reference, Terminal slice reference, Framework lifecycle reference and the full repository/documentation matrix.",
-    "The tracker-only finalization after 61fce562... may change only STATUS.md, next_step.yaml and experiments/search-semantics-reference/README.md and RESULTS.md.",
-    "Session must remain 25/25 with Composer 881/881, terminal Session-absent 6/6 and all 38 direct SPEC-0006 routes.",
-    "Fresh complete-diff author review must remain free of blocking semantic, ownership, governance, evidence or cleanup defects.",
-    "Any material head or base change after review invalidates affected review/authorization and requires requalification."
+    "The final tracker-only head may differ from documentation review checkpoint 385594ab... only in STATUS.md, next_step.yaml and experiments/search-semantics-reference/README.md and RESULTS.md.",
+    "The final tracker-only head must pass Stage, Session, Terminal, Framework and full repository/documentation workflows on one exact head.",
+    "Stage must remain 10/10 with all 8 direct SPEC-0003 routes and no skips.",
+    "Fresh whole-diff author review is complete at 385594ab...; any semantic/test/workflow change after that invalidates review and requires another full review.",
+    "Any material base change invalidates review/authorization and requires requalification."
   ],
   "blockers": [],
   "current_gate": [
-    "Qualify the tracker-only finalization head with Session, Terminal, Framework and full repository/documentation workflows.",
-    "Verify the tracker-only finalization changed no semantic/test/workflow source.",
-    "Update PR #189 and issue/current-state surfaces to the exact final head.",
+    "Qualify this final tracker-only head with Stage, Session, Terminal, Framework and full repository/documentation workflows.",
+    "Verify the final tracker-only tail changed no Stage semantic/test/projection/workflow source.",
+    "Update PR #190 and issue/current-state surfaces to the exact final head.",
     "Stop for fresh repository-owner authorization of that exact reviewed head/base."
   ],
   "do_not": [
-    "Do not count the invalid replay-ledger capacity exploration as a conformance red.",
-    "Do not weaken stale authority, provenance, teardown, or rejected-command replay gates.",
-    "Do not create another Session schema/normalizer or generic root transaction owner.",
-    "Do not duplicate Domain, Graph, Resource, Progress, Output or Framework authority.",
-    "Do not add native code, private CUDA-JS access, product semantics or a host progression loop.",
-    "Do not start #30 or merge #181 before exact-head authorization and guarded readback."
+    "Do not create a second Stage schema/normalizer, scheduler, workflow DSL or runtime extension registry.",
+    "Do not let Stage own Resource admission/accounting or Progress global scheduling/fairness.",
+    "Do not accept undeclared owner facts or outcomes that contradict normalized release semantics.",
+    "Do not add CUDA-MCGS PTX/native lowering or private CUDA-JS access.",
+    "Do not count the canonical-index harness failure as a conformance red.",
+    "Do not start #33 or integrate #30 before exact-head owner authorization and guarded readback."
   ],
-  "next_after_authorized_integration": "#30 REF-STAGE-01, then #33 REF-CHANNEL-EVIDENCE-01, #36 REF-INTEGRATE-01, and #122 protected atomic semantic acceptance."
+  "next_after_authorized_integration": "#33 REF-CHANNEL-EVIDENCE-01, then #36 REF-INTEGRATE-01 and #122 protected atomic semantic acceptance."
 }
