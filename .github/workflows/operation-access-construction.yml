@@ -32,62 +32,66 @@ jobs:
             const source = readFileSync(path, 'utf8');
             const first = source.indexOf(before);
             if (first < 0 || source.indexOf(before, first + 1) >= 0) {
-              throw new Error(`${path}: expected exactly one construction seam`);
+              throw new Error(`${path}: expected exactly one construction seam for ${JSON.stringify(before)}`);
             }
             writeFileSync(path, source.slice(0, first) + after + source.slice(first + before.length));
           }
 
           const programPath = 'experiments/search-ir-composer-reference/src/program-package.mjs';
-          replaceExact(programPath,
-          `  if (input.source?.kind === 'resource') {
-            exactKeys(input.source, ['kind', 'resource'], 'COMPOSE_OPERATION_BINDING_FIELDS', \`${'${operationId} ${input.parameter} resource'}\`);
-            const resource = resources.get(input.source.resource);
-            if (!resource || resource.materialization !== 'resident-storage' || !parameter.type.startsWith('ptr<')) fail('COMPOSE_OPERATION_BINDING', \`${'${operationId} resource binding is incompatible'}\`);
-            return { parameter: input.parameter, source: { kind: 'resource', resource: input.source.resource } };
-          }
-          exactKeys(input.source, ['kind', 'schema'], 'COMPOSE_OPERATION_BINDING_FIELDS', \`${'${operationId} ${input.parameter} scalar'}\`);`,
-          `  if (input.source?.kind === 'resource') {
-            const hasAccess = Object.hasOwn(input.source, 'access');
-            exactKeys(input.source, hasAccess ? ['kind', 'resource', 'access'] : ['kind', 'resource'], 'COMPOSE_OPERATION_BINDING_FIELDS', \`${'${operationId} ${input.parameter} resource'}\`);
-            const resource = resources.get(input.source.resource);
-            if (!resource || resource.materialization !== 'resident-storage' || !parameter.type.startsWith('ptr<')) fail('COMPOSE_OPERATION_BINDING', \`${'${operationId} resource binding is incompatible'}\`);
-            const source = { kind: 'resource', resource: input.source.resource };
-            if (hasAccess) {
-              const access = assertEnum(input.source.access, ['read', 'write', 'read-write'], 'COMPOSE_OPERATION_ACCESS', \`${'${operationId} ${input.parameter} access'}\`);
-              if ((access === 'read' || access === 'read-write') && !resource.access.includes('read')) fail('COMPOSE_OPERATION_ACCESS', \`${'${operationId} ${input.parameter} read access exceeds the resource envelope'}\`);
-              if ((access === 'write' || access === 'read-write') && !resource.access.includes('write')) fail('COMPOSE_OPERATION_ACCESS', \`${'${operationId} ${input.parameter} write access exceeds the resource envelope'}\`);
-              source.access = access;
-            }
-            return { parameter: input.parameter, source };
-          }
-          if (Object.hasOwn(input.source ?? {}, 'access')) fail('COMPOSE_OPERATION_ACCESS', \`${'${operationId} ${input.parameter} scalar binding cannot carry access'}\`);
-          exactKeys(input.source, ['kind', 'schema'], 'COMPOSE_OPERATION_BINDING_FIELDS', \`${'${operationId} ${input.parameter} scalar'}\`);`);
-
-          replaceExact(programPath,
-          `function buildCudaJsAdapterRequirements(program) {
-            const resources = program.resources.filter(({ materialization }) => materialization === 'resident-storage');
-            const resourceNames = new Map(resources.map((entry, index) => [entry.id, \`resource-${'${index}'}\`]));
-            const operations = program.operations.map((entry, index) => ({`,
-          `function buildCudaJsAdapterRequirements(program) {
-            const resources = program.resources.filter(({ materialization }) => materialization === 'resident-storage');
-            const resourceNames = new Map(resources.map((entry, index) => [entry.id, \`resource-${'${index}'}\`]));
-            for (const operation of program.operations) for (const binding of operation.bindings) {
-              if (binding.source.kind === 'resource' && !Object.hasOwn(binding.source, 'access')) {
-                fail('COMPOSE_OPERATION_ACCESS_REQUIRED', \`${'${operation.id} ${binding.parameter} lacks operation-local resource access'}\`);
-              }
-            }
-            const operations = program.operations.map((entry, index) => ({`);
-
-          replaceExact(programPath,
-          `      ? { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource) } }
-                : { parameter: binding.parameter, source: { kind: 'scalar', schema: { ...binding.source.schema } } }),`,
-          `      ? { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource), access: binding.source.access } }
-                : { parameter: binding.parameter, source: { kind: 'scalar', schema: { ...binding.source.schema } } }),`);
+          replaceExact(
+            programPath,
+            "    exactKeys(input.source, ['kind', 'resource'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} resource`);",
+            [
+              "    const hasAccess = Object.hasOwn(input.source, 'access');",
+              "    exactKeys(input.source, hasAccess ? ['kind', 'resource', 'access'] : ['kind', 'resource'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} resource`);",
+            ].join('\n'),
+          );
+          replaceExact(
+            programPath,
+            "    return { parameter: input.parameter, source: { kind: 'resource', resource: input.source.resource } };",
+            [
+              "    const source = { kind: 'resource', resource: input.source.resource };",
+              "    if (hasAccess) {",
+              "      const access = assertEnum(input.source.access, ['read', 'write', 'read-write'], 'COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} access`);",
+              "      if ((access === 'read' || access === 'read-write') && !resource.access.includes('read')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} read access exceeds the resource envelope`);",
+              "      if ((access === 'write' || access === 'read-write') && !resource.access.includes('write')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} write access exceeds the resource envelope`);",
+              "      source.access = access;",
+              "    }",
+              "    return { parameter: input.parameter, source };",
+            ].join('\n'),
+          );
+          replaceExact(
+            programPath,
+            "  exactKeys(input.source, ['kind', 'schema'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} scalar`);",
+            [
+              "  if (Object.hasOwn(input.source ?? {}, 'access')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} scalar binding cannot carry access`);",
+              "  exactKeys(input.source, ['kind', 'schema'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} scalar`);",
+            ].join('\n'),
+          );
+          replaceExact(
+            programPath,
+            "  const resourceNames = new Map(resources.map((entry, index) => [entry.id, `resource-${index}`]));",
+            [
+              "  const resourceNames = new Map(resources.map((entry, index) => [entry.id, `resource-${index}`]));",
+              "  for (const operation of program.operations) for (const binding of operation.bindings) {",
+              "    if (binding.source.kind === 'resource' && !Object.hasOwn(binding.source, 'access')) {",
+              "      fail('COMPOSE_OPERATION_ACCESS_REQUIRED', `${operation.id} ${binding.parameter} lacks operation-local resource access`);",
+              "    }",
+              "  }",
+            ].join('\n'),
+          );
+          replaceExact(
+            programPath,
+            "      ? { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource) } }",
+            "      ? { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource), access: binding.source.access } }",
+          );
 
           const fixturePath = 'experiments/search-ir-composer-reference/src/program-package-fixtures.mjs';
-          replaceExact(fixturePath,
-          `bindings: [{ parameter: 'output', source: { kind: 'resource', resource: outputResource.id } }],`,
-          `bindings: [{ parameter: 'output', source: { kind: 'resource', resource: outputResource.id, access: 'write' } }],`);
+          replaceExact(
+            fixturePath,
+            "bindings: [{ parameter: 'output', source: { kind: 'resource', resource: outputResource.id } }],",
+            "bindings: [{ parameter: 'output', source: { kind: 'resource', resource: outputResource.id, access: 'write' } }],",
+          );
 
           const operationAccess = {
             enum: ['read', 'write', 'read-write'],
@@ -101,7 +105,9 @@ jobs:
             const branches = schema.$defs[definition].properties.source.oneOf;
             const resource = branches.find((entry) => entry.properties?.kind?.const === 'resource');
             const scalar = branches.find((entry) => entry.properties?.kind?.const === 'scalar');
-            if (!resource || !scalar || Object.hasOwn(resource.properties, 'access') || Object.hasOwn(scalar.properties, 'access')) throw new Error(`${path}: unexpected binding schema seam`);
+            if (!resource || !scalar || Object.hasOwn(resource.properties, 'access') || Object.hasOwn(scalar.properties, 'access')) {
+              throw new Error(`${path}: unexpected binding schema seam`);
+            }
             resource.properties.access = operationAccess;
             writeFileSync(path, `${JSON.stringify(schema, null, 2)}\n`);
           }
@@ -181,11 +187,8 @@ jobs:
           assert.equal(execution.normalized.cudaJsAdapter.operationRequirements[0].bindings[0].source.access, 'write');
           assert.deepEqual(new Set(execution.normalized.cudaJsAdapter.resourceRequirements[0].accessRequirements), new Set(broadAccess));
 
-          const readOnly = normalizeCase(['read'], 'read');
-          assert.equal(readOnly.normalized.normalized.operations[0].bindings[0].source.access, 'read');
-          const readWrite = normalizeCase(['read', 'write'], 'read-write');
-          assert.equal(readWrite.normalized.normalized.operations[0].bindings[0].source.access, 'read-write');
-
+          assert.equal(normalizeCase(['read'], 'read').normalized.normalized.operations[0].bindings[0].source.access, 'read');
+          assert.equal(normalizeCase(['read', 'write'], 'read-write').normalized.normalized.operations[0].bindings[0].source.access, 'read-write');
           assert.throws(() => normalizeCase(['write'], 'read'), { code: 'COMPOSE_OPERATION_ACCESS' });
           assert.throws(() => normalizeCase(['read'], 'write'), { code: 'COMPOSE_OPERATION_ACCESS' });
           assert.throws(() => normalizeCase(['read'], 'read-write'), { code: 'COMPOSE_OPERATION_ACCESS' });
@@ -201,8 +204,8 @@ jobs:
           assert.throws(() => normalizeProgramPackageProfile(scalarAccess.fixture.input, scalarAccess.inspected, scalarAccess.fixture.context), { code: 'COMPOSE_OPERATION_ACCESS' });
 
           const historical = normalizeCase(broadAccess, null);
-          const historicalProgram = composeSearchProgram(historical.normalized);
-          assert.throws(() => buildExecutionPackage(historical.normalized, historicalProgram), { code: 'COMPOSE_OPERATION_ACCESS_REQUIRED' });
+          assert.equal(Object.hasOwn(historical.normalized.normalized.operations[0].bindings[0].source, 'access'), false);
+          assert.throws(() => buildExecutionPackage(historical.normalized, composeSearchProgram(historical.normalized)), { code: 'COMPOSE_OPERATION_ACCESS_REQUIRED' });
 
           const readWriteSameEnvelope = normalizeCase(broadAccess, 'read-write');
           assert.notEqual(readWriteSameEnvelope.normalized.identity.sha256, accepted.normalized.identity.sha256);
@@ -230,10 +233,7 @@ jobs:
           `);
 
           const integrationPath = 'scripts/run-engine-reference-integration.mjs';
-          replaceExact(integrationPath,
-          `  'scripts/run-search-ir-composer-reference.mjs',
-            'experiments/search-ir-composer-reference/verify-operation-local-access.mjs',`,
-          `  'scripts/run-search-ir-composer-reference.mjs',`);
+          replaceExact(integrationPath, "  'experiments/search-ir-composer-reference/verify-operation-local-access.mjs',\n", '');
 
           unlinkSync('.github/workflows/operation-access-construction.yml');
           NODE
