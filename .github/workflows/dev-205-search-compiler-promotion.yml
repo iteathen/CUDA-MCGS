@@ -1,0 +1,52 @@
+name: dev-205-search-compiler-promotion
+
+on:
+  push:
+    branches: [construct/205-search-compiler-promotion]
+
+permissions:
+  contents: write
+
+jobs:
+  promote-and-qualify:
+    if: github.event.head_commit.message == 'Add #205 promotion workflow'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Construct production promotion
+        run: node scripts/dev-205-promote-search-compiler.mjs
+      - name: Focused Search Compiler conformance
+        run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Full Engine reference integration
+        run: node scripts/run-engine-reference-integration.mjs
+      - name: Repository governance and source boundary
+        shell: bash
+        run: |
+          ./scripts/verify-docs.sh
+          node scripts/check-source-boundary.mjs
+      - name: Review construction diff
+        shell: bash
+        run: |
+          git diff --check
+          test ! -e experiments/search-ir-composer-reference
+          test -e components/search-compiler/component.yaml
+          test -e conformance/search-compiler/verify-promotion-boundary.mjs
+          if git grep -n 'components/search-compiler/src/' -- conformance ':!conformance/search-compiler/verify-promotion-boundary.mjs'; then
+            echo 'conformance deep-imported Search Compiler private src' >&2
+            exit 1
+          fi
+      - name: Publish qualified candidate and remove construction helpers
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Promote canonical Search Compiler to production ownership'
+          git rm scripts/dev-205-promote-search-compiler.mjs .github/workflows/dev-205-search-compiler-promotion.yml
+          git commit -m 'Remove #205 construction helpers'
+          git push origin HEAD:construct/205-search-compiler-promotion
