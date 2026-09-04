@@ -41,10 +41,14 @@ jobs:
           const verifierStart = source.indexOf(verifierStartMarker);
           const verifierEnd = source.indexOf(verifierEndMarker, verifierStart);
           if (verifierStart < 0 || verifierEnd < 0) throw new Error('preserved verifier block not found');
-          const verifier = source.slice(verifierStart + verifierStartMarker.length, verifierEnd)
+          let verifier = source.slice(verifierStart + verifierStartMarker.length, verifierEnd)
             .split('\n')
             .map((line) => line.startsWith('          ') ? line.slice(10) : line)
             .join('\n');
+          verifier = verifier.replace(
+            "requirements: [schemaReference('cuda-js.publication-mailbox', '8')], engineStepRoles",
+            "requirements: [baseBuilt.context.requirementById.get('cuda-js.publication-mailbox/0.1.0')], engineStepRoles",
+          );
           fs.writeFileSync('/tmp/verify-external-control-sideband-authority.mjs', verifier + '\n');
           NODE
       - name: Apply package-sideband implementation
