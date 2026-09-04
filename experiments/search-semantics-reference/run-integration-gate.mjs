@@ -50,103 +50,103 @@ const frozenEvidenceIdentities = {
   },
   "composer": {
     "algorithm": "sha256",
-    "byteLength": 709315,
-    "sha256": "3b701ac4d8fcb6f831d274656af0a65932cea1b479a18e2a80d8909e880fd731"
+    "byteLength": 709387,
+    "sha256": "e576c182b56ad857069af4260f24451aa5db6abfaa4e0d33a80e1f74b8797df6"
   },
   "domain": {
     "algorithm": "sha256",
     "byteLength": 30372,
-    "sha256": "5561b8821c570dec826933e256bf0f020eb35f01244d6527b6272c0fc51cfe38"
+    "sha256": "08517640b434f2c900914767564f7130f38d122bcca9845ab052161774bb0a2d"
   },
   "graph-node": {
     "algorithm": "sha256",
     "byteLength": 10047,
-    "sha256": "ab6e27592769e51d7799408e8b90b2141bca6d35c2f90f40282b38c8f1c84dce"
+    "sha256": "56c26a5a66d1c7a81e26137ea32d6a9dd639dd51871ece1f3aebedd6e45436e9"
   },
   "graph-edge": {
     "algorithm": "sha256",
     "byteLength": 11661,
-    "sha256": "b785595fd01f5f664d03cdc0aff9a604df3fee3c63746ba31ac6672477f872b3"
+    "sha256": "8376f680f7d8a97970b97f67d9f45b92901d48af95053fef3431feff660feada"
   },
   "graph-ref": {
     "algorithm": "sha256",
     "byteLength": 9139,
-    "sha256": "fc2bfb8fee1b107b9830440b5130ec7536c526d7c1e38ee3462ec67308d8069d"
+    "sha256": "197092573a6b4bf5035875ead6e5a682a283995ced633e4524c8f7003b3026f0"
   },
   "graph-path": {
     "algorithm": "sha256",
     "byteLength": 9530,
-    "sha256": "75050df61307999ae068700a8ba04fbd3db7bb5213c1775a36df4e7f19d24485"
+    "sha256": "85ff63d91b420a19b2cd3574e2ab90c7e8e4dd70efae3672c9e99e5ddea5bc12"
   },
   "graph-root": {
     "algorithm": "sha256",
     "byteLength": 10008,
-    "sha256": "634d91778a2cc1754857a4e04a7f9e57a49bc853b34d8d821418583b5693f882"
+    "sha256": "8fe1cd87d10a4e82ad040d395b70e5602e0fff011290e16873ac0ae345c85bd2"
   },
   "graph-reclaim": {
     "algorithm": "sha256",
     "byteLength": 12127,
-    "sha256": "a37b3509f7285c538781d6fafdbf7c50e489fd96f0a9c498b417a3c8d1fcc17e"
+    "sha256": "84d670178e646699bcfda965ccd3221734c8c7f5b375c75a79e669eece2dee3c"
   },
   "graph-advance": {
     "algorithm": "sha256",
     "byteLength": 4195,
-    "sha256": "681b16a1ea10417de8e81266e3f9a5eb57a3ead77e398fd0a5b756fa0a6879d2"
+    "sha256": "262834edde346bf04df871523432024f682d2d3c68a735683fce59c7c53c8349"
   },
   "graph-cleanup": {
     "algorithm": "sha256",
     "byteLength": 5466,
-    "sha256": "d50ecb81acf30fc1c724698787473c81c49b044fd72f3baead76a5a93aea1f10"
+    "sha256": "85229a3887eff1bbdd0f88e6c9388aceb9687377d27bcc84d7022d284fa86c3b"
   },
   "policy": {
     "algorithm": "sha256",
     "byteLength": 13104,
-    "sha256": "24ddd3aefb13bb93ec3917cd40205038232e696b99014022e1d115bf5e903f02"
+    "sha256": "a1a81fafe32cf45dd36dff215e63752e0f21cf3ff02224149a6d85ea3242612f"
   },
   "evaluator": {
     "algorithm": "sha256",
     "byteLength": 18051,
-    "sha256": "b75206cb42ca611592b9b07a4920bcb9de4fa1c001a93509a41ca07d71f5ea79"
+    "sha256": "b4ed13b4f1244358ca742b61645b35ea92a66b77c88a53593bd96391f60d5bb7"
   },
   "resource": {
     "algorithm": "sha256",
     "byteLength": 12512,
-    "sha256": "5bd71040e00999faa8eaaaa3d4eb96f602a626b0b8a81bda621a4ab3a382fd7c"
+    "sha256": "9a59a36c6e846cd036562e85ef0172e491e8982c26223582e770988cd1dbdd46"
   },
   "progress": {
     "algorithm": "sha256",
     "byteLength": 12006,
-    "sha256": "94535bcf8b2f996b4f34a53c959527216159ff9daabc968f0060ea12fab8059b"
+    "sha256": "c5d791bf30191fac3d3da43ff2e92a52d8246915871caa5cf0dc9a589406cba2"
   },
   "output": {
     "algorithm": "sha256",
     "byteLength": 16538,
-    "sha256": "24e57471817aab100e02a2031a3deb53e0e6a3e2c922629539a085204c13ce41"
+    "sha256": "d4aac4d4ac71f25a400445899712966f916462dc09bf48f3f77eb9b7714e3006"
   },
   "framework": {
     "algorithm": "sha256",
     "byteLength": 6517,
-    "sha256": "055d90eefb670bc388bae2eceb650442910540dcdf32abef36f1bd4d160f36ed"
+    "sha256": "4f45695cec765fab6ff69a880ceded9b04dc52b13d1b6d7a77af5877d12d1d3c"
   },
   "terminal": {
     "algorithm": "sha256",
     "byteLength": 9388,
-    "sha256": "526275324936bcf1baf5fd5cbb5a6f5e36e154386547ddebf1cfd327f4bd403e"
+    "sha256": "cd51ce6c3b062c963a47245c96f1d40a5ef4c8625d0d67f74080363670d7b843"
   },
   "session": {
     "algorithm": "sha256",
     "byteLength": 18579,
-    "sha256": "a0686239f37c8f8c00ec68ec05d23e0b106f2e694ab05e2d3f1ad77850f2b2fa"
+    "sha256": "36e33838a4e94e0ce8337c8ee4d29cf7bda72f0d84189eb1ace2ba5861a8cfd3"
   },
   "stage": {
     "algorithm": "sha256",
     "byteLength": 9395,
-    "sha256": "6c1bc8c41c03080012456bc4c7e57f56d69232fe18f7293b7d75a57766071ef9"
+    "sha256": "1c61bdacdd13163b6a7a2c3425b5045924d83c4d2af4630fbb85ccce8806a310"
   },
   "channel": {
     "algorithm": "sha256",
     "byteLength": 17158,
-    "sha256": "0e77ffc9a1bba9ab9528e89f0b3311d19d9b88e590d693e9d045e766a2deedd1"
+    "sha256": "2d18dea0b7b7a3e5bfebd2b46b799d6485da385dd2e102fd82f7e2d0f01219be"
   }
 };
 
