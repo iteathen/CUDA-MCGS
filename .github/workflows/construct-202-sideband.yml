@@ -1,0 +1,493 @@
+name: construct-202-sideband
+
+on:
+  push:
+    branches:
+      - impl/202-external-control-sideband-projection
+
+permissions:
+  contents: write
+
+jobs:
+  construct:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: impl/202-external-control-sideband-projection
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Apply #202 package-sideband implementation
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function patch(path, transform) {
+            const before = fs.readFileSync(path, 'utf8');
+            const after = transform(before);
+            if (after === before) throw new Error(`${path}: transform made no change`);
+            fs.writeFileSync(path, after);
+          }
+          function once(text, oldText, newText, label) {
+            const first = text.indexOf(oldText);
+            if (first < 0 || text.indexOf(oldText, first + oldText.length) >= 0) throw new Error(`${label}: expected exactly one match`);
+            return text.slice(0, first) + newText + text.slice(first + oldText.length);
+          }
+
+          patch('experiments/search-ir-composer-reference/src/program-package.mjs', (text) => {
+            text = once(text,
+              "const RESTRICTED_SOURCE_TYPES = new Set(['bool', 'u32', 'i32', 'u64', 'f32', 'ptr<bool>', 'ptr<u32>', 'ptr<i32>', 'ptr<u64>', 'ptr<f32>']);",
+              "const RESTRICTED_SOURCE_TYPES = new Set(['bool', 'u32', 'i32', 'u64', 'f32', 'ptr<bool>', 'ptr<u32>', 'ptr<i32>', 'ptr<u64>', 'ptr<f32>', 'sideband<u32>']);",
+              'restricted parameter types');
+            text = once(text,
+              "const BASE_REQUIREMENTS = new Set(['cuda-js.device-js/0.1.0', 'cuda-js.operation-lifecycle/0.1.0']);",
+              "const HISTORICAL_BASE_REQUIREMENTS = new Set(['cuda-js.device-js/0.1.0', 'cuda-js.operation-lifecycle/0.1.0']);\nconst BASE_REQUIREMENTS = new Set([...HISTORICAL_BASE_REQUIREMENTS, 'cuda-js.publication-mailbox/0.1.0']);",
+              'base public requirements');
+
+            const sidebandHelpers = `function expectedSessionPayloadResourceId(context) {
+  if (!context.sessionResult) return null;
+  const plan = context.resourceResult?.normalized;
+  const contributors = (plan?.contributors ?? []).filter(({ contract }) => contract?.id === 'SPEC-0006');
+  if (contributors.length !== 1) fail('COMPOSE_SIDEBAND_PAYLOAD', 'selected Session requires exactly one Resource-plan Session contributor');
+  const rerootClasses = new Set((plan.reserves ?? []).filter(({ purpose }) => purpose === 'reroot-admission').map(({ class: classId }) => classId));
+  const candidates = (plan.classes ?? []).filter((entry) => entry.contributor === contributors[0].id && !rerootClasses.has(entry.id) && entry.lifetime === 'session');
+  if (candidates.length !== 1) fail('COMPOSE_SIDEBAND_PAYLOAD', 'selected Session requires exactly one resident control class outside reroot admission');
+  const partition = (plan.partitions ?? []).find(({ class: classId }) => classId === candidates[0].id);
+  const pool = partition ? (plan.pools ?? []).find(({ id }) => id === partition.pool) : null;
+  const provider = pool ? (plan.providerRequirements ?? []).find(({ pool: poolId }) => poolId === pool.id) : null;
+  const resource = provider ? context.resources.find(({ providerRequirement }) => providerRequirement === provider.id) : null;
+  if (!resource || resource.materialization !== 'resident-storage') fail('COMPOSE_SIDEBAND_PAYLOAD', 'selected Session control class has no resident package resource');
+  return resource.id;
+}
+
+function normalizeSideband(input, index, context) {
+  exactKeys(input, ['id', 'owner', 'role', 'direction', 'valueType', 'capacity', 'publication', 'applicationPoint', 'lifetime', 'payloadResource'], 'COMPOSE_SIDEBAND_FIELDS', \`sideband \${index}\`);
+  assertNamespacedId(input.id, 'COMPOSE_SIDEBAND_ID', \`sideband \${index} id\`);
+  assertNamespacedId(input.owner, 'COMPOSE_SIDEBAND_OWNER', \`\${input.id} owner\`);
+  if (!context.semanticOwners.has(input.owner)) fail('COMPOSE_SIDEBAND_OWNER', \`\${input.id} names unselected owner \${input.owner}\`);
+  const role = assertEnum(input.role, ['framework-cancellation', 'session-command-publication'], 'COMPOSE_SIDEBAND_ROLE', \`\${input.id} role\`);
+  const direction = assertEnum(input.direction, ['host-to-device'], 'COMPOSE_SIDEBAND_DIRECTION', \`\${input.id} direction\`);
+  const valueType = assertEnum(input.valueType, ['u32'], 'COMPOSE_SIDEBAND_VALUE', \`\${input.id} valueType\`);
+  const capacity = positiveDecimal(input.capacity, 'COMPOSE_SIDEBAND_CAPACITY', \`\${input.id} capacity\`);
+  if (capacity !== '1') fail('COMPOSE_SIDEBAND_CAPACITY', \`\${input.id} first accepted realization requires one finite signal lane\`);
+  const publication = assertEnum(input.publication, ['release-acquire'], 'COMPOSE_SIDEBAND_PUBLICATION', \`\${input.id} publication\`);
+  const applicationPoint = assertEnum(input.applicationPoint, ['progress-bounded-checkpoint', 'session-command-checkpoint'], 'COMPOSE_SIDEBAND_APPLICATION', \`\${input.id} applicationPoint\`);
+  const lifetime = assertEnum(input.lifetime, ['execution', 'session'], 'COMPOSE_SIDEBAND_LIFETIME', \`\${input.id} lifetime\`);
+  let payloadResource = null;
+  if (input.payloadResource !== null) {
+    assertNamespacedId(input.payloadResource, 'COMPOSE_SIDEBAND_PAYLOAD', \`\${input.id} payloadResource\`);
+    const resource = context.resourceById.get(input.payloadResource);
+    if (!resource || resource.materialization !== 'resident-storage'
+        || !['device-search', 'device-publication'].every((space) => resource.memorySpaces.includes(space))
+        || !['read', 'write', 'atomic', 'publish'].every((access) => resource.access.includes(access))) {
+      fail('COMPOSE_SIDEBAND_PAYLOAD', \`\${input.id} payloadResource lacks the required resident publication envelope\`);
+    }
+    payloadResource = input.payloadResource;
+  }
+  if (role === 'framework-cancellation') {
+    if (input.owner !== context.progressResult.normalized.id || applicationPoint !== 'progress-bounded-checkpoint' || lifetime !== 'execution' || payloadResource !== null) {
+      fail('COMPOSE_SIDEBAND_ROLE', 'framework cancellation sideband ownership/lifetime/payload is invalid');
+    }
+  } else {
+    const expectedPayload = expectedSessionPayloadResourceId(context);
+    if (!context.sessionResult || input.owner !== context.sessionResult.normalized.id || applicationPoint !== 'session-command-checkpoint' || lifetime !== 'session' || payloadResource !== expectedPayload) {
+      fail('COMPOSE_SIDEBAND_ROLE', 'Session publication sideband ownership/lifetime/payload is invalid');
+    }
+  }
+  return { id: input.id, owner: input.owner, role, direction, valueType, capacity, publication, applicationPoint, lifetime, payloadResource };
+}
+
+`;
+            text = once(text, 'function normalizeBinding(input, operationId, index, parameters, resources) {', sidebandHelpers + 'function normalizeBinding(input, operationId, index, parameters, resources, sidebands) {', 'sideband normalizer insertion');
+            text = once(text,
+              "    return { parameter: input.parameter, source };\n  }\n  if (Object.hasOwn(input.source ?? {}, 'access')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} scalar binding cannot carry access`);",
+              "    return { parameter: input.parameter, source };\n  }\n  if (input.source?.kind === 'sideband') {\n    exactKeys(input.source, ['kind', 'sideband'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} sideband`);\n    const sideband = sidebands.get(input.source.sideband);\n    if (!sideband || parameter.type !== `sideband<${sideband.valueType}>`) fail('COMPOSE_OPERATION_BINDING', `${operationId} sideband binding is incompatible`);\n    return { parameter: input.parameter, source: { kind: 'sideband', sideband: input.source.sideband } };\n  }\n  if (Object.hasOwn(input.source ?? {}, 'access')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} scalar binding cannot carry access`);",
+              'sideband binding branch');
+            text = once(text,
+              "  if (input.source.kind !== 'scalar' || parameter.type.startsWith('ptr<')) fail('COMPOSE_OPERATION_BINDING', `${operationId} scalar binding is incompatible`);",
+              "  if (input.source.kind !== 'scalar' || parameter.type.startsWith('ptr<') || parameter.type.startsWith('sideband<')) fail('COMPOSE_OPERATION_BINDING', `${operationId} scalar binding is incompatible`);",
+              'scalar binding exclusion');
+            text = once(text,
+              'const bindings = input.bindings.map((binding, bindingIndex) => normalizeBinding(binding, input.id, bindingIndex, entryPoint.parameters, context.resourceById)).sort((left, right) => compareRaw(left.parameter, right.parameter));',
+              'const bindings = input.bindings.map((binding, bindingIndex) => normalizeBinding(binding, input.id, bindingIndex, entryPoint.parameters, context.resourceById, context.sidebandById)).sort((left, right) => compareRaw(left.parameter, right.parameter));',
+              'operation binding context');
+
+            text = once(text,
+              "function expectedRequirementKeys(context) {\n  const expected = new Map();\n  for (const id of BASE_REQUIREMENTS) expected.set(id, context.requirementById.get(id));\n  for (const result of [context.stageResult, context.channelResult]) {\n    for (const requirement of result?.normalized?.programContribution?.requirements ?? []) expected.set(requirement.id, requirement);\n  }\n  return expected;\n}",
+              "function expectedRequirementKeys(context, currentSidebandRepresentation) {\n  const expected = new Map();\n  const base = currentSidebandRepresentation ? BASE_REQUIREMENTS : HISTORICAL_BASE_REQUIREMENTS;\n  for (const id of base) expected.set(id, context.requirementById.get(id));\n  const results = currentSidebandRepresentation ? (context.profileResults ?? []) : [context.stageResult, context.channelResult];\n  for (const result of results) {\n    for (const requirement of result?.normalized?.programContribution?.requirements ?? []) expected.set(requirement.id, requirement);\n  }\n  return expected;\n}",
+              'generic requirement closure');
+            text = once(text,
+              '  const expectedRequirements = expectedRequirementKeys(context);',
+              '  const expectedRequirements = expectedRequirementKeys(context, hasSidebands);',
+              'requirement closure mode');
+
+            const deletionStart = text.indexOf('function normalizeDeletion(input, context) {');
+            const deletionEnd = text.indexOf('\nfunction semanticEngineIdentity', deletionStart);
+            if (deletionStart < 0 || deletionEnd < 0) throw new Error('normalizeDeletion block not found');
+            const deletion = `function normalizeDeletion(input, context) {
+  exactKeys(input, ['selectedOwners', 'records', 'comparison', 'absence'], 'COMPOSE_DELETION_FIELDS', 'deletion');
+  if (input.comparison !== 'byte-exact-except-truthful-selected-owner-identities' || input.absence !== 'structural-omission-no-placeholder') fail('COMPOSE_DELETION_POLICY', 'deletion policy is invalid');
+  const selectedOwners = [...input.selectedOwners].sort(compareRaw);
+  if (selectedOwners.length !== context.semanticOwners.size || selectedOwners.some((owner, index) => owner !== [...context.semanticOwners].sort(compareRaw)[index])) fail('COMPOSE_DELETION_OWNER', 'deletion owner set differs from selected semantics');
+  if (!Array.isArray(input.records) || input.records.length === 0) fail('COMPOSE_DELETION_RECORD', 'deletion records are absent');
+  const sidebandDeletion = (context.sidebands?.length ?? 0) > 0;
+  const records = input.records.map((record, index) => {
+    exactKeys(record, sidebandDeletion
+      ? ['owner', 'sourceUnits', 'functions', 'resources', 'sidebands', 'publicRequirements', 'packageRecords']
+      : ['owner', 'sourceUnits', 'functions', 'resources', 'publicRequirements', 'packageRecords'], 'COMPOSE_DELETION_RECORD_FIELDS', \`deletion record \${index}\`);
+    if (!context.semanticOwners.has(record.owner)) fail('COMPOSE_DELETION_OWNER', \`deletion record \${record.owner} is not selected\`);
+    const normalized = { owner: record.owner };
+    const keys = ['sourceUnits', 'functions', 'resources', ...(sidebandDeletion ? ['sidebands'] : []), 'publicRequirements', 'packageRecords'];
+    for (const key of keys) {
+      if (!Array.isArray(record[key])) fail('COMPOSE_DELETION_RECORD', \`\${record.owner} \${key} must be an array\`);
+      normalized[key] = [...record[key]].sort(compareRaw);
+      if (new Set(normalized[key]).size !== normalized[key].length) fail('COMPOSE_DELETION_RECORD', \`\${record.owner} repeats \${key}\`);
+    }
+    return normalized;
+  }).sort((left, right) => compareRaw(left.owner, right.owner));
+  uniqueBy(records, 'owner', 'COMPOSE_DELETION_OWNER', 'deletion owner');
+  if (records.length !== selectedOwners.length) fail('COMPOSE_DELETION_OWNER', 'every selected owner requires one deletion record');
+  const coverage = new Map([
+    ['sourceUnits', context.sourceUnits.map(({ id }) => id)],
+    ['functions', context.functions.map(({ name }) => name)],
+    ['resources', context.resources.map(({ id }) => id)],
+    ...(sidebandDeletion ? [['sidebands', context.sidebands.map(({ id }) => id)]] : []),
+    ['publicRequirements', context.publicRequirements.map(({ contract }) => contract.id)],
+  ]);
+  for (const [key, expected] of coverage) for (const id of expected) if (!records.some((record) => record[key].includes(id))) fail('COMPOSE_DELETION_COVERAGE', \`\${key} \${id} has no deletion owner\`);
+  const same = (left, right) => left.length === right.length && left.every((value, index) => value === right[index]);
+  for (const record of records) {
+    const expectedSourceUnits = context.sourceUnits.filter(({ semanticOwner }) => semanticOwner === record.owner).map(({ id }) => id).sort(compareRaw);
+    const expectedFunctions = context.functions.filter(({ sourceUnit }) => expectedSourceUnits.includes(sourceUnit)).map(({ name }) => name).sort(compareRaw);
+    const expectedResources = context.resources.filter(({ ownerProfile }) => ownerProfile === record.owner).map(({ id }) => id).sort(compareRaw);
+    const expectedSidebands = sidebandDeletion ? context.sidebands.filter(({ owner }) => owner === record.owner).map(({ id }) => id).sort(compareRaw) : [];
+    const expectedRequirements = context.publicRequirements.filter(({ consumers }) => consumers.includes(record.owner)).map(({ contract }) => contract.id).sort(compareRaw);
+    const expectedPackageRecords = record.owner === context.compositionProfileId ? ['package.execution-operation'] : [];
+    if (!same(record.sourceUnits, expectedSourceUnits) || !same(record.functions, expectedFunctions) || !same(record.resources, expectedResources)
+        || (sidebandDeletion && !same(record.sidebands, expectedSidebands)) || !same(record.publicRequirements, expectedRequirements) || !same(record.packageRecords, expectedPackageRecords)) {
+      fail('COMPOSE_DELETION_OWNERSHIP', \`\${record.owner} deletion record differs from authoritative ownership\`);
+    }
+  }
+  return { selectedOwners, records, comparison: input.comparison, absence: input.absence };
+}
+`;
+            text = text.slice(0, deletionStart) + deletion + text.slice(deletionEnd);
+
+            text = once(text,
+              "export function normalizeProgramPackageProfile(input, inspected, suppliedContext) {\n  exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'semanticEngine', 'generator', 'sourceUnits', 'functions', 'programUnits', 'publicRequirements', 'resources', 'operations', 'manifests', 'provenance', 'compatibility', 'deletion'], 'COMPOSE_ROOT_FIELDS', 'program/package profile');",
+              "export function normalizeProgramPackageProfile(input, inspected, suppliedContext) {\n  const hasSidebands = Object.hasOwn(input, 'sidebands');\n  exactKeys(input, hasSidebands\n    ? ['schema', 'representation', 'status', 'contract', 'id', 'version', 'semanticEngine', 'generator', 'sourceUnits', 'functions', 'programUnits', 'publicRequirements', 'resources', 'sidebands', 'operations', 'manifests', 'provenance', 'compatibility', 'deletion']\n    : ['schema', 'representation', 'status', 'contract', 'id', 'version', 'semanticEngine', 'generator', 'sourceUnits', 'functions', 'programUnits', 'publicRequirements', 'resources', 'operations', 'manifests', 'provenance', 'compatibility', 'deletion'], 'COMPOSE_ROOT_FIELDS', 'program/package profile');",
+              'optional sideband root');
+
+            text = once(text,
+              "  context.resourceById = new Map(resources.map((entry) => [entry.id, entry])); context.resources = resources;\n\n  const operations = input.operations.map((entry, index) => normalizeOperation(entry, index, context)).sort((left, right) => compareRaw(left.id, right.id));",
+              "  context.resourceById = new Map(resources.map((entry) => [entry.id, entry])); context.resources = resources;\n\n  let sidebands = [];\n  if (hasSidebands) {\n    if (!Array.isArray(input.sidebands) || input.sidebands.length === 0) fail('COMPOSE_SIDEBAND_COUNT', 'sidebands must contain the required external-control path');\n    sidebands = input.sidebands.map((entry, index) => normalizeSideband(entry, index, context)).sort((left, right) => compareRaw(left.id, right.id));\n    uniqueBy(sidebands, 'id', 'COMPOSE_SIDEBAND_DUPLICATE', 'sideband');\n    if (sidebands.filter(({ role }) => role === 'framework-cancellation').length !== 1) fail('COMPOSE_SIDEBAND_REQUIRED', 'exactly one framework cancellation sideband is required');\n    const sessionCount = sidebands.filter(({ role }) => role === 'session-command-publication').length;\n    if (sessionCount !== (context.sessionResult ? 1 : 0)) fail('COMPOSE_SIDEBAND_REQUIRED', 'Session publication sideband selection differs from selected Session');\n    if (!context.publicRequirements.some(({ contract }) => contract.id === 'cuda-js.publication-mailbox/0.1.0')) fail('COMPOSE_SIDEBAND_CAPABILITY', 'sideband realization requires the public publication-mailbox contract');\n  }\n  context.sidebands = sidebands; context.sidebandById = new Map(sidebands.map((entry) => [entry.id, entry]));\n\n  const operations = input.operations.map((entry, index) => normalizeOperation(entry, index, context)).sort((left, right) => compareRaw(left.id, right.id));",
+              'sideband normalization phase');
+            text = once(text,
+              "  uniqueBy(operations, 'id', 'COMPOSE_OPERATION_DUPLICATE', 'operation');\n  const kernels = functions.filter(({ executionRole }) => executionRole === 'runtime-entry');",
+              "  uniqueBy(operations, 'id', 'COMPOSE_OPERATION_DUPLICATE', 'operation');\n  if (hasSidebands) for (const sideband of sidebands) {\n    if (!operations.some(({ bindings }) => bindings.some(({ source }) => source.kind === 'sideband' && source.sideband === sideband.id))) fail('COMPOSE_SIDEBAND_BINDING', `${sideband.id} has no generated operation binding`);\n  }\n  const kernels = functions.filter(({ executionRole }) => executionRole === 'runtime-entry');",
+              'sideband binding coverage');
+            text = once(text,
+              "  const normalized = { schema: input.schema, representation: input.representation, status: input.status, contract: normalizeCatalogContract(input.contract, inspected), id: input.id, version: input.version, semanticEngine, generator, sourceUnits, functions, programUnits, publicRequirements, resources, operations, manifests, provenance, compatibility, deletion };",
+              "  const normalized = { schema: input.schema, representation: input.representation, status: input.status, contract: normalizeCatalogContract(input.contract, inspected), id: input.id, version: input.version, semanticEngine, generator, sourceUnits, functions, programUnits, publicRequirements, resources, ...(hasSidebands ? { sidebands } : {}), operations, manifests, provenance, compatibility, deletion };",
+              'normalized sidebands');
+            text = once(text,
+              "    resources: profile.resources.map((entry) => ({ ...entry, memorySpaces: [...entry.memorySpaces], access: [...entry.access] })),\n    operations: profile.operations.map((entry) => ({ ...entry, bindings: structuredClone(entry.bindings), grid: [...entry.grid], block: [...entry.block],  })),",
+              "    resources: profile.resources.map((entry) => ({ ...entry, memorySpaces: [...entry.memorySpaces], access: [...entry.access] })),\n    ...(Object.hasOwn(profile, 'sidebands') ? { sidebands: structuredClone(profile.sidebands) } : {}),\n    operations: profile.operations.map((entry) => ({ ...entry, bindings: structuredClone(entry.bindings), grid: [...entry.grid], block: [...entry.block],  })),",
+              'Search Program sidebands');
+
+            text = once(text,
+              "  const resourceNames = new Map(resources.map((entry, index) => [entry.id, `resource-${index}`]));\n  for (const operation of program.operations) for (const binding of operation.bindings) {",
+              "  const resourceNames = new Map(resources.map((entry, index) => [entry.id, `resource-${index}`]));\n  const sidebands = program.sidebands ?? [];\n  const frameworkCancellation = sidebands.find(({ role }) => role === 'framework-cancellation');\n  if (!frameworkCancellation) fail('COMPOSE_SIDEBAND_REQUIRED', 'runtime-realizable execution requires an explicit framework cancellation sideband');\n  const sidebandNames = new Map(sidebands.map((entry, index) => [entry.id, `sideband-${index}`]));\n  for (const operation of program.operations) for (const binding of operation.bindings) {",
+              'adapter sideband preflight');
+            text = once(text,
+              "    if (binding.source.kind === 'resource' && !Object.hasOwn(binding.source, 'access')) {\n      fail('COMPOSE_OPERATION_ACCESS_REQUIRED', `${operation.id} ${binding.parameter} lacks operation-local resource access`);\n    }\n  }",
+              "    if (binding.source.kind === 'resource' && !Object.hasOwn(binding.source, 'access')) {\n      fail('COMPOSE_OPERATION_ACCESS_REQUIRED', `${operation.id} ${binding.parameter} lacks operation-local resource access`);\n    }\n    if (binding.source.kind === 'sideband' && !sidebandNames.has(binding.source.sideband)) fail('COMPOSE_SIDEBAND_BINDING', `${operation.id} ${binding.parameter} names unknown sideband`);\n  }",
+              'adapter sideband binding preflight');
+            text = once(text,
+              "    bindings: entry.bindings.map((binding) => binding.source.kind === 'resource'\n      ? { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource), access: binding.source.access } }\n      : { parameter: binding.parameter, source: { kind: 'scalar', schema: { ...binding.source.schema } } }),",
+              "    bindings: entry.bindings.map((binding) => {\n      if (binding.source.kind === 'resource') return { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource), access: binding.source.access } };\n      if (binding.source.kind === 'sideband') return { parameter: binding.parameter, source: { kind: 'sideband', sideband: sidebandNames.get(binding.source.sideband) } };\n      return { parameter: binding.parameter, source: { kind: 'scalar', schema: { ...binding.source.schema } } };\n    }),",
+              'adapter binding projection');
+            text = once(text,
+              "    resourceRequirements: resources.map((entry, index) => ({ id: `resource-${index}`, byteLength: entry.capacity, alignment: entry.alignment, memorySpaces: [...entry.memorySpaces], accessRequirements: [...entry.access] })),\n    operationRequirements: operations,",
+              "    resourceRequirements: resources.map((entry, index) => ({ id: `resource-${index}`, byteLength: entry.capacity, alignment: entry.alignment, memorySpaces: [...entry.memorySpaces], accessRequirements: [...entry.access] })),\n    sidebandRequirements: sidebands.map((entry, index) => ({ id: `sideband-${index}`, semanticId: entry.id, owner: entry.owner, role: entry.role, direction: entry.direction, valueType: entry.valueType, capacity: entry.capacity, publication: entry.publication, applicationPoint: entry.applicationPoint, lifetime: entry.lifetime, payloadResource: entry.payloadResource === null ? null : resourceNames.get(entry.payloadResource) })),\n    operationRequirements: operations,",
+              'adapter sideband requirements');
+            return text;
+          });
+
+          patch('experiments/search-ir-composer-reference/src/program-package-fixtures.mjs', (text) => {
+            const helper = `function sessionPayloadResourceId(context, resources) {
+  if (!context.sessionResult) return null;
+  const plan = context.resourceResult.normalized;
+  const contributors = (plan.contributors ?? []).filter(({ contract }) => contract?.id === 'SPEC-0006');
+  if (contributors.length !== 1) throw new Error('selected Session requires exactly one Resource-plan Session contributor');
+  const rerootClasses = new Set((plan.reserves ?? []).filter(({ purpose }) => purpose === 'reroot-admission').map(({ class: classId }) => classId));
+  const candidates = (plan.classes ?? []).filter((entry) => entry.contributor === contributors[0].id && !rerootClasses.has(entry.id) && entry.lifetime === 'session');
+  if (candidates.length !== 1) throw new Error('selected Session requires exactly one generic resident control class');
+  const partition = (plan.partitions ?? []).find(({ class: classId }) => classId === candidates[0].id);
+  const pool = partition ? (plan.pools ?? []).find(({ id }) => id === partition.pool) : null;
+  const provider = pool ? (plan.providerRequirements ?? []).find(({ pool: poolId }) => poolId === pool.id) : null;
+  const resource = provider ? resources.find(({ providerRequirement }) => providerRequirement === provider.id) : null;
+  if (!resource || resource.materialization !== 'resident-storage') throw new Error('selected Session control class has no resident package resource');
+  return resource.id;
+}
+
+function sidebandRequirements(context, profileId, resources) {
+  const sidebands = [{
+    id: `sideband.${profileId}.framework-cancellation`, owner: context.progressResult.normalized.id, role: 'framework-cancellation',
+    direction: 'host-to-device', valueType: 'u32', capacity: '1', publication: 'release-acquire',
+    applicationPoint: 'progress-bounded-checkpoint', lifetime: 'execution', payloadResource: null,
+  }];
+  if (context.sessionResult) sidebands.push({
+    id: `sideband.${profileId}.session-command-publication`, owner: context.sessionResult.normalized.id, role: 'session-command-publication',
+    direction: 'host-to-device', valueType: 'u32', capacity: '1', publication: 'release-acquire',
+    applicationPoint: 'session-command-checkpoint', lifetime: 'session', payloadResource: sessionPayloadResourceId(context, resources),
+  });
+  return sidebands;
+}
+
+`;
+            text = once(text, 'function publicRequirements(context, profileId) {', helper + 'function publicRequirements(context, profileId) {', 'fixture sideband helpers');
+            text = once(text,
+              "  const deviceJs = schemaReference('cuda-js.device-js');\n  const operation = schemaReference('cuda-js.operation-lifecycle');\n  add(deviceJs, [profileId], 'portable'); add(operation, [profileId], 'native-compatible-pair');\n  if (context.stageResult) {\n    for (const requirement of context.stageResult.normalized.programContribution.requirements) add(requirement, [context.stageResult.normalized.id, ...context.stageResult.normalized.capabilities.map(({ id }) => id)], 'native-compatible-pair');\n  }\n  if (context.channelResult) {\n    for (const requirement of context.channelResult.normalized.programContribution.requirements) add(requirement, [context.channelResult.normalized.id, ...context.channelResult.normalized.channels.map(({ id }) => id)], 'native-compatible-pair');\n  }",
+              "  const deviceJs = schemaReference('cuda-js.device-js');\n  const operation = schemaReference('cuda-js.operation-lifecycle');\n  const mailbox = schemaReference('cuda-js.publication-mailbox');\n  add(deviceJs, [profileId], 'portable'); add(operation, [profileId], 'native-compatible-pair'); add(mailbox, [profileId], 'native-compatible-pair');\n  for (const result of context.profileResults) {\n    const consumers = [result.normalized.id];\n    if (context.stageResult && result.normalized.id === context.stageResult.normalized.id) consumers.push(...context.stageResult.normalized.capabilities.map(({ id }) => id));\n    if (context.channelResult && result.normalized.id === context.channelResult.normalized.id) consumers.push(...context.channelResult.normalized.channels.map(({ id }) => id));\n    for (const requirement of result.normalized.programContribution?.requirements ?? []) add(requirement, consumers, 'native-compatible-pair');\n  }",
+              'fixture generic requirement closure');
+            text = once(text,
+              "  const entrySource = 'function engine_step(output) { output[gpu.thread.globalX()] = 0; }\\n';\n  const entryUnitId = `source.${label}.engine-entry`;",
+              "  const sidebandParameters = [{ name: 'frameworkCancellation', type: 'sideband<u32>' }, ...(context.sessionResult ? [{ name: 'sessionCommandPublication', type: 'sideband<u32>' }] : [])];\n  const entryArguments = ['output', ...sidebandParameters.map(({ name }) => name)].join(', ');\n  const sessionObservation = context.sessionResult ? ' void sessionCommandPublication;' : '';\n  const entrySource = `function engine_step(${entryArguments}) { if (frameworkCancellation !== 0) return;${sessionObservation} output[gpu.thread.globalX()] = 0; }\\n`;\n  const entryUnitId = `source.${label}.engine-entry`;",
+              'fixture entry source sidebands');
+            text = once(text,
+              "  functions.push({ name: 'engine_step', executionRole: 'runtime-entry', parameters: [{ name: 'output', type: 'ptr<u32>' }], returns: 'void', sourceUnit: entryUnitId, ownerProfile: profileId, semanticRole: 'engine.execute', calls: [], helpers: ['gpu.thread.global-x'] });",
+              "  functions.push({ name: 'engine_step', executionRole: 'runtime-entry', parameters: [{ name: 'output', type: 'ptr<u32>' }, ...sidebandParameters], returns: 'void', sourceUnit: entryUnitId, ownerProfile: profileId, semanticRole: 'engine.execute', calls: [], helpers: ['gpu.thread.global-x'] });",
+              'fixture entry parameter metadata');
+            text = once(text,
+              'function deletionManifest(profileId, semanticOwners, sourceUnits, functions, resources, requirements) {',
+              'function deletionManifest(profileId, semanticOwners, sourceUnits, functions, resources, sidebands, requirements) {',
+              'fixture deletion signature');
+            text = once(text,
+              "    resources: resources.filter((entry) => entry.ownerProfile === owner).map(({ id }) => id),\n    publicRequirements: requirements.filter(({ consumers }) => consumers.includes(owner)).map(({ contract }) => contract.id),",
+              "    resources: resources.filter((entry) => entry.ownerProfile === owner).map(({ id }) => id),\n    sidebands: sidebands.filter((entry) => entry.owner === owner).map(({ id }) => id),\n    publicRequirements: requirements.filter(({ consumers }) => consumers.includes(owner)).map(({ contract }) => contract.id),",
+              'fixture deletion sidebands');
+            text = once(text,
+              "  const resources = resourceRequirements(context);\n  const outputResource = resources.find(({ materialization }) => materialization === 'resident-storage');",
+              "  const resources = resourceRequirements(context);\n  const sidebands = sidebandRequirements(context, profileId, resources);\n  const outputResource = resources.find(({ materialization }) => materialization === 'resident-storage');",
+              'fixture sideband construction');
+            text = once(text,
+              "    sourceUnits: source.sourceUnits, functions: source.functions, programUnits: source.programUnits, publicRequirements: requirements, resources,\n    operations: [{ id: `operation.${label}.engine-step`, entryPoint: 'engine_step', bindings: [{ parameter: 'output', source: { kind: 'resource', resource: outputResource.id, access: 'write' } }], grid: ['1', '1', '1'], block: ['64', '1', '1'], dynamicSharedBytes: '0', maxPending: '1' }],",
+              "    sourceUnits: source.sourceUnits, functions: source.functions, programUnits: source.programUnits, publicRequirements: requirements, resources, sidebands,\n    operations: [{ id: `operation.${label}.engine-step`, entryPoint: 'engine_step', bindings: [\n      { parameter: 'output', source: { kind: 'resource', resource: outputResource.id, access: 'write' } },\n      { parameter: 'frameworkCancellation', source: { kind: 'sideband', sideband: sidebands.find(({ role }) => role === 'framework-cancellation').id } },\n      ...(context.sessionResult ? [{ parameter: 'sessionCommandPublication', source: { kind: 'sideband', sideband: sidebands.find(({ role }) => role === 'session-command-publication').id } }] : []),\n    ], grid: ['1', '1', '1'], block: ['64', '1', '1'], dynamicSharedBytes: '0', maxPending: '1' }],",
+              'fixture operation sideband bindings');
+            text = once(text,
+              '    deletion: deletionManifest(profileId, semanticOwners, source.sourceUnits, source.functions, resources, requirements),',
+              '    deletion: deletionManifest(profileId, semanticOwners, source.sourceUnits, source.functions, resources, sidebands, requirements),',
+              'fixture deletion call');
+            return text;
+          });
+
+          const ppPath = 'schemas/search-ir/0.2.0/program-package-profile.schema.json';
+          const pp = JSON.parse(fs.readFileSync(ppPath, 'utf8'));
+          pp.properties.sidebands = { type: 'array', items: { $ref: '#/$defs/sideband' } };
+          pp.$defs.parameter.properties.type.enum.push('sideband<u32>');
+          pp.$defs.sideband = {
+            type: 'object', additionalProperties: false,
+            required: ['id', 'owner', 'role', 'direction', 'valueType', 'capacity', 'publication', 'applicationPoint', 'lifetime', 'payloadResource'],
+            properties: {
+              id: { $ref: 'primitives.schema.json#/$defs/namespacedId' },
+              owner: { $ref: 'primitives.schema.json#/$defs/namespacedId' },
+              role: { enum: ['framework-cancellation', 'session-command-publication'] },
+              direction: { const: 'host-to-device' }, valueType: { const: 'u32' }, capacity: { $ref: 'primitives.schema.json#/$defs/decimalUint' },
+              publication: { const: 'release-acquire' }, applicationPoint: { enum: ['progress-bounded-checkpoint', 'session-command-checkpoint'] },
+              lifetime: { enum: ['execution', 'session'] }, payloadResource: { oneOf: [{ type: 'null' }, { $ref: 'primitives.schema.json#/$defs/namespacedId' }] },
+            },
+          };
+          pp.$defs.binding.properties.source.oneOf.push({
+            type: 'object', additionalProperties: false, required: ['kind', 'sideband'],
+            properties: { kind: { const: 'sideband' }, sideband: { $ref: 'primitives.schema.json#/$defs/namespacedId' } },
+          });
+          pp.$defs.deletion.properties.records.items.properties.sidebands = { type: 'array', items: { $ref: 'primitives.schema.json#/$defs/namespacedId' } };
+          fs.writeFileSync(ppPath, JSON.stringify(pp, null, 2) + '\n');
+
+          const spPath = 'schemas/search-ir/0.2.0/search-program.schema.json';
+          const sp = JSON.parse(fs.readFileSync(spPath, 'utf8'));
+          sp.properties.sidebands = { type: 'array', items: { $ref: 'program-package-profile.schema.json#/$defs/sideband' } };
+          fs.writeFileSync(spPath, JSON.stringify(sp, null, 2) + '\n');
+
+          const epPath = 'schemas/search-ir/0.2.0/execution-package.schema.json';
+          const ep = JSON.parse(fs.readFileSync(epPath, 'utf8'));
+          ep.properties.cudaJsAdapter.properties.sidebandRequirements = { type: 'array', minItems: 1, items: { $ref: '#/$defs/sidebandRequirement' } };
+          ep.$defs.publicBinding.properties.source.oneOf.push({
+            type: 'object', additionalProperties: false, required: ['kind', 'sideband'],
+            properties: { kind: { const: 'sideband' }, sideband: { type: 'string', pattern: '^sideband-[0-9]+$' } },
+          });
+          ep.$defs.sidebandRequirement = {
+            type: 'object', additionalProperties: false,
+            required: ['id', 'semanticId', 'owner', 'role', 'direction', 'valueType', 'capacity', 'publication', 'applicationPoint', 'lifetime', 'payloadResource'],
+            properties: {
+              id: { type: 'string', pattern: '^sideband-[0-9]+$' }, semanticId: { $ref: 'primitives.schema.json#/$defs/namespacedId' }, owner: { $ref: 'primitives.schema.json#/$defs/namespacedId' },
+              role: { enum: ['framework-cancellation', 'session-command-publication'] }, direction: { const: 'host-to-device' }, valueType: { const: 'u32' }, capacity: { $ref: 'primitives.schema.json#/$defs/decimalUint' },
+              publication: { const: 'release-acquire' }, applicationPoint: { enum: ['progress-bounded-checkpoint', 'session-command-checkpoint'] }, lifetime: { enum: ['execution', 'session'] },
+              payloadResource: { oneOf: [{ type: 'null' }, { type: 'string', pattern: '^resource-[0-9]+$' }] },
+            },
+          };
+          fs.writeFileSync(epPath, JSON.stringify(ep, null, 2) + '\n');
+          NODE
+      - name: Write permanent #202 falsifier/conformance verifier
+        shell: bash
+        run: |
+          cat > experiments/search-ir-composer-reference/verify-external-control-sideband-authority.mjs <<'EOF'
+          #!/usr/bin/env node
+          import assert from 'node:assert/strict';
+          import { createHash } from 'node:crypto';
+
+          import { buildProgramPackageProfile } from './src/program-package-fixtures.mjs';
+          import { buildExecutionPackage, composeSearchProgram, normalizeProgramPackageProfile } from './src/program-package.mjs';
+
+          const U128_MAX = '340282366920938463463374607431768211455';
+          const digest = (character) => ({ algorithm: 'sha256', sha256: character.repeat(64) });
+          const profile = (id, schema, character, normalized = {}) => ({
+            normalized: { id, schema, ...normalized }, schemaSha: character.repeat(64), identity: digest(character),
+          });
+          const schemaReference = (id, character = '9') => ({ id: `${id}/0.1.0`, version: '0.1.0', sha256: character.repeat(64) });
+          const sourceIdentity = (source) => ({ algorithm: 'sha256', sha256: createHash('sha256').update(source, 'utf8').digest('hex') });
+
+          function makeContext(sessionResult = null) {
+            const providerRequirements = [{
+              id: 'provider.sideband-authority.output', unit: 'bytes', capacity: '64', alignment: '8',
+              memorySpaces: ['device-search'], access: ['read', 'write'],
+            }];
+            const resourceNormalized = { providerRequirements, contributors: [], classes: [], reserves: [], partitions: [], pools: [] };
+            if (sessionResult) {
+              providerRequirements.push({
+                id: 'provider.sideband-authority.session-control', pool: 'pool.sideband-authority.session-control', unit: 'bytes', capacity: '16384', alignment: '256',
+                memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'],
+              });
+              resourceNormalized.contributors.push({ id: 'owner.session.sideband-authority', contract: { id: 'SPEC-0006' }, classes: ['resource.sideband-authority.class-session-control'] });
+              resourceNormalized.classes.push({
+                id: 'resource.sideband-authority.class-session-control', contributor: 'owner.session.sideband-authority', lifetime: 'session',
+                memorySpaces: ['device-search', 'device-publication'], access: ['read', 'write', 'atomic', 'publish'],
+              });
+              resourceNormalized.partitions.push({ id: 'partition.sideband-authority.session-control', class: 'resource.sideband-authority.class-session-control', pool: 'pool.sideband-authority.session-control' });
+              resourceNormalized.pools.push({ id: 'pool.sideband-authority.session-control', providerRequirement: 'provider.sideband-authority.session-control' });
+            }
+            const resourceResult = profile('resource.sideband-authority', 'cuda-mcgs.resource-profile/0.2.0', '1', resourceNormalized);
+            const progressResult = profile('progress.sideband-authority', 'cuda-mcgs.progress-profile/0.2.0', '2');
+            const outputResult = profile('output.sideband-authority', 'cuda-mcgs.output-profile/0.2.0', '3');
+            return {
+              profileResults: [resourceResult, progressResult, outputResult, ...(sessionResult ? [sessionResult] : [])],
+              resourceResult, progressResult, outputResult, sessionResult, stageResult: null, channelResult: null,
+            };
+          }
+
+          const inspected = {
+            contractSet: { contracts: [{ id: 'SPEC-0005', specificationIdentity: 'CUDA-MCGS-SPEC-0005@0.4.0', sha256: '4'.repeat(64) }] },
+            identities: { contractSet: digest('5') },
+          };
+          const normalize = (built) => normalizeProgramPackageProfile(built.input, inspected, built.context);
+
+          const baseBuilt = buildProgramPackageProfile(inspected, makeContext(), 'sideband-base');
+          const base = normalize(baseBuilt);
+          const baseProgram = composeSearchProgram(base);
+          const baseExecution = buildExecutionPackage(base, baseProgram);
+          const baseCancellation = base.normalized.sidebands.find(({ role }) => role === 'framework-cancellation');
+          assert.ok(baseCancellation);
+          assert.equal(baseCancellation.owner, baseBuilt.context.progressResult.normalized.id);
+          assert.equal(baseCancellation.payloadResource, null);
+          assert.ok(base.normalized.operations[0].bindings.some(({ source }) => source.kind === 'sideband' && source.sideband === baseCancellation.id));
+          assert.ok(base.normalized.publicRequirements.some(({ contract }) => contract.id === 'cuda-js.publication-mailbox/0.1.0'));
+          assert.ok(baseExecution.normalized.cudaJsAdapter.sidebandRequirements.some(({ role }) => role === 'framework-cancellation'));
+
+          const sessionResult = profile('session.sideband-authority', 'cuda-mcgs.session-profile/0.2.0', '6', {
+            counters: [{ kind: 'command', maximum: U128_MAX }],
+            programContribution: {
+              sourceIdentity: digest('7'), functionIds: ['program.session.sideband-authority.apply_commands'],
+              requirements: [schemaReference('cuda-js.publication-mailbox', '8')], engineStepRoles: ['apply-session-controls'], nativeContent: 'forbidden',
+            },
+          });
+          const sessionBuilt = buildProgramPackageProfile(inspected, makeContext(sessionResult), 'sideband-session');
+          const session = normalize(sessionBuilt);
+          const sessionSignal = session.normalized.sidebands.find(({ role }) => role === 'session-command-publication');
+          assert.ok(sessionSignal);
+          assert.equal(sessionSignal.owner, sessionResult.normalized.id);
+          assert.ok(sessionSignal.payloadResource);
+          assert.equal(sessionSignal.valueType, 'u32');
+          assert.equal(sessionResult.normalized.counters.find(({ kind }) => kind === 'command').maximum, U128_MAX);
+          assert.equal('commandGeneration' in sessionSignal, false);
+          assert.equal('commandId' in sessionSignal, false);
+          assert.ok(session.normalized.operations[0].bindings.some(({ source }) => source.kind === 'sideband' && source.sideband === sessionSignal.id));
+          const mailboxRequirement = session.normalized.publicRequirements.find(({ contract }) => contract.id === 'cuda-js.publication-mailbox/0.1.0');
+          assert.ok(mailboxRequirement.consumers.includes(sessionResult.normalized.id));
+          const baseMailbox = base.normalized.publicRequirements.find(({ contract }) => contract.id === 'cuda-js.publication-mailbox/0.1.0');
+          assert.equal(baseMailbox.consumers.includes(sessionResult.normalized.id), false);
+          assert.equal(base.normalized.sidebands.some(({ role }) => role === 'session-command-publication'), false);
+
+          const unknownBinding = structuredClone(baseBuilt.input);
+          unknownBinding.operations[0].bindings.find(({ source }) => source.kind === 'sideband').source.sideband = 'sideband.unknown-control';
+          assert.throws(() => normalizeProgramPackageProfile(unknownBinding, inspected, baseBuilt.context), /sideband binding is incompatible/);
+
+          const missingSidebands = structuredClone(baseBuilt.input);
+          delete missingSidebands.sidebands;
+          assert.throws(() => normalizeProgramPackageProfile(missingSidebands, inspected, baseBuilt.context), /sideband binding is incompatible/);
+
+          const missingCapability = structuredClone(baseBuilt.input);
+          missingCapability.publicRequirements = missingCapability.publicRequirements.filter(({ contract }) => contract.id !== 'cuda-js.publication-mailbox/0.1.0');
+          for (const record of missingCapability.deletion.records) record.publicRequirements = record.publicRequirements.filter((id) => id !== 'cuda-js.publication-mailbox/0.1.0');
+          assert.throws(() => normalizeProgramPackageProfile(missingCapability, inspected, baseBuilt.context), /public requirements differ|publication-mailbox/);
+
+          const invalidDirection = structuredClone(baseBuilt.input);
+          invalidDirection.sidebands[0].direction = 'device-to-host';
+          assert.throws(() => normalizeProgramPackageProfile(invalidDirection, inspected, baseBuilt.context), /direction is invalid/);
+
+          const changedMeaning = structuredClone(baseBuilt.input);
+          changedMeaning.sidebands[0].capacity = '2';
+          assert.throws(() => normalizeProgramPackageProfile(changedMeaning, inspected, baseBuilt.context), /first accepted realization requires one finite signal lane/);
+          const changedApplication = structuredClone(baseBuilt.input);
+          changedApplication.sidebands[0].applicationPoint = 'session-command-checkpoint';
+          assert.throws(() => normalizeProgramPackageProfile(changedApplication, inspected, baseBuilt.context), /framework cancellation sideband ownership/);
+
+          const historical = structuredClone(baseBuilt.input);
+          delete historical.sidebands;
+          historical.publicRequirements = historical.publicRequirements.filter(({ contract }) => contract.id !== 'cuda-js.publication-mailbox/0.1.0');
+          const historicalSource = 'function engine_step(output) { output[gpu.thread.globalX()] = 0; }\n';
+          const entryUnit = historical.sourceUnits.find(({ functions }) => functions.includes('engine_step'));
+          entryUnit.source = historicalSource;
+          entryUnit.sourceIdentity = sourceIdentity(historicalSource);
+          historical.functions.find(({ name }) => name === 'engine_step').parameters = [{ name: 'output', type: 'ptr<u32>' }];
+          historical.operations[0].bindings = historical.operations[0].bindings.filter(({ parameter }) => parameter === 'output');
+          for (const record of historical.deletion.records) {
+            delete record.sidebands;
+            record.publicRequirements = record.owner === historical.id
+              ? historical.publicRequirements.map(({ contract }) => contract.id)
+              : [];
+          }
+          const historicalResult = normalizeProgramPackageProfile(historical, inspected, baseBuilt.context);
+          assert.equal(Object.hasOwn(historicalResult.normalized, 'sidebands'), false);
+          const historicalProgram = composeSearchProgram(historicalResult);
+          assert.equal(Object.hasOwn(historicalProgram.normalized, 'sidebands'), false);
+          assert.throws(() => buildExecutionPackage(historicalResult, historicalProgram), /explicit framework cancellation sideband/);
+
+          const identityBase = base.identity.sha256;
+          const identityMutation = structuredClone(baseBuilt.input);
+          identityMutation.sidebands[0].publication = 'release-acquire';
+          identityMutation.sidebands[0].id = 'sideband.sideband-base.framework-cancellation-v2';
+          identityMutation.operations[0].bindings.find(({ source }) => source.kind === 'sideband').source.sideband = identityMutation.sidebands[0].id;
+          const progressDeletion = identityMutation.deletion.records.find(({ owner }) => owner === baseBuilt.context.progressResult.normalized.id);
+          progressDeletion.sidebands = [identityMutation.sidebands[0].id];
+          assert.notEqual(normalizeProgramPackageProfile(identityMutation, inspected, baseBuilt.context).identity.sha256, identityBase);
+
+          console.log('external_control_sideband=pass base_cancellation=declared-and-bound session_requirement=closed session_publication=notification-not-identity historical=structural-valid-runtime-reject deletion=exact binding=fail-closed identity=sensitive');
+          EOF
+      - name: Qualify focused Composer/reference implementation
+        shell: bash
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          git diff --check
+      - name: Commit semantic construction
+        shell: bash
+        run: |
+          rm .github/workflows/construct-202-sideband.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "Execution package: implement bounded external control sidebands"
+          git push origin HEAD:impl/202-external-control-sideband-projection
