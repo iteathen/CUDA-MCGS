@@ -21,6 +21,7 @@ The capsule covers:
 - compile-returned kernel symbol/parameter use rather than adapter-owned lower ABI inference;
 - runtime-entry parameter order, operation-local full-resource access records and launch dimensions;
 - write-only uninitialized resources versus explicit exact-length input for read/read-write resources;
+- complete pre-ignition resource/scalar validation before the first lower memory write, including retryability after a late-invalid input;
 - explicit scalar values rather than schema-derived values;
 - host-to-device publication and device-to-host observation directionality;
 - lower compile/allocation/submit/terminal failure preservation;
