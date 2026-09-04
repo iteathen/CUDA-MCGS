@@ -1,6 +1,7 @@
 # SPEC-0005 addendum — bounded external control sideband projection
 
-- **Status:** Accepted
+**Status:** Accepted
+
 - **Version:** 0.1.0
 - **Selection:** Universal package correction for bounded external control and publication sidebands
 - **Semantic owner:** Framework / Progress, with Search Session owning optional session-command meaning when selected
