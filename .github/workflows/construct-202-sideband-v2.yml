@@ -65,6 +65,18 @@ jobs:
         run: |
           node --check /tmp/construct-202.cjs
           node /tmp/construct-202.cjs
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = 'experiments/search-ir-composer-reference/verify-operation-local-access.mjs';
+          let source = fs.readFileSync(path, 'utf8');
+          const outputBinding = ".bindings.find(({ parameter }) => parameter === 'output')";
+          source = source
+            .replace("program.normalized.operations[0].bindings[0].source.access", `program.normalized.operations[0]${outputBinding}.source.access`)
+            .replace("execution.normalized.cudaJsAdapter.operationRequirements[0].bindings[0].source.access", `execution.normalized.cudaJsAdapter.operationRequirements[0]${outputBinding}.source.access`)
+            .replaceAll(".normalized.normalized.operations[0].bindings[0].source.access", `.normalized.normalized.operations[0]${outputBinding}.source.access`)
+            .replace("historical.normalized.normalized.operations[0].bindings[0].source", `historical.normalized.normalized.operations[0]${outputBinding}.source`);
+          fs.writeFileSync(path, source);
+          NODE
           cp /tmp/verify-external-control-sideband-authority.mjs experiments/search-ir-composer-reference/verify-external-control-sideband-authority.mjs
           git diff --check
       - name: Qualify focused Composer/reference implementation
