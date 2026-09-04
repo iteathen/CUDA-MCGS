@@ -203,6 +203,13 @@
               "const": "device-owned-closure"
             }
           }
+        },
+        "sidebandRequirements": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sidebandRequirement"
+          }
         }
       }
     }
@@ -298,6 +305,23 @@
                 },
                 "schema": {
                   "$ref": "primitives.schema.json#/$defs/schemaReference"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "sideband"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "sideband"
+                },
+                "sideband": {
+                  "type": "string",
+                  "pattern": "^sideband-[0-9]+$"
                 }
               }
             }
@@ -399,6 +423,74 @@
               "$ref": "primitives.schema.json#/$defs/decimalUint"
             }
           }
+        }
+      }
+    },
+    "sidebandRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "role",
+        "direction",
+        "valueType",
+        "capacity",
+        "publication",
+        "applicationPoint",
+        "lifetime",
+        "residentResource",
+        "semantics",
+        "cleanup"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^sideband-[0-9]+$"
+        },
+        "role": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "direction": {
+          "enum": [
+            "host-to-device",
+            "device-to-host"
+          ]
+        },
+        "valueType": {
+          "const": "u32"
+        },
+        "capacity": {
+          "$ref": "primitives.schema.json#/$defs/decimalUint"
+        },
+        "publication": {
+          "const": "release-acquire"
+        },
+        "applicationPoint": {
+          "$ref": "primitives.schema.json#/$defs/schemaReference"
+        },
+        "lifetime": {
+          "enum": [
+            "operation",
+            "session"
+          ]
+        },
+        "residentResource": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^resource-[0-9]+$"
+            }
+          ]
+        },
+        "semantics": {
+          "$ref": "primitives.schema.json#/$defs/schemaReference"
+        },
+        "cleanup": {
+          "$ref": "primitives.schema.json#/$defs/schemaReference"
         }
       }
     }

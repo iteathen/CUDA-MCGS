@@ -68,13 +68,13 @@ const accepted = normalizeCase();
 const acceptedBinding = accepted.normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output');
 assert.equal(acceptedBinding.source.access, 'write');
 const program = composeSearchProgram(accepted.normalized);
-assert.equal(program.normalized.operations[0].bindings[0].source.access, 'write');
+assert.equal(program.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source.access, 'write');
 const execution = buildExecutionPackage(accepted.normalized, program);
-assert.equal(execution.normalized.cudaJsAdapter.operationRequirements[0].bindings[0].source.access, 'write');
+assert.equal(execution.normalized.cudaJsAdapter.operationRequirements[0].bindings.find(({ parameter }) => parameter === 'output').source.access, 'write');
 assert.deepEqual(new Set(execution.normalized.cudaJsAdapter.resourceRequirements[0].accessRequirements), new Set(broadAccess));
 
-assert.equal(normalizeCase(['read'], 'read').normalized.normalized.operations[0].bindings[0].source.access, 'read');
-assert.equal(normalizeCase(['read', 'write'], 'read-write').normalized.normalized.operations[0].bindings[0].source.access, 'read-write');
+assert.equal(normalizeCase(['read'], 'read').normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source.access, 'read');
+assert.equal(normalizeCase(['read', 'write'], 'read-write').normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source.access, 'read-write');
 assert.throws(() => normalizeCase(['write'], 'read'), { code: 'COMPOSE_OPERATION_ACCESS' });
 assert.throws(() => normalizeCase(['read'], 'write'), { code: 'COMPOSE_OPERATION_ACCESS' });
 assert.throws(() => normalizeCase(['read'], 'read-write'), { code: 'COMPOSE_OPERATION_ACCESS' });
@@ -90,7 +90,7 @@ scalarAccess.binding.source = {
 assert.throws(() => normalizeProgramPackageProfile(scalarAccess.fixture.input, scalarAccess.inspected, scalarAccess.fixture.context), { code: 'COMPOSE_OPERATION_ACCESS' });
 
 const historical = normalizeCase(broadAccess, null);
-assert.equal(Object.hasOwn(historical.normalized.normalized.operations[0].bindings[0].source, 'access'), false);
+assert.equal(Object.hasOwn(historical.normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source, 'access'), false);
 assert.throws(() => buildExecutionPackage(historical.normalized, composeSearchProgram(historical.normalized)), { code: 'COMPOSE_OPERATION_ACCESS_REQUIRED' });
 
 const readWriteSameEnvelope = normalizeCase(broadAccess, 'read-write');
