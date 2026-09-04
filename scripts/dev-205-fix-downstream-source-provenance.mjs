@@ -66,6 +66,26 @@ assert(changedFiles > 0, 'no downstream provenance file required #205 rewiring')
 assert(canonicalPathLabels > 0, 'no canonical Search Compiler source path was re-owned');
 assert(routedReaders > 0, 'no canonical source-manifest reader was routed through testing.mjs');
 
+// Repository governance must require the actual production owner, not a deleted conformance copy.
+const governancePath = 'scripts/verify-docs.sh';
+let governance = await readFile(governancePath, 'utf8');
+let governanceReowned = 0;
+for (const name of productionNames) {
+  const oldEntry = `  conformance/search-compiler/src/${name}\n`;
+  const newEntry = `  components/search-compiler/src/${name}\n`;
+  assert.equal(governance.split(oldEntry).length - 1, 1, `verify-docs must contain exactly one pre-reownership entry for ${name}`);
+  governance = governance.replace(oldEntry, newEntry);
+  governanceReowned += 1;
+}
+const componentAnchor = '  components/README.md\n';
+assert.equal(governance.split(componentAnchor).length - 1, 1, 'verify-docs components anchor drifted');
+governance = governance.replace(componentAnchor, `${componentAnchor}  components/search-compiler/README.md\n  components/search-compiler/component.yaml\n  components/search-compiler/index.mjs\n  components/search-compiler/testing.mjs\n`);
+const conformanceAnchor = '  conformance/README.md\n';
+assert.equal(governance.split(conformanceAnchor).length - 1, 1, 'verify-docs conformance anchor drifted');
+governance = governance.replace(conformanceAnchor, `${conformanceAnchor}  conformance/search-compiler/verify-promotion-boundary.mjs\n`);
+await writeFile(governancePath, governance, 'utf8');
+assert.equal(governanceReowned, productionNames.length);
+
 // Fail if any active evidence source manifest still labels one of the 14 canonical modules as conformance source.
 for (const evidenceRoot of evidenceRoots) {
   for (const file of await walk(evidenceRoot)) {
@@ -77,4 +97,4 @@ for (const evidenceRoot of evidenceRoots) {
   }
 }
 
-console.log(`downstream_source_provenance=pass changed_files=${changedFiles} canonical_path_labels=${canonicalPathLabels} routed_readers=${routedReaders}`);
+console.log(`downstream_source_provenance=pass changed_files=${changedFiles} canonical_path_labels=${canonicalPathLabels} routed_readers=${routedReaders} governance_reowned=${governanceReowned}`);
