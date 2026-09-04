@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 
-import { multiplyDecimalUint } from './validation.mjs';
+import { multiplyDecimalUint } from '../../../components/search-compiler/testing.mjs';
 
 const VERSION = '0.1.0';
 const REVISION = 'ee5b0348585842096324c315a079d05cbe64b9d4';

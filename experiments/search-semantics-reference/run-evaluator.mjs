@@ -11,8 +11,8 @@ import { DIRECT_EVALUATOR_REQUIREMENTS, registerEvaluatorCases } from './src/eva
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'evaluator-cases.json');
-const composerEvidencePath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'evidence.json');
-const evaluatorProjectionPath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'evaluator-profiles.json');
+const composerEvidencePath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
+const evaluatorProjectionPath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evaluator-profiles.json');
 const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 const evaluatorSpecPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0009-evaluator-contract.md');
 
@@ -144,7 +144,7 @@ const summary = {
 if (selectedCase === null) assert.equal(cases.length, expectedCaseIds.length);
 
 const sourcePaths = [
-  'experiments/search-ir-composer-reference/export-evaluator-profiles.mjs',
+  'conformance/search-compiler/export-evaluator-profiles.mjs',
   'experiments/search-semantics-reference/fixtures/evaluator-cases.json',
   'experiments/search-semantics-reference/src/errors.mjs',
   'experiments/search-semantics-reference/src/canonical.mjs',

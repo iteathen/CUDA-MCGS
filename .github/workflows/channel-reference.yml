@@ -11,11 +11,11 @@ on:
       - 'docs/specs/SPEC-0004-async-stage-channels.md'
       - 'schemas/search-ir/0.2.0/requirement-coverage.json'
       - 'schemas/search-ir/0.2.0/channel-profile.schema.json'
-      - 'experiments/search-ir-composer-reference/fixtures/channel-evidence-routes.json'
-      - 'experiments/search-ir-composer-reference/src/channel.mjs'
-      - 'experiments/search-ir-composer-reference/src/channel-fixtures.mjs'
-      - 'experiments/search-ir-composer-reference/run.mjs'
-      - 'experiments/search-ir-composer-reference/run-channel-evidence.mjs'
+      - 'components/search-compiler/src/channel.mjs'
+      - 'conformance/search-compiler/fixtures/channel-evidence-routes.json'
+      - 'conformance/search-compiler/src/channel-fixtures.mjs'
+      - 'conformance/search-compiler/run.mjs'
+      - 'conformance/search-compiler/run-channel-evidence.mjs'
       - 'scripts/run-search-ir-composer-reference.mjs'
       - 'scripts/run-channel-reference-evidence.mjs'
       - 'scripts/verify-channel-ci-gate.mjs'
@@ -26,11 +26,11 @@ on:
       - 'docs/specs/SPEC-0004-async-stage-channels.md'
       - 'schemas/search-ir/0.2.0/requirement-coverage.json'
       - 'schemas/search-ir/0.2.0/channel-profile.schema.json'
-      - 'experiments/search-ir-composer-reference/fixtures/channel-evidence-routes.json'
-      - 'experiments/search-ir-composer-reference/src/channel.mjs'
-      - 'experiments/search-ir-composer-reference/src/channel-fixtures.mjs'
-      - 'experiments/search-ir-composer-reference/run.mjs'
-      - 'experiments/search-ir-composer-reference/run-channel-evidence.mjs'
+      - 'components/search-compiler/src/channel.mjs'
+      - 'conformance/search-compiler/fixtures/channel-evidence-routes.json'
+      - 'conformance/search-compiler/src/channel-fixtures.mjs'
+      - 'conformance/search-compiler/run.mjs'
+      - 'conformance/search-compiler/run-channel-evidence.mjs'
       - 'scripts/run-search-ir-composer-reference.mjs'
       - 'scripts/run-channel-reference-evidence.mjs'
       - 'scripts/verify-channel-ci-gate.mjs'
@@ -58,4 +58,4 @@ jobs:
         with:
           name: channel-reference-evidence
           if-no-files-found: error
-          path: experiments/search-ir-composer-reference/build/channel-evidence*.json
+          path: conformance/search-compiler/build/channel-evidence*.json

@@ -2,14 +2,14 @@
   "schema": "cuda-mcgs.reference-resource-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 709387,
-    "sha256": "e576c182b56ad857069af4260f24451aa5db6abfaa4e0d33a80e1f74b8797df6"
+    "byteLength": 708983,
+    "sha256": "4e6b1911dcc4dc828fc49c9ece2b3d3694257507ad5ad37156e518c6eaddca25"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-resource-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 982936,
-    "sha256": "40715a93d66b7f48abfd9d737acc763d3f742836a75785b2a276f8a8f5dca63d"
+    "sha256": "30e69da8ba3aa94fc80e32c7fe0a289c00bafdb00054050bf9fb841d94272aaf"
   },
   "expectedCases": [
     "resource-single-admission-atomicity",

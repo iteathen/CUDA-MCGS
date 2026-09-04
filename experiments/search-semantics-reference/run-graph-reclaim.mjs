@@ -1,3 +1,4 @@
+import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -11,7 +12,7 @@ import { registerGraphReclaimCases } from './src/graph-reclaim-cases.mjs';
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'graph-reclaim-cases.json');
-const composerRoot = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference');
+const composerRoot = path.join(repositoryRoot, 'conformance', 'search-compiler');
 const composerEvidencePath = path.join(composerRoot, 'build', 'evidence.json');
 const graphProjectionPath = path.join(composerRoot, 'build', 'graph-profiles.json');
 const rootControlPath = path.join(composerRoot, 'build', 'root-control.json');
@@ -186,8 +187,8 @@ const sourcePaths = [
   'experiments/search-semantics-reference/src/graph-reclaim.mjs',
   'experiments/search-semantics-reference/src/graph-reclaim-cases.mjs',
   'experiments/search-semantics-reference/run-graph-reclaim.mjs',
-  'experiments/search-ir-composer-reference/src/graph.mjs',
-  'experiments/search-ir-composer-reference/src/graph-fixtures.mjs',
+  'components/search-compiler/src/graph.mjs',
+  'conformance/search-compiler/src/graph-fixtures.mjs',
   'scripts/run-graph-node-reference.mjs',
   'scripts/run-graph-edge-reference.mjs',
   'scripts/run-graph-ref-reference.mjs',
@@ -198,7 +199,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/requirement-coverage.json',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths) sources[relative] = sourceTextSha256(relative.startsWith('components/search-compiler/src/') ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8') : await readFile(path.join(repositoryRoot, relative)));
 const evidenceSubject = {
   schema: 'cuda-mcgs.search-semantics-graph-reclaim-evidence-key/0.2.0',
   composerEvidence: fixture.composerEvidence,

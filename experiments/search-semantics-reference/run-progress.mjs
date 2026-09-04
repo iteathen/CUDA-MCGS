@@ -11,8 +11,8 @@ import { DIRECT_PROGRESS_REQUIREMENTS, registerProgressCases } from './src/progr
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'progress-cases.json');
-const composerEvidencePath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'evidence.json');
-const progressProjectionPath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'progress-profiles.json');
+const composerEvidencePath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
+const progressProjectionPath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'progress-profiles.json');
 const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 const progressSpecPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0012-device-owned-search-progress.md');
 
@@ -145,7 +145,7 @@ const summary = {
 if (selectedCase === null) assert.equal(cases.length, expectedCaseIds.length);
 
 const sourcePaths = [
-  'experiments/search-ir-composer-reference/export-progress-profiles.mjs',
+  'conformance/search-compiler/export-progress-profiles.mjs',
   'experiments/search-semantics-reference/fixtures/progress-cases.json',
   'experiments/search-semantics-reference/src/errors.mjs',
   'experiments/search-semantics-reference/src/canonical.mjs',

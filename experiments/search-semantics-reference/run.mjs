@@ -14,8 +14,8 @@ const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'neutral-schedules.json');
 const domainFixturePath = path.join(experimentRoot, 'fixtures', 'domain-cases.json');
-const composerEvidencePath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'evidence.json');
-const domainProjectionPath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'domain-profiles.json');
+const composerEvidencePath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
+const domainProjectionPath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'domain-profiles.json');
 const domainSpecPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0007-domain-state-action-and-transition.md');
 const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 
@@ -391,7 +391,7 @@ const sourcePaths = [
   'experiments/search-semantics-reference/src/domain.mjs',
   'experiments/search-semantics-reference/src/domain-instances.mjs',
   'experiments/search-semantics-reference/src/domain-cases.mjs',
-  'experiments/search-ir-composer-reference/export-domain-profiles.mjs',
+  'conformance/search-compiler/export-domain-profiles.mjs',
   'scripts/export-search-ir-composer-domain-profiles.mjs',
   'docs/specs/SPEC-0007-domain-state-action-and-transition.md',
   'schemas/search-ir/0.2.0/requirement-coverage.json',

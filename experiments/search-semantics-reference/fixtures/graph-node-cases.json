@@ -2,14 +2,14 @@
   "schema": "cuda-mcgs.reference-graph-node-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 709387,
-    "sha256": "e576c182b56ad857069af4260f24451aa5db6abfaa4e0d33a80e1f74b8797df6"
+    "byteLength": 708983,
+    "sha256": "4e6b1911dcc4dc828fc49c9ece2b3d3694257507ad5ad37156e518c6eaddca25"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 140229,
-    "sha256": "5e81db605b6c7b783c352213fb0f9018a827ecc5037a62b6dab308fd7a516f11"
+    "sha256": "d37c52056f906519f3badddd20d4e95510489c015b0369d3ac46e07d8becafc3"
   },
   "expectedCases": [
     "graph-node-profile-projection-exact",

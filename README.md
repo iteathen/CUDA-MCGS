@@ -15,7 +15,7 @@ What exists today:
 
 - accepted and proposed search contracts;
 - Search IR/schema work;
-- bounded reference implementations and semantic falsifiers;
+- a production Search Compiler component for canonical pre-ignition normalization/composition, plus bounded independent reference/conformance evidence;
 - repository/document validation;
 - public adapter and ownership definitions for future CUDA-JS integration.
 
@@ -42,6 +42,7 @@ Run bounded reference semantics directly:
 
 ```bash
 node scripts/run-search-ir-reference.mjs
+node scripts/run-search-ir-composer-reference.mjs
 node scripts/run-search-semantics-reference.mjs
 ```
 

@@ -8,7 +8,8 @@ on:
     paths:
       - '.github/workflows/session-reference.yml'
       - 'docs/specs/SPEC-0006-search-session-control-and-observation.md'
-      - 'experiments/search-ir-composer-reference/**'
+      - 'components/search-compiler/**'
+      - 'conformance/search-compiler/**'
       - 'experiments/search-semantics-reference/fixtures/domain-cases.json'
       - 'experiments/search-semantics-reference/fixtures/framework-lifecycle-cases.json'
       - 'experiments/search-semantics-reference/fixtures/terminal-slice-cases.json'
@@ -26,7 +27,8 @@ on:
     paths:
       - '.github/workflows/session-reference.yml'
       - 'docs/specs/SPEC-0006-search-session-control-and-observation.md'
-      - 'experiments/search-ir-composer-reference/**'
+      - 'components/search-compiler/**'
+      - 'conformance/search-compiler/**'
       - 'experiments/search-semantics-reference/fixtures/domain-cases.json'
       - 'experiments/search-semantics-reference/fixtures/framework-lifecycle-cases.json'
       - 'experiments/search-semantics-reference/fixtures/terminal-slice-cases.json'

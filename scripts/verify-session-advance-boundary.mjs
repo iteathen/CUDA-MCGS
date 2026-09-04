@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { createSessionOracle } from '../experiments/search-semantics-reference/src/session.mjs';
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const projection = JSON.parse(await readFile(path.join(repositoryRoot, 'experiments/search-ir-composer-reference/build/session-profiles.json'), 'utf8'));
+const projection = JSON.parse(await readFile(path.join(repositoryRoot, 'conformance/search-compiler/build/session-profiles.json'), 'utf8'));
 const entry = projection.profiles.find(({ id }) => id === 'session.synthetic-live-session');
 assert(entry, 'Session projection must contain the live Session profile');
 const provenance = {

@@ -56,9 +56,9 @@ This registry tells developers and agents where durable information and future i
 | Product area | Owns | Location | Current status |
 |---|---|---|---|
 | `schemas` | Versioned CUDA-MCGS machine-readable universal and namespaced selected contracts/metaschemas | [`../schemas/`](../schemas/README.md) | Active; Search IR 0.1.0 foundation and 0.2.0 universal semantic/profile/program/package authority accepted; native realization deferred |
-| `components` | Production universal CUDA-MCGS search components | [`../components/`](../components/README.md) | Reserved; no implementation authorized |
+| `components` | Production universal CUDA-MCGS search components | [`../components/`](../components/README.md) | Active; `tool.search-compiler` is the first production component |
 | `adapters` | Consumer-neutral domain/policy/evaluator/output integration and peer-runtime adapters | [`../adapters/`](../adapters/README.md) | Reserved; no external product semantics owned here |
-| `conformance` | Universal reference backend, materially varied removable domains/workloads, search-contract suites, and public peer/external-consumer boundary compatibility | [`../conformance/`](../conformance/README.md) | Reserved |
+| `conformance` | Universal reference backend, materially varied removable domains/workloads, search-contract suites, and public peer/external-consumer boundary compatibility | [`../conformance/`](../conformance/README.md) | Active; Search Compiler conformance is promoted while independent reference experiments remain bounded evidence |
 | `benchmarks` | Cross-component reproducible framework mechanism/resource/performance suites; concrete workloads remain evidence rather than product quality authority | [`../benchmarks/`](../benchmarks/README.md) | Reserved |
 | `experiments` | Disposable research/prototypes | [`../experiments/`](../experiments/README.md) | Active; CUDA-free bounded evidence only; deleted native experiment conclusions are archived as non-executable provenance |
 | `examples` | Minimal public-surface usage examples, including removable concrete consumers where useful | [`../examples/`](../examples/README.md) | Reserved |
@@ -86,8 +86,14 @@ This registry tells developers and agents where durable information and future i
 | `contract.resources` | Finite selected-owner resource composition/admission/accounting/pressure semantics | [`../docs/specs/SPEC-0011-finite-search-resources.md`](../docs/specs/SPEC-0011-finite-search-resources.md) | Accepted 0.1.0 semantic contract |
 | `contract.progress` | Device-owned readiness/fairness/no-progress/stop/drain/closure semantics | [`../docs/specs/SPEC-0012-device-owned-search-progress.md`](../docs/specs/SPEC-0012-device-owned-search-progress.md) | Accepted 0.1.0 semantic contract |
 | `contract.cuda-js-package` | MCGS Search Program/execution-package semantics plus MCGS-owned CUDA-JS adapter requirements; installed public CUDA-JS remains lower authority | [`../docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md`](../docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md), [`../schemas/search-ir/0.2.0/execution-package.schema.json`](../schemas/search-ir/0.2.0/execution-package.schema.json) | Accepted semantic/package boundary; #125 lower realization pending |
-| `evidence.search-ir-composer` | CUDA-free accepted Search IR 0.2.0 catalog, strict owner-profile normalization, restricted Device-JS Search Program/adapter-requirement composition, canonical identities and bounded deletion/rejection/reference-pair evidence | [`../experiments/search-ir-composer-reference/`](../experiments/search-ir-composer-reference/README.md) and [`../schemas/search-ir/0.2.0/`](../schemas/search-ir/0.2.0/) | Accepted semantic/reference evidence; no Device-JS compiler, production/native or lower-runtime authority |
+| `evidence.search-ir-composer` | CUDA-free conformance for Search IR 0.2.0 catalog, strict owner-profile normalization, restricted Device-JS Search Program/adapter-requirement composition, canonical identities and bounded deletion/rejection/reference-pair evidence | [`../conformance/search-compiler/`](../conformance/search-compiler/README.md) and [`../schemas/search-ir/0.2.0/`](../schemas/search-ir/0.2.0/) | Active conformance evidence for `tool.search-compiler`; no Device-JS compiler, native or lower-runtime authority |
 | `evidence.search-semantics-reference` | Semantic-neutral finite declared-schedule execution plus owner-local behavioral oracles bound to exact public proposal Composer/profile identities, with immutable facts, mutation sensitivity and source-keyed evidence | [`../experiments/search-semantics-reference/`](../experiments/search-semantics-reference/README.md) | Accepted bounded CUDA-free owner/reference packet: 393/393 routes; native compatible-pair, production and performance authority remain deferred |
+
+## Production implementation boundaries
+
+| Boundary ID | Owns | Authoritative location | Status |
+|---|---|---|---|
+| `tool.search-compiler` | Canonical pre-ignition normalization, specialization, deterministic Search Program and execution-package implementation for accepted framework contracts | [`../components/search-compiler/`](../components/search-compiler/README.md) | Production component; semantic authority remains accepted specs/schemas; stable SDK remains #109 |
 
 ## Planned universal CUDA-MCGS boundaries
 
@@ -99,7 +105,6 @@ The active dependency graph and owner-level proposal outputs are governed beneat
 |---|---|---|
 | `interface.library` | Progressive public access from convenience facade/presets through the complete composable surface to low-level integration tools; one canonical resolved-profile path with inspectable default provenance | [`../docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md`](../docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md); exact API remains future specification work |
 | `tool.search-schema` | Parse, validate, normalize, diff, and generate universal plus namespaced selected search contracts | Future accepted component specification |
-| `tool.search-compiler` | Capability/consumer resolution, search specialization, layouts/device code, and execution-package generation | Future accepted component specification |
 | `integration.cuda-js` | CUDA-MCGS adapter from execution-package semantics to public CUDA-JS runtime | Interop contract v0 |
 | `conformance.search` | Synthetic/removable end-to-end universal CUDA-MCGS conformance independent of every external production product | Future accepted component specification |
 

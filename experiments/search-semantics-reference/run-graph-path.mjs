@@ -1,3 +1,4 @@
+import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -11,8 +12,8 @@ import { registerGraphPathCases } from './src/graph-path-cases.mjs';
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'graph-path-cases.json');
-const composerEvidencePath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'evidence.json');
-const graphProjectionPath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'graph-profiles.json');
+const composerEvidencePath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
+const graphProjectionPath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'graph-profiles.json');
 const nodeEvidencePath = path.join(experimentRoot, 'build', 'graph-node-evidence.json');
 const refEvidencePath = path.join(experimentRoot, 'build', 'graph-ref-evidence.json');
 const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
@@ -159,9 +160,9 @@ const sourcePaths = [
   'experiments/search-semantics-reference/src/graph-path.mjs',
   'experiments/search-semantics-reference/src/graph-path-cases.mjs',
   'experiments/search-semantics-reference/run-graph-path.mjs',
-  'experiments/search-ir-composer-reference/src/graph.mjs',
-  'experiments/search-ir-composer-reference/src/graph-fixtures.mjs',
-  'experiments/search-ir-composer-reference/export-graph-profiles.mjs',
+  'components/search-compiler/src/graph.mjs',
+  'conformance/search-compiler/src/graph-fixtures.mjs',
+  'conformance/search-compiler/export-graph-profiles.mjs',
   'scripts/export-search-ir-composer-graph-profiles.mjs',
   'scripts/run-graph-node-reference.mjs',
   'scripts/run-graph-ref-reference.mjs',
@@ -170,7 +171,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/requirement-coverage.json',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths) sources[relative] = sourceTextSha256(relative.startsWith('components/search-compiler/src/') ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8') : await readFile(path.join(repositoryRoot, relative)));
 const evidenceSubject = {
   schema: 'cuda-mcgs.search-semantics-graph-path-evidence-key/0.2.0',
   composerEvidence: fixture.composerEvidence,

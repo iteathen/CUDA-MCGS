@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-import '../experiments/search-ir-composer-reference/export-session-profiles.mjs';
+import '../conformance/search-compiler/export-session-profiles.mjs';

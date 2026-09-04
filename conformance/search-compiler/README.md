@@ -1,8 +1,8 @@
-# Search IR 0.2.0 Composer Reference
+# Search Compiler Conformance Capsule
 
-**Status:** Research Note
+**Status:** Active conformance evidence
 
-This bounded CUDA-free capsule implements proposal Search IR 0.2.0 catalog, normalization and reference-Composer evidence in dependency order. It is not a production component, public API, accepted semantic contract or native-support claim.
+This bounded CUDA-free capsule validates the production `tool.search-compiler` implementation against accepted Search IR 0.2.0 catalog, normalization, composition, deletion and evidence obligations in dependency order. It is conformance evidence, not semantic authority, a stable public API, a CUDA runtime, or a native-support claim.
 
 ADR-0022 supersedes this capsule's broad `rootTransaction`/root-advance terminology. Its current outputs remain exact historical evidence for their frozen proposal input and must not be described as four-operation root-control conformance. `REF-ROOT-CONTROL-01` owns the coherent SPEC-0006/schema/composition/evidence revision.
 
@@ -158,7 +158,7 @@ Normative sentences remain solely in [`docs/specs/`](../../docs/specs/). The che
 Run with Node.js 26 or newer:
 
 ```text
-node experiments/search-ir-composer-reference/run.mjs
+node conformance/search-compiler/run.mjs
 node scripts/export-search-ir-composer-domain-profiles.mjs
 ```
 

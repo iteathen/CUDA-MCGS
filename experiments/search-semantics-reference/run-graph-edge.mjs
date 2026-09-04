@@ -17,8 +17,8 @@ const readJson = async (file, code) => {
 
 assert(Number(process.versions.node.split('.')[0]) >= 26);
 const fixture = await readJson(path.join(here, 'fixtures', 'graph-edge-cases.json'));
-const composer = await readJson(path.join(root, 'experiments', 'search-ir-composer-reference', 'build', 'evidence.json'), 'GRAPH_EDGE_COMPOSER_EVIDENCE_MISSING');
-const projection = await readJson(path.join(root, 'experiments', 'search-ir-composer-reference', 'build', 'graph-profiles.json'), 'GRAPH_EDGE_PROJECTION_MISSING');
+const composer = await readJson(path.join(root, 'conformance', 'search-compiler', 'build', 'evidence.json'), 'GRAPH_EDGE_COMPOSER_EVIDENCE_MISSING');
+const projection = await readJson(path.join(root, 'conformance', 'search-compiler', 'build', 'graph-profiles.json'), 'GRAPH_EDGE_PROJECTION_MISSING');
 const nodeEvidence = await readJson(path.join(here, 'build', 'graph-node-evidence.json'), 'GRAPH_EDGE_NODE_EVIDENCE_MISSING');
 const coverage = await readJson(path.join(root, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json'));
 const spec = await readFile(path.join(root, 'docs', 'specs', 'SPEC-0010-graph-storage-and-reclamation.md'), 'utf8');

@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 
-import { compareRaw } from './validation.mjs';
+import { compareRaw } from '../../../components/search-compiler/testing.mjs';
 
 const VERSION = '0.1.0';
 const AUTHORITY_REVISION = '711a0570115ecf08d005a07408ee77f3c6671cba';

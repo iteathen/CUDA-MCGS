@@ -3,26 +3,24 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { assertCompletePassSummary } from './src/validation.mjs';
+import { assertCompletePassSummary } from '../../components/search-compiler/testing.mjs';
 
 import { canonicalIdentity, inspectCatalog, sourceTextSha256 } from './src/catalog.mjs';
-import { normalizeDomainProfile } from './src/domain.mjs';
+import { normalizeDomainProfile } from '../../components/search-compiler/testing.mjs';
 import { buildDomainProfiles } from './src/domain-fixtures.mjs';
-import { normalizeGraphProfile } from './src/graph.mjs';
+import { normalizeGraphProfile } from '../../components/search-compiler/testing.mjs';
 import { buildGraphProfiles } from './src/graph-fixtures.mjs';
-import { normalizeEvaluatorProfile } from './src/evaluator.mjs';
+import { normalizeEvaluatorProfile } from '../../components/search-compiler/testing.mjs';
 import { buildEvaluatorProfiles } from './src/evaluator-fixtures.mjs';
-import { normalizePolicyProfile } from './src/policy.mjs';
+import { normalizePolicyProfile } from '../../components/search-compiler/testing.mjs';
 import { buildPolicyProfiles } from './src/policy-fixtures.mjs';
-import { normalizeResourceProfile } from './src/resource.mjs';
-import { buildResourceProfiles } from './src/resource-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const schemaRoot = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0');
 const evidencePath = path.join(experimentRoot, 'build', 'evidence.json');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Resource-profile projection requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Policy-profile projection requires Node 26 or newer; found ${process.version}`);
 
 async function readJson(absolutePath) {
   return JSON.parse(await readFile(absolutePath, 'utf8'));
@@ -45,7 +43,6 @@ const coverageInput = await readJson(path.join(schemaRoot, 'requirement-coverage
 const inspected = await inspectCatalog(repositoryRoot, contractSetInput, coverageInput);
 const domainSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'domain-profile.schema.json')));
 const graphSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'graph-profile.schema.json')));
-const policySchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'policy-profile.schema.json')));
 const evaluatorSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'evaluator-profile.schema.json')));
 
 const domainProfiles = buildDomainProfiles(inspected).map((profile) => normalizeDomainProfile(profile, inspected));
@@ -54,29 +51,16 @@ const graphProfiles = graphFixtures.map(({ input, domain }) => normalizeGraphPro
 const evaluatorFixtures = buildEvaluatorProfiles(inspected, domainProfiles, graphProfiles, domainSchemaSha, graphSchemaSha);
 const evaluatorProfiles = evaluatorFixtures.map(({ input, domain, graph }) => normalizeEvaluatorProfile(input, inspected, domain, graph));
 const policyFixtures = buildPolicyProfiles(inspected, domainProfiles, graphProfiles, domainSchemaSha, graphSchemaSha, evaluatorProfiles, evaluatorSchemaSha);
-const policyProfiles = policyFixtures.map(({ input, domain, graph }) => normalizePolicyProfile(input, inspected, domain, graph));
-const resourceInputs = buildResourceProfiles(inspected, domainProfiles, graphProfiles, policyProfiles, evaluatorProfiles, {
-  domain: domainSchemaSha,
-  graph: graphSchemaSha,
-  policy: policySchemaSha,
-  evaluator: evaluatorSchemaSha,
-});
-const knownProfiles = [
-  ...domainProfiles.map((result) => ({ ...result, schemaSha: domainSchemaSha })),
-  ...graphProfiles.map((result) => ({ ...result, schemaSha: graphSchemaSha })),
-  ...policyProfiles.map((result) => ({ ...result, schemaSha: policySchemaSha })),
-  ...evaluatorProfiles.map((result) => ({ ...result, schemaSha: evaluatorSchemaSha })),
-];
-const profiles = resourceInputs.map((input) => normalizeResourceProfile(input, inspected, knownProfiles));
+const profiles = policyFixtures.map(({ input, domain, graph }) => normalizePolicyProfile(input, inspected, domain, graph));
 
 assert.deepEqual(
   profiles.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })),
-  composerEvidence.resourceProfileIdentities,
-  'projected Resource profiles must match the exact Composer-published identities',
+  composerEvidence.policyProfileIdentities,
+  'projected Policy profiles must match the exact Composer-published identities',
 );
 
 const projectionSubject = {
-  schema: 'cuda-mcgs.search-ir-composer-resource-profile-projection/0.2.0',
+  schema: 'cuda-mcgs.search-ir-composer-policy-profile-projection/0.2.0',
   producer: {
     capsule: composerEvidence.capsule,
     representationCompositionEvidenceKey: composerEvidence.representationCompositionEvidenceKey,
@@ -88,8 +72,8 @@ const projection = {
   projectionIdentity: canonicalIdentity(projectionSubject),
 };
 
-const outputPath = path.join(experimentRoot, 'build', 'resource-profiles.json');
+const outputPath = path.join(experimentRoot, 'build', 'policy-profiles.json');
 await mkdir(path.dirname(outputPath), { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(projection, null, 2)}\n`);
 
-console.log(`capsule=cuda-mcgs-search-ir-composer-resource-profile-projection-v0.2.0 profiles=${profiles.length} projection_sha256=${projection.projectionIdentity.sha256} canonical_bytes=${projection.projectionIdentity.byteLength}`);
+console.log(`capsule=cuda-mcgs-search-ir-composer-policy-profile-projection-v0.2.0 profiles=${profiles.length} projection_sha256=${projection.projectionIdentity.sha256} canonical_bytes=${projection.projectionIdentity.byteLength}`);

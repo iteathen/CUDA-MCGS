@@ -1,3 +1,4 @@
+import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -33,7 +34,7 @@ const specText = await readFile(specPath, 'utf8');
 
 assert.equal(routes.schema, 'cuda-mcgs.channel-evidence-routes/0.2.0');
 assert.equal(routes.contract, 'SPEC-0004');
-assert.equal(routes.ownerExperiment, 'experiments/search-ir-composer-reference');
+assert.equal(routes.ownerConformance, 'conformance/search-compiler');
 assert.equal(routes.directRequirementCount, 41);
 assert.equal(composerEvidence.capsule, 'cuda-mcgs-search-ir-composer-reference-v0.2.0');
 assert.equal(composerEvidence.status, 'pass');
@@ -127,15 +128,15 @@ const sourcePaths = [
   'docs/specs/SPEC-0004-async-stage-channels.md',
   'schemas/search-ir/0.2.0/requirement-coverage.json',
   'schemas/search-ir/0.2.0/channel-profile.schema.json',
-  'experiments/search-ir-composer-reference/fixtures/channel-evidence-routes.json',
-  'experiments/search-ir-composer-reference/src/channel.mjs',
-  'experiments/search-ir-composer-reference/src/channel-fixtures.mjs',
-  'experiments/search-ir-composer-reference/run.mjs',
-  'experiments/search-ir-composer-reference/run-channel-evidence.mjs',
+  'conformance/search-compiler/fixtures/channel-evidence-routes.json',
+  'components/search-compiler/src/channel.mjs',
+  'conformance/search-compiler/src/channel-fixtures.mjs',
+  'conformance/search-compiler/run.mjs',
+  'conformance/search-compiler/run-channel-evidence.mjs',
   'scripts/run-channel-reference-evidence.mjs',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths) sources[relative] = sourceTextSha256(relative.startsWith('components/search-compiler/src/') ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8') : await readFile(path.join(repositoryRoot, relative)));
 
 const evidenceSubject = {
   schema: 'cuda-mcgs.channel-reference-evidence-key/0.2.0',

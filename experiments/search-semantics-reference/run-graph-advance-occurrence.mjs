@@ -11,7 +11,7 @@ import { registerGraphAdvanceOccurrenceCases } from './src/graph-advance-occurre
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'graph-advance-occurrence-cases.json');
-const composerRoot = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference');
+const composerRoot = path.join(repositoryRoot, 'conformance', 'search-compiler');
 const composerEvidencePath = path.join(composerRoot, 'build', 'evidence.json');
 const graphProjectionPath = path.join(composerRoot, 'build', 'graph-profiles.json');
 const rootControlPath = path.join(composerRoot, 'build', 'root-control.json');

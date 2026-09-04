@@ -58,7 +58,7 @@ jobs:
         with:
           name: graph-node-reference
           path: |
-            experiments/search-ir-composer-reference/build/graph-profiles.json
+            conformance/search-compiler/build/graph-profiles.json
             experiments/search-semantics-reference/build/graph-node-evidence.json
 
   graph-edge-reference:
@@ -100,7 +100,7 @@ jobs:
         with:
           name: graph-ref-reference
           path: |
-            experiments/search-ir-composer-reference/build/graph-profiles.json
+            conformance/search-compiler/build/graph-profiles.json
             experiments/search-semantics-reference/build/graph-node-evidence.json
             experiments/search-semantics-reference/build/graph-ref-evidence.json
 
@@ -124,7 +124,7 @@ jobs:
         with:
           name: graph-path-reference
           path: |
-            experiments/search-ir-composer-reference/build/graph-profiles.json
+            conformance/search-compiler/build/graph-profiles.json
             experiments/search-semantics-reference/build/graph-node-evidence.json
             experiments/search-semantics-reference/build/graph-ref-evidence.json
             experiments/search-semantics-reference/build/graph-path-evidence.json
@@ -151,8 +151,8 @@ jobs:
         with:
           name: graph-root-reference
           path: |
-            experiments/search-ir-composer-reference/build/graph-profiles.json
-            experiments/search-ir-composer-reference/build/root-control.json
+            conformance/search-compiler/build/graph-profiles.json
+            conformance/search-compiler/build/root-control.json
             experiments/search-semantics-reference/build/graph-node-evidence.json
             experiments/search-semantics-reference/build/graph-ref-evidence.json
             experiments/search-semantics-reference/build/graph-path-evidence.json
@@ -182,8 +182,8 @@ jobs:
         with:
           name: graph-reclaim-reference
           path: |
-            experiments/search-ir-composer-reference/build/graph-profiles.json
-            experiments/search-ir-composer-reference/build/root-control.json
+            conformance/search-compiler/build/graph-profiles.json
+            conformance/search-compiler/build/root-control.json
             experiments/search-semantics-reference/build/graph-node-evidence.json
             experiments/search-semantics-reference/build/graph-edge-evidence.json
             experiments/search-semantics-reference/build/graph-ref-evidence.json
@@ -216,8 +216,8 @@ jobs:
         with:
           name: graph-advance-occurrence-reference
           path: |
-            experiments/search-ir-composer-reference/build/graph-profiles.json
-            experiments/search-ir-composer-reference/build/root-control.json
+            conformance/search-compiler/build/graph-profiles.json
+            conformance/search-compiler/build/root-control.json
             experiments/search-semantics-reference/build/graph-node-evidence.json
             experiments/search-semantics-reference/build/graph-edge-evidence.json
             experiments/search-semantics-reference/build/graph-ref-evidence.json
@@ -252,8 +252,8 @@ jobs:
         with:
           name: graph-cleanup-reference
           path: |
-            experiments/search-ir-composer-reference/build/graph-profiles.json
-            experiments/search-ir-composer-reference/build/root-control.json
+            conformance/search-compiler/build/graph-profiles.json
+            conformance/search-compiler/build/root-control.json
             experiments/search-semantics-reference/build/graph-node-evidence.json
             experiments/search-semantics-reference/build/graph-edge-evidence.json
             experiments/search-semantics-reference/build/graph-ref-evidence.json
@@ -282,7 +282,7 @@ jobs:
         with:
           name: policy-reference
           path: |
-            experiments/search-ir-composer-reference/build/policy-profiles.json
+            conformance/search-compiler/build/policy-profiles.json
             experiments/search-semantics-reference/build/policy-evidence.json
 
   evaluator-reference:
@@ -304,7 +304,7 @@ jobs:
         with:
           name: evaluator-reference
           path: |
-            experiments/search-ir-composer-reference/build/evaluator-profiles.json
+            conformance/search-compiler/build/evaluator-profiles.json
             experiments/search-semantics-reference/build/evaluator-evidence.json
 
   resource-reference:
@@ -326,7 +326,7 @@ jobs:
         with:
           name: resource-reference
           path: |
-            experiments/search-ir-composer-reference/build/resource-profiles.json
+            conformance/search-compiler/build/resource-profiles.json
             experiments/search-semantics-reference/build/resource-evidence.json
 
   progress-reference:
@@ -348,7 +348,7 @@ jobs:
         with:
           name: progress-reference
           path: |
-            experiments/search-ir-composer-reference/build/progress-profiles.json
+            conformance/search-compiler/build/progress-profiles.json
             experiments/search-semantics-reference/build/progress-evidence.json
 
   output-reference:
@@ -370,7 +370,7 @@ jobs:
         with:
           name: output-reference
           path: |
-            experiments/search-ir-composer-reference/build/output-profiles.json
+            conformance/search-compiler/build/output-profiles.json
             experiments/search-semantics-reference/build/output-evidence.json
 
   verify:

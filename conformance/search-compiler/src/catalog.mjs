@@ -11,9 +11,9 @@ import {
   fail,
   sourceTextSha256,
   uniqueBy,
-} from './validation.mjs';
+} from '../../../components/search-compiler/testing.mjs';
 
-export { canonicalBytes, canonicalIdentity, sourceTextSha256 } from './validation.mjs';
+export { canonicalBytes, canonicalIdentity, sourceTextSha256 } from '../../../components/search-compiler/testing.mjs';
 
 const CONTRACT_SET_SCHEMA = 'cuda-mcgs.search-ir.contract-set/0.2.0';
 const COVERAGE_SCHEMA = 'cuda-mcgs.search-ir.requirement-coverage/0.2.0';

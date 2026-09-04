@@ -10,7 +10,7 @@ import { registerTerminalSliceCases } from './src/terminal-slice-cases.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const composerRoot = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference');
+const composerRoot = path.join(repositoryRoot, 'conformance', 'search-compiler');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'terminal-slice-cases.json');
 const domainFixturePath = path.join(experimentRoot, 'fixtures', 'domain-cases.json');
 const frameworkFixturePath = path.join(experimentRoot, 'fixtures', 'framework-lifecycle-cases.json');
@@ -119,13 +119,13 @@ const summary = {
 if (selectedCase === null) assert.equal(cases.length, expectedCaseIds.length);
 
 const sourcePaths = [
-  'experiments/search-ir-composer-reference/export-domain-profiles.mjs',
-  'experiments/search-ir-composer-reference/export-graph-profiles.mjs',
-  'experiments/search-ir-composer-reference/export-policy-profiles.mjs',
-  'experiments/search-ir-composer-reference/export-evaluator-profiles.mjs',
-  'experiments/search-ir-composer-reference/export-resource-profiles.mjs',
-  'experiments/search-ir-composer-reference/export-progress-profiles.mjs',
-  'experiments/search-ir-composer-reference/export-output-profiles.mjs',
+  'conformance/search-compiler/export-domain-profiles.mjs',
+  'conformance/search-compiler/export-graph-profiles.mjs',
+  'conformance/search-compiler/export-policy-profiles.mjs',
+  'conformance/search-compiler/export-evaluator-profiles.mjs',
+  'conformance/search-compiler/export-resource-profiles.mjs',
+  'conformance/search-compiler/export-progress-profiles.mjs',
+  'conformance/search-compiler/export-output-profiles.mjs',
   'experiments/search-semantics-reference/fixtures/domain-cases.json',
   'experiments/search-semantics-reference/fixtures/framework-lifecycle-cases.json',
   'experiments/search-semantics-reference/fixtures/terminal-slice-cases.json',

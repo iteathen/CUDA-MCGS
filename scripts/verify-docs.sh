@@ -132,7 +132,12 @@ required=(
   adapters/README.md
   benchmarks/README.md
   components/README.md
+  components/search-compiler/README.md
+  components/search-compiler/component.yaml
+  components/search-compiler/index.mjs
+  components/search-compiler/testing.mjs
   conformance/README.md
+  conformance/search-compiler/verify-promotion-boundary.mjs
   examples/README.md
   experiments/README.md
   packaging/README.md
@@ -178,38 +183,38 @@ required=(
   experiments/search-ir-reference/src/normalize.mjs
   experiments/search-ir-reference/src/reference.mjs
   experiments/search-ir-reference/run.mjs
-  experiments/search-ir-composer-reference/README.md
-  experiments/search-ir-composer-reference/RESULTS.md
-  experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json
-  experiments/search-ir-composer-reference/src/catalog.mjs
-  experiments/search-ir-composer-reference/src/validation.mjs
-  experiments/search-ir-composer-reference/src/foundation.mjs
-  experiments/search-ir-composer-reference/src/domain.mjs
-  experiments/search-ir-composer-reference/src/domain-fixtures.mjs
-  experiments/search-ir-composer-reference/src/graph.mjs
-  experiments/search-ir-composer-reference/src/graph-fixtures.mjs
-  experiments/search-ir-composer-reference/src/policy.mjs
-  experiments/search-ir-composer-reference/src/policy-fixtures.mjs
-  experiments/search-ir-composer-reference/src/evaluator.mjs
-  experiments/search-ir-composer-reference/src/evaluator-fixtures.mjs
-  experiments/search-ir-composer-reference/src/resource.mjs
-  experiments/search-ir-composer-reference/src/resource-fixtures.mjs
-  experiments/search-ir-composer-reference/src/progress.mjs
-  experiments/search-ir-composer-reference/src/progress-fixtures.mjs
-  experiments/search-ir-composer-reference/src/output.mjs
-  experiments/search-ir-composer-reference/src/output-fixtures.mjs
-  experiments/search-ir-composer-reference/src/session.mjs
-  experiments/search-ir-composer-reference/src/session-fixtures.mjs
-  experiments/search-ir-composer-reference/src/stage.mjs
-  experiments/search-ir-composer-reference/src/stage-fixtures.mjs
-  experiments/search-ir-composer-reference/src/channel.mjs
-  experiments/search-ir-composer-reference/src/channel-fixtures.mjs
-  experiments/search-ir-composer-reference/src/program-package.mjs
-  experiments/search-ir-composer-reference/src/program-package-fixtures.mjs
-  experiments/search-ir-composer-reference/src/composer.mjs
-  experiments/search-ir-composer-reference/src/composer-presets.mjs
-  experiments/search-ir-composer-reference/export-domain-profiles.mjs
-  experiments/search-ir-composer-reference/run.mjs
+  conformance/search-compiler/README.md
+  conformance/search-compiler/RESULTS.md
+  conformance/search-compiler/fixtures/minimal.framework-selection.json
+  conformance/search-compiler/src/catalog.mjs
+  components/search-compiler/src/validation.mjs
+  components/search-compiler/src/foundation.mjs
+  components/search-compiler/src/domain.mjs
+  conformance/search-compiler/src/domain-fixtures.mjs
+  components/search-compiler/src/graph.mjs
+  conformance/search-compiler/src/graph-fixtures.mjs
+  components/search-compiler/src/policy.mjs
+  conformance/search-compiler/src/policy-fixtures.mjs
+  components/search-compiler/src/evaluator.mjs
+  conformance/search-compiler/src/evaluator-fixtures.mjs
+  components/search-compiler/src/resource.mjs
+  conformance/search-compiler/src/resource-fixtures.mjs
+  components/search-compiler/src/progress.mjs
+  conformance/search-compiler/src/progress-fixtures.mjs
+  components/search-compiler/src/output.mjs
+  conformance/search-compiler/src/output-fixtures.mjs
+  components/search-compiler/src/session.mjs
+  conformance/search-compiler/src/session-fixtures.mjs
+  components/search-compiler/src/stage.mjs
+  conformance/search-compiler/src/stage-fixtures.mjs
+  components/search-compiler/src/channel.mjs
+  conformance/search-compiler/src/channel-fixtures.mjs
+  components/search-compiler/src/program-package.mjs
+  conformance/search-compiler/src/program-package-fixtures.mjs
+  components/search-compiler/src/composer.mjs
+  conformance/search-compiler/src/composer-presets.mjs
+  conformance/search-compiler/export-domain-profiles.mjs
+  conformance/search-compiler/run.mjs
   experiments/search-semantics-reference/README.md
   experiments/search-semantics-reference/RESULTS.md
   experiments/search-semantics-reference/fixtures/neutral-schedules.json

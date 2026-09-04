@@ -3,32 +3,30 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { assertCompletePassSummary } from './src/validation.mjs';
+import { assertCompletePassSummary } from '../../components/search-compiler/testing.mjs';
 
 import { canonicalIdentity, inspectCatalog, sourceTextSha256 } from './src/catalog.mjs';
-import { normalizeDomainProfile } from './src/domain.mjs';
+import { normalizeDomainProfile } from '../../components/search-compiler/testing.mjs';
 import { buildDomainProfiles } from './src/domain-fixtures.mjs';
-import { normalizeGraphProfile } from './src/graph.mjs';
+import { normalizeGraphProfile } from '../../components/search-compiler/testing.mjs';
 import { buildGraphProfiles } from './src/graph-fixtures.mjs';
-import { normalizeEvaluatorProfile } from './src/evaluator.mjs';
+import { normalizeEvaluatorProfile } from '../../components/search-compiler/testing.mjs';
 import { buildEvaluatorProfiles } from './src/evaluator-fixtures.mjs';
-import { normalizePolicyProfile } from './src/policy.mjs';
+import { normalizePolicyProfile } from '../../components/search-compiler/testing.mjs';
 import { buildPolicyProfiles } from './src/policy-fixtures.mjs';
-import { normalizeResourceProfile } from './src/resource.mjs';
+import { normalizeResourceProfile } from '../../components/search-compiler/testing.mjs';
 import { buildResourceProfiles } from './src/resource-fixtures.mjs';
-import { normalizeProgressProfile } from './src/progress.mjs';
+import { normalizeProgressProfile } from '../../components/search-compiler/testing.mjs';
 import { buildProgressProfiles } from './src/progress-fixtures.mjs';
-import { normalizeOutputProfile } from './src/output.mjs';
+import { normalizeOutputProfile } from '../../components/search-compiler/testing.mjs';
 import { buildOutputProfiles } from './src/output-fixtures.mjs';
-import { normalizeSessionProfile } from './src/session.mjs';
-import { buildSessionProfiles } from './src/session-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const schemaRoot = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0');
 const evidencePath = path.join(experimentRoot, 'build', 'evidence.json');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Session-profile projection requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Output-profile projection requires Node 26 or newer; found ${process.version}`);
 
 async function readJson(absolutePath) {
   return JSON.parse(await readFile(absolutePath, 'utf8'));
@@ -55,7 +53,6 @@ const evaluatorSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot,
 const policySchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'policy-profile.schema.json')));
 const resourceSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'resource-profile.schema.json')));
 const progressSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'progress-profile.schema.json')));
-const outputSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'output-profile.schema.json')));
 
 const domainProfiles = buildDomainProfiles(inspected).map((profile) => normalizeDomainProfile(profile, inspected));
 const graphFixtures = buildGraphProfiles(inspected, domainProfiles, domainSchemaSha);
@@ -82,30 +79,19 @@ const progressInputs = buildProgressProfiles(inspected, progressResourceResults)
 const progressProfiles = progressInputs.map((input, index) => normalizeProgressProfile(input, inspected, progressResourceResults[index], knownOwnerProfiles));
 const outputProgressResults = progressProfiles.map((result) => ({ ...result, schemaSha: progressSchemaSha }));
 const outputInputs = buildOutputProfiles(inspected, progressResourceResults, outputProgressResults);
-const outputProfiles = outputInputs.map((input, index) => normalizeOutputProfile(input, inspected, progressResourceResults[index], outputProgressResults[index]));
-
-const liveResource = progressResourceResults[2];
-const liveProgress = outputProgressResults[2];
-const liveOutput = { ...outputProfiles[2], schemaSha: outputSchemaSha };
-const sessionInputs = buildSessionProfiles(inspected, liveResource, liveProgress, liveOutput);
-const profiles = sessionInputs.map((input) => normalizeSessionProfile(input, inspected, liveResource, liveProgress, liveOutput));
+const profiles = outputInputs.map((input, index) => normalizeOutputProfile(input, inspected, progressResourceResults[index], outputProgressResults[index]));
 
 assert.deepEqual(
   profiles.map(({ normalized, identity }) => ({ id: normalized.id, ...identity })),
-  composerEvidence.sessionProfileIdentities,
-  'projected Session profiles must match the exact Composer-published identities',
+  composerEvidence.outputProfileIdentities,
+  'projected Output profiles must match the exact Composer-published identities',
 );
 
 const projectionSubject = {
-  schema: 'cuda-mcgs.search-ir-composer-session-profile-projection/0.2.0',
+  schema: 'cuda-mcgs.search-ir-composer-output-profile-projection/0.2.0',
   producer: {
     capsule: composerEvidence.capsule,
     representationCompositionEvidenceKey: composerEvidence.representationCompositionEvidenceKey,
-  },
-  upstream: {
-    resource: liveResource.identity,
-    progress: liveProgress.identity,
-    output: liveOutput.identity,
   },
   profiles: profiles.map(({ normalized, identity }) => ({ id: normalized.id, identity, normalized })),
 };
@@ -114,8 +100,8 @@ const projection = {
   projectionIdentity: canonicalIdentity(projectionSubject),
 };
 
-const outputPath = path.join(experimentRoot, 'build', 'session-profiles.json');
+const outputPath = path.join(experimentRoot, 'build', 'output-profiles.json');
 await mkdir(path.dirname(outputPath), { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(projection, null, 2)}\n`);
 
-console.log(`capsule=cuda-mcgs-search-ir-composer-session-profile-projection-v0.2.0 profiles=${profiles.length} projection_sha256=${projection.projectionIdentity.sha256} canonical_bytes=${projection.projectionIdentity.byteLength}`);
+console.log(`capsule=cuda-mcgs-search-ir-composer-output-profile-projection-v0.2.0 profiles=${profiles.length} projection_sha256=${projection.projectionIdentity.sha256} canonical_bytes=${projection.projectionIdentity.byteLength}`);

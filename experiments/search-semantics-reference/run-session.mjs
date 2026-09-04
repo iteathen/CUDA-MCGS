@@ -1,3 +1,4 @@
+import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -12,7 +13,7 @@ import { registerSessionReplayCases } from './src/session-replay-cases.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const composerRoot = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference');
+const composerRoot = path.join(repositoryRoot, 'conformance', 'search-compiler');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'session-cases.json');
 const sessionProjectionPath = path.join(composerRoot, 'build', 'session-profiles.json');
 const composerEvidencePath = path.join(composerRoot, 'build', 'evidence.json');
@@ -136,9 +137,9 @@ if (selectedCase === null) {
 const sourcePaths = [
   'docs/specs/SPEC-0006-search-session-control-and-observation.md',
   'schemas/search-ir/0.2.0/requirement-coverage.json',
-  'experiments/search-ir-composer-reference/src/session.mjs',
-  'experiments/search-ir-composer-reference/src/session-fixtures.mjs',
-  'experiments/search-ir-composer-reference/export-session-profiles.mjs',
+  'components/search-compiler/src/session.mjs',
+  'conformance/search-compiler/src/session-fixtures.mjs',
+  'conformance/search-compiler/export-session-profiles.mjs',
   'experiments/search-semantics-reference/fixtures/session-cases.json',
   'experiments/search-semantics-reference/src/canonical.mjs',
   'experiments/search-semantics-reference/src/errors.mjs',
@@ -153,7 +154,7 @@ const sourcePaths = [
   'scripts/verify-session-advance-boundary.mjs',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths) sources[relative] = sourceTextSha256(relative.startsWith('components/search-compiler/src/') ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8') : await readFile(path.join(repositoryRoot, relative)));
 
 const evidenceSubject = {
   schema: 'cuda-mcgs.search-semantics-session-evidence-key/0.1.0',
