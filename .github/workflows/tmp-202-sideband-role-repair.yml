@@ -19,23 +19,8 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: 26.7.0
-      - name: Repair helper interpolation
-        run: |
-          node --input-type=module <<'NODE'
-          import assert from 'node:assert/strict';
-          import { readFile, writeFile } from 'node:fs/promises';
-          const path = 'scripts/tmp-202-sideband-role-repair.mjs';
-          let text = await readFile(path, 'utf8');
-          const first = /    assert\.equal\(error\?\.code, expectedCode, .*\);/;
-          const second = /  assert\.fail\(.* unexpectedly passed.*\);/;
-          assert(first.test(text), 'expectCode assertion interpolation seam not found');
-          assert(second.test(text), 'expectCode failure interpolation seam not found');
-          text = text.replace(first, "    assert.equal(error?.code, expectedCode, label + ' rejected with unexpected code ' + error?.code);");
-          text = text.replace(second, "  assert.fail(label + ' unexpectedly passed');");
-          await writeFile(path, text);
-          NODE
       - name: Apply deterministic repair
-        run: node scripts/tmp-202-sideband-role-repair.mjs
+        run: node scripts/tmp-202-sideband-role-repair-v2.mjs
       - name: Qualify focused Composer capsule
         run: node scripts/run-search-ir-composer-reference.mjs
       - name: Verify diff
@@ -47,7 +32,7 @@ jobs:
           git add \
             experiments/search-ir-composer-reference/src/program-package-fixtures.mjs \
             experiments/search-ir-composer-reference/src/program-package.mjs \
-            experiments/search-ir-composer-reference/verify-external-control-sideband-authority.mjs \
+            experiments/search-ir-composer-reference/run.mjs \
             schemas/search-ir/0.2.0/program-package-profile.schema.json
-          git commit -m "tmp: qualified #202 explicit sideband role and falsifiers"
+          git commit -m "tmp: qualified #202 explicit sideband role and canonical falsifiers"
           git push origin HEAD:tmp/202-sideband-role-falsifier-repair-20260904
