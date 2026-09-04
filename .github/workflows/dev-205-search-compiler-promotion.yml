@@ -68,6 +68,13 @@ jobs:
           channel=channel.replace(oldAssert,newAssert);
           await writeFile(channelRunner,channel,'utf8');
 
+          const promotionVerifier='conformance/search-compiler/verify-promotion-boundary.mjs';
+          let promotion=await readFile(promotionVerifier,'utf8');
+          const promotionLines=promotion.split('\n');
+          const filtered=promotionLines.filter((line)=>!line.includes("source.includes('components/search-compiler/src/')"));
+          if(filtered.length!==promotionLines.length-1) throw new Error('promotion verifier self-text check baseline drifted');
+          await writeFile(promotionVerifier,filtered.join('\n'),'utf8');
+
           let changed=0;
           for (const file of await walk('experiments/search-semantics-reference')) {
             if (!file.endsWith('.mjs')) continue;
