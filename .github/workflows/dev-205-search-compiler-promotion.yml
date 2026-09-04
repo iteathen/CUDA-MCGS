@@ -31,14 +31,14 @@ jobs:
           if (!text.includes(beforeDocs)) throw new Error('constructor docs-area guard moved');
           text = text.replace(beforeDocs, afterDocs);
           const beforeActive = "const activeCheckAreas = ['scripts', '.github/workflows', 'components', 'conformance', 'agent_files', 'docs/specs', 'docs/architecture'];";
-          const afterActive = "const activeCheckAreas = ['.github/workflows', 'conformance', 'agent_files', 'docs/architecture'];";
+          const afterActive = "const activeCheckAreas = ['.github/workflows', 'agent_files', 'docs/architecture'];";
           if (!text.includes(beforeActive)) throw new Error('constructor active-area guard moved');
           text = text.replace(beforeActive, afterActive);
           await writeFile(file, text, 'utf8');
           NODE
       - name: Construct production promotion
         run: node scripts/dev-205-promote-search-compiler.mjs
-      - name: Rewire downstream reference consumers to promoted conformance outputs
+      - name: Reclassify moved conformance provenance and downstream consumers
         shell: bash
         run: |
           node --input-type=module <<'NODE'
@@ -53,6 +53,21 @@ jobs:
             }
             return out;
           }
+          const routePath='conformance/search-compiler/fixtures/channel-evidence-routes.json';
+          const routes=JSON.parse(await readFile(routePath,'utf8'));
+          if(routes.ownerExperiment!=='experiments/search-ir-composer-reference') throw new Error('Channel evidence owner baseline drifted');
+          delete routes.ownerExperiment;
+          routes.ownerConformance='conformance/search-compiler';
+          await writeFile(routePath,`${JSON.stringify(routes,null,2)}\n`,'utf8');
+
+          const channelRunner='conformance/search-compiler/run-channel-evidence.mjs';
+          let channel=await readFile(channelRunner,'utf8');
+          const oldAssert="assert.equal(routes.ownerExperiment, 'experiments/search-ir-composer-reference');";
+          const newAssert="assert.equal(routes.ownerConformance, 'conformance/search-compiler');";
+          if(!channel.includes(oldAssert)) throw new Error('Channel evidence owner assertion baseline drifted');
+          channel=channel.replace(oldAssert,newAssert);
+          await writeFile(channelRunner,channel,'utf8');
+
           let changed=0;
           for (const file of await walk('experiments/search-semantics-reference')) {
             if (!file.endsWith('.mjs')) continue;
@@ -86,6 +101,10 @@ jobs:
           fi
           if git grep -n 'experiments/search-ir-composer-reference' -- scripts ':!scripts/dev-205-promote-search-compiler.mjs'; then
             echo 'live script still targets old Composer experiment path' >&2
+            exit 1
+          fi
+          if git grep -n 'experiments/search-ir-composer-reference' -- conformance; then
+            echo 'moved conformance capsule still claims the old experiment owner/path' >&2
             exit 1
           fi
           git diff --quiet c10c616058e7e492e130e5ff14fa41402290d5b4 -- docs/specs || {
