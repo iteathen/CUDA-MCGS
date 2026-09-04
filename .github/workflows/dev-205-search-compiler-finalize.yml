@@ -1,0 +1,98 @@
+name: dev-205-search-compiler-finalize
+
+on:
+  push:
+    branches: [construct/205-search-compiler-promotion]
+    paths:
+      - .github/workflows/dev-205-search-compiler-finalize.yml
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Keep accepted specs immutable during structural promotion
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const file = 'scripts/dev-205-promote-search-compiler.mjs';
+          let text = await readFile(file, 'utf8');
+          const beforeDocs = "for (const area of ['agent_files', 'docs/specs', 'docs/architecture']) {";
+          const afterDocs = "for (const area of ['agent_files', 'docs/architecture']) {";
+          if (!text.includes(beforeDocs)) throw new Error('constructor docs-area guard moved');
+          text = text.replace(beforeDocs, afterDocs);
+          const beforeActive = "const activeCheckAreas = ['scripts', '.github/workflows', 'components', 'conformance', 'agent_files', 'docs/specs', 'docs/architecture'];";
+          const afterActive = "const activeCheckAreas = ['.github/workflows', 'agent_files', 'docs/architecture'];";
+          if (!text.includes(beforeActive)) throw new Error('constructor active-area guard moved');
+          text = text.replace(beforeActive, afterActive);
+          await writeFile(file, text, 'utf8');
+          NODE
+      - name: Construct byte-identical promotion
+        run: node scripts/dev-205-promote-search-compiler.mjs
+      - name: Reclassify conformance ownership and source evidence
+        run: node scripts/dev-205-reclassify-promotion.mjs
+      - name: Prove focused Search Compiler behavior
+        run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Rebind declared path-sensitive owner evidence
+        run: node scripts/dev-205-rebind-owner-evidence.mjs
+      - name: Prove complete Engine packet
+        run: node scripts/run-engine-reference-integration.mjs
+      - name: Prove repository governance and source boundary
+        shell: bash
+        run: |
+          ./scripts/verify-docs.sh
+          node scripts/check-source-boundary.mjs
+      - name: Review structural transaction
+        shell: bash
+        run: |
+          git diff --check
+          test ! -e experiments/search-ir-composer-reference
+          test -e components/search-compiler/README.md
+          test -e components/search-compiler/component.yaml
+          test -e components/search-compiler/index.mjs
+          test -e components/search-compiler/testing.mjs
+          test -e conformance/search-compiler/verify-promotion-boundary.mjs
+          if git grep -n 'components/search-compiler/src/' -- conformance ':!conformance/search-compiler/verify-promotion-boundary.mjs' ':!conformance/search-compiler/run.mjs'; then
+            echo 'conformance deep-imported Search Compiler private src outside explicit source-evidence manifest' >&2
+            exit 1
+          fi
+          if git grep -n 'experiments/search-ir-composer-reference' -- scripts ':!scripts/dev-205-promote-search-compiler.mjs' ':!scripts/dev-205-rebind-owner-evidence.mjs' ':!scripts/dev-205-reclassify-promotion.mjs'; then
+            echo 'live script still targets old Composer experiment path' >&2
+            exit 1
+          fi
+          if git grep -n 'experiments/search-ir-composer-reference' -- conformance; then
+            echo 'moved conformance capsule still claims old experiment ownership/path' >&2
+            exit 1
+          fi
+          git diff --quiet c10c616058e7e492e130e5ff14fa41402290d5b4 -- docs/specs || {
+            echo 'accepted specs changed during structural promotion' >&2
+            exit 1
+          }
+          if git grep -nE "from ['\"](?:\.\./)*conformance/|from ['\"](?:\.\./)*experiments/" -- components adapters examples; then
+            echo 'production source depends on evidence source' >&2
+            exit 1
+          fi
+      - name: Publish qualified candidate and remove construction helpers
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Promote canonical Search Compiler to production ownership'
+          git rm \
+            scripts/dev-205-promote-search-compiler.mjs \
+            scripts/dev-205-rebind-owner-evidence.mjs \
+            scripts/dev-205-reclassify-promotion.mjs \
+            .github/workflows/dev-205-search-compiler-promotion.yml \
+            .github/workflows/dev-205-search-compiler-finalize.yml
+          git commit -m 'Remove #205 construction helpers'
+          git push origin HEAD:construct/205-search-compiler-promotion
