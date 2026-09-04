@@ -77,8 +77,8 @@ jobs:
           const fixturePath = 'experiments/search-ir-composer-reference/src/program-package-fixtures.mjs';
           let fixture = fs.readFileSync(fixturePath, 'utf8');
           const oldClassFilter = "const classes = resource.classes?.filter(({ contributor: owner, lifetime }) => owner === contributor.id && lifetime === 'session') ?? [];";
-          const newClassFilter = "const classes = resource.classes?.filter(({ contributor: owner, lifetime, formula }) => owner === contributor.id && lifetime === 'session' && formula.basis === 'maximum-live') ?? [];";
-          if (!fixture.includes(oldClassFilter)) throw new Error('missing Session maximum-live resource seam');
+          const newClassFilter = "const sessionClasses = resource.classes?.filter(({ contributor: owner, lifetime }) => owner === contributor.id && lifetime === 'session') ?? [];\n  const classes = sessionClasses.length === 1 ? sessionClasses : sessionClasses.filter(({ formula }) => formula?.basis === 'maximum-live');";
+          if (!fixture.includes(oldClassFilter)) throw new Error('missing Session control resource seam');
           fixture = fixture.replace(oldClassFilter, newClassFilter);
           fs.writeFileSync(fixturePath, fixture);
 
