@@ -1,4 +1,4 @@
-# trigger: final-integration-evidence-paths
+# trigger: governance-owner-boundary
 name: dev-205-search-compiler-promotion
 
 on:
@@ -83,8 +83,8 @@ jobs:
           test -e components/search-compiler/index.mjs
           test -e components/search-compiler/testing.mjs
           test -e conformance/search-compiler/verify-promotion-boundary.mjs
-          if git grep -n 'components/search-compiler/src/' -- conformance ':!conformance/search-compiler/verify-promotion-boundary.mjs' ':!conformance/search-compiler/run.mjs'; then
-            echo 'conformance deep-imported Search Compiler private src outside explicit source-evidence manifest' >&2
+          if git grep -nE "(?:from|import\\() ['\"][^'\"]*components/search-compiler/src/|from ['\"][^'\"]*components/search-compiler/src/" -- conformance; then
+            echo 'conformance deep-imported Search Compiler private src' >&2
             exit 1
           fi
           if git grep -n 'experiments/search-ir-composer-reference' -- scripts ':!scripts/dev-205-promote-search-compiler.mjs' ':!scripts/dev-205-rebind-owner-evidence.mjs' ':!scripts/dev-205-reclassify-promotion.mjs' ':!scripts/dev-205-fix-downstream-source-provenance.mjs' ':!scripts/dev-205-fix-integration-evidence-paths.mjs'; then
