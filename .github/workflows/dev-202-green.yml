@@ -32,7 +32,6 @@ jobs:
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
-
           const accessPath = 'experiments/search-ir-composer-reference/verify-operation-local-access.mjs';
           let access = fs.readFileSync(accessPath, 'utf8');
           const accessReplacements = new Map([
@@ -69,6 +68,26 @@ jobs:
           if (!composer.includes(createOld) || !composer.includes(normalizeOld)) throw new Error('missing resolved Composer optional-sideband seam');
           composer = composer.replace(createOld, createNew).replace(normalizeOld, normalizeNew);
           fs.writeFileSync(composerPath, composer);
+          NODE
+      - name: Add diagnostic detail for remaining seams
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const fixturePath = 'experiments/search-ir-composer-reference/src/program-package-fixtures.mjs';
+          let fixture = fs.readFileSync(fixturePath, 'utf8');
+          fixture = fixture.replace(
+            "if (classes.length !== 1) throw new Error('selected Session must project exactly one generic session-lifetime control class');",
+            "if (classes.length !== 1) throw new Error(`selected Session control candidates=${JSON.stringify(classes)}`);"
+          );
+          fs.writeFileSync(fixturePath, fixture);
+          const runPath = 'experiments/search-ir-composer-reference/run.mjs';
+          let run = fs.readFileSync(runPath, 'utf8');
+          run = run.replace(
+            "for (const forbidden of ['compile', 'allocate', 'load', 'teardown', 'device-memory', 'cuda-js-request-projection']) assert.equal(serialized.includes(forbidden), false);",
+            "for (const forbidden of ['compile', 'allocate', 'load', 'teardown', 'device-memory', 'cuda-js-request-projection']) assert.equal(serialized.includes(forbidden), false, `adapter contains forbidden token ${forbidden}`);"
+          );
+          fs.writeFileSync(runPath, run);
           NODE
       - name: Qualify focused Composer and permanent sideband verifier
         run: node scripts/run-search-ir-composer-reference.mjs
