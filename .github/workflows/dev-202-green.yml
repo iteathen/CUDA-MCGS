@@ -27,6 +27,26 @@ jobs:
         run: |
           sed -i 's/delectionRecord\.properties/deletionRecord.properties/' scripts/dev-202-green.mjs
           node scripts/dev-202-green.mjs
+      - name: Repair #199 verifier binding-order assumption
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const path = 'experiments/search-ir-composer-reference/verify-operation-local-access.mjs';
+          let source = fs.readFileSync(path, 'utf8');
+          const replacements = new Map([
+            ["program.normalized.operations[0].bindings[0].source.access", "program.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source.access"],
+            ["execution.normalized.cudaJsAdapter.operationRequirements[0].bindings[0].source.access", "execution.normalized.cudaJsAdapter.operationRequirements[0].bindings.find(({ parameter }) => parameter === 'output').source.access"],
+            ["normalizeCase(['read'], 'read').normalized.normalized.operations[0].bindings[0].source.access", "normalizeCase(['read'], 'read').normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source.access"],
+            ["normalizeCase(['read', 'write'], 'read-write').normalized.normalized.operations[0].bindings[0].source.access", "normalizeCase(['read', 'write'], 'read-write').normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source.access"],
+            ["Object.hasOwn(historical.normalized.normalized.operations[0].bindings[0].source, 'access')", "Object.hasOwn(historical.normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source, 'access')"],
+          ]);
+          for (const [from, to] of replacements) {
+            if (!source.includes(from)) throw new Error(`missing #199 verifier seam: ${from}`);
+            source = source.replace(from, to);
+          }
+          fs.writeFileSync(path, source);
+          NODE
       - name: Qualify focused Composer and permanent sideband verifier
         run: node scripts/run-search-ir-composer-reference.mjs
       - name: Publish temp semantic candidate
