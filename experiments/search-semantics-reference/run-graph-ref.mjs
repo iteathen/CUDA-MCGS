@@ -11,8 +11,8 @@ import { registerGraphRefCases } from './src/graph-ref-cases.mjs';
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'graph-ref-cases.json');
-const composerEvidencePath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'evidence.json');
-const graphProjectionPath = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference', 'build', 'graph-profiles.json');
+const composerEvidencePath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
+const graphProjectionPath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'graph-profiles.json');
 const nodeEvidencePath = path.join(experimentRoot, 'build', 'graph-node-evidence.json');
 const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 const graphSpecPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0010-graph-storage-and-reclamation.md');
@@ -152,7 +152,7 @@ const sourcePaths = [
   'experiments/search-semantics-reference/src/graph-ref.mjs',
   'experiments/search-semantics-reference/src/graph-ref-cases.mjs',
   'experiments/search-semantics-reference/run-graph-ref.mjs',
-  'experiments/search-ir-composer-reference/export-graph-profiles.mjs',
+  'conformance/search-compiler/export-graph-profiles.mjs',
   'scripts/export-search-ir-composer-graph-profiles.mjs',
   'scripts/run-graph-node-reference.mjs',
   'scripts/run-graph-ref-reference.mjs',

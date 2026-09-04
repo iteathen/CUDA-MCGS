@@ -1,4 +1,4 @@
-import { composerConstants, createResolvedComposerInput } from './composer.mjs';
+import { composerConstants, createResolvedComposerInput } from '../../../components/search-compiler/testing.mjs';
 
 const REFERENCE_GENERATOR = composerConstants.referenceGenerator;
 

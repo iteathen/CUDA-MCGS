@@ -2,34 +2,34 @@
   "schema": "cuda-mcgs.reference-graph-reclaim-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 709387,
-    "sha256": "e576c182b56ad857069af4260f24451aa5db6abfaa4e0d33a80e1f74b8797df6"
+    "byteLength": 708983,
+    "sha256": "4e6b1911dcc4dc828fc49c9ece2b3d3694257507ad5ad37156e518c6eaddca25"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 140229,
-    "sha256": "5e81db605b6c7b783c352213fb0f9018a827ecc5037a62b6dab308fd7a516f11"
+    "sha256": "d37c52056f906519f3badddd20d4e95510489c015b0369d3ac46e07d8becafc3"
   },
   "nodeEvidence": {
     "algorithm": "sha256",
-    "byteLength": 10047,
-    "sha256": "56c26a5a66d1c7a81e26137ea32d6a9dd639dd51871ece1f3aebedd6e45436e9"
+    "byteLength": 10034,
+    "sha256": "f8500d3f534353351db47110b0119eb2a55b536a06684a2c2fb4571d890eb6f9"
   },
   "edgeEvidence": {
     "algorithm": "sha256",
     "byteLength": 11661,
-    "sha256": "8376f680f7d8a97970b97f67d9f45b92901d48af95053fef3431feff660feada"
+    "sha256": "8cdb3b14740c73090f3f069711a5e7b3a9eb6dbc200f253aff58a52fcaf989c7"
   },
   "refEvidence": {
     "algorithm": "sha256",
-    "byteLength": 9139,
-    "sha256": "197092573a6b4bf5035875ead6e5a682a283995ced633e4524c8f7003b3026f0"
+    "byteLength": 9126,
+    "sha256": "83b491a614bd2b99a3c0ad7dbc8d73258ca1389ea42664a74df8de4f23800322"
   },
   "pathEvidence": {
     "algorithm": "sha256",
-    "byteLength": 9530,
-    "sha256": "85ff63d91b420a19b2cd3574e2ab90c7e8e4dd70efae3672c9e99e5ddea5bc12"
+    "byteLength": 9490,
+    "sha256": "f23952daba7a73f651a753b0e995091460f54ba764690ac74ce25c09e2520cb9"
   },
   "rootControlProjection": {
     "algorithm": "sha256",
@@ -38,8 +38,8 @@
   },
   "rootEvidence": {
     "algorithm": "sha256",
-    "byteLength": 10008,
-    "sha256": "8fe1cd87d10a4e82ad040d395b70e5602e0fff011290e16873ac0ae345c85bd2"
+    "byteLength": 9954,
+    "sha256": "f9647870d49cb8ae29b4412eaf3bfccaec128e02ef3d9547101833b3820a4cbc"
   },
   "expectedCases": [
     "graph-reclaim-profile-and-upstream-evidence-exact",

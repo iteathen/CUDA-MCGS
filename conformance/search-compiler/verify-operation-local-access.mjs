@@ -8,7 +8,7 @@ import {
   buildExecutionPackage,
   composeSearchProgram,
   normalizeProgramPackageProfile,
-} from './src/program-package.mjs';
+} from '../../components/search-compiler/testing.mjs';
 import { buildProgramPackageProfile } from './src/program-package-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));

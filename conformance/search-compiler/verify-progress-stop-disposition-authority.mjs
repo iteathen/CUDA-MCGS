@@ -4,24 +4,24 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { inspectCatalog } from './src/catalog.mjs';
-import { normalizeDomainProfile } from './src/domain.mjs';
+import { normalizeDomainProfile } from '../../components/search-compiler/testing.mjs';
 import { buildDomainProfiles } from './src/domain-fixtures.mjs';
-import { normalizeGraphProfile } from './src/graph.mjs';
+import { normalizeGraphProfile } from '../../components/search-compiler/testing.mjs';
 import { buildGraphProfiles } from './src/graph-fixtures.mjs';
-import { normalizeEvaluatorProfile } from './src/evaluator.mjs';
+import { normalizeEvaluatorProfile } from '../../components/search-compiler/testing.mjs';
 import { buildEvaluatorProfiles } from './src/evaluator-fixtures.mjs';
-import { normalizePolicyProfile } from './src/policy.mjs';
+import { normalizePolicyProfile } from '../../components/search-compiler/testing.mjs';
 import { buildPolicyProfiles } from './src/policy-fixtures.mjs';
-import { normalizeResourceProfile } from './src/resource.mjs';
+import { normalizeResourceProfile } from '../../components/search-compiler/testing.mjs';
 import { buildResourceProfiles } from './src/resource-fixtures.mjs';
 import {
   assertProgressStopDispositionTerminalState,
   assertProgressTerminalStateReachability,
   normalizeProgressProfile,
   requiredProgressTerminalStates,
-} from './src/progress.mjs';
+} from '../../components/search-compiler/testing.mjs';
 import { buildProgressProfiles } from './src/progress-fixtures.mjs';
-import { sourceTextSha256 } from './src/validation.mjs';
+import { sourceTextSha256 } from '../../components/search-compiler/testing.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');

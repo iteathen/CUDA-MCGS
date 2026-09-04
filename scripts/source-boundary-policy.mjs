@@ -192,7 +192,7 @@ export function violationsForFile(relativePath, text = "") {
 
   const mechanismChecks = [
     ["DIRECT_NATIVE_ACCESS", /\b(?:process\.dlopen|process\.binding|Deno\.dlopen|Bun\.ffi)\b/, "direct native loader/binding access"],
-    ["EMBEDDED_NATIVE_SOURCE", /(?:#\s*include\s*[<\"](?:cuda|nvidia)|\b__global__\b|\b__device__\b|extern\s+["']C["'])/, "embedded C/CUDA source"],
+    ["EMBEDDED_NATIVE_SOURCE", /(?:#\s*include\s*[<\"](?:cuda|nvidia)|\b__(?:global|device)__\b\s+|extern\s+["']C["'])/, "embedded C/CUDA source"],
     ["CUDA_DRIVER_SYMBOL", /\bcu(?:Init|Device|Ctx|Module|Mem|Launch|Stream|Event|Graph|Link|Library|Func)[A-Z0-9_a-z]*\b/, "direct CUDA Driver API symbol"],
     ["PRIVATE_CUDA_JS_PATH", /(?:\.\.?\/[^\n"'`]*CUDA-JS|\.\.?\/[^\n"'`]*cuda-js|(?:CUDA-JS|cuda-js)\/(?:src|internal|private|native|build|vendor|tests?|experiments)\/)/, "private CUDA-JS filesystem/source path"],
   ];

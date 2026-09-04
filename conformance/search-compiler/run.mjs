@@ -1,3 +1,4 @@
+import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -11,34 +12,34 @@ import {
   normalizeRequirementCoverage,
   sourceTextSha256,
 } from './src/catalog.mjs';
-import { normalizeDecimalUint, normalizeFrameworkSelection } from './src/foundation.mjs';
-import { normalizeDomainProfile } from './src/domain.mjs';
+import { normalizeDecimalUint, normalizeFrameworkSelection } from '../../components/search-compiler/testing.mjs';
+import { normalizeDomainProfile } from '../../components/search-compiler/testing.mjs';
 import {
   buildDomainProfiles,
   syntheticContentIdentity,
   syntheticSchemaReference,
 } from './src/domain-fixtures.mjs';
-import { normalizeGraphProfile } from './src/graph.mjs';
+import { normalizeGraphProfile } from '../../components/search-compiler/testing.mjs';
 import {
   buildGraphProfiles,
   graphSyntheticContentIdentity,
   graphSyntheticProfileReference,
   graphSyntheticSchemaReference,
 } from './src/graph-fixtures.mjs';
-import { normalizePolicyProfile } from './src/policy.mjs';
+import { normalizePolicyProfile } from '../../components/search-compiler/testing.mjs';
 import {
   buildPolicyProfile,
   buildPolicyProfiles,
   policySyntheticContentIdentity,
   policySyntheticSchemaReference,
 } from './src/policy-fixtures.mjs';
-import { normalizeEvaluatorProfile } from './src/evaluator.mjs';
+import { normalizeEvaluatorProfile } from '../../components/search-compiler/testing.mjs';
 import {
   buildEvaluatorProfiles,
   evaluatorSyntheticContentIdentity,
   evaluatorSyntheticSchemaReference,
 } from './src/evaluator-fixtures.mjs';
-import { normalizeResourceProfile } from './src/resource.mjs';
+import { normalizeResourceProfile } from '../../components/search-compiler/testing.mjs';
 import {
   buildChannelFirstProductDeletedResourceProfile,
   buildChannelResourceProfile,
@@ -48,7 +49,7 @@ import {
   resourceSyntheticContentIdentity,
   resourceSyntheticSchemaReference,
 } from './src/resource-fixtures.mjs';
-import { normalizeProgressProfile } from './src/progress.mjs';
+import { normalizeProgressProfile } from '../../components/search-compiler/testing.mjs';
 import {
   buildChannelFirstProductDeletedProgressProfile,
   buildChannelProgressProfile,
@@ -58,21 +59,21 @@ import {
   progressSyntheticContentIdentity,
   progressSyntheticSchemaReference,
 } from './src/progress-fixtures.mjs';
-import { normalizeOutputProfile } from './src/output.mjs';
+import { normalizeOutputProfile } from '../../components/search-compiler/testing.mjs';
 import {
   buildOutputProfile,
   buildOutputProfiles,
   outputSyntheticContentIdentity,
   outputSyntheticSchemaReference,
 } from './src/output-fixtures.mjs';
-import { normalizeSessionProfile } from './src/session.mjs';
+import { normalizeSessionProfile } from '../../components/search-compiler/testing.mjs';
 import {
   buildSessionProfile,
   buildSessionProfiles,
   sessionSyntheticContentIdentity,
   sessionSyntheticSchemaReference,
 } from './src/session-fixtures.mjs';
-import { normalizeStageProfile } from './src/stage.mjs';
+import { normalizeStageProfile } from '../../components/search-compiler/testing.mjs';
 import {
   buildChannelStageFirstProductDeletedProfile,
   buildChannelStageProfile,
@@ -82,7 +83,7 @@ import {
   stageSyntheticContentIdentity,
   stageSyntheticSchemaReference,
 } from './src/stage-fixtures.mjs';
-import { classifyChannelProgress, normalizeChannelProfile, simulateChannelTrace } from './src/channel.mjs';
+import { classifyChannelProgress, normalizeChannelProfile, simulateChannelTrace } from '../../components/search-compiler/testing.mjs';
 import {
   buildChannelProfile,
   buildChannelFirstProductDeletedProfile,
@@ -96,7 +97,7 @@ import {
   normalizeCompatiblePair,
   normalizeCudaJsRealization,
   normalizeProgramPackageProfile,
-} from './src/program-package.mjs';
+} from '../../components/search-compiler/testing.mjs';
 import {
   buildCompatiblePairFixture,
   buildCudaJsFailureFixture,
@@ -108,7 +109,7 @@ import {
   createResolvedComposerInput,
   normalizeResolvedComposerInput,
   tryComposeResolvedEngine,
-} from './src/composer.mjs';
+} from '../../components/search-compiler/testing.mjs';
 import {
   referenceComposerPreset,
   resolveReferenceConvenienceCall,
@@ -1613,14 +1614,14 @@ await runCase('composer-material-policy-version-identity-sensitive', () => {
 });
 
 await runCase('composer-convenience-deletion-complete-surface-coherent', async () => {
-  const composerSource = await readFile(path.join(experimentRoot, 'src', 'composer.mjs'), 'utf8');
+  const composerSource = await readSearchCompilerSource('composer.mjs');
   assert.equal(composerSource.includes('composer-presets.mjs'), false);
   const direct = composeResolvedEngine(clone(explicitResolvedComposerInput.normalized), inspected, programPackageFixtures[0].context);
   assert.deepEqual(direct.publication.identity, convenientComposition.publication.identity);
 });
 
 await runCase('composer-static-no-runtime-interpreter-or-registry', async () => {
-  const composerSource = await readFile(path.join(experimentRoot, 'src', 'composer.mjs'), 'utf8');
+  const composerSource = await readSearchCompilerSource('composer.mjs');
   const presetSource = await readFile(path.join(experimentRoot, 'src', 'composer-presets.mjs'), 'utf8');
   for (const source of [composerSource, presetSource]) {
     assert.equal(/\beval\s*\(/u.test(source), false);
@@ -6453,40 +6454,43 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/execution-package.schema.json',
   'schemas/search-ir/0.2.0/compatible-pair-record.schema.json',
   'schemas/search-ir/0.2.0/resolved-composer-input.schema.json',
-  'experiments/search-ir-composer-reference/fixtures/minimal.framework-selection.json',
-  'experiments/search-ir-composer-reference/src/catalog.mjs',
-  'experiments/search-ir-composer-reference/src/validation.mjs',
-  'experiments/search-ir-composer-reference/src/foundation.mjs',
-  'experiments/search-ir-composer-reference/src/domain.mjs',
-  'experiments/search-ir-composer-reference/src/domain-fixtures.mjs',
-  'experiments/search-ir-composer-reference/src/graph.mjs',
-  'experiments/search-ir-composer-reference/src/graph-fixtures.mjs',
-  'experiments/search-ir-composer-reference/src/policy.mjs',
-  'experiments/search-ir-composer-reference/src/policy-fixtures.mjs',
-  'experiments/search-ir-composer-reference/src/evaluator.mjs',
-  'experiments/search-ir-composer-reference/src/evaluator-fixtures.mjs',
-  'experiments/search-ir-composer-reference/src/resource.mjs',
-  'experiments/search-ir-composer-reference/src/resource-fixtures.mjs',
-  'experiments/search-ir-composer-reference/src/progress.mjs',
-  'experiments/search-ir-composer-reference/src/progress-fixtures.mjs',
-  'experiments/search-ir-composer-reference/src/output.mjs',
-  'experiments/search-ir-composer-reference/src/output-fixtures.mjs',
-  'experiments/search-ir-composer-reference/src/session.mjs',
-  'experiments/search-ir-composer-reference/src/session-fixtures.mjs',
-  'experiments/search-ir-composer-reference/src/stage.mjs',
-  'experiments/search-ir-composer-reference/src/stage-fixtures.mjs',
-  'experiments/search-ir-composer-reference/src/channel.mjs',
-  'experiments/search-ir-composer-reference/src/channel-fixtures.mjs',
-  'experiments/search-ir-composer-reference/src/program-package.mjs',
-  'experiments/search-ir-composer-reference/src/program-package-fixtures.mjs',
-  'experiments/search-ir-composer-reference/src/composer.mjs',
-  'experiments/search-ir-composer-reference/src/composer-presets.mjs',
-  'experiments/search-ir-composer-reference/src/deletion-identity.mjs',
-  'experiments/search-ir-composer-reference/run.mjs',
+  'conformance/search-compiler/fixtures/minimal.framework-selection.json',
+  'conformance/search-compiler/src/catalog.mjs',
+  'components/search-compiler/src/validation.mjs',
+  'components/search-compiler/src/foundation.mjs',
+  'components/search-compiler/src/domain.mjs',
+  'conformance/search-compiler/src/domain-fixtures.mjs',
+  'components/search-compiler/src/graph.mjs',
+  'conformance/search-compiler/src/graph-fixtures.mjs',
+  'components/search-compiler/src/policy.mjs',
+  'conformance/search-compiler/src/policy-fixtures.mjs',
+  'components/search-compiler/src/evaluator.mjs',
+  'conformance/search-compiler/src/evaluator-fixtures.mjs',
+  'components/search-compiler/src/resource.mjs',
+  'conformance/search-compiler/src/resource-fixtures.mjs',
+  'components/search-compiler/src/progress.mjs',
+  'conformance/search-compiler/src/progress-fixtures.mjs',
+  'components/search-compiler/src/output.mjs',
+  'conformance/search-compiler/src/output-fixtures.mjs',
+  'components/search-compiler/src/session.mjs',
+  'conformance/search-compiler/src/session-fixtures.mjs',
+  'components/search-compiler/src/stage.mjs',
+  'conformance/search-compiler/src/stage-fixtures.mjs',
+  'components/search-compiler/src/channel.mjs',
+  'conformance/search-compiler/src/channel-fixtures.mjs',
+  'components/search-compiler/src/program-package.mjs',
+  'conformance/search-compiler/src/program-package-fixtures.mjs',
+  'components/search-compiler/src/composer.mjs',
+  'conformance/search-compiler/src/composer-presets.mjs',
+  'conformance/search-compiler/src/deletion-identity.mjs',
+  'conformance/search-compiler/run.mjs',
 ];
 const sources = {};
 for (const relative of sourcePaths) {
-  sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+  const sourceBytes = relative.startsWith('components/search-compiler/src/')
+    ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8')
+    : await readFile(path.join(repositoryRoot, relative));
+  sources[relative] = sourceTextSha256(sourceBytes);
 }
 const representationCompositionEvidenceKey = canonicalIdentity({
   schema: 'cuda-mcgs.search-ir-composer-evidence-key/0.2.0',

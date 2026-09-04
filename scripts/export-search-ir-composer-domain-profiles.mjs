@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-import '../experiments/search-ir-composer-reference/export-domain-profiles.mjs';
+import '../conformance/search-compiler/export-domain-profiles.mjs';

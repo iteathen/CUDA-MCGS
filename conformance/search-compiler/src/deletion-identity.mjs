@@ -1,5 +1,5 @@
-import { assertOwnerDeletion } from './program-package.mjs';
-import { compareRaw, fail } from './validation.mjs';
+import { assertOwnerDeletion } from '../../../components/search-compiler/testing.mjs';
+import { compareRaw, fail } from '../../../components/search-compiler/testing.mjs';
 
 function exact(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);

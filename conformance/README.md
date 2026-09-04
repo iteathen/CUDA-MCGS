@@ -14,6 +14,8 @@ Conformance consumes public contracts only and must not become a hidden producti
 
 ## Consolidated conformance capsules
 
+[`search-compiler/`](search-compiler/) is the active CUDA-free conformance owner for the production `tool.search-compiler` component. It consumes only the declared component testing port, retains Composer/fixture/deletion/mutation/evidence support outside production, and must remain replaceable by stronger independent evidence without becoming a production dependency.
+
 Synthetic domains are accumulated as stable labeled cases and executed through shared public-contract runners. Compatible cases may share immutable schema/build/generated-engine/model/device setup, but each domain/case retains isolated mutable state, exact expected behavior, direct selection, and per-case reporting.
 
 Do not create a separate runner or permanent setup path for every synthetic example. Capture the test intent immediately, use a provisional reproducer only when diagnosing, and fold the case into the owning conformance capsule before the relevant contract branch is accepted.

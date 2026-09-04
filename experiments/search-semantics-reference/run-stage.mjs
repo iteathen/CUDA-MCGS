@@ -1,3 +1,4 @@
+import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -10,7 +11,7 @@ import { registerStageCases } from './src/stage-cases.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const composerRoot = path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference');
+const composerRoot = path.join(repositoryRoot, 'conformance', 'search-compiler');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'stage-cases.json');
 const stageProjectionPath = path.join(composerRoot, 'build', 'stage-profiles.json');
 const composerEvidencePath = path.join(composerRoot, 'build', 'evidence.json');
@@ -120,9 +121,9 @@ const sourcePaths = [
   'docs/specs/SPEC-0003-search-stage-and-extension-surface.md',
   'docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md',
   'schemas/search-ir/0.2.0/requirement-coverage.json',
-  'experiments/search-ir-composer-reference/src/stage.mjs',
-  'experiments/search-ir-composer-reference/src/stage-fixtures.mjs',
-  'experiments/search-ir-composer-reference/export-stage-profiles.mjs',
+  'components/search-compiler/src/stage.mjs',
+  'conformance/search-compiler/src/stage-fixtures.mjs',
+  'conformance/search-compiler/export-stage-profiles.mjs',
   'experiments/search-semantics-reference/fixtures/stage-cases.json',
   'experiments/search-semantics-reference/src/canonical.mjs',
   'experiments/search-semantics-reference/src/errors.mjs',
@@ -136,7 +137,7 @@ const sourcePaths = [
   'scripts/run-stage-reference.mjs',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths) sources[relative] = sourceTextSha256(relative.startsWith('components/search-compiler/src/') ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8') : await readFile(path.join(repositoryRoot, relative)));
 
 const evidenceSubject = {
   schema: 'cuda-mcgs.search-semantics-stage-evidence-key/0.1.0',

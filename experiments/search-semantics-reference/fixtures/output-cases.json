@@ -2,8 +2,8 @@
   "schema": "cuda-mcgs.reference-output-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 709387,
-    "sha256": "e576c182b56ad857069af4260f24451aa5db6abfaa4e0d33a80e1f74b8797df6"
+    "byteLength": 708983,
+    "sha256": "4e6b1911dcc4dc828fc49c9ece2b3d3694257507ad5ad37156e518c6eaddca25"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-output-profile-projection/0.2.0",

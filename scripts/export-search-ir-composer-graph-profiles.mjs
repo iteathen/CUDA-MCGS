@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-import '../experiments/search-ir-composer-reference/export-graph-profiles.mjs';
+import '../conformance/search-compiler/export-graph-profiles.mjs';
