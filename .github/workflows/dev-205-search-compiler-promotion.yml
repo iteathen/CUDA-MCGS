@@ -62,7 +62,7 @@ jobs:
 
           const channelRunner='conformance/search-compiler/run-channel-evidence.mjs';
           let channel=await readFile(channelRunner,'utf8');
-          const oldAssert="assert.equal(routes.ownerExperiment, 'experiments/search-ir-composer-reference');";
+          const oldAssert="assert.equal(routes.ownerExperiment, 'conformance/search-compiler');";
           const newAssert="assert.equal(routes.ownerConformance, 'conformance/search-compiler');";
           if(!channel.includes(oldAssert)) throw new Error('Channel evidence owner assertion baseline drifted');
           channel=channel.replace(oldAssert,newAssert);
