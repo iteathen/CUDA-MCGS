@@ -1,4 +1,4 @@
-# trigger: channel-provenance-closure
+# trigger: final-integration-evidence-paths
 name: dev-205-search-compiler-promotion
 
 on:
@@ -49,6 +49,8 @@ jobs:
         run: node scripts/run-search-ir-composer-reference.mjs
       - name: Route downstream canonical source provenance
         run: node scripts/dev-205-fix-downstream-source-provenance.mjs
+      - name: Re-own final integration evidence paths
+        run: node scripts/dev-205-fix-integration-evidence-paths.mjs
       - name: Make owner-rebind failures concise
         shell: bash
         run: |
@@ -85,7 +87,7 @@ jobs:
             echo 'conformance deep-imported Search Compiler private src outside explicit source-evidence manifest' >&2
             exit 1
           fi
-          if git grep -n 'experiments/search-ir-composer-reference' -- scripts ':!scripts/dev-205-promote-search-compiler.mjs' ':!scripts/dev-205-rebind-owner-evidence.mjs' ':!scripts/dev-205-reclassify-promotion.mjs' ':!scripts/dev-205-fix-downstream-source-provenance.mjs'; then
+          if git grep -n 'experiments/search-ir-composer-reference' -- scripts ':!scripts/dev-205-promote-search-compiler.mjs' ':!scripts/dev-205-rebind-owner-evidence.mjs' ':!scripts/dev-205-reclassify-promotion.mjs' ':!scripts/dev-205-fix-downstream-source-provenance.mjs' ':!scripts/dev-205-fix-integration-evidence-paths.mjs'; then
             echo 'live script still targets old Composer experiment path' >&2
             exit 1
           fi
@@ -113,6 +115,7 @@ jobs:
             scripts/dev-205-rebind-owner-evidence.mjs \
             scripts/dev-205-reclassify-promotion.mjs \
             scripts/dev-205-fix-downstream-source-provenance.mjs \
+            scripts/dev-205-fix-integration-evidence-paths.mjs \
             .github/workflows/dev-205-search-compiler-promotion.yml \
             .github/workflows/dev-205-search-compiler-finalize.yml
           git commit -m 'Remove #205 construction helpers'
