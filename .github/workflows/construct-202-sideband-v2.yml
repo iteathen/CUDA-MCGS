@@ -31,7 +31,11 @@ jobs:
           const constructStart = source.indexOf(constructStartMarker);
           const constructEnd = source.indexOf(constructEndMarker, constructStart);
           if (constructStart < 0 || constructEnd < 0) throw new Error('preserved construction block not found');
-          fs.writeFileSync('/tmp/construct-202.cjs', source.slice(constructStart + constructStartMarker.length, constructEnd));
+          let construct = source.slice(constructStart + constructStartMarker.length, constructEnd);
+          construct = construct
+            .replace("id: `sideband.${profileId}.framework-cancellation`", "id: \\`sideband.\\${profileId}.framework-cancellation\\`")
+            .replace("id: `sideband.${profileId}.session-command-publication`", "id: \\`sideband.\\${profileId}.session-command-publication\\`");
+          fs.writeFileSync('/tmp/construct-202.cjs', construct);
           const verifierStartMarker = "          cat > experiments/search-ir-composer-reference/verify-external-control-sideband-authority.mjs <<'EOF'\n";
           const verifierEndMarker = "\n          EOF\n      - name: Qualify focused Composer/reference implementation";
           const verifierStart = source.indexOf(verifierStartMarker);
@@ -46,6 +50,7 @@ jobs:
       - name: Apply package-sideband implementation
         shell: bash
         run: |
+          node --check /tmp/construct-202.cjs
           node /tmp/construct-202.cjs
           cp /tmp/verify-external-control-sideband-authority.mjs experiments/search-ir-composer-reference/verify-external-control-sideband-authority.mjs
           git diff --check
