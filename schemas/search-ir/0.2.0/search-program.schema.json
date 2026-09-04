@@ -148,6 +148,13 @@
     },
     "deletion": {
       "$ref": "program-package-profile.schema.json#/$defs/deletion"
+    },
+    "sidebands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "program-package-profile.schema.json#/$defs/sideband"
+      }
     }
   }
 }

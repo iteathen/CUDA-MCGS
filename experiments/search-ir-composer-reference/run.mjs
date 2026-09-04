@@ -1987,6 +1987,16 @@ await runCase('deletion-matrix-adapter-requirements-only', () => {
       assert.deepEqual(adapter.publicContracts, composition.searchProgram.normalized.publicRequirements.map(({ contract }) => contract));
       assert.equal(JSON.stringify(adapter).includes('semanticOwner'), false);
       assert.equal(JSON.stringify(adapter).includes('ownerProfile'), false);
+      const program = composition.searchProgram.normalized;
+      const residentResources = program.resources.filter(({ materialization }) => materialization === 'resident-storage');
+      const resourceNames = new Map(residentResources.map((entry, index) => [entry.id, `resource-${index}`]));
+      const expectedSidebands = (program.sidebands ?? []).map((entry, index) => ({
+        id: `sideband-${index}`, role: entry.role, direction: entry.direction, valueType: entry.valueType,
+        capacity: entry.capacity, publication: entry.publication, applicationPoint: { ...entry.applicationPoint }, lifetime: entry.lifetime,
+        residentResource: entry.residentResource === null ? null : resourceNames.get(entry.residentResource),
+        semantics: { ...entry.semantics }, cleanup: { ...entry.cleanup },
+      }));
+      assert.deepEqual(adapter.sidebandRequirements, expectedSidebands);
     }
   }
 });
@@ -2009,7 +2019,9 @@ await runCase('adapter-operation-policy-is-not-lower-request', () => {
 await runCase('adapter-requirements-do-not-own-lower-lifecycle', () => {
   const adapter = executionPackages[1].normalized.cudaJsAdapter;
   assert.deepEqual(adapter.searchLifecycle, { ignition: 'device-owned', cancellation: 'bounded-external-intent', completion: 'device-owned-closure' });
-  const serialized = JSON.stringify(adapter);
+  const { searchProgram, ...adapterControlRequirements } = adapter;
+  const serialized = JSON.stringify(adapterControlRequirements);
+  assert.ok(searchProgram.source.includes('gpu.mailbox.loadAcquireSystem'));
   for (const forbidden of ['compile', 'allocate', 'load', 'teardown', 'device-memory', 'cuda-js-request-projection']) assert.equal(serialized.includes(forbidden), false);
 });
 
