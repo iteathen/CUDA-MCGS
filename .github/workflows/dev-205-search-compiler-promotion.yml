@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Tighten constructor to structural-only authority changes
+      - name: Keep accepted specs immutable during structural promotion
         shell: bash
         run: |
           node --input-type=module <<'NODE'
@@ -36,121 +36,51 @@ jobs:
           text = text.replace(beforeActive, afterActive);
           await writeFile(file, text, 'utf8');
           NODE
-      - name: Construct production promotion
+      - name: Construct byte-identical promotion
         run: node scripts/dev-205-promote-search-compiler.mjs
-      - name: Reclassify moved conformance provenance and downstream consumers
-        shell: bash
-        run: |
-          node --input-type=module <<'NODE'
-          import { readFile, readdir, writeFile } from 'node:fs/promises';
-          import path from 'node:path';
-          async function walk(dir) {
-            const out=[];
-            for (const entry of await readdir(dir,{withFileTypes:true})) {
-              const full=path.join(dir,entry.name);
-              if(entry.isDirectory()) out.push(...await walk(full));
-              else if(entry.isFile()) out.push(full);
-            }
-            return out;
-          }
-          const productionNames = [
-            'validation.mjs','foundation.mjs','domain.mjs','graph.mjs','policy.mjs','evaluator.mjs','resource.mjs',
-            'progress.mjs','output.mjs','session.mjs','stage.mjs','channel.mjs','program-package.mjs','composer.mjs',
-          ];
-
-          const routePath='conformance/search-compiler/fixtures/channel-evidence-routes.json';
-          const routes=JSON.parse(await readFile(routePath,'utf8'));
-          if(routes.ownerExperiment!=='experiments/search-ir-composer-reference') throw new Error('Channel evidence owner baseline drifted');
-          delete routes.ownerExperiment;
-          routes.ownerConformance='conformance/search-compiler';
-          await writeFile(routePath,`${JSON.stringify(routes,null,2)}\n`,'utf8');
-
-          const channelRunner='conformance/search-compiler/run-channel-evidence.mjs';
-          let channel=await readFile(channelRunner,'utf8');
-          const oldAssert="assert.equal(routes.ownerExperiment, 'conformance/search-compiler');";
-          const newAssert="assert.equal(routes.ownerConformance, 'conformance/search-compiler');";
-          if(!channel.includes(oldAssert)) throw new Error('Channel evidence owner assertion baseline drifted');
-          channel=channel.replace(oldAssert,newAssert);
-          await writeFile(channelRunner,channel,'utf8');
-
-          const promotionVerifier='conformance/search-compiler/verify-promotion-boundary.mjs';
-          let promotion=await readFile(promotionVerifier,'utf8');
-          const promotionLines=promotion.split('\n');
-          const filtered=promotionLines.filter((line)=>!line.includes("source.includes('components/search-compiler/src/')"));
-          if(filtered.length!==promotionLines.length-1) throw new Error('promotion verifier self-text check baseline drifted');
-          await writeFile(promotionVerifier,filtered.join('\n'),'utf8');
-
-          const testingPort='components/search-compiler/testing.mjs';
-          let testing=await readFile(testingPort,'utf8');
-          testing = `import { readFile as readSearchCompilerFile } from 'node:fs/promises';\n${testing.trimEnd()}\n\nconst SEARCH_COMPILER_SOURCE_NAMES = new Set(${JSON.stringify(productionNames)});\n\nexport async function readSearchCompilerSource(name) {\n  if (!SEARCH_COMPILER_SOURCE_NAMES.has(name)) throw new Error(\`unknown Search Compiler source: \${name}\`);\n  return readSearchCompilerFile(new URL(\`./src/\${name}\`, import.meta.url), 'utf8');\n}\n`;
-          await writeFile(testingPort,testing,'utf8');
-
-          const composerRun='conformance/search-compiler/run.mjs';
-          let run=await readFile(composerRun,'utf8');
-          run = `import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';\n${run}`;
-          const composerPattern=/await readFile\(path\.join\(experimentRoot,\s*['"]src['"],\s*['"]composer\.mjs['"]\)(?:,\s*['"]utf8['"])?\)/g;
-          const composerMatches=[...run.matchAll(composerPattern)].length;
-          if(composerMatches!==2) throw new Error(`static Composer source-read baseline drifted composer=${composerMatches}`);
-          run=run.replace(composerPattern,"await readSearchCompilerSource('composer.mjs')");
-          for (const name of productionNames) {
-            run=run.replaceAll(`'experiments/search-ir-composer-reference/src/${name}'`,`'components/search-compiler/src/${name}'`);
-            run=run.replaceAll(`'conformance/search-compiler/src/${name}'`,`'components/search-compiler/src/${name}'`);
-            run=run.replaceAll(`"experiments/search-ir-composer-reference/src/${name}"`,`"components/search-compiler/src/${name}"`);
-            run=run.replaceAll(`"conformance/search-compiler/src/${name}"`,`"components/search-compiler/src/${name}"`);
-          }
-          run=run.replaceAll("'experiments/search-ir-composer-reference/src/", "'conformance/search-compiler/src/");
-          run=run.replaceAll("'experiments/search-ir-composer-reference/run.mjs'", "'conformance/search-compiler/run.mjs'");
-          const oldSourceLoop = "for (const relative of sourcePaths) {\n  sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));\n}";
-          const newSourceLoop = "for (const relative of sourcePaths) {\n  const sourceBytes = relative.startsWith('components/search-compiler/src/')\n    ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8')\n    : await readFile(path.join(repositoryRoot, relative));\n  sources[relative] = sourceTextSha256(sourceBytes);\n}";
-          if(!run.includes(oldSourceLoop)) throw new Error('Composer evidence source loop baseline drifted');
-          run=run.replace(oldSourceLoop,newSourceLoop);
-          await writeFile(composerRun,run,'utf8');
-
-          let changed=0;
-          for (const file of await walk('experiments/search-semantics-reference')) {
-            if (!file.endsWith('.mjs')) continue;
-            let text=await readFile(file,'utf8');
-            const before=text;
-            text=text.replaceAll("path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference'", "path.join(repositoryRoot, 'conformance', 'search-compiler'");
-            if(text!==before){await writeFile(file,text,'utf8'); changed+=1;}
-          }
-          if(changed===0) throw new Error('no downstream Composer build consumers were rewired');
-          console.log(`downstream_consumer_files_rewired=${changed}`);
-          NODE
-      - name: Focused Search Compiler conformance
+      - name: Reclassify conformance ownership and source evidence
+        run: node scripts/dev-205-reclassify-promotion.mjs
+      - name: Prove focused Search Compiler behavior
         run: node scripts/run-search-ir-composer-reference.mjs
-      - name: Rebind path-sensitive owner evidence
+      - name: Rebind declared path-sensitive owner evidence
         run: node scripts/dev-205-rebind-owner-evidence.mjs
-      - name: Full Engine reference integration
+      - name: Prove complete Engine packet
         run: node scripts/run-engine-reference-integration.mjs
-      - name: Repository governance and source boundary
+      - name: Prove repository governance and source boundary
         shell: bash
         run: |
           ./scripts/verify-docs.sh
           node scripts/check-source-boundary.mjs
-      - name: Review construction diff
+      - name: Review structural transaction
         shell: bash
         run: |
           git diff --check
           test ! -e experiments/search-ir-composer-reference
+          test -e components/search-compiler/README.md
           test -e components/search-compiler/component.yaml
+          test -e components/search-compiler/index.mjs
+          test -e components/search-compiler/testing.mjs
           test -e conformance/search-compiler/verify-promotion-boundary.mjs
           if git grep -n 'components/search-compiler/src/' -- conformance ':!conformance/search-compiler/verify-promotion-boundary.mjs' ':!conformance/search-compiler/run.mjs'; then
             echo 'conformance deep-imported Search Compiler private src outside explicit source-evidence manifest' >&2
             exit 1
           fi
-          if git grep -n 'experiments/search-ir-composer-reference' -- scripts ':!scripts/dev-205-promote-search-compiler.mjs' ':!scripts/dev-205-rebind-owner-evidence.mjs'; then
+          if git grep -n 'experiments/search-ir-composer-reference' -- scripts ':!scripts/dev-205-promote-search-compiler.mjs' ':!scripts/dev-205-rebind-owner-evidence.mjs' ':!scripts/dev-205-reclassify-promotion.mjs'; then
             echo 'live script still targets old Composer experiment path' >&2
             exit 1
           fi
           if git grep -n 'experiments/search-ir-composer-reference' -- conformance; then
-            echo 'moved conformance capsule still claims the old experiment owner/path' >&2
+            echo 'moved conformance capsule still claims old experiment ownership/path' >&2
             exit 1
           fi
           git diff --quiet c10c616058e7e492e130e5ff14fa41402290d5b4 -- docs/specs || {
             echo 'accepted specs changed during structural promotion' >&2
             exit 1
           }
+          if git grep -nE "from ['\"](?:\.\./)*conformance/|from ['\"](?:\.\./)*experiments/" -- components adapters examples; then
+            echo 'production source depends on evidence source' >&2
+            exit 1
+          fi
       - name: Publish qualified candidate and remove construction helpers
         shell: bash
         run: |
@@ -158,6 +88,11 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
           git commit -m 'Promote canonical Search Compiler to production ownership'
-          git rm scripts/dev-205-promote-search-compiler.mjs scripts/dev-205-rebind-owner-evidence.mjs .github/workflows/dev-205-search-compiler-promotion.yml
+          git rm \
+            scripts/dev-205-promote-search-compiler.mjs \
+            scripts/dev-205-rebind-owner-evidence.mjs \
+            scripts/dev-205-reclassify-promotion.mjs \
+            .github/workflows/dev-205-search-compiler-promotion.yml \
+            .github/workflows/dev-205-search-compiler-finalize.yml
           git commit -m 'Remove #205 construction helpers'
           git push origin HEAD:construct/205-search-compiler-promotion
