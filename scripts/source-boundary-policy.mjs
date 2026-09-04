@@ -67,7 +67,9 @@ function importSpecifiers(text) {
 function isPrivateCudaJsSpecifier(specifier) {
   const normalized = slash(specifier);
   const lower = normalized.toLowerCase();
-  if ((lower.includes("cuda-js") || lower.includes("cuda_js")) && (
+  const pathSegments = lower.split("/").filter(Boolean);
+  const namesCudaJsRepository = pathSegments.some((segment) => segment === "cuda-js" || segment === "cuda_js");
+  if (namesCudaJsRepository && (
     lower.startsWith(".") || lower.startsWith("/") || lower.startsWith("file:") || lower.includes("github.com/") || lower.includes("raw.githubusercontent.com/")
   )) return true;
 
