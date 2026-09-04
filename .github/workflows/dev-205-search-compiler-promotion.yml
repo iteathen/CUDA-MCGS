@@ -1,4 +1,4 @@
-# trigger: complete-next-step-governance
+# trigger: publish-existing-helpers-only
 name: dev-205-search-compiler-promotion
 
 on:
@@ -121,7 +121,6 @@ jobs:
             scripts/dev-205-reclassify-promotion.mjs \
             scripts/dev-205-fix-downstream-source-provenance.mjs \
             scripts/dev-205-fix-integration-evidence-paths.mjs \
-            .github/workflows/dev-205-search-compiler-promotion.yml \
-            .github/workflows/dev-205-search-compiler-finalize.yml
+            .github/workflows/dev-205-search-compiler-promotion.yml
           git commit -m 'Remove #205 construction helpers'
           git push origin HEAD:construct/205-search-compiler-promotion
