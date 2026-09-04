@@ -1,0 +1,66 @@
+name: construct-202-sideband-v2
+
+on:
+  push:
+    branches:
+      - impl/202-external-control-sideband-projection
+
+permissions:
+  contents: write
+
+jobs:
+  construct:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: impl/202-external-control-sideband-projection
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Extract preserved construction source
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = '.github/workflows/construct-202-sideband.yml';
+          const source = fs.readFileSync(path, 'utf8');
+          const constructStartMarker = "          node <<'NODE'\n";
+          const constructEndMarker = "\n          NODE\n      - name: Write permanent #202 falsifier/conformance verifier";
+          const constructStart = source.indexOf(constructStartMarker);
+          const constructEnd = source.indexOf(constructEndMarker, constructStart);
+          if (constructStart < 0 || constructEnd < 0) throw new Error('preserved construction block not found');
+          fs.writeFileSync('/tmp/construct-202.cjs', source.slice(constructStart + constructStartMarker.length, constructEnd));
+          const verifierStartMarker = "          cat > experiments/search-ir-composer-reference/verify-external-control-sideband-authority.mjs <<'EOF'\n";
+          const verifierEndMarker = "\n          EOF\n      - name: Qualify focused Composer/reference implementation";
+          const verifierStart = source.indexOf(verifierStartMarker);
+          const verifierEnd = source.indexOf(verifierEndMarker, verifierStart);
+          if (verifierStart < 0 || verifierEnd < 0) throw new Error('preserved verifier block not found');
+          const verifier = source.slice(verifierStart + verifierStartMarker.length, verifierEnd)
+            .split('\n')
+            .map((line) => line.startsWith('          ') ? line.slice(10) : line)
+            .join('\n');
+          fs.writeFileSync('/tmp/verify-external-control-sideband-authority.mjs', verifier + '\n');
+          NODE
+      - name: Apply package-sideband implementation
+        shell: bash
+        run: |
+          node /tmp/construct-202.cjs
+          cp /tmp/verify-external-control-sideband-authority.mjs experiments/search-ir-composer-reference/verify-external-control-sideband-authority.mjs
+          git diff --check
+      - name: Qualify focused Composer/reference implementation
+        shell: bash
+        run: |
+          node scripts/run-search-ir-composer-reference.mjs
+          git diff --check
+      - name: Commit clean semantic construction
+        shell: bash
+        run: |
+          rm .github/workflows/construct-202-sideband.yml .github/workflows/construct-202-sideband-v2.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git diff --cached --check
+          git commit -m "Execution package: implement bounded external control sidebands"
+          git push origin HEAD:impl/202-external-control-sideband-projection
