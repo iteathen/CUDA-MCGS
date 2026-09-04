@@ -171,9 +171,18 @@ function normalizeSourceUnit(input, index, context) {
 }
 
 function normalizeParameter(input, functionName, index) {
-  exactKeys(input, ['name', 'type'], 'COMPOSE_PARAMETER_FIELDS', `${functionName} parameter ${index}`);
+  const fields = ['name', 'type'];
+  if (Object.hasOwn(input, 'sidebandRole')) fields.push('sidebandRole');
+  exactKeys(input, fields, 'COMPOSE_PARAMETER_FIELDS', `${functionName} parameter ${index}`);
   assertString(input.name, /^[A-Za-z_$][A-Za-z0-9_$]*$/, 'COMPOSE_PARAMETER_NAME', `${functionName} parameter ${index} name`);
   if (!RESTRICTED_SOURCE_TYPES.has(input.type)) fail('COMPOSE_PARAMETER_TYPE', `${functionName} parameter ${input.name} has an unsupported type`);
+  const sideband = input.type.startsWith('sideband<');
+  if (sideband) {
+    if (!Object.hasOwn(input, 'sidebandRole')) fail('COMPOSE_PARAMETER_ROLE', `${functionName} sideband parameter ${input.name} lacks an explicit role`);
+    assertString(input.sidebandRole, /^[a-z][a-z0-9-]*$/, 'COMPOSE_PARAMETER_ROLE', `${functionName} parameter ${input.name} sidebandRole`);
+    return { name: input.name, type: input.type, sidebandRole: input.sidebandRole };
+  }
+  if (Object.hasOwn(input, 'sidebandRole')) fail('COMPOSE_PARAMETER_ROLE', `${functionName} non-sideband parameter ${input.name} cannot carry sidebandRole`);
   return { name: input.name, type: input.type };
 }
 
@@ -342,7 +351,7 @@ function normalizeBinding(input, operationId, index, parameters, resources, side
   if (input.source?.kind === 'sideband') {
     exactKeys(input.source, ['kind', 'sideband'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} sideband`);
     const sideband = sidebands.get(input.source.sideband);
-    if (!sideband || parameter.type !== `sideband<${sideband.direction},${sideband.valueType}>`) fail('COMPOSE_OPERATION_BINDING', `${operationId} sideband binding is incompatible`);
+    if (!sideband || parameter.type !== `sideband<${sideband.direction},${sideband.valueType}>` || parameter.sidebandRole !== sideband.role) fail('COMPOSE_OPERATION_BINDING', `${operationId} sideband binding is incompatible`);
     return { parameter: input.parameter, source: { kind: 'sideband', sideband: input.source.sideband } };
   }
   if (Object.hasOwn(input.source ?? {}, 'access')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} scalar binding cannot carry access`);

@@ -2169,6 +2169,100 @@ await runCase('reject-operation-binding-omission', () => {
   assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_OPERATION_BINDING' });
 });
 
+await runCase('external-control-sideband-authority-falsifiers', () => {
+  const sessionResult = withSchema(sessionProfiles[0], sessionSchemaSha);
+  const sessionContext = {
+    profileResults: [progressResourceResults[2], outputProgressResults[2], sessionOutputResult, sessionResult],
+    resourceResult: progressResourceResults[2],
+    progressResult: outputProgressResults[2],
+    outputResult: sessionOutputResult,
+    sessionResult,
+    stageResult: null,
+    channelResult: null,
+  };
+  const sessionFixture = buildProgramPackageProfile(inspected, sessionContext, 'sideband-session-falsifier');
+  const sessionNormalized = normalizeProgramPackageProfile(sessionFixture.input, inspected, sessionFixture.context);
+  const sessionProgram = composeSearchProgram(sessionNormalized);
+  assert.doesNotThrow(() => buildExecutionPackage(sessionNormalized, sessionProgram));
+
+  // 1. Base cancellation omission is non-realizable.
+  const missingBaseBinding = clone(programPackageFixtures[0].input);
+  missingBaseBinding.operations[0].bindings = missingBaseBinding.operations[0].bindings.filter(({ source }) => source.kind !== 'sideband');
+  assert.throws(() => normalizeProgramPackageProfile(missingBaseBinding, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_OPERATION_BINDING' });
+
+  // 2. Selected Session publication requirement cannot disappear.
+  const missingSessionRequirement = clone(sessionFixture.input);
+  missingSessionRequirement.publicRequirements = missingSessionRequirement.publicRequirements.filter(({ contract }) => contract.id !== 'cuda-js.publication-mailbox/0.1.0');
+  assert.throws(() => normalizeProgramPackageProfile(missingSessionRequirement, inspected, sessionFixture.context), { code: 'COMPOSE_PUBLIC_REQUIREMENT_CLOSURE' });
+
+  // 3. Unknown and role-incompatible sideband bindings fail closed.
+  const unknownBinding = clone(sessionFixture.input);
+  unknownBinding.operations[0].bindings.find(({ parameter }) => parameter === 'frameworkCancellation').source.sideband = 'sideband.unknown-control';
+  assert.throws(() => normalizeProgramPackageProfile(unknownBinding, inspected, sessionFixture.context), { code: 'COMPOSE_OPERATION_BINDING' });
+  const roleMismatch = clone(sessionFixture.input);
+  const sessionSidebandId = roleMismatch.sidebands.find(({ role }) => role === 'session-command-publication').id;
+  roleMismatch.operations[0].bindings.find(({ parameter }) => parameter === 'frameworkCancellation').source.sideband = sessionSidebandId;
+  assert.throws(() => normalizeProgramPackageProfile(roleMismatch, inspected, sessionFixture.context), { code: 'COMPOSE_OPERATION_BINDING' });
+
+  // 4. Source/function facts cannot repair an omitted declaration.
+  const inferredFromSource = clone(searchPrograms[0]);
+  delete inferredFromSource.normalized.sidebands;
+  assert(inferredFromSource.normalized.source.includes('gpu.mailbox.loadAcquireSystem'));
+  assert.throws(() => buildExecutionPackage(programPackageProfiles[0], inferredFromSource), { code: 'COMPOSE_SIDEBAND_REQUIRED' });
+
+  // 5. Session command identity remains authoritative 128-bit state, not u32 publication.
+  const commandCounter = sessionProfiles[0].normalized.counters.find(({ kind }) => kind === 'command');
+  const sessionSignal = sessionFixture.input.sidebands.find(({ role }) => role === 'session-command-publication');
+  assert.equal(BigInt(commandCounter.maximum), (1n << 128n) - 1n);
+  assert.equal(sessionSignal.valueType, 'u32');
+  assert.equal(Object.hasOwn(sessionSignal, 'generation'), false);
+  assert.equal(Object.hasOwn(sessionSignal, 'commandIdentity'), false);
+
+  // 6. Shared publication does not collapse Session operation kinds.
+  assert.deepEqual(new Set(sessionProfiles[0].normalized.commands.inputs.map(({ kind }) => kind)), new Set(['advance', 'reroot', 'attention', 'cancellation', 'observation-request']));
+
+  // 7. Session absence deletes Session-only residue while Framework cancellation remains.
+  const baseInput = programPackageFixtures[0].input;
+  assert(baseInput.sidebands.some(({ role }) => role === 'framework-cancellation'));
+  assert.equal(baseInput.sidebands.some(({ role }) => role === 'session-command-publication'), false);
+  assert.equal(baseInput.operations[0].bindings.some(({ parameter }) => parameter === 'sessionCommandPublication'), false);
+  const baseMailbox = baseInput.publicRequirements.find(({ contract }) => contract.id === 'cuda-js.publication-mailbox/0.1.0');
+  assert(baseMailbox);
+  assert.equal(baseMailbox.consumers.includes(sessionResult.normalized.id), false);
+
+  // 8. Material sideband meaning is identity-bearing; lower lane/handle names are absent from semantic input.
+  const capacityMutation = clone(programPackageFixtures[0].input);
+  capacityMutation.sidebands.find(({ role }) => role === 'framework-cancellation').capacity = '2';
+  const capacityNormalized = normalizeProgramPackageProfile(capacityMutation, inspected, programPackageFixtures[0].context);
+  assert.notEqual(capacityNormalized.identity.sha256, programPackageProfiles[0].identity.sha256);
+  const semanticText = JSON.stringify(programPackageProfiles[0].normalized);
+  for (const forbidden of ['mailboxLane', 'laneName', 'nativeHandle', 'sideband-0']) assert.equal(semanticText.includes(forbidden), false);
+
+  // 9. Unsupported forms, unavailable capability, and incomplete payload relation reject pre-realization.
+  const badDirection = clone(programPackageFixtures[0].input);
+  badDirection.sidebands[0].direction = 'host-to-host';
+  assert.throws(() => normalizeProgramPackageProfile(badDirection, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_SIDEBAND_DIRECTION' });
+  const badValue = clone(programPackageFixtures[0].input);
+  badValue.sidebands[0].valueType = 'u64';
+  assert.throws(() => normalizeProgramPackageProfile(badValue, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_SIDEBAND_VALUE' });
+  const missingCapability = clone(programPackageFixtures[0].input);
+  missingCapability.publicRequirements = missingCapability.publicRequirements.filter(({ contract }) => contract.id !== 'cuda-js.publication-mailbox/0.1.0');
+  assert.throws(() => normalizeProgramPackageProfile(missingCapability, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_PUBLIC_REQUIREMENT_CLOSURE' });
+  const badPayload = clone(sessionFixture.input);
+  badPayload.sidebands.find(({ role }) => role === 'session-command-publication').residentResource = 'package-resource.missing-session-control';
+  assert.throws(() => normalizeProgramPackageProfile(badPayload, inspected, sessionFixture.context), { code: 'COMPOSE_SIDEBAND_PAYLOAD' });
+
+  // 10. Generated source remains public Device-JS only.
+  for (const forbidden of ['#include', '__global__', '__device__', '.ptx', '.cu', 'node:', 'require(', 'process.']) assert.equal(sessionProgram.normalized.source.includes(forbidden), false);
+
+  // 11. Equal u32 notifications cannot erase distinct authoritative generations.
+  const notificationA = { signal: 7, generation: (1n << 64n).toString() };
+  const notificationB = { signal: 7, generation: ((1n << 64n) + 1n).toString() };
+  assert.equal(notificationA.signal, notificationB.signal);
+  assert.notEqual(notificationA.generation, notificationB.generation);
+  assert(BigInt(notificationB.generation) > 0xffffffffn);
+});
+
 await runCase('reject-operation-entry-point-gap', () => {
   const mutated = clone(programPackageFixtures[0].input); mutated.operations[0].entryPoint = mutated.functions.find(({ executionRole }) => executionRole === 'device-callable').name;
   assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_OPERATION_ENTRY' });
@@ -6325,7 +6419,7 @@ await runCase('integration-requirement-disposition-handoff', () => {
 
 const failed = cases.filter(({ status }) => status === 'fail');
 const summary = {
-  expected: 882,
+  expected: 883,
   discovered: cases.length,
   executed: cases.length,
   passed: cases.length - failed.length,
@@ -6333,7 +6427,7 @@ const summary = {
   requiredSkipped: 0,
   conditionalSkipped: 0,
   optionalSkipped: 0,
-  notDiscovered: 882 - cases.length,
+  notDiscovered: 883 - cases.length,
 };
 assert.equal(cases.length, summary.expected, `Expected ${summary.expected} cases, discovered ${cases.length}`);
 

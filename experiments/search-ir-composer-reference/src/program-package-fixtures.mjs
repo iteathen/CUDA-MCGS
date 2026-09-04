@@ -130,6 +130,7 @@ function sourceAndFunctions(context, profileId, label, sidebands = []) {
   const sidebandParameters = sidebands.map((sideband) => ({
     name: sideband.role === 'framework-cancellation' ? 'frameworkCancellation' : 'sessionCommandPublication',
     type: `sideband<${sideband.direction},${sideband.valueType}>`,
+    sidebandRole: sideband.role,
   }));
   const parameterList = ['output', ...sidebandParameters.map(({ name }) => name)].join(', ');
   const observations = sidebandParameters.map(({ name }) => `gpu.mailbox.loadAcquireSystem(${name});`).join(' ');

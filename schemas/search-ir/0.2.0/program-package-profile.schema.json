@@ -346,8 +346,41 @@
             "sideband<host-to-device,u32>",
             "sideband<device-to-host,u32>"
           ]
+        },
+        "sidebandRole": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "sideband<host-to-device,u32>",
+                  "sideband<device-to-host,u32>"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "sidebandRole"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "sidebandRole"
+              ]
+            }
+          }
+        }
+      ]
     },
     "function": {
       "type": "object",
