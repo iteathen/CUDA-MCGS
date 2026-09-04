@@ -19,8 +19,51 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
+      - name: Tighten constructor to structural-only authority changes
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const file = 'scripts/dev-205-promote-search-compiler.mjs';
+          let text = await readFile(file, 'utf8');
+          const beforeDocs = "for (const area of ['agent_files', 'docs/specs', 'docs/architecture']) {";
+          const afterDocs = "for (const area of ['agent_files', 'docs/architecture']) {";
+          if (!text.includes(beforeDocs)) throw new Error('constructor docs-area guard moved');
+          text = text.replace(beforeDocs, afterDocs);
+          const beforeActive = "const activeCheckAreas = ['scripts', '.github/workflows', 'components', 'conformance', 'agent_files', 'docs/specs', 'docs/architecture'];";
+          const afterActive = "const activeCheckAreas = ['.github/workflows', 'conformance', 'agent_files', 'docs/architecture'];";
+          if (!text.includes(beforeActive)) throw new Error('constructor active-area guard moved');
+          text = text.replace(beforeActive, afterActive);
+          await writeFile(file, text, 'utf8');
+          NODE
       - name: Construct production promotion
         run: node scripts/dev-205-promote-search-compiler.mjs
+      - name: Rewire downstream reference consumers to promoted conformance outputs
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, readdir, writeFile } from 'node:fs/promises';
+          import path from 'node:path';
+          async function walk(dir) {
+            const out=[];
+            for (const entry of await readdir(dir,{withFileTypes:true})) {
+              const full=path.join(dir,entry.name);
+              if(entry.isDirectory()) out.push(...await walk(full));
+              else if(entry.isFile()) out.push(full);
+            }
+            return out;
+          }
+          let changed=0;
+          for (const file of await walk('experiments/search-semantics-reference')) {
+            if (!file.endsWith('.mjs')) continue;
+            let text=await readFile(file,'utf8');
+            const before=text;
+            text=text.replaceAll("path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference'", "path.join(repositoryRoot, 'conformance', 'search-compiler'");
+            if(text!==before){await writeFile(file,text,'utf8'); changed+=1;}
+          }
+          if(changed===0) throw new Error('no downstream Composer build consumers were rewired');
+          console.log(`downstream_consumer_files_rewired=${changed}`);
+          NODE
       - name: Focused Search Compiler conformance
         run: node scripts/run-search-ir-composer-reference.mjs
       - name: Full Engine reference integration
@@ -41,6 +84,14 @@ jobs:
             echo 'conformance deep-imported Search Compiler private src' >&2
             exit 1
           fi
+          if git grep -n 'experiments/search-ir-composer-reference' -- scripts ':!scripts/dev-205-promote-search-compiler.mjs'; then
+            echo 'live script still targets old Composer experiment path' >&2
+            exit 1
+          fi
+          git diff --quiet c10c616058e7e492e130e5ff14fa41402290d5b4 -- docs/specs || {
+            echo 'accepted specs changed during structural promotion' >&2
+            exit 1
+          }
       - name: Publish qualified candidate and remove construction helpers
         shell: bash
         run: |
