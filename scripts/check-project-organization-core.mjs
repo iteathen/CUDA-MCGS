@@ -96,7 +96,7 @@ const scaffoldReadmes = new Set([
   "tools/README.md",
 ]);
 
-const adapterFamilies = new Set(["domains", "evaluators", "outputs", "policies"]);
+const adapterFamilies = new Set(["domains", "evaluators", "outputs", "policies", "runtimes"]);
 const errors = [];
 
 const workflowPath = path.join(root, ".github", "workflows", "docs.yml");

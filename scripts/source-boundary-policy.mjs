@@ -67,7 +67,9 @@ function importSpecifiers(text) {
 function isPrivateCudaJsSpecifier(specifier) {
   const normalized = slash(specifier);
   const lower = normalized.toLowerCase();
-  if ((lower.includes("cuda-js") || lower.includes("cuda_js")) && (
+  const pathSegments = lower.split("/").filter(Boolean);
+  const namesCudaJsRepository = pathSegments.some((segment) => segment === "cuda-js" || segment === "cuda_js");
+  if (namesCudaJsRepository && (
     lower.startsWith(".") || lower.startsWith("/") || lower.startsWith("file:") || lower.includes("github.com/") || lower.includes("raw.githubusercontent.com/")
   )) return true;
 
@@ -194,7 +196,7 @@ export function violationsForFile(relativePath, text = "") {
     ["DIRECT_NATIVE_ACCESS", /\b(?:process\.dlopen|process\.binding|Deno\.dlopen|Bun\.ffi)\b/, "direct native loader/binding access"],
     ["EMBEDDED_NATIVE_SOURCE", /(?:#\s*include\s*[<\"](?:cuda|nvidia)|\b__(?:global|device)__\b\s+|extern\s+["']C["'])/, "embedded C/CUDA source"],
     ["CUDA_DRIVER_SYMBOL", /\bcu(?:Init|Device|Ctx|Module|Mem|Launch|Stream|Event|Graph|Link|Library|Func)[A-Z0-9_a-z]*\b/, "direct CUDA Driver API symbol"],
-    ["PRIVATE_CUDA_JS_PATH", /(?:\.\.?\/[^\n"'`]*CUDA-JS|\.\.?\/[^\n"'`]*cuda-js|(?:CUDA-JS|cuda-js)\/(?:src|internal|private|native|build|vendor|tests?|experiments)\/)/, "private CUDA-JS filesystem/source path"],
+    ["PRIVATE_CUDA_JS_PATH", /(?:CUDA-JS|cuda-js)\/(?:src|internal|private|native|build|vendor|tests?|experiments)\//, "private CUDA-JS filesystem/source path"],
   ];
   for (const [code, pattern, detail] of mechanismChecks) {
     if (code === "PRIVATE_CUDA_JS_PATH" && hasPrivateCudaJsImport) continue;

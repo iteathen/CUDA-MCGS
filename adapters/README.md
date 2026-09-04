@@ -16,14 +16,16 @@ Each adapter is a manifested component with its own README, public contract, dep
 
 ## CUDA-JS adapter
 
-The planned `integration.cuda-js` adapter belongs under `adapters/runtimes/` after the version-zero interop specification is accepted. It owns:
+The production `integration.cuda-js` component lives at [`runtimes/cuda-js/`](runtimes/cuda-js/). It owns:
 
-- mapping the UMCGS execution-package schema to the versioned CUDA-JS public runtime contract;
-- capability and compatibility negotiation;
-- semantic classification of UMCGS package/result errors versus generic CUDA-JS runtime/context errors;
-- exact peer artifact identity and conformance evidence;
-- configuration, initial upload, launch, one-way cancellation request, completion consumption, and teardown mapping.
+- fail-closed mapping from accepted CUDA-MCGS execution-package requirements to an exact versioned public CUDA-JS peer;
+- public capability and compatibility admission before lower mutation;
+- mechanical Device-JS/resource/sideband/launch translation;
+- explicit pre-ignition resource/scalar input binding;
+- bounded single-operation ignition, external-control publication/observation, completion and teardown mapping;
+- MCGS-side failure classification while retaining lower public error/health facts;
+- exact portable adapter evidence and adapter-owned rollback.
 
-It does **not** own Search IR semantics, search scheduling, generic Driver bindings, JIT ABI generation, generic memory implementation, NVRTC plumbing, or CUDA-JS packaging.
+It does **not** own Search IR semantics, search scheduling/progression, generic Driver bindings, JIT/native ABI generation, generic memory implementation, NVRTC plumbing, CUDA-JS packaging/provider truth, private CUDA-JS source, native compatible-pair qualification, or performance/support claims.
 
-Adapters may depend on stable UMCGS contracts/SDK and released peer contracts. Universal components must not depend on concrete adapters. No adapter may deep-import private source from `iteathen/CUDA-JS`.
+Adapters may depend on stable CUDA-MCGS contracts/SDK and released/versioned peer contracts. Universal components must not depend on concrete adapters. No adapter may deep-import private source from `iteathen/CUDA-JS`.

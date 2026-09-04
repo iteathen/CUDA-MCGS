@@ -17,6 +17,7 @@ const cases = [
   ["native addon import", "components/search/index.mjs", 'import ffi from "ffi-napi";\n', ["NATIVE_ADDON_IMPORT"]],
   ["private CUDA-JS package import", "components/search/index.mjs", 'import runtime from "cuda-js/src/runtime.mjs";\n', ["PRIVATE_CUDA_JS_IMPORT"]],
   ["sibling CUDA-JS import", "components/search/index.mjs", 'import runtime from "../../../CUDA-JS/src/runtime.mjs";\n', ["PRIVATE_CUDA_JS_IMPORT"]],
+  ["local CUDA-JS-named conformance import", "scripts/run-cuda-js-runtime-adapter.mjs", 'import "../conformance/cuda-js-runtime-adapter/run.mjs";\n', []],
   ["raw private CUDA-JS path", "tools/inspect/index.mjs", 'const sourcePath = "../CUDA-JS/src/runtime.mjs";\n', ["PRIVATE_CUDA_JS_PATH"]],
   ["evidence dependency", "components/search/index.mjs", 'import probe from "../../experiments/probe.mjs";\n', ["EVIDENCE_DEPENDENCY"]],
   ["native subprocess", "components/search/index.mjs", 'import { spawn } from "node:child_process";\n', ["SUBPROCESS_RUNTIME"]],

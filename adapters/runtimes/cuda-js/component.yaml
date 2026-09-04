@@ -1,0 +1,233 @@
+{
+  "schema_version": 3,
+  "component": {
+    "id": "integration.cuda-js",
+    "name": "CUDA-JS Runtime Adapter",
+    "status": "production",
+    "product_area": "adapters",
+    "path": "adapters/runtimes/cuda-js",
+    "purpose": "Translate accepted CUDA-MCGS execution-package requirements into an injected versioned public CUDA-JS runtime surface without taking over lower runtime or search semantic authority.",
+    "roles": [
+      "adapter",
+      "runtime-integration"
+    ],
+    "governing_authority": [
+      "docs/decisions/ADR-0005-lego-design-hierarchy.md",
+      "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
+      "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
+      "docs/decisions/ADR-0023-parallel-first-native-execution.md",
+      "docs/decisions/ADR-0024-framework-only-production-ownership.md",
+      "docs/decisions/ADR-0025-compose-rng-and-communication-semantic-owners.md",
+      "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
+      "docs/specs/SPEC-0005-operation-local-resource-access-addendum.md",
+      "docs/specs/SPEC-0005-external-control-sideband-addendum.md",
+      "docs/development/2026-09-04-cuda-js-runtime-adapter-125-assessment-and-plan.md"
+    ],
+    "design": {
+      "owned_invariant": "One fail-closed public-only translation path realizes an accepted v0 execution package through the exact injected CUDA-JS peer while preserving MCGS semantic ownership and lower CUDA-JS lifecycle/failure truth.",
+      "intended_equivalence_class": [
+        "product-neutral accepted CUDA-MCGS execution packages",
+        "different removable domain/policy/evaluator selections that produce the same accepted runtime boundary",
+        "public CUDA-JS peers admitted by an explicit future compatibility assessment"
+      ],
+      "excluded_cases": [
+        "Search IR interpretation or semantic scheduling",
+        "product/domain production semantics",
+        "native CUDA or private CUDA-JS access",
+        "provider/device selection policy",
+        "multi-operation scheduling without accepted MCGS authority",
+        "native compatible-pair or performance claims"
+      ],
+      "authoritative_state_owner": "CUDA-MCGS execution-package inputs own upper requirements; the injected public CUDA-JS peer owns lower capability, health, operation and resource truth; the adapter owns only call-local translation state",
+      "public_ports": [
+        "adapters/runtimes/cuda-js/index.mjs"
+      ],
+      "injected_dependencies": [
+        "accepted cuda-mcgs.execution-package/0.2.0 value",
+        "public cuda-js namespace",
+        "exact public CUDA-JS peer provenance identity",
+        "explicit pre-ignition runtime input values"
+      ],
+      "adapter_boundaries": [
+        "tool.search-compiler produces immutable execution-package requirements",
+        "public cuda-js owns compiler/module/function/allocation/mailbox/operation/runtime mechanics",
+        "CUDA-JS #32 owns exact native compatible-pair evidence"
+      ],
+      "solid_responsibilities": [
+        "admit exact upper/lower compatibility",
+        "translate accepted package requirements mechanically",
+        "compose and roll back lower public resources without semantic scheduling"
+      ],
+      "cupid_qualities": [
+        "composable",
+        "predictable",
+        "idiomatic Node.js",
+        "domain-based",
+        "fail-closed"
+      ],
+      "second_instance": "A different removable CUDA-MCGS consumer package with the same accepted execution boundary uses this adapter without new product vocabulary or another runtime owner.",
+      "first_consumer_deletion": "Deleting every current concrete product/domain leaves this product-neutral runtime adapter coherent and independently portable-testable.",
+      "essential_complexity": [
+        "exact peer compatibility admission",
+        "Device-JS/resource/sideband/launch translation",
+        "bounded operation lifecycle",
+        "dependency-safe failure rollback"
+      ],
+      "accidental_complexity_rejected": [
+        "second scheduler/runtime lifecycle",
+        "host-driven search progression",
+        "private/deep CUDA-JS imports",
+        "native CUDA implementation",
+        "prepared-DAG abstraction where direct public function submit is sufficient",
+        "adapter-owned copy of lower request validation"
+      ],
+      "complexity_moved_elsewhere": [
+        "search semantics remain accepted CUDA-MCGS owners",
+        "pre-ignition package normalization remains tool.search-compiler",
+        "lower provider/compiler/resource/operation lifecycle remains CUDA-JS",
+        "native exact-pair evidence remains CUDA-JS #32"
+      ],
+      "simplest_sufficient_total_system": "Admit one accepted v0 operation, compile/load/resolve/allocate/mailbox through injected public CUDA-JS bricks, bind explicit runtime inputs, submit once, expose bounded control/completion and close owned children before the runtime."
+    },
+    "public_contracts": [
+      "cuda-mcgs.execution-package/0.2.0",
+      "cuda-mcgs.cuda-js-adapter-requirements/0.2.0"
+    ],
+    "owns": [
+      "execution-package to public CUDA-JS translation implementation",
+      "exact peer admission and v0 support envelope",
+      "adapter-local lower resource composition and rollback",
+      "MCGS-side lower failure classification"
+    ],
+    "persistent_state": [],
+    "generated_artifacts": [
+      "prepared call-local CUDA-JS execution handle",
+      "portable adapter qualification evidence"
+    ],
+    "testing": {
+      "test_owner": "conformance/cuda-js-runtime-adapter",
+      "authoritative_oracles": [
+        "accepted CUDA-MCGS execution-package requirements",
+        "exact public CUDA-JS alpha.18 API/compatibility contract",
+        "docs/development/2026-09-04-cuda-js-runtime-adapter-125-assessment-and-plan.md"
+      ],
+      "coverage_map_location": [
+        "conformance/cuda-js-runtime-adapter/README.md"
+      ],
+      "focused_fast_capsules_and_commands": [
+        "node scripts/run-cuda-js-runtime-adapter.mjs"
+      ],
+      "owner_contract_capsules_and_commands": [
+        "node scripts/run-search-ir-composer-reference.mjs",
+        "node scripts/run-engine-reference-integration.mjs"
+      ],
+      "integration_smoke_dependencies": [
+        "tool.search-compiler execution-package construction",
+        "source-boundary policy",
+        "documentation/governance verification"
+      ],
+      "deep_forensic_and_release_triggers": [
+        "public CUDA-JS package/API/capability change",
+        "execution-package adapter-requirements schema change",
+        "multi-operation semantic authority",
+        "new sideband/value/resource realization requirement"
+      ],
+      "expected_discovery_and_skip_policy": [
+        "portable capsule has no CUDA/native prerequisite and zero conditional skips"
+      ],
+      "evidence_key_dimensions": [
+        "exact CUDA-MCGS commit/tree",
+        "exact CUDA-JS revision/package/API schema",
+        "adapter-requirements schema",
+        "public capability projection"
+      ],
+      "test_invalidation_inputs": [
+        "execution-package schema/meaning",
+        "public CUDA-JS API or compatibility manifest",
+        "adapter source bytes",
+        "accepted operation/access/sideband semantics"
+      ],
+      "shared_setup_and_mutable_state_isolation": [
+        "each portable case creates a fresh injected public-peer fake and fresh execution-package value"
+      ],
+      "failure_cluster_and_repair_owner": "integration.cuda-js for translation/rollback defects; CUDA-MCGS semantic owner for package-authority defects; CUDA-JS for missing/incorrect consumer-neutral lower primitives",
+      "test_intent_consolidation_and_debt_policy": [
+        "new adapter falsifiers join the owner-local portable capsule rather than creating another lower-runtime interpreter"
+      ],
+      "runtime_output_and_resource_budgets": [
+        "bounded CUDA-free Node.js portable qualification; native/performance claims excluded"
+      ]
+    },
+    "lifecycle_and_cleanup": {
+      "startup_and_acquisition": [
+        "admit exact package/peer/capability requirements before lower mutation",
+        "open compiler-enabled public CUDA-JS runtime",
+        "compile/load/resolve before allocation",
+        "allocate resident resources and create declared mailboxes"
+      ],
+      "steady_state_ownership": [
+        "one prepared execution owns only the public lower objects it assembled",
+        "one direct submitted operation; no adapter scheduler"
+      ],
+      "cancellation_and_failure": [
+        "external cancellation intent publishes only through declared host-to-device mailbox lanes",
+        "lower failure facts are retained and preparation/ignition failures trigger best-effort reverse rollback"
+      ],
+      "teardown_and_resource_release": [
+        "operation, function, module, mailboxes and memories close before aggregate runtime close",
+        "cleanup failure or restart-required runtime truth is quarantined rather than relabeled successful"
+      ],
+      "generated_cache_package_test_and_diagnostic_disposition": [
+        "no adapter-owned persistent cache; lower CUDA-JS owns any compiler cache",
+        "portable conformance output is reproducible and not native evidence"
+      ],
+      "persistence_migration_backup_and_recovery_retention": [
+        "not applicable; no persistent adapter state"
+      ],
+      "archive_deprecation_and_supersession": [
+        "peer/API widening requires a fresh compatibility assessment, never a silent fallback"
+      ],
+      "cleanup_verification": [
+        "portable repeated-run/rollback/quarantine falsifiers",
+        "source-boundary verification",
+        "full repository qualification"
+      ]
+    },
+    "allowed_dependencies": [
+      "accepted execution-package values supplied by callers",
+      "injected public cuda-js package namespace and public values only"
+    ],
+    "forbidden_dependencies": [
+      "experiments/",
+      "conformance/",
+      "cuda-js private/deep source",
+      "native addons/FFI/CUDA source",
+      "subprocess execution",
+      "product-specific semantics",
+      "adapter-owned search scheduler"
+    ],
+    "known_consumers": [
+      "conformance/cuda-js-runtime-adapter",
+      "future interface.library #109",
+      "external CUDA-MCGS product/runtime consumers"
+    ],
+    "validation": [
+      "node scripts/run-cuda-js-runtime-adapter.mjs",
+      "node scripts/run-search-ir-composer-reference.mjs",
+      "node scripts/run-engine-reference-integration.mjs",
+      "./scripts/verify-docs.sh",
+      "node scripts/check-source-boundary.mjs"
+    ],
+    "release": {
+      "unit": "monorepo",
+      "compatibility": "Pre-1.0 fail-closed exact-peer adapter surface. Current portable qualification targets CUDA-JS 0.1.0-alpha.18/API schema 1 only; widening requires reassessment.",
+      "distribution": "internal",
+      "artifact_and_test_evidence_retention_cleanup": "No separate binary/native artifact. Portable conformance is reproducible; exact native compatible-pair evidence is retained by its lower owner rather than this component."
+    },
+    "owner": "CUDA-MCGS framework",
+    "notes": [
+      "#125 v0 admits exactly one operation with maxPending=1 and uses direct public CudaFunction.submit because accepted mailbox arguments are not a current prepared-DAG binding type.",
+      "The adapter never passes alignment to allocateDevice; alignment is a fail-closed compatibility admission fact only."
+    ]
+  }
+}
