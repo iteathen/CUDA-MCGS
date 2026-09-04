@@ -47,19 +47,20 @@ async function updateFixture(file, mutate) {
 }
 async function evidence(file) { return identity((await readJson(file)).evidenceIdentity); }
 
-// Re-own source-provenance paths without changing semantic fixtures/cases. The old Composer capsule no longer exists.
+// Re-own every executable Search-Semantics reference to the removed Composer capsule.
+// This is a physical source/evidence path migration only; semantic fixtures are rebound below from actual outputs.
 let sourcePathFilesChanged = 0;
 for (const file of await walk(semanticsRoot)) {
   if (!file.endsWith('.mjs')) continue;
   let source = await readFile(file, 'utf8');
   const before = source;
   source = source
-    .replaceAll("path.join(repositoryRoot, 'experiments', 'search-ir-composer-reference'", "path.join(repositoryRoot, 'conformance', 'search-compiler'")
-    .replaceAll('path.join(repositoryRoot, "experiments", "search-ir-composer-reference"', 'path.join(repositoryRoot, "conformance", "search-compiler"')
-    .replaceAll("'experiments/search-ir-composer-reference/", "'conformance/search-compiler/")
-    .replaceAll('"experiments/search-ir-composer-reference/', '"conformance/search-compiler/')
+    .replaceAll('experiments/search-ir-composer-reference', 'conformance/search-compiler')
     .replaceAll("'experiments', 'search-ir-composer-reference'", "'conformance', 'search-compiler'")
     .replaceAll('"experiments", "search-ir-composer-reference"', '"conformance", "search-compiler"');
+  assert.equal(source.includes('experiments/search-ir-composer-reference'), false, `stale Composer source path remains in ${file}`);
+  assert.equal(source.includes("'experiments', 'search-ir-composer-reference'"), false, `stale segmented Composer source path remains in ${file}`);
+  assert.equal(source.includes('"experiments", "search-ir-composer-reference"'), false, `stale segmented Composer source path remains in ${file}`);
   if (source !== before) {
     await writeFile(file, source, 'utf8');
     sourcePathFilesChanged += 1;
@@ -193,7 +194,6 @@ for (const [owner, script] of [
 await updateFixture(`${semanticsRoot}/fixtures/framework-lifecycle-cases.json`, (fixture) => bindComposer(fixture, composer));
 run('scripts/run-framework-lifecycle-reference.mjs');
 
-// Regenerate independent/optional owners after source ownership relocation; their semantic inputs remain unchanged.
 for (const script of [
   'scripts/run-terminal-slice-reference.mjs',
   'scripts/run-session-reference.mjs',
