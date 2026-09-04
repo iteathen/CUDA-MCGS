@@ -1,0 +1,76 @@
+name: tmp 202 role evidence rebind
+
+on:
+  push:
+    branches:
+      - tmp/202-role-evidence-rebind-20260904
+
+permissions:
+  contents: write
+
+jobs:
+  rebind:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Rebind declared owner evidence in dependency order
+        run: node scripts/tmp-202-rebind-owner-evidence.mjs
+      - name: Re-run complete Engine packet
+        run: node scripts/run-engine-reference-integration.mjs
+      - name: Verify exact changed path set
+        shell: bash
+        run: |
+          git diff --check
+          git diff --name-only | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          experiments/search-semantics-reference/fixtures/domain-cases.json
+          experiments/search-semantics-reference/fixtures/evaluator-cases.json
+          experiments/search-semantics-reference/fixtures/framework-lifecycle-cases.json
+          experiments/search-semantics-reference/fixtures/graph-advance-occurrence-cases.json
+          experiments/search-semantics-reference/fixtures/graph-cleanup-cases.json
+          experiments/search-semantics-reference/fixtures/graph-edge-cases.json
+          experiments/search-semantics-reference/fixtures/graph-node-cases.json
+          experiments/search-semantics-reference/fixtures/graph-path-cases.json
+          experiments/search-semantics-reference/fixtures/graph-reclaim-cases.json
+          experiments/search-semantics-reference/fixtures/graph-ref-cases.json
+          experiments/search-semantics-reference/fixtures/graph-root-cases.json
+          experiments/search-semantics-reference/fixtures/integration-cases.json
+          experiments/search-semantics-reference/fixtures/neutral-schedules.json
+          experiments/search-semantics-reference/fixtures/output-cases.json
+          experiments/search-semantics-reference/fixtures/policy-cases.json
+          experiments/search-semantics-reference/fixtures/progress-cases.json
+          experiments/search-semantics-reference/fixtures/resource-cases.json
+          experiments/search-semantics-reference/run-integration-gate.mjs
+          EOF
+          diff -u /tmp/expected.txt /tmp/actual.txt
+      - name: Publish proved evidence blobs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            experiments/search-semantics-reference/fixtures/domain-cases.json \
+            experiments/search-semantics-reference/fixtures/evaluator-cases.json \
+            experiments/search-semantics-reference/fixtures/framework-lifecycle-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-advance-occurrence-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-cleanup-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-edge-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-node-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-path-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-reclaim-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-ref-cases.json \
+            experiments/search-semantics-reference/fixtures/graph-root-cases.json \
+            experiments/search-semantics-reference/fixtures/integration-cases.json \
+            experiments/search-semantics-reference/fixtures/neutral-schedules.json \
+            experiments/search-semantics-reference/fixtures/output-cases.json \
+            experiments/search-semantics-reference/fixtures/policy-cases.json \
+            experiments/search-semantics-reference/fixtures/progress-cases.json \
+            experiments/search-semantics-reference/fixtures/resource-cases.json \
+            experiments/search-semantics-reference/run-integration-gate.mjs
+          git commit -m "tmp: qualified #202 role-aware owner evidence rebind"
+          git push origin HEAD:tmp/202-role-evidence-rebind-20260904
