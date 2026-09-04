@@ -1,89 +1,83 @@
 {
   "schema_version": 111,
   "updated": "2026-09-04",
-  "status": "production_search_compiler_promotion_review",
-  "objective": "Promote the byte-identical accepted canonical Search IR/profile normalization and deterministic composition implementation into durable tool.search-compiler production ownership, while retaining Composer fixture/oracle/evidence support in conformance and leaving no experiment compatibility implementation before any later CUDA-JS adapter work is reconsidered.",
-  "ownership_boundary": "Accepted specs/schemas own semantic truth. tool.search-compiler owns the canonical stateless pre-ignition implementation. conformance/search-compiler owns fixture/catalog/deletion/mutation/evidence support and may use only the declared component testing port. integration.cuda-js remains #125 and CUDA-JS owns generic runtime/provider/resource lifecycle.",
+  "status": "post_search_compiler_promotion_reconcile",
+  "objective": "Reconcile the protected post-#205 state and make the next executable seam a fresh #125 public CUDA-JS adapter assessment from the new production Search Compiler boundary, without assuming implementation before lower-gap preflight.",
+  "ownership_boundary": "Accepted specs/schemas own semantic truth. tool.search-compiler owns canonical stateless pre-ignition normalization/composition. integration.cuda-js #125 owns only translation from accepted MCGS execution-package meaning to versioned public CUDA-JS contracts. CUDA-JS retains lower request validity, device/provider/resource/compiler/prepared-operation/publication lifecycle and compatibility facts.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
     "agent_files/AI_RULES.md",
     "agent_files/DESIGN_ALIGNMENT_CARD.md",
-    "docs/decisions/ADR-0004-large-project-organization.md",
-    "docs/decisions/ADR-0005-lego-design-hierarchy.md",
     "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
     "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
-    "docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md",
+    "docs/decisions/ADR-0023-parallel-native-execution.md",
     "docs/decisions/ADR-0024-framework-only-production-ownership.md",
-    "docs/specs/SPEC-0000-framework-requirements.md",
+    "docs/architecture/2026-09-03-cuda-js-execution-boundary-audit.md",
     "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
     "docs/specs/SPEC-0005-operation-local-resource-access-addendum.md",
     "docs/specs/SPEC-0005-external-control-sideband-addendum.md",
-    "https://github.com/iteathen/CUDA-MCGS/issues/205",
-    "https://github.com/iteathen/CUDA-MCGS/issues/125"
+    "https://github.com/iteathen/CUDA-MCGS/issues/125",
+    "https://github.com/iteathen/CUDA-MCGS/issues/193",
+    "https://github.com/iteathen/CUDA-MCGS/issues/205"
   ],
   "deliverables": [
-    "One production tool.search-compiler component containing the 14 canonical implementation modules byte-identical to protected main, with explicit production and conformance-only testing ports.",
-    "One conformance/search-compiler evidence capsule containing fixture/catalog/deletion/mutation/export/runner support without a second semantic implementation or private src deep imports.",
-    "Explicit dependency-ordered rebind of path-sensitive evidence through all 21 final integration inputs, preserving 393 CUDA-free reference requirements and 52 deferred-native requirements.",
-    "Repository governance, source-boundary, STATUS.md and next_step.yaml updated to the new ownership seam with the removed experiment path left absent and no compatibility shim.",
-    "Exact-head hosted qualification and complete author review before a fresh protected-integration authorization request."
+    "Protected post-#205 STATUS.md and next_step.yaml agree on exact main/tree and production Search Compiler ownership.",
+    "#125 tracker reflects the live completed prerequisite graph rather than stale #202/#205 blockers.",
+    "A fresh #125 assess/research pass starts only from the reconciled protected base and does not reuse the stale paused implementation branch.",
+    "Any newly demonstrated generic lower capability gap is upstreamed to CUDA-JS before adapter workaround code."
   ],
   "protected_state": {
-    "main": "c10c616058e7e492e130e5ff14fa41402290d5b4",
-    "tree": "49ed0a56cdb2214dbdac84af11f349ce62643a63",
+    "main": "5bdfa7b63d9a2f19e26e862e5c217ee717af12b0",
+    "tree": "a2a2b154375dec372746368da0ac589384f1954e",
+    "search_compiler_component": "tool.search-compiler",
+    "search_compiler_promotion_issue": 205,
+    "search_compiler_promotion": "protected-integrated-through-pr-206",
     "composer_requirements_classified": 989,
     "accepted_reference_requirements": 937,
     "native_compatible_pair_deferred": 52,
     "cuda_free_reference_routes": 393,
     "composer_cases": 883,
-    "external_control_sideband_issue": 202,
-    "external_control_sideband": "protected-integrated-through-pr-204",
     "cuda_js_lower_baseline": "49a2f77d2c8364d67030fbc1c2e870e58e70d334",
     "cuda_js_package": "cuda-js@0.1.0-alpha.18"
   },
   "current_focus": {
     "repository": "iteathen/CUDA-MCGS",
-    "issue": 205,
-    "pull_request": 206,
-    "name": "promote canonical Search Compiler into production component ownership",
-    "base": "c10c616058e7e492e130e5ff14fa41402290d5b4",
-    "state": "structural ownership migration constructed; exact-head PR qualification and author review active; #125 blocked",
-    "next_action": "Complete exact-head PR qualification and complete author review on the clean one-commit #206 subject, reconcile #205 evidence, then request fresh protected-integration authorization.",
-    "exit": "One production implementation owner exists under components/search-compiler; Composer evidence lives under conformance/search-compiler; no production import reaches experiments/conformance; all exact semantic identities and repository gates are green; the exact subject is reviewed and ready for an explicit protected-integration decision."
+    "issue": 207,
+    "name": "reconcile post-#205 protected state before #125 reassessment",
+    "base": "5bdfa7b63d9a2f19e26e862e5c217ee717af12b0",
+    "state": "docs-only protected-state reconciliation",
+    "next_action": "Qualify and review the STATUS/next-step reconciliation, integrate it after fresh authorization, then create a fresh #125 branch from that protected base and perform assess/research before mutation.",
+    "exit": "Protected status reflects completed #205 and identifies #125 assessment as the next executable seam without stale blockers or pre-authorized implementation."
   },
   "blockers": [
-    "#125 must not resume until #205 is protected-integrated; after that integration its complete independent prerequisite set must be reassessed from live authority and issue state before implementation.",
-    "Any semantic identity drift during a source-location-only move is a stop/reassessment condition rather than an acceptable migration side effect.",
-    "Any new generic lower capability gap routes to CUDA-JS rather than a CUDA-MCGS native/private workaround."
+    "No #125 production mutation before a fresh assess/research pass confirms the current public CUDA-JS package still satisfies the accepted execution-package needs.",
+    "Any newly demonstrated generic lower gap routes to CUDA-JS before local workaround code.",
+    "The 52 native-deferred requirements remain deferred until compatible-pair/native evidence proves them."
   ],
   "validation": [
-    "All 14 promoted canonical module Git blob identities equal protected main@c10c616 source blobs.",
-    "Conformance imports no components/search-compiler/src private file and production imports no experiments/ or conformance/ file.",
-    "Composer qualification remains 883/883 with zero weakened falsifiers.",
-    "Complete Engine reference integration and final mutation gate remain green.",
-    "Project organization, structured-data, documentation governance, source-boundary and CodeQL/required verify checks remain green on the exact head.",
-    "Any path/revision-sensitive evidence key is re-keyed explicitly through its declared dependency edge; semantic profile/Search Program/execution-package identities remain unchanged for path-independent meaning."
+    "Project organization, structured data, documentation governance and required verify pass on the exact #207 head.",
+    "Diff is limited to STATUS.md and next_step.yaml.",
+    "Protected main/tree values equal the #206 integration readback.",
+    "#125 is described as assessment-ready, not implementation-complete or native-qualified."
   ],
   "after_current_focus": [
-    "Request fresh protected-integration authorization for the exact qualified/reviewed #205 subject.",
-    "After protected #205 integration, reassess #125 against all live independent prerequisites and the new protected Search Compiler boundary before deciding whether implementation is dependency-ready.",
-    "Only if #125 is dependency-ready, refresh it from the new protected main and implement integration.cuda-js against public cuda-js only.",
-    "CUDA-JS #32 owns later exact compatible-pair/native qualification through the eventual #125 implementation.",
-    "#109 continues to own the stable complete public facade/resolver without duplicating tool.search-compiler ownership."
+    "Create a fresh #125 focus branch from the reconciled protected main; do not reuse impl/125-public-cuda-js-runtime-adapter.",
+    "Read governing agent instructions, ADRs/specs, integration.cuda-js reservation, accepted execution-package surface and current public cuda-js alpha.18 package before mutation.",
+    "If no lower gap appears, implement the smallest replaceable public CUDA-JS adapter with a fake injected runtime port for portable lifecycle/failure tests.",
+    "Use CUDA-JS #32 for later exact compatible-pair/native qualification through the real adapter path.",
+    "Keep #109 as the independent stable public facade/resolver owner."
   ],
   "do_not": [
-    "Do not keep a compatibility copy or forwarding implementation under experiments/search-ir-composer-reference.",
-    "Do not move fixture/catalog/deletion/mutation or independent reference-oracle code into production components.",
-    "Do not let production depend on conformance/search-compiler/testing support.",
-    "Do not change accepted search semantics/schemas as part of #205.",
-    "Do not start #125 before #205 is protected or before its independent prerequisites are reassessed.",
-    "Do not add maintained native/CUDA/PTX/FFI/private CUDA-JS paths.",
-    "Do not claim native, performance, stable SDK, product or multi-GPU support from this structural promotion."
+    "Do not reuse the stale paused #125 branch.",
+    "Do not add native/CUDA/PTX/FFI/private CUDA-JS paths in CUDA-MCGS.",
+    "Do not create a new preparation transaction, universal launch resolver, GPU IR, scheduler or provider registry without new demonstrated authority.",
+    "Do not copy CUDA-JS limits/provider/alignment facts into MCGS semantic authority.",
+    "Do not claim native, performance, stable SDK, product or multi-GPU support from portable adapter evidence."
   ],
   "hard_constraints": [
-    "The 52 deferred-native requirements remain deferred until compatible-pair/native evidence proves them.",
-    "Generic lower gaps route to CUDA-JS; generic Tensor gaps route to CUDA-JS-Tensor; product semantics remain downstream.",
-    "No protected integration occurs without exact-head qualification, complete review and fresh user authorization."
+    "No protected integration without exact-head qualification, complete review and fresh user authorization.",
+    "Generic lower gaps route to CUDA-JS; generic Tensor gaps route to CUDA-JS-Tensor; reusable NN semantics route to cuda-nn; product semantics remain downstream.",
+    "One semantic fact/state/resource/lifecycle/compatibility fact has one visible owner."
   ]
 }
