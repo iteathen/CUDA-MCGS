@@ -98,7 +98,7 @@ jobs:
           run=run.replaceAll("'experiments/search-ir-composer-reference/src/", "'conformance/search-compiler/src/");
           run=run.replaceAll("'experiments/search-ir-composer-reference/run.mjs'", "'conformance/search-compiler/run.mjs'");
           const oldSourceLoop = "for (const relative of sourcePaths) {\n  sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));\n}";
-          const newSourceLoop = "for (const relative of sourcePaths) {\n  const sourceText = relative.startsWith('components/search-compiler/src/')\n    ? await readSearchCompilerSource(path.basename(relative))\n    : await readFile(path.join(repositoryRoot, relative), 'utf8');\n  sources[relative] = sourceTextSha256(sourceText);\n}";
+          const newSourceLoop = "for (const relative of sourcePaths) {\n  const sourceBytes = relative.startsWith('components/search-compiler/src/')\n    ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8')\n    : await readFile(path.join(repositoryRoot, relative));\n  sources[relative] = sourceTextSha256(sourceBytes);\n}";
           if(!run.includes(oldSourceLoop)) throw new Error('Composer evidence source loop baseline drifted');
           run=run.replace(oldSourceLoop,newSourceLoop);
           await writeFile(composerRun,run,'utf8');
