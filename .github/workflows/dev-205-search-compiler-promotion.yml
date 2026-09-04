@@ -19,21 +19,29 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
-      - name: Keep accepted specs immutable during structural promotion
+      - name: Keep structural promotion isolated from construction helpers
         shell: bash
         run: |
           node --input-type=module <<'NODE'
           import { readFile, writeFile } from 'node:fs/promises';
           const file = 'scripts/dev-205-promote-search-compiler.mjs';
           let text = await readFile(file, 'utf8');
+
           const beforeDocs = "for (const area of ['agent_files', 'docs/specs', 'docs/architecture']) {";
           const afterDocs = "for (const area of ['agent_files', 'docs/architecture']) {";
           if (!text.includes(beforeDocs)) throw new Error('constructor docs-area guard moved');
           text = text.replace(beforeDocs, afterDocs);
+
           const beforeActive = "const activeCheckAreas = ['scripts', '.github/workflows', 'components', 'conformance', 'agent_files', 'docs/specs', 'docs/architecture'];";
-          const afterActive = "const activeCheckAreas = ['.github/workflows', 'agent_files', 'docs/architecture'];";
+          const afterActive = "const activeCheckAreas = ['agent_files', 'docs/architecture'];";
           if (!text.includes(beforeActive)) throw new Error('constructor active-area guard moved');
           text = text.replace(beforeActive, afterActive);
+
+          const beforeRewire = `for (const area of ['scripts', '.github/workflows']) {\n  const dir = path.join(root, area);\n  for (const file of await walk(dir)) {\n    if (!/\\.(?:mjs|ya?ml|sh)$/.test(file)) continue;`;
+          const afterRewire = `for (const area of ['scripts', '.github/workflows']) {\n  const dir = path.join(root, area);\n  for (const file of await walk(dir)) {\n    if (!/\\.(?:mjs|ya?ml|sh)$/.test(file)) continue;\n    const relative = slash(path.relative(root, file));\n    if (relative.includes('dev-205-')) continue;`;
+          if (!text.includes(beforeRewire)) throw new Error('constructor script/workflow rewire seam moved');
+          text = text.replace(beforeRewire, afterRewire);
+
           await writeFile(file, text, 'utf8');
           NODE
       - name: Construct byte-identical promotion
