@@ -1,4 +1,4 @@
-# trigger: generic-downstream-source-provenance
+# trigger: channel-provenance-closure
 name: dev-205-search-compiler-promotion
 
 on:
