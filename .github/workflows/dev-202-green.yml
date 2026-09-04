@@ -27,25 +27,48 @@ jobs:
         run: |
           sed -i 's/delectionRecord\.properties/deletionRecord.properties/' scripts/dev-202-green.mjs
           node scripts/dev-202-green.mjs
-      - name: Repair #199 verifier binding-order assumption
+      - name: Preserve existing verifier and Composer invariants
         shell: bash
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
-          const path = 'experiments/search-ir-composer-reference/verify-operation-local-access.mjs';
-          let source = fs.readFileSync(path, 'utf8');
-          const replacements = new Map([
+
+          const accessPath = 'experiments/search-ir-composer-reference/verify-operation-local-access.mjs';
+          let access = fs.readFileSync(accessPath, 'utf8');
+          const accessReplacements = new Map([
             ["program.normalized.operations[0].bindings[0].source.access", "program.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source.access"],
             ["execution.normalized.cudaJsAdapter.operationRequirements[0].bindings[0].source.access", "execution.normalized.cudaJsAdapter.operationRequirements[0].bindings.find(({ parameter }) => parameter === 'output').source.access"],
             ["normalizeCase(['read'], 'read').normalized.normalized.operations[0].bindings[0].source.access", "normalizeCase(['read'], 'read').normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source.access"],
             ["normalizeCase(['read', 'write'], 'read-write').normalized.normalized.operations[0].bindings[0].source.access", "normalizeCase(['read', 'write'], 'read-write').normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source.access"],
             ["Object.hasOwn(historical.normalized.normalized.operations[0].bindings[0].source, 'access')", "Object.hasOwn(historical.normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source, 'access')"],
           ]);
-          for (const [from, to] of replacements) {
-            if (!source.includes(from)) throw new Error(`missing #199 verifier seam: ${from}`);
-            source = source.replace(from, to);
+          for (const [from, to] of accessReplacements) {
+            if (!access.includes(from)) throw new Error(`missing #199 verifier seam: ${from}`);
+            access = access.replace(from, to);
           }
-          fs.writeFileSync(path, source);
+          fs.writeFileSync(accessPath, access);
+
+          for (const path of [
+            'experiments/search-ir-composer-reference/src/program-package.mjs',
+            'experiments/search-ir-composer-reference/src/program-package-fixtures.mjs',
+            'experiments/search-ir-composer-reference/verify-external-control-sideband-authority.mjs',
+            'schemas/search-ir/0.2.0/program-package-profile.schema.json',
+            'schemas/search-ir/0.2.0/execution-package.schema.json',
+          ]) {
+            const source = fs.readFileSync(path, 'utf8');
+            if (!source.includes('payloadResource')) throw new Error(`missing sideband resident-resource rename seam: ${path}`);
+            fs.writeFileSync(path, source.replaceAll('payloadResource', 'residentResource'));
+          }
+
+          const composerPath = 'experiments/search-ir-composer-reference/src/composer.mjs';
+          let composer = fs.readFileSync(composerPath, 'utf8');
+          const createOld = "  exactKeys(profileTemplate, PROFILE_TEMPLATE_FIELDS, 'COMPOSER_PROFILE_TEMPLATE_FIELDS', 'program-package profile template');";
+          const createNew = "  const templateFields = [...PROFILE_TEMPLATE_FIELDS];\n  if (Object.hasOwn(profileTemplate, 'sidebands')) templateFields.splice(templateFields.indexOf('operations'), 0, 'sidebands');\n  exactKeys(profileTemplate, templateFields, 'COMPOSER_PROFILE_TEMPLATE_FIELDS', 'program-package profile template');";
+          const normalizeOld = "  exactKeys(input.profile, [...PROFILE_TEMPLATE_FIELDS, 'generator'], 'COMPOSER_PROFILE_FIELDS', 'resolved program-package profile');";
+          const normalizeNew = "  const profileFields = [...PROFILE_TEMPLATE_FIELDS];\n  if (Object.hasOwn(input.profile, 'sidebands')) profileFields.splice(profileFields.indexOf('operations'), 0, 'sidebands');\n  exactKeys(input.profile, [...profileFields, 'generator'], 'COMPOSER_PROFILE_FIELDS', 'resolved program-package profile');";
+          if (!composer.includes(createOld) || !composer.includes(normalizeOld)) throw new Error('missing resolved Composer optional-sideband seam');
+          composer = composer.replace(createOld, createNew).replace(normalizeOld, normalizeNew);
+          fs.writeFileSync(composerPath, composer);
           NODE
       - name: Qualify focused Composer and permanent sideband verifier
         run: node scripts/run-search-ir-composer-reference.mjs
