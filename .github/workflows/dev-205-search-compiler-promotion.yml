@@ -1,4 +1,4 @@
-# trigger: source-path-rebind-v2
+# trigger: concise-rebind-diagnostics
 name: dev-205-search-compiler-promotion
 
 on:
@@ -27,22 +27,18 @@ jobs:
           import { readFile, writeFile } from 'node:fs/promises';
           const file = 'scripts/dev-205-promote-search-compiler.mjs';
           let text = await readFile(file, 'utf8');
-
           const beforeDocs = "for (const area of ['agent_files', 'docs/specs', 'docs/architecture']) {";
           const afterDocs = "for (const area of ['agent_files', 'docs/architecture']) {";
           if (!text.includes(beforeDocs)) throw new Error('constructor docs-area guard moved');
           text = text.replace(beforeDocs, afterDocs);
-
           const beforeActive = "const activeCheckAreas = ['scripts', '.github/workflows', 'components', 'conformance', 'agent_files', 'docs/specs', 'docs/architecture'];";
           const afterActive = "const activeCheckAreas = ['agent_files', 'docs/architecture'];";
           if (!text.includes(beforeActive)) throw new Error('constructor active-area guard moved');
           text = text.replace(beforeActive, afterActive);
-
           const beforeRewire = `for (const area of ['scripts', '.github/workflows']) {\n  const dir = path.join(root, area);\n  for (const file of await walk(dir)) {\n    if (!/\\.(?:mjs|ya?ml|sh)$/.test(file)) continue;`;
           const afterRewire = `for (const area of ['scripts', '.github/workflows']) {\n  const dir = path.join(root, area);\n  for (const file of await walk(dir)) {\n    if (!/\\.(?:mjs|ya?ml|sh)$/.test(file)) continue;\n    const relative = slash(path.relative(root, file));\n    if (relative.includes('dev-205-')) continue;`;
           if (!text.includes(beforeRewire)) throw new Error('constructor script/workflow rewire seam moved');
           text = text.replace(beforeRewire, afterRewire);
-
           await writeFile(file, text, 'utf8');
           NODE
       - name: Construct byte-identical promotion
@@ -51,6 +47,19 @@ jobs:
         run: node scripts/dev-205-reclassify-promotion.mjs
       - name: Prove focused Search Compiler behavior
         run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Make owner-rebind failures concise
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const file='scripts/dev-205-rebind-owner-evidence.mjs';
+          let text=await readFile(file,'utf8');
+          const before=`function run(file) {\n  console.log(\`rebind_run=\${file}\`);\n  const result = spawnSync(process.execPath, [file], { encoding: 'utf8', stdio: 'inherit' });\n  if (result.error) throw result.error;\n  assert.equal(result.status, 0, \`\${file} failed\`);\n}`;
+          const after=`function run(file) {\n  const result = spawnSync(process.execPath, [file], { encoding: 'utf8' });\n  if (result.error) throw result.error;\n  if (result.status !== 0) {\n    console.error(\`rebind_failure=\${file} status=\${result.status}\`);\n    console.error(String(result.stdout ?? '').split('\\n').slice(-80).join('\\n'));\n    console.error(String(result.stderr ?? '').split('\\n').slice(-80).join('\\n'));\n    throw new Error(\`\${file} failed\`);\n  }\n  console.log(\`rebind_pass=\${file}\`);\n  const lines=String(result.stdout ?? '').trim().split('\\n');\n  console.log(lines.slice(-3).join('\\n'));\n}`;
+          if(!text.includes(before)) throw new Error('rebinder run seam moved');
+          text=text.replace(before,after);
+          await writeFile(file,text,'utf8');
+          NODE
       - name: Rebind declared path-sensitive owner evidence
         run: node scripts/dev-205-rebind-owner-evidence.mjs
       - name: Prove complete Engine packet
