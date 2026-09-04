@@ -1,0 +1,38 @@
+name: dev-202-green
+
+on:
+  push:
+    branches:
+      - impl/202-external-control-sideband-projection
+    paths:
+      - scripts/dev-202-green.mjs
+      - .github/workflows/dev-202-green.yml
+
+permissions:
+  contents: write
+
+jobs:
+  construct:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: impl/202-external-control-sideband-projection
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Apply semantic and schema patch
+        run: node scripts/dev-202-green.mjs
+      - name: Qualify focused Composer and permanent sideband verifier
+        run: node scripts/run-search-ir-composer-reference.mjs
+      - name: Clean construction-only files and publish semantic commit
+        shell: bash
+        run: |
+          rm scripts/dev-202-green.mjs .github/workflows/dev-202-green.yml
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Execution package: implement bounded external control sideband projection"
+          git push origin HEAD:impl/202-external-control-sideband-projection
