@@ -94,6 +94,9 @@ jobs:
           run=run.replace(composerPattern,"await readSearchCompilerSource('composer.mjs')");
           for (const name of productionNames) {
             run=run.replaceAll(`'experiments/search-ir-composer-reference/src/${name}'`,`'components/search-compiler/src/${name}'`);
+            run=run.replaceAll(`'conformance/search-compiler/src/${name}'`,`'components/search-compiler/src/${name}'`);
+            run=run.replaceAll(`"experiments/search-ir-composer-reference/src/${name}"`,`"components/search-compiler/src/${name}"`);
+            run=run.replaceAll(`"conformance/search-compiler/src/${name}"`,`"components/search-compiler/src/${name}"`);
           }
           run=run.replaceAll("'experiments/search-ir-composer-reference/src/", "'conformance/search-compiler/src/");
           run=run.replaceAll("'experiments/search-ir-composer-reference/run.mjs'", "'conformance/search-compiler/run.mjs'");
