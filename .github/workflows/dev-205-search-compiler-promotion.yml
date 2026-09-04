@@ -53,6 +53,11 @@ jobs:
             }
             return out;
           }
+          const productionNames = [
+            'validation.mjs','foundation.mjs','domain.mjs','graph.mjs','policy.mjs','evaluator.mjs','resource.mjs',
+            'progress.mjs','output.mjs','session.mjs','stage.mjs','channel.mjs','program-package.mjs','composer.mjs',
+          ];
+
           const routePath='conformance/search-compiler/fixtures/channel-evidence-routes.json';
           const routes=JSON.parse(await readFile(routePath,'utf8'));
           if(routes.ownerExperiment!=='experiments/search-ir-composer-reference') throw new Error('Channel evidence owner baseline drifted');
@@ -74,6 +79,30 @@ jobs:
           const filtered=promotionLines.filter((line)=>!line.includes("source.includes('components/search-compiler/src/')"));
           if(filtered.length!==promotionLines.length-1) throw new Error('promotion verifier self-text check baseline drifted');
           await writeFile(promotionVerifier,filtered.join('\n'),'utf8');
+
+          const testingPort='components/search-compiler/testing.mjs';
+          let testing=await readFile(testingPort,'utf8');
+          testing = `import { readFile as readSearchCompilerFile } from 'node:fs/promises';\n${testing.trimEnd()}\n\nconst SEARCH_COMPILER_SOURCE_NAMES = new Set(${JSON.stringify(productionNames)});\n\nexport async function readSearchCompilerSource(name) {\n  if (!SEARCH_COMPILER_SOURCE_NAMES.has(name)) throw new Error(\`unknown Search Compiler source: \${name}\`);\n  return readSearchCompilerFile(new URL(\`./src/\${name}\`, import.meta.url), 'utf8');\n}\n`;
+          await writeFile(testingPort,testing,'utf8');
+
+          const composerRun='conformance/search-compiler/run.mjs';
+          let run=await readFile(composerRun,'utf8');
+          run = `import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';\n${run}`;
+          const composerRead="await readFile(path.join(experimentRoot, 'src', 'composer.mjs'), 'utf8')";
+          const validationRead="await readFile(path.join(experimentRoot, 'src', 'validation.mjs'), 'utf8')";
+          if(!run.includes(composerRead) || !run.includes(validationRead)) throw new Error('static source-read baseline drifted');
+          run=run.replaceAll(composerRead,"await readSearchCompilerSource('composer.mjs')");
+          run=run.replaceAll(validationRead,"await readSearchCompilerSource('validation.mjs')");
+          for (const name of productionNames) {
+            run=run.replaceAll(`'experiments/search-ir-composer-reference/src/${name}'`,`'components/search-compiler/src/${name}'`);
+          }
+          run=run.replaceAll("'experiments/search-ir-composer-reference/src/", "'conformance/search-compiler/src/");
+          run=run.replaceAll("'experiments/search-ir-composer-reference/run.mjs'", "'conformance/search-compiler/run.mjs'");
+          const oldSourceLoop = "for (const relative of sourcePaths) {\n  sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));\n}";
+          const newSourceLoop = "for (const relative of sourcePaths) {\n  const sourceText = relative.startsWith('components/search-compiler/src/')\n    ? await readSearchCompilerSource(path.basename(relative))\n    : await readFile(path.join(repositoryRoot, relative), 'utf8');\n  sources[relative] = sourceTextSha256(sourceText);\n}";
+          if(!run.includes(oldSourceLoop)) throw new Error('Composer evidence source loop baseline drifted');
+          run=run.replace(oldSourceLoop,newSourceLoop);
+          await writeFile(composerRun,run,'utf8');
 
           let changed=0;
           for (const file of await walk('experiments/search-semantics-reference')) {
@@ -102,8 +131,8 @@ jobs:
           test ! -e experiments/search-ir-composer-reference
           test -e components/search-compiler/component.yaml
           test -e conformance/search-compiler/verify-promotion-boundary.mjs
-          if git grep -n 'components/search-compiler/src/' -- conformance ':!conformance/search-compiler/verify-promotion-boundary.mjs'; then
-            echo 'conformance deep-imported Search Compiler private src' >&2
+          if git grep -n 'components/search-compiler/src/' -- conformance ':!conformance/search-compiler/verify-promotion-boundary.mjs' ':!conformance/search-compiler/run.mjs'; then
+            echo 'conformance deep-imported Search Compiler private src outside explicit source-evidence manifest' >&2
             exit 1
           fi
           if git grep -n 'experiments/search-ir-composer-reference' -- scripts ':!scripts/dev-205-promote-search-compiler.mjs'; then
