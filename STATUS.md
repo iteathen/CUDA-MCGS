@@ -4,47 +4,47 @@
 
 **Updated:** 2026-09-04
 
-## Protected state
+## Protected semantic/runtime state
 
-Protected `main@5bdfa7b63d9a2f19e26e862e5c217ee717af12b0`, tree `a2a2b154375dec372746368da0ac589384f1954e`, contains the accepted universal semantic/reference packet, #199 operation-local resource access, #202 bounded external-control sideband projection, and the #205 production ownership promotion.
+The protected post-#125 runtime baseline is `main@67d16badb6dd65be9c96c4198b4451b1edb82f57`, tree `750a2a7ee7c519241c82e180cf84c76f3d5ee398`. It contains the accepted universal semantic/reference packet, #199 operation-local resource access, #202 bounded external-control sideband projection, the durable `tool.search-compiler` production owner, and the #125 production `integration.cuda-js` adapter integrated through PR #210.
 
-`tool.search-compiler` is now the durable production owner for the canonical pre-ignition Search IR/profile normalization and composition implementation under `components/search-compiler/`. The 14 canonical implementation modules are byte-identical to their protected pre-promotion sources. Fixture/catalog/deletion/mutation/export/reference support is separated under `conformance/search-compiler/`; the old Composer experiment implementation path is absent and there is no compatibility shim or second semantic interpreter.
+`integration.cuda-js` lives under `adapters/runtimes/cuda-js` and translates accepted finite CUDA-MCGS execution packages onto versioned public CUDA-JS contracts only. The integrated v0 adapter targets the exact protected peer `iteathen/CUDA-JS@49a2f77d2c8364d67030fbc1c2e870e58e70d334`, tree `b67890e2499f04ab3b81b8f4a72dab38a5281c7e`, package `cuda-js@0.1.0-alpha.18`. It fail-closes public-peer/capability admission, validates the complete resource/scalar binding set before the first lower mutation, constructs lower requests through public contracts, exposes only accepted bounded controls/observations, projects lower failure truth, and closes children before the parent runtime while retaining orphan/restart-required truth where terminality is unproved.
 
-The accepted packet remains 12 contracts, 989/989 classified Composer requirements, 937 `accepted-reference`, exactly 52 `deferred-native`, 0 pending, 883/883 Composer cases, and 393/393 CUDA-free reference routes. This still does not claim native GPU correctness, physical publication/memory-order qualification, performance, stable SDK, multi-GPU support, product behavior, or an exact CUDA-JS compatible pair.
+Protected-main post-integration qualification repeated successfully: `cuda-js-runtime-adapter` workflow `33915951068` passed and `documentation` workflow `33915951020` passed. This is portable/public-contract evidence only. It does **not** claim exact native compatible-pair correctness, physical publication/memory-order qualification, performance, stable SDK support, multi-GPU support, or downstream product behavior.
 
-## Current production seam
+The accepted semantic/reference packet remains 12 contracts, 989/989 classified Composer requirements, 937 `accepted-reference`, exactly 52 `deferred-native`, 0 pending, 883/883 Composer cases, and 393/393 CUDA-free reference routes. The 52 native-deferred requirements remain deferred until exact compatible-pair/native evidence proves them.
 
-**#125 — implement the public CUDA-JS runtime adapter for accepted execution packages** is the next P0 owner, but the next action is a fresh assess/research pass rather than implementation by assumption.
+## Current reconciliation seam
 
-The live prerequisite reassessment after #205 found #122, #193, CUDA-JS #178/#179/#180/#181, CUDA-JS-Tensor #40/#44/#45, #199, #202/#204 and #205/#206 closed or protected-dispositioned. The stale paused `impl/125-public-cuda-js-runtime-adapter` branch must not be reused.
+**#211 — reconcile protected state after #125 runtime adapter integration** is the active docs/governance-only transaction. Its source base is the exact protected post-#125 runtime baseline above. It may update only governance/state documentation; it must not change semantic, adapter, native, or evidence-oracle behavior.
 
-The controlling #193 disposition remains:
+After #211 is qualified, completely reviewed, freshly authorized, and protected-integrated, the next P0 assess/research seam is **CUDA-JS #32 — exact CUDA-MCGS/CUDA-JS compatible-pair qualification through the public adapter**. #125 has removed the CUDA-MCGS-owned adapter prerequisite, but #32 is not pre-authorized to claim native success: it must first re-read the new protected CUDA-MCGS head, the exact protected CUDA-JS peer, the selected provider/device/target/toolkit facts, the public adapter call surface, and all governing native-evidence requirements.
 
-- CUDA-MCGS owns Search Program/package meaning, MCGS finite resource/layout requirements, operation-local semantic access, selected search physical-profile policy, bounded control/observation semantics and mapping lower failures into MCGS dispositions;
-- `integration.cuda-js` constructs actual lower request objects from the installed/versioned public CUDA-JS contract;
-- CUDA-JS owns lower request validity/ranges, device/target selection, compilation/linking, module/function/artifact resources, memory/allocation admission, prepared operations/DAGs, publication/synchronization, provider facts/lifecycle, errors/health and teardown;
-- CUDA-JS #180 concluded existing compiler/module/function/prepared-DAG bricks are the correct LEGO composition; no new universal preparation transaction is required;
-- CUDA-JS #181 preserves explicit expert grid/block control for materially selected MCGS topology; no required generic launch resolver was justified;
-- public `cuda-js@0.1.0-alpha.18` ordinary allocation alignment remains a lower compatibility fact to validate against, not copy into MCGS authority.
+Any newly demonstrated generic lower capability gap routes to CUDA-JS before a consumer-local workaround or native bypass. CUDA-MCGS must not acquire private CUDA-JS imports, generated-artifact inspection, direct CUDA/PTX/FFI realization, or a second lower request/lifecycle interpreter.
 
-Any newly demonstrated missing generic lower capability stops #125 and routes to CUDA-JS before workaround code.
+## Parallel and downstream work
+
+- **#109** remains independent post-acceptance public facade/resolver/diagnostics/SDK ergonomics work over the one canonical pre-ignition path. Its older pre-#125 dependency wording is stale and must not be read as a reason to rebuild Composer or create a second runtime.
+- **#123** remains the external-consumer acceptance capsule and waits on the usable public #109 surface plus exact compatible-pair evidence from CUDA-JS #32; #124 is relevant only if the selected consumer chooses the optional Tensor evaluator path.
+- CUDA-JS #32 is the evidence owner for the first exact native pair. Native proof must run through `integration.cuda-js`, not a diagnostic bypass.
 
 ## Immediate dependency chain
 
-1. Reconcile post-#205 protected status through #207.
-2. Start a fresh #125 focus branch from the reconciled protected main.
-3. Assess AGENTS/ADRs/specs, current `integration.cuda-js` reservation, accepted execution-package surface, CUDA-JS alpha.18 public package, and lifecycle/failure tests before production mutation.
-4. If the design survives and no lower gap appears, implement one replaceable adapter using only public CUDA-JS contracts and a fake injected runtime for portable lifecycle/failure qualification.
-5. CUDA-JS #32 later owns exact compatible-pair/native publication, race, cancellation and teardown evidence through that adapter; #109 independently owns the stable public library/resolver facade.
+1. Qualify and completely review docs-only #211 on its exact head; stop for fresh protected-integration authorization.
+2. After #211 integration, read back the new protected CUDA-MCGS commit/tree before creating any #32 qualification branch or capsule.
+3. Perform a fresh CUDA-JS #32 assess/research pass against that exact CUDA-MCGS revision and protected `CUDA-JS@49a2f77d2c8364d67030fbc1c2e870e58e70d334`; do not assume portable #125 evidence implies native compatibility.
+4. If the design survives, execute the smallest exact compatible-pair/native capsule entirely through public CUDA-JS contracts and the production adapter, recording provider/device/target/toolkit/artifact identity, useful bounded device progress, publication/order, pressure/failure/health, cancellation/timeout disposition, and terminal cleanup truth.
+5. Route any generic CUDA gap to CUDA-JS before proceeding. Keep every unproved native requirement deferred.
+6. Continue #109 independently, then use #123 to prove an installed external consumer once both the public surface and exact compatible-pair path are ready.
 
 ## Ownership boundary
 
-CUDA-MCGS owns Search IR, Graph/Policy/Evaluator/Resource/Progress/Output/Session/Stage/Channel semantics, finite search resource/pressure policy, deterministic restricted Search Program generation, selected search physical-profile policy, execution-package meaning and its canonical pre-ignition implementation.
+CUDA-MCGS owns Search IR, Graph/Policy/Evaluator/Resource/Progress/Output/Session/Stage/Channel semantics, finite search resource/pressure policy, deterministic restricted Search Program generation, selected search physical-profile policy, execution-package meaning, canonical pre-ignition composition, and translation of that accepted meaning through `integration.cuda-js`.
 
-CUDA-JS owns consumer-neutral device/context/memory/compiler/artifact/module/function/operation/publication/provider mechanisms, lower validity/compatibility facts, errors/health and lower resource lifecycle. CUDA-JS-Tensor owns generic Tensor mathematics/device-callable Tensor semantics. Product meaning remains downstream.
+CUDA-JS owns consumer-neutral device/context/memory/compiler/artifact/module/function/operation/publication/provider mechanisms, lower request validity and ranges, compatibility facts, errors/health, and lower resource lifecycle. CUDA-JS-Tensor owns generic Tensor mathematics/device-callable Tensor semantics. Product meaning remains downstream.
 
 A need for native/private lower escape code is a missing-library-capability diagnostic, not permission to bypass the owning library.
 
 ## Current-state governance
 
-Protected `STATUS.md` and `next_step.yaml` own the live execution seam. Issues own durable obligations and evidence. No protected integration occurs without exact-head qualification, complete review and fresh authorization.
+Protected `STATUS.md` and `next_step.yaml` own the live execution seam. Issues own durable obligations and evidence. No protected integration occurs without exact-head qualification, complete review, and fresh authorization. A docs-only reconciliation must read back its resulting protected commit/tree before the next semantic/native branch is created.
