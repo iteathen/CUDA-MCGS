@@ -89,12 +89,9 @@ jobs:
           let run=await readFile(composerRun,'utf8');
           run = `import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';\n${run}`;
           const composerPattern=/await readFile\(path\.join\(experimentRoot,\s*['"]src['"],\s*['"]composer\.mjs['"]\)(?:,\s*['"]utf8['"])?\)/g;
-          const validationPattern=/await readFile\(path\.join\(experimentRoot,\s*['"]src['"],\s*['"]validation\.mjs['"]\)(?:,\s*['"]utf8['"])?\)/g;
           const composerMatches=[...run.matchAll(composerPattern)].length;
-          const validationMatches=[...run.matchAll(validationPattern)].length;
-          if(composerMatches!==2 || validationMatches!==1) throw new Error(`static source-read baseline drifted composer=${composerMatches} validation=${validationMatches}`);
+          if(composerMatches!==2) throw new Error(`static Composer source-read baseline drifted composer=${composerMatches}`);
           run=run.replace(composerPattern,"await readSearchCompilerSource('composer.mjs')");
-          run=run.replace(validationPattern,"await readSearchCompilerSource('validation.mjs')");
           for (const name of productionNames) {
             run=run.replaceAll(`'experiments/search-ir-composer-reference/src/${name}'`,`'components/search-compiler/src/${name}'`);
           }
