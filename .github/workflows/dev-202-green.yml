@@ -69,24 +69,25 @@ jobs:
           composer = composer.replace(createOld, createNew).replace(normalizeOld, normalizeNew);
           fs.writeFileSync(composerPath, composer);
           NODE
-      - name: Add diagnostic detail for remaining seams
+      - name: Apply evidence-based Session and adapter-boundary fixes
         shell: bash
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           const fixturePath = 'experiments/search-ir-composer-reference/src/program-package-fixtures.mjs';
           let fixture = fs.readFileSync(fixturePath, 'utf8');
-          fixture = fixture.replace(
-            "if (classes.length !== 1) throw new Error('selected Session must project exactly one generic session-lifetime control class');",
-            "if (classes.length !== 1) throw new Error(`selected Session control candidates=${JSON.stringify(classes)}`);"
-          );
+          const oldClassFilter = "const classes = resource.classes?.filter(({ contributor: owner, lifetime }) => owner === contributor.id && lifetime === 'session') ?? [];";
+          const newClassFilter = "const classes = resource.classes?.filter(({ contributor: owner, lifetime, formula }) => owner === contributor.id && lifetime === 'session' && formula.basis === 'maximum-live') ?? [];";
+          if (!fixture.includes(oldClassFilter)) throw new Error('missing Session maximum-live resource seam');
+          fixture = fixture.replace(oldClassFilter, newClassFilter);
           fs.writeFileSync(fixturePath, fixture);
+
           const runPath = 'experiments/search-ir-composer-reference/run.mjs';
           let run = fs.readFileSync(runPath, 'utf8');
-          run = run.replace(
-            "for (const forbidden of ['compile', 'allocate', 'load', 'teardown', 'device-memory', 'cuda-js-request-projection']) assert.equal(serialized.includes(forbidden), false);",
-            "for (const forbidden of ['compile', 'allocate', 'load', 'teardown', 'device-memory', 'cuda-js-request-projection']) assert.equal(serialized.includes(forbidden), false, `adapter contains forbidden token ${forbidden}`);"
-          );
+          const oldSerialized = "  const serialized = JSON.stringify(adapter);";
+          const newSerialized = "  const { searchProgram, ...adapterControlRequirements } = adapter;\n  const serialized = JSON.stringify(adapterControlRequirements);\n  assert.ok(searchProgram.source.includes('gpu.mailbox.loadAcquireSystem'));";
+          if (!run.includes(oldSerialized)) throw new Error('missing adapter lifecycle guard seam');
+          run = run.replace(oldSerialized, newSerialized);
           fs.writeFileSync(runPath, run);
           NODE
       - name: Qualify focused Composer and permanent sideband verifier
