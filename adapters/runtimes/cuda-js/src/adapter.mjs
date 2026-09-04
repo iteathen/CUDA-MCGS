@@ -238,8 +238,18 @@ class PreparedExecution {
       const modes = this.#plan.operation.bindings.filter(({ source }) => source.kind === 'resource' && source.resource === id).map(({ source }) => source.access);
       const bytes = resourceInputs[id];
       if (bytes === undefined && modes.some((mode) => mode !== 'write')) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} requires explicit initial bytes`);
+      if (bytes !== undefined && (!(bytes instanceof Uint8Array) || bytes.byteLength !== resource.byteLengthNumber)) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} initial bytes must exactly match byteLength`);
+    }
+    for (const parameter of this.#plan.entry.parameters) {
+      const binding = this.#plan.bindings.get(parameter.name);
+      if (binding.source.kind !== 'scalar') continue;
+      if (!Object.hasOwn(scalarInputs, parameter.name)) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `missing scalar value for ${parameter.name}`);
+      scalar(parameter.type, scalarInputs[parameter.name], parameter.name);
+    }
+
+    for (const [id, resource] of this.#plan.resources) {
+      const bytes = resourceInputs[id];
       if (bytes === undefined) continue;
-      if (!(bytes instanceof Uint8Array) || bytes.byteLength !== resource.byteLengthNumber) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} initial bytes must exactly match byteLength`);
       try { await this.#owned.memories.get(id).write(bytes); }
       catch (error) {
         const report = await cleanup(this.#owned); this.#closed = true; this.state = 'closed';
@@ -259,7 +269,6 @@ class PreparedExecution {
       } else if (binding.source.kind === 'sideband') {
         args.push({ kind: 'publication-mailbox', mailbox: this.#owned.mailboxes.get(binding.source.sideband), lane: binding.source.sideband });
       } else {
-        if (!Object.hasOwn(scalarInputs, parameter.name)) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `missing scalar value for ${parameter.name}`);
         args.push(scalar(parameter.type, scalarInputs[parameter.name], parameter.name));
       }
     }
