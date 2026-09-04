@@ -101,7 +101,7 @@ function canonicalCapabilityOrder(stageProfile, capabilities) {
   return ordered;
 }
 
-function sourceAndFunctions(context, profileId, label) {
+function sourceAndFunctions(context, profileId, label, sidebands = []) {
   const sourceUnits = []; const functions = []; const ordinaryFunctions = [];
   for (const result of context.profileResults) {
     if (!result.normalized.programContribution?.sourceIdentity) continue;
@@ -127,10 +127,17 @@ function sourceAndFunctions(context, profileId, label) {
     }
   }
 
-  const entrySource = 'function engine_step(output) { output[gpu.thread.globalX()] = 0; }\n';
+  const sidebandParameters = sidebands.map((sideband) => ({
+    name: sideband.role === 'framework-cancellation' ? 'frameworkCancellation' : 'sessionCommandPublication',
+    type: `sideband<${sideband.direction},${sideband.valueType}>`,
+    sidebandRole: sideband.role,
+  }));
+  const parameterList = ['output', ...sidebandParameters.map(({ name }) => name)].join(', ');
+  const observations = sidebandParameters.map(({ name }) => `gpu.mailbox.loadAcquireSystem(${name});`).join(' ');
+  const entrySource = `function engine_step(${parameterList}) { ${observations} output[gpu.thread.globalX()] = 0; }\n`;
   const entryUnitId = `source.${label}.engine-entry`;
   sourceUnits.push({ id: entryUnitId, ownerProfile: profileId, semanticOwner: profileId, kind: 'composer-entry', source: entrySource, sourceIdentity: sourceIdentity(entrySource), contributionIdentity: contentIdentity(`${label}:composer-entry-contribution`), functions: ['engine_step'], provenance: provenance(`${label}-composer-entry`) });
-  functions.push({ name: 'engine_step', executionRole: 'runtime-entry', parameters: [{ name: 'output', type: 'ptr<u32>' }], returns: 'void', sourceUnit: entryUnitId, ownerProfile: profileId, semanticRole: 'engine.execute', calls: [], helpers: ['gpu.thread.global-x'] });
+  functions.push({ name: 'engine_step', executionRole: 'runtime-entry', parameters: [{ name: 'output', type: 'ptr<u32>' }, ...sidebandParameters], returns: 'void', sourceUnit: entryUnitId, ownerProfile: profileId, semanticRole: 'engine.execute', calls: [], helpers: ['gpu.thread.global-x', 'gpu.mailbox.load-acquire-system'] });
 
   const programUnits = ordinaryFunctions.map((name) => {
     const fn = functions.find((entry) => entry.name === name);
@@ -153,12 +160,17 @@ function publicRequirements(context, profileId) {
   };
   const deviceJs = schemaReference('cuda-js.device-js');
   const operation = schemaReference('cuda-js.operation-lifecycle');
-  add(deviceJs, [profileId], 'portable'); add(operation, [profileId], 'native-compatible-pair');
-  if (context.stageResult) {
-    for (const requirement of context.stageResult.normalized.programContribution.requirements) add(requirement, [context.stageResult.normalized.id, ...context.stageResult.normalized.capabilities.map(({ id }) => id)], 'native-compatible-pair');
-  }
-  if (context.channelResult) {
-    for (const requirement of context.channelResult.normalized.programContribution.requirements) add(requirement, [context.channelResult.normalized.id, ...context.channelResult.normalized.channels.map(({ id }) => id)], 'native-compatible-pair');
+  const mailbox = schemaReference('cuda-js.publication-mailbox');
+  add(deviceJs, [profileId], 'portable');
+  add(operation, [profileId], 'native-compatible-pair');
+  add(mailbox, [context.progressResult.normalized.id], 'native-compatible-pair');
+  for (const result of context.profileResults) {
+    const contributed = result.normalized.programContribution?.requirements ?? [];
+    if (contributed.length === 0) continue;
+    const consumers = [result.normalized.id];
+    if (result === context.stageResult) consumers.push(...result.normalized.capabilities.map(({ id }) => id));
+    if (result === context.channelResult) consumers.push(...result.normalized.channels.map(({ id }) => id));
+    for (const requirement of contributed) add(requirement, consumers, 'native-compatible-pair');
   }
   return [...requirements.values()].map((entry) => ({ contract: entry.contract, consumers: [...entry.consumers].sort(compareRaw), qualification: entry.qualification })).sort((left, right) => compareRaw(left.contract.id, right.contract.id));
 }
@@ -177,13 +189,64 @@ function resourceRequirements(context) {
   }));
 }
 
-function deletionManifest(profileId, semanticOwners, sourceUnits, functions, resources, requirements) {
+function sessionPayloadResource(context, resources) {
+  if (!context.sessionResult) return null;
+  const resource = context.resourceResult.normalized;
+  const sessionProfile = context.sessionResult.normalized.resourceContribution;
+  const contributor = resource.contributors?.find(({ profile }) => profile?.id === sessionProfile?.id);
+  if (!contributor) throw new Error('selected Session resource contribution is absent from Resource');
+  const sessionClasses = resource.classes?.filter(({ contributor: owner, lifetime }) => owner === contributor.id && lifetime === 'session') ?? [];
+  const classes = sessionClasses.length === 1 ? sessionClasses : sessionClasses.filter(({ formula }) => formula?.basis === 'maximum-live');
+  if (classes.length !== 1) throw new Error('selected Session must project exactly one generic session-lifetime control class');
+  const partitions = resource.partitions?.filter(({ class: classId }) => classId === classes[0].id) ?? [];
+  if (partitions.length !== 1) throw new Error('selected Session control class must map to exactly one resource partition');
+  const pool = resource.pools?.find(({ id }) => id === partitions[0].pool);
+  if (!pool) throw new Error('selected Session control partition has no pool');
+  const packageResource = resources.find(({ providerRequirement }) => providerRequirement === pool.providerRequirement);
+  if (!packageResource || packageResource.materialization !== 'resident-storage') throw new Error('selected Session control payload is not resident package storage');
+  return packageResource.id;
+}
+
+function sidebandRequirements(context, label, resources) {
+  const sidebands = [{
+    id: `sideband.${label}.framework-cancellation`,
+    semanticOwner: context.progressResult.normalized.id,
+    role: 'framework-cancellation',
+    direction: 'host-to-device',
+    valueType: 'u32',
+    capacity: '1',
+    publication: 'release-acquire',
+    applicationPoint: schemaReference('cuda-mcgs.framework-cancellation-checkpoint'),
+    lifetime: 'operation',
+    residentResource: null,
+    semantics: schemaReference('cuda-mcgs.framework-cancellation-sideband'),
+    cleanup: schemaReference('cuda-mcgs.framework-cancellation-sideband-cleanup'),
+  }];
+  if (context.sessionResult) sidebands.push({
+    id: `sideband.${label}.session-command-publication`,
+    semanticOwner: context.sessionResult.normalized.id,
+    role: 'session-command-publication',
+    direction: 'host-to-device',
+    valueType: 'u32',
+    capacity: '1',
+    publication: 'release-acquire',
+    applicationPoint: schemaReference('cuda-mcgs.session-command-publication-checkpoint'),
+    lifetime: 'session',
+    residentResource: sessionPayloadResource(context, resources),
+    semantics: schemaReference('cuda-mcgs.session-command-publication-sideband'),
+    cleanup: schemaReference('cuda-mcgs.session-command-publication-sideband-cleanup'),
+  });
+  return sidebands;
+}
+
+function deletionManifest(profileId, semanticOwners, sourceUnits, functions, resources, requirements, sidebands) {
   const records = [...semanticOwners].sort(compareRaw).map((owner) => ({
     owner,
     sourceUnits: sourceUnits.filter((entry) => entry.semanticOwner === owner).map(({ id }) => id),
     functions: functions.filter((entry) => sourceUnits.find(({ id }) => id === entry.sourceUnit)?.semanticOwner === owner).map(({ name }) => name),
     resources: resources.filter((entry) => entry.ownerProfile === owner).map(({ id }) => id),
     publicRequirements: requirements.filter(({ consumers }) => consumers.includes(owner)).map(({ contract }) => contract.id),
+    sidebands: sidebands.filter(({ semanticOwner }) => semanticOwner === owner).map(({ id }) => id),
     packageRecords: owner === profileId ? ['package.execution-operation'] : [],
   }));
   return { selectedOwners: [...semanticOwners].sort(compareRaw), records, comparison: 'byte-exact-except-truthful-selected-owner-identities', absence: 'structural-omission-no-placeholder' };
@@ -192,9 +255,10 @@ function deletionManifest(profileId, semanticOwners, sourceUnits, functions, res
 export function buildProgramPackageProfile(inspected, context, label) {
   const profileId = `program-package.${label}`;
   const profiles = context.profileResults.map(profileReference).sort((left, right) => compareRaw(left.id, right.id));
-  const source = sourceAndFunctions(context, profileId, label);
   const requirements = publicRequirements(context, profileId);
   const resources = resourceRequirements(context);
+  const sidebands = sidebandRequirements(context, label, resources);
+  const source = sourceAndFunctions(context, profileId, label, sidebands);
   const outputResource = resources.find(({ materialization }) => materialization === 'resident-storage');
   if (!outputResource) throw new Error(`${label} fixture has no resident-storage resource`);
   const semanticOwners = new Set([profileId, ...profiles.map(({ id }) => id)]);
@@ -210,12 +274,19 @@ export function buildProgramPackageProfile(inspected, context, label) {
       channelProfile: context.channelResult ? { kind: 'selected', profile: profileReference(context.channelResult) } : { kind: 'absent' },
     },
     generator: { id: 'composer.reference-search-program', version: VERSION, revision: AUTHORITY_REVISION, language: 'restricted-device-js', canonicalization: 'utf8-lf-source-units-by-js-code-unit-v1', maxSourceBytes: '1048576', maxFunctions: '1024', maxCallDepth: '64' },
-    sourceUnits: source.sourceUnits, functions: source.functions, programUnits: source.programUnits, publicRequirements: requirements, resources,
-    operations: [{ id: `operation.${label}.engine-step`, entryPoint: 'engine_step', bindings: [{ parameter: 'output', source: { kind: 'resource', resource: outputResource.id, access: 'write' } }], grid: ['1', '1', '1'], block: ['64', '1', '1'], dynamicSharedBytes: '0', maxPending: '1' }],
+    sourceUnits: source.sourceUnits, functions: source.functions, programUnits: source.programUnits, publicRequirements: requirements, resources, sidebands,
+    operations: [{
+      id: `operation.${label}.engine-step`, entryPoint: 'engine_step',
+      bindings: [
+        { parameter: 'output', source: { kind: 'resource', resource: outputResource.id, access: 'write' } },
+        ...sidebands.map((sideband) => ({ parameter: sideband.role === 'framework-cancellation' ? 'frameworkCancellation' : 'sessionCommandPublication', source: { kind: 'sideband', sideband: sideband.id } })),
+      ],
+      grid: ['1', '1', '1'], block: ['64', '1', '1'], dynamicSharedBytes: '0', maxPending: '1',
+    }],
     manifests: { result: schemaReference('cuda-mcgs.package-result'), observation: schemaReference('cuda-mcgs.package-observation'), diagnostic: schemaReference('cuda-mcgs.package-diagnostic'), cancellation: schemaReference('cuda-mcgs.package-cancellation'), completion: schemaReference('cuda-mcgs.package-completion'), cleanup: schemaReference('cuda-mcgs.package-cleanup') },
     provenance: provenance(`${label}-package`),
     compatibility: { cudaJs: { repository: 'iteathen/CUDA-JS', revision: CUDA_JS_REVISION, package: CUDA_JS_PACKAGE }, apiSchema: '1', capabilityNegotiation: 'pre-allocation-fail-closed', fallback: 'none', requiredEvidence: [schemaReference('cuda-mcgs.reference-composition-evidence'), schemaReference('cuda-js.compatible-pair-evidence')] },
-    deletion: deletionManifest(profileId, semanticOwners, source.sourceUnits, source.functions, resources, requirements),
+    deletion: deletionManifest(profileId, semanticOwners, source.sourceUnits, source.functions, resources, requirements, sidebands),
   };
   const requirementById = new Map(requirements.map(({ contract }) => [contract.id, contract]));
   return { input, context: { ...context, authorityRevision: AUTHORITY_REVISION, composerContributionIdentity: source.composerContributionIdentity, requirementById, availableRequirements: new Set(requirementById.keys()), cudaJs: { revision: CUDA_JS_REVISION, package: CUDA_JS_PACKAGE, apiSchema: '1' } } };

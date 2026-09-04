@@ -23,20 +23,22 @@ const CUDA_JS_ADAPTER_REQUIREMENTS_SCHEMA = 'cuda-mcgs.cuda-js-adapter-requireme
 const COMPATIBLE_PAIR_SCHEMA = 'cuda-mcgs.compatible-pair-record/0.2.0';
 const REPRESENTATION = 'cuda-mcgs.search-ir/0.2.0';
 const COMPOSE_CONTRACT = 'SPEC-0005';
-const RESTRICTED_SOURCE_TYPES = new Set(['bool', 'u32', 'i32', 'u64', 'f32', 'ptr<bool>', 'ptr<u32>', 'ptr<i32>', 'ptr<u64>', 'ptr<f32>']);
+const RESTRICTED_SOURCE_TYPES = new Set(['bool', 'u32', 'i32', 'u64', 'f32', 'ptr<bool>', 'ptr<u32>', 'ptr<i32>', 'ptr<u64>', 'ptr<f32>', 'sideband<host-to-device,u32>', 'sideband<device-to-host,u32>']);
 const RETURN_TYPES = new Set(['void', 'bool', 'u32', 'i32', 'u64', 'f32']);
 const HELPER_REQUIREMENTS = new Map([
   ['gpu.atomic.load-acquire-device', 'cuda-js.device-publication-release-acquire/0.1.0'],
   ['gpu.atomic.store-release-device', 'cuda-js.device-publication-release-acquire/0.1.0'],
+  ['gpu.mailbox.load-acquire-system', 'cuda-js.publication-mailbox/0.1.0'],
 ]);
 const HELPER_SOURCE_NAMES = new Map([
   ['gpu.thread.global-x', 'gpu.thread.globalX'],
   ['gpu.atomic.load-acquire-device', 'gpu.atomic.loadAcquireDevice'],
   ['gpu.atomic.store-release-device', 'gpu.atomic.storeReleaseDevice'],
+  ['gpu.mailbox.load-acquire-system', 'gpu.mailbox.loadAcquireSystem'],
   ['gpu.barrier.block', 'gpu.barrier.block'],
   ['gpu.fence.device', 'gpu.fence.device'],
 ]);
-const BASE_REQUIREMENTS = new Set(['cuda-js.device-js/0.1.0', 'cuda-js.operation-lifecycle/0.1.0']);
+const BASE_REQUIREMENTS = new Set(['cuda-js.device-js/0.1.0', 'cuda-js.operation-lifecycle/0.1.0', 'cuda-js.publication-mailbox/0.1.0']);
 const FORBIDDEN_SOURCE = /(?:#include|__global__|__device__|\b(?:import|export|require|eval|process|Buffer)\b|node:|\.cu\b|\.cuh\b|\.ptx\b|\bcuda[A-Za-z0-9_]*\b)/;
 
 function assertEnum(value, allowed, code, label) {
@@ -169,9 +171,18 @@ function normalizeSourceUnit(input, index, context) {
 }
 
 function normalizeParameter(input, functionName, index) {
-  exactKeys(input, ['name', 'type'], 'COMPOSE_PARAMETER_FIELDS', `${functionName} parameter ${index}`);
+  const fields = ['name', 'type'];
+  if (Object.hasOwn(input, 'sidebandRole')) fields.push('sidebandRole');
+  exactKeys(input, fields, 'COMPOSE_PARAMETER_FIELDS', `${functionName} parameter ${index}`);
   assertString(input.name, /^[A-Za-z_$][A-Za-z0-9_$]*$/, 'COMPOSE_PARAMETER_NAME', `${functionName} parameter ${index} name`);
   if (!RESTRICTED_SOURCE_TYPES.has(input.type)) fail('COMPOSE_PARAMETER_TYPE', `${functionName} parameter ${input.name} has an unsupported type`);
+  const sideband = input.type.startsWith('sideband<');
+  if (sideband) {
+    if (!Object.hasOwn(input, 'sidebandRole')) fail('COMPOSE_PARAMETER_ROLE', `${functionName} sideband parameter ${input.name} lacks an explicit role`);
+    assertString(input.sidebandRole, /^[a-z][a-z0-9-]*$/, 'COMPOSE_PARAMETER_ROLE', `${functionName} parameter ${input.name} sidebandRole`);
+    return { name: input.name, type: input.type, sidebandRole: input.sidebandRole };
+  }
+  if (Object.hasOwn(input, 'sidebandRole')) fail('COMPOSE_PARAMETER_ROLE', `${functionName} non-sideband parameter ${input.name} cannot carry sidebandRole`);
   return { name: input.name, type: input.type };
 }
 
@@ -271,7 +282,7 @@ function normalizePublicRequirement(input, index, context) {
 function expectedRequirementKeys(context) {
   const expected = new Map();
   for (const id of BASE_REQUIREMENTS) expected.set(id, context.requirementById.get(id));
-  for (const result of [context.stageResult, context.channelResult]) {
+  for (const result of context.profileResults ?? []) {
     for (const requirement of result?.normalized?.programContribution?.requirements ?? []) expected.set(requirement.id, requirement);
   }
   return expected;
@@ -291,7 +302,35 @@ function normalizeResource(input, index, context) {
   return { id: input.id, ownerProfile: input.ownerProfile, providerRequirement: input.providerRequirement, materialization, unit: input.unit, capacity: normalizeDecimalUint(input.capacity), alignment: positiveDecimal(input.alignment, 'COMPOSE_RESOURCE_ALIGNMENT', `${input.id} alignment`), memorySpaces, access };
 }
 
-function normalizeBinding(input, operationId, index, parameters, resources) {
+function normalizeSideband(input, index, context) {
+  exactKeys(input, ['id', 'semanticOwner', 'role', 'direction', 'valueType', 'capacity', 'publication', 'applicationPoint', 'lifetime', 'residentResource', 'semantics', 'cleanup'], 'COMPOSE_SIDEBAND_FIELDS', `sideband ${index}`);
+  assertNamespacedId(input.id, 'COMPOSE_SIDEBAND_ID', `sideband ${index} id`);
+  if (!context.semanticOwners.has(input.semanticOwner)) fail('COMPOSE_SIDEBAND_OWNER', `${input.id} names unselected semantic owner ${input.semanticOwner}`);
+  assertString(input.role, /^[a-z][a-z0-9-]*$/, 'COMPOSE_SIDEBAND_ROLE', `${input.id} role`);
+  const direction = assertEnum(input.direction, ['host-to-device', 'device-to-host'], 'COMPOSE_SIDEBAND_DIRECTION', `${input.id} direction`);
+  const valueType = assertEnum(input.valueType, ['u32'], 'COMPOSE_SIDEBAND_VALUE', `${input.id} valueType`);
+  const capacity = positiveDecimal(input.capacity, 'COMPOSE_SIDEBAND_CAPACITY', `${input.id} capacity`);
+  if (input.publication !== 'release-acquire') fail('COMPOSE_SIDEBAND_PUBLICATION', `${input.id} publication contract is unsupported`);
+  const lifetime = assertEnum(input.lifetime, ['operation', 'session'], 'COMPOSE_SIDEBAND_LIFETIME', `${input.id} lifetime`);
+  let residentResource = null;
+  if (input.residentResource !== null) {
+    assertNamespacedId(input.residentResource, 'COMPOSE_SIDEBAND_PAYLOAD', `${input.id} residentResource`);
+    const resource = context.resourceById.get(input.residentResource);
+    if (!resource || resource.materialization !== 'resident-storage') fail('COMPOSE_SIDEBAND_PAYLOAD', `${input.id} residentResource is not resident storage`);
+    residentResource = input.residentResource;
+  }
+  if (!context.publicRequirements.some(({ contract }) => contract.id === 'cuda-js.publication-mailbox/0.1.0')) fail('COMPOSE_SIDEBAND_CAPABILITY', `${input.id} lacks the selected public publication capability`);
+  return {
+    id: input.id, semanticOwner: input.semanticOwner, role: input.role, direction, valueType, capacity,
+    publication: input.publication,
+    applicationPoint: normalizeSchemaReference(input.applicationPoint, `${input.id} applicationPoint`),
+    lifetime, residentResource,
+    semantics: normalizeSchemaReference(input.semantics, `${input.id} semantics`),
+    cleanup: normalizeSchemaReference(input.cleanup, `${input.id} cleanup`),
+  };
+}
+
+function normalizeBinding(input, operationId, index, parameters, resources, sidebands) {
   exactKeys(input, ['parameter', 'source'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} binding ${index}`);
   const parameter = parameters.find(({ name }) => name === input.parameter);
   if (!parameter) fail('COMPOSE_OPERATION_BINDING', `${operationId} binds unknown parameter ${input.parameter}`);
@@ -309,9 +348,15 @@ function normalizeBinding(input, operationId, index, parameters, resources) {
     }
     return { parameter: input.parameter, source };
   }
+  if (input.source?.kind === 'sideband') {
+    exactKeys(input.source, ['kind', 'sideband'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} sideband`);
+    const sideband = sidebands.get(input.source.sideband);
+    if (!sideband || parameter.type !== `sideband<${sideband.direction},${sideband.valueType}>` || parameter.sidebandRole !== sideband.role) fail('COMPOSE_OPERATION_BINDING', `${operationId} sideband binding is incompatible`);
+    return { parameter: input.parameter, source: { kind: 'sideband', sideband: input.source.sideband } };
+  }
   if (Object.hasOwn(input.source ?? {}, 'access')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} scalar binding cannot carry access`);
   exactKeys(input.source, ['kind', 'schema'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} scalar`);
-  if (input.source.kind !== 'scalar' || parameter.type.startsWith('ptr<')) fail('COMPOSE_OPERATION_BINDING', `${operationId} scalar binding is incompatible`);
+  if (input.source.kind !== 'scalar' || parameter.type.startsWith('ptr<') || parameter.type.startsWith('sideband<')) fail('COMPOSE_OPERATION_BINDING', `${operationId} scalar binding is incompatible`);
   return { parameter: input.parameter, source: { kind: 'scalar', schema: normalizeSchemaReference(input.source.schema, `${operationId} ${input.parameter} scalar schema`) } };
 }
 
@@ -326,7 +371,7 @@ function normalizeOperation(input, index, context) {
   const entryPoint = context.functionByName.get(input.entryPoint);
   if (!entryPoint || entryPoint.executionRole !== 'runtime-entry') fail('COMPOSE_OPERATION_ENTRY', `${input.id} entry point is not a kernel`);
   if (!Array.isArray(input.bindings)) fail('COMPOSE_OPERATION_BINDING', `${input.id} bindings must be an array`);
-  const bindings = input.bindings.map((binding, bindingIndex) => normalizeBinding(binding, input.id, bindingIndex, entryPoint.parameters, context.resourceById)).sort((left, right) => compareRaw(left.parameter, right.parameter));
+  const bindings = input.bindings.map((binding, bindingIndex) => normalizeBinding(binding, input.id, bindingIndex, entryPoint.parameters, context.resourceById, context.sidebandById)).sort((left, right) => compareRaw(left.parameter, right.parameter));
   uniqueBy(bindings, 'parameter', 'COMPOSE_OPERATION_BINDING', `${input.id} binding`);
   if (bindings.length !== entryPoint.parameters.length) fail('COMPOSE_OPERATION_BINDING', `${input.id} does not bind every parameter`);
   return { id: input.id, entryPoint: input.entryPoint, bindings, grid: normalizeDim3(input.grid, `${input.id} grid`), block: normalizeDim3(input.block, `${input.id} block`), dynamicSharedBytes: normalizeDecimalUint(input.dynamicSharedBytes), maxPending: positiveDecimal(input.maxPending, 'COMPOSE_OPERATION_PENDING', `${input.id} maxPending`) };
@@ -355,10 +400,14 @@ function normalizeDeletion(input, context) {
   if (selectedOwners.length !== context.semanticOwners.size || selectedOwners.some((owner, index) => owner !== [...context.semanticOwners].sort(compareRaw)[index])) fail('COMPOSE_DELETION_OWNER', 'deletion owner set differs from selected semantics');
   if (!Array.isArray(input.records) || input.records.length === 0) fail('COMPOSE_DELETION_RECORD', 'deletion records are absent');
   const records = input.records.map((record, index) => {
-    exactKeys(record, ['owner', 'sourceUnits', 'functions', 'resources', 'publicRequirements', 'packageRecords'], 'COMPOSE_DELETION_RECORD_FIELDS', `deletion record ${index}`);
+    const recordFields = ['owner', 'sourceUnits', 'functions', 'resources', 'publicRequirements', 'packageRecords'];
+    if (context.sidebandsDeclared) recordFields.splice(recordFields.indexOf('packageRecords'), 0, 'sidebands');
+    exactKeys(record, recordFields, 'COMPOSE_DELETION_RECORD_FIELDS', `deletion record ${index}`);
     if (!context.semanticOwners.has(record.owner)) fail('COMPOSE_DELETION_OWNER', `deletion record ${record.owner} is not selected`);
     const normalized = { owner: record.owner };
-    for (const key of ['sourceUnits', 'functions', 'resources', 'publicRequirements', 'packageRecords']) {
+    const recordLists = ['sourceUnits', 'functions', 'resources', 'publicRequirements', 'packageRecords'];
+    if (context.sidebandsDeclared) recordLists.splice(recordLists.indexOf('packageRecords'), 0, 'sidebands');
+    for (const key of recordLists) {
       if (!Array.isArray(record[key])) fail('COMPOSE_DELETION_RECORD', `${record.owner} ${key} must be an array`);
       normalized[key] = [...record[key]].sort(compareRaw);
       if (new Set(normalized[key]).size !== normalized[key].length) fail('COMPOSE_DELETION_RECORD', `${record.owner} repeats ${key}`);
@@ -368,6 +417,7 @@ function normalizeDeletion(input, context) {
   uniqueBy(records, 'owner', 'COMPOSE_DELETION_OWNER', 'deletion owner');
   if (records.length !== selectedOwners.length) fail('COMPOSE_DELETION_OWNER', 'every selected owner requires one deletion record');
   const coverage = new Map([['sourceUnits', context.sourceUnits.map(({ id }) => id)], ['functions', context.functions.map(({ name }) => name)], ['resources', context.resources.map(({ id }) => id)], ['publicRequirements', context.publicRequirements.map(({ contract }) => contract.id)]]);
+  if (context.sidebandsDeclared) coverage.set('sidebands', context.sidebands.map(({ id }) => id));
   for (const [key, expected] of coverage) for (const id of expected) if (!records.some((record) => record[key].includes(id))) fail('COMPOSE_DELETION_COVERAGE', `${key} ${id} has no deletion owner`);
   const same = (left, right) => left.length === right.length && left.every((value, index) => value === right[index]);
   for (const record of records) {
@@ -375,9 +425,10 @@ function normalizeDeletion(input, context) {
     const expectedFunctions = context.functions.filter(({ sourceUnit }) => expectedSourceUnits.includes(sourceUnit)).map(({ name }) => name).sort(compareRaw);
     const expectedResources = context.resources.filter(({ ownerProfile }) => ownerProfile === record.owner).map(({ id }) => id).sort(compareRaw);
     const expectedRequirements = context.publicRequirements.filter(({ consumers }) => consumers.includes(record.owner)).map(({ contract }) => contract.id).sort(compareRaw);
+    const expectedSidebands = context.sidebands.filter(({ semanticOwner }) => semanticOwner === record.owner).map(({ id }) => id).sort(compareRaw);
     const expectedPackageRecords = record.owner === context.compositionProfileId ? ['package.execution-operation'] : [];
     if (!same(record.sourceUnits, expectedSourceUnits) || !same(record.functions, expectedFunctions) || !same(record.resources, expectedResources)
-        || !same(record.publicRequirements, expectedRequirements) || !same(record.packageRecords, expectedPackageRecords)) {
+        || !same(record.publicRequirements, expectedRequirements) || (context.sidebandsDeclared && !same(record.sidebands, expectedSidebands)) || !same(record.packageRecords, expectedPackageRecords)) {
       fail('COMPOSE_DELETION_OWNERSHIP', `${record.owner} deletion record differs from authoritative ownership`);
     }
   }
@@ -389,7 +440,10 @@ function semanticEngineIdentity(semanticEngine) {
 }
 
 export function normalizeProgramPackageProfile(input, inspected, suppliedContext) {
-  exactKeys(input, ['schema', 'representation', 'status', 'contract', 'id', 'version', 'semanticEngine', 'generator', 'sourceUnits', 'functions', 'programUnits', 'publicRequirements', 'resources', 'operations', 'manifests', 'provenance', 'compatibility', 'deletion'], 'COMPOSE_ROOT_FIELDS', 'program/package profile');
+  const sidebandsDeclared = Object.hasOwn(input, 'sidebands');
+  const rootFields = ['schema', 'representation', 'status', 'contract', 'id', 'version', 'semanticEngine', 'generator', 'sourceUnits', 'functions', 'programUnits', 'publicRequirements', 'resources', 'operations', 'manifests', 'provenance', 'compatibility', 'deletion'];
+  if (sidebandsDeclared) rootFields.splice(rootFields.indexOf('operations'), 0, 'sidebands');
+  exactKeys(input, rootFields, 'COMPOSE_ROOT_FIELDS', 'program/package profile');
   if (input.schema !== PROFILE_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('COMPOSE_SCHEMA', 'unsupported program/package schema/representation/status');
   assertNamespacedId(input.id, 'COMPOSE_PROFILE_ID', 'program/package profile id'); assertVersion(input.version, 'COMPOSE_PROFILE_VERSION', 'program/package profile version');
   const generator = normalizeProgramGenerator(input.generator);
@@ -475,6 +529,16 @@ export function normalizeProgramPackageProfile(input, inspected, suppliedContext
   if (resources.length !== context.providerById.size) fail('COMPOSE_RESOURCE_COVERAGE', 'resources do not cover every provider requirement');
   context.resourceById = new Map(resources.map((entry) => [entry.id, entry])); context.resources = resources;
 
+  let sidebands = [];
+  if (sidebandsDeclared) {
+    if (!Array.isArray(input.sidebands) || input.sidebands.length === 0) fail('COMPOSE_SIDEBAND_COUNT', 'sidebands must be a non-empty array when declared');
+    sidebands = input.sidebands.map((entry, index) => normalizeSideband(entry, index, context)).sort((left, right) => compareRaw(left.id, right.id));
+    uniqueBy(sidebands, 'id', 'COMPOSE_SIDEBAND_DUPLICATE', 'sideband');
+  }
+  context.sidebandsDeclared = sidebandsDeclared;
+  context.sidebands = sidebands;
+  context.sidebandById = new Map(sidebands.map((entry) => [entry.id, entry]));
+
   const operations = input.operations.map((entry, index) => normalizeOperation(entry, index, context)).sort((left, right) => compareRaw(left.id, right.id));
   uniqueBy(operations, 'id', 'COMPOSE_OPERATION_DUPLICATE', 'operation');
   const kernels = functions.filter(({ executionRole }) => executionRole === 'runtime-entry');
@@ -482,7 +546,12 @@ export function normalizeProgramPackageProfile(input, inspected, suppliedContext
   const manifests = normalizeManifests(input.manifests); const provenance = normalizeProvenance(input.provenance, 'composition profile provenance'); const compatibility = normalizeCompatibility(input.compatibility, context);
   context.operations = operations;
   const deletion = normalizeDeletion(input.deletion, context);
-  const normalized = { schema: input.schema, representation: input.representation, status: input.status, contract: normalizeCatalogContract(input.contract, inspected), id: input.id, version: input.version, semanticEngine, generator, sourceUnits, functions, programUnits, publicRequirements, resources, operations, manifests, provenance, compatibility, deletion };
+  const normalized = {
+    schema: input.schema, representation: input.representation, status: input.status, contract: normalizeCatalogContract(input.contract, inspected), id: input.id, version: input.version,
+    semanticEngine, generator, sourceUnits, functions, programUnits, publicRequirements, resources,
+    ...(sidebandsDeclared ? { sidebands } : {}),
+    operations, manifests, provenance, compatibility, deletion,
+  };
   return { normalized, identity: canonicalIdentity(normalized), semanticEngineIdentity: semanticEngineIdentity(semanticEngine) };
 }
 
@@ -508,6 +577,7 @@ export function composeSearchProgram(profileResult) {
     entryPoints,
     publicRequirements: profile.publicRequirements.map((entry) => ({ contract: { ...entry.contract }, consumers: [...entry.consumers], qualification: entry.qualification })),
     resources: profile.resources.map((entry) => ({ ...entry, memorySpaces: [...entry.memorySpaces], access: [...entry.access] })),
+    ...(Object.hasOwn(profile, 'sidebands') ? { sidebands: profile.sidebands.map((entry) => structuredClone(entry)) } : {}),
     operations: profile.operations.map((entry) => ({ ...entry, bindings: structuredClone(entry.bindings), grid: [...entry.grid], block: [...entry.block],  })),
     manifests: structuredClone(profile.manifests),
     provenance: structuredClone(profile.provenance),
@@ -519,6 +589,11 @@ export function composeSearchProgram(profileResult) {
 function buildCudaJsAdapterRequirements(program) {
   const resources = program.resources.filter(({ materialization }) => materialization === 'resident-storage');
   const resourceNames = new Map(resources.map((entry, index) => [entry.id, `resource-${index}`]));
+  const sidebands = program.sidebands ?? [];
+  const frameworkCancellation = sidebands.filter(({ role }) => role === 'framework-cancellation');
+  if (frameworkCancellation.length !== 1) fail('COMPOSE_SIDEBAND_REQUIRED', 'runtime realization requires exactly one framework-cancellation sideband');
+  if (!program.publicRequirements.some(({ contract }) => contract.id === 'cuda-js.publication-mailbox/0.1.0')) fail('COMPOSE_SIDEBAND_CAPABILITY', 'runtime realization requires the selected public publication capability');
+  const sidebandNames = new Map(sidebands.map((entry, index) => [entry.id, `sideband-${index}`]));
   for (const operation of program.operations) for (const binding of operation.bindings) {
     if (binding.source.kind === 'resource' && !Object.hasOwn(binding.source, 'access')) {
       fail('COMPOSE_OPERATION_ACCESS_REQUIRED', `${operation.id} ${binding.parameter} lacks operation-local resource access`);
@@ -527,9 +602,11 @@ function buildCudaJsAdapterRequirements(program) {
   const operations = program.operations.map((entry, index) => ({
     id: `operation-${index}`,
     function: entry.entryPoint,
-    bindings: entry.bindings.map((binding) => binding.source.kind === 'resource'
-      ? { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource), access: binding.source.access } }
-      : { parameter: binding.parameter, source: { kind: 'scalar', schema: { ...binding.source.schema } } }),
+    bindings: entry.bindings.map((binding) => {
+      if (binding.source.kind === 'resource') return { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource), access: binding.source.access } };
+      if (binding.source.kind === 'sideband') return { parameter: binding.parameter, source: { kind: 'sideband', sideband: sidebandNames.get(binding.source.sideband) } };
+      return { parameter: binding.parameter, source: { kind: 'scalar', schema: { ...binding.source.schema } } };
+    }),
     launchPolicy: { grid: [...entry.grid], block: [...entry.block], dynamicSharedBytes: entry.dynamicSharedBytes, maxPending: entry.maxPending },
   }));
   return {
@@ -537,6 +614,11 @@ function buildCudaJsAdapterRequirements(program) {
     publicContracts: program.publicRequirements.map(({ contract }) => ({ ...contract })),
     searchProgram: { source: program.source, functions: program.functions.map(({ name, executionRole, parameters, returns }) => ({ name, executionRole, parameters: parameters.map((parameter) => ({ ...parameter })), returns })) },
     resourceRequirements: resources.map((entry, index) => ({ id: `resource-${index}`, byteLength: entry.capacity, alignment: entry.alignment, memorySpaces: [...entry.memorySpaces], accessRequirements: [...entry.access] })),
+    sidebandRequirements: sidebands.map((entry, index) => ({
+      id: `sideband-${index}`, role: entry.role, direction: entry.direction, valueType: entry.valueType,
+      capacity: entry.capacity, publication: entry.publication, applicationPoint: { ...entry.applicationPoint }, lifetime: entry.lifetime,
+      residentResource: entry.residentResource === null ? null : resourceNames.get(entry.residentResource), semantics: { ...entry.semantics }, cleanup: { ...entry.cleanup },
+    })),
     operationRequirements: operations,
     searchLifecycle: { ignition: 'device-owned', cancellation: 'bounded-external-intent', completion: 'device-owned-closure' },
   };

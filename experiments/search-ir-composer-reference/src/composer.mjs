@@ -127,7 +127,9 @@ function usesReferencePolicy(generator) {
 }
 
 export function createResolvedComposerInput(profileTemplate, generatorInput) {
-  exactKeys(profileTemplate, PROFILE_TEMPLATE_FIELDS, 'COMPOSER_PROFILE_TEMPLATE_FIELDS', 'program-package profile template');
+  const templateFields = [...PROFILE_TEMPLATE_FIELDS];
+  if (Object.hasOwn(profileTemplate, 'sidebands')) templateFields.splice(templateFields.indexOf('operations'), 0, 'sidebands');
+  exactKeys(profileTemplate, templateFields, 'COMPOSER_PROFILE_TEMPLATE_FIELDS', 'program-package profile template');
   if (profileTemplate.schema !== PROGRAM_PACKAGE_SCHEMA) fail('COMPOSER_PROFILE_SCHEMA', 'profile template schema is incompatible');
   const generator = normalizeProgramGenerator(generatorInput);
   const profile = structuredClone(profileTemplate);
@@ -161,7 +163,9 @@ export function normalizeResolvedComposerInput(input) {
     fail('COMPOSER_SCHEMA', 'resolved Composer input schema/representation is incompatible');
   }
   if (input.status !== STATUS) fail('COMPOSER_STATUS', 'resolved Composer input must remain proposal evidence');
-  exactKeys(input.profile, [...PROFILE_TEMPLATE_FIELDS, 'generator'], 'COMPOSER_PROFILE_FIELDS', 'resolved program-package profile');
+  const profileFields = [...PROFILE_TEMPLATE_FIELDS];
+  if (Object.hasOwn(input.profile, 'sidebands')) profileFields.splice(profileFields.indexOf('operations'), 0, 'sidebands');
+  exactKeys(input.profile, [...profileFields, 'generator'], 'COMPOSER_PROFILE_FIELDS', 'resolved program-package profile');
   if (input.profile.schema !== PROGRAM_PACKAGE_SCHEMA
       || input.profile.representation !== SEARCH_IR_REPRESENTATION
       || input.profile.status !== STATUS) {
