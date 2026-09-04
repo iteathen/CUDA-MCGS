@@ -3,7 +3,10 @@ import assert from 'node:assert/strict';
 import { readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const semanticsRoot = 'experiments/search-semantics-reference';
+const evidenceRoots = [
+  'experiments/search-semantics-reference',
+  'conformance/search-compiler',
+];
 const productionNames = [
   'validation.mjs', 'foundation.mjs', 'domain.mjs', 'graph.mjs', 'policy.mjs', 'evaluator.mjs', 'resource.mjs',
   'progress.mjs', 'output.mjs', 'session.mjs', 'stage.mjs', 'channel.mjs', 'program-package.mjs', 'composer.mjs',
@@ -27,33 +30,35 @@ const routedHash = "sourceTextSha256(relative.startsWith('components/search-comp
 let changedFiles = 0;
 let routedReaders = 0;
 let canonicalPathLabels = 0;
-for (const file of await walk(semanticsRoot)) {
-  if (!file.endsWith('.mjs')) continue;
-  let source = await readFile(file, 'utf8');
-  const before = source;
+for (const evidenceRoot of evidenceRoots) {
+  for (const file of await walk(evidenceRoot)) {
+    if (!file.endsWith('.mjs')) continue;
+    let source = await readFile(file, 'utf8');
+    const before = source;
 
-  // Support/evidence files live in conformance. Canonical implementation source lives in the production component.
-  source = source.replaceAll('experiments/search-ir-composer-reference', 'conformance/search-compiler');
-  for (const name of productionNames) {
-    const oldPath = `conformance/search-compiler/src/${name}`;
-    const newPath = `components/search-compiler/src/${name}`;
-    if (source.includes(oldPath)) {
-      source = source.replaceAll(oldPath, newPath);
-      canonicalPathLabels += 1;
+    // Support/evidence files live in conformance. Canonical implementation source lives in the production component.
+    source = source.replaceAll('experiments/search-ir-composer-reference', 'conformance/search-compiler');
+    for (const name of productionNames) {
+      const oldPath = `conformance/search-compiler/src/${name}`;
+      const newPath = `components/search-compiler/src/${name}`;
+      if (source.includes(oldPath)) {
+        source = source.replaceAll(oldPath, newPath);
+        canonicalPathLabels += 1;
+      }
     }
-  }
 
-  directHashPattern.lastIndex = 0;
-  if (source.includes('components/search-compiler/src/') && directHashPattern.test(source)) {
     directHashPattern.lastIndex = 0;
-    source = source.replace(directHashPattern, routedHash);
-    if (!source.includes(testingImport)) source = `${testingImport}\n${source}`;
-    routedReaders += 1;
-  }
+    if (source.includes('components/search-compiler/src/') && directHashPattern.test(source)) {
+      directHashPattern.lastIndex = 0;
+      source = source.replace(directHashPattern, routedHash);
+      if (!source.includes(testingImport)) source = `${testingImport}\n${source}`;
+      routedReaders += 1;
+    }
 
-  if (source !== before) {
-    await writeFile(file, source, 'utf8');
-    changedFiles += 1;
+    if (source !== before) {
+      await writeFile(file, source, 'utf8');
+      changedFiles += 1;
+    }
   }
 }
 
@@ -61,12 +66,14 @@ assert(changedFiles > 0, 'no downstream provenance file required #205 rewiring')
 assert(canonicalPathLabels > 0, 'no canonical Search Compiler source path was re-owned');
 assert(routedReaders > 0, 'no canonical source-manifest reader was routed through testing.mjs');
 
-// Fail if any downstream source manifest still labels one of the 14 canonical modules as conformance source.
-for (const file of await walk(semanticsRoot)) {
-  if (!file.endsWith('.mjs')) continue;
-  const source = await readFile(file, 'utf8');
-  for (const name of productionSet) {
-    assert.equal(source.includes(`conformance/search-compiler/src/${name}`), false, `${file} still labels canonical ${name} as conformance source`);
+// Fail if any active evidence source manifest still labels one of the 14 canonical modules as conformance source.
+for (const evidenceRoot of evidenceRoots) {
+  for (const file of await walk(evidenceRoot)) {
+    if (!file.endsWith('.mjs')) continue;
+    const source = await readFile(file, 'utf8');
+    for (const name of productionSet) {
+      assert.equal(source.includes(`conformance/search-compiler/src/${name}`), false, `${file} still labels canonical ${name} as conformance source`);
+    }
   }
 }
 
