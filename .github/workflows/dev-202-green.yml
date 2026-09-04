@@ -6,6 +6,7 @@ on:
       - tmp/202-sideband-clean-construction
     paths:
       - scripts/dev-202-green.mjs
+      - scripts/dev-202-green-final.mjs
       - .github/workflows/dev-202-green.yml
 
 permissions:
@@ -90,12 +91,14 @@ jobs:
           run = run.replace(oldSerialized, newSerialized);
           fs.writeFileSync(runPath, run);
           NODE
+      - name: Apply sideband-aware deletion and lower-projection repair
+        run: node scripts/dev-202-green-final.mjs
       - name: Qualify focused Composer and permanent sideband verifier
         run: node scripts/run-search-ir-composer-reference.mjs
       - name: Publish temp semantic candidate
         shell: bash
         run: |
-          rm -f scripts/dev-202-green.mjs .github/workflows/dev-202-green.yml .github/workflows/construct-202-sideband.yml .github/workflows/construct-202-sideband-v2.yml
+          rm -f scripts/dev-202-green.mjs scripts/dev-202-green-final.mjs .github/workflows/dev-202-green.yml .github/workflows/construct-202-sideband.yml .github/workflows/construct-202-sideband-v2.yml
           git diff --check
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
