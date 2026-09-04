@@ -92,7 +92,18 @@ jobs:
           fs.writeFileSync(runPath, run);
           NODE
       - name: Apply sideband-aware deletion and lower-projection repair
-        run: node scripts/dev-202-green-final.mjs
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const path = 'scripts/dev-202-green-final.mjs';
+          let source = fs.readFileSync(path, 'utf8');
+          const seam = "const deletionPath = 'experiments/search-ir-composer-reference/src/deletion-identity.mjs';\n";
+          if (!source.includes(seam)) throw new Error('missing final helper label interpolation seam');
+          source = source.replace(seam, seam + "const label = '${label}';\n");
+          fs.writeFileSync(path, source);
+          NODE
+          node scripts/dev-202-green-final.mjs
       - name: Qualify focused Composer and permanent sideband verifier
         run: node scripts/run-search-ir-composer-reference.mjs
       - name: Publish temp semantic candidate
