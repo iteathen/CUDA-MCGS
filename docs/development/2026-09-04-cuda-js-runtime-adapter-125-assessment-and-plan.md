@@ -1,6 +1,6 @@
 # CUDA-JS runtime adapter #125 assessment and execution plan
 
-**Status:** Informational  
+**Status:** Informational
 **Tracker:** #125  
 **Date:** 2026-09-04  
 **Assessment depth:** Critical  
