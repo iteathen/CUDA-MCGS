@@ -1,4 +1,4 @@
-# trigger: governance-owner-boundary
+# trigger: monotonic-source-boundary
 name: dev-205-search-compiler-promotion
 
 on:
