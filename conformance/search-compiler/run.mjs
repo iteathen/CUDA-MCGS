@@ -1998,6 +1998,13 @@ await runCase('deletion-matrix-adapter-requirements-only', () => {
         semantics: { ...entry.semantics }, cleanup: { ...entry.cleanup },
       }));
       assert.deepEqual(adapter.sidebandRequirements, expectedSidebands);
+      const expectedDeliveries = program.deliveries.map((entry, index) => ({
+        id: `delivery-${index}`, packageDelivery: entry.id, role: entry.role, terminalSchema: entry.terminalSchema,
+        resource: resourceNames.get(entry.resource), byteOffset: entry.byteOffset, byteLength: entry.byteLength,
+        readiness: entry.readiness, mode: entry.mode, maxTransfers: entry.maxTransfers,
+        borrow: { ...entry.borrow }, asyncRead: { ...entry.asyncRead }, cleanup: { ...entry.cleanup }, lifetime: entry.lifetime,
+      }));
+      assert.deepEqual(adapter.deliveryRequirements, expectedDeliveries);
     }
   }
 });

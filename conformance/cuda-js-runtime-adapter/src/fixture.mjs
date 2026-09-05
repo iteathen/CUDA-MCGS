@@ -27,7 +27,15 @@ export function executionPackage() {
         }],
       },
       resourceRequirements: [{
-        id: 'resource.output', ownerProfile: 'resource.synthetic', providerRequirement: 'provider.device', byteLength: '16', alignment: '16', memorySpaces: ['device-search'], accessRequirements: ['write'],
+        id: 'resource.output', ownerProfile: 'resource.synthetic', providerRequirement: 'provider.device', byteLength: '16', alignment: '16', memorySpaces: ['device-search'], accessRequirements: ['read', 'write'],
+      }],
+      deliveryRequirements: [{
+        id: 'delivery.terminal-output', packageDelivery: 'delivery.synthetic.terminal-output', role: 'terminal-output',
+        terminalSchema: 'output-schema.synthetic.terminal', resource: 'resource.output',
+        byteOffset: '0', byteLength: '16', readiness: 'terminal-completed', mode: 'asynchronous-bounded-read', maxTransfers: '1',
+        borrow: { id: 'cuda-mcgs.synthetic-borrow/0.1.0', version: '0.1.0', sha256: 'd'.repeat(64) },
+        asyncRead: { id: 'cuda-mcgs.synthetic-async-read/0.1.0', version: '0.1.0', sha256: 'e'.repeat(64) },
+        cleanup: { id: 'cuda-mcgs.synthetic-delivery-cleanup/0.1.0', version: '0.1.0', sha256: 'f'.repeat(64) }, lifetime: 'terminal-result',
       }],
       sidebandRequirements: [{
         id: 'sideband.framework-cancellation', semanticOwner: 'progress.synthetic', role: 'framework-cancellation', direction: 'host-to-device', valueType: 'u32', capacity: '1', publication: 'release-acquire', lifetime: 'operation', residentResource: null,
@@ -54,6 +62,7 @@ export function publicCudaJsFake(flags = {}) {
   const mailboxValues = new Map();
   let memoryIndex = 0;
   let mailboxIndex = 0;
+  let transferIndex = 0;
   const push = (...entry) => calls.push(entry);
   const operation = {
     kind: 'gpu-operation', state: 'pending',
@@ -77,6 +86,27 @@ export function publicCudaJsFake(flags = {}) {
         push('memory.write', id, bytes.byteLength, [...bytes]);
         if (flags.writeError) throw flags.writeError === true ? lowerError('CUDA_JS_WRITE_FAILED', 'allocation', 'memory.write') : flags.writeError;
         return { byteLength: bytes.byteLength };
+      },
+      async readAsync(options = {}) {
+        push('memory.readAsync', id, options);
+        if (flags.readSubmitError) throw flags.readSubmitError === true ? lowerError('CUDA_JS_READ_SUBMIT_FAILED', 'operation', 'memory.readAsync') : flags.readSubmitError;
+        const transferId = `transfer-${transferIndex++}`;
+        const length = options.byteLength ?? byteLength;
+        const bytes = flags.readBytes ? new Uint8Array(flags.readBytes) : new Uint8Array(length).fill(5);
+        return {
+          kind: 'operation', state: 'pending',
+          async status() { push('transfer.status', transferId); return { schemaVersion: 1, status: 'pending', kind: 'device-to-host', pollCount: 0, elapsedMilliseconds: 0, operationSequence: 10 + transferIndex, health: { state: 'healthy' } }; },
+          async wait() {
+            push('transfer.wait', transferId);
+            if (flags.readError) throw flags.readError === true ? lowerError('CUDA_JS_READ_FAILED', 'operation', 'memory.readAsync.wait') : flags.readError;
+            return { schemaVersion: 1, status: 'completed', kind: 'device-to-host', pollCount: 1, elapsedMilliseconds: 1, operationSequence: 10 + transferIndex, health: { state: 'healthy' }, result: { bytes } };
+          },
+          async close() {
+            push('transfer.close', transferId);
+            if (flags.readCloseError) throw flags.readCloseError === true ? lowerError('CUDA_JS_READ_CLOSE_FAILED', 'cleanup', 'memory.readAsync.close') : flags.readCloseError;
+            return { state: 'closed' };
+          },
+        };
       },
       async close() { push('memory.close', id); return { state: 'closed' }; },
     };
@@ -136,6 +166,8 @@ export function publicCudaJsFake(flags = {}) {
       package: { name: 'cuda-js', version: '0.1.0-alpha.18' },
       publicApi: { schemaVersion: 1, entries: ['cuda-js', 'cuda-js/compatibility', 'cuda-js/testing'] },
       capabilities: {
+        deviceMemory: 'bounded-synchronous-copied-bytes',
+        asyncTransfers: 'opt-in-capacity-two-internal-pinned-staging-contiguous-h2d-d2h-d2d',
         deviceMemoryAllocationMinimumAlignmentBytes: 256,
         deviceJsFrontend: 'restricted-device-js-publication',
         gpuOperationLifecycle: 'opaque-submit-status-wait-close-one-pending',

@@ -239,7 +239,27 @@ function sidebandRequirements(context, label, resources) {
   return sidebands;
 }
 
-function deletionManifest(profileId, semanticOwners, sourceUnits, functions, resources, requirements, sidebands) {
+function terminalDelivery(context, label, resources) {
+  const output = context.outputResult.normalized;
+  const plan = context.resourceResult.normalized;
+  const reserve = plan.reserves.find(({ id }) => id === output.terminalEnvelope.terminalReserve);
+  if (!reserve || reserve.purpose !== 'terminal-result') throw new Error('selected Output terminal reserve is absent');
+  const partition = plan.partitions.find(({ id }) => id === reserve.partition);
+  const resourceClass = plan.classes.find(({ id }) => id === reserve.class);
+  const pool = partition && plan.pools.find(({ id }) => id === partition.pool);
+  const contributor = plan.contributors.find(({ profile, contract }) => profile?.id === output.id || contract?.id === 'SPEC-0013');
+  if (!partition || !resourceClass || !pool || resourceClass.unit !== 'bytes' || pool.unit !== 'bytes' || partition.alias?.kind !== 'none' || partition.class !== resourceClass.id) throw new Error('selected Output terminal reserve is not first-realization byte storage');
+  if (!contributor || !reserve.eligibleOwners.includes(contributor.id)) throw new Error('selected Output terminal reserve is not owned by Output');
+  const packageResource = resources.find(({ providerRequirement }) => providerRequirement === pool.providerRequirement);
+  if (!packageResource || packageResource.materialization !== 'resident-storage' || !packageResource.access.includes('read')) throw new Error('selected Output terminal delivery is not readable resident package storage');
+  return {
+    id: `delivery.${label}.terminal-output`, semanticOwner: output.id, role: 'terminal-output', terminalSchema: output.terminal.schema,
+    resource: packageResource.id, byteOffset: partition.offset, byteLength: reserve.maximum, readiness: 'terminal-completed', mode: 'asynchronous-bounded-read',
+    maxTransfers: output.publication.maxTransfers, borrow: { ...output.terminal.borrow }, asyncRead: { ...output.terminal.asyncRead }, cleanup: { ...output.terminal.cleanup }, lifetime: 'terminal-result',
+  };
+}
+
+function deletionManifest(profileId, semanticOwners, sourceUnits, functions, resources, requirements, sidebands, deliveries) {
   const records = [...semanticOwners].sort(compareRaw).map((owner) => ({
     owner,
     sourceUnits: sourceUnits.filter((entry) => entry.semanticOwner === owner).map(({ id }) => id),
@@ -247,6 +267,7 @@ function deletionManifest(profileId, semanticOwners, sourceUnits, functions, res
     resources: resources.filter((entry) => entry.ownerProfile === owner).map(({ id }) => id),
     publicRequirements: requirements.filter(({ consumers }) => consumers.includes(owner)).map(({ contract }) => contract.id),
     sidebands: sidebands.filter(({ semanticOwner }) => semanticOwner === owner).map(({ id }) => id),
+    deliveries: deliveries.filter(({ semanticOwner }) => semanticOwner === owner).map(({ id }) => id),
     packageRecords: owner === profileId ? ['package.execution-operation'] : [],
   }));
   return { selectedOwners: [...semanticOwners].sort(compareRaw), records, comparison: 'byte-exact-except-truthful-selected-owner-identities', absence: 'structural-omission-no-placeholder' };
@@ -258,6 +279,7 @@ export function buildProgramPackageProfile(inspected, context, label) {
   const requirements = publicRequirements(context, profileId);
   const resources = resourceRequirements(context);
   const sidebands = sidebandRequirements(context, label, resources);
+  const deliveries = [terminalDelivery(context, label, resources)];
   const source = sourceAndFunctions(context, profileId, label, sidebands);
   const outputResource = resources.find(({ materialization }) => materialization === 'resident-storage');
   if (!outputResource) throw new Error(`${label} fixture has no resident-storage resource`);
@@ -274,7 +296,7 @@ export function buildProgramPackageProfile(inspected, context, label) {
       channelProfile: context.channelResult ? { kind: 'selected', profile: profileReference(context.channelResult) } : { kind: 'absent' },
     },
     generator: { id: 'composer.reference-search-program', version: VERSION, revision: AUTHORITY_REVISION, language: 'restricted-device-js', canonicalization: 'utf8-lf-source-units-by-js-code-unit-v1', maxSourceBytes: '1048576', maxFunctions: '1024', maxCallDepth: '64' },
-    sourceUnits: source.sourceUnits, functions: source.functions, programUnits: source.programUnits, publicRequirements: requirements, resources, sidebands,
+    sourceUnits: source.sourceUnits, functions: source.functions, programUnits: source.programUnits, publicRequirements: requirements, resources, sidebands, deliveries,
     operations: [{
       id: `operation.${label}.engine-step`, entryPoint: 'engine_step',
       bindings: [
@@ -286,7 +308,7 @@ export function buildProgramPackageProfile(inspected, context, label) {
     manifests: { result: schemaReference('cuda-mcgs.package-result'), observation: schemaReference('cuda-mcgs.package-observation'), diagnostic: schemaReference('cuda-mcgs.package-diagnostic'), cancellation: schemaReference('cuda-mcgs.package-cancellation'), completion: schemaReference('cuda-mcgs.package-completion'), cleanup: schemaReference('cuda-mcgs.package-cleanup') },
     provenance: provenance(`${label}-package`),
     compatibility: { cudaJs: { repository: 'iteathen/CUDA-JS', revision: CUDA_JS_REVISION, package: CUDA_JS_PACKAGE }, apiSchema: '1', capabilityNegotiation: 'pre-allocation-fail-closed', fallback: 'none', requiredEvidence: [schemaReference('cuda-mcgs.reference-composition-evidence'), schemaReference('cuda-js.compatible-pair-evidence')] },
-    deletion: deletionManifest(profileId, semanticOwners, source.sourceUnits, source.functions, resources, requirements, sidebands),
+    deletion: deletionManifest(profileId, semanticOwners, source.sourceUnits, source.functions, resources, requirements, sidebands, deliveries),
   };
   const requirementById = new Map(requirements.map(({ contract }) => [contract.id, contract]));
   return { input, context: { ...context, authorityRevision: AUTHORITY_REVISION, composerContributionIdentity: source.composerContributionIdentity, requirementById, availableRequirements: new Set(requirementById.keys()), cudaJs: { revision: CUDA_JS_REVISION, package: CUDA_JS_PACKAGE, apiSchema: '1' } } };

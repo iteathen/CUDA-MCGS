@@ -21,6 +21,7 @@
       "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
       "docs/specs/SPEC-0005-operation-local-resource-access-addendum.md",
       "docs/specs/SPEC-0005-external-control-sideband-addendum.md",
+      "docs/specs/SPEC-0005-terminal-output-host-delivery-addendum.md",
       "docs/development/2026-09-04-cuda-js-runtime-adapter-125-assessment-and-plan.md"
     ],
     "design": {
@@ -71,7 +72,8 @@
         "exact peer compatibility admission",
         "Device-JS/resource/sideband/launch translation",
         "bounded operation lifecycle",
-        "dependency-safe failure rollback"
+        "dependency-safe failure rollback",
+        "explicit terminal Output delivery mapping through the declared resident resource range"
       ],
       "accidental_complexity_rejected": [
         "second scheduler/runtime lifecycle",
@@ -145,7 +147,8 @@
         "execution-package schema/meaning",
         "public CUDA-JS API or compatibility manifest",
         "adapter source bytes",
-        "accepted operation/access/sideband semantics"
+        "accepted operation/access/sideband semantics",
+        "accepted terminal Output host-delivery representation or mapping"
       ],
       "shared_setup_and_mutable_state_isolation": [
         "each portable case creates a fresh injected public-peer fake and fresh execution-package value"
@@ -167,7 +170,8 @@
       ],
       "steady_state_ownership": [
         "one prepared execution owns only the public lower objects it assembled",
-        "one direct submitted operation; no adapter scheduler"
+        "one direct submitted operation; no adapter scheduler",
+        "terminal delivery may read only explicitly declared Output-owned package ranges after completion; no arbitrary resident-memory read surface"
       ],
       "cancellation_and_failure": [
         "external cancellation intent publishes only through declared host-to-device mailbox lanes",
@@ -227,7 +231,8 @@
     "owner": "CUDA-MCGS framework",
     "notes": [
       "#125 v0 admits exactly one operation with maxPending=1 and uses direct public CudaFunction.submit because accepted mailbox arguments are not a current prepared-DAG binding type.",
-      "The adapter never passes alignment to allocateDevice; alignment is a fail-closed compatibility admission fact only."
+      "The adapter never passes alignment to allocateDevice; alignment is a fail-closed compatibility admission fact only.",
+      "SPEC-0005 terminal host-delivery projection adds one semantic delivery id mapped to exact public D2H bytes only after terminal completion; arbitrary resource reads remain unavailable."
     ]
   }
 }

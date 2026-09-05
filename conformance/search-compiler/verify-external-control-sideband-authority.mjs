@@ -12,23 +12,42 @@ const profile = (id, schema, character, normalized = {}) => ({
 const schemaReference = (id, character = '9') => ({ id: `${id}/0.1.0`, version: '0.1.0', sha256: character.repeat(64) });
 
 function makeContext(sessionResult = null) {
+  const progressResult = profile('progress.sideband-authority', 'cuda-mcgs.progress-profile/0.2.0', '2');
+  const outputResult = profile('output.sideband-authority', 'cuda-mcgs.output-profile/0.2.0', '3', {
+    terminalEnvelope: { terminalReserve: 'reserve.sideband-authority.terminal' },
+    terminal: {
+      schema: 'output-schema.sideband-authority.terminal',
+      borrow: schemaReference('cuda-mcgs.synthetic-sideband-terminal-borrow'),
+      asyncRead: schemaReference('cuda-mcgs.synthetic-sideband-terminal-async-read'),
+      cleanup: schemaReference('cuda-mcgs.synthetic-sideband-terminal-cleanup'),
+    },
+    publication: { hostDelivery: 'asynchronous-bounded-read', hostEffect: 'transfer-borrow-only', maxTransfers: '1' },
+  });
   const sessionResourceProfile = { id: 'resource-owner.sideband-session', schema: schemaReference('cuda-mcgs.synthetic-sideband-session-resource-profile'), identity: digest('a') };
   const resourceResult = profile('resource.sideband-authority', 'cuda-mcgs.resource-profile/0.2.0', '1', {
-    contributors: [{ id: 'resource-contributor.sideband-session', profile: sessionResourceProfile }],
-    classes: [{ id: 'resource-class.sideband-session-control', contributor: 'resource-contributor.sideband-session', lifetime: 'session' }],
-    partitions: [{ id: 'resource-partition.sideband-session-control', class: 'resource-class.sideband-session-control', pool: 'resource-pool.sideband-session-control' }],
-    pools: [{ id: 'resource-pool.sideband-session-control', providerRequirement: 'provider.sideband-authority.output' }],
+    contributors: [
+      { id: 'resource-contributor.sideband-session', profile: sessionResourceProfile },
+      { id: 'resource-contributor.sideband-output', profile: { id: outputResult.normalized.id } },
+    ],
+    classes: [
+      { id: 'resource-class.sideband-session-control', contributor: 'resource-contributor.sideband-session', lifetime: 'session', unit: 'bytes' },
+      { id: 'resource-class.sideband-terminal', contributor: 'resource-contributor.sideband-output', lifetime: 'operation', unit: 'bytes' },
+    ],
+    partitions: [
+      { id: 'resource-partition.sideband-session-control', class: 'resource-class.sideband-session-control', pool: 'resource-pool.sideband-shared', offset: '64', capacity: '64', alias: { kind: 'none' } },
+      { id: 'resource-partition.sideband-terminal', class: 'resource-class.sideband-terminal', pool: 'resource-pool.sideband-shared', offset: '0', capacity: '64', alias: { kind: 'none' } },
+    ],
+    pools: [{ id: 'resource-pool.sideband-shared', providerRequirement: 'provider.sideband-authority.output', unit: 'bytes', capacity: '128' }],
+    reserves: [{ id: 'reserve.sideband-authority.terminal', purpose: 'terminal-result', class: 'resource-class.sideband-terminal', partition: 'resource-partition.sideband-terminal', minimum: '64', maximum: '64', eligibleOwners: ['resource-contributor.sideband-output'] }],
     providerRequirements: [{
       id: 'provider.sideband-authority.output',
       unit: 'bytes',
-      capacity: '64',
+      capacity: '128',
       alignment: '8',
       memorySpaces: ['device-search'],
       access: ['read', 'write'],
     }],
   });
-  const progressResult = profile('progress.sideband-authority', 'cuda-mcgs.progress-profile/0.2.0', '2');
-  const outputResult = profile('output.sideband-authority', 'cuda-mcgs.output-profile/0.2.0', '3');
   return {
     profileResults: [resourceResult, progressResult, outputResult, ...(sessionResult ? [sessionResult] : [])],
     resourceResult,
