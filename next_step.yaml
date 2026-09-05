@@ -1,9 +1,9 @@
 {
-  "schema_version": 113,
+  "schema_version": 114,
   "updated": "2026-09-04",
-  "status": "cuda_js_32_exact_pair_handoff",
-  "objective": "Hand the protected post-#211 CUDA-MCGS consumer state to fresh CUDA-JS #32 exact compatible-pair assessment and evidence without changing semantic ownership or relabeling portable evidence as native qualification.",
-  "ownership_boundary": "Accepted specs/schemas own semantic truth. tool.search-compiler owns canonical stateless pre-ignition normalization/composition. integration.cuda-js owns mechanical translation from accepted finite MCGS execution-package meaning to an injected versioned public CUDA-JS surface. CUDA-JS owns lower request validity, provider/device/resource/compiler/operation/publication lifecycle and compatibility facts.",
+  "status": "cuda_js_32_terminal_pair_ready",
+  "objective": "Use the protected post-#215 CUDA-MCGS consumer path for fresh CUDA-JS #32 exact compatible-pair evidence, with explicit terminal Output delivery available end-to-end and all unproved native requirements still deferred.",
+  "ownership_boundary": "Accepted specs/schemas own semantic truth. tool.search-compiler owns canonical stateless pre-ignition normalization/composition. Program Package owns explicit cross-owner realization connections such as terminal delivery without taking Output or Resource semantics. integration.cuda-js owns mechanical translation from accepted finite MCGS execution-package meaning to an injected versioned public CUDA-JS surface. CUDA-JS owns lower request validity, provider/device/resource/compiler/operation/publication lifecycle and compatibility facts.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
@@ -18,14 +18,15 @@
     "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
     "docs/specs/SPEC-0005-operation-local-resource-access-addendum.md",
     "docs/specs/SPEC-0005-external-control-sideband-addendum.md",
+    "docs/specs/SPEC-0005-terminal-output-host-delivery-addendum.md",
     "docs/specs/SPEC-0013-bounded-result-and-observation-publication.md",
     "https://github.com/iteathen/CUDA-JS/issues/32",
     "https://github.com/iteathen/CUDA-JS/issues/4"
   ],
   "recorded_protected_input": {
-    "main": "6f39fe765a1b7ca721cafc52081d4fcfd3683214",
-    "tree": "8b192d018ccc5136da9a07122893b257c31843a6",
-    "meaning": "Exact protected CUDA-MCGS base from which this post-#211 handoff transaction was constructed; after integration it remains historical transaction provenance and live protected identity is read from GitHub."
+    "main": "658cd666327924b6d2d5321f06ade7e2e84e3792",
+    "tree": "86ed6b6992b4300b27965b7a5d94a6cf0470a39b",
+    "meaning": "Exact protected CUDA-MCGS implementation baseline containing #215 terminal Output host delivery and from which this docs-only #218 reconciliation was constructed. After #218 integration this remains implementation provenance; the exact pair must freeze the live protected revision actually executed."
   },
   "protected_state": {
     "search_compiler_component": "tool.search-compiler",
@@ -33,6 +34,9 @@
     "runtime_adapter_issue": 125,
     "runtime_adapter_pr": 210,
     "runtime_adapter": "protected-production-portable-qualified-v0",
+    "terminal_delivery_issue": 215,
+    "terminal_delivery_pr": 217,
+    "terminal_delivery": "protected-production-portable-qualified-v0",
     "composer_requirements_classified": 989,
     "accepted_reference_requirements": 937,
     "native_compatible_pair_deferred": 52,
@@ -47,24 +51,27 @@
   "completed_dependencies": [
     "#125 / PR #210 protected-integrated production integration.cuda-js and portable Windows/Ubuntu conformance",
     "#211 / PR #212 protected-integrated the post-#125 state reconciliation and was closed completed",
-    "post-#212 CUDA-MCGS adapter/documentation/CodeQL qualification 33920231733 / 33920231761 / 33920231589 passed",
     "CUDA-JS #156 / PR #199 protected-integrated the current-state freshness guard and closed completed",
     "CUDA-JS #200 / PR #201 protected-integrated the #32 activation/current-state reconciliation as dd41ce0693c91aff867a9db9ad4f11b507eeb38b / tree b331ddc3cadb48003ba86d7b920e7b6cb34606a1",
-    "post-#201 CUDA-JS verify/schema/node-compatibility/CodeQL 33922548945 / 33922548825 / 33922548619 passed"
+    "post-#201 CUDA-JS verify/schema/node-compatibility/CodeQL 33922548945 / 33922548825 / 33922548619 passed",
+    "#215 / PR #217 protected-integrated explicit terminal Output host delivery through Program Package/Search Program and production integration.cuda-js as 658cd666327924b6d2d5321f06ade7e2e84e3792 / tree 86ed6b6992b4300b27965b7a5d94a6cf0470a39b",
+    "post-#215 CUDA-MCGS documentation/runtime-adapter/CodeQL 33944607573 / 33944607533 / 33944607295 passed; protected required verify job 101248366485 passed",
+    "permanent SPEC-0005 terminal-delivery falsifiers are protected and final REF-INTEGRATE-01 remains strict at 393 reference requirements with exactly 52 native-deferred"
   ],
   "current_focus": {
     "repository": "iteathen/CUDA-JS",
     "issue": 32,
     "name": "exact CUDA-MCGS/CUDA-JS compatible-pair qualification through public CUDA-JS",
-    "state": "fresh cross-repository assess/research and exact-profile evidence construction",
-    "next_action": "Freeze one truthful exact pair, derive the smallest safe accepted product-neutral terminal-only MCGS workload through tool.search-compiler, realize it through integration.cuda-js/public CUDA-JS only on a qualifying physical profile, and record exact identity/progress/publication/failure/health/cleanup evidence.",
+    "state": "software prerequisites complete; exact physical-profile evidence construction remains",
+    "next_action": "After #218 protected readback, freeze the actually executed protected CUDA-MCGS revision together with the protected CUDA-JS revision/package/API schema, derive the smallest safe accepted product-neutral terminal-only workload through tool.search-compiler, realize it through production integration.cuda-js/public CUDA-JS only, and collect exact native identity/progress/publication/terminal-delivery/failure/health/cleanup evidence on a qualifying physical profile.",
     "exit": "One exact pair satisfies CUDA-JS #32 without consumer-local native/private bypass, or the first demonstrated generic lower gap is routed to CUDA-JS and the pair remains unqualified until that owner is corrected."
   },
   "assessment_findings": [
-    "Production integration.cuda-js does not hard-code the old CUDA-JS revision; it requires execution-package peer identity and injected peer provenance to agree exactly with the public package/API projection.",
-    "The #125 portable fixture's 49a2f77d revision is historical conformance provenance only and must not be used to label a different actually executed checkout.",
+    "Production integration.cuda-js does not hard-code the historical CUDA-JS revision; it requires execution-package peer identity and injected peer provenance to agree exactly with the public package/API projection.",
+    "The #125 portable fixture's 49a2f77d revision is historical conformance provenance only and must not label a different actually executed checkout.",
     "The #125 portable fake is not a native workload oracle because its 16-byte u32 output combined with a 64-thread globalX write can address outside the declared allocation if physically executed unchanged.",
     "The first physical workload therefore comes from accepted tool.search-compiler/owner semantics with safe finite resource/launch bounds rather than from the portable translation fake.",
+    "#215 closed the MCGS terminal-delivery projection defect: every admitted package has an explicit Output-owned terminal delivery, the execution projection is owner-neutral, and production integration.cuda-js uses public asynchronous D2H only after completed operation state.",
     "Accepted Output semantics permit a terminal-only one-shot profile with bounded asynchronous host delivery after ready publication, so live observation need not be invented for the first exact pair.",
     "CUDA-JS already owns terminal D2H transfer and the selected public publication mechanisms; no new generic lower capability is currently demonstrated by the smallest first pair.",
     "CUDA-JS #198 is conditional pressure only; it becomes a blocker only if the selected accepted pair demonstrates that behavior is required."
@@ -79,9 +86,9 @@
     "#123 remains downstream external-consumer acceptance requiring usable #109 surface plus exact #32 pair evidence; #124 matters only for a selected optional Tensor evaluator."
   ],
   "deliverables": [
-    "STATUS.md names CUDA-JS #32 as the next P0 cross-repository evidence seam and records the exact post-#211 protected MCGS input plus newly protected CUDA-JS #201 peer truth.",
-    "next_step.yaml carries the exact #32 handoff, terminal-only first-pair disposition, evidence split with #4, lower-gap routing rule, and downstream #109/#123 disposition.",
-    "adapters/runtimes/cuda-js/README.md reflects its already-protected production status and distinguishes historical portable peer provenance from the actually executed pair revision."
+    "STATUS.md records #215 / PR #217 as protected-complete with terminal delivery behavior, exact implementation baseline, protected post-merge qualification and explicit non-claims while keeping CUDA-JS #32 as the current P0 seam.",
+    "next_step.yaml records the post-#215 implementation baseline, terminal-delivery completion, exact-pair freeze rule, physical-evidence blocker, #4 split, and standing lower-gap routing rule without making #218 the semantic current focus.",
+    "adapters/runtimes/cuda-js/README.md was inspected at the protected #215 baseline and already reflects terminal delivery accurately; no edit is required."
   ],
   "validation": [
     "./scripts/verify-docs.sh",
@@ -97,14 +104,14 @@
     "Continue #109 independently and use #123 only after the public surface and exact-pair evidence are both ready."
   ],
   "do_not": [
-    "Do not infer native, performance, stable SDK, product or multi-GPU support from portable #125 evidence.",
-    "Do not add native/CUDA/PTX/FFI/private CUDA-JS paths, generated-artifact inspection or a second lower request/lifecycle interpreter in CUDA-MCGS.",
+    "Do not infer native, performance, stable SDK, product or multi-GPU support from portable #125 or #215 evidence.",
+    "Do not add native/CUDA/PTX/FFI/private CUDA-JS paths, generated-artifact inspection, arbitrary resource reads or a second lower request/lifecycle interpreter in CUDA-MCGS.",
     "Do not use the historical portable fake as the physical pair workload or misstate its old peer revision as the revision actually executed.",
     "Do not create a new preparation transaction, universal launch resolver, GPU IR, scheduler or provider registry without newly demonstrated authority.",
     "Do not copy CUDA-JS limits/provider/alignment facts into MCGS semantic authority."
   ],
   "hard_constraints": [
-    "No protected integration without exact-head qualification, complete review and fresh user authorization.",
+    "Protected integration requires exact-head qualification, complete review and applicable user authorization. Standing user authorization is active for this workstream; do not create an authorization-only stop while the exact subject/base/tree and qualification/review invariants remain satisfied.",
     "Generic lower gaps route to CUDA-JS; generic Tensor gaps route to CUDA-JS-Tensor; reusable NN semantics route to cuda-nn; product semantics remain downstream.",
     "One semantic fact/state/resource/lifecycle/compatibility fact has one visible owner."
   ]
