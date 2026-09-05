@@ -1,0 +1,32 @@
+name: cuda-js-compatible-pair
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  portable-compatible-pair:
+    name: Portable exact-pair capsule (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      CUDA_JS_REVISION: 2ec2b9e7ffd3b6b5fe8d14364e2d758065d90e5c
+      CUDA_JS_TREE: 05fe89ff91e538aedf003a17c5b8d40c725a4b24
+      CUDA_JS_PACKAGE: cuda-js@0.1.0-alpha.18
+      CUDA_JS_API_SCHEMA: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Run portable exact compatible-pair construction and falsifiers
+        run: node scripts/run-cuda-js-compatible-pair.mjs portable
+      - name: Re-run protected public CUDA-JS adapter regression capsule
+        run: node scripts/run-cuda-js-runtime-adapter.mjs
