@@ -524,13 +524,13 @@ export async function buildExactCompatiblePairCapsule(pairInput) {
     composition,
     resources: {
       terminal: {
-        id: built.terminalResource.id,
+        packageId: built.terminalResource.id,
         allocationByteLength: built.terminalResource.capacity,
         deliveryByteOffset: built.delivery.byteOffset,
         deliveryByteLength: built.delivery.byteLength,
         alignment: built.terminalResource.alignment,
       },
-      channel: { id: built.channelResource.id, byteLength: built.channelResource.capacity, alignment: built.channelResource.alignment, semanticOwner: built.channel.id },
+      channel: { packageId: built.channelResource.id, byteLength: built.channelResource.capacity, alignment: built.channelResource.alignment, semanticOwner: built.channel.id },
     },
     deliveryId: built.delivery.id,
     workload: Object.freeze({ gridX: GRID_X, blockX: BLOCK_X, workItems: GRID_X * BLOCK_X, terminalWords: TERMINAL_WORDS, publicationPayload: PUBLICATION_PAYLOAD, publicationReady: PUBLICATION_READY, publicationResult: PUBLICATION_RESULT }),
@@ -539,30 +539,43 @@ export async function buildExactCompatiblePairCapsule(pairInput) {
   return capsule;
 }
 
+export function executionBindings(executionPackage, capsule) {
+  const adapter = executionPackage.cudaJsAdapter;
+  const operation = adapter.operationRequirements[0];
+  const delivery = adapter.deliveryRequirements.find(({ packageDelivery }) => packageDelivery === capsule.deliveryId);
+  const outputBinding = operation?.bindings.find(({ parameter }) => parameter === 'output');
+  const channelBinding = operation?.bindings.find(({ parameter }) => parameter === 'channelState');
+  const terminalResource = delivery && adapter.resourceRequirements.find(({ id }) => id === delivery.resource);
+  const channelResource = channelBinding && adapter.resourceRequirements.find(({ id }) => id === channelBinding.source.resource);
+  return { adapter, operation, delivery, outputBinding, channelBinding, terminalResource, channelResource };
+}
+
 export function assertExactExecutionPackage(executionPackage, capsule) {
   if (executionPackage.compatibility.cudaJs.revision !== capsule.pair.cudaJs.revision || executionPackage.compatibility.cudaJs.package !== capsule.pair.cudaJs.package || String(executionPackage.compatibility.apiSchema) !== capsule.pair.cudaJs.apiSchema) fail('PAIR_STALE_LOWER', 'execution package lower identity differs from frozen pair');
-  const adapter = executionPackage.cudaJsAdapter;
+  const { adapter, operation, delivery, outputBinding, channelBinding, terminalResource, channelResource } = executionBindings(executionPackage, capsule);
   if (adapter.operationRequirements.length !== 1) fail('PAIR_HOST_RELAUNCH', 'exact pair admits exactly one device operation');
-  const operation = adapter.operationRequirements[0];
-  const totalThreads = Number(operation.launchPolicy.grid[0]) * Number(operation.launchPolicy.block[0]);
-  const delivery = adapter.deliveryRequirements.find(({ id }) => id === capsule.deliveryId);
-  const outputBinding = operation.bindings.find(({ parameter }) => parameter === 'output');
-  const channelBinding = operation.bindings.find(({ parameter }) => parameter === 'channelState');
-  if (!delivery || delivery.resource !== capsule.resources.terminal.id || delivery.byteOffset !== capsule.resources.terminal.deliveryByteOffset || delivery.byteLength !== capsule.resources.terminal.deliveryByteLength) fail('PAIR_TERMINAL_RANGE', 'terminal delivery is not the exact declared Output reserve range');
+  if (!operation) fail('PAIR_HOST_RELAUNCH', 'exact pair operation is absent');
+  if (!delivery || delivery.byteOffset !== capsule.resources.terminal.deliveryByteOffset || delivery.byteLength !== capsule.resources.terminal.deliveryByteLength) fail('PAIR_TERMINAL_RANGE', 'terminal delivery is not the exact declared Output reserve range');
   if (!outputBinding || outputBinding.source.resource !== delivery.resource || outputBinding.source.access !== 'write') fail('PAIR_TERMINAL_RESOURCE', 'operation Output binding differs from terminal delivery resource');
-  if (!channelBinding || channelBinding.source.resource !== capsule.resources.channel.id || channelBinding.source.access !== 'read-write') fail('PAIR_CHANNEL_RESOURCE', 'operation Channel binding differs from accepted Channel payload storage');
-  if (capsule.resources.channel.id === capsule.resources.terminal.id) fail('PAIR_RESOURCE_OWNERSHIP', 'Channel and Output resources alias');
-  if (BigInt(capsule.resources.terminal.allocationByteLength) < BigInt(delivery.byteOffset) + BigInt(delivery.byteLength)) fail('PAIR_TERMINAL_RANGE', 'terminal delivery exceeds its backing allocation');
+  if (!channelBinding || channelBinding.source.kind !== 'resource' || channelBinding.source.access !== 'read-write') fail('PAIR_CHANNEL_RESOURCE', 'operation Channel binding does not realize accepted read-write Channel payload storage');
+  if (!terminalResource || terminalResource.byteLength !== capsule.resources.terminal.allocationByteLength || terminalResource.alignment !== capsule.resources.terminal.alignment) fail('PAIR_TERMINAL_RESOURCE', 'terminal backing allocation differs from the accepted Resource provider');
+  if (!channelResource || channelResource.byteLength !== capsule.resources.channel.byteLength || channelResource.alignment !== capsule.resources.channel.alignment) fail('PAIR_CHANNEL_RESOURCE', 'Channel backing allocation differs from the accepted Resource provider');
+  if (terminalResource.id === channelResource.id) fail('PAIR_RESOURCE_OWNERSHIP', 'Channel and Output adapter resources alias');
+  if (BigInt(terminalResource.byteLength) < BigInt(delivery.byteOffset) + BigInt(delivery.byteLength)) fail('PAIR_TERMINAL_RANGE', 'terminal delivery exceeds its backing allocation');
+  const totalThreads = Number(operation.launchPolicy.grid[0]) * Number(operation.launchPolicy.block[0]);
   if (totalThreads !== capsule.workload.terminalWords || totalThreads * 4 !== Number(delivery.byteLength)) fail('PAIR_LAUNCH_RANGE', 'launch does not cover the exact finite terminal u32 range');
   if (Number(operation.launchPolicy.block[0]) !== BLOCK_X || Number(operation.launchPolicy.grid[0]) !== GRID_X) fail('PAIR_LAUNCH_RANGE', 'launch geometry differs from the qualified capsule geometry');
-  const entry = adapter.searchProgram.functions.find(({ name }) => name === operation.function);
-  const handoff = adapter.searchProgram.functions.find(({ name }) => name === 'channel_handoff');
-  if (!entry || !handoff || !entry.calls.includes('channel_handoff')) fail('PAIR_CHANNEL_SEMANTICS', 'runtime entry does not consume the selected Channel function');
+
+  const semanticProgram = capsule.composition.searchProgram.normalized;
+  const semanticEntry = semanticProgram.functions.find(({ name }) => name === operation.function);
+  const semanticHandoff = semanticProgram.functions.find(({ name }) => name === 'channel_handoff');
+  if (!semanticEntry || !semanticHandoff || !semanticEntry.calls.includes('channel_handoff')) fail('PAIR_CHANNEL_SEMANTICS', 'canonical Search Program does not consume the selected Channel function');
   const requiredHelpers = ['gpu.atomic.store-release-device', 'gpu.atomic.load-acquire-device', 'gpu.barrier.block'];
-  if (requiredHelpers.some((helper) => !handoff.helpers.includes(helper))) fail('PAIR_PUBLICATION', 'Channel function omits device release/acquire publication or deterministic block sequencing');
+  if (requiredHelpers.some((helper) => !semanticHandoff.helpers.includes(helper))) fail('PAIR_PUBLICATION', 'canonical Channel function omits device release/acquire publication or deterministic block sequencing');
   if (!adapter.publicContracts.some(({ id }) => id === 'cuda-js.device-publication-release-acquire/0.1.0')) fail('PAIR_PUBLICATION', 'device release/acquire public requirement is absent');
   const source = adapter.searchProgram.source;
-  if (!source.includes('gpu.atomic.storeReleaseDevice') || !source.includes('gpu.atomic.loadAcquireDevice') || !source.includes('gpu.barrier.block')) fail('PAIR_PUBLICATION', 'Search Program source omits release/acquire publication evidence');
+  if (!source.includes('gpu.atomic.storeReleaseDevice') || !source.includes('gpu.atomic.loadAcquireDevice') || !source.includes('gpu.barrier.block')) fail('PAIR_PUBLICATION', 'translated Search Program source omits release/acquire publication evidence');
+  if (!adapter.searchProgram.functions.some(({ name }) => name === 'channel_handoff') || !adapter.searchProgram.functions.some(({ name }) => name === operation.function)) fail('PAIR_CHANNEL_SEMANTICS', 'execution package omits required public Device-JS functions');
   if (/(?:#include|__global__|__device__|\.ptx\b|\.cu\b|\bffi\b|raw[-_ ]?handle|native[-_ ]?handle)/i.test(source)) fail('PAIR_BOUNDARY', 'Search Program crosses the public Device-JS boundary');
   if (adapter.sidebandRequirements.some(({ direction }) => direction === 'device-to-host')) fail('PAIR_HOST_INTERMEDIATE', 'first exact pair must not observe active device work through the host');
   return true;

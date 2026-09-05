@@ -7,6 +7,7 @@ import {
   assertExactExecutionPackage,
   assertHostProtocol,
   buildExactCompatiblePairCapsule,
+  executionBindings,
   expectedTerminalBytes,
   portableEvidenceIdentity,
 } from './src/capsule.mjs';
@@ -56,6 +57,17 @@ function lowerSemanticNeutrality(compatibility) {
   assert(!/(?:cuda-mcgs|search-program|search-policy|search-graph|channel\.synthetic|output\.synthetic)/i.test(serialized));
 }
 
+function adapterInputs(capsule) {
+  const executionPackage = capsule.composition.executionPackage.normalized;
+  const binding = executionBindings(executionPackage, capsule);
+  return {
+    executionPackage,
+    deliveryId: binding.delivery.id,
+    channelResourceId: binding.channelResource.id,
+    channelByteLength: Number(binding.channelResource.byteLength),
+  };
+}
+
 const cases = [];
 async function test(name, run) {
   try {
@@ -72,21 +84,21 @@ const pair = currentPair();
 let capsule;
 await test('production-composer-builds-exact-channel-terminal-capsule', async () => {
   capsule = await buildExactCompatiblePairCapsule(pair);
-  assertExactExecutionPackage(capsule.composition.executionPackage.normalized, capsule);
-  assert.equal(capsule.composition.executionPackage.normalized.compatibility.cudaJs.revision, pair.cudaJs.revision);
-  assert.equal(capsule.composition.executionPackage.normalized.compatibility.cudaJs.package, pair.cudaJs.package);
+  const input = adapterInputs(capsule);
+  assertExactExecutionPackage(input.executionPackage, capsule);
+  assert.equal(input.executionPackage.compatibility.cudaJs.revision, pair.cudaJs.revision);
+  assert.equal(input.executionPackage.compatibility.cudaJs.package, pair.cudaJs.package);
   assert.equal(capsule.workload.workItems, 1024);
   assert.equal(capsule.resources.terminal.deliveryByteOffset, '0');
   assert.equal(capsule.resources.terminal.deliveryByteLength, '4096');
   assert.equal(capsule.resources.terminal.allocationByteLength, '12288');
-  assert.notEqual(capsule.resources.terminal.id, capsule.resources.channel.id);
+  assert.notEqual(input.channelResourceId, executionBindings(input.executionPackage, capsule).terminalResource.id);
 });
 
 await test('device-release-acquire-is-owner-backed-and-mandatory', () => {
-  const value = clone(capsule.composition.executionPackage.normalized);
-  const handoff = value.cudaJsAdapter.searchProgram.functions.find(({ name }) => name === 'channel_handoff');
-  handoff.helpers = handoff.helpers.filter((helper) => helper !== 'gpu.atomic.load-acquire-device');
-  throws(() => assertExactExecutionPackage(value, capsule), 'PAIR_PUBLICATION');
+  const missingSource = clone(capsule.composition.executionPackage.normalized);
+  missingSource.cudaJsAdapter.searchProgram.source = missingSource.cudaJsAdapter.searchProgram.source.replace('gpu.atomic.loadAcquireDevice', 'gpu.u32');
+  throws(() => assertExactExecutionPackage(missingSource, capsule), 'PAIR_PUBLICATION');
 
   const missingContract = clone(capsule.composition.executionPackage.normalized);
   missingContract.cudaJsAdapter.publicContracts = missingContract.cudaJsAdapter.publicContracts.filter(({ id }) => id !== 'cuda-js.device-publication-release-acquire/0.1.0');
@@ -99,7 +111,7 @@ await test('unsafe-launch-and-terminal-range-fail-before-lower-use', () => {
   throws(() => assertExactExecutionPackage(launch, capsule), 'PAIR_LAUNCH_RANGE');
 
   const delivery = clone(capsule.composition.executionPackage.normalized);
-  delivery.cudaJsAdapter.deliveryRequirements[0].resource = capsule.resources.channel.id;
+  delivery.cudaJsAdapter.deliveryRequirements[0].byteLength = '4092';
   throws(() => assertExactExecutionPackage(delivery, capsule), 'PAIR_TERMINAL_RANGE');
 });
 
@@ -143,18 +155,19 @@ await test('portable-public-adapter-path-has-one-ignition-no-host-active-loop-an
   const expected = expectedTerminalBytes();
   const fake = publicCudaJsFake({ readBytes: expected });
   const recorder = createPublicCudaJsRecorder(fake.cudaJs);
+  const input = adapterInputs(capsule);
   const actions = ['prepare'];
-  const prepared = await prepareCudaJsExecution(capsule.composition.executionPackage.normalized, {
+  const prepared = await prepareCudaJsExecution(input.executionPackage, {
     cudaJs: recorder.cudaJs,
     peer: { repository: pair.cudaJs.repository, revision: pair.cudaJs.revision, package: pair.cudaJs.package },
   });
-  await rejects(() => prepared.deliver(capsule.deliveryId), 'CUDA_JS_ADAPTER_STATE');
+  await rejects(() => prepared.deliver(input.deliveryId), 'CUDA_JS_ADAPTER_STATE');
   actions.push('ignite');
-  await prepared.ignite({ resources: { [capsule.resources.channel.id]: new Uint8Array(Number(capsule.resources.channel.byteLength)) } });
+  await prepared.ignite({ resources: { [input.channelResourceId]: new Uint8Array(input.channelByteLength) } });
   actions.push('wait');
   await prepared.wait();
   actions.push('deliver');
-  const delivery = await prepared.deliver(capsule.deliveryId);
+  const delivery = await prepared.deliver(input.deliveryId);
   assert.deepEqual(delivery.bytes, expected);
   actions.push('close');
   const cleanup = await prepared.close();
@@ -175,11 +188,12 @@ await test('portable-public-adapter-path-has-one-ignition-no-host-active-loop-an
 
 await test('deferred-lower-failure-preserves-lower-facts-and-cleanup', async () => {
   const fake = publicCudaJsFake({ waitError: true });
-  const prepared = await prepareCudaJsExecution(capsule.composition.executionPackage.normalized, {
+  const input = adapterInputs(capsule);
+  const prepared = await prepareCudaJsExecution(input.executionPackage, {
     cudaJs: fake.cudaJs,
     peer: { repository: pair.cudaJs.repository, revision: pair.cudaJs.revision, package: pair.cudaJs.package },
   });
-  await prepared.ignite({ resources: { [capsule.resources.channel.id]: new Uint8Array(Number(capsule.resources.channel.byteLength)) } });
+  await prepared.ignite({ resources: { [input.channelResourceId]: new Uint8Array(input.channelByteLength) } });
   const error = await rejects(() => prepared.wait(), 'CUDA_JS_ADAPTER_OPERATION');
   assert(error.lower);
   assert.equal((await prepared.close()).status, 'complete');
@@ -187,11 +201,12 @@ await test('deferred-lower-failure-preserves-lower-facts-and-cleanup', async () 
 
 await test('timeout-abandonment-is-not-reported-as-completion', async () => {
   const fake = publicCudaJsFake({ waitResult: { status: 'abandoned', failure: { code: 'CUDA_JS_TIMEOUT', category: 'operation', details: { reason: 'portable-timeout-falsifier' } } } });
-  const prepared = await prepareCudaJsExecution(capsule.composition.executionPackage.normalized, {
+  const input = adapterInputs(capsule);
+  const prepared = await prepareCudaJsExecution(input.executionPackage, {
     cudaJs: fake.cudaJs,
     peer: { repository: pair.cudaJs.repository, revision: pair.cudaJs.revision, package: pair.cudaJs.package },
   });
-  await prepared.ignite({ resources: { [capsule.resources.channel.id]: new Uint8Array(Number(capsule.resources.channel.byteLength)) } });
+  await prepared.ignite({ resources: { [input.channelResourceId]: new Uint8Array(input.channelByteLength) } });
   const error = await rejects(() => prepared.wait(), 'CUDA_JS_ADAPTER_OPERATION');
   assert.equal(error.lower.code, 'CUDA_JS_TIMEOUT');
   assert.equal((await prepared.close()).status, 'complete');
@@ -199,13 +214,14 @@ await test('timeout-abandonment-is-not-reported-as-completion', async () => {
 
 await test('terminal-transfer-child-cleanup-failure-quarantines-backing-resource-truth', async () => {
   const fake = publicCudaJsFake({ readBytes: expectedTerminalBytes(), readCloseError: true });
-  const prepared = await prepareCudaJsExecution(capsule.composition.executionPackage.normalized, {
+  const input = adapterInputs(capsule);
+  const prepared = await prepareCudaJsExecution(input.executionPackage, {
     cudaJs: fake.cudaJs,
     peer: { repository: pair.cudaJs.repository, revision: pair.cudaJs.revision, package: pair.cudaJs.package },
   });
-  await prepared.ignite({ resources: { [capsule.resources.channel.id]: new Uint8Array(Number(capsule.resources.channel.byteLength)) } });
+  await prepared.ignite({ resources: { [input.channelResourceId]: new Uint8Array(input.channelByteLength) } });
   await prepared.wait();
-  const deliveryError = await rejects(() => prepared.deliver(capsule.deliveryId), 'CUDA_JS_ADAPTER_DELIVERY_CLEANUP');
+  const deliveryError = await rejects(() => prepared.deliver(input.deliveryId), 'CUDA_JS_ADAPTER_DELIVERY_CLEANUP');
   assert.equal(deliveryError.cleanup.status, 'quarantined');
   assert(deliveryError.cleanup.retained.includes('runtime'));
   const cleanup = await prepared.close();
