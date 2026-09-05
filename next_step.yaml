@@ -1,44 +1,46 @@
 {
-  "schema_version": 115,
+  "schema_version": 116,
   "updated": "2026-09-05",
-  "status": "cuda_js_32_physical_pair_runner_ready",
-  "objective": "After this state reconciliation is protected, freeze and execute one exact live protected CUDA-MCGS/CUDA-JS physical compatible pair through the public CUDA-JS path, using the protected #221 runner-ready capsule without adding consumer-local native/lower mechanisms.",
-  "ownership_boundary": "Accepted specs/schemas own semantic truth. tool.search-compiler owns canonical stateless pre-ignition normalization/composition. Program Package owns explicit cross-owner realization connections without taking Channel, Output or Resource semantics. integration.cuda-js owns mechanical translation from accepted finite MCGS execution-package meaning to an injected versioned public CUDA-JS surface. The conformance compatible-pair capsule owns evidence construction/falsifiers only. CUDA-JS owns lower request validity, provider/device/resource/compiler/artifact/module/function/operation/publication lifecycle and compatibility facts.",
+  "status": "public_library_ready_external_consumer_prep",
+  "objective": "Use the protected SPEC-0014/interface.library package boundary in one real CUDA-free downstream consumer preparation slice, while keeping CUDA-JS #32 parked as a runner-ready physical-evidence gate until an accepted directly exposed NVIDIA GPU exists.",
+  "ownership_boundary": "Accepted specs/schemas own semantic truth. tool.search-compiler owns canonical stateless pre-ignition normalization/composition and Search Compiler validation classification. interface.library owns prerelease package-root ergonomics and supported installed-package export closure without duplicating search/runtime meaning. integration.cuda-js owns mechanical translation from accepted finite CUDA-MCGS execution-package meaning to an injected versioned public CUDA-JS surface. CUDA-JS owns lower provider/device/resource/compiler/artifact/module/function/operation/publication lifecycle and compatibility facts. CUDA-JS-Tensor owns generic Tensor mathematics/device-callable Tensor semantics; cuda-nn owns reusable NN/model semantics; downstream products retain product meaning.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
     "agent_files/AI_RULES.md",
     "agent_files/DESIGN_ALIGNMENT_CARD.md",
-    "docs/decisions/ADR-0014-extract-cuda-js-runtime.md",
+    "agent_files/SYSTEM_REGISTRY.md",
     "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
-    "docs/decisions/ADR-0023-parallel-first-native-execution.md",
+    "docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md",
     "docs/decisions/ADR-0024-framework-only-production-ownership.md",
-    "docs/architecture/2026-09-03-cuda-js-execution-boundary-audit.md",
-    "docs/specs/SPEC-0004-channel-contract.md",
-    "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
-    "docs/specs/SPEC-0005-terminal-output-host-delivery-addendum.md",
-    "docs/specs/SPEC-0011-resource-contract.md",
-    "docs/specs/SPEC-0012-progress-contract.md",
-    "docs/specs/SPEC-0013-bounded-result-and-observation-publication.md",
+    "docs/specs/SPEC-0000-framework-requirements.md",
+    "docs/specs/SPEC-0014-public-library-interface.md",
+    "components/library-interface/component.yaml",
+    "components/search-compiler/component.yaml",
+    "conformance/library-interface/README.md",
     "conformance/cuda-js-compatible-pair/README.md",
-    "https://github.com/iteathen/CUDA-JS/issues/32",
-    "https://github.com/iteathen/CUDA-JS/issues/4"
+    "https://github.com/iteathen/CUDA-MCGS/issues/123",
+    "https://github.com/iteathen/CUDA-JS/issues/32"
   ],
   "recorded_protected_input": {
-    "main": "dadf2b053016dafbb5ca56b79b09f72405d1214a",
-    "tree": "b000264125899e1769df51613a70f4f697a43bd2",
-    "parent": "85ee5d261fa50a4933e091cc993c60867158eea1",
-    "meaning": "Protected #221 implementation baseline containing PR #222 runner-ready pair tooling. After this docs-only reconciliation integrates it remains implementation provenance, while physical execution must freeze the then-live protected MCGS revision actually executed."
+    "main": "7c02c33373dd3aa517655965f10994a46bc6699a",
+    "tree": "7b620c68bedbbda55036557d8f2968f5fea06d39",
+    "parent": "eebb7779909a64dc581b607133b5a28f0eedc5cd",
+    "meaning": "Protected #109 / PR #225 implementation baseline containing the accepted prerelease public-library boundary. This docs-only reconciliation will move protected main; this tuple remains implementation provenance and must never be reused as a stale physical-run label."
   },
   "protected_state": {
     "search_compiler_component": "tool.search-compiler",
+    "library_interface_component": "interface.library",
+    "library_interface_contract": "cuda-mcgs.library-interface/0.1.0",
+    "library_interface_issue": 109,
+    "library_interface_pr": 225,
+    "library_interface": "protected-production-cuda-free-installed-qualified-v0",
+    "development_package": "cuda-mcgs@0.0.0-dev.0",
+    "development_package_distribution": "private-unreleased",
     "runtime_adapter_component": "integration.cuda-js",
     "runtime_adapter_issue": 125,
     "runtime_adapter_pr": 210,
     "runtime_adapter": "protected-production-portable-qualified-v0",
-    "terminal_delivery_issue": 215,
-    "terminal_delivery_pr": 217,
-    "terminal_delivery": "protected-production-portable-qualified-v0",
     "compatible_pair_capsule_issue": 221,
     "compatible_pair_capsule_pr": 222,
     "compatible_pair_capsule": "protected-runner-ready-portable-qualified-v0",
@@ -51,84 +53,98 @@
     "cuda_js_package": "cuda-js@0.1.0-alpha.18",
     "cuda_js_public_api_schema": 1,
     "cuda_js_current_recorded_input": "2ec2b9e7ffd3b6b5fe8d14364e2d758065d90e5c",
-    "cuda_js_current_recorded_tree": "05fe89ff91e538aedf003a17c5b8d40c725a4b24",
-    "cuda_js_125_portable_fixture_historical_revision": "49a2f77d2c8364d67030fbc1c2e870e58e70d334"
+    "cuda_js_current_recorded_tree": "05fe89ff91e538aedf003a17c5b8d40c725a4b24"
   },
   "completed_dependencies": [
-    "#125 / PR #210 protected-integrated production integration.cuda-js and portable Windows/Ubuntu conformance",
-    "#211 / PR #212 protected-integrated the post-#125 state reconciliation and was closed completed",
-    "#215 / PR #217 protected-integrated explicit terminal Output host delivery through Program Package/Search Program and production integration.cuda-js",
-    "#218 protected-integrated the post-#215 state reconciliation",
-    "CUDA-JS #156 / PR #199 protected-integrated the current-state freshness guard",
-    "CUDA-JS #200 / PR #201 and #202 protected-integrated the current #32 lower-state reconciliation, leaving protected CUDA-JS at 2ec2b9e7ffd3b6b5fe8d14364e2d758065d90e5c / tree 05fe89ff91e538aedf003a17c5b8d40c725a4b24",
-    "#221 / PR #222 protected-integrated the runner-ready exact compatible-pair capsule as implementation baseline dadf2b053016dafbb5ca56b79b09f72405d1214a / tree b000264125899e1769df51613a70f4f697a43bd2",
-    "exact #222 candidate 54d86406e930c06087afe6d9125feeabdddccf8c had the same implementation tree and passed compatible-pair Windows/Ubuntu workflow 33970801963, runtime-adapter workflow 33970801982, documentation/required verify workflow 33970802033 with verify job 101318925625, and CodeQL check 101318918746",
-    "portable stable cases PAIR-F01 through PAIR-F16 cover stale pair identity, unsafe ranges, publication requirement/helper drift, host contamination, wrong Channel/Output binding, lower capability/alignment, premature delivery, deferred failure, timeout/abandonment, cleanup/quarantine/restart truth, same-transaction evidence, and CUDA-JS consumer-neutrality"
+    "#122 accepted the decision-complete 989-requirement semantic/reference packet while leaving 52 exact-native requirements deferred.",
+    "#125 / PR #210 protected-integrated production integration.cuda-js and portable Windows/Ubuntu conformance.",
+    "#215 / PR #217 protected-integrated explicit terminal Output host delivery through Program Package/Search Program and production integration.cuda-js.",
+    "#221 / PR #222 protected-integrated the runner-ready exact compatible-pair capsule without changing CUDA-JS production/API ownership.",
+    "#109 / PR #225 protected-integrated SPEC-0014, production interface.library, private cuda-mcgs@0.0.0-dev.0 exports, owner-local resolver diagnostics and exact packed/installed CUDA-free conformance.",
+    "Exact #225 source head aed2d4602e06f873140f834b2d9523e031c38e90 / tree 7b620c68bedbbda55036557d8f2968f5fea06d39 passed all 31 source checks including library-interface workflow 33982472940, runtime-adapter 33982472946, portable exact-pair 33982472937, Engine reference 33982472932, documentation 33982472963 with required verify 101350117259, and CodeQL with no new changed-code alerts.",
+    "Protected #225 merge 7c02c33373dd3aa517655965f10994a46bc6699a / tree 7b620c68bedbbda55036557d8f2968f5fea06d39 passed all 25 protected-head checks including library-interface 33982644840, runtime-adapter 33982644809, portable exact-pair 33982644772, documentation/reference 33982644767 with required verify 101350562478, and CodeQL checks 101350504197 plus 101350504041."
   ],
   "current_focus": {
+    "repository": "iteathen/CUDA-MCGS",
+    "issue": 123,
+    "name": "CUDA-free external-consumer preparation through the protected public package boundary",
+    "consumer": "iteathen/UCI-Arena-Vector",
+    "state": "#109 public surface is protected and installed-qualified; final #123 physical acceptance remains blocked on CUDA-JS #32, but the downstream public-surface/ownership slice is now executable without hardware.",
+    "next_action": "Re-read UCI-Arena-Vector protected authority, current issue/PR/CI state, public/product contracts and package topology. Reconcile its stale upstream assumptions, then implement the smallest CUDA-free consumer slice that installs an exact packed protected cuda-mcgs artifact and uses declared public exports only for pre-ignition resolution/composition/provenance/diagnostics. Do not ignite CUDA-JS or claim #123 completion.",
+    "exit": "One exact CUDA-free downstream consumer slice proves the protected public MCGS package can be consumed without private imports or ownership leakage, or it demonstrates a concrete owner/API gap that is routed to its natural owner. #123 remains open until its separately required physical CUDA-JS #32 evidence exists."
+  },
+  "parked_physical_gate": {
     "repository": "iteathen/CUDA-JS",
     "issue": 32,
-    "name": "exact CUDA-MCGS/CUDA-JS compatible-pair qualification through public CUDA-JS",
-    "state": "MCGS runner-ready and portable-qualified; physical execution awaits exact post-reconciliation protected pair freeze and accepted NVIDIA evidence/review",
-    "next_action": "After #223 is protected-integrated, read back the resulting live protected MCGS commit/tree and re-read protected CUDA-JS. On an accepted physical NVIDIA host use tracked-clean exact checkouts, link the exact CUDA-JS checkout as the public cuda-js package, run scripts/run-cuda-js-compatible-pair.mjs native with that exact pair environment, retain the complete JSON evidence, and review it against CUDA-JS #32 without promoting broader support.",
-    "exit": "One exact physical pair satisfies CUDA-JS #32 through public CUDA-JS only, or physical execution demonstrates a generic lower gap that is routed to CUDA-JS and the pair remains unqualified until that owner is corrected."
+    "state": "runner-ready-and-portable-qualified-hardware-blocked",
+    "blocker": "No currently connected execution environment supplies an accepted directly exposed physical NVIDIA GPU; hosted/portable/VM/mock evidence cannot be relabeled physical.",
+    "recorded_cuda_js_revision": "2ec2b9e7ffd3b6b5fe8d14364e2d758065d90e5c",
+    "recorded_cuda_js_tree": "05fe89ff91e538aedf003a17c5b8d40c725a4b24",
+    "recorded_cuda_js_package": "cuda-js@0.1.0-alpha.18",
+    "recorded_cuda_js_api_schema": 1,
+    "native_entry": "node --experimental-ffi scripts/run-cuda-js-compatible-pair.mjs native",
+    "resume_condition": "An accepted directly exposed physical NVIDIA host becomes available; immediately re-read both protected repositories and freeze the exact live tuple before execution."
   },
   "physical_pair_freeze_rule": {
-    "cuda_mcgs_implementation_baseline": "dadf2b053016dafbb5ca56b79b09f72405d1214a",
-    "cuda_mcgs_implementation_tree": "b000264125899e1769df51613a70f4f697a43bd2",
+    "cuda_mcgs_implementation_baseline": "7c02c33373dd3aa517655965f10994a46bc6699a",
+    "cuda_mcgs_implementation_tree": "7b620c68bedbbda55036557d8f2968f5fea06d39",
     "cuda_js_recorded_revision": "2ec2b9e7ffd3b6b5fe8d14364e2d758065d90e5c",
     "cuda_js_recorded_tree": "05fe89ff91e538aedf003a17c5b8d40c725a4b24",
     "cuda_js_package": "cuda-js@0.1.0-alpha.18",
     "cuda_js_public_api_schema": 1,
-    "rule": "Do not use the MCGS implementation baseline as a stale execution label after this docs transaction. After #223 integration, re-read live protected MCGS and immediately before execution re-read both protected heads; freeze the exact commit/tree/package/API tuple actually executed."
+    "rule": "The recorded MCGS and CUDA-JS values are provenance only. This docs transaction changes MCGS main, and either repository may move later. Immediately before any physical #32 execution re-read live protected heads, exact trees, CUDA-JS package/API identity and tracked-clean checkout state; execute only that newly frozen tuple."
   },
   "assessment_findings": [
-    "No generic lower CUDA-JS capability gap was demonstrated by #221 or its exact-head portable qualification; CUDA-JS #198 remains inactive for this terminal-only pair.",
-    "SPEC-0004 Channel is the semantic owner of the internal device-resident producer/release-to-consumer/acquire edge and contributes cuda-js.device-publication-release-acquire/0.1.0; Channel storage is distinct from terminal Output storage.",
-    "The fresh #221 workload uses 4 blocks x 256 threads and exactly 4096 terminal Output bytes for 1024 u32 writes, avoiding the historical #125 fixture's unsafe physical shape.",
-    "The conformance recorder observes only the public CUDA-JS transaction actually used by production integration.cuda-js and does not create a second compile/load/runtime path or inspect generated lower code.",
-    "The native runner verifies tracked-clean exact source checkouts plus public package realpath before lower execution, then correlates compile input, produced artifact, loaded module, submit, terminal D2H and cleanup evidence.",
-    "A docs-only reconciliation necessarily changes the live MCGS commit/tree, so the physical pair must use post-reconciliation protected readback rather than hard-coding the #221 implementation baseline.",
-    "Hosted Windows/Ubuntu results are portable evidence only and cannot close CUDA-JS #32 or infer CUDA-JS #4/Linux physical support."
+    "The original #109 semantic resolver diagnosis was stale: PR #112 had already made Search Compiler the canonical resolved Composer owner. The real missing capability was the interface.library/install boundary, now protected by #225.",
+    "interface.library adds no second semantic implementation: omitted generator convenience selects only Search Compiler's existing frozen reference generator; compose/tryCompose are direct owner-port aliases.",
+    "The installed-package capsule proves public export closure and canonical identities from an actual npm-packed temporary installation on Windows/Ubuntu, while conformance/testing ports remain absent/private.",
+    "No generic lower CUDA-JS capability gap was demonstrated by #221/#225 or their portable qualification; CUDA-JS #198 remains inactive.",
+    "UCI-Arena-Vector protected state was read-only inspected and contains stale upstream references to CUDA-MCGS #122 and cuda-js alpha.16; those are downstream tracker facts to reassess under Vector authority, not permission for an MCGS-owned product workaround.",
+    "A successful CUDA-free Vector slice cannot close #123 because physical #32 remains a distinct acceptance dependency."
   ],
   "blockers": [
-    "No currently connected execution environment supplies an accepted directly exposed physical NVIDIA GPU for CUDA-JS #32; portable/hosted/VM/mock evidence cannot be relabeled physical.",
-    "Any physically demonstrated generic lower CUDA capability gap must be fixed in CUDA-JS before retry; CUDA-MCGS may not add private/deep CUDA-JS imports, direct CUDA/PTX/FFI realization, generated lower inspection, copied provider facts, or a second runtime/scheduler."
+    "Physical CUDA-JS #32 evidence is unavailable until an accepted directly exposed NVIDIA host exists.",
+    "Any downstream implementation must first satisfy UCI-Arena-Vector's own protected authority/contracts; current stale tracker text must not be treated as specification.",
+    "Any demonstrated generic lower CUDA capability gap must be fixed in CUDA-JS before physical retry; CUDA-MCGS/downstream consumers may not add private/deep CUDA-JS imports, direct CUDA/PTX/FFI realization, generated lower inspection, copied provider facts or a second runtime/scheduler."
   ],
   "parallel_and_downstream": [
-    "CUDA-JS #4 remains an independent native Ubuntu 24.04 x86-64 directly exposed physical-NVIDIA evidence cell.",
-    "#109 remains independent public facade/resolver/diagnostics/SDK ergonomics work over the canonical pre-ignition path.",
-    "#123 remains downstream external-consumer acceptance requiring usable #109 surface plus exact #32 pair evidence; #124 matters only for a selected optional Tensor evaluator.",
-    "Generic Tensor gaps route to CUDA-JS-Tensor; reusable NN/model semantics route to cuda-nn; product semantics stay downstream."
+    "CUDA-JS #4 remains an independent native Ubuntu 24.04 x86-64 directly exposed physical-NVIDIA support cell.",
+    "#124 matters only if the selected external-consumer profile actually uses the optional Tensor evaluator path.",
+    "Generic Tensor gaps route to CUDA-JS-Tensor; reusable NN/model semantics route to cuda-nn; UCI/chess/product semantics stay in UCI-Arena-Vector or another downstream owner.",
+    "No additional MCGS native-runner or mock evidence work is authorized solely because #32 hardware is unavailable."
   ],
   "deliverables": [
-    "Protected #221 / PR #222 supplies a runner-ready conformance-owned exact-pair constructor, transparent public CUDA-JS recorder, native evidence entry, stable portable falsifiers, and Windows/Ubuntu hosted qualification without changing production integration.cuda-js or CUDA-JS.",
-    "STATUS.md records the exact protected #221 implementation baseline, exact recorded lower tuple, portable evidence limits, native command, and the post-reconciliation live-head freeze rule for CUDA-JS #32.",
-    "next_step.yaml makes post-reconciliation live pair freeze followed by physical execution/evidence review the current P0 action and prevents stale pair labels or hosted evidence from satisfying it."
+    "Protected #109 / PR #225 supplies accepted SPEC-0014, production interface.library, a private development package/export map, owner-preserving resolver diagnostics and CUDA-free installed-package conformance.",
+    "Protected #221 / PR #222 remains the runner-ready physical pair capsule for future #32 execution without consumer-local lower mechanisms.",
+    "STATUS.md and next_step.yaml distinguish the protected #225 implementation baseline from future live physical-pair identity, park the unavailable hardware gate, and route current work to #123 CUDA-free external-consumer preparation."
   ],
   "validation": [
+    "node scripts/run-library-interface.mjs",
+    "node scripts/run-search-ir-composer-reference.mjs",
     "node scripts/run-cuda-js-compatible-pair.mjs portable",
     "node scripts/run-cuda-js-runtime-adapter.mjs",
     "./scripts/verify-docs.sh",
-    "complete documentation workflow including required verify on the exact reconciliation candidate head",
-    "native command is runner-ready but remains intentionally unexecuted until an accepted physical NVIDIA host is available"
+    "complete documentation/reference workflow including required verify on each exact candidate/protected head",
+    "native #32 entry remains intentionally unexecuted until an accepted physical NVIDIA host is available"
   ],
   "after_current_focus": [
-    "If #32 exposes a generic lower gap, stop and route it to CUDA-JS; re-freeze the pair only after the lower owner is protected-integrated and read back.",
-    "If #32 passes, retain one exact compatible-pair record and discharge only the native-deferred requirements actually proved by that physical profile.",
-    "Run CUDA-JS #4 unchanged only on native Ubuntu 24.04 x86-64 with a directly exposed physical NVIDIA GPU and exact required providers; promote only that exact support cell.",
-    "Continue #109 independently and use #123 only after the public surface and exact-pair evidence are both ready."
+    "If the CUDA-free external consumer proves a missing generic CUDA-MCGS public capability, stop and fix that capability in its natural MCGS owner, then re-freeze/requalify the consumer; do not add a product-private framework clone.",
+    "If the consumer selects Tensor, reassess #124 and route generic Tensor capability work to CUDA-JS-Tensor; otherwise leave #124 inactive for this profile.",
+    "When physical hardware becomes available, re-read the live protected MCGS/CUDA-JS tuple and execute #32 unchanged; a pass discharges only the exact native requirements/profile actually proved.",
+    "If physical #32 demonstrates a generic lower gap, route it to CUDA-JS and keep #32 open until the lower owner is corrected and the exact pair is rerun."
   ],
   "do_not": [
-    "Do not infer native, physical Linux, performance, stable SDK, product or multi-GPU support from hosted compatible-pair evidence.",
-    "Do not add native/CUDA/PTX/FFI/private CUDA-JS paths, generated-artifact inspection, arbitrary resource reads or a second lower request/lifecycle interpreter in CUDA-MCGS.",
-    "Do not use the historical #125 portable fake as the physical pair workload or misstate its old peer revision as the revision actually executed.",
-    "Do not reuse the #221 implementation baseline as the physical MCGS revision after #223 changes protected main; re-read and freeze the live protected head actually executed.",
+    "Do not call cuda-mcgs@0.0.0-dev.0 a released npm package or a stable public API.",
+    "Do not infer native CUDA, physical Linux, performance, product readiness or multi-GPU support from hosted installed-package/compatible-pair evidence.",
+    "Do not close #123 from a CUDA-free downstream slice; the physical #32 dependency remains unsatisfied.",
+    "Do not add native/CUDA/PTX/FFI/private CUDA-JS paths, generated-artifact inspection, arbitrary lower resource reads or a second lower request/lifecycle interpreter in CUDA-MCGS or its consumer.",
+    "Do not hard-code the #225 implementation baseline as a future physical MCGS revision after this docs transaction; re-read and freeze the live protected pair actually executed.",
     "Do not activate CUDA-JS #198 without a real physical execution demonstrating that generic lower capability is required."
   ],
   "hard_constraints": [
     "Protected integration requires exact-head qualification, complete review and applicable user authorization. Standing user authorization is active for this workstream; do not create an authorization-only stop while exact subject/base/tree and qualification/review invariants remain satisfied.",
-    "Generic lower gaps route to CUDA-JS; generic Tensor gaps route to CUDA-JS-Tensor; reusable NN semantics route to cuda-nn; product semantics remain downstream.",
-    "One semantic fact/state/resource/lifecycle/compatibility fact has one visible owner."
+    "One semantic fact/state/resource/lifecycle/compatibility fact has one visible owner.",
+    "Generic lower gaps route to CUDA-JS; generic Tensor gaps route to CUDA-JS-Tensor; reusable NN/model semantics route to cuda-nn; product semantics remain downstream.",
+    "Portable/mock/hosted evidence is never relabeled physical/native evidence."
   ]
 }
