@@ -13,7 +13,13 @@ const expected = new Map([["validation.mjs","7d0e932db4982d1550547732ec42c0d44c9
 
 async function exists(target) { try { await stat(target); return true; } catch { return false; } }
 async function walk(dir) { const out=[]; for (const e of await readdir(dir,{withFileTypes:true})) { const f=path.join(dir,e.name); if(e.isDirectory()) out.push(...await walk(f)); else if(e.isFile()) out.push(f); } return out; }
-function blob(bytes) { return createHash('sha1').update(Buffer.from(`blob ${bytes.length}\0`)).update(bytes).digest('hex'); }
+function canonicalSourceBytes(bytes) {
+  return Buffer.from(bytes.toString('utf8').replace(/\r\n/g, '\n'), 'utf8');
+}
+function blob(bytes) {
+  const canonical = canonicalSourceBytes(bytes);
+  return createHash('sha1').update(Buffer.from(`blob ${canonical.length}\0`)).update(canonical).digest('hex');
+}
 function imports(text) { const out=[]; for (const p of [/\b(?:import|export)\s+(?:[^'";]*?\s+from\s+)?["']([^"']+)["']/g,/\bimport\s*\(\s*["']([^"']+)["']\s*\)/g]) { for (const m of text.matchAll(p)) out.push(m[1]); } return out; }
 
 assert.equal(await exists(oldRoot), false, 'old Composer experiment path must be absent');
