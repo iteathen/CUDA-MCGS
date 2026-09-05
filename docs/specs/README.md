@@ -4,7 +4,7 @@
 
 **Status:** Informational
 
-This directory contains versioned CUDA-MCGS framework, extension, and interop contracts. Production domain/search product specifications live in their owning repositories or packages under [`ADR-0024`](../decisions/ADR-0024-framework-only-production-ownership.md). No interface is accepted merely because it appears in architecture discussion, research, implementation, tests, a plan, product example, or proposal.
+This directory contains versioned CUDA-MCGS framework, extension, interop, and public-interface contracts. Production domain/search product specifications live in their owning repositories or packages under [`ADR-0024`](../decisions/ADR-0024-framework-only-production-ownership.md). No interface is accepted merely because it appears in architecture discussion, research, implementation, tests, a plan, product example, or proposal.
 
 Read specifications through [`../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md`](../../agent_files/general_foundation/SPEC_AND_AGENT_FILE_READING.md): verify status, owner, scope, version, exact revision and supersession; follow normative references; read governing requirements to semantic closure; inspect material producer/consumer/lifecycle/test adjacency; refresh when scope or authority changes.
 
@@ -24,7 +24,7 @@ The extension substrate is universal; a selected capability's payload is not aut
 
 [`ADR-0019`](../decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md) governs every production proposal: ordinary Node.js plus restricted Device-JS is the maintained source boundary; post-ignition host interaction is narrow and asynchronous; and an unnatural expression of a generic GPU mechanism is classified as a CUDA-JS capability gap rather than implemented as native CUDA-MCGS code.
 
-[`ADR-0020`](../decisions/ADR-0020-complete-library-and-resolved-defaults.md) establishes the public-library direction: the complete composable surface is authoritative, while convenience calls and presets resolve into the same canonical normalized framework profile. Defaults must be owned, bounded, deterministic, inspectable, overridable and identity-bearing when material. Public API naming and production facade implementation remain downstream of behavioral reference evidence and integrated semantic acceptance.
+[`ADR-0020`](../decisions/ADR-0020-complete-library-and-resolved-defaults.md) establishes the public-library direction: the complete composable surface is authoritative, while convenience calls and presets resolve into the same canonical normalized framework profile. Defaults must be owned, bounded, deterministic, inspectable, overridable and identity-bearing when material. [`SPEC-0014`](SPEC-0014-public-library-interface.md) now assigns the prerelease package/facade boundary to `interface.library` without changing Search Compiler or CUDA-JS semantic ownership.
 
 ## Foundational accepted contracts
 
@@ -83,6 +83,12 @@ Generic CUDA Driver symbol schemas, host-call ABI/JIT bindings, memory-provider 
 These accepted semantic contracts do not by themselves authorize production lowering. The complete Search IR may represent namespaced consumer-supplied specialization inputs without promoting one product's fields into universal core meaning.
 
 SPEC-0000 and SPEC-0006 through SPEC-0013 form the decision-complete 741-requirement core proposal packet. SPEC-0003 through SPEC-0005 form the decision-complete 248-requirement optional extension packet. The combined 989 requirements are accepted semantic/reference authority under #122: 937 are accepted-reference and 52 native-compatible-pair requirements remain explicitly deferred. The #36 consolidated CUDA-free packet is the acceptance evidence; native/runtime/performance/product qualification remains downstream.
+
+## Accepted public interface contract
+
+- [`SPEC-0014-public-library-interface.md`](SPEC-0014-public-library-interface.md) — prerelease `interface.library` package-root facade, explicit complete-owner subpaths, material default/provenance preservation, owner-classified diagnostics, package export closure and exact packed/installed CUDA-free conformance, version 0.1.0.
+
+SPEC-0014 does not enlarge the 989 semantic requirement packet and does not grant Search Compiler, the facade, or CUDA-MCGS ownership of CUDA-JS provider/runtime mechanics. Its installed-package evidence cannot substitute for CUDA-JS #32 physical compatible-pair qualification or downstream external-product acceptance.
 
 ## External product specifications and historical provenance
 
