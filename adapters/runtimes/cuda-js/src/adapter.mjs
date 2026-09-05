@@ -108,6 +108,13 @@ function admitContracts(requirements, lower) {
   }
 }
 
+function compileOptions(requirements) {
+  const contracts = new Set(requirements.publicContracts.map(({ id }) => id));
+  const needsCccl = contracts.has('cuda-js.device-publication-release-acquire/0.1.0')
+    || requirements.sidebandRequirements?.some(({ publication }) => publication === 'release-acquire');
+  return needsCccl ? Object.freeze({ headerProfile: 'cuda-cccl' }) : Object.freeze({});
+}
+
 function admitPackage(executionPackage, lower) {
   if (executionPackage.schema !== PACKAGE_SCHEMA || executionPackage.status !== 'accepted') fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'unsupported execution package schema/status');
   const requirements = object(executionPackage.cudaJsAdapter, 'cudaJsAdapter requirements');
@@ -155,11 +162,13 @@ function admitPackage(executionPackage, lower) {
 
   if (!Array.isArray(operation.bindings)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'operation bindings must be an array');
   const bindings = new Map();
+  const allocatedResourceIds = new Set([...deliveries.values()].map(({ resource }) => resource));
   for (const binding of operation.bindings) {
     if (bindings.has(binding.parameter)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `binding repeats: ${binding.parameter}`);
     const source = binding.source;
     if (source?.kind === 'resource') {
       if (!resources.has(source.resource) || !['read', 'write', 'read-write'].includes(source.access)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `invalid resource binding ${binding.parameter}`);
+      allocatedResourceIds.add(source.resource);
     } else if (source?.kind === 'sideband') {
       if (!sidebands.has(source.sideband)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `invalid sideband binding ${binding.parameter}`);
     } else if (source?.kind !== 'scalar' || !source.schema) {
@@ -171,9 +180,11 @@ function admitPackage(executionPackage, lower) {
   const searchProgram = object(requirements.searchProgram, 'searchProgram');
   const entry = searchProgram.functions?.find((fn) => fn.name === operation.function && fn.executionRole === 'runtime-entry');
   if (!entry || !Array.isArray(entry.parameters) || entry.parameters.length !== bindings.size || entry.parameters.some(({ name }) => !bindings.has(name))) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'runtime entry and operation bindings differ');
+  const allocatedResources = new Map([...resources].filter(([id]) => allocatedResourceIds.has(id)));
   return {
-    operation, resources, sidebands, deliveries, bindings, searchProgram, entry,
+    operation, resources, allocatedResources, sidebands, deliveries, bindings, searchProgram, entry,
     functions: deviceFunctions(searchProgram.functions),
+    compile: compileOptions(requirements),
     launch: { grid: dimensions(operation.launchPolicy.grid, 'grid'), block: dimensions(operation.launchPolicy.block, 'block'), sharedMemoryBytes: decimal(operation.launchPolicy.dynamicSharedBytes, 'dynamicSharedBytes') },
   };
 }
@@ -256,7 +267,7 @@ class PreparedExecution {
   async ignite(inputs = {}) {
     if (this.#closed || this.state !== 'prepared') fail('CUDA_JS_ADAPTER_STATE', 'ignition', `cannot ignite from state ${this.state}`);
     object(inputs, 'runtime inputs');
-    const resourceInputs = inputRecord(inputs.resources, this.#plan.resources, 'resource inputs');
+    const resourceInputs = inputRecord(inputs.resources, this.#plan.allocatedResources, 'resource inputs');
     if (inputs.scalars !== undefined) {
       object(inputs.scalars, 'scalar input operations');
       for (const operationId of Object.keys(inputs.scalars)) if (operationId !== this.#plan.operation.id) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `unknown scalar operation ${operationId}`);
@@ -264,7 +275,7 @@ class PreparedExecution {
     const scalarNames = new Set(this.#plan.operation.bindings.filter(({ source }) => source.kind === 'scalar').map(({ parameter }) => parameter));
     const scalarInputs = inputRecord(inputs.scalars?.[this.#plan.operation.id], scalarNames, 'scalar inputs');
 
-    for (const [id, resource] of this.#plan.resources) {
+    for (const [id, resource] of this.#plan.allocatedResources) {
       const modes = this.#plan.operation.bindings.filter(({ source }) => source.kind === 'resource' && source.resource === id).map(({ source }) => source.access);
       const bytes = resourceInputs[id];
       if (bytes === undefined && modes.some((mode) => mode !== 'write')) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} requires explicit initial bytes`);
@@ -277,7 +288,7 @@ class PreparedExecution {
       scalar(parameter.type, scalarInputs[parameter.name], parameter.name);
     }
 
-    for (const [id, resource] of this.#plan.resources) {
+    for (const [id, resource] of this.#plan.allocatedResources) {
       const bytes = resourceInputs[id];
       if (bytes === undefined) continue;
       try { await this.#owned.memories.get(id).write(bytes); }
@@ -406,17 +417,22 @@ export async function prepareCudaJsExecution(executionPackage, { cudaJs, peer, r
   const plan = admitPackage(executionPackage, lower);
   if (runtimeOptions.compiler === false) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'compiler=false is incompatible with preparation');
   if (runtimeOptions.driver?.maxPending !== undefined && runtimeOptions.driver.maxPending !== 1) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'runtimeOptions.driver.maxPending must remain 1');
+  if (runtimeOptions.driver?.execution?.maxPendingGpuOperations !== undefined && runtimeOptions.driver.execution.maxPendingGpuOperations !== 2) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'runtimeOptions.driver.execution.maxPendingGpuOperations must remain 2 for terminal delivery');
   const owned = { runtime: null, module: null, function: null, operation: null, deliveryOperations: new Map(), nextDeliverySequence: 0, memories: new Map(), mailboxes: new Map() };
   try {
-    owned.runtime = await cudaJs.openCudaRuntime({ ...runtimeOptions, driver: { ...(runtimeOptions.driver ?? {}), maxPending: 1 }, compiler: runtimeOptions.compiler ?? true });
-    const compiled = await cudaJs.compileDeviceProgram(owned.runtime, { source: plan.searchProgram.source, functions: plan.functions });
+    owned.runtime = await cudaJs.openCudaRuntime({
+      ...runtimeOptions,
+      driver: { ...(runtimeOptions.driver ?? {}), execution: { ...(runtimeOptions.driver?.execution ?? {}), maxPendingGpuOperations: 2 } },
+      compiler: runtimeOptions.compiler ?? true,
+    });
+    const compiled = await cudaJs.compileDeviceProgram(owned.runtime, { source: plan.searchProgram.source, functions: plan.functions, compile: plan.compile });
     const artifact = compiled?.linker?.artifact ?? compiled?.compiler?.artifact;
     if (!artifact || !['ptx', 'cubin'].includes(artifact.format) || !(artifact.bytes instanceof Uint8Array)) fail('CUDA_JS_ADAPTER_COMPILE', 'compilation', 'CUDA-JS compilation returned no loadable public artifact', { classification: 'compilation' });
     owned.module = await owned.runtime.loadModule({ format: artifact.format, bytes: artifact.bytes });
-    const kernel = compiled?.deviceProgram?.kernels?.find(({ functionName }) => functionName === plan.operation.function);
+    const kernel = compiled?.deviceProgram?.kernels?.find(({ name }) => name === plan.operation.function);
     if (!kernel || !Array.isArray(kernel.parameters)) fail('CUDA_JS_ADAPTER_COMPILE', 'compilation', 'CUDA-JS device program exposed no runtime-entry kernel', { classification: 'compilation' });
-    owned.function = await owned.module.getFunction({ name: kernel.name, parameters: kernel.parameters });
-    for (const [id, resource] of plan.resources) owned.memories.set(id, await owned.runtime.allocateDevice({ byteLength: resource.byteLengthNumber }));
+    owned.function = await owned.module.getFunction({ name: kernel.functionName, parameters: kernel.parameters });
+    for (const [id, resource] of plan.allocatedResources) owned.memories.set(id, await owned.runtime.allocateDevice({ byteLength: resource.byteLengthNumber }));
     for (const delivery of plan.deliveries.values()) if (typeof owned.memories.get(delivery.resource)?.readAsync !== 'function') fail('CUDA_JS_ADAPTER_CAPABILITY', 'allocation', `${delivery.id} public asynchronous memory read is unavailable`, { classification: 'unsupported-capability' });
     for (const [id, sideband] of plan.sidebands) owned.mailboxes.set(id, await owned.runtime.createPublicationMailbox({ lanes: [{ name: id, direction: sideband.direction }] }));
     return new PreparedExecution(plan, owned);

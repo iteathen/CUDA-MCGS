@@ -19,10 +19,11 @@ test('happy path translates only declared public facts and cleans in dependency 
   const prepared = await prepareCudaJsExecution(executionPackage(), { cudaJs: fake.cudaJs, peer: PEER });
   assert.equal(prepared.kind, 'cuda-js-execution');
   assert.equal(prepared.state, 'prepared');
-  assert.deepEqual(call(fake, 'openCudaRuntime')[1], { driver: { maxPending: 1 }, compiler: true });
+  assert.deepEqual(call(fake, 'openCudaRuntime')[1], { driver: { execution: { maxPendingGpuOperations: 2 } }, compiler: true });
   assert.deepEqual(call(fake, 'runtime.allocateDevice')[1], { byteLength: 16 });
   assert.deepEqual(call(fake, 'runtime.createPublicationMailbox')[1], { lanes: [{ name: 'sideband.framework-cancellation', direction: 'host-to-device' }] });
   const compile = call(fake, 'compileDeviceProgram')[1];
+  assert.deepEqual(compile.compile, { headerProfile: 'cuda-cccl' });
   assert.equal(compile.functions[0].kind, 'kernel');
   assert.deepEqual(compile.functions[0].parameters, [{ name: 'output', type: 'ptr<u32>' }, { name: 'frameworkCancellation', type: 'mailbox<host-to-device,u32>' }]);
   assert.equal(call(fake, 'module.getFunction')[1].name, 'kernel_engine_step');
@@ -109,6 +110,10 @@ test('unsafe numeric bounds and runtime policy overrides fail before mutation', 
   const overrideFake = publicCudaJsFake();
   await rejects(() => prepareCudaJsExecution(executionPackage(), { cudaJs: overrideFake.cudaJs, peer: PEER, runtimeOptions: { driver: { maxPending: 2 } } }), 'CUDA_JS_ADAPTER_INPUT');
   assert.equal(overrideFake.calls.length, 0);
+
+  const executionOverrideFake = publicCudaJsFake();
+  await rejects(() => prepareCudaJsExecution(executionPackage(), { cudaJs: executionOverrideFake.cudaJs, peer: PEER, runtimeOptions: { driver: { execution: { maxPendingGpuOperations: 1 } } } }), 'CUDA_JS_ADAPTER_INPUT');
+  assert.equal(executionOverrideFake.calls.length, 0);
 });
 
 test('multiple operations are not inferred into a scheduler', async () => {
@@ -118,6 +123,24 @@ test('multiple operations are not inferred into a scheduler', async () => {
   value.cudaJsAdapter.operationRequirements[1].id = 'operation.second';
   await rejects(() => prepareCudaJsExecution(value, { cudaJs: fake.cudaJs, peer: PEER }), 'CUDA_JS_ADAPTER_CAPABILITY', 'unsupported-capability');
   assert.equal(fake.calls.length, 0);
+});
+
+test('unbound package resources remain admitted facts but are not lower allocations', async () => {
+  const fake = publicCudaJsFake();
+  const value = executionPackage();
+  value.cudaJsAdapter.resourceRequirements.push({
+    id: 'resource.unbound',
+    ownerProfile: 'resource.synthetic',
+    providerRequirement: 'provider.unbound',
+    byteLength: '1073741824',
+    alignment: '256',
+    memorySpaces: ['device-search'],
+    accessRequirements: ['read', 'write'],
+  });
+  const prepared = await prepareCudaJsExecution(value, { cudaJs: fake.cudaJs, peer: PEER });
+  assert.deepEqual(calls(fake, 'runtime.allocateDevice').map((entry) => entry[1].byteLength), [16]);
+  await rejects(() => prepared.ignite({ resources: { 'resource.unbound': new Uint8Array(0) } }), 'CUDA_JS_ADAPTER_INPUT');
+  assert.equal((await prepared.close()).status, 'complete');
 });
 
 test('read and read-write bindings require exact explicit initial bytes', async () => {

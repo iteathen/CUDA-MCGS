@@ -191,7 +191,7 @@ export function publicCudaJsFake(flags = {}) {
       }));
       return {
         schemaVersion: 1,
-        deviceProgram: { kernels: [{ functionName: entry.name, name: `kernel_${entry.name}`, parameters }] },
+        deviceProgram: { kernels: [{ name: entry.name, functionName: `kernel_${entry.name}`, parameters }] },
         compiler: { artifact: { format: 'ptx', bytes: new Uint8Array([1, 2, 3]), byteLength: 3, sha256: 'a'.repeat(64), architecture: 'compute_75' } },
       };
     },
