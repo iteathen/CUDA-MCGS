@@ -3,7 +3,7 @@
 **Universal Monte Carlo Graph Search**
 
 [![Documentation](https://github.com/iteathen/CUDA-MCGS/actions/workflows/docs.yml/badge.svg)](https://github.com/iteathen/CUDA-MCGS/actions/workflows/docs.yml)
-[![License: AGPL-3.0-or-later](https://img.shields.io/badge/License-AGPL--3.0-or-later-blue.svg)](LICENSE)
+[![License: AGPL-3.0-or-later](https://img.shields.io/badge/License-AGPL--3.0--or--later-blue.svg)](LICENSE)
 
 CUDA-MCGS is a public pre-release project defining a finite GPU-resident Monte Carlo Graph Search framework.
 
