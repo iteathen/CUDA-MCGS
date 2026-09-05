@@ -1,6 +1,8 @@
 # #109 public library interface — assessment and execution plan
 
-**Status:** Accepted execution packet
+**Status:** Accepted
+
+**Document type:** Execution packet
 
 **Date:** 2026-09-05
 
