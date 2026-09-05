@@ -173,7 +173,7 @@ try {
   assertRecorderTransaction(snapshot, input.executionPackage, capsule);
   assertPhysicalPublicEvidence(snapshot);
 
-  const handoff = input.executionPackage.cudaJsAdapter.searchProgram.functions.find(({ name }) => name === 'channel_handoff');
+  const handoff = capsule.composition.searchProgram.normalized.functions.find(({ name }) => name === 'channel_handoff');
   const terminalBytes = {
     byteLength: delivery.bytes.byteLength,
     sha256: sha256Bytes(delivery.bytes),

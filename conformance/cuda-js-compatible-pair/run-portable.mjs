@@ -148,10 +148,10 @@ if (capsule) {
   });
 
   await test('PAIR-F05', 'release/acquire helper removal or substitution is rejected', () => {
-    const metadata = clone(capsule.composition.executionPackage.normalized);
-    const handoff = metadata.cudaJsAdapter.searchProgram.functions.find(({ name }) => name === 'channel_handoff');
+    const semantic = clone(capsule);
+    const handoff = semantic.composition.searchProgram.normalized.functions.find(({ name }) => name === 'channel_handoff');
     handoff.helpers = handoff.helpers.filter((helper) => helper !== 'gpu.atomic.store-release-device');
-    throws(() => assertPairExecutionEvidence(metadata, capsule), 'PAIR_PUBLICATION');
+    throws(() => assertPairExecutionEvidence(capsule.composition.executionPackage.normalized, semantic), 'PAIR_PUBLICATION');
 
     const source = clone(capsule.composition.executionPackage.normalized);
     source.cudaJsAdapter.searchProgram.source = source.cudaJsAdapter.searchProgram.source.replace('gpu.atomic.loadAcquireDevice', 'gpu.atomic.loadRelaxedDevice');

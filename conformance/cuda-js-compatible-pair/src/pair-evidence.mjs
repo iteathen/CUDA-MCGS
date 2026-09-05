@@ -105,11 +105,6 @@ export function assertPublicCudaJsIdentity(publicCudaJs, expected) {
 
 export function assertPairExecutionEvidence(executionPackage, capsule) {
   assertExactExecutionPackage(executionPackage, capsule);
-  const handoff = executionPackage.cudaJsAdapter.searchProgram.functions.find(({ name }) => name === 'channel_handoff');
-  const required = ['gpu.atomic.store-release-device', 'gpu.atomic.load-acquire-device', 'gpu.barrier.block'];
-  if (!handoff || required.some((helper) => !handoff.helpers?.includes(helper))) {
-    fail('PAIR_PUBLICATION', 'execution-package Channel function metadata omits required device release/acquire/barrier helpers');
-  }
   if (!executionPackage.cudaJsAdapter.publicContracts.some(({ id }) => id === 'cuda-js.device-publication-release-acquire/0.1.0')) {
     fail('PAIR_PUBLICATION', 'execution package does not retain the selected Channel device publication requirement');
   }
