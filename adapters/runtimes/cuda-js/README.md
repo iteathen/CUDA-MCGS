@@ -37,12 +37,14 @@ Exact peer revision is an injected compatible-pair provenance fact. The producti
 - `prepareCudaJsExecution(executionPackage, options)` — prepares one admitted execution using an injected public `cuda-js` namespace and exact peer provenance identity;
 - `CudaJsRuntimeAdapterError` — stable MCGS-side error wrapper retaining lower public error facts.
 
-The prepared execution exposes bounded `ignite`, `publish`, `observe`, `status`, `wait`, and `close` operations. Runtime inputs are supplied to `ignite`; they are not written into or inferred from the immutable execution package.
+The prepared execution exposes bounded `ignite`, `publish`, `observe`, `status`, `wait`, declared terminal `deliver`, and `close` operations. Runtime inputs are supplied to `ignite`; they are not written into or inferred from the immutable execution package.
 
 ## Qualification
 
 Owner-local portable conformance lives under `conformance/cuda-js-runtime-adapter/` and is entered by `node scripts/run-cuda-js-runtime-adapter.mjs`. It uses an injected fake of the public CUDA-JS port so the capsule can falsify translation, failure and cleanup semantics on Windows and Ubuntu without claiming native CUDA compatibility.
 
 The portable fake is translation/lifecycle scaffolding, not a physical workload oracle. In particular, its historical synthetic output/launch shape must not be promoted unchanged to native execution. Exact physical workload resource and launch bounds come from accepted CUDA-MCGS semantic owners through `tool.search-compiler`.
+
+Declared terminal delivery maps the accepted Output-owned package delivery id to an exact public CUDA-JS asynchronous D2H operation only after operation completion. The transfer operation is waited and closed before its backing memory; unproved transfer cleanup retains/quarantines backing memory and runtime rather than claiming terminal release. Arbitrary generated-resource reads are not exposed.
 
 Native exact compatible-pair evidence remains owned by CUDA-JS #32. The protected #125 assessment remains the construction provenance and critical boundary record; post-integration current state is owned by protected `STATUS.md` / `next_step.yaml` and live GitHub read-back.

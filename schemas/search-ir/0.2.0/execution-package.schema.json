@@ -135,6 +135,7 @@
         "publicContracts",
         "searchProgram",
         "resourceRequirements",
+        "deliveryRequirements",
         "operationRequirements",
         "searchLifecycle"
       ],
@@ -209,6 +210,14 @@
           "minItems": 1,
           "items": {
             "$ref": "#/$defs/sidebandRequirement"
+          }
+        },
+        "deliveryRequirements": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/$defs/deliveryRequirement"
           }
         }
       }
@@ -491,6 +500,72 @@
         },
         "cleanup": {
           "$ref": "primitives.schema.json#/$defs/schemaReference"
+        }
+      }
+    },
+    "deliveryRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "packageDelivery",
+        "role",
+        "terminalSchema",
+        "resource",
+        "byteOffset",
+        "byteLength",
+        "readiness",
+        "mode",
+        "maxTransfers",
+        "borrow",
+        "asyncRead",
+        "cleanup",
+        "lifetime"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^delivery-[0-9]+$"
+        },
+        "packageDelivery": {
+          "$ref": "primitives.schema.json#/$defs/namespacedId"
+        },
+        "role": {
+          "const": "terminal-output"
+        },
+        "terminalSchema": {
+          "$ref": "primitives.schema.json#/$defs/namespacedId"
+        },
+        "resource": {
+          "type": "string",
+          "pattern": "^resource-[0-9]+$"
+        },
+        "byteOffset": {
+          "$ref": "primitives.schema.json#/$defs/decimalUint"
+        },
+        "byteLength": {
+          "$ref": "primitives.schema.json#/$defs/decimalUint"
+        },
+        "readiness": {
+          "const": "terminal-completed"
+        },
+        "mode": {
+          "const": "asynchronous-bounded-read"
+        },
+        "maxTransfers": {
+          "$ref": "primitives.schema.json#/$defs/decimalUint"
+        },
+        "borrow": {
+          "$ref": "primitives.schema.json#/$defs/schemaReference"
+        },
+        "asyncRead": {
+          "$ref": "primitives.schema.json#/$defs/schemaReference"
+        },
+        "cleanup": {
+          "$ref": "primitives.schema.json#/$defs/schemaReference"
+        },
+        "lifetime": {
+          "const": "terminal-result"
         }
       }
     }

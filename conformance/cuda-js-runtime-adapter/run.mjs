@@ -40,8 +40,17 @@ test('happy path translates only declared public facts and cleans in dependency 
   prepared.publish('sideband.framework-cancellation', 7);
   assert.equal(fake.mailboxValues.get('sideband.framework-cancellation'), 7);
   await rejects(() => prepared.observe('sideband.framework-cancellation'), 'CUDA_JS_ADAPTER_INPUT');
+  await rejects(() => prepared.deliver('delivery.terminal-output'), 'CUDA_JS_ADAPTER_STATE');
+  assert.equal(calls(fake, 'memory.readAsync').length, 0);
   const complete = await prepared.wait();
   assert.equal(complete.state, 'completed');
+  const delivery = await prepared.deliver('delivery.terminal-output');
+  assert.equal(delivery.role, 'terminal-output');
+  assert.equal(delivery.bytes.byteLength, 16);
+  assert.deepEqual(call(fake, 'memory.readAsync').slice(2), [{ deviceOffset: 0, byteLength: 16 }]);
+  const repeatedDelivery = await prepared.deliver('delivery.terminal-output');
+  assert.equal(repeatedDelivery.bytes.byteLength, 16);
+  assert.equal(calls(fake, 'memory.readAsync').length, 2);
   const cleanup = await prepared.close();
   assert.equal(cleanup.status, 'complete');
   const order = fake.calls.map(([name]) => name);
@@ -115,7 +124,7 @@ test('read and read-write bindings require exact explicit initial bytes', async 
   for (const mode of ['read', 'read-write']) {
     const fake = publicCudaJsFake();
     const value = executionPackage();
-    value.cudaJsAdapter.resourceRequirements[0].accessRequirements = [mode];
+    value.cudaJsAdapter.resourceRequirements[0].accessRequirements = mode === 'read-write' ? ['read', 'write'] : [mode];
     value.cudaJsAdapter.operationRequirements[0].bindings.find(({ parameter }) => parameter === 'output').source.access = mode;
     const prepared = await prepareCudaJsExecution(value, { cudaJs: fake.cudaJs, peer: PEER });
     await rejects(() => prepared.ignite(), 'CUDA_JS_ADAPTER_INPUT');
@@ -157,6 +166,38 @@ test('device-to-host sideband is observed but cannot be published by the host', 
   assert.equal(prepared.observe('sideband.observation'), 0);
   await rejects(() => prepared.publish('sideband.observation', 1), 'CUDA_JS_ADAPTER_INPUT');
   await prepared.close();
+});
+
+
+test('terminal delivery failure preserves lower facts and remains retry-safe for cleanup', async () => {
+  const fake = publicCudaJsFake({ readError: true });
+  const prepared = await prepareCudaJsExecution(executionPackage(), { cudaJs: fake.cudaJs, peer: PEER });
+  await prepared.ignite(); await prepared.wait();
+  const error = await rejects(() => prepared.deliver('delivery.terminal-output'), 'CUDA_JS_ADAPTER_DELIVERY', 'operation');
+  assert.equal(error.lower.code, 'CUDA_JS_READ_FAILED');
+  assert.equal(calls(fake, 'memory.readAsync').length, 1);
+  assert.equal((await prepared.close()).status, 'complete');
+});
+
+test('unproved terminal transfer cleanup retains backing memory and runtime', async () => {
+  const fake = publicCudaJsFake({ readCloseError: true });
+  const prepared = await prepareCudaJsExecution(executionPackage(), { cudaJs: fake.cudaJs, peer: PEER });
+  await prepared.ignite(); await prepared.wait();
+  const error = await rejects(() => prepared.deliver('delivery.terminal-output'), 'CUDA_JS_ADAPTER_DELIVERY_CLEANUP', 'cleanup');
+  assert.equal(error.lower.code, 'CUDA_JS_READ_CLOSE_FAILED');
+  assert.ok(error.cleanup.retained.includes('memory:resource.output'));
+  const report = await prepared.close();
+  assert.equal(report.status, 'quarantined');
+  assert.equal(calls(fake, 'memory.close').length, 0);
+  assert.equal(calls(fake, 'runtime.close').length, 0);
+});
+
+test('invalid terminal delivery rejects before lower mutation', async () => {
+  const fake = publicCudaJsFake();
+  const value = executionPackage();
+  value.cudaJsAdapter.deliveryRequirements[0].byteLength = '17';
+  await rejects(() => prepareCudaJsExecution(value, { cudaJs: fake.cudaJs, peer: PEER }), 'CUDA_JS_ADAPTER_PACKAGE');
+  assert.equal(fake.calls.length, 0);
 });
 
 test('compilation failure retains lower facts and rolls back runtime', async () => {

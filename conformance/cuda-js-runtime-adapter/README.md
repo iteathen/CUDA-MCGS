@@ -29,3 +29,7 @@ The capsule covers:
 - repeated fresh prepare/ignite/wait/close lifecycles.
 
 The fake is evidence support only. Production source cannot import it or any other conformance/experiment path. Native CUDA correctness, provider/device support and performance remain outside this capsule and downstream of CUDA-JS #32.
+
+## Terminal Output delivery
+
+The portable capsule also falsifies the SPEC-0005 terminal host-delivery projection: explicit delivery admission/range validation occurs before lower mutation, delivery is rejected before terminal completion, post-terminal delivery reads exactly the declared public CUDA-JS byte range, transfer bounds are finite, lower D2H failures retain lower facts, and no arbitrary generated-resource read API exists. Portable evidence does not claim native D2H or publication correctness.

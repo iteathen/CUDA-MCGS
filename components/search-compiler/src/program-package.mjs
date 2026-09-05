@@ -330,6 +330,40 @@ function normalizeSideband(input, index, context) {
   };
 }
 
+function normalizeDelivery(input, index, context) {
+  exactKeys(input, ['id', 'semanticOwner', 'role', 'terminalSchema', 'resource', 'byteOffset', 'byteLength', 'readiness', 'mode', 'maxTransfers', 'borrow', 'asyncRead', 'cleanup', 'lifetime'], 'COMPOSE_DELIVERY_FIELDS', `delivery ${index}`);
+  assertNamespacedId(input.id, 'COMPOSE_DELIVERY_ID', `delivery ${index} id`);
+  const output = context.outputResult?.normalized;
+  if (!output || input.semanticOwner !== output.id) fail('COMPOSE_DELIVERY_OWNER', `${input.id} does not name the selected Output owner`);
+  if (input.role !== 'terminal-output' || input.readiness !== 'terminal-completed' || input.mode !== 'asynchronous-bounded-read' || input.lifetime !== 'terminal-result') fail('COMPOSE_DELIVERY_CONTRACT', `${input.id} has an unsupported terminal delivery contract`);
+  assertNamespacedId(input.terminalSchema, 'COMPOSE_DELIVERY_SCHEMA', `${input.id} terminalSchema`);
+  const terminalSchema = input.terminalSchema;
+  if (terminalSchema !== output.terminal.schema) fail('COMPOSE_DELIVERY_SCHEMA', `${input.id} terminal schema differs from Output`);
+  const resource = context.resourceById.get(input.resource);
+  if (!resource || resource.materialization !== 'resident-storage' || !resource.access.includes('read')) fail('COMPOSE_DELIVERY_RESOURCE', `${input.id} resource is not readable resident storage`);
+  const byteOffset = normalizeDecimalUint(input.byteOffset, `${input.id} byteOffset`);
+  const byteLength = positiveDecimal(input.byteLength, 'COMPOSE_DELIVERY_RANGE', `${input.id} byteLength`);
+  const maxTransfers = positiveDecimal(input.maxTransfers, 'COMPOSE_DELIVERY_RANGE', `${input.id} maxTransfers`);
+  const borrow = normalizeSchemaReference(input.borrow, `${input.id} borrow`);
+  const asyncRead = normalizeSchemaReference(input.asyncRead, `${input.id} asyncRead`);
+  const cleanup = normalizeSchemaReference(input.cleanup, `${input.id} cleanup`);
+  if (schemaKey(borrow) !== schemaKey(output.terminal.borrow) || schemaKey(asyncRead) !== schemaKey(output.terminal.asyncRead) || schemaKey(cleanup) !== schemaKey(output.terminal.cleanup)) fail('COMPOSE_DELIVERY_CONTRACT', `${input.id} delivery contracts differ from Output`);
+  if (output.publication.hostDelivery !== 'asynchronous-bounded-read' || output.publication.hostEffect !== 'transfer-borrow-only' || output.publication.maxTransfers !== maxTransfers) fail('COMPOSE_DELIVERY_CONTRACT', `${input.id} publication bounds differ from Output`);
+
+  const plan = context.resourceResult?.normalized;
+  const reserve = plan?.reserves?.find(({ id }) => id === output.terminalEnvelope.terminalReserve);
+  const partition = reserve ? plan.partitions?.find(({ id }) => id === reserve.partition) : null;
+  const resourceClass = reserve ? plan.classes?.find(({ id }) => id === reserve.class) : null;
+  const pool = partition ? plan.pools?.find(({ id }) => id === partition.pool) : null;
+  const outputContributor = plan?.contributors?.find(({ profile, contract }) => profile?.id === output.id || contract?.id === 'SPEC-0013');
+  if (!reserve || reserve.purpose !== 'terminal-result' || !partition || !resourceClass || partition.class !== resourceClass.id || !pool || resourceClass.unit !== 'bytes' || pool.unit !== 'bytes' || partition.alias?.kind !== 'none') fail('COMPOSE_DELIVERY_RESOURCE', `${input.id} Output reserve/resource chain is not first-realization byte storage`);
+  if (!outputContributor || !reserve.eligibleOwners.includes(outputContributor.id)) fail('COMPOSE_DELIVERY_OWNER', `${input.id} terminal reserve is not owned by Output`);
+  if (resource.providerRequirement !== pool.providerRequirement) fail('COMPOSE_DELIVERY_RESOURCE', `${input.id} package resource differs from the terminal pool provider`);
+  if (byteOffset !== partition.offset || byteLength !== reserve.maximum) fail('COMPOSE_DELIVERY_RANGE', `${input.id} range differs from the authoritative terminal reserve`);
+  if (BigInt(reserve.maximum) > BigInt(partition.capacity) || BigInt(partition.offset) + BigInt(reserve.maximum) > BigInt(pool.capacity) || BigInt(byteOffset) + BigInt(byteLength) > BigInt(resource.capacity)) fail('COMPOSE_DELIVERY_RANGE', `${input.id} terminal range exceeds admitted storage`);
+  return { id: input.id, semanticOwner: input.semanticOwner, role: input.role, terminalSchema, resource: input.resource, byteOffset, byteLength, readiness: input.readiness, mode: input.mode, maxTransfers, borrow, asyncRead, cleanup, lifetime: input.lifetime };
+}
+
 function normalizeBinding(input, operationId, index, parameters, resources, sidebands) {
   exactKeys(input, ['parameter', 'source'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} binding ${index}`);
   const parameter = parameters.find(({ name }) => name === input.parameter);
@@ -400,13 +434,13 @@ function normalizeDeletion(input, context) {
   if (selectedOwners.length !== context.semanticOwners.size || selectedOwners.some((owner, index) => owner !== [...context.semanticOwners].sort(compareRaw)[index])) fail('COMPOSE_DELETION_OWNER', 'deletion owner set differs from selected semantics');
   if (!Array.isArray(input.records) || input.records.length === 0) fail('COMPOSE_DELETION_RECORD', 'deletion records are absent');
   const records = input.records.map((record, index) => {
-    const recordFields = ['owner', 'sourceUnits', 'functions', 'resources', 'publicRequirements', 'packageRecords'];
-    if (context.sidebandsDeclared) recordFields.splice(recordFields.indexOf('packageRecords'), 0, 'sidebands');
+    const recordFields = ['owner', 'sourceUnits', 'functions', 'resources', 'publicRequirements', 'deliveries', 'packageRecords'];
+    if (context.sidebandsDeclared) recordFields.splice(recordFields.indexOf('deliveries'), 0, 'sidebands');
     exactKeys(record, recordFields, 'COMPOSE_DELETION_RECORD_FIELDS', `deletion record ${index}`);
     if (!context.semanticOwners.has(record.owner)) fail('COMPOSE_DELETION_OWNER', `deletion record ${record.owner} is not selected`);
     const normalized = { owner: record.owner };
-    const recordLists = ['sourceUnits', 'functions', 'resources', 'publicRequirements', 'packageRecords'];
-    if (context.sidebandsDeclared) recordLists.splice(recordLists.indexOf('packageRecords'), 0, 'sidebands');
+    const recordLists = ['sourceUnits', 'functions', 'resources', 'publicRequirements', 'deliveries', 'packageRecords'];
+    if (context.sidebandsDeclared) recordLists.splice(recordLists.indexOf('deliveries'), 0, 'sidebands');
     for (const key of recordLists) {
       if (!Array.isArray(record[key])) fail('COMPOSE_DELETION_RECORD', `${record.owner} ${key} must be an array`);
       normalized[key] = [...record[key]].sort(compareRaw);
@@ -416,7 +450,7 @@ function normalizeDeletion(input, context) {
   }).sort((left, right) => compareRaw(left.owner, right.owner));
   uniqueBy(records, 'owner', 'COMPOSE_DELETION_OWNER', 'deletion owner');
   if (records.length !== selectedOwners.length) fail('COMPOSE_DELETION_OWNER', 'every selected owner requires one deletion record');
-  const coverage = new Map([['sourceUnits', context.sourceUnits.map(({ id }) => id)], ['functions', context.functions.map(({ name }) => name)], ['resources', context.resources.map(({ id }) => id)], ['publicRequirements', context.publicRequirements.map(({ contract }) => contract.id)]]);
+  const coverage = new Map([['sourceUnits', context.sourceUnits.map(({ id }) => id)], ['functions', context.functions.map(({ name }) => name)], ['resources', context.resources.map(({ id }) => id)], ['publicRequirements', context.publicRequirements.map(({ contract }) => contract.id)], ['deliveries', context.deliveries.map(({ id }) => id)]]);
   if (context.sidebandsDeclared) coverage.set('sidebands', context.sidebands.map(({ id }) => id));
   for (const [key, expected] of coverage) for (const id of expected) if (!records.some((record) => record[key].includes(id))) fail('COMPOSE_DELETION_COVERAGE', `${key} ${id} has no deletion owner`);
   const same = (left, right) => left.length === right.length && left.every((value, index) => value === right[index]);
@@ -426,9 +460,10 @@ function normalizeDeletion(input, context) {
     const expectedResources = context.resources.filter(({ ownerProfile }) => ownerProfile === record.owner).map(({ id }) => id).sort(compareRaw);
     const expectedRequirements = context.publicRequirements.filter(({ consumers }) => consumers.includes(record.owner)).map(({ contract }) => contract.id).sort(compareRaw);
     const expectedSidebands = context.sidebands.filter(({ semanticOwner }) => semanticOwner === record.owner).map(({ id }) => id).sort(compareRaw);
+    const expectedDeliveries = context.deliveries.filter(({ semanticOwner }) => semanticOwner === record.owner).map(({ id }) => id).sort(compareRaw);
     const expectedPackageRecords = record.owner === context.compositionProfileId ? ['package.execution-operation'] : [];
     if (!same(record.sourceUnits, expectedSourceUnits) || !same(record.functions, expectedFunctions) || !same(record.resources, expectedResources)
-        || !same(record.publicRequirements, expectedRequirements) || (context.sidebandsDeclared && !same(record.sidebands, expectedSidebands)) || !same(record.packageRecords, expectedPackageRecords)) {
+        || !same(record.publicRequirements, expectedRequirements) || (context.sidebandsDeclared && !same(record.sidebands, expectedSidebands)) || !same(record.deliveries, expectedDeliveries) || !same(record.packageRecords, expectedPackageRecords)) {
       fail('COMPOSE_DELETION_OWNERSHIP', `${record.owner} deletion record differs from authoritative ownership`);
     }
   }
@@ -441,8 +476,8 @@ function semanticEngineIdentity(semanticEngine) {
 
 export function normalizeProgramPackageProfile(input, inspected, suppliedContext) {
   const sidebandsDeclared = Object.hasOwn(input, 'sidebands');
-  const rootFields = ['schema', 'representation', 'status', 'contract', 'id', 'version', 'semanticEngine', 'generator', 'sourceUnits', 'functions', 'programUnits', 'publicRequirements', 'resources', 'operations', 'manifests', 'provenance', 'compatibility', 'deletion'];
-  if (sidebandsDeclared) rootFields.splice(rootFields.indexOf('operations'), 0, 'sidebands');
+  const rootFields = ['schema', 'representation', 'status', 'contract', 'id', 'version', 'semanticEngine', 'generator', 'sourceUnits', 'functions', 'programUnits', 'publicRequirements', 'resources', 'deliveries', 'operations', 'manifests', 'provenance', 'compatibility', 'deletion'];
+  if (sidebandsDeclared) rootFields.splice(rootFields.indexOf('deliveries'), 0, 'sidebands');
   exactKeys(input, rootFields, 'COMPOSE_ROOT_FIELDS', 'program/package profile');
   if (input.schema !== PROFILE_SCHEMA || input.representation !== REPRESENTATION || input.status !== 'accepted') fail('COMPOSE_SCHEMA', 'unsupported program/package schema/representation/status');
   assertNamespacedId(input.id, 'COMPOSE_PROFILE_ID', 'program/package profile id'); assertVersion(input.version, 'COMPOSE_PROFILE_VERSION', 'program/package profile version');
@@ -528,6 +563,7 @@ export function normalizeProgramPackageProfile(input, inspected, suppliedContext
   uniqueBy(resources, 'id', 'COMPOSE_RESOURCE_DUPLICATE', 'resource'); uniqueBy(resources, 'providerRequirement', 'COMPOSE_RESOURCE_PROVIDER', 'resource provider');
   if (resources.length !== context.providerById.size) fail('COMPOSE_RESOURCE_COVERAGE', 'resources do not cover every provider requirement');
   context.resourceById = new Map(resources.map((entry) => [entry.id, entry])); context.resources = resources;
+  context.outputResult = suppliedContext.outputResult;
 
   let sidebands = [];
   if (sidebandsDeclared) {
@@ -538,6 +574,13 @@ export function normalizeProgramPackageProfile(input, inspected, suppliedContext
   context.sidebandsDeclared = sidebandsDeclared;
   context.sidebands = sidebands;
   context.sidebandById = new Map(sidebands.map((entry) => [entry.id, entry]));
+
+  if (!Array.isArray(input.deliveries) || input.deliveries.length !== 1) fail('COMPOSE_DELIVERY_COUNT', 'exactly one terminal delivery is required');
+  const deliveries = input.deliveries.map((entry, index) => normalizeDelivery(entry, index, context)).sort((left, right) => compareRaw(left.id, right.id));
+  uniqueBy(deliveries, 'id', 'COMPOSE_DELIVERY_DUPLICATE', 'delivery');
+  if (deliveries[0].role !== 'terminal-output') fail('COMPOSE_DELIVERY_COUNT', 'the mandatory delivery must be terminal-output');
+  context.deliveries = deliveries;
+  context.deliveryById = new Map(deliveries.map((entry) => [entry.id, entry]));
 
   const operations = input.operations.map((entry, index) => normalizeOperation(entry, index, context)).sort((left, right) => compareRaw(left.id, right.id));
   uniqueBy(operations, 'id', 'COMPOSE_OPERATION_DUPLICATE', 'operation');
@@ -550,7 +593,7 @@ export function normalizeProgramPackageProfile(input, inspected, suppliedContext
     schema: input.schema, representation: input.representation, status: input.status, contract: normalizeCatalogContract(input.contract, inspected), id: input.id, version: input.version,
     semanticEngine, generator, sourceUnits, functions, programUnits, publicRequirements, resources,
     ...(sidebandsDeclared ? { sidebands } : {}),
-    operations, manifests, provenance, compatibility, deletion,
+    deliveries, operations, manifests, provenance, compatibility, deletion,
   };
   return { normalized, identity: canonicalIdentity(normalized), semanticEngineIdentity: semanticEngineIdentity(semanticEngine) };
 }
@@ -578,6 +621,7 @@ export function composeSearchProgram(profileResult) {
     publicRequirements: profile.publicRequirements.map((entry) => ({ contract: { ...entry.contract }, consumers: [...entry.consumers], qualification: entry.qualification })),
     resources: profile.resources.map((entry) => ({ ...entry, memorySpaces: [...entry.memorySpaces], access: [...entry.access] })),
     ...(Object.hasOwn(profile, 'sidebands') ? { sidebands: profile.sidebands.map((entry) => structuredClone(entry)) } : {}),
+    deliveries: profile.deliveries.map((entry) => structuredClone(entry)),
     operations: profile.operations.map((entry) => ({ ...entry, bindings: structuredClone(entry.bindings), grid: [...entry.grid], block: [...entry.block],  })),
     manifests: structuredClone(profile.manifests),
     provenance: structuredClone(profile.provenance),
@@ -594,6 +638,12 @@ function buildCudaJsAdapterRequirements(program) {
   if (frameworkCancellation.length !== 1) fail('COMPOSE_SIDEBAND_REQUIRED', 'runtime realization requires exactly one framework-cancellation sideband');
   if (!program.publicRequirements.some(({ contract }) => contract.id === 'cuda-js.publication-mailbox/0.1.0')) fail('COMPOSE_SIDEBAND_CAPABILITY', 'runtime realization requires the selected public publication capability');
   const sidebandNames = new Map(sidebands.map((entry, index) => [entry.id, `sideband-${index}`]));
+  const deliveryRequirements = program.deliveries.map((entry, index) => ({
+    id: `delivery-${index}`, packageDelivery: entry.id, role: entry.role, terminalSchema: entry.terminalSchema,
+    resource: resourceNames.get(entry.resource), byteOffset: entry.byteOffset, byteLength: entry.byteLength, readiness: entry.readiness, mode: entry.mode,
+    maxTransfers: entry.maxTransfers, borrow: { ...entry.borrow }, asyncRead: { ...entry.asyncRead }, cleanup: { ...entry.cleanup }, lifetime: entry.lifetime,
+  }));
+  if (deliveryRequirements.some(({ resource }) => !resource)) fail('COMPOSE_DELIVERY_RESOURCE', 'delivery maps to non-resident package storage');
   for (const operation of program.operations) for (const binding of operation.bindings) {
     if (binding.source.kind === 'resource' && !Object.hasOwn(binding.source, 'access')) {
       fail('COMPOSE_OPERATION_ACCESS_REQUIRED', `${operation.id} ${binding.parameter} lacks operation-local resource access`);
@@ -619,6 +669,7 @@ function buildCudaJsAdapterRequirements(program) {
       capacity: entry.capacity, publication: entry.publication, applicationPoint: { ...entry.applicationPoint }, lifetime: entry.lifetime,
       residentResource: entry.residentResource === null ? null : resourceNames.get(entry.residentResource), semantics: { ...entry.semantics }, cleanup: { ...entry.cleanup },
     })),
+    deliveryRequirements,
     operationRequirements: operations,
     searchLifecycle: { ignition: 'device-owned', cancellation: 'bounded-external-intent', completion: 'device-owned-closure' },
   };
