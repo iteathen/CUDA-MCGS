@@ -31,8 +31,5 @@
     "README.md",
     "LICENSE",
     "LICENSING.md"
-  ],
-  "scripts": {
-    "test:library-interface": "node scripts/run-library-interface.mjs"
-  }
+  ]
 }
