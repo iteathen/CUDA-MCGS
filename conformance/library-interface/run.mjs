@@ -11,7 +11,6 @@ import { buildExactCompatiblePairCapsule } from '../cuda-js-compatible-pair/src/
 const execFile = promisify(execFileCallback);
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(here, '..', '..');
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const gitCommand = process.platform === 'win32' ? 'git.exe' : 'git';
 const cases = [];
 
@@ -26,6 +25,13 @@ async function runCase(id, body) {
   }
 }
 
+async function execNpm(args, options) {
+  if (process.platform !== 'win32') return execFile('npm', args, options);
+  const npmCli = path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
+  await access(npmCli);
+  return execFile(process.execPath, [npmCli, ...args], options);
+}
+
 async function gitObject(...args) {
   const { stdout } = await execFile(gitCommand, ['-C', repositoryRoot, 'rev-parse', ...args], { maxBuffer: 1024 * 1024 });
   return stdout.trim();
@@ -36,7 +42,7 @@ async function installCandidate(tempRoot) {
   const consumerRoot = path.join(tempRoot, 'consumer');
   await mkdir(packRoot, { recursive: true });
   await mkdir(consumerRoot, { recursive: true });
-  const { stdout } = await execFile(npmCommand, ['pack', '--json', '--pack-destination', packRoot], {
+  const { stdout } = await execNpm(['pack', '--json', '--pack-destination', packRoot], {
     cwd: repositoryRoot,
     maxBuffer: 16 * 1024 * 1024,
   });
@@ -44,7 +50,7 @@ async function installCandidate(tempRoot) {
   assert.equal(packed.length, 1, 'npm pack must produce exactly one artifact');
   const tarball = path.join(packRoot, packed[0].filename);
   await writeFile(path.join(consumerRoot, 'package.json'), JSON.stringify({ private: true, type: 'module' }, null, 2) + '\n', 'utf8');
-  await execFile(npmCommand, ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false', tarball], {
+  await execNpm(['install', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false', tarball], {
     cwd: consumerRoot,
     maxBuffer: 16 * 1024 * 1024,
   });
