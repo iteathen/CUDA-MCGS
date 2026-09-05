@@ -96,10 +96,23 @@ try {
   const { library, compiler, cudaJsRuntime } = installed.shim;
 
   await runCase('LIB-C00-installed-package-identity', async () => {
-    const packageJson = JSON.parse(await readFile(new URL(installed.shim.packageJsonUrl), 'utf8'));
+    const packageJsonPath = fileURLToPath(installed.shim.packageJsonUrl);
+    const installedPackageRoot = path.join(installed.consumerRoot, 'node_modules', 'cuda-mcgs');
+    assert.equal(path.relative(installedPackageRoot, packageJsonPath), 'package.json');
+    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8'));
     assert.equal(packageJson.name, 'cuda-mcgs');
     assert.equal(packageJson.version, '0.0.0-dev.0');
     assert.equal(packageJson.private, true);
+    assert.equal(packageJson.scripts, undefined, 'installed manifest must not advertise repository-only scripts');
+    assert.equal(installed.packed.name, packageJson.name);
+    assert.equal(installed.packed.version, packageJson.version);
+    assert.match(installed.packed.shasum, /^[0-9a-f]{40}$/);
+    assert.match(installed.packed.integrity, /^sha512-/);
+    await assert.rejects(
+      access(path.join(installedPackageRoot, 'components', 'search-compiler', 'testing.mjs')),
+      (error) => error?.code === 'ENOENT',
+      'conformance-only Search Compiler testing port must not be packed',
+    );
     assert.equal(library.libraryConstants.contract, 'cuda-mcgs.library-interface/0.1.0');
     assert.equal(library.libraryConstants.version, '0.1.0');
     assert.equal(library.libraryConstants.resolverOwner, 'tool.search-compiler');
@@ -204,7 +217,18 @@ const failed = cases.filter(({ status }) => status !== 'pass');
 const summary = {
   schema: 'cuda-mcgs.library-interface-conformance/0.1.0',
   source: { revision, tree },
-  package: { name: 'cuda-mcgs', version: '0.0.0-dev.0' },
+  package: {
+    name: 'cuda-mcgs',
+    version: '0.0.0-dev.0',
+    artifact: {
+      filename: installed.packed.filename,
+      shasum: installed.packed.shasum,
+      integrity: installed.packed.integrity,
+      size: installed.packed.size,
+      unpackedSize: installed.packed.unpackedSize,
+      entryCount: installed.packed.entryCount,
+    },
+  },
   contract: 'cuda-mcgs.library-interface/0.1.0',
   node: process.version,
   platform: `${process.platform}-${process.arch}`,
