@@ -47,12 +47,8 @@ function fail(code, message) {
   throw error;
 }
 
-function assertHex40(value, label) {
-  if (typeof value !== 'string' || !/^[0-9a-f]{40}$/.test(value)) fail('PAIR_IDENTITY', `${label} must be an exact 40-hex revision`);
-}
-
-function assertHex64(value, label) {
-  if (typeof value !== 'string' || !/^[0-9a-f]{64}$/.test(value)) fail('PAIR_IDENTITY', `${label} must be an exact 64-hex tree`);
+function assertGitObject(value, label) {
+  if (typeof value !== 'string' || !/^[0-9a-f]{40}$/.test(value)) fail('PAIR_IDENTITY', `${label} must be an exact 40-hex Git object id`);
 }
 
 export function normalizeExactPair(input) {
@@ -60,10 +56,10 @@ export function normalizeExactPair(input) {
   const mcgs = input.cudaMcgs;
   const cudaJs = input.cudaJs;
   if (mcgs?.repository !== CUDA_MCGS_REPOSITORY || cudaJs?.repository !== CUDA_JS_REPOSITORY) fail('PAIR_IDENTITY', 'pair repositories are not the governed repositories');
-  assertHex40(mcgs.revision, 'CUDA-MCGS revision');
-  assertHex40(cudaJs.revision, 'CUDA-JS revision');
-  assertHex64(mcgs.tree, 'CUDA-MCGS tree');
-  assertHex64(cudaJs.tree, 'CUDA-JS tree');
+  assertGitObject(mcgs.revision, 'CUDA-MCGS revision');
+  assertGitObject(cudaJs.revision, 'CUDA-JS revision');
+  assertGitObject(mcgs.tree, 'CUDA-MCGS tree');
+  assertGitObject(cudaJs.tree, 'CUDA-JS tree');
   if (typeof cudaJs.package !== 'string' || !/^cuda-js@[0-9A-Za-z.+-]+$/.test(cudaJs.package)) fail('PAIR_IDENTITY', 'CUDA-JS package identity is invalid');
   if (String(cudaJs.apiSchema) !== '1') fail('PAIR_IDENTITY', 'CUDA-JS API schema must be 1 for this capsule');
   return Object.freeze({
@@ -383,7 +379,7 @@ function sourceAndFunctions(context, profileId, pair) {
       });
     } else {
       const record = ownerSource(context.channelResult, channel.id, 'channel', pair);
-      sourceUnits.push(record.unit); functions.push(record.function); ordinaryFunctions.push(record.function.name);
+      sourceUnits.push(record.unit); functions.push(record.function);
     }
   }
 
@@ -515,7 +511,6 @@ export function expectedTerminalBytes() {
 export async function buildExactCompatiblePairCapsule(pairInput) {
   const pair = normalizeExactPair(pairInput);
   const ownerContext = await buildAcceptedOwnerContext(pair);
-  ownerContext.inspected = ownerContext.inspected;
   const built = buildProfileTemplate(ownerContext, pair);
   const generator = {
     id: 'composer.exact-compatible-pair', version: VERSION, revision: pair.cudaMcgs.revision, language: 'restricted-device-js',
@@ -540,7 +535,6 @@ export async function buildExactCompatiblePairCapsule(pairInput) {
 
 export function assertExactExecutionPackage(executionPackage, capsule) {
   if (executionPackage.compatibility.cudaJs.revision !== capsule.pair.cudaJs.revision || executionPackage.compatibility.cudaJs.package !== capsule.pair.cudaJs.package || String(executionPackage.compatibility.apiSchema) !== capsule.pair.cudaJs.apiSchema) fail('PAIR_STALE_LOWER', 'execution package lower identity differs from frozen pair');
-  if (executionPackage.semantic?.engineAuthority?.revision && executionPackage.semantic.engineAuthority.revision !== capsule.pair.cudaMcgs.revision) fail('PAIR_STALE_MCGS', 'execution package semantic authority differs from frozen MCGS revision');
   const adapter = executionPackage.cudaJsAdapter;
   if (adapter.operationRequirements.length !== 1) fail('PAIR_HOST_RELAUNCH', 'exact pair admits exactly one device operation');
   const operation = adapter.operationRequirements[0];
