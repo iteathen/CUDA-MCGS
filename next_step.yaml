@@ -70,8 +70,8 @@
     "name": "CUDA-free external-consumer preparation through the protected public package boundary",
     "consumer": "iteathen/UCI-Arena-Vector",
     "state": "#109 public surface is protected and installed-qualified; final #123 physical acceptance remains blocked on CUDA-JS #32, but the downstream public-surface/ownership slice is now executable without hardware.",
-    "next_action": "Re-read UCI-Arena-Vector protected authority, current issue/PR/CI state, public/product contracts and package topology. Reconcile its stale upstream assumptions, then implement the smallest CUDA-free consumer slice that installs an exact packed protected cuda-mcgs artifact and uses declared public exports only for pre-ignition resolution/composition/provenance/diagnostics. Do not ignite CUDA-JS or claim #123 completion.",
-    "exit": "One exact CUDA-free downstream consumer slice proves the protected public MCGS package can be consumed without private imports or ownership leakage, or it demonstrates a concrete owner/API gap that is routed to its natural owner. #123 remains open until its separately required physical CUDA-JS #32 evidence exists."
+    "next_action": "Re-read UCI-Arena-Vector protected authority, current issue/PR/CI state, public/product contracts and package topology. Reconcile its stale upstream assumptions, then implement the smallest product-owned evaluator-free CUDA-free consumer slice that installs an exact packed protected cuda-mcgs artifact and uses declared public exports only for pre-ignition resolution/composition/provenance/diagnostics. Do not ignite CUDA-JS, enter the separate Tensor/model lane, or claim #123 completion.",
+    "exit": "One exact evaluator-free CUDA-free downstream consumer slice proves the protected public MCGS package can be consumed without private imports or ownership leakage, or it demonstrates a concrete owner/API gap that is routed to its natural owner. #123 remains open until its separately required physical CUDA-JS #32 evidence exists."
   },
   "parked_physical_gate": {
     "repository": "iteathen/CUDA-JS",
@@ -99,7 +99,8 @@
     "interface.library adds no second semantic implementation: omitted generator convenience selects only Search Compiler's existing frozen reference generator; compose/tryCompose are direct owner-port aliases.",
     "The installed-package capsule proves public export closure and canonical identities from an actual npm-packed temporary installation on Windows/Ubuntu, while conformance/testing ports remain absent/private.",
     "No generic lower CUDA-JS capability gap was demonstrated by #221/#225 or their portable qualification; CUDA-JS #198 remains inactive.",
-    "UCI-Arena-Vector protected state was read-only inspected and contains stale upstream references to CUDA-MCGS #122 and cuda-js alpha.16; those are downstream tracker facts to reassess under Vector authority, not permission for an MCGS-owned product workaround.",
+    "UCI-Arena-Vector protected state was read-only inspected and still records CUDA-MCGS #122 as a production-lowering gate plus stale CUDA-JS alpha.16-era provenance; those are downstream tracker facts to reassess under Vector authority, not permission for an MCGS-owned product workaround.",
+    "Vector's selected neural production path remains a separate Tensor lane with its own CUDA-MCGS #124 / CUDA-JS-Tensor capability gates; the current #123 public-package proof is intentionally evaluator-free and does not satisfy that lane.",
     "A successful CUDA-free Vector slice cannot close #123 because physical #32 remains a distinct acceptance dependency."
   ],
   "blockers": [
@@ -109,7 +110,7 @@
   ],
   "parallel_and_downstream": [
     "CUDA-JS #4 remains an independent native Ubuntu 24.04 x86-64 directly exposed physical-NVIDIA support cell.",
-    "#124 matters only if the selected external-consumer profile actually uses the optional Tensor evaluator path.",
+    "The current evaluator-free external-consumer slice does not require #124. Vector's selected neural/Tensor production profile still requires the appropriate CUDA-MCGS evaluator/Tensor connector and CUDA-JS-Tensor coverage before that separate readiness claim.",
     "Generic Tensor gaps route to CUDA-JS-Tensor; reusable NN/model semantics route to cuda-nn; UCI/chess/product semantics stay in UCI-Arena-Vector or another downstream owner.",
     "No additional MCGS native-runner or mock evidence work is authorized solely because #32 hardware is unavailable."
   ],
@@ -128,8 +129,8 @@
     "native #32 entry remains intentionally unexecuted until an accepted physical NVIDIA host is available"
   ],
   "after_current_focus": [
-    "If the CUDA-free external consumer proves a missing generic CUDA-MCGS public capability, stop and fix that capability in its natural MCGS owner, then re-freeze/requalify the consumer; do not add a product-private framework clone.",
-    "If the consumer selects Tensor, reassess #124 and route generic Tensor capability work to CUDA-JS-Tensor; otherwise leave #124 inactive for this profile.",
+    "If the evaluator-free CUDA-free external consumer proves a missing generic CUDA-MCGS public capability, stop and fix that capability in its natural MCGS owner, then re-freeze/requalify the consumer; do not add a product-private framework clone.",
+    "Keep Vector's selected neural/Tensor profile on its existing owner path: reassess #124 and CUDA-JS-Tensor capability state there, without making the evaluator-free public-package proof depend on or satisfy that lane.",
     "When physical hardware becomes available, re-read the live protected MCGS/CUDA-JS tuple and execute #32 unchanged; a pass discharges only the exact native requirements/profile actually proved.",
     "If physical #32 demonstrates a generic lower gap, route it to CUDA-JS and keep #32 open until the lower owner is corrected and the exact pair is rerun."
   ],
@@ -137,6 +138,7 @@
     "Do not call cuda-mcgs@0.0.0-dev.0 a released npm package or a stable public API.",
     "Do not infer native CUDA, physical Linux, performance, product readiness or multi-GPU support from hosted installed-package/compatible-pair evidence.",
     "Do not close #123 from a CUDA-free downstream slice; the physical #32 dependency remains unsatisfied.",
+    "Do not infer Tensor/model readiness from the evaluator-free public-package slice; that is a separate Vector/#124/CUDA-JS-Tensor evidence lane.",
     "Do not add native/CUDA/PTX/FFI/private CUDA-JS paths, generated-artifact inspection, arbitrary lower resource reads or a second lower request/lifecycle interpreter in CUDA-MCGS or its consumer.",
     "Do not hard-code the #225 implementation baseline as a future physical MCGS revision after this docs transaction; re-read and freeze the live protected pair actually executed.",
     "Do not activate CUDA-JS #198 without a real physical execution demonstrating that generic lower capability is required."
