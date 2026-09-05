@@ -3,32 +3,33 @@
 **Universal Monte Carlo Graph Search**
 
 [![Documentation](https://github.com/iteathen/CUDA-MCGS/actions/workflows/docs.yml/badge.svg)](https://github.com/iteathen/CUDA-MCGS/actions/workflows/docs.yml)
-[![License: AGPL-3.0-or-later](https://img.shields.io/badge/License-AGPL--3.0--or--later-blue.svg)](LICENSE)
+[![License: AGPL-3.0-or-later](https://img.shields.io/badge/License-AGPL--3.0-or-later-blue.svg)](LICENSE)
 
 CUDA-MCGS is a public pre-release project defining a finite GPU-resident Monte Carlo Graph Search framework.
 
 ## Current reality
 
-**There is no production CUDA-MCGS runtime or installable package yet. You cannot run a GPU search from this repository today.**
+**There is no released CUDA-MCGS package and no physically qualified CUDA-MCGS production runtime yet.** A private development package manifest now exists so the prerelease public library boundary can be packed, installed and falsified as an exact artifact before release.
 
 What exists today:
 
-- accepted and proposed search contracts;
-- Search IR/schema work;
-- a production Search Compiler component for canonical pre-ignition normalization/composition, plus bounded independent reference/conformance evidence;
-- repository/document validation;
-- public adapter and ownership definitions for future CUDA-JS integration.
+- accepted universal search contracts and Search IR/schema authority;
+- a production Search Compiler component for canonical pre-ignition normalization/composition;
+- a production `interface.library` prerelease facade plus explicit complete Search Compiler/runtime-adapter package subpaths;
+- a private `cuda-mcgs@0.0.0-dev.0` development package/export map used for exact installed-artifact qualification, not publication;
+- a production public CUDA-JS adapter boundary and runner-ready exact compatible-pair capsule;
+- deterministic CUDA-free reference/conformance evidence and repository/document validation.
 
 What does **not** exist today:
 
-- a released CUDA-MCGS package;
-- a production GPU search engine;
-- a qualified CUDA-MCGS/CUDA-JS compatible pair;
-- a stable public API;
+- a released npm CUDA-MCGS package;
+- a physically qualified CUDA-MCGS/CUDA-JS compatible pair;
+- a stable 1.0 public API;
+- a qualified production GPU search release;
 - a chess-engine release;
 - native Linux CUDA-MCGS support or performance claims.
 
-Specification status is explicit. Accepted foundational contracts currently include [`SPEC-0001`](docs/specs/SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](docs/specs/SPEC-0002-search-ir-and-reference-semantics.md); proposal documents do not authorize production implementation merely by existing. See [`docs/specs/README.md`](docs/specs/README.md) for the current authoritative list.
+Specification status is explicit. Accepted foundational contracts include [`SPEC-0001`](docs/specs/SPEC-0001-device-search-publication-and-resources.md) and [`SPEC-0002`](docs/specs/SPEC-0002-search-ir-and-reference-semantics.md); the accepted universal 0.2 semantic family is indexed in [`docs/specs/README.md`](docs/specs/README.md). [`SPEC-0014`](docs/specs/SPEC-0014-public-library-interface.md) governs the prerelease public package/facade boundary without changing CUDA-JS ownership. Proposal documents do not authorize production implementation merely by existing.
 
 ## Verify what exists
 
@@ -46,9 +47,28 @@ node scripts/run-search-ir-composer-reference.mjs
 node scripts/run-search-semantics-reference.mjs
 ```
 
-These checks exercise documentation, schema/reference behavior, and semantic contracts. They are **not** GPU-runtime qualification.
+Pack, install and exercise the exact prerelease public library artifact:
+
+```bash
+node scripts/run-library-interface.mjs
+```
+
+The installed-library check uses a temporary external-consumer directory and public package exports only. These checks are **not** physical GPU/runtime qualification. CUDA-JS #32 remains the accepted physical compatible-pair evidence gate.
 
 Current project state and the dependency-ready next action live in [`STATUS.md`](STATUS.md) and [`next_step.yaml`](next_step.yaml).
+
+## Public library surface
+
+The private development package exposes progressive disclosure without introducing another runtime or semantic interpreter:
+
+- `cuda-mcgs` — prerelease convenience facade (`resolve`, `tryResolve`, `compose`, `tryCompose`) over the one canonical Search Compiler path;
+- `cuda-mcgs/search-compiler` — the complete production Search Compiler public port;
+- `cuda-mcgs/runtime/cuda-js` — the explicit production runtime-adapter port, which still requires an injected public CUDA-JS namespace when actually used;
+- `cuda-mcgs/schemas/search-ir/0.2.0/*` — explicit versioned low-level schema access.
+
+Omitting the facade generator selects only the Search Compiler-owned neutral reference generator. Material default provenance remains in the canonical resolved input. Runtime creation is never a side effect of the root facade. Deep/private implementation and testing ports are not package exports.
+
+This is a prerelease qualification surface, not an npm-release or compatibility-stability promise.
 
 ## What CUDA-MCGS is intended to own
 
