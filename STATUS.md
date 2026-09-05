@@ -6,7 +6,7 @@
 
 ## Protected semantic/runtime state
 
-Protected `main` is `dadf2b053016dafbb5ca56b79b09f72405d1214a`, tree `b000264125899e1769df51613a70f4f697a43bd2`, parent `85ee5d261fa50a4933e091cc993c60867158eea1`. This is the protected runner-ready CUDA-JS #32 consumer baseline produced by CUDA-MCGS #221 / PR #222.
+The protected #221 implementation baseline recorded immediately after PR #222 integration is `dadf2b053016dafbb5ca56b79b09f72405d1214a`, tree `b000264125899e1769df51613a70f4f697a43bd2`, parent `85ee5d261fa50a4933e091cc993c60867158eea1`. It contains the runner-ready CUDA-JS #32 consumer capsule. This docs-only reconciliation is constructed from that baseline; after this reconciliation integrates, the exact physical pair must freeze the **live protected MCGS revision actually executed**, not reuse `dadf2b...` merely because it is the implementation provenance recorded here.
 
 The accepted semantic/reference packet remains 12 contracts, 989/989 classified Composer requirements, 937 `accepted-reference`, exactly 52 `deferred-native`, 0 pending, 883/883 Composer cases, and 393/393 CUDA-free reference routes. The 52 native-deferred requirements remain deferred until exact compatible-pair/native evidence proves them.
 
@@ -24,7 +24,7 @@ The transparent recorder wraps only public CUDA-JS namespace/capability methods 
 
 The native runner is fail-closed on exact repository/HEAD/tree/package/API identity, tracked-clean MCGS and CUDA-JS checkouts, public `cuda-js` root resolution into the exact CUDA-JS checkout, same-transaction compile→artifact→load identity, distinct Channel/Output capabilities, exact Output delivery range, deterministic terminal bytes/publication result, terminal transfer closure, and clean runtime terminal state. Portable failure-path evidence remains separate and is never relabeled physical.
 
-Exact candidate head `54d86406e930c06087afe6d9125feeabdddccf8c` had the same tree now protected as `main` (`b000264125899e1769df51613a70f4f697a43bd2`) and passed:
+Exact candidate head `54d86406e930c06087afe6d9125feeabdddccf8c` had the same tree as the protected #221 implementation baseline (`b000264125899e1769df51613a70f4f697a43bd2`) and passed:
 
 - `cuda-js-compatible-pair` workflow `33970801963`: Windows and Ubuntu Node 26.7.0 exact-pair construction plus `PAIR-F01` through `PAIR-F16`, and the protected public-adapter regression in both matrix cells;
 - `cuda-js-runtime-adapter` workflow `33970801982`;
@@ -35,13 +35,11 @@ These are hosted/portable qualification facts only. They do **not** prove native
 
 ## Current P0 — CUDA-JS #32 physical compatible-pair evidence
 
-`iteathen/CUDA-JS#32 — CUDA-MCGS compatible-pair qualification through public CUDA-JS` remains open and is now runner-ready from the MCGS side. If protected heads remain unchanged immediately before execution, the first physical pair is:
+`iteathen/CUDA-JS#32 — CUDA-MCGS compatible-pair qualification through public CUDA-JS` remains open and is now runner-ready from the MCGS side.
 
-- CUDA-MCGS `dadf2b053016dafbb5ca56b79b09f72405d1214a`, tree `b000264125899e1769df51613a70f4f697a43bd2`;
-- CUDA-JS `2ec2b9e7ffd3b6b5fe8d14364e2d758065d90e5c`, tree `05fe89ff91e538aedf003a17c5b8d40c725a4b24`;
-- `cuda-js@0.1.0-alpha.18`, public API schema 1.
+The current recorded lower input is protected CUDA-JS `2ec2b9e7ffd3b6b5fe8d14364e2d758065d90e5c`, tree `05fe89ff91e538aedf003a17c5b8d40c725a4b24`, package `cuda-js@0.1.0-alpha.18`, public API schema 1. These are execution-pair provenance, not permanent compatibility constants; re-read CUDA-JS protected main immediately before execution and re-freeze if it moved.
 
-Those values are execution-pair provenance, not permanent compatibility constants. Re-read both protected heads immediately before a physical run and re-freeze if either moved.
+For CUDA-MCGS, `dadf2b053016dafbb5ca56b79b09f72405d1214a` is the #221 implementation baseline, not a permanent physical-run label. After this docs-only reconciliation is protected, re-read MCGS `main` and use that exact live protected commit/tree as `CUDA_MCGS_REVISION` / `CUDA_MCGS_TREE` for the physical run. This prevents the state document itself from creating a stale self-reference.
 
 No generic lower CUDA-JS capability gap has been demonstrated by #221 or its portable qualification. CUDA-JS #198 therefore remains inactive for this terminal-only pair. A real physical failure may route to CUDA-JS only if the evidence demonstrates a missing generic lower capability; CUDA-MCGS must not grow a private/native workaround.
 
@@ -65,7 +63,7 @@ CUDA-JS #4 remains an independent native Ubuntu 24.04 x86-64 hardware-support ce
 
 ## Immediate execution chain
 
-1. Re-read protected CUDA-MCGS and CUDA-JS heads/trees immediately before physical execution; use the protected tuple above only while it remains current.
+1. Complete this docs-only reconciliation, then read back the resulting protected CUDA-MCGS commit/tree. Immediately before physical execution also re-read protected CUDA-JS; freeze the exact live pair actually to be executed.
 2. On an accepted physical NVIDIA host, use tracked-clean exact checkouts, install CUDA-JS dependencies in its own checkout, and link that checkout through the public `cuda-js` package as documented by the capsule.
 3. Run the native pair entry with the exact pair environment and retain its complete JSON evidence bundle. Do not use the historical #125 fake or a copied/stale package.
 4. Review the exact bundle against CUDA-JS #32: source/host/provider/device/target/program/artifact/module/launch/publication/progress/delivery/pressure/failure/timeout/cleanup truth must all be complete and internally correlated.
