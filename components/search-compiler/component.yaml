@@ -35,23 +35,24 @@
         "CUDA runtime/provider/resource lifecycle",
         "native realization",
         "post-ignition search scheduling/progression",
-        "stable public SDK policy"
+        "package-root public SDK policy"
       ],
       "authoritative_state_owner": "stateless; accepted schemas/specifications own semantic truth and each call owns only its returned immutable normalized values",
       "public_ports": [
-        "components/search-compiler/index.mjs",
-        "components/search-compiler/testing.mjs (conformance only)"
+        "components/search-compiler/index.mjs (also installed as cuda-mcgs/search-compiler)",
+        "components/search-compiler/testing.mjs (conformance only; not package-exported)"
       ],
       "injected_dependencies": [
         "accepted framework/profile/schema/catalog values"
       ],
       "adapter_boundaries": [
-        "integration.cuda-js consumes execution-package meaning later; no CUDA-JS dependency here"
+        "integration.cuda-js consumes execution-package meaning separately; no CUDA-JS dependency here"
       ],
       "solid_responsibilities": [
         "normalize accepted owner contracts",
         "compose deterministic Search Programs/packages",
-        "preserve identity/deletion/fail-closed invariants"
+        "preserve identity/deletion/fail-closed invariants",
+        "classify Search Compiler validation failures through owner-local try ports"
       ],
       "cupid_qualities": [
         "composable",
@@ -61,7 +62,7 @@
         "deterministic"
       ],
       "second_instance": "Another unrelated domain/product selects accepted profiles and uses the same component ports without new component ownership or product vocabulary.",
-      "first_consumer_deletion": "Deleting any current domain/product or CUDA-JS runtime consumer leaves generic framework normalization/composition coherent and independently testable.",
+      "first_consumer_deletion": "Deleting any current domain/product, interface.library facade or CUDA-JS runtime consumer leaves generic framework normalization/composition coherent and independently testable.",
       "essential_complexity": [
         "cross-owner profile closure",
         "canonical identity",
@@ -80,9 +81,9 @@
         "semantic authority remains specs/schemas",
         "behavioral oracle remains conformance/reference",
         "CUDA execution remains CUDA-JS/integration.cuda-js",
-        "stable facade remains #109"
+        "package-root facade and export policy remain interface.library/SPEC-0014"
       ],
-      "simplest_sufficient_total_system": "Promote the already canonical colocated implementation as one coherent pre-ignition brick while separating evidence support; do not rewrite or repartition accepted semantics during relocation."
+      "simplest_sufficient_total_system": "Keep the canonical colocated implementation as one coherent pre-ignition brick while projecting its public index unchanged through interface.library; do not duplicate accepted semantics in the package facade."
     },
     "public_contracts": [
       "cuda-mcgs.search-ir/0.2.0",
@@ -93,6 +94,7 @@
     "owns": [
       "canonical normalization implementation",
       "resolved Composer implementation",
+      "Search Compiler validation-diagnostic classification",
       "Search Program/Program Package/execution-package implementation projection"
     ],
     "persistent_state": [],
@@ -118,7 +120,8 @@
       ],
       "integration_smoke_dependencies": [
         "Search IR reference",
-        "Search Semantics/Graph/Policy/Evaluator/Resource/Progress/Output/Framework/Session/Stage/Channel references"
+        "Search Semantics/Graph/Policy/Evaluator/Resource/Progress/Output/Framework/Session/Stage/Channel references",
+        "conformance/library-interface when installed public projection changes"
       ],
       "deep_forensic_and_release_triggers": [
         "semantic identity drift",
@@ -144,9 +147,9 @@
       "shared_setup_and_mutable_state_isolation": [
         "immutable catalog/schema setup may be shared; each case owns mutable fixture copies"
       ],
-      "failure_cluster_and_repair_owner": "tool.search-compiler for canonical normalization/composition defects; semantic owner for contract defects; conformance owner for oracle defects",
+      "failure_cluster_and_repair_owner": "tool.search-compiler for canonical normalization/composition/diagnostic defects; semantic owner for contract defects; conformance owner for oracle defects",
       "test_intent_consolidation_and_debt_policy": [
-        "new falsifiers join the owning Composer/conformance capsule rather than creating duplicate interpreters"
+        "new semantic falsifiers join the owning Composer/conformance capsule rather than creating duplicate interpreters"
       ],
       "runtime_output_and_resource_budgets": [
         "CUDA-free bounded Node.js qualification; no native/performance claim"
@@ -160,7 +163,7 @@
         "stateless deterministic call-local normalization/composition"
       ],
       "cancellation_and_failure": [
-        "pre-ignition validation failures reject without partial valid publication"
+        "pre-ignition validation failures reject without partial valid publication; owner-local try ports return plain diagnostics only for ValidationError"
       ],
       "teardown_and_resource_release": [
         "no external/native resources owned"
@@ -172,10 +175,10 @@
         "not applicable; accepted versioned schemas/specifications govern compatibility"
       ],
       "archive_deprecation_and_supersession": [
-        "old experiments/search-ir-composer-reference path is removed by #205 with no shim"
+        "old experiments/search-ir-composer-reference path was removed by #205 with no shim"
       ],
       "cleanup_verification": [
-        "organization, source-boundary and promotion-boundary gates"
+        "organization, source-boundary, Search Compiler conformance and installed-interface export-closure gates"
       ]
     },
     "allowed_dependencies": [
@@ -192,24 +195,25 @@
     ],
     "known_consumers": [
       "conformance/search-compiler",
-      "future interface.library #109",
-      "future integration.cuda-js #125"
+      "interface.library",
+      "integration.cuda-js"
     ],
     "validation": [
       "node scripts/run-search-ir-composer-reference.mjs",
       "node scripts/run-engine-reference-integration.mjs",
+      "node scripts/run-library-interface.mjs when the installed public projection changes",
       "./scripts/verify-docs.sh",
       "node scripts/check-source-boundary.mjs"
     ],
     "release": {
       "unit": "monorepo",
-      "compatibility": "Pre-1.0 repository-internal component surface; accepted schema/spec identity governs semantic compatibility; #109 owns stable public facade/API.",
-      "distribution": "internal",
-      "artifact_and_test_evidence_retention_cleanup": "No separate artifact; reproducible conformance build output is ignored. Historical experiment provenance remains in Git history/docs, not as a compatibility path."
+      "compatibility": "Pre-1.0 public component subpath within the private development package; accepted schema/spec identity governs semantic compatibility while interface.library/SPEC-0014 owns package-root facade and export policy.",
+      "distribution": "private",
+      "artifact_and_test_evidence_retention_cleanup": "No separate component artifact; the private development cuda-mcgs package projects this public index. Temporary pack/install evidence is owned and cleaned by conformance/library-interface."
     },
     "owner": "CUDA-MCGS framework",
     "notes": [
-      "#205 is a structural promotion only; canonical source blobs are byte-identical to protected main@c10c616058e7e492e130e5ff14fa41402290d5b4."
+      "#205 was a structural promotion only; canonical source blobs at that promotion point were byte-identical to protected main@c10c616058e7e492e130e5ff14fa41402290d5b4."
     ]
   }
 }

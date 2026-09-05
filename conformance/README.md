@@ -1,6 +1,6 @@
 # Conformance
 
-This product area will own:
+This product area owns or reserves:
 
 - the deterministic Search IR reference backend;
 - synthetic domains;
@@ -10,13 +10,17 @@ This product area will own:
 - capability matrices;
 - consolidated evidence for universal assumptions and finite-resource behavior.
 
-Conformance consumes public contracts only and must not become a hidden production dependency.
+Conformance consumes public contracts or explicit testing ports only and must not become a hidden production dependency.
 
 ## Consolidated conformance capsules
 
 [`search-compiler/`](search-compiler/) is the active CUDA-free conformance owner for the production `tool.search-compiler` component. It consumes only the declared component testing port, retains Composer/fixture/deletion/mutation/evidence support outside production, and must remain replaceable by stronger independent evidence without becoming a production dependency.
 
-[`cuda-js-runtime-adapter/`](cuda-js-runtime-adapter/) is the portable public-contract conformance owner for production `integration.cuda-js`. It injects a fake of the versioned public CUDA-JS port to falsify exact admission, translation, operation/control, lower-failure preservation and cleanup behavior on ordinary Windows/Ubuntu CI. It does not claim native CUDA compatible-pair correctness, support or performance; CUDA-JS #32 remains the downstream native evidence owner.
+[`library-interface/`](library-interface/) is the CUDA-free installed-artifact conformance owner for production `interface.library` / SPEC-0014. It packs the exact candidate, installs it into a temporary external-consumer directory on Windows/Ubuntu, resolves only declared `cuda-mcgs` package exports, compares root-facade results with the canonical Search Compiler owner, falsifies deep/testing imports and removes all temporary pack/install state. It does not claim a released package, stable 1.0 SDK, native CUDA execution, physical GPU support or external-product acceptance.
+
+[`cuda-js-runtime-adapter/`](cuda-js-runtime-adapter/) is the portable public-contract conformance owner for production `integration.cuda-js`. It injects a fake of the versioned public CUDA-JS port to falsify exact admission, translation, operation/control, lower-failure preservation and cleanup behavior on ordinary Windows/Ubuntu CI. It does not claim native CUDA compatible-pair correctness, support or performance; CUDA-JS #32 remains the downstream physical evidence owner.
+
+[`cuda-js-compatible-pair/`](cuda-js-compatible-pair/) owns the exact protected CUDA-MCGS/CUDA-JS pair capsule and its portable falsifiers plus the runner-ready physical entrypoint. Hosted Windows/Ubuntu execution remains portable evidence only; the accepted physical NVIDIA run required by CUDA-JS #32 is still separate.
 
 Synthetic domains are accumulated as stable labeled cases and executed through shared public-contract runners. Compatible cases may share immutable schema/build/generated-engine/model/device setup, but each domain/case retains isolated mutable state, exact expected behavior, direct selection, and per-case reporting.
 

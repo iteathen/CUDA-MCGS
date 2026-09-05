@@ -14,11 +14,12 @@ For one complete accepted input set, there is one deterministic, fail-closed nor
 
 ## Public and internal boundary
 
-- `index.mjs` is the repository-internal production port for canonical normalization/composition operations. It is pre-1.0 and is not the stable SDK promised by #109.
-- `testing.mjs` is an explicit conformance-only port. Production components/adapters/examples must not depend on it.
+- `index.mjs` is the production port for canonical normalization/composition operations. It is pre-1.0 and is also exposed unchanged as the installed `cuda-mcgs/search-compiler` subpath by `interface.library`; the package facade does not mirror or reinterpret its symbols.
+- `tryCreateResolvedComposerInput` and `tryComposeResolvedEngine` classify this component's own accepted validation failures into plain diagnostic data. Unexpected exceptions propagate; callers do not inspect private `ValidationError` types.
+- `testing.mjs` is an explicit conformance-only port. Production components/adapters/examples and installed-package consumers must not depend on it.
 - `src/` is private implementation. Consumers do not deep-import it.
 - schemas and accepted specifications own semantic shapes; this component validates/implements them but does not replace their authority.
-- CUDA-JS is not a dependency of this component. The future `integration.cuda-js` adapter (#125) consumes accepted execution-package meaning separately through versioned public CUDA-JS contracts.
+- CUDA-JS is not a dependency of this component. `integration.cuda-js` consumes accepted execution-package meaning separately through versioned public CUDA-JS contracts.
 
 ## Dependencies
 
@@ -32,11 +33,11 @@ The component is stateless across calls. Inputs are normalized before ignition; 
 
 ## Verification
 
-The owner conformance capsule is `conformance/search-compiler/`, executed through `node scripts/run-search-ir-composer-reference.mjs`. Promotion qualification also runs the complete Engine reference integration and repository governance/source-boundary gates. The promotion verifier pins the pre-migration Git blob identities of all canonical source modules so #205 cannot smuggle semantic edits into a path move.
+The owner conformance capsule is `conformance/search-compiler/`, executed through `node scripts/run-search-ir-composer-reference.mjs`. Public installed-package projection is separately falsified by `conformance/library-interface/`. Promotion qualification also runs the complete Engine reference integration and repository governance/source-boundary gates. The historical #205 promotion verifier pins the pre-migration Git blob identities of the canonical source modules so the structural promotion could not smuggle semantic edits into the path move.
 
 ## LEGO/deletion result
 
-Deleting CUDA-JS, Tensor, CUDA-NN, UCI products, or any one concrete domain does not remove this component: deterministic framework normalization/composition remains coherent for unrelated consumers. Deleting this component leaves the accepted specifications/schemas and independent semantic reference oracles intact, but removes the production implementation path. A second framework consumer uses the same accepted component ports without new foundational ownership.
+Deleting CUDA-JS, Tensor, CUDA-NN, UCI products, `interface.library`, or any one concrete domain does not remove this component: deterministic framework normalization/composition remains coherent for unrelated consumers. Deleting this component leaves the accepted specifications/schemas and independent semantic reference oracles intact, but removes the production implementation path. A second framework consumer uses the same accepted component ports without new foundational ownership.
 
 ## Governing authority
 
@@ -52,4 +53,4 @@ Deleting CUDA-JS, Tensor, CUDA-NN, UCI products, or any one concrete domain does
 
 ## Non-goals
 
-No stable SDK, product/domain implementation, CUDA-JS runtime adapter, native CUDA code, GPU scheduler, provider registry, universal GPU IR, or second semantic interpreter is created here.
+No package-root SDK policy, product/domain implementation, CUDA-JS runtime adapter, native CUDA code, GPU scheduler, provider registry, universal GPU IR, or second semantic interpreter is owned here. Prerelease package/facade policy belongs to `interface.library` / SPEC-0014.
