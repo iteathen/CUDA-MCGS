@@ -34,6 +34,11 @@ function git(root, ...args) {
   }
 }
 
+function assertTrackedWorktreeClean(root, label) {
+  const status = git(root, 'status', '--porcelain=v1', '--untracked-files=no');
+  if (status !== '') fail('PAIR_SOURCE_DIRTY', `${label} checkout has tracked modifications; exact source-pair qualification requires tracked files to match HEAD`);
+}
+
 function githubRepository(value) {
   if (typeof value !== 'string') return null;
   const normalized = value.trim().replace(/\\/g, '/');
@@ -50,6 +55,8 @@ function samePairField(actual, expected) {
 }
 
 export async function inspectSourcePair({ mcgsRoot, cudaJsRoot }) {
+  assertTrackedWorktreeClean(mcgsRoot, 'CUDA-MCGS');
+  assertTrackedWorktreeClean(cudaJsRoot, 'CUDA-JS');
   const mcgsRepository = githubRepository(git(mcgsRoot, 'remote', 'get-url', 'origin'));
   const cudaJsRepository = githubRepository(git(cudaJsRoot, 'remote', 'get-url', 'origin'));
   const packageJson = JSON.parse(await readFile(path.join(cudaJsRoot, 'package.json'), 'utf8'));
@@ -174,11 +181,12 @@ export async function scanCudaJsConsumerNeutrality(cudaJsRoot) {
   const identities = [];
   for (const absolute of files) {
     const text = await readFile(absolute, 'utf8');
+    const canonicalText = text.replace(/\r\n?/g, '\n');
     const relative = path.relative(cudaJsRoot, absolute).replace(/\\/g, '/');
     for (const pattern of FORBIDDEN_LOWER_VOCABULARY) {
-      if (pattern.test(text)) fail('PAIR_CONSUMER_NEUTRALITY', `CUDA-MCGS search vocabulary leaked into CUDA-JS lower source/public contracts: ${relative}`);
+      if (pattern.test(canonicalText)) fail('PAIR_CONSUMER_NEUTRALITY', `CUDA-MCGS search vocabulary leaked into CUDA-JS lower source/public contracts: ${relative}`);
     }
-    identities.push(`${relative}\0${sha256Text(text)}`);
+    identities.push(`${relative}\0${sha256Text(canonicalText)}`);
   }
   return Object.freeze({ filesScanned: files.length, identity: sha256Text(identities.join('\n')) });
 }
