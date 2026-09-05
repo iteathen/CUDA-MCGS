@@ -76,7 +76,9 @@ await test('production-composer-builds-exact-channel-terminal-capsule', async ()
   assert.equal(capsule.composition.executionPackage.normalized.compatibility.cudaJs.revision, pair.cudaJs.revision);
   assert.equal(capsule.composition.executionPackage.normalized.compatibility.cudaJs.package, pair.cudaJs.package);
   assert.equal(capsule.workload.workItems, 1024);
-  assert.equal(capsule.resources.terminal.byteLength, '4096');
+  assert.equal(capsule.resources.terminal.deliveryByteOffset, '0');
+  assert.equal(capsule.resources.terminal.deliveryByteLength, '4096');
+  assert.equal(capsule.resources.terminal.allocationByteLength, '12288');
   assert.notEqual(capsule.resources.terminal.id, capsule.resources.channel.id);
 });
 

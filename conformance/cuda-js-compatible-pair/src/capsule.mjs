@@ -456,7 +456,7 @@ function buildProfileTemplate(context, pair) {
   const { channel, resource: channelResource } = channelPayloadResource(context, resources);
   const terminalResource = resources.find(({ id }) => id === delivery.resource);
   if (terminalResource.id === channelResource.id) fail('PAIR_RESOURCE_OWNERSHIP', 'Channel payload and terminal Output must remain distinct package resources');
-  if (delivery.byteOffset !== '0' || delivery.byteLength !== '4096' || terminalResource.capacity !== '4096') fail('PAIR_TERMINAL_RANGE', 'first pair requires the exact accepted 4096-byte terminal Output reserve');
+  if (delivery.byteOffset !== '0' || delivery.byteLength !== '4096' || BigInt(terminalResource.capacity) < BigInt(delivery.byteLength)) fail('PAIR_TERMINAL_RANGE', 'first pair requires the exact accepted 4096-byte terminal Output reserve at backing-resource offset zero');
   const source = sourceAndFunctions(context, profileId, pair);
   const sidebands = [frameworkCancellationSideband(context)];
   const profileTemplate = {
@@ -523,7 +523,13 @@ export async function buildExactCompatiblePairCapsule(pairInput) {
     pair,
     composition,
     resources: {
-      terminal: { id: built.terminalResource.id, byteLength: built.terminalResource.capacity, alignment: built.terminalResource.alignment },
+      terminal: {
+        id: built.terminalResource.id,
+        allocationByteLength: built.terminalResource.capacity,
+        deliveryByteOffset: built.delivery.byteOffset,
+        deliveryByteLength: built.delivery.byteLength,
+        alignment: built.terminalResource.alignment,
+      },
       channel: { id: built.channelResource.id, byteLength: built.channelResource.capacity, alignment: built.channelResource.alignment, semanticOwner: built.channel.id },
     },
     deliveryId: built.delivery.id,
@@ -542,10 +548,11 @@ export function assertExactExecutionPackage(executionPackage, capsule) {
   const delivery = adapter.deliveryRequirements.find(({ id }) => id === capsule.deliveryId);
   const outputBinding = operation.bindings.find(({ parameter }) => parameter === 'output');
   const channelBinding = operation.bindings.find(({ parameter }) => parameter === 'channelState');
-  if (!delivery || delivery.resource !== capsule.resources.terminal.id || delivery.byteOffset !== '0' || delivery.byteLength !== capsule.resources.terminal.byteLength) fail('PAIR_TERMINAL_RANGE', 'terminal delivery is not the exact declared Output range');
+  if (!delivery || delivery.resource !== capsule.resources.terminal.id || delivery.byteOffset !== capsule.resources.terminal.deliveryByteOffset || delivery.byteLength !== capsule.resources.terminal.deliveryByteLength) fail('PAIR_TERMINAL_RANGE', 'terminal delivery is not the exact declared Output reserve range');
   if (!outputBinding || outputBinding.source.resource !== delivery.resource || outputBinding.source.access !== 'write') fail('PAIR_TERMINAL_RESOURCE', 'operation Output binding differs from terminal delivery resource');
   if (!channelBinding || channelBinding.source.resource !== capsule.resources.channel.id || channelBinding.source.access !== 'read-write') fail('PAIR_CHANNEL_RESOURCE', 'operation Channel binding differs from accepted Channel payload storage');
   if (capsule.resources.channel.id === capsule.resources.terminal.id) fail('PAIR_RESOURCE_OWNERSHIP', 'Channel and Output resources alias');
+  if (BigInt(capsule.resources.terminal.allocationByteLength) < BigInt(delivery.byteOffset) + BigInt(delivery.byteLength)) fail('PAIR_TERMINAL_RANGE', 'terminal delivery exceeds its backing allocation');
   if (totalThreads !== capsule.workload.terminalWords || totalThreads * 4 !== Number(delivery.byteLength)) fail('PAIR_LAUNCH_RANGE', 'launch does not cover the exact finite terminal u32 range');
   if (Number(operation.launchPolicy.block[0]) !== BLOCK_X || Number(operation.launchPolicy.grid[0]) !== GRID_X) fail('PAIR_LAUNCH_RANGE', 'launch geometry differs from the qualified capsule geometry');
   const entry = adapter.searchProgram.functions.find(({ name }) => name === operation.function);
