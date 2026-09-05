@@ -11,3 +11,4 @@ export * from './src/stage.mjs';
 export * from './src/channel.mjs';
 export * from './src/program-package.mjs';
 export * from './src/composer.mjs';
+export { tryCreateResolvedComposerInput } from './src/diagnostics.mjs';

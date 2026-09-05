@@ -1,0 +1,79 @@
+{
+  "schema_version": 3,
+  "component": {
+    "id": "interface.library",
+    "name": "Public Library Interface",
+    "status": "production",
+    "product_area": "components",
+    "path": "components/library-interface",
+    "purpose": "Progressive prerelease public access to canonical CUDA-MCGS production owners without duplicating search semantics or runtime lifecycle.",
+    "roles": ["tool"],
+    "governing_authority": [
+      "docs/decisions/ADR-0005-lego-design-hierarchy.md",
+      "docs/decisions/ADR-0019-pure-node-device-program-and-cuda-js-capability-escalation.md",
+      "docs/decisions/ADR-0020-complete-library-and-resolved-defaults.md",
+      "docs/decisions/ADR-0024-framework-only-production-ownership.md",
+      "docs/specs/SPEC-0000-framework-requirements.md",
+      "docs/specs/SPEC-0014-public-library-interface.md"
+    ],
+    "design": {
+      "owned_invariant": "Every supported convenience call is a pre-ignition projection onto one existing canonical production owner, with package export closure and no copied search/runtime meaning.",
+      "intended_equivalence_class": ["product-neutral CUDA-MCGS library consumers using accepted Search Compiler contracts"],
+      "excluded_cases": ["domain/product defaults", "Search Compiler semantic ownership", "CUDA runtime/provider lifecycle", "post-ignition progression", "native qualification", "stable 1.0 SDK policy"],
+      "authoritative_state_owner": "stateless; Search Compiler, runtime adapter and versioned schemas retain their own authoritative values",
+      "public_ports": ["components/library-interface/index.mjs", "package root export cuda-mcgs"],
+      "injected_dependencies": ["tool.search-compiler public index"],
+      "adapter_boundaries": ["integration.cuda-js is exposed as a separate package subpath and is never created by the facade"],
+      "solid_responsibilities": ["omitted-reference-generator call ergonomics", "public package surface composition", "package export closure"],
+      "cupid_qualities": ["composable", "predictable", "idiomatic Node.js", "domain-based"],
+      "second_instance": "Another unrelated MCGS product uses the same root facade and owner subpaths without new library-interface behavior.",
+      "first_consumer_deletion": "Deleting any external product leaves a product-neutral facade; deleting the facade leaves Search Compiler and runtime-adapter public ports complete.",
+      "essential_complexity": ["progressive disclosure", "prerelease export/version identity", "owner-preserving diagnostics"],
+      "accidental_complexity_rejected": ["second resolver", "Engine runtime wrapper", "private/deep exports", "product presets", "facade-owned exception interpretation"],
+      "complexity_moved_elsewhere": ["search semantics remain tool.search-compiler", "runtime realization remains integration.cuda-js", "low-level meaning remains versioned schemas"],
+      "simplest_sufficient_total_system": "One thin root facade plus direct package subpaths to existing public owners; no registry, callback system, second runtime or semantic mirror."
+    },
+    "public_contracts": ["cuda-mcgs.library-interface/0.1.0"],
+    "owns": ["prerelease root-facade call ergonomics", "supported installed-package export map"],
+    "persistent_state": [],
+    "generated_artifacts": ["temporary npm pack artifact used only by conformance"],
+    "testing": {
+      "test_owner": "conformance/library-interface",
+      "authoritative_oracles": ["SPEC-0014", "tool.search-compiler exact identities", "Node package exports"],
+      "coverage_map_location": ["docs/specs/SPEC-0014-public-library-interface.md#conformance-requirements-and-authoritative-test-oracles"],
+      "focused_fast_capsules_and_commands": ["node scripts/run-library-interface.mjs"],
+      "owner_contract_capsules_and_commands": ["node scripts/run-search-ir-composer-reference.mjs"],
+      "integration_smoke_dependencies": ["conformance/cuda-js-compatible-pair portable", "conformance/cuda-js-runtime-adapter"],
+      "deep_forensic_and_release_triggers": ["package export change", "facade default change", "Search Compiler public identity change", "release/publication proposal"],
+      "expected_discovery_and_skip_policy": ["all LIB cases execute; zero required skips"],
+      "evidence_key_dimensions": ["exact Git revision/tree", "package name/version", "interface contract/version", "canonical resolved/composed identities", "Node version and OS"],
+      "test_invalidation_inputs": ["SPEC-0014", "package.json exports", "library-interface source", "Search Compiler public source", "runtime-adapter public index"],
+      "shared_setup_and_mutable_state_isolation": ["one temporary installed consumer per run; generated package/install state is run-owned and removed in finally"],
+      "failure_cluster_and_repair_owner": "interface.library for facade/package defects; tool.search-compiler or integration.cuda-js for owner-local defects",
+      "test_intent_consolidation_and_debt_policy": ["new facade/package falsifiers join conformance/library-interface rather than creating another resolver fixture"],
+      "runtime_output_and_resource_budgets": ["CUDA-free bounded Node.js/npm qualification; no native or performance claim"]
+    },
+    "lifecycle_and_cleanup": {
+      "startup_and_acquisition": ["none in production facade"],
+      "steady_state_ownership": ["stateless synchronous pre-ignition delegation"],
+      "cancellation_and_failure": ["Search Compiler validation failures are returned only by owner-provided try ports; unexpected exceptions propagate"],
+      "teardown_and_resource_release": ["none in production facade"],
+      "generated_cache_package_test_and_diagnostic_disposition": ["conformance tarballs/install directories/shims are temporary and removed after each run"],
+      "persistence_migration_backup_and_recovery_retention": ["not applicable; prerelease contract/package versions govern compatibility"],
+      "archive_deprecation_and_supersession": ["superseded prerelease interfaces require explicit spec/version update"],
+      "cleanup_verification": ["conformance asserts temporary root removal; repository organization/source-boundary gates remain required"]
+    },
+    "allowed_dependencies": ["components/search-compiler/index.mjs"],
+    "forbidden_dependencies": ["components/search-compiler/src/", "adapters/runtimes/cuda-js/src/", "cuda-js package or private source", "experiments/", "conformance/", "native addons/FFI/CUDA/PTX", "product-specific semantics"],
+    "known_consumers": ["conformance/library-interface", "future external-consumer acceptance #123"],
+    "validation": ["node scripts/run-library-interface.mjs", "node scripts/run-search-ir-composer-reference.mjs", "node scripts/check-source-boundary.mjs", "./scripts/verify-docs.sh"],
+    "release": {
+      "unit": "monorepo",
+      "compatibility": "Pre-1.0 prerelease interface; SPEC-0014 and package export/version changes invalidate installed-package evidence.",
+      "distribution": "private",
+      "artifact_and_test_evidence_retention_cleanup": "No pack artifact is committed; exact CI/run identity is retained while temporary tarballs and install directories are removed."
+    },
+    "owner": "CUDA-MCGS framework",
+    "notes": ["The root package is intentionally private/development-versioned; this component does not claim an npm release or physical CUDA support."]
+  }
+}

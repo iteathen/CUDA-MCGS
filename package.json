@@ -1,0 +1,38 @@
+{
+  "name": "cuda-mcgs",
+  "version": "0.0.0-dev.0",
+  "private": true,
+  "description": "Prerelease public library surface for the CUDA-MCGS framework",
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iteathen/CUDA-MCGS.git"
+  },
+  "engines": {
+    "node": ">=26"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": "./components/library-interface/index.mjs",
+    "./search-compiler": "./components/search-compiler/index.mjs",
+    "./runtime/cuda-js": "./adapters/runtimes/cuda-js/index.mjs",
+    "./schemas/search-ir/0.2.0/*": "./schemas/search-ir/0.2.0/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "components/library-interface/index.mjs",
+    "components/library-interface/README.md",
+    "components/search-compiler/index.mjs",
+    "components/search-compiler/src",
+    "adapters/runtimes/cuda-js/index.mjs",
+    "adapters/runtimes/cuda-js/src",
+    "schemas/search-ir/0.2.0",
+    "README.md",
+    "LICENSE",
+    "LICENSING.md"
+  ],
+  "scripts": {
+    "test:library-interface": "node scripts/run-library-interface.mjs"
+  }
+}
