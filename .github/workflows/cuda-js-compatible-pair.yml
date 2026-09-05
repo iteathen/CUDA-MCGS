@@ -22,13 +22,23 @@ jobs:
       CUDA_JS_PACKAGE: cuda-js@0.1.0-alpha.18
       CUDA_JS_API_SCHEMA: '1'
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out exact CUDA-MCGS candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Check out exact protected CUDA-JS source pair
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: iteathen/CUDA-JS
+          ref: ${{ env.CUDA_JS_REVISION }}
+          path: .pair/cuda-js
+          persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.7.0
       - name: Run portable exact compatible-pair construction and falsifiers
+        env:
+          CUDA_JS_SOURCE_ROOT: ${{ github.workspace }}/.pair/cuda-js
         run: node scripts/run-cuda-js-compatible-pair.mjs portable
       - name: Re-run protected public CUDA-JS adapter regression capsule
         run: node scripts/run-cuda-js-runtime-adapter.mjs
