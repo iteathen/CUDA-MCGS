@@ -207,8 +207,8 @@
     ],
     "release": {
       "unit": "monorepo",
-      "compatibility": "Pre-1.0 public component subpath; accepted schema/spec identity governs semantic compatibility while interface.library/SPEC-0014 owns package-root facade and export policy.",
-      "distribution": "public",
+      "compatibility": "Pre-1.0 public component subpath within the private development package; accepted schema/spec identity governs semantic compatibility while interface.library/SPEC-0014 owns package-root facade and export policy.",
+      "distribution": "private",
       "artifact_and_test_evidence_retention_cleanup": "No separate component artifact; the private development cuda-mcgs package projects this public index. Temporary pack/install evidence is owned and cleaned by conformance/library-interface."
     },
     "owner": "CUDA-MCGS framework",
