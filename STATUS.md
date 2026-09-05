@@ -64,18 +64,18 @@ No generic lower CUDA-JS capability gap has been demonstrated by the runner-read
 
 With #109 complete and #32 hardware-blocked, the highest-value executable work is the CUDA-free portion of #123: prove that a real downstream consumer can use the protected public package boundary without importing repository-private MCGS implementation or taking over lower CUDA-JS facts.
 
-The first concrete consumer is `iteathen/UCI-Arena-Vector`. Its current protected state predates the accepted CUDA-MCGS #122/#109 and current CUDA-JS alpha.18 provenance, so its own authority, contracts, issue tracker and CI must be reassessed before mutation. Stale downstream tracker text is evidence to reconcile, not permission to bypass that repository's ownership rules.
+The first concrete consumer is `iteathen/UCI-Arena-Vector`. Its current protected state still records CUDA-MCGS #122 as a production-lowering gate and stale CUDA-JS package provenance, while #109's public package boundary is newer. Its own authority, contracts, issue tracker and CI therefore must be reassessed before mutation. Stale downstream tracker text is evidence to reconcile, not permission to bypass that repository's ownership rules.
 
 The intended preparation slice is deliberately narrower than #123 completion:
 
 1. re-read Vector's protected authority, public/product contracts, package topology, relevant issues/PRs and CI;
-2. determine the smallest product-owned configuration/profile that exercises CUDA-MCGS through declared public package exports only;
+2. determine the smallest product-owned **evaluator-free** configuration/profile that exercises CUDA-MCGS through declared public package exports only;
 3. pack the exact protected CUDA-MCGS development artifact and install/use it as an external package rather than deep-importing MCGS source;
 4. exercise pre-ignition resolution/composition and inspect exact provenance/diagnostics with CUDA runtime ignition disabled;
 5. falsify ownership leakage, private import dependence, stale upstream identities, invalid combinations, retryability and cleanup; and
 6. route any demonstrated generic framework gap to CUDA-MCGS, generic lower CUDA gap to CUDA-JS, Tensor gap to CUDA-JS-Tensor, reusable NN/model gap to `cuda-nn`, and retain Vector product semantics downstream.
 
-A successful CUDA-free Vector slice makes the eventual physical run the remaining evidence dependency; it does **not** close #123 while CUDA-JS #32 remains physically unqualified. #124 matters only if Vector actually selects the optional Tensor evaluator path.
+A successful CUDA-free Vector slice makes the public-package/consumer seam executable, but it does **not** close #123 while CUDA-JS #32 remains physically unqualified. The deliberately evaluator-free dry-run does not require #124; Vector's separately selected neural/Tensor production profile still does.
 
 ## Ownership boundary
 
