@@ -14,7 +14,7 @@
   "nodeEvidence": {
     "algorithm": "sha256",
     "byteLength": 10034,
-    "sha256": "92b674f87a1cbc3dfb01bb692d89b03415bf636f5fe54624ce589e95093f6ccc"
+    "sha256": "91b6bfa4cf03d1fcaca9fc25ea975e4a3cb27230117629cb830689737295605d"
   },
   "expectedCases": [
     "graph-edge-profile-projection-exact",
