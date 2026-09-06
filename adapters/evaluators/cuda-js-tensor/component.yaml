@@ -78,6 +78,7 @@
     "allowed_dependencies": ["injected public cuda-js-tensor capability values only"],
     "forbidden_dependencies": ["cuda-js-tensor private/deep source", "CUDA-JS private/deep source", "native addons/FFI/CUDA/PTX", "product semantics", "Python"],
     "known_consumers": ["conformance/cuda-js-tensor-evaluator", "future optional evaluator profiles"],
-    "validation": ["node scripts/run-cuda-js-tensor-evaluator.mjs", "node scripts/run-evaluator-reference.mjs", "node scripts/run-search-ir-composer-reference.mjs"]
+    "validation": ["node scripts/run-cuda-js-tensor-evaluator.mjs", "node scripts/run-evaluator-reference.mjs", "node scripts/run-search-ir-composer-reference.mjs"],
+    "owner": "CUDA-MCGS framework"
   }
 }
