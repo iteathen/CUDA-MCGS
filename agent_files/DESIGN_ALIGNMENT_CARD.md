@@ -7,10 +7,10 @@ Read this before architecture, specification, engineering decisions, implementat
 ```text
 project purpose, domain truth, and accepted authority
     → engineering contract, bounds, and value ordering
-    → LEGO component ownership and boundaries
+    → LEGO component ownership and attention-bounded containment
     → SOLID responsibility structure inside each component
     → CUPID implementation quality
-    → simplest sufficient total system
+    → KISS among complete designs
     → accurate consolidated testing, token backpressure, validation, cleanup, and evolution
 ```
 
@@ -96,6 +96,10 @@ Every substantial component is a movable brick with:
 
 Consumers request changes through contracts. They do not mutate another component’s internals or deep-import private files.
 
+**Attention-bounded LEGO rule:** LEGO also owns cognitive/context containment. A brick is too large when one agent cannot load and actively reason about its complete authoritative working set—public contract, implementation, invariants, lifecycle/resource/failure rules, tests/conformance, and the immediate dependency and consumer interfaces needed to understand consequences—with substantial headroom for task context, evidence, and review. Merely fitting inside the model's maximum context window is not enough. When this full-attention envelope is exceeded, recursively split at the strongest real semantic, lifecycle, functional, substitution/change, failure/resource, volatility, or execution-locality seam, or narrow the component's scope. Do not manufacture arbitrary modules: a split is invalid when it duplicates truth, creates shared mutable ownership, requires constant cross-boundary chatter, or makes neighbors understand private internals. The target is the smallest coherent independently comprehensible and replaceable unit, not the smallest possible module.
+
+LEGO is the outer architectural layer: it chooses and contains boundaries for ownership, universality, replaceability, scope, damage limitation, and context. SOLID structures responsibilities and dependency direction inside each brick; CUPID shapes that implementation; KISS removes remaining unjustified complexity. A lower-level principle may not defeat a higher-level one.
+
 ### Non-negotiable isolation, naming, and transient topology
 
 These rules are part of LEGO correctness, not optional naming guidance.
@@ -104,7 +108,7 @@ These rules are part of LEGO correctness, not optional naming guidance.
 - **Agnostic interface naming:** ports, inputs, outputs, events, properties, commands, queries, DTOs, callbacks, and public types are named for local data, intent, or action, never for the identity of the current upstream source or downstream target. Domain-specific vocabulary is valid only inside the component that owns that domain.
 - **Transient topology:** every external connection is temporary. Replacing, removing, isolating, or rewiring a neighbor must not require changes to internal logic or vocabulary. Composition owns relationships and lifecycle wiring; bricks do not discover neighbors or branch on product/repository/provider identity.
 - **Rewiring test:** replace the current neighbor mentally with another conforming implementation or remove it. If internal names become false, foreign types appear, or topology-specific branches are needed, redesign the boundary before implementation.
-- **No abstraction theater:** do not add a port, interface, callback registry, event bus, or generic wrapper merely to look modular. Boundaries exist only for real ownership, substitution, lifecycle, failure, or testing value; direct private calls inside one brick are preferred otherwise.
+- **No abstraction theater:** do not add a port, interface, callback registry, event bus, or generic wrapper merely to look modular. Boundaries exist only for real ownership, substitution, lifecycle, failure, context, or testing value; direct private calls inside one attention-bounded brick are preferred otherwise.
 - **Single authority remains explicit:** neutral naming is not permission for `common`, `shared`, `generic`, `manager`, callback, or registry dumping grounds with competing ownership.
 
 A violation is an architecture defect and a stop condition before implementation or acceptance, not a cleanup-level naming issue.
@@ -207,7 +211,7 @@ Consolidation merges execution overhead, not semantic accountability.
 
 ## Stop conditions
 
-Stop and resolve the boundary before implementation/testing/cleanup when ownership is ambiguous, a large task lacks a full-attention map, branches overlap authority, shared meaning can drift, dependencies cycle, a public contract leaks private types, resource exhaustion/teardown is undefined, token pressure would violate the practice floor, reserve cannot support required testing/integration/cleanup/handoff, context is red/emergency, required tests are undiscovered/skipped, cleanup cannot be verified, or alleged simplicity exports the problem.
+Stop and resolve the boundary before implementation/testing/cleanup when ownership is ambiguous, a large task lacks a full-attention map, a component's authoritative working set does not fit one agent's focused attention and has not been recursively decomposed at a real seam, branches overlap authority, shared meaning can drift, dependencies cycle, a public contract leaks private types, resource exhaustion/teardown is undefined, token pressure would violate the practice floor, reserve cannot support required testing/integration/cleanup/handoff, context is red/emergency, required tests are undiscovered/skipped, cleanup cannot be verified, or alleged simplicity exports the problem.
 
 Stop PR integration when the reviewed head is stale, changed surface/branch outputs/token decisions are unaccounted, a blocker or unsafe cleanup remains, required evidence/gates are missing, or target/post-merge state cannot be verified.
 
