@@ -2,7 +2,7 @@
 
 **Status:** Informational
 
-This directory contains accepted search, extension, composition, and public-library contracts. The universal 0.2 semantic/reference packet is accepted; native compatible-pair qualification remains separate.
+This directory contains accepted search, extension, composition, public-library, and cross-cutting ownership contracts. The universal 0.2 semantic/reference packet is accepted; native compatible-pair qualification remains separate.
 
 ## Contract index
 
@@ -21,6 +21,7 @@ This directory contains accepted search, extension, composition, and public-libr
 - [`SPEC-0012-device-owned-search-progress.md`](SPEC-0012-device-owned-search-progress.md) — scheduler-neutral device-side work readiness, finite service/fairness, typed deadlock/livelock/starvation, stop/drain and closure semantics without host progression or physical topology selection.
 - [`SPEC-0013-result-and-observation-publication.md`](SPEC-0013-result-and-observation-publication.md) — mandatory bounded terminal envelopes plus optional immutable read-only live observations, with explicit snapshot consistency, slot/borrow lifecycle, pressure/drop semantics and exact terminal-only sideband deletion.
 - [`SPEC-0014-public-library-interface.md`](SPEC-0014-public-library-interface.md) — prerelease `interface.library` package-root facade, explicit complete-owner subpaths, material default/provenance preservation, owner-classified diagnostics, package export closure and exact packed/installed CUDA-free conformance, version 0.1.0.
+- [`SPEC-0015-native-boundary-and-js-only-implementation.md`](SPEC-0015-native-boundary-and-js-only-implementation.md) — accepted cross-cutting successor requiring maintained CUDA-MCGS source to remain JavaScript/TypeScript plus restricted Device-JS, making CUDA-JS the sole native CUDA/provider owner, and separating search semantics/policy from generic native mechanism and reusable cross-domain physical policy.
 
 Read each document's status, scope, version, normative references, and addenda. Acceptance governs only that contract; it does not establish physical GPU support or a product release.
 
