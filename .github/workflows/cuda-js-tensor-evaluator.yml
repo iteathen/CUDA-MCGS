@@ -32,3 +32,5 @@ jobs:
         run: node --version
       - name: Run product-neutral connector conformance
         run: node scripts/run-cuda-js-tensor-evaluator.mjs
+      - name: Verify installed package export boundary
+        run: node conformance/cuda-js-tensor-evaluator/package.mjs
