@@ -66,5 +66,6 @@ jobs:
           path: |
             experiments/search-ir-reference/build/evidence.json
             conformance/search-compiler/build/evidence.json
+            conformance/search-compiler/build/root-control.json
             conformance/search-compiler/build/channel-evidence.json
             experiments/search-semantics-reference/build/*evidence*.json
