@@ -1,9 +1,9 @@
 {
   "schema_version": 118,
   "updated": "2026-09-06",
-  "status": "public_library_ready_external_consumer_prep_model_resource_gate_complete_oracle_external",
-  "objective": "Use the protected SPEC-0014/interface.library package boundary in one real CUDA-free downstream consumer preparation slice while keeping CUDA-JS #32 parked as a physical-evidence gate and keeping the remaining LatticeKnight numerical oracle in its product owner.",
-  "ownership_boundary": "Accepted specs/schemas own semantic truth. tool.search-compiler owns canonical stateless pre-ignition normalization/composition and Search Compiler validation classification. interface.library owns prerelease package-root ergonomics and supported installed-package export closure. integration.cuda-js owns mechanical translation from accepted finite CUDA-MCGS execution-package meaning to an injected public CUDA-JS surface. CUDA-JS owns lower provider/device/resource/compiler/artifact/module/function/operation/publication lifecycle and compatibility facts. CUDA-JS-Tensor owns generic Tensor mathematics/device-callable Tensor semantics; cuda-nn owns reusable NN/model semantics; downstream products retain product meaning and numerical oracles.",
+  "status": "public_library_external_consumer_slice_protected_physical_pair_blocked_oracle_external",
+  "objective": "Preserve the protected public package boundary and completed CUDA-free downstream consumer evidence while keeping CUDA-MCGS #123 open only on its separate physical CUDA-JS #32 gate, keeping the remaining LatticeKnight numerical oracle in its product owner, and retaining #124 downstream of product numerical correctness. Honor accepted SPEC-0015 JavaScript/TypeScript-only native ownership and SPEC-0016 optional CUDA-MM physical-policy composition without promoting either into implementation or hardware evidence.",
+  "ownership_boundary": "Accepted specs/schemas own semantic truth. tool.search-compiler owns canonical stateless pre-ignition normalization/composition and Search Compiler validation classification. interface.library owns prerelease package-root ergonomics and supported installed-package export closure. integration.cuda-js owns mechanical translation from accepted finite CUDA-MCGS execution-package meaning to an injected public CUDA-JS surface. CUDA-JS owns lower provider/device/resource/compiler/artifact/module/function/operation/publication lifecycle and compatibility facts and is the sole native CUDA/provider owner. CUDA-JS-Tensor owns generic Tensor mathematics/device-callable Tensor semantics; cuda-nn owns reusable NN/model semantics; CUDA-MM is reserved only for separately activated reusable cross-domain physical memory policy; downstream products retain product meaning and numerical oracles.",
   "authority": [
     "AGENTS.md",
     "agent_files/AGENTS.md",
@@ -15,6 +15,8 @@
     "docs/decisions/ADR-0024-framework-only-production-ownership.md",
     "docs/specs/SPEC-0000-framework-requirements.md",
     "docs/specs/SPEC-0014-public-library-interface.md",
+    "docs/specs/SPEC-0015-native-boundary-and-js-only-implementation.md",
+    "docs/specs/SPEC-0016-cuda-mm-physical-policy-composition.md",
     "components/library-interface/component.yaml",
     "components/search-compiler/component.yaml",
     "conformance/library-interface/README.md",
@@ -50,10 +52,13 @@
     "#125 protected-integrated production integration.cuda-js and portable conformance.",
     "#109 / PR #225 protected-integrated SPEC-0014, production interface.library, private cuda-mcgs@0.0.0-dev.0 exports and packed/installed CUDA-free conformance.",
     "#228 protected-integrated the current public CUDA-JS adapter/profile correction without adding search semantics or physical-support claims.",
+    "#236 protected-accepted SPEC-0015 at a20cbbba1ebd0ed5ded5338bf80838169925f94d, fixing maintained CUDA-MCGS source to JavaScript/TypeScript plus restricted Device-JS and retaining CUDA-JS as the sole native CUDA/provider owner.",
+    "#237 protected-accepted SPEC-0016 at b3657d165eba3eaf4a1fd23e11952bcf14d0d213, reserving CUDA-MM only for optional separately activated cross-domain physical memory policy while retaining search-specific semantics in CUDA-MCGS.",
     "CUDA-JS #206/#209 protected f32/f64 Device-JS tanh; CUDA-JS #213/#216 later protected the finite Device-JS/compiler admission correction required by the real Tensor leaf at 45a9ef15537b52d6fd7c615b7e596676dfd00587.",
     "CUDA-JS-Tensor #32/#52/#37/#61 protected the required Tensor erf/gather/concat/tanh semantics and device-callable realization; PR #68 protected the exact dependency refresh as merge 0da2c70a0a10df908a33e842aa4ba3dbd7605c48.",
     "UCI-Arena-Vector PR #24 protected the exact frozen LatticeKnight FP32 TensorProgram/TensorPlan and public callable/resource gate at ca3cce162a73a664a789f6a27a819097ec994bd6 / tree 2182527aa9cd058824d3658a549a2f8224d18db5; protected Repository quality 34023725885 and Model Tensor Coverage 34023725845 succeeded.",
-    "Vector PR #25 and Tensor PR #69 reconciled protected control state: the independent checkpoint-bound numerical oracle is now the only remaining first-model correctness seam."
+    "Vector PR #25 and Tensor PR #69 reconciled protected control state: the independent checkpoint-bound numerical oracle is now the only remaining first-model correctness seam.",
+    "UCI-Arena-Vector #27 / PR #29 protected the first evaluator-free CUDA-free downstream installed-package falsifier as Vector merge cf07cb51e868a002dffaf178c769b21f16b63c9e / tree 0b8649efadd10086cba1c0687d3b2ab07c87f2c2; final candidate ce4abc0d27dc3316528c4c177b7c9599788d0767 passed Repository quality 34054854320 and External Consumer 34054854364 on Ubuntu/Windows against exact CUDA-MCGS e4ff2614006dea054359560827dda9b93d9fe6cd. This completes the CUDA-free #123 consumer slice without closing the physical gate."
   ],
   "real_model_resource_result": {
     "product_owner": "iteathen/UCI-Arena-Vector#3",
@@ -70,11 +75,11 @@
   "current_focus": {
     "repository": "iteathen/CUDA-MCGS",
     "issue": 123,
-    "name": "CUDA-free external-consumer preparation through the protected public package boundary",
+    "name": "external-consumer completion state with physical compatible-pair gate remaining",
     "consumer": "iteathen/UCI-Arena-Vector",
-    "state": "The MCGS public package boundary is protected and installed-qualified. The first-model Tensor resource gate is separately protected-complete. The remaining model numerical oracle and #124 evaluator connector are not prerequisites for this deliberately evaluator-free CUDA-free #123 slice. Final #123 physical acceptance remains blocked on CUDA-JS #32.",
-    "next_action": "Use current protected Vector authority and implement the smallest product-owned evaluator-free CUDA-free consumer slice that installs an exact packed protected cuda-mcgs artifact and uses declared public exports only for pre-ignition resolution/composition/provenance/diagnostics. Do not ignite CUDA-JS, deep-import MCGS, enter the product numerical-oracle lane, or claim #123 completion.",
-    "exit": "One exact evaluator-free CUDA-free downstream consumer slice proves the protected public MCGS package can be consumed without private imports or ownership leakage, or demonstrates a concrete owner/API gap routed to its natural owner. #123 remains open until its separately required physical CUDA-JS #32 evidence exists."
+    "state": "The public package boundary and first real evaluator-free CUDA-free downstream installed-package slice are protected-complete. No generic CUDA-MCGS source defect is demonstrated by that slice. CUDA-MCGS #123 remains open only because its separately required directly exposed physical NVIDIA compatible-pair evidence in CUDA-JS #32 is unavailable. Vector #3's independent numerical oracle and #124 evaluator integration remain separate ownership lanes.",
+    "next_action": "Do not create more hosted, mock or package conformance solely to compensate for unavailable physical hardware. When an accepted directly exposed physical NVIDIA host is available, re-read the live protected CUDA-MCGS and CUDA-JS heads, trees, package/API/toolchain/environment identities, freeze the exact tuple actually executed and run the existing #32 compatible-pair entry. Separately, after Vector #3 completes its independent checkpoint-bound oracle, #124 may consume only public generic callable/resource facts.",
+    "exit": "#123 closes only after its separately required physical CUDA-JS #32 evidence is protected, or a physical run demonstrates a concrete generic defect that is routed to its natural owner and requalified. The protected CUDA-free Vector slice remains package evidence and is not reinterpreted as physical qualification."
   },
   "parked_physical_gate": {
     "repository": "iteathen/CUDA-JS",
@@ -87,20 +92,21 @@
   "blockers": [
     "Physical CUDA-JS #32 evidence remains unavailable until an accepted directly exposed NVIDIA host exists; hosted/portable/VM/mock/DevBridge evidence cannot substitute for that physical gate.",
     "UCI-Arena-Vector #3 still lacks the independent checkpoint-bound policy/value numerical oracle required for first-model numerical correctness; CUDA-MCGS must not manufacture or absorb those expected outputs.",
-    "Any new generic framework, Tensor or lower CUDA defect demonstrated by the #123 consumer or later #124 integration must be routed to its natural owner rather than worked around in the product or a private sibling path."
+    "Any new generic framework, Tensor or lower CUDA defect demonstrated by future #32 or #124 work must be routed to its natural owner rather than worked around in the product or a private sibling path."
   ],
   "deliverables": [
     "Protected #109 / PR #225 remains the accepted prerelease public library/package boundary and installed-package evidence baseline.",
     "Protected #228 remains the current public CUDA-JS adapter/profile correction without new search semantics or physical-support promotion.",
+    "Protected #236/#237 remain accepted ownership addenda only: MCGS stays JavaScript/TypeScript with CUDA-JS as sole native owner, and CUDA-MM remains optional/unactivated cross-domain physical-policy ownership.",
     "Protected Vector PR #24 and Tensor PR #68/#69 are the current generic first-model program/resource dependency facts; they do not establish numerical parity.",
-    "The next #123 evaluator-free Vector slice must consume an exact packed protected cuda-mcgs artifact only through declared public exports and retain exact provenance/diagnostic evidence.",
-    "STATUS.md and next_step.yaml must keep #123 evaluator-free public-package work, Vector #3 product numerical-oracle work, #124 evaluator lifecycle integration and CUDA-JS #32 physical qualification as separate owned gates."
+    "Protected Vector #27 / PR #29 is the completed #123 evaluator-free CUDA-free downstream package slice; exact protected evidence remains frozen and does not close the physical gate.",
+    "STATUS.md and next_step.yaml must keep the completed #123 package slice, Vector #3 product numerical-oracle work, #124 evaluator lifecycle integration and CUDA-JS #32 physical qualification as separate owned gates."
   ],
   "parallel_and_downstream": [
     "CUDA-JS #4 remains an independent native Ubuntu 24.04 x86-64 directly exposed physical-NVIDIA support cell.",
     "UCI-Arena-Vector #3 owns the remaining independent checkpoint numerical oracle; CUDA-MCGS must not manufacture expected model outputs.",
     "CUDA-MCGS #124 consumes only public generic callable/resource facts after product numerical qualification while retaining evaluator request/batch/scatter/publication/search lifecycle ownership.",
-    "Generic Tensor gaps route to CUDA-JS-Tensor; reusable NN/model semantics route to cuda-nn; UCI/chess/product semantics stay downstream.",
+    "Generic Tensor gaps route to CUDA-JS-Tensor; reusable NN/model semantics route to cuda-nn; reusable cross-domain physical memory policy routes to CUDA-MM only if separately activated; UCI/chess/product semantics stay downstream.",
     "No additional MCGS native-runner or mock evidence work is authorized solely because #32 hardware is unavailable."
   ],
   "validation": [
@@ -116,13 +122,15 @@
     "Do not infer native CUDA, physical Linux, performance, product readiness or multi-GPU support from hosted installed-package/compatible-pair evidence.",
     "Do not close #123 from a CUDA-free downstream slice; physical #32 remains unsatisfied.",
     "Do not infer Tensor/model numerical readiness from capability/resource coverage.",
+    "Do not activate CUDA-MM merely because SPEC-0016 recognizes its optional ownership boundary; production composition remains separately gated.",
     "Do not add native/CUDA/PTX/FFI/private CUDA-JS paths, generated-artifact inspection or a second lower lifecycle interpreter in CUDA-MCGS or its consumer.",
     "Do not hard-code current implementation provenance as a future physical pair identity; re-read the live protected tuple before execution."
   ],
   "hard_constraints": [
     "Protected integration requires exact-head qualification, complete review and applicable user authorization. Standing user authorization is active for this workstream.",
     "One semantic fact/state/resource/lifecycle/compatibility fact has one visible owner.",
-    "Generic lower gaps route to CUDA-JS; generic Tensor gaps route to CUDA-JS-Tensor; reusable NN/model semantics route to cuda-nn; product semantics remain downstream.",
+    "Maintained CUDA-MCGS source remains JavaScript/TypeScript plus restricted Device-JS through public CUDA-JS; CUDA-JS is the sole native CUDA/provider owner.",
+    "Generic lower gaps route to CUDA-JS; generic Tensor gaps route to CUDA-JS-Tensor; reusable NN/model semantics route to cuda-nn; reusable cross-domain physical memory policy routes to CUDA-MM only if separately activated; product semantics remain downstream.",
     "Portable/mock/hosted/VM evidence is never relabeled physical/native evidence."
   ]
 }
