@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {
   TensorEvaluatorConnectorError,
   createTensorEvaluatorConnector,
-  createTensorEvaluatorReference,
 } from '../../adapters/evaluators/cuda-js-tensor/index.mjs';
+import { createTensorEvaluatorReference } from './reference.mjs';
 
 const cases = [];
 function runCase(id, body) {
@@ -59,7 +59,12 @@ runCase('TENSOR-EVAL-C01-public-callable-admission', () => {
   assert.equal(connector.tensor.itemCapacity, 2);
   assert.equal(connector.requestCapacity, 2);
   assert.equal(connector.tensor.totalWorkspaceBytes, 32);
-  assert.equal(connector.deviceImport.name, 'tensorRunItem');
+  assert.equal(connector.deviceImportIdentity.name, 'tensorRunItem');
+  assert.equal(connector.deviceImportIdentity.as, 'mcgsTensorRunItem');
+  const imported = connector.createDeviceImport();
+  assert.equal(imported.name, 'tensorRunItem');
+  assert.equal(imported.as, 'mcgsTensorRunItem');
+  assert(imported.library.artifact.bytes instanceof Uint8Array, 'opaque Tensor library bytes must retain their public Uint8Array type');
   assert.match(connector.source, /return mcgsTensorRunItem\(/);
   assert.deepEqual(connector.claimLimits, ['public-tensor-callable-only', 'no-product-semantics', 'no-native-or-provider-qualification']);
 });
@@ -86,8 +91,13 @@ runCase('TENSOR-EVAL-C03-partial-batch-preserves-occupancy', () => {
   const batch = reference.formBatch();
   assert.equal(batch.occupancy, 1);
   assert.equal(batch.items[0].itemIndex, 0);
-  reference.publish(batch, [{ ...batch.items[0], outputs: { left: 7, right: 9 } }]);
-  assert.deepEqual(reference.scatter(batch), [{ requestId: 'request-only', requestGeneration: 2, outputs: { left: 7, right: 9 } }]);
+  const payload = new Uint8Array([7, 9]);
+  reference.publish(batch, [{ ...batch.items[0], outputs: payload }]);
+  const scattered = reference.scatter(batch);
+  assert.equal(scattered.length, 1);
+  assert.equal(scattered[0].requestId, 'request-only');
+  assert(scattered[0].outputs instanceof Uint8Array, 'conformance reference must preserve opaque typed payload representation');
+  assert.deepEqual([...scattered[0].outputs], [7, 9]);
 });
 
 runCase('TENSOR-EVAL-F01-capacity-pressure-fails-closed', () => {
@@ -124,6 +134,20 @@ runCase('TENSOR-EVAL-F03-invalid-public-shapes-reject', () => {
   assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram({ contract: 'wrong' })), (error) => error?.code === 'TENSOR_EVALUATOR_CONTRACT');
   assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram({ totalWorkspaceBytes: 31 })), (error) => error?.code === 'TENSOR_EVALUATOR_WORKSPACE');
   assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram(), { requestCapacity: 3 }), (error) => error?.code === 'TENSOR_EVALUATOR_CAPACITY');
+});
+
+runCase('TENSOR-EVAL-F04-device-import-drift-rejected', () => {
+  const program = fakeTensorDeviceProgram();
+  const stableImport = program.importAs.bind(program);
+  let callCount = 0;
+  program.importAs = (alias) => {
+    const imported = stableImport(alias);
+    callCount += 1;
+    if (callCount === 1) return imported;
+    return { ...imported, library: { ...imported.library, sha256: '3'.repeat(64) } };
+  };
+  const connector = createTensorEvaluatorConnector(program);
+  assert.throws(() => connector.createDeviceImport(), (error) => error?.code === 'TENSOR_EVALUATOR_IMPORT_DRIFT');
 });
 
 const failed = cases.filter(({ status }) => status !== 'pass');
