@@ -1,0 +1,85 @@
+{
+  "schema_version": 3,
+  "component": {
+    "id": "integration.cuda-js-tensor-evaluator",
+    "name": "CUDA-JS-Tensor Evaluator Connector",
+    "status": "candidate",
+    "product_area": "adapters",
+    "path": "adapters/evaluators/cuda-js-tensor",
+    "purpose": "Admit an injected public CUDA-JS-Tensor TensorDeviceProgram and expose its exact opaque Device-JS import boundary for later CUDA-MCGS evaluator composition without taking over Tensor mathematics or lower CUDA ownership.",
+    "roles": ["adapter", "evaluator-integration"],
+    "governing_authority": [
+      "docs/specs/SPEC-0009-evaluator-contract.md",
+      "docs/specs/SPEC-0011-finite-search-resources.md",
+      "docs/specs/SPEC-0012-device-owned-search-progress.md",
+      "docs/specs/SPEC-0015-native-boundary-and-js-only-implementation.md",
+      "https://github.com/iteathen/CUDA-MCGS/issues/124"
+    ],
+    "design": {
+      "owned_invariant": "One admitted TensorDeviceProgram has an exact finite callable/capacity/workspace/import identity, and every later import obtained through the connector must still match that admitted identity before it can enter CUDA-MCGS composition.",
+      "intended_equivalence_class": [
+        "public CUDA-JS-Tensor TensorDeviceProgram capabilities with item-parallel callable semantics",
+        "product-neutral scalar, vector or multi-output Tensor evaluator payloads",
+        "finite item-capacity Tensor callables"
+      ],
+      "excluded_cases": [
+        "Tensor mathematics or TensorProgram/TensorPlan interpretation",
+        "evaluator request scheduler/runtime ownership",
+        "model/checkpoint/head/product semantics",
+        "native CUDA/provider mechanisms",
+        "host-driven active evaluator progression"
+      ],
+      "authoritative_state_owner": "stateless admission descriptor; CUDA-JS-Tensor owns the injected callable/item/workspace/library facts and CUDA-MCGS SPEC-0009 owns evaluator lifecycle semantics",
+      "public_ports": ["adapters/evaluators/cuda-js-tensor/index.mjs"],
+      "injected_dependencies": ["public cuda-js-tensor TensorDeviceProgram capability"],
+      "adapter_boundaries": [
+        "CUDA-JS-Tensor owns public Tensor callable/library identity",
+        "CUDA-MCGS SPEC-0009 owns evaluator request/batch/readiness lifecycle",
+        "CUDA-JS owns Device-JS library linking and native execution"
+      ],
+      "solid_responsibilities": ["admit public Tensor callable shape", "freeze finite evaluator capacity/workspace facts", "preserve exact Device-JS import identity", "reject import drift"],
+      "cupid_qualities": ["composable", "predictable", "domain-based", "fail-closed"],
+      "second_instance": "A materially different downstream evaluator can inject another conforming TensorDeviceProgram without changing connector vocabulary.",
+      "first_consumer_deletion": "Removing every Tensor evaluator removes this optional adapter while evaluator-free/non-Tensor CUDA-MCGS profiles remain complete.",
+      "essential_complexity": ["public callable shape", "item capacity", "workspace total", "opaque device-library import identity", "drift rejection"],
+      "accidental_complexity_rejected": ["model semantics", "second Tensor compiler", "second evaluator runtime", "private/deep imports", "native source", "host search scheduler"],
+      "complexity_moved_elsewhere": ["Tensor math/callable ABI/workspace remain CUDA-JS-Tensor", "evaluator request/batch lifecycle remains CUDA-MCGS semantic/runtime composition", "native linking/execution remains CUDA-JS"],
+      "simplest_sufficient_total_system": "Validate one public TensorDeviceProgram, retain only its finite identity metadata and obtain a fresh owner-produced DeviceJsImport on demand after revalidating exact identity."
+    },
+    "public_contracts": ["cuda-mcgs.tensor-evaluator-connector/0.1.0"],
+    "owns": ["Tensor evaluator connector admission", "admitted Tensor callable/capacity/workspace/import identity", "fail-closed import drift rejection"],
+    "persistent_state": [],
+    "generated_artifacts": ["immutable connector descriptor", "portable conformance evidence"],
+    "testing": {
+      "test_owner": "conformance/cuda-js-tensor-evaluator",
+      "authoritative_oracles": ["accepted SPEC-0009 evaluator semantics", "public CUDA-JS-Tensor TensorDeviceProgram contract"],
+      "coverage_map_location": ["conformance/cuda-js-tensor-evaluator/README.md"],
+      "focused_fast_capsules_and_commands": ["node scripts/run-cuda-js-tensor-evaluator.mjs"],
+      "owner_contract_capsules_and_commands": ["node scripts/run-evaluator-reference.mjs", "node scripts/run-search-ir-composer-reference.mjs"],
+      "integration_smoke_dependencies": ["repository source-boundary policy", "documentation/governance verification"],
+      "deep_forensic_and_release_triggers": ["TensorDeviceProgram public ABI change", "evaluator request/batch semantics change", "Device-JS import composition change"],
+      "expected_discovery_and_skip_policy": ["portable connector capsule has zero native prerequisites and zero conditional skips"],
+      "evidence_key_dimensions": ["connector source identity", "Tensor callable contract/item capacity/workspace/import identity"],
+      "test_invalidation_inputs": ["SPEC-0009", "TensorDeviceProgram public contract", "connector source"],
+      "shared_setup_and_mutable_state_isolation": ["each case creates a fresh connector and conformance-only reference state"],
+      "failure_cluster_and_repair_owner": "integration.cuda-js-tensor-evaluator for connector defects; CUDA-JS-Tensor for generic callable defects; CUDA-JS for lower native defects",
+      "test_intent_consolidation_and_debt_policy": ["new connector/lifecycle falsifiers join the owner-local portable capsule; the request/batch reference remains conformance-only and is not a package export"],
+      "runtime_output_and_resource_budgets": ["bounded CUDA-free Node.js portable qualification; no native/performance claim"]
+    },
+    "lifecycle_and_cleanup": {
+      "startup_and_acquisition": ["validate public TensorDeviceProgram and exact finite item/request capacity before returning a connector descriptor"],
+      "steady_state_ownership": ["no mutable production connector state; each DeviceJsImport is freshly obtained from the injected Tensor owner and checked against admitted identity"],
+      "cancellation_and_failure": ["not owned by this admission brick; accepted evaluator lifecycle and later runtime composition own request terminal disposition"],
+      "teardown_and_resource_release": ["no production resources are acquired by this connector"],
+      "generated_cache_package_test_and_diagnostic_disposition": ["no persistent connector cache; portable evidence is not native evidence"],
+      "persistence_migration_backup_and_recovery_retention": ["not applicable"],
+      "archive_deprecation_and_supersession": ["public Tensor contract changes require explicit compatibility reassessment"],
+      "cleanup_verification": ["import drift and invalid-shape portable falsifiers; request/batch cleanup remains conformance-only until runtime composition is implemented"]
+    },
+    "allowed_dependencies": ["injected public cuda-js-tensor capability values only"],
+    "forbidden_dependencies": ["cuda-js-tensor private/deep source", "CUDA-JS private/deep source", "native addons/FFI/CUDA/PTX", "product semantics", "Python", "adapter-owned evaluator scheduler/runtime"],
+    "known_consumers": ["conformance/cuda-js-tensor-evaluator", "future optional evaluator composition"],
+    "validation": ["node scripts/run-cuda-js-tensor-evaluator.mjs", "node scripts/run-evaluator-reference.mjs", "node scripts/run-search-ir-composer-reference.mjs"],
+    "owner": "CUDA-MCGS framework"
+  }
+}

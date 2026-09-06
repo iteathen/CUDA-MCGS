@@ -17,6 +17,7 @@
     ".": "./components/library-interface/index.mjs",
     "./search-compiler": "./components/search-compiler/index.mjs",
     "./runtime/cuda-js": "./adapters/runtimes/cuda-js/index.mjs",
+    "./evaluator/cuda-js-tensor": "./adapters/evaluators/cuda-js-tensor/index.mjs",
     "./schemas/search-ir/0.2.0/*": "./schemas/search-ir/0.2.0/*",
     "./package.json": "./package.json"
   },
@@ -27,6 +28,9 @@
     "components/search-compiler/src",
     "adapters/runtimes/cuda-js/index.mjs",
     "adapters/runtimes/cuda-js/src",
+    "adapters/evaluators/cuda-js-tensor/index.mjs",
+    "adapters/evaluators/cuda-js-tensor/README.md",
+    "adapters/evaluators/cuda-js-tensor/src",
     "schemas/search-ir/0.2.0",
     "README.md",
     "LICENSE",
