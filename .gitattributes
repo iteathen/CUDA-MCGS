@@ -1,2 +1,11 @@
+# Public/package source is hashed, packed and compared across Windows/Linux; keep tracked text bytes stable.
+/components/** text eol=lf
+/adapters/** text eol=lf
+/schemas/** text eol=lf
+/README.md text eol=lf
+/LICENSE text eol=lf
+/LICENSING.md text eol=lf
+/package.json text eol=lf
+
 # These discovery fixtures have exact-byte digests and must survive Windows checkout unchanged.
 /experiments/ptx-extension-composition-prototype/fixtures/ptx/*.ptx text eol=lf
