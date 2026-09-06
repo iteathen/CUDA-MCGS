@@ -1,13 +1,7 @@
-# Third-Party Material
+# Third-party material
 
-Copied or vendored external material lives only here and requires:
+This directory is reserved for external material admitted through a provenance and licensing review. See [licensing](../LICENSING.md) for the project's AGPL-3.0-or-later and third-party boundaries.
 
-- upstream project and canonical source;
-- exact revision/version;
-- license;
-- local modifications;
-- update process;
-- owning UMCGS component or tool;
-- explicit reuse decision.
+Prior-art references are indexed under [research](../docs/research/prior-art/README.md). A reference is not permission to copy its implementation.
 
-UMCGS may proceed with original private pre-release work without a selected project license, but third-party implementation must not be scattered into product components or copied without provenance and compatibility review.
+Before adding external material, follow the [developer instructions](../AGENTS.md) and record its origin, exact revision, license, modifications, owning component, and update policy.

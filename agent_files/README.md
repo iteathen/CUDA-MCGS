@@ -51,7 +51,6 @@ This directory is the durable operating system for development. The root [`AGENT
 ## CUDA-MCGS application profile
 
 - [`application_specific/CUDA_MCGS_PROFILE.md`](application_specific/CUDA_MCGS_PROFILE.md) — canonical current project profile.
-- [`application_specific/CUDA_MCGS_PROFILE.md`](application_specific/CUDA_MCGS_PROFILE.md) — compatibility-only pointer for the former project name; do not use for new references.
 - [`application_specific/REPOSITORY_ORGANIZATION.md`](application_specific/REPOSITORY_ORGANIZATION.md)
 - [`application_specific/ARCHITECTURE_GUARDRAILS.md`](application_specific/ARCHITECTURE_GUARDRAILS.md)
 - [`application_specific/MEMORY_AND_PERFORMANCE.md`](application_specific/MEMORY_AND_PERFORMANCE.md)
@@ -61,12 +60,6 @@ This directory is the durable operating system for development. The root [`AGENT
 
 Use [`templates/`](templates/) for engineering decisions, ADRs, specifications, component manifests, combined assessment/plans, durable focus-branch packets, token/context budgets, document-reading/applicability maps, consolidated test batches, governed plan execution, cleanup/disposition, sanity checks, critical semantic reviews, durable PR reviews, design reviews, naming analysis, research, handoffs, debugging, subsystem documentation, and benchmarks. Templates are starting structures, not substitutes for reasoning.
 
-Universal token backpressure applies to every task, but routine work uses an implicit micro-budget and no token ledger. Use [`templates/token-budget.template.yaml`](templates/token-budget.template.yaml) only when cross-session/agent continuation, telemetry, high consequence, parallelism, repeated pressure, or audit/review gives the record a real consumer.
-
-Selective document reading also applies to every task, but routine work needs no standalone applicability ledger when the instruction chain and governing authority are obvious. Use [`templates/document-reading.template.yaml`](templates/document-reading.template.yaml) only for substantial, critical, cross-session, cross-agent, cross-repository, disputed, or review-sensitive work whose exact authority coverage and invalidation state must survive.
-
-Routine work needs no engineering-decision or test ledger. Use [`templates/engineering-decision.template.yaml`](templates/engineering-decision.template.yaml) for foundational, contested, cross-component, high-consequence, empirically uncertain, difficult-to-reverse, or cross-session choices. Use [`templates/test-batch.template.yaml`](templates/test-batch.template.yaml) when several test intents must be accumulated/consolidated, expensive setup must be shared, a failure cluster crosses sessions/agents, or completeness/skip/invalidation evidence has a real consumer. Routine task-owned scratch cleanup, single-session execution, simple focus branches, self-sanity, and ordinary PR review should remain in the canonical issue/plan/PR rather than forcing standalone artifacts.
-
-Token backpressure and selective reading should reduce duplicate context and records. They must not add a mandatory form to every task, weaken the practice floor, or permit shallow interpretation of governing authority.
+Template applicability and required practices are defined in the linked foundation files. Use those owners rather than treating a template as an additional requirement.
 
 Tool adapters such as `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md` must point here and remain thin.

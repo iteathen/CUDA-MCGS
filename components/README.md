@@ -1,16 +1,10 @@
-# Components
+# CUDA-MCGS components
 
-Production framework components live here.
+This directory contains implemented framework components:
 
-Every immediate child component must contain:
+- [Library interface](library-interface/README.md): prerelease package facade and public entry points.
+- [Search Compiler](search-compiler/README.md): pre-execution normalization and program composition.
 
-- `README.md`;
-- `component.yaml` based on [`../agent_files/templates/component-manifest.template.yaml`](../agent_files/templates/component-manifest.template.yaml);
-- a clear public/internal boundary;
-- declared dependencies;
-- owned validation;
-- governing specifications/ADRs.
+The [CUDA-JS runtime adapter](../adapters/runtimes/cuda-js/README.md) lives under adapters. [Conformance](../conformance/README.md) provides independent evidence.
 
-Do not create component directories merely to reserve speculative names. Planned boundaries are tracked in [`../agent_files/SYSTEM_REGISTRY.md`](../agent_files/SYSTEM_REGISTRY.md) until accepted contracts assign implementation ownership.
-
-Generic `common`, `shared`, `utils`, `helpers`, `misc`, or equivalent dumping-ground components are prohibited.
+For component creation and ownership requirements, use the [system registry](../agent_files/SYSTEM_REGISTRY.md) and [developer instructions](../AGENTS.md). Planned boundaries do not imply implementation.
