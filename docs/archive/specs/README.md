@@ -1,5 +1,7 @@
 # Archived specifications
 
+**Status:** Informational
+
 This directory retains superseded repository-local specification provenance only.
 
 Files here are historical evidence. They are not current CUDA-MCGS semantic authority, production ownership, execution dependencies, or downstream product contracts. Current universal framework authority lives under [`../../specs/`](../../specs/README.md); current execution state lives in [`../../../STATUS.md`](../../../STATUS.md) and [`../../../next_step.yaml`](../../../next_step.yaml).
