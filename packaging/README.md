@@ -1,19 +1,10 @@
-# Packaging
+# CUDA-MCGS packaging
 
-UMCGS release composition, execution-package manifests, compatibility matrices, reproducibility metadata, installation/distribution packaging, and release verification live here.
+This area covers distribution, execution-package compatibility, and reproducibility metadata. A private development package is defined in the [root manifest](../package.json); there is no released npm package yet.
 
-Packaging consumes declared UMCGS component outputs and released/versioned CUDA-JS public artifacts. It must not reach into UMCGS component internals, CUDA-JS private source, branches, worktrees, local build directories, or incidental generated paths.
+- [Library interface](../components/library-interface/README.md): public exports.
+- [Installed-package conformance](../conformance/library-interface/README.md): pack/install checks.
+- [Compatible-pair qualification](../conformance/cuda-js-compatible-pair/README.md): exact CUDA-MCGS/CUDA-JS evidence.
+- [Specifications](../docs/specs/README.md): package and compatibility contracts.
 
-For each compatible UMCGS/CUDA-JS pair, manifests must identify where material:
-
-- UMCGS and CUDA-JS package versions and exact tested revisions/artifacts;
-- public contract/schema versions;
-- generated search package, generator/compiler, and complete cache identity;
-- host binding backend and platform/CPU ABI;
-- Node runtime, CUDA driver/toolkit, GPU architecture, and build flags;
-- evaluator/model/adapter and resource profile;
-- checksums, provenance, conformance tier, and known limitations.
-
-The UMCGS package may compose or depend on a released CUDA-JS package. It may not vendor an untracked copy as a second source of truth.
-
-A future installer that coordinates independently released peer projects should be a peer repository consuming these manifests rather than internal source paths.
+Future releases need recorded provenance and independently qualified runtime compatibility. Packaging consumes declared public component/library outputs, not private peer source paths.

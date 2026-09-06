@@ -1,56 +1,16 @@
 # Search Compiler
 
-**Component ID:** `tool.search-compiler`  
-**Status:** Production  
-**Issue:** #205
+The implemented `tool.search-compiler` component normalizes accepted framework/profile selections and composes deterministic restricted Device-JS search programs before execution.
 
-## Purpose
+It is stateless across calls and owns no GPU runtime or post-launch search scheduler. Invalid or incompatible input produces no partial valid composition. Schemas and specifications define the semantics it implements.
 
-Own the canonical pre-ignition implementation that normalizes accepted CUDA-MCGS framework selections and owner profiles, composes deterministic restricted Device-JS Search Programs, and emits accepted Program Package / execution-package meaning. Semantic authority remains in the accepted specifications and schemas; this component is their canonical implementation path.
+## Entry points
 
-## Owned invariant
+- [Public component port](index.mjs), also exposed as `cuda-mcgs/search-compiler`.
+- [Convenience library facade](../library-interface/README.md).
+- [Governing contracts](../../docs/specs/README.md).
+- [Owner conformance](../../conformance/search-compiler/README.md).
 
-For one complete accepted input set, there is one deterministic, fail-closed normalization/composition path from selected framework/profile meaning to canonical normalized profiles, Search Program and execution-package identities. Optional-owner deletion leaves only truthfully surviving meaning, and runtime realization facts are explicit before ignition.
+`src/` is private implementation; `testing.mjs` is conformance-only. CUDA-JS runtime realization is a separate [adapter](../../adapters/runtimes/cuda-js/README.md).
 
-## Public and internal boundary
-
-- `index.mjs` is the production port for canonical normalization/composition operations. It is pre-1.0 and is also exposed unchanged as the installed `cuda-mcgs/search-compiler` subpath by `interface.library`; the package facade does not mirror or reinterpret its symbols.
-- `tryCreateResolvedComposerInput` and `tryComposeResolvedEngine` classify this component's own accepted validation failures into plain diagnostic data. Unexpected exceptions propagate; callers do not inspect private `ValidationError` types.
-- `testing.mjs` is an explicit conformance-only port. Production components/adapters/examples and installed-package consumers must not depend on it.
-- `src/` is private implementation. Consumers do not deep-import it.
-- schemas and accepted specifications own semantic shapes; this component validates/implements them but does not replace their authority.
-- CUDA-JS is not a dependency of this component. `integration.cuda-js` consumes accepted execution-package meaning separately through versioned public CUDA-JS contracts.
-
-## Dependencies
-
-The component uses Node.js standard-library primitives and injected accepted schema/profile/catalog values. Its canonical owner modules are deliberately colocated because they share one pre-ignition composition lifecycle and a small foundation/validation substrate; splitting them into one component per SPEC owner would create either duplicated foundations or an artificial shared/common component.
-
-Forbidden dependencies include `experiments/`, `conformance/`, CUDA-JS private/deep paths, native/FFI/CUDA source, product semantics, and runtime-owned GPU resource lifecycle.
-
-## Lifecycle and failure
-
-The component is stateless across calls. Inputs are normalized before ignition; invalid, incomplete, incompatible, unknown, cyclic, over-bound, or ownership-inconsistent inputs fail without publishing a partial valid composition. It allocates no GPU/native resources and owns no post-ignition scheduler or runtime lifecycle.
-
-## Verification
-
-The owner conformance capsule is `conformance/search-compiler/`, executed through `node scripts/run-search-ir-composer-reference.mjs`. Public installed-package projection is separately falsified by `conformance/library-interface/`. Promotion qualification also runs the complete Engine reference integration and repository governance/source-boundary gates. The historical #205 promotion verifier pins the pre-migration Git blob identities of the canonical source modules so the structural promotion could not smuggle semantic edits into the path move.
-
-## LEGO/deletion result
-
-Deleting CUDA-JS, Tensor, CUDA-NN, UCI products, `interface.library`, or any one concrete domain does not remove this component: deterministic framework normalization/composition remains coherent for unrelated consumers. Deleting this component leaves the accepted specifications/schemas and independent semantic reference oracles intact, but removes the production implementation path. A second framework consumer uses the same accepted component ports without new foundational ownership.
-
-## Governing authority
-
-- ADR-0004 repository organization
-- ADR-0005 LEGO design hierarchy
-- ADR-0014 CUDA-JS runtime extraction
-- ADR-0019 public CUDA-JS capability escalation
-- ADR-0020 complete library / resolved defaults
-- ADR-0024 framework-only production ownership
-- SPEC-0000 and accepted SPEC-0003 through SPEC-0013 as applicable
-- SPEC-0005 operation-local-access and external-control-sideband addenda
-- issue #205
-
-## Non-goals
-
-No package-root SDK policy, product/domain implementation, CUDA-JS runtime adapter, native CUDA code, GPU scheduler, provider registry, universal GPU IR, or second semantic interpreter is owned here. Prerelease package/facade policy belongs to `interface.library` / SPEC-0014.
+The prerelease API may change. Compiler/reference evidence does not establish native GPU execution.

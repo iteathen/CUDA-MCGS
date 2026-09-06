@@ -1,35 +1,15 @@
-# CUDA-JS Runtime Adapter Portable Conformance
+# CUDA-JS adapter conformance
 
-**Owner:** `integration.cuda-js`  
-**Command:** `node scripts/run-cuda-js-runtime-adapter.mjs`  
-**Native claim:** none
+Exercises compatibility admission, translation, operation lifecycle, failure projection, terminal output delivery, and cleanup against a fake of the public CUDA-JS interface.
 
-This capsule validates the production CUDA-MCGS-to-CUDA-JS adapter against an injected fake of the **public** CUDA-JS alpha.18 surface. It exists to falsify CUDA-MCGS-owned translation, admission, failure-projection and cleanup behavior without importing CUDA-JS internals, requiring a GPU, or claiming exact native compatible-pair support.
+## Run
 
-The committed red-before-green subject was `0cab6f869d4f40fdf4a33c7b3cd369c15ff926e0`; workflow `33911108900` reached this capsule and failed on both Windows and Ubuntu while the production adapter boundary was still absent.
+Use Node.js 26 or newer from a repository checkout. No GPU is required; passing does not qualify the physical library pair.
 
-## Permanent falsifiers
+From the repository root:
 
-The capsule covers:
+```bash
+node scripts/run-cuda-js-runtime-adapter.mjs
+```
 
-- exact execution-package / peer revision / package / public API identity;
-- fail-closed unknown public-contract handling before lower mutation;
-- allocation-alignment divisibility against lower-owned compatibility truth, with `{ byteLength }` as the only allocation request field;
-- safe integer conversion and fixed v0 `maxPending=1`;
-- refusal to infer a scheduler from multiple operation requirements;
-- mechanical Device-JS sideband-to-public-mailbox type conversion;
-- compile-returned kernel symbol/parameter use rather than adapter-owned lower ABI inference;
-- runtime-entry parameter order, operation-local full-resource access records and launch dimensions;
-- write-only uninitialized resources versus explicit exact-length input for read/read-write resources;
-- complete pre-ignition resource/scalar validation before the first lower memory write, including retryability after a late-invalid input;
-- explicit scalar values rather than schema-derived values;
-- host-to-device publication and device-to-host observation directionality;
-- lower compile/allocation/submit/terminal failure preservation;
-- reverse resource teardown, restart-required quarantine and cleanup-exception retention;
-- repeated fresh prepare/ignite/wait/close lifecycles.
-
-The fake is evidence support only. Production source cannot import it or any other conformance/experiment path. Native CUDA correctness, provider/device support and performance remain outside this capsule and downstream of CUDA-JS #32.
-
-## Terminal Output delivery
-
-The portable capsule also falsifies the SPEC-0005 terminal host-delivery projection: explicit delivery admission/range validation occurs before lower mutation, delivery is rejected before terminal completion, post-terminal delivery reads exactly the declared public CUDA-JS byte range, transfer bounds are finite, lower D2H failures retain lower facts, and no arbitrary generated-resource read API exists. Portable evidence does not claim native D2H or publication correctness.
+Generated evidence stays in ignored build storage. See the [owning interface/contracts](../../adapters/runtimes/cuda-js/README.md) for exact meaning and [current status](../../STATUS.md) for outstanding work.
