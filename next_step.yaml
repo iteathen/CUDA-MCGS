@@ -121,6 +121,25 @@
     "state": "cuda_free_pre_ignition_slice_protected_complete_physical_remainder_deferred",
     "meaning": "One unrelated repository proved installed public package normalization, accepted authority/context construction, resolve/compose, fail-closed stale or wrong authority, retryability, private/testing export rejection and cleanup. The consumer repository identity is historical evidence only and is not a current product dependency or semantic owner."
   },
+  "blockers": [
+    "Search Program/execution-package composition does not yet carry an identity-bound generic external Device-JS library import from the admitted Tensor connector into the public CUDA-JS compile request.",
+    "Full #124 request/batch/scatter/readiness runtime composition remains after the admission/package slice; conformance reference behavior is evidence only and is not production runtime authority.",
+    "Physical NVIDIA qualification remains deferred until suitable directly exposed hardware is available and cannot be substituted by portable evidence."
+  ],
+  "deliverables": [
+    "Product-neutral public TensorDeviceProgram admission/import connector under integration.cuda-js-tensor-evaluator.",
+    "CUDA-free Ubuntu/Windows conformance for callable admission, independent queue and Tensor batch capacities, full/partial batches, stale rejection, pressure, cancellation, retry and cleanup.",
+    "Installed-package evidence that cuda-mcgs/evaluator/cuda-js-tensor is exported while conformance reference source is physically absent and unexported.",
+    "Current STATUS.md, next_step.yaml and SYSTEM_REGISTRY.md keep #124 generic and physical-only gates explicitly deferred."
+  ],
+  "do_not": [
+    "Do not add downstream product-specific state, protocol, model, output, correctness or release semantics to CUDA-MCGS.",
+    "Do not create a second Tensor planner/compiler/runtime or a second evaluator scheduler/runtime in the adapter.",
+    "Do not import CUDA-JS-Tensor or CUDA-JS private/deep source or inspect generated native artifacts as semantic authority.",
+    "Do not add C/C++/CUDA/PTX/native FFI or Python.",
+    "Do not relabel hosted, portable, VM, mock or package evidence as native/provider/hardware qualification.",
+    "Do not close #124 from the admission/package slice; continue with generic Search Program import composition and later evaluator runtime composition."
+  ],
   "validation": {
     "existing": [
       "node scripts/run-evaluator-reference.mjs",
