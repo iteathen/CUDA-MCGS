@@ -110,14 +110,14 @@ function sameFunction(left, right) {
     && left.parameters.every((parameter, index) => parameter?.name === right.parameters[index].name && parameter?.type === right.parameters[index].type);
 }
 
-function normalizeImport(tensorDeviceProgram, alias, callable, expected = null) {
+function normalizeImport(tensorDeviceProgram, alias, callable, outputFormat, expected = null) {
   if (typeof tensorDeviceProgram.importAs !== 'function') fail('TENSOR_EVALUATOR_IMPORT', 'TensorDeviceProgram.importAs is unavailable');
   const imported = object(tensorDeviceProgram.importAs(alias), 'Tensor Device-JS import');
   const library = object(imported.library, 'Tensor Device-JS library');
   const artifact = object(library.artifact, 'Tensor Device-JS artifact');
   const exported = Array.isArray(library.exports) ? library.exports.find((entry) => entry?.name === 'tensorRunItem') : null;
   if (imported.as !== alias || imported.name !== 'tensorRunItem' || library.schemaVersion !== 1 || !HEX64.test(library.sha256)
-      || !['ptx', 'lto-ir'].includes(library.format) || typeof library.architecture !== 'string' || library.architecture.length === 0
+      || library.format !== outputFormat || typeof library.architecture !== 'string' || library.architecture.length === 0
       || typeof library.contract !== 'string' || library.contract.length === 0 || !sameFunction(exported, callable)
       || artifact.format !== library.format || artifact.architecture !== library.architecture
       || !HEX64.test(artifact.sha256) || !(artifact.bytes instanceof Uint8Array)
@@ -165,8 +165,9 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
   const workspaceBytes = parameters.filter(({ role }) => role === 'workspace').reduce((total, entry) => total + entry.byteLength, 0);
   if (workspaceBytes !== totalWorkspaceBytes) fail('TENSOR_EVALUATOR_WORKSPACE', 'Tensor workspace descriptors differ from totalWorkspaceBytes');
   const compatibilityIdentity = text(tensorDeviceProgram.compatibilityIdentity, 'Tensor compatibilityIdentity');
-  if (!['ptx', 'lto-ir'].includes(tensorDeviceProgram.outputFormat)) fail('TENSOR_EVALUATOR_OUTPUT', 'Tensor outputFormat must be ptx or lto-ir');
-  const admittedImport = normalizeImport(tensorDeviceProgram, alias, callable);
+  const outputFormat = tensorDeviceProgram.outputFormat;
+  if (!['ptx', 'lto-ir'].includes(outputFormat)) fail('TENSOR_EVALUATOR_OUTPUT', 'Tensor outputFormat must be ptx or lto-ir');
+  const admittedImport = normalizeImport(tensorDeviceProgram, alias, callable, outputFormat);
   const sourceParameters = callable.parameters.map(({ name }) => name).join(', ');
   const source = `function mcgsTensorEvaluateItem(${sourceParameters}) { return ${alias}(${sourceParameters}); }\n`;
   const connector = {
@@ -177,13 +178,13 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
       compatibilityIdentity,
       itemCapacity,
       totalWorkspaceBytes,
-      outputFormat: tensorDeviceProgram.outputFormat,
+      outputFormat,
     },
     requestCapacity,
     parameters,
     deviceImportIdentity: admittedImport.identity,
     createDeviceImport() {
-      return normalizeImport(tensorDeviceProgram, alias, callable, admittedImport.identity).imported;
+      return normalizeImport(tensorDeviceProgram, alias, callable, outputFormat, admittedImport.identity).imported;
     },
     deviceFunction: {
       name: 'mcgsTensorEvaluateItem',
