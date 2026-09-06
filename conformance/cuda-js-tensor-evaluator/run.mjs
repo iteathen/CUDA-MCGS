@@ -152,6 +152,7 @@ runCase('TENSOR-EVAL-C05-cancel-retry-and-cleanup-are-explicit', () => {
 runCase('TENSOR-EVAL-F03-invalid-public-shapes-reject', () => {
   assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram({ contract: 'wrong' })), (error) => error?.code === 'TENSOR_EVALUATOR_CONTRACT');
   assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram({ totalWorkspaceBytes: 31 })), (error) => error?.code === 'TENSOR_EVALUATOR_WORKSPACE');
+  assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram({ outputFormat: 'ptx' })), (error) => error?.code === 'TENSOR_EVALUATOR_IMPORT');
   assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram(), { requestCapacity: 0 }), (error) => error?.code === 'TENSOR_EVALUATOR_BOUNDS');
 });
 
