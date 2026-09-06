@@ -107,6 +107,12 @@
     "Generic Tensor gaps route to CUDA-JS-Tensor; reusable NN/model semantics route to cuda-nn; UCI/chess/product semantics stay in UCI-Arena-Vector or another downstream owner.",
     "No additional MCGS native-runner or mock evidence work is authorized solely because #32 hardware is unavailable."
   ],
+  "deliverables": [
+    "Protected #109 / PR #225 remains the accepted prerelease public library/package boundary and installed-package evidence baseline.",
+    "Protected #228 remains the current public CUDA-JS adapter/profile correction without new search semantics or physical-support promotion.",
+    "The next #123 evaluator-free Vector slice must consume an exact packed protected cuda-mcgs artifact only through declared public exports and retain exact provenance/diagnostic evidence.",
+    "STATUS.md and next_step.yaml must keep the Tensor #61 model lane separate from the evaluator-free #123 package falsifier and keep CUDA-JS #32 explicitly hardware-blocked/refreeze-required."
+  ],
   "validation": [
     "node scripts/run-library-interface.mjs",
     "node scripts/run-search-ir-composer-reference.mjs",
