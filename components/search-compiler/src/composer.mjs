@@ -9,6 +9,7 @@ import {
   normalizeContentIdentity,
   normalizeSchemaReference,
 } from './foundation.mjs';
+import { normalizeAcceptedContractAuthority } from './accepted-authority.mjs';
 import {
   buildExecutionPackage,
   composeSearchProgram,
@@ -197,13 +198,14 @@ function contextResultKey(result, label) {
   return `${result.normalized.id}\0${result.identity.sha256}\0${result.schemaSha}`;
 }
 
-function selectContextResult(input, profileByKey, label, optional = false) {
+function selectContextResult(input, profileByKey, label, expectedSchema, optional = false) {
   if (input === null) {
     if (!optional) fail('COMPOSER_CONTEXT_PROFILE', `${label} is required`);
     return null;
   }
   const selected = profileByKey.get(contextResultKey(input, label));
   if (!selected) fail('COMPOSER_CONTEXT_PROFILE', `${label} is not present in profileResults`);
+  if (selected.normalized.schema !== expectedSchema) fail('COMPOSER_CONTEXT_PROFILE', `${label} has the wrong owner schema`);
   return selected;
 }
 
@@ -231,12 +233,12 @@ export function createProgramPackageCompositionContext(resolvedInput, selection)
     profileByKey.set(key, result);
     profileIds.add(result.normalized.id);
   }
-  const resourceResult = selectContextResult(selection.resourceResult, profileByKey, 'resourceResult');
-  const progressResult = selectContextResult(selection.progressResult, profileByKey, 'progressResult');
-  const outputResult = selectContextResult(selection.outputResult, profileByKey, 'outputResult');
-  const sessionResult = selectContextResult(selection.sessionResult, profileByKey, 'sessionResult', true);
-  const stageResult = selectContextResult(selection.stageResult, profileByKey, 'stageResult', true);
-  const channelResult = selectContextResult(selection.channelResult, profileByKey, 'channelResult', true);
+  const resourceResult = selectContextResult(selection.resourceResult, profileByKey, 'resourceResult', 'cuda-mcgs.resource-profile/0.2.0');
+  const progressResult = selectContextResult(selection.progressResult, profileByKey, 'progressResult', 'cuda-mcgs.progress-profile/0.2.0');
+  const outputResult = selectContextResult(selection.outputResult, profileByKey, 'outputResult', 'cuda-mcgs.output-profile/0.2.0');
+  const sessionResult = selectContextResult(selection.sessionResult, profileByKey, 'sessionResult', 'cuda-mcgs.session-profile/0.2.0', true);
+  const stageResult = selectContextResult(selection.stageResult, profileByKey, 'stageResult', 'cuda-mcgs.stage-profile/0.2.0', true);
+  const channelResult = selectContextResult(selection.channelResult, profileByKey, 'channelResult', 'cuda-mcgs.channel-profile/0.2.0', true);
   const profile = resolved.normalized.profile;
   const authority = profile.semanticEngine?.authority;
   if (authority?.repository !== 'iteathen/CUDA-MCGS') fail('COMPOSER_CONTEXT_AUTHORITY', 'resolved profile does not name the CUDA-MCGS authority repository');
@@ -281,7 +283,8 @@ export function createProgramPackageCompositionContext(resolvedInput, selection)
 
 export function composeResolvedEngine(resolvedInput, inspected, context) {
   const resolved = normalizeResolvedComposerInput(resolvedInput);
-  const profile = normalizeProgramPackageProfile(resolved.normalized.profile, inspected, context);
+  const authority = normalizeAcceptedContractAuthority(inspected);
+  const profile = normalizeProgramPackageProfile(resolved.normalized.profile, authority, context);
   const program = composeSearchProgram(profile);
   const executionPackage = buildExecutionPackage(profile, program);
   const normalizedPublication = {
