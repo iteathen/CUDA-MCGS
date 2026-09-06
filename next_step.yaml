@@ -46,7 +46,7 @@
     "cuda_js_public_api_schema": 1
   },
   "completed_dependencies": [
-    "#122 accepted the decision-complete semantic/reference packet while leaving 52 exact-native requirements deferred.",
+    "#122 accepted the decision-complete 989-requirement semantic/reference packet while leaving 52 exact-native requirements deferred.",
     "#125 protected-integrated production integration.cuda-js and portable conformance.",
     "#109 / PR #225 protected-integrated SPEC-0014, production interface.library, private cuda-mcgs@0.0.0-dev.0 exports and packed/installed CUDA-free conformance.",
     "#228 protected-integrated the current public CUDA-JS adapter/profile correction without adding search semantics or physical-support claims.",
@@ -84,8 +84,20 @@
     "native_entry": "node --experimental-ffi scripts/run-cuda-js-compatible-pair.mjs native",
     "resume_condition": "An accepted directly exposed physical NVIDIA host becomes available; then re-read and freeze the exact live MCGS/CUDA-JS pair actually executed."
   },
+  "blockers": [
+    "Physical CUDA-JS #32 evidence remains unavailable until an accepted directly exposed NVIDIA host exists; hosted/portable/VM/mock/DevBridge evidence cannot substitute for that physical gate.",
+    "UCI-Arena-Vector #3 still lacks the independent checkpoint-bound policy/value numerical oracle required for first-model numerical correctness; CUDA-MCGS must not manufacture or absorb those expected outputs.",
+    "Any new generic framework, Tensor or lower CUDA defect demonstrated by the #123 consumer or later #124 integration must be routed to its natural owner rather than worked around in the product or a private sibling path."
+  ],
+  "deliverables": [
+    "Protected #109 / PR #225 remains the accepted prerelease public library/package boundary and installed-package evidence baseline.",
+    "Protected #228 remains the current public CUDA-JS adapter/profile correction without new search semantics or physical-support promotion.",
+    "Protected Vector PR #24 and Tensor PR #68/#69 are the current generic first-model program/resource dependency facts; they do not establish numerical parity.",
+    "The next #123 evaluator-free Vector slice must consume an exact packed protected cuda-mcgs artifact only through declared public exports and retain exact provenance/diagnostic evidence.",
+    "STATUS.md and next_step.yaml must keep #123 evaluator-free public-package work, Vector #3 product numerical-oracle work, #124 evaluator lifecycle integration and CUDA-JS #32 physical qualification as separate owned gates."
+  ],
   "parallel_and_downstream": [
-    "CUDA-JS #4 remains an independent native Ubuntu x86-64 directly exposed physical-NVIDIA support cell.",
+    "CUDA-JS #4 remains an independent native Ubuntu 24.04 x86-64 directly exposed physical-NVIDIA support cell.",
     "UCI-Arena-Vector #3 owns the remaining independent checkpoint numerical oracle; CUDA-MCGS must not manufacture expected model outputs.",
     "CUDA-MCGS #124 consumes only public generic callable/resource facts after product numerical qualification while retaining evaluator request/batch/scatter/publication/search lifecycle ownership.",
     "Generic Tensor gaps route to CUDA-JS-Tensor; reusable NN/model semantics route to cuda-nn; UCI/chess/product semantics stay downstream.",
