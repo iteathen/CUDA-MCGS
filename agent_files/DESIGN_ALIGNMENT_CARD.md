@@ -94,11 +94,13 @@ Every substantial component is a movable brick with:
 - explicit lifecycle, failure, cancellation, finite-resource, teardown, testing, and cleanup behavior where material;
 - isolated contract tests and replaceability without consumer rewrites.
 
-Consumers request changes through contracts. They do not mutate another component’s internals or deep-import private files.
+The application/system itself is the outermost LEGO. Its supported external inputs, outputs, commands, events, data contracts, and lifecycle entry/exit points are its public **studs/surfaces**. Large application sections, subsystems, components, and large objects should preferentially be composed from smaller child LEGOs when that preserves cohesion and keeps each child inside one full-attention envelope. Parents own the externally visible responsibility and hide child topology; no caller drills through one brick to reach another brick's private internals.
+
+Consumers request changes through contracts/studs/surfaces. They do not mutate another component’s internals or deep-import private files.
 
 **Attention-bounded LEGO rule:** LEGO also owns cognitive/context containment. A brick is too large when one agent cannot load and actively reason about its complete authoritative working set—public contract, implementation, invariants, lifecycle/resource/failure rules, tests/conformance, and the immediate dependency and consumer interfaces needed to understand consequences—with substantial headroom for task context, evidence, and review. Merely fitting inside the model's maximum context window is not enough. When this full-attention envelope is exceeded, recursively split at the strongest real semantic, lifecycle, functional, substitution/change, failure/resource, volatility, or execution-locality seam, or narrow the component's scope. Do not manufacture arbitrary modules: a split is invalid when it duplicates truth, creates shared mutable ownership, requires constant cross-boundary chatter, or makes neighbors understand private internals. The target is the smallest coherent independently comprehensible and replaceable unit, not the smallest possible module.
 
-LEGO is the outer architectural layer: it chooses and contains boundaries for ownership, universality, replaceability, scope, damage limitation, and context. SOLID structures responsibilities and dependency direction inside each brick; CUPID shapes that implementation; KISS removes remaining unjustified complexity. A lower-level principle may not defeat a higher-level one.
+LEGO is the outer architectural layer: it chooses and contains boundaries for ownership, universality, replaceability, scope, damage limitation, context, and supported studs/surfaces. SOLID structures responsibilities and dependency direction inside each brick; CUPID shapes that implementation; KISS removes remaining unjustified complexity. A lower-level principle may not defeat a higher-level one.
 
 ### Non-negotiable isolation, naming, and transient topology
 
