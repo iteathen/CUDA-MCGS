@@ -1,5 +1,4 @@
 const CONNECTOR_CONTRACT = 'cuda-mcgs.tensor-evaluator-connector/0.1.0';
-const REFERENCE_CONTRACT = 'cuda-mcgs.tensor-evaluator-reference/0.1.0';
 const TENSOR_CONTRACTS = new Set([
   'SPEC-0009-item-parallel-device-tensor-program-v1',
   'SPEC-0009-item-parallel-device-tensor-program-v1+SPEC-0009-gather-concat-v1',
@@ -63,7 +62,7 @@ function normalizeFunction(value) {
   return { name: value.name, parameters, returns: value.returns };
 }
 
-function normalizeProgramParameters(value, itemCapacity) {
+function normalizeProgramParameters(value) {
   if (!Array.isArray(value) || value.length === 0) fail('TENSOR_EVALUATOR_CALLABLE', 'Tensor program parameters must be non-empty');
   const parameters = value.map((parameter, index) => {
     object(parameter, `Tensor program parameter ${index}`);
@@ -72,15 +71,7 @@ function normalizeProgramParameters(value, itemCapacity) {
         || !['read', 'write', 'read-write'].includes(parameter.access) || typeof parameter.itemVarying !== 'boolean') {
       fail('TENSOR_EVALUATOR_CALLABLE', `Tensor program parameter ${index} is malformed`);
     }
-    let byteLength = 0;
-    let perItemBytes = 0;
-    if (parameter.role !== 'item-index') {
-      byteLength = nonnegativeInteger(parameter.byteLength, `${parameter.parameterName} byteLength`);
-      if (parameter.itemVarying) {
-        if (byteLength % itemCapacity !== 0) fail('TENSOR_EVALUATOR_ITEM_AXIS', `${parameter.parameterName} bytes do not divide by item capacity`);
-        perItemBytes = byteLength / itemCapacity;
-      }
-    }
+    const byteLength = parameter.role === 'item-index' ? 0 : nonnegativeInteger(parameter.byteLength, `${parameter.parameterName} byteLength`);
     return {
       parameterIndex: index,
       parameterName: parameter.parameterName,
@@ -90,7 +81,6 @@ function normalizeProgramParameters(value, itemCapacity) {
       access: parameter.access,
       itemVarying: parameter.itemVarying,
       byteLength,
-      perItemBytes,
     };
   });
   if (parameters[0].role !== 'item-index' || parameters.filter(({ role }) => role === 'item-index').length !== 1) {
@@ -100,16 +90,46 @@ function normalizeProgramParameters(value, itemCapacity) {
   return parameters;
 }
 
-function normalizeImport(tensorDeviceProgram, alias) {
+function requireRoleProjection(value, parameters, role, label) {
+  if (!Array.isArray(value)) fail('TENSOR_EVALUATOR_CALLABLE', `${label} must be an array`);
+  const expected = parameters.filter((entry) => entry.role === role);
+  if (value.length !== expected.length) fail('TENSOR_EVALUATOR_CALLABLE', `${label} differs from Tensor parameter roles`);
+  value.forEach((entry, index) => {
+    object(entry, `${label} ${index}`);
+    const parameter = expected[index];
+    if (entry.parameterIndex !== parameter.parameterIndex || entry.parameterName !== parameter.parameterName
+        || entry.type !== parameter.type || entry.role !== role || entry.byteLength !== parameter.byteLength) {
+      fail('TENSOR_EVALUATOR_CALLABLE', `${label} differs from Tensor parameter ${parameter.parameterName}`);
+    }
+  });
+}
+
+function normalizeImport(tensorDeviceProgram, alias, expected = null) {
   if (typeof tensorDeviceProgram.importAs !== 'function') fail('TENSOR_EVALUATOR_IMPORT', 'TensorDeviceProgram.importAs is unavailable');
   const imported = object(tensorDeviceProgram.importAs(alias), 'Tensor Device-JS import');
   const library = object(imported.library, 'Tensor Device-JS library');
+  const artifact = object(library.artifact, 'Tensor Device-JS artifact');
   if (imported.as !== alias || imported.name !== 'tensorRunItem' || library.schemaVersion !== 1 || !HEX64.test(library.sha256)
-      || !['ptx', 'lto-ir'].includes(library.format) || !Array.isArray(library.exports)
-      || !library.exports.some((entry) => entry?.name === 'tensorRunItem')) {
+      || !['ptx', 'lto-ir'].includes(library.format) || typeof library.architecture !== 'string' || library.architecture.length === 0
+      || !Array.isArray(library.exports) || !library.exports.some((entry) => entry?.name === 'tensorRunItem')
+      || !HEX64.test(artifact.sha256) || !(artifact.bytes instanceof Uint8Array)) {
     fail('TENSOR_EVALUATOR_IMPORT', 'Tensor public Device-JS import/library identity is invalid');
   }
-  return imported;
+  const identity = freeze({
+    name: imported.name,
+    as: imported.as,
+    library: {
+      contract: library.contract,
+      sha256: library.sha256,
+      format: library.format,
+      architecture: library.architecture,
+      artifactSha256: artifact.sha256,
+    },
+  });
+  if (expected && JSON.stringify(identity) !== JSON.stringify(expected)) {
+    fail('TENSOR_EVALUATOR_IMPORT_DRIFT', 'Tensor public Device-JS import identity changed after connector admission');
+  }
+  return { imported, identity };
 }
 
 export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}) {
@@ -125,16 +145,20 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
   const alias = options.alias ?? 'mcgsTensorRunItem';
   if (!IDENTIFIER.test(alias) || alias === 'gpu') fail('TENSOR_EVALUATOR_ALIAS', 'Tensor import alias must be a non-gpu Device-JS identifier');
   const callable = normalizeFunction(tensorDeviceProgram.function);
-  const parameters = normalizeProgramParameters(tensorDeviceProgram.parameters, itemCapacity);
+  const parameters = normalizeProgramParameters(tensorDeviceProgram.parameters);
   if (callable.parameters.length !== parameters.length
       || callable.parameters.some((parameter, index) => parameter.name !== parameters[index].parameterName || parameter.type !== parameters[index].type)) {
     fail('TENSOR_EVALUATOR_CALLABLE', 'Tensor function and parameter descriptors differ');
   }
+  requireRoleProjection(tensorDeviceProgram.inputs, parameters, 'input', 'Tensor inputs');
+  requireRoleProjection(tensorDeviceProgram.outputs, parameters, 'output', 'Tensor outputs');
+  requireRoleProjection(tensorDeviceProgram.workspace, parameters, 'workspace', 'Tensor workspace');
   const totalWorkspaceBytes = nonnegativeInteger(tensorDeviceProgram.totalWorkspaceBytes, 'totalWorkspaceBytes');
   const workspaceBytes = parameters.filter(({ role }) => role === 'workspace').reduce((total, entry) => total + entry.byteLength, 0);
   if (workspaceBytes !== totalWorkspaceBytes) fail('TENSOR_EVALUATOR_WORKSPACE', 'Tensor workspace descriptors differ from totalWorkspaceBytes');
   const compatibilityIdentity = text(tensorDeviceProgram.compatibilityIdentity, 'Tensor compatibilityIdentity');
-  const deviceImport = normalizeImport(tensorDeviceProgram, alias);
+  if (!['ptx', 'lto-ir'].includes(tensorDeviceProgram.outputFormat)) fail('TENSOR_EVALUATOR_OUTPUT', 'Tensor outputFormat must be ptx or lto-ir');
+  const admittedImport = normalizeImport(tensorDeviceProgram, alias);
   const sourceParameters = callable.parameters.map(({ name }) => name).join(', ');
   const source = `function mcgsTensorEvaluateItem(${sourceParameters}) { return ${alias}(${sourceParameters}); }\n`;
   const connector = {
@@ -149,7 +173,10 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
     },
     requestCapacity,
     parameters,
-    deviceImport,
+    deviceImportIdentity: admittedImport.identity,
+    createDeviceImport() {
+      return normalizeImport(tensorDeviceProgram, alias, admittedImport.identity).imported;
+    },
     deviceFunction: {
       name: 'mcgsTensorEvaluateItem',
       kind: 'device',
@@ -162,140 +189,7 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
   return freeze(connector);
 }
 
-function tokenKey(token) {
-  return `${token.slot}:${token.slotGeneration}:${token.requestId}:${token.requestGeneration}`;
-}
-
-export function createTensorEvaluatorReference(connector) {
-  object(connector, 'connector');
-  if (connector.contract !== CONNECTOR_CONTRACT) fail('TENSOR_EVALUATOR_CONNECTOR', 'connector contract is invalid');
-  const slots = Array.from({ length: connector.requestCapacity }, (_, slot) => ({ slot, generation: 0, state: 'free', request: null, result: null, batch: null }));
-  let batchGeneration = 0;
-  let closed = false;
-
-  const assertOpen = () => { if (closed) fail('TENSOR_EVALUATOR_CLOSED', 'reference connector is closed'); };
-  const slotFor = (token, states = null) => {
-    object(token, 'request token');
-    const slot = slots[token.slot];
-    if (!slot || !slot.request || slot.generation !== token.slotGeneration
-        || slot.request.requestId !== token.requestId || slot.request.requestGeneration !== token.requestGeneration) {
-      fail('TENSOR_EVALUATOR_STALE', 'request token is stale');
-    }
-    if (states && !states.includes(slot.state)) fail('TENSOR_EVALUATOR_STATE', `request is ${slot.state}`);
-    return slot;
-  };
-
-  const reference = {
-    kind: 'cuda-mcgs-tensor-evaluator-reference',
-    contract: REFERENCE_CONTRACT,
-    admit(request) {
-      assertOpen(); object(request, 'request');
-      const requestId = text(request.requestId, 'requestId');
-      const requestGeneration = nonnegativeInteger(request.requestGeneration, 'requestGeneration');
-      const inputIdentity = text(request.inputIdentity, 'inputIdentity');
-      if (slots.some((slot) => slot.request?.requestId === requestId && slot.request.requestGeneration === requestGeneration)) {
-        fail('TENSOR_EVALUATOR_DUPLICATE', 'request incarnation is already admitted');
-      }
-      const slot = slots.find((entry) => entry.state === 'free');
-      if (!slot) fail('TENSOR_EVALUATOR_PRESSURE', 'request capacity is exhausted');
-      slot.generation += 1;
-      slot.state = 'queued';
-      slot.request = { requestId, requestGeneration, inputIdentity };
-      slot.result = null;
-      slot.batch = null;
-      return freeze({ slot: slot.slot, slotGeneration: slot.generation, requestId, requestGeneration });
-    },
-    formBatch(maxItems = connector.tensor.itemCapacity) {
-      assertOpen();
-      positiveInteger(maxItems, 'maxItems');
-      const selected = slots.filter(({ state }) => state === 'queued').slice(0, Math.min(maxItems, connector.tensor.itemCapacity));
-      if (selected.length === 0) return null;
-      batchGeneration += 1;
-      const items = selected.map((slot, itemIndex) => {
-        slot.state = 'inflight'; slot.batch = batchGeneration;
-        return freeze({
-          itemIndex,
-          slot: slot.slot,
-          slotGeneration: slot.generation,
-          requestId: slot.request.requestId,
-          requestGeneration: slot.request.requestGeneration,
-          inputIdentity: slot.request.inputIdentity,
-        });
-      });
-      return freeze({ batchGeneration, itemCapacity: connector.tensor.itemCapacity, occupancy: items.length, items });
-    },
-    publish(batch, results) {
-      assertOpen(); object(batch, 'batch');
-      if (!Array.isArray(results) || results.length !== batch.items?.length) fail('TENSOR_EVALUATOR_RESULT', 'result count must equal batch occupancy');
-      const prepared = results.map((result, index) => {
-        object(result, `result ${index}`);
-        const expected = batch.items[index];
-        if (!expected || result.itemIndex !== expected.itemIndex || result.slot !== expected.slot
-            || result.slotGeneration !== expected.slotGeneration || result.requestId !== expected.requestId
-            || result.requestGeneration !== expected.requestGeneration) fail('TENSOR_EVALUATOR_STALE', `result ${index} does not match the batch item incarnation`);
-        const slot = slots[expected.slot];
-        if (!slot || slot.state !== 'inflight' || slot.batch !== batch.batchGeneration || slot.generation !== expected.slotGeneration) {
-          fail('TENSOR_EVALUATOR_STALE', `result ${index} targets a stale slot/batch`);
-        }
-        return { slot, result: freeze({ outputs: result.outputs ?? null, token: freeze({ slot: expected.slot, slotGeneration: expected.slotGeneration, requestId: expected.requestId, requestGeneration: expected.requestGeneration }) }) };
-      });
-      for (const entry of prepared) { entry.slot.result = entry.result; entry.slot.state = 'ready'; }
-      return freeze({ status: 'ready', batchGeneration: batch.batchGeneration, count: prepared.length });
-    },
-    scatter(batch) {
-      assertOpen(); object(batch, 'batch');
-      const output = batch.items.map((item) => {
-        const slot = slots[item.slot];
-        if (!slot || slot.generation !== item.slotGeneration || slot.state !== 'ready' || slot.batch !== batch.batchGeneration) {
-          fail('TENSOR_EVALUATOR_STATE', 'batch is not completely ready for scatter');
-        }
-        return freeze({ requestId: item.requestId, requestGeneration: item.requestGeneration, outputs: slot.result.outputs });
-      });
-      for (const item of batch.items) {
-        const slot = slots[item.slot];
-        slot.state = 'free'; slot.request = null; slot.result = null; slot.batch = null;
-      }
-      return freeze(output);
-    },
-    cancel(token) {
-      assertOpen();
-      const slot = slotFor(token, ['queued']);
-      slot.state = 'free'; slot.request = null; slot.result = null; slot.batch = null;
-      return freeze({ status: 'cancelled', token: tokenKey(token) });
-    },
-    retryBatch(batch) {
-      assertOpen(); object(batch, 'batch');
-      for (const item of batch.items ?? []) {
-        const slot = slots[item.slot];
-        if (!slot || slot.generation !== item.slotGeneration || slot.batch !== batch.batchGeneration || !['inflight', 'ready'].includes(slot.state)) {
-          fail('TENSOR_EVALUATOR_STALE', 'cannot retry a stale batch');
-        }
-      }
-      for (const item of batch.items) {
-        const slot = slots[item.slot]; slot.state = 'queued'; slot.result = null; slot.batch = null;
-      }
-      return freeze({ status: 'retryable', count: batch.items.length });
-    },
-    snapshot() {
-      return freeze({
-        closed,
-        capacity: slots.length,
-        free: slots.filter(({ state }) => state === 'free').length,
-        queued: slots.filter(({ state }) => state === 'queued').length,
-        inflight: slots.filter(({ state }) => state === 'inflight').length,
-        ready: slots.filter(({ state }) => state === 'ready').length,
-        slots: slots.map(({ slot, generation, state, request, batch }) => ({ slot, generation, state, request: request ? { ...request } : null, batch })),
-      });
-    },
-    close() {
-      if (closed) return freeze({ status: 'complete', repeated: true });
-      const active = slots.filter(({ state }) => state !== 'free');
-      if (active.length > 0) return freeze({ status: 'retained', active: active.map(({ slot, generation, state }) => ({ slot, generation, state })) });
-      closed = true;
-      return freeze({ status: 'complete', repeated: false });
-    },
-  };
-  return Object.freeze(reference);
-}
-
-export const tensorEvaluatorConnectorConstants = Object.freeze({ connectorContract: CONNECTOR_CONTRACT, referenceContract: REFERENCE_CONTRACT, tensorContracts: Object.freeze([...TENSOR_CONTRACTS]) });
+export const tensorEvaluatorConnectorConstants = Object.freeze({
+  connectorContract: CONNECTOR_CONTRACT,
+  tensorContracts: Object.freeze([...TENSOR_CONTRACTS]),
+});
