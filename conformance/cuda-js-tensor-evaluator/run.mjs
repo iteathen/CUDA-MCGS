@@ -54,10 +54,15 @@ function fakeTensorDeviceProgram(overrides = {}) {
   };
 }
 
+function publishAndScatter(reference, batch) {
+  reference.publish(batch, batch.items.map((item) => ({ ...item, outputs: { value: item.requestId } })));
+  return reference.scatter(batch);
+}
+
 runCase('TENSOR-EVAL-C01-public-callable-admission', () => {
-  const connector = createTensorEvaluatorConnector(fakeTensorDeviceProgram(), { requestCapacity: 2 });
+  const connector = createTensorEvaluatorConnector(fakeTensorDeviceProgram(), { requestCapacity: 3 });
   assert.equal(connector.tensor.itemCapacity, 2);
-  assert.equal(connector.requestCapacity, 2);
+  assert.equal(connector.requestCapacity, 3);
   assert.equal(connector.tensor.totalWorkspaceBytes, 32);
   assert.equal(connector.deviceImportIdentity.name, 'tensorRunItem');
   assert.equal(connector.deviceImportIdentity.as, 'mcgsTensorRunItem');
@@ -100,6 +105,20 @@ runCase('TENSOR-EVAL-C03-partial-batch-preserves-occupancy', () => {
   assert.deepEqual([...scattered[0].outputs], [7, 9]);
 });
 
+runCase('TENSOR-EVAL-C04-queue-capacity-exceeds-batch-capacity', () => {
+  const connector = createTensorEvaluatorConnector(fakeTensorDeviceProgram(), { requestCapacity: 3 });
+  const reference = createTensorEvaluatorReference(connector);
+  for (const requestId of ['a', 'b', 'c']) reference.admit({ requestId, requestGeneration: 0, inputIdentity: `input-${requestId}` });
+  const first = reference.formBatch();
+  assert.equal(first.occupancy, 2);
+  assert.deepEqual(publishAndScatter(reference, first).map(({ requestId }) => requestId), ['a', 'b']);
+  assert.equal(reference.snapshot().queued, 1);
+  const second = reference.formBatch();
+  assert.equal(second.occupancy, 1);
+  assert.deepEqual(publishAndScatter(reference, second).map(({ requestId }) => requestId), ['c']);
+  assert.equal(reference.close().status, 'complete');
+});
+
 runCase('TENSOR-EVAL-F01-capacity-pressure-fails-closed', () => {
   const reference = createTensorEvaluatorReference(createTensorEvaluatorConnector(fakeTensorDeviceProgram()));
   reference.admit({ requestId: 'a', requestGeneration: 0, inputIdentity: 'ia' });
@@ -118,7 +137,7 @@ runCase('TENSOR-EVAL-F02-stale-result-rejected-before-publication', () => {
   assert.equal(reference.snapshot().queued, 1);
 });
 
-runCase('TENSOR-EVAL-C04-cancel-retry-and-cleanup-are-explicit', () => {
+runCase('TENSOR-EVAL-C05-cancel-retry-and-cleanup-are-explicit', () => {
   const reference = createTensorEvaluatorReference(createTensorEvaluatorConnector(fakeTensorDeviceProgram()));
   const cancelled = reference.admit({ requestId: 'cancel', requestGeneration: 1, inputIdentity: 'ix' });
   assert.equal(reference.cancel(cancelled).status, 'cancelled');
@@ -133,7 +152,7 @@ runCase('TENSOR-EVAL-C04-cancel-retry-and-cleanup-are-explicit', () => {
 runCase('TENSOR-EVAL-F03-invalid-public-shapes-reject', () => {
   assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram({ contract: 'wrong' })), (error) => error?.code === 'TENSOR_EVALUATOR_CONTRACT');
   assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram({ totalWorkspaceBytes: 31 })), (error) => error?.code === 'TENSOR_EVALUATOR_WORKSPACE');
-  assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram(), { requestCapacity: 3 }), (error) => error?.code === 'TENSOR_EVALUATOR_CAPACITY');
+  assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram(), { requestCapacity: 0 }), (error) => error?.code === 'TENSOR_EVALUATOR_BOUNDS');
 });
 
 runCase('TENSOR-EVAL-F04-device-import-drift-rejected', () => {
