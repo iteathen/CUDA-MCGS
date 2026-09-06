@@ -3,33 +3,33 @@
   "composerEvidence": {
     "algorithm": "sha256",
     "byteLength": 708983,
-    "sha256": "82bba215ead0fbba48ab2d80ee263f429fbfcd39e8a8aa1bfc8b4ffb19b60381"
+    "sha256": "53e1454fc2ebe46fcc53fd1717cb687e907d133e238c84488bd50b6f759f6103"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 140229,
-    "sha256": "f0f0c9f5fa749d2c4b95350dbac9a710c659e79d5245a3d16acbee7d222357d1"
+    "sha256": "861fe4b04e76c71a004224dc51e7bd5e4e1b25db0d7cdb4d1c03066067c973b1"
   },
   "nodeEvidence": {
     "algorithm": "sha256",
     "byteLength": 10034,
-    "sha256": "92b674f87a1cbc3dfb01bb692d89b03415bf636f5fe54624ce589e95093f6ccc"
+    "sha256": "91b6bfa4cf03d1fcaca9fc25ea975e4a3cb27230117629cb830689737295605d"
   },
   "edgeEvidence": {
     "algorithm": "sha256",
     "byteLength": 11661,
-    "sha256": "87ce1dd9263d0c702b23ee59e2471fb0df6ff05af217a9ea46e25a87a39b5034"
+    "sha256": "0b3065a81515166b16ef9b2d3f54398e8492d45f54e63d65fe885e7482b913fb"
   },
   "refEvidence": {
     "algorithm": "sha256",
     "byteLength": 9126,
-    "sha256": "47a8370cc5f49bf38a7cd801ea4f035791c0adcec039216aadc7a70700ccbe75"
+    "sha256": "4055eefaf442c82a8579f819befebcf67dbfd6c50fffd9bbafd46888b3aff064"
   },
   "pathEvidence": {
     "algorithm": "sha256",
     "byteLength": 9490,
-    "sha256": "6ce14572b7118ba9369f4dc1d3f3fa8c85dded14e212137eb40846ca7614cbf5"
+    "sha256": "e2e785c623c3f7206fdba35b31a1ac8baefc05bdba90e2b7f3477f57bd0f9e2a"
   },
   "rootControlProjection": {
     "algorithm": "sha256",
@@ -39,7 +39,7 @@
   "rootEvidence": {
     "algorithm": "sha256",
     "byteLength": 9954,
-    "sha256": "c4ec41deeb0277663eca0c52e70706df4c1c83e250957e907333609480759594"
+    "sha256": "f36dcea5ddb72eed73fc6474368444969bf9065076f123fe7888b3c721703275"
   },
   "expectedCases": [
     "graph-reclaim-profile-and-upstream-evidence-exact",

@@ -1,4 +1,5 @@
 export * from './src/foundation.mjs';
+export * from './src/accepted-authority.mjs';
 export * from './src/domain.mjs';
 export * from './src/graph.mjs';
 export * from './src/policy.mjs';
