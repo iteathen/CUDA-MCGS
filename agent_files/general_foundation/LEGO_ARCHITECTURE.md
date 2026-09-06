@@ -1,10 +1,12 @@
 # LEGO Architecture
 
-**Scope:** Macroscopic ownership, composition, replaceability, lifecycle, failure containment, scope containment, and attention-bounded component boundaries.
+**Scope:** Macroscopic ownership, composition, replaceability, lifecycle, failure containment, scope containment, connection surfaces, and attention-bounded component boundaries.
 
 ## Macroscopic universality
 
 At system scale, components are movable bricks. A component should be usable wherever its declared domain contract is satisfied without knowledge of the surrounding application arrangement.
+
+The **application or system itself is the outermost LEGO**. Its supported external inputs, outputs, commands, events, data contracts, and lifecycle entry/exit points are its public **studs/surfaces**. Large application sections, subsystems, services, components, and large objects should preferably be compositions of smaller child LEGOs rather than monolithic implementations when that preserves cohesion and keeps each reasoning unit attention-bounded.
 
 The shell enforces:
 
@@ -17,13 +19,14 @@ The shell enforces:
 - explicit lifecycle, cancellation, failure, and resource ownership;
 - independent testing and replaceability;
 - bounded blast radius for failure and redesign;
-- bounded reasoning context for one agent's full attention.
+- bounded reasoning context for one agent's full attention;
+- deliberate studs/surfaces as the only supported connection points between bricks.
 
 ## Responsibility hierarchy
 
 ```text
 domain truth and accepted authority
-    → LEGO component boundaries and containment
+    → LEGO component boundaries, containment, and studs/surfaces
     → SOLID internal responsibilities
     → CUPID implementation quality
     → KISS among complete designs
@@ -37,7 +40,7 @@ LEGO determines:
 
 - the coherent responsibility owned by a component;
 - the source of truth and allowed mutation paths;
-- the public ports and observable effects;
+- the public studs/surfaces: ports, inputs, outputs, commands, events, capabilities, and observable effects;
 - which dependencies are required and injected;
 - which adapters translate unstable external details;
 - startup, shutdown, cancellation, and failure boundaries;
@@ -66,6 +69,10 @@ Inside a valid component, simple direct code is preferred.
 
 A LEGO is **encapsulated composition**, not necessarily an atomic leaf. A larger brick may be composed recursively from smaller internal bricks, and those children may themselves contain smaller bricks. The parent owns the externally visible semantic responsibility and contract; child bricks own narrower local invariants, state machines, lifecycles, resources, failure domains, substitution boundaries, or independently changing responsibilities behind that parent contract.
 
+This recursive model applies from the application itself down through major sections, subsystems, components, objects, and smaller internal units. For very large objects or large sections of an application, child LEGOs are preferred over a monolith when they preserve coherent responsibility while allowing full attention to each internal unit.
+
+Each brick connects to its parent, siblings, dependencies, and consumers only through deliberate **studs/surfaces**. A stud/surface is a supported contract boundary: an input, output, port, command/query surface, event, capability, or lifecycle seam. It does not expose mutable internals, private child topology, or foreign implementation details merely for convenience. A consumer must not “drill through” a parent brick to reach a private child.
+
 For example, an Evaluator may be one external owner while internally composing request-lifecycle, batch/workspace, cache, publication, and reuse bricks. That internal decomposition does not authorize Policy, Graph, Output, or another neighbor to deep-import those children. If outsiders must understand or wire private children directly, the parent has become a directory or namespace rather than a real LEGO boundary.
 
 ### The two sizing gates
@@ -85,7 +92,7 @@ The cohesion gate asks where real seams exist. Strong seam signals are:
 The attention gate asks whether one agent can load and actively reason about the component's **complete authoritative working set** at once:
 
 ```text
-public contract
+public studs/surfaces and contract
 + implementation
 + invariants
 + lifecycle/resource/failure rules
@@ -119,7 +126,7 @@ An agent entering a brick should be able to establish quickly:
 
 - what it owns;
 - what it explicitly does not own;
-- what enters and leaves;
+- what enters and leaves through its studs/surfaces;
 - which invariants cannot be violated;
 - which state/resources it creates, mutates, and disposes;
 - what can replace it;
@@ -147,7 +154,7 @@ Bad example:
 
 Every authoritative fact has one owner. Consumers may:
 
-- issue commands through a port;
+- issue commands through a stud/port;
 - query stable values or bounded immutable views;
 - receive events describing completed facts;
 - hold capability/identity references with explicit lifetime.
@@ -163,7 +170,8 @@ A component qualifies as a LEGO brick when:
 - its purpose fits in one clear paragraph;
 - it owns one coherent invariant or lifecycle responsibility;
 - its authoritative state and writers are explicit;
-- consumers depend on public contracts, not implementation paths;
+- its supported studs/surfaces are explicit and sufficient;
+- consumers depend on those contracts, not implementation paths;
 - required dependencies are visible at composition;
 - unstable external types do not leak beyond adapters;
 - it can be tested without unrelated systems;
@@ -172,11 +180,11 @@ A component qualifies as a LEGO brick when:
 - failure and resource behavior remain inside the declared boundary;
 - its complete authoritative working set fits one agent's focused attention with headroom for reasoning, evidence, and review.
 
-If the last condition fails, introduce a subordinate LEGO boundary at the strongest real semantic, lifecycle, functional, substitution/change, failure/resource, volatility, or execution seam while preserving the parent's external ownership where appropriate.
+If the last condition fails, introduce a subordinate LEGO boundary at the strongest real semantic, lifecycle, functional, substitution/change, failure/resource, volatility, or execution seam while preserving the parent's external ownership and studs/surfaces where appropriate.
 
 ## SOLID, CUPID, and KISS inside LEGO
 
-LEGO decides where the walls go and what they contain. **SOLID** structures responsibilities and dependency direction inside those walls. **CUPID** shapes the resulting code so it is composable, Unix-like where appropriate, predictable, idiomatic, and domain-based. **KISS** then removes remaining accidental complexity.
+LEGO decides where the walls go, what they contain, and which studs/surfaces may connect them. **SOLID** structures responsibilities and dependency direction inside those walls. **CUPID** shapes the resulting code so it is composable, Unix-like where appropriate, predictable, idiomatic, and domain-based. **KISS** then removes remaining accidental complexity.
 
 The order is strict. A locally simpler implementation is not KISS if it breaks LEGO containment. CUPID does not justify violating SOLID dependency direction. SOLID does not justify moving a responsibility into the wrong LEGO. Lower-level elegance cannot repair a wrong architectural boundary.
 
@@ -208,6 +216,6 @@ Temporary duplication may be safer than a false abstraction. Promote common beha
 
 ## CUDA-MCGS compilation boundary
 
-LEGO boundaries remain conceptual and source-level even when the compiler links domain, policy, evaluator, and runtime device code into one highly specialized binary. Physical inlining does not erase contract ownership or attention-bounded source organization.
+LEGO boundaries remain conceptual and source-level even when the compiler links domain, policy, evaluator, and runtime device code into one highly specialized binary. Physical inlining does not erase contract ownership, studs/surfaces, or attention-bounded source organization.
 
 The generated engine may remove unused abstraction cost, but its build inputs and generated layout must remain traceable to their owning contracts.
