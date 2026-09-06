@@ -4,6 +4,10 @@ CUDA-MCGS is a framework project for GPU-resident Monte Carlo Graph Search. It i
 
 **Public pre-release: a development library exists, but there is no released npm package or physically qualified production GPU search runtime.**
 
+## Why CUDA-MCGS
+
+- **The search runs on the GPU, not through it.** Once ignited, active search progression is required to remain device-owned through restricted Device-JS, not a host loop dispatching one kernel per tree step. Keeping the CPU out of the internal search loop is a hard contract in the accepted design. The prerelease implementation already contains the Search Compiler, graph/policy/resource/progress/output machinery, Device-JS program composition, and public CUDA-JS runtime adapter needed to realize that contract; physical end-to-end qualification remains open.
+
 ## What exists
 
 - Accepted search contracts and versioned Search IR schemas.
