@@ -198,6 +198,16 @@ try {
     assert.equal(schema.additionalProperties, false);
   });
 
+  await runCase('LIB-C09-external-compose-authority-ports', () => {
+    assert.equal(typeof compiler.getAcceptedContractAuthority, 'function');
+    assert.equal(typeof compiler.createProgramPackageCompositionContext, 'function');
+    const authority = compiler.getAcceptedContractAuthority();
+    assert.equal(authority.contractSet.schema, 'cuda-mcgs.search-ir.contract-set/0.2.0');
+    assert.equal(authority.contractSet.status, 'accepted');
+    assert.equal(authority.identities.contractSet.algorithm, 'sha256');
+    assert.match(authority.identities.contractSet.sha256, /^[0-9a-f]{64}$/);
+  });
+
   await runCase('LIB-F03-private-deep-import-rejected', async () => {
     await assert.rejects(installed.shim.importPrivateValidation(), (error) => error?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED');
   });
