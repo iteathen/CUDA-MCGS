@@ -1,0 +1,34 @@
+name: CUDA-JS-Tensor evaluator connector
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cuda-js-tensor-evaluator-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  portable:
+    name: Tensor evaluator portable
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Report Node
+        run: node --version
+      - name: Run product-neutral connector conformance
+        run: node scripts/run-cuda-js-tensor-evaluator.mjs
