@@ -104,15 +104,24 @@ function requireRoleProjection(value, parameters, role, label) {
   });
 }
 
-function normalizeImport(tensorDeviceProgram, alias, expected = null) {
+function sameFunction(left, right) {
+  return left?.name === right.name && left?.returns === right.returns && Array.isArray(left?.parameters)
+    && left.parameters.length === right.parameters.length
+    && left.parameters.every((parameter, index) => parameter?.name === right.parameters[index].name && parameter?.type === right.parameters[index].type);
+}
+
+function normalizeImport(tensorDeviceProgram, alias, callable, expected = null) {
   if (typeof tensorDeviceProgram.importAs !== 'function') fail('TENSOR_EVALUATOR_IMPORT', 'TensorDeviceProgram.importAs is unavailable');
   const imported = object(tensorDeviceProgram.importAs(alias), 'Tensor Device-JS import');
   const library = object(imported.library, 'Tensor Device-JS library');
   const artifact = object(library.artifact, 'Tensor Device-JS artifact');
+  const exported = Array.isArray(library.exports) ? library.exports.find((entry) => entry?.name === 'tensorRunItem') : null;
   if (imported.as !== alias || imported.name !== 'tensorRunItem' || library.schemaVersion !== 1 || !HEX64.test(library.sha256)
       || !['ptx', 'lto-ir'].includes(library.format) || typeof library.architecture !== 'string' || library.architecture.length === 0
-      || !Array.isArray(library.exports) || !library.exports.some((entry) => entry?.name === 'tensorRunItem')
-      || !HEX64.test(artifact.sha256) || !(artifact.bytes instanceof Uint8Array)) {
+      || typeof library.contract !== 'string' || library.contract.length === 0 || !sameFunction(exported, callable)
+      || artifact.format !== library.format || artifact.architecture !== library.architecture
+      || !HEX64.test(artifact.sha256) || !(artifact.bytes instanceof Uint8Array)
+      || artifact.byteLength !== artifact.bytes.byteLength) {
     fail('TENSOR_EVALUATOR_IMPORT', 'Tensor public Device-JS import/library identity is invalid');
   }
   const identity = freeze({
@@ -141,7 +150,6 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
   }
   const itemCapacity = positiveInteger(tensorDeviceProgram.itemCapacity, 'Tensor itemCapacity');
   const requestCapacity = positiveInteger(options.requestCapacity ?? itemCapacity, 'requestCapacity');
-  if (requestCapacity > itemCapacity) fail('TENSOR_EVALUATOR_CAPACITY', 'requestCapacity cannot exceed Tensor itemCapacity');
   const alias = options.alias ?? 'mcgsTensorRunItem';
   if (!IDENTIFIER.test(alias) || alias === 'gpu') fail('TENSOR_EVALUATOR_ALIAS', 'Tensor import alias must be a non-gpu Device-JS identifier');
   const callable = normalizeFunction(tensorDeviceProgram.function);
@@ -158,7 +166,7 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
   if (workspaceBytes !== totalWorkspaceBytes) fail('TENSOR_EVALUATOR_WORKSPACE', 'Tensor workspace descriptors differ from totalWorkspaceBytes');
   const compatibilityIdentity = text(tensorDeviceProgram.compatibilityIdentity, 'Tensor compatibilityIdentity');
   if (!['ptx', 'lto-ir'].includes(tensorDeviceProgram.outputFormat)) fail('TENSOR_EVALUATOR_OUTPUT', 'Tensor outputFormat must be ptx or lto-ir');
-  const admittedImport = normalizeImport(tensorDeviceProgram, alias);
+  const admittedImport = normalizeImport(tensorDeviceProgram, alias, callable);
   const sourceParameters = callable.parameters.map(({ name }) => name).join(', ');
   const source = `function mcgsTensorEvaluateItem(${sourceParameters}) { return ${alias}(${sourceParameters}); }\n`;
   const connector = {
@@ -175,7 +183,7 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
     parameters,
     deviceImportIdentity: admittedImport.identity,
     createDeviceImport() {
-      return normalizeImport(tensorDeviceProgram, alias, admittedImport.identity).imported;
+      return normalizeImport(tensorDeviceProgram, alias, callable, admittedImport.identity).imported;
     },
     deviceFunction: {
       name: 'mcgsTensorEvaluateItem',
