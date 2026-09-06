@@ -29,7 +29,7 @@
   "pathEvidence": {
     "algorithm": "sha256",
     "byteLength": 9490,
-    "sha256": "e2e785c613b7dac9d05126372c0dd4fc17d093c3343639be7c67fb36bc43d846"
+    "sha256": "e2e785c623c3f7206fdba35b31a1ac8baefc05bdba90e2b7f3477f57bd0f9e2a"
   },
   "rootControlProjection": {
     "algorithm": "sha256",
