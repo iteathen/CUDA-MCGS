@@ -6,6 +6,10 @@ import {
   ValidationError,
 } from './validation.mjs';
 import {
+  normalizeContentIdentity,
+  normalizeSchemaReference,
+} from './foundation.mjs';
+import {
   buildExecutionPackage,
   composeSearchProgram,
   normalizeProgramGenerator,
@@ -181,6 +185,98 @@ export function normalizeResolvedComposerInput(input) {
     resolution: normalizeResolution(input.resolution, generator),
   };
   return { normalized, identity: canonicalIdentity(normalized) };
+}
+
+function contextResultKey(result, label) {
+  if (!result?.normalized || typeof result.normalized.id !== 'string' || !result?.identity) {
+    fail('COMPOSER_CONTEXT_PROFILE', `${label} is not a normalized owner result`);
+  }
+  assertString(result.identity.algorithm, /^sha256$/, 'COMPOSER_CONTEXT_PROFILE', `${label} identity algorithm`);
+  assertString(result.identity.sha256, /^[0-9a-f]{64}$/, 'COMPOSER_CONTEXT_PROFILE', `${label} identity sha256`);
+  assertString(result.schemaSha, /^[0-9a-f]{64}$/, 'COMPOSER_CONTEXT_PROFILE', `${label} schemaSha`);
+  return `${result.normalized.id}\0${result.identity.sha256}\0${result.schemaSha}`;
+}
+
+function selectContextResult(input, profileByKey, label, optional = false) {
+  if (input === null) {
+    if (!optional) fail('COMPOSER_CONTEXT_PROFILE', `${label} is required`);
+    return null;
+  }
+  const selected = profileByKey.get(contextResultKey(input, label));
+  if (!selected) fail('COMPOSER_CONTEXT_PROFILE', `${label} is not present in profileResults`);
+  return selected;
+}
+
+export function createProgramPackageCompositionContext(resolvedInput, selection) {
+  const resolved = normalizeResolvedComposerInput(resolvedInput?.normalized ?? resolvedInput);
+  exactKeys(selection, [
+    'profileResults',
+    'resourceResult',
+    'progressResult',
+    'outputResult',
+    'sessionResult',
+    'stageResult',
+    'channelResult',
+    'composerContributionIdentity',
+  ], 'COMPOSER_CONTEXT_FIELDS', 'program-package composition context');
+  if (!Array.isArray(selection.profileResults) || selection.profileResults.length === 0) {
+    fail('COMPOSER_CONTEXT_PROFILE', 'profileResults must contain selected normalized owner results');
+  }
+  const profileResults = [...selection.profileResults];
+  const profileByKey = new Map();
+  const profileIds = new Set();
+  for (const result of profileResults) {
+    const key = contextResultKey(result, 'profileResults entry');
+    if (profileByKey.has(key) || profileIds.has(result.normalized.id)) fail('COMPOSER_CONTEXT_PROFILE', 'profileResults repeats an owner result');
+    profileByKey.set(key, result);
+    profileIds.add(result.normalized.id);
+  }
+  const resourceResult = selectContextResult(selection.resourceResult, profileByKey, 'resourceResult');
+  const progressResult = selectContextResult(selection.progressResult, profileByKey, 'progressResult');
+  const outputResult = selectContextResult(selection.outputResult, profileByKey, 'outputResult');
+  const sessionResult = selectContextResult(selection.sessionResult, profileByKey, 'sessionResult', true);
+  const stageResult = selectContextResult(selection.stageResult, profileByKey, 'stageResult', true);
+  const channelResult = selectContextResult(selection.channelResult, profileByKey, 'channelResult', true);
+  const profile = resolved.normalized.profile;
+  const authority = profile.semanticEngine?.authority;
+  if (authority?.repository !== 'iteathen/CUDA-MCGS') fail('COMPOSER_CONTEXT_AUTHORITY', 'resolved profile does not name the CUDA-MCGS authority repository');
+  assertString(authority.revision, /^[0-9a-f]{40}$/, 'COMPOSER_CONTEXT_AUTHORITY', 'resolved profile authority revision');
+  const requirementById = new Map();
+  if (!Array.isArray(profile.publicRequirements)) fail('COMPOSER_CONTEXT_REQUIREMENT', 'resolved profile publicRequirements must be an array');
+  for (let index = 0; index < profile.publicRequirements.length; index += 1) {
+    const contract = normalizeSchemaReference(profile.publicRequirements[index]?.contract, `resolved public requirement ${index}`);
+    if (requirementById.has(contract.id)) fail('COMPOSER_CONTEXT_REQUIREMENT', `resolved profile repeats public requirement ${contract.id}`);
+    requirementById.set(contract.id, contract);
+  }
+  const compatibility = profile.compatibility;
+  const cudaJs = compatibility?.cudaJs;
+  if (!cudaJs || cudaJs.repository !== 'iteathen/CUDA-JS') fail('COMPOSER_CONTEXT_CUDA_JS', 'resolved profile does not name the public CUDA-JS repository');
+  assertString(cudaJs.revision, /^[0-9a-f]{40}$/, 'COMPOSER_CONTEXT_CUDA_JS', 'resolved CUDA-JS revision');
+  assertString(cudaJs.package, /^cuda-js@[0-9A-Za-z.+-]+$/, 'COMPOSER_CONTEXT_CUDA_JS', 'resolved CUDA-JS package');
+  assertString(compatibility.apiSchema, /^[0-9]+$/, 'COMPOSER_CONTEXT_CUDA_JS', 'resolved CUDA-JS API schema');
+  const composerContributionIdentity = normalizeContentIdentity(
+    selection.composerContributionIdentity,
+    'COMPOSER_CONTEXT_CONTRIBUTION',
+    'composerContributionIdentity',
+  );
+  return {
+    profileResults,
+    resourceResult,
+    progressResult,
+    outputResult,
+    sessionResult,
+    stageResult,
+    channelResult,
+    authorityRevision: authority.revision,
+    composerContributionIdentity,
+    requirementById,
+    availableRequirements: new Set(requirementById.keys()),
+    cudaJs: {
+      revision: cudaJs.revision,
+      package: cudaJs.package,
+      apiSchema: compatibility.apiSchema,
+    },
+  };
 }
 
 export function composeResolvedEngine(resolvedInput, inspected, context) {
