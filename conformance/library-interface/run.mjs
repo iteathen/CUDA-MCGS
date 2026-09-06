@@ -7,6 +7,7 @@ import { promisify } from 'node:util';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { buildExactCompatiblePairCapsule } from '../cuda-js-compatible-pair/src/capsule.mjs';
+import { buildInstalledOwnerResultsFixture } from './owner-results-fixture.mjs';
 
 const execFile = promisify(execFileCallback);
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -84,6 +85,7 @@ const pair = {
 };
 
 const capsule = await buildExactCompatiblePairCapsule(pair);
+const ownerFixture = await buildInstalledOwnerResultsFixture();
 const canonicalResolved = capsule.composition.resolvedInput;
 const profileTemplate = structuredClone(canonicalResolved.normalized.profile);
 const explicitGenerator = structuredClone(profileTemplate.generator);
@@ -198,14 +200,82 @@ try {
     assert.equal(schema.additionalProperties, false);
   });
 
-  await runCase('LIB-C09-external-compose-authority-ports', () => {
+  await runCase('LIB-C09-external-compose-through-public-authority-and-context', () => {
     assert.equal(typeof compiler.getAcceptedContractAuthority, 'function');
     assert.equal(typeof compiler.createProgramPackageCompositionContext, 'function');
     const authority = compiler.getAcceptedContractAuthority();
-    assert.equal(authority.contractSet.schema, 'cuda-mcgs.search-ir.contract-set/0.2.0');
-    assert.equal(authority.contractSet.status, 'accepted');
-    assert.equal(authority.identities.contractSet.algorithm, 'sha256');
-    assert.match(authority.identities.contractSet.sha256, /^[0-9a-f]{64}$/);
+    assert.equal(Object.isFrozen(authority), true);
+    assert.equal(Object.isFrozen(authority.contractSet), true);
+    assert.deepEqual(authority.contractSet, ownerFixture.inspected.contractSet);
+    assert.deepEqual(authority.identities.contractSet, ownerFixture.inspected.identities.contractSet);
+
+    const resolved = library.resolve(structuredClone(profileTemplate), structuredClone(explicitGenerator));
+    const profileResults = structuredClone(ownerFixture.profileResults);
+    const byId = new Map(profileResults.map((result) => [result.normalized.id, result]));
+    const pick = (result) => result === null ? null : byId.get(result.normalized.id);
+    const composerEntry = resolved.normalized.profile.sourceUnits.find(({ kind }) => kind === 'composer-entry');
+    assert.ok(composerEntry, 'resolved public profile must expose the product-owned Composer contribution identity');
+    const context = compiler.createProgramPackageCompositionContext(resolved.normalized, {
+      profileResults,
+      resourceResult: pick(ownerFixture.resourceResult),
+      progressResult: pick(ownerFixture.progressResult),
+      outputResult: pick(ownerFixture.outputResult),
+      sessionResult: null,
+      stageResult: pick(ownerFixture.stageResult),
+      channelResult: pick(ownerFixture.channelResult),
+      composerContributionIdentity: structuredClone(composerEntry.contributionIdentity),
+    });
+    const facade = library.compose(resolved.normalized, authority, context);
+    const direct = compiler.composeResolvedEngine(resolved.normalized, authority, context);
+    assert.deepEqual(facade.publication.identity, direct.publication.identity);
+    assert.deepEqual(facade.compositionProfile.identity, capsule.composition.compositionProfile.identity);
+    assert.deepEqual(facade.searchProgram.identity, capsule.composition.searchProgram.identity);
+    assert.deepEqual(facade.executionPackage.identity, capsule.composition.executionPackage.identity);
+  });
+
+  await runCase('LIB-F05-stale-public-authority-fails-and-remains-retryable', () => {
+    const authority = compiler.getAcceptedContractAuthority();
+    const resolved = library.resolve(structuredClone(profileTemplate), structuredClone(explicitGenerator));
+    const profileResults = structuredClone(ownerFixture.profileResults);
+    const byId = new Map(profileResults.map((result) => [result.normalized.id, result]));
+    const pick = (result) => result === null ? null : byId.get(result.normalized.id);
+    const composerEntry = resolved.normalized.profile.sourceUnits.find(({ kind }) => kind === 'composer-entry');
+    const context = compiler.createProgramPackageCompositionContext(resolved.normalized, {
+      profileResults,
+      resourceResult: pick(ownerFixture.resourceResult),
+      progressResult: pick(ownerFixture.progressResult),
+      outputResult: pick(ownerFixture.outputResult),
+      sessionResult: null,
+      stageResult: pick(ownerFixture.stageResult),
+      channelResult: pick(ownerFixture.channelResult),
+      composerContributionIdentity: structuredClone(composerEntry.contributionIdentity),
+    });
+    const stale = structuredClone(authority);
+    stale.contractSet.contracts[0].sha256 = '0'.repeat(64);
+    const failed = library.tryCompose(resolved.normalized, stale, context);
+    assert.equal(failed.status, 'failure');
+    assert.equal(failed.publication, null);
+    assert.equal(failed.diagnostic.code, 'COMPOSER_AUTHORITY_DRIFT');
+    const retried = library.compose(resolved.normalized, authority, context);
+    assert.deepEqual(retried.executionPackage.identity, capsule.composition.executionPackage.identity);
+  });
+
+  await runCase('LIB-F06-wrong-owner-role-rejected-before-composition', () => {
+    const resolved = library.resolve(structuredClone(profileTemplate), structuredClone(explicitGenerator));
+    const profileResults = structuredClone(ownerFixture.profileResults);
+    const byId = new Map(profileResults.map((result) => [result.normalized.id, result]));
+    const pick = (result) => result === null ? null : byId.get(result.normalized.id);
+    const composerEntry = resolved.normalized.profile.sourceUnits.find(({ kind }) => kind === 'composer-entry');
+    assert.throws(() => compiler.createProgramPackageCompositionContext(resolved.normalized, {
+      profileResults,
+      resourceResult: pick(ownerFixture.stageResult),
+      progressResult: pick(ownerFixture.progressResult),
+      outputResult: pick(ownerFixture.outputResult),
+      sessionResult: null,
+      stageResult: pick(ownerFixture.stageResult),
+      channelResult: pick(ownerFixture.channelResult),
+      composerContributionIdentity: structuredClone(composerEntry.contributionIdentity),
+    }), (error) => error?.code === 'COMPOSER_CONTEXT_PROFILE');
   });
 
   await runCase('LIB-F03-private-deep-import-rejected', async () => {
