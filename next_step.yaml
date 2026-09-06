@@ -98,7 +98,7 @@ current_focus:
     - evaluator-free deletion/substitution remains complete
     - portable conformance claims only portable semantic evidence
   stop_conditions:
-    - do not introduce product/model/chess/UCI/head/checkpoint/tolerance meaning
+    - do not introduce downstream product-specific state, protocol, model, output or correctness meaning
     - do not create a second Tensor planner/compiler/runtime
     - do not inspect or depend on Tensor private source layout
     - do not add host read-decide-write/relaunch progression for active evaluation
