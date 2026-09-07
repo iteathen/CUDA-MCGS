@@ -267,7 +267,7 @@ test('cleanup truth is quarantined when lower runtime requires restart', async (
   assert.equal(report.runtime.restartRequired, true);
 });
 
-test('cleanup exceptions are retained rather than relabeled successful', async () => {
+test('failed operation disposal quarantines the live dependency chain', async () => {
   const fake = publicCudaJsFake({ operationCloseError: true });
   const prepared = await prepareCudaJsExecution(executionPackage(), { cudaJs: fake.cudaJs, peer: PEER });
   await prepared.ignite();
@@ -275,7 +275,13 @@ test('cleanup exceptions are retained rather than relabeled successful', async (
   assert.equal(report.status, 'quarantined');
   assert.equal(report.failures[0].label, 'operation');
   assert.equal(report.failures[0].lower.code, 'CUDA_JS_OPERATION_CLOSE_FAILED');
-  assert.ok(fake.calls.some(([name]) => name === 'runtime.close'));
+  for (const label of ['operation', 'function', 'module', 'memory:resource.output', 'runtime']) {
+    assert.ok(report.retained.includes(label), `failed operation disposal must retain ${label}`);
+  }
+  assert.equal(calls(fake, 'runtime.close').length, 0);
+  assert.equal(calls(fake, 'memory.close').length, 0);
+  assert.equal(calls(fake, 'module.close').length, 0);
+  assert.equal(calls(fake, 'function.close').length, 0);
 });
 
 test('repeated prepare/ignite/wait/close cycles acquire fresh lower state', async () => {
