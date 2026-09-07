@@ -220,3 +220,15 @@ Stop PR integration when the reviewed head is stale, changed surface/branch outp
 ## Deeper doctrine
 
 Start with [`general_foundation/PRINCIPLES.md`](general_foundation/PRINCIPLES.md), then load [`general_foundation/TOKEN_DISCIPLINE.md`](general_foundation/TOKEN_DISCIPLINE.md), [`general_foundation/ENGINEERING_JUDGMENT.md`](general_foundation/ENGINEERING_JUDGMENT.md), [`general_foundation/TESTING.md`](general_foundation/TESTING.md), [`general_foundation/FOCUS_BRANCHES.md`](general_foundation/FOCUS_BRANCHES.md), [`general_foundation/CLEANUP_AND_DISPOSITION.md`](general_foundation/CLEANUP_AND_DISPOSITION.md), and [`general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md`](general_foundation/PULL_REQUEST_REVIEW_AND_MERGE.md) when triggered.
+
+## Execution efficiency / mutation hygiene
+
+These are **default suggestions, not mandatory sequencing rules**. Use them when they reduce uncertainty, duplication, or avoidable mutation risk. Current validated information and repository-specific authority can justify a different sequence; do not perform a step merely for procedural completeness.
+
+- **Read before write when the read can materially improve the decision.** Reuse prior validated context when its assumptions still hold. A safe, isolated, informative write can itself be research.
+- **Prefer one ownership unit at a time when that keeps reasoning and review clear.** Cross ownership boundaries deliberately when the real problem or solution spans them.
+- **Introduce new mechanisms when they solve a real problem.** Avoid gratuitous machinery, not invention.
+- **When state is unexpected, stop and assess before acting.** Then choose whether to preserve it, repair forward, or roll back; rollback is not the default.
+- **Qualify proportionally.** Validate before propagation when remaining uncertainty would become meaningfully more expensive. For simple, well-understood, mechanical changes, propagate then qualify once when that is cheaper and equally sound.
+- **Reuse valid evidence and established conclusions.** Do not repeat research or validation solely to satisfy process form.
+- Prefer the path that uses available information to reduce uncertainty and rework at reasonable cost while preserving correctness, ownership, recoverability, and honest evidence.
