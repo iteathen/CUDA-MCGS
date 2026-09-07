@@ -54,7 +54,7 @@
     "graph-cleanup": {
       "algorithm": "sha256",
       "byteLength": 5465,
-      "sha256": "96fdf3558f5a7eb33cdeae687d1bb0ca49b11c4381538bdfe1618228e5338184"
+      "sha256": "56ceb7d05058c8328bd857532696d99176e15f8ab8c26a0748e3cc1ff89f387c"
     },
     "policy": {
       "algorithm": "sha256",
