@@ -1,3 +1,3 @@
-# UMCGS Copilot Entry Point
+# CUDA-MCGS Copilot Entry Point
 
-The authoritative repository instructions are [`AGENTS.md`](../AGENTS.md) and [`agent_files/AGENTS.md`](../agent_files/AGENTS.md). Read them before proposing or changing code. This file is a compatibility pointer, not an independent rule set.
+Universal engineering and agent guidance comes from [`iteathen/.github/AGENTS.md`](https://github.com/iteathen/.github/blob/main/AGENTS.md). Then read [`AGENT_LOCAL.md`](../AGENT_LOCAL.md) and the repository-specific authority it routes to. This file is a compatibility pointer, not an independent rule set.
