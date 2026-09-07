@@ -3,7 +3,7 @@
   "composerEvidence": {
     "algorithm": "sha256",
     "byteLength": 708983,
-    "sha256": "6f56f4afef54e573a9d977003cbf0dd208378a8b1fcbf6e748fb4d61f7694d70"
+    "sha256": "b5b80c05161ae4dc4a618237b425dff2fdb54ffd48d96a9935bde34200ca6d21"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-progress-profile-projection/0.2.0",
