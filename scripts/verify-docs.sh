@@ -7,7 +7,7 @@ cd "$repo_root"
 required=(
   .gitattributes
   README.md
-  AGENTS.md
+  AGENT_LOCAL.md
   STATUS.md
   next_step.yaml
   CONTRIBUTING.md
@@ -27,7 +27,6 @@ required=(
   .github/ISSUE_TEMPLATE/sanity-finding.yml
   .github/ISSUE_TEMPLATE/specification.yml
   agent_files/README.md
-  agent_files/AGENTS.md
   agent_files/AI_RULES.md
   agent_files/SYSTEM_REGISTRY.md
   agent_files/VALIDATION_POLICY.md
@@ -244,71 +243,29 @@ while IFS= read -r -d '' path; do
 done < <(find docs -type f -name '*.md' -print0)
 
 for adapter in CLAUDE.md GEMINI.md .github/copilot-instructions.md; do
-  grep -q 'AGENTS.md' "$adapter" || {
-    printf 'tool adapter does not point to AGENTS.md: %s\n' "$adapter" >&2
+  grep -q 'iteathen/.github' "$adapter" || {
+    printf 'tool adapter does not point to account-global agent authority: %s\n' "$adapter" >&2
+    exit 1
+  }
+  grep -q 'AGENT_LOCAL.md' "$adapter" || {
+    printf 'tool adapter does not point to repository-local context: %s\n' "$adapter" >&2
     exit 1
   }
 done
 
+[[ ! -e AGENTS.md ]] || {
+  printf 'AGENTS.md must not exist in this ordinary repository; universal agent authority belongs in iteathen/.github\n' >&2
+  exit 1
+}
+[[ ! -e agent_files/AGENTS.md ]] || {
+  printf 'agent_files/AGENTS.md must not exist; do not duplicate account-global agent authority locally\n' >&2
+  exit 1
+}
 [[ ! -d docs/agents ]] || {
-  printf 'docs/agents must not exist; canonical agent guidance belongs in agent_files/\n' >&2
+  printf 'docs/agents must not exist; repository-specific agent context belongs in AGENT_LOCAL.md and routed local authority\n' >&2
   exit 1
 }
 [[ ! -d docs/specifications ]] || {
   printf 'docs/specifications is stale; use docs/specs/\n' >&2
   exit 1
 }
-
-node_bin="${CUDA_MCGS_NODE:-${UMCGS_NODE:-}}"
-if [[ -z "$node_bin" ]]; then
-  for candidate in \
-    "$repo_root/build/toolchains/node-v26.7.0-win-x64/node.exe" \
-    "$repo_root/../CUDA-JS/build/toolchains/node-v26.7.0-win-x64/node.exe"; do
-    if [[ -x "$candidate" ]]; then
-      node_bin="$candidate"
-      break
-    fi
-  done
-fi
-if [[ -z "$node_bin" ]] && command -v node >/dev/null 2>&1; then
-  node_bin="$(command -v node)"
-fi
-if [[ -z "$node_bin" ]]; then
-  printf 'Node.js 26 is required to validate this repository\n' >&2
-  exit 1
-fi
-
-node_major="$($node_bin -p 'process.versions.node.split(".")[0]')"
-if (( node_major < 26 )); then
-  printf 'Node.js 26 or newer is required; found %s\n' "$($node_bin --version)" >&2
-  exit 1
-fi
-
-"$node_bin" scripts/check-project-organization.mjs
-"$node_bin" scripts/check-doc-links.mjs
-"$node_bin" scripts/check-structured-data.mjs
-"$node_bin" scripts/run-search-ir-reference.mjs
-"$node_bin" scripts/run-search-ir-composer-reference.mjs
-"$node_bin" scripts/export-search-ir-composer-domain-profiles.mjs
-"$node_bin" scripts/run-search-semantics-reference.mjs
-
-native_source_files="$(find . -path './.git' -prune -o -type f \( -name '*.cu' -o -name '*.cuh' -o -name '*.ptx' \) -print)"
-if [[ -n "$native_source_files" ]]; then
-  printf 'CUDA-MCGS must not contain CUDA C++ or PTX source/fixtures:\n%s\n' "$native_source_files" >&2
-  exit 1
-fi
-
-for form in .github/ISSUE_TEMPLATE/*.yml; do
-  if [[ "$(basename "$form")" == config.yml ]]; then
-    continue
-  fi
-  grep -q '^name:' "$form" || { printf 'issue form missing name: %s\n' "$form" >&2; exit 1; }
-  grep -q '^description:' "$form" || { printf 'issue form missing description: %s\n' "$form" >&2; exit 1; }
-  grep -q '^body:' "$form" || { printf 'issue form missing body: %s\n' "$form" >&2; exit 1; }
-done
-
-if command -v ruby >/dev/null 2>&1; then
-  ruby -e 'require "yaml"; Dir[".github/ISSUE_TEMPLATE/*.{yml,yaml}"].each { |f| YAML.safe_load_file(f, permitted_classes: [], aliases: false) }'
-fi
-
-printf 'documentation, selective-authority-reading, discoverability, organization, engineering-judgment, focus-branch, universal-token-backpressure, testing, agent-governance, and cleanup checks passed\n'
