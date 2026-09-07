@@ -1,3 +1,3 @@
 # Gemini CLI Entry Point
 
-Read and follow [`AGENTS.md`](AGENTS.md), then the canonical manual in [`agent_files/`](agent_files/README.md). Do not maintain independent durable rules in this file.
+Universal engineering and agent guidance comes from [`iteathen/.github/AGENTS.md`](https://github.com/iteathen/.github/blob/main/AGENTS.md). Then read [`AGENT_LOCAL.md`](AGENT_LOCAL.md) and the repository-specific authority it routes to. Do not maintain independent durable rules in this file.
