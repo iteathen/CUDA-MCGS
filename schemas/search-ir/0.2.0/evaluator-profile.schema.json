@@ -397,7 +397,9 @@
       "type": "object", "additionalProperties": false, "required": ["kind", "language", "sourceIdentity", "inputs", "provenance"],
       "properties": {
         "kind": { "const": "device-program" }, "language": { "const": "restricted-device-js" }, "sourceIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
-        "inputs": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/profileReference" } }, "provenance": { "$ref": "#/$defs/programProvenance" }
+        "inputs": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/profileReference" } },
+        "requirements": { "type": "array", "maxItems": 64, "items": { "$ref": "primitives.schema.json#/$defs/schemaReference" } },
+        "provenance": { "$ref": "#/$defs/programProvenance" }
       }
     },
     "productData": {
