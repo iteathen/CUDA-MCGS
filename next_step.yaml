@@ -54,6 +54,29 @@
     "No product numerical oracle is a blocker or prerequisite for generic #124 work.",
     "Direct physical NVIDIA qualification remains deferred until suitable hardware is actually exposed."
   ],
+  "deliverables": [
+    "Protected active #124 state with exact branch/base identity and preserved prerequisites.",
+    "One bounded generic device-owned evaluator request/batch/scatter lifecycle implementation through public Tensor/CUDA-JS surfaces.",
+    "Portable conformance for normal, full/partial batch, stale slot reuse, pressure, cancellation, failure, retry and cleanup behavior.",
+    "Deletion/substitution evidence proving evaluator-free and materially non-Tensor alternatives remain valid.",
+    "Explicit evidence that the selected device-resident profile does not require host gather/launch/poll/relaunch progression after ignition."
+  ],
+  "validation": {
+    "required_before_mutation": [
+      "read protected evaluator/search semantic ports and current implementation",
+      "read public Tensor connector and CUDA-JS runtime adapter implementation/tests",
+      "reconfirm #124 issue acceptance and ownership boundaries"
+    ],
+    "required_after_each_meaningful_unit": [
+      "focused owner-level tests",
+      "documentation/governance verification when authority files change",
+      "cuda-js-runtime-adapter",
+      "cuda-js-compatible-pair",
+      "CUDA-JS-Tensor evaluator connector",
+      "library-interface when public composition changes"
+    ],
+    "integration_gate": "exact-head required checks including verify must be green before protected-main promotion"
+  },
   "downstream_state": {
     "Connect4": "paused after C4-0001 through C4-0005; dependency assessment confirms it must wait for this generic lifecycle rather than reimplement it downstream"
   },
