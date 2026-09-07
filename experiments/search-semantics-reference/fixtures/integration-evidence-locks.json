@@ -24,7 +24,7 @@
     "graph-edge": {
       "algorithm": "sha256",
       "byteLength": 11661,
-      "sha256": "dbeaad7a6a5c81466ebe8fe46db04a60319eeef7468e07ce8373e3fe9f68e063"
+      "sha256": "dbeaad7acb39f46a12a0ebbe7b34fa57d8bc4ae73ace456919afcede80ea136a"
     },
     "graph-ref": {
       "algorithm": "sha256",
@@ -34,7 +34,7 @@
     "graph-path": {
       "algorithm": "sha256",
       "byteLength": 9490,
-      "sha256": "6344238fb56de2bbc8a6b930e42c0485de02f6cb00e16b0844867ac3275525ee"
+      "sha256": "5ae7141f3b7a018d873da0fa449ffd811cc8f62dc7b50ec8cbb2c67dfdec1e0c"
     },
     "graph-root": {
       "algorithm": "sha256",
