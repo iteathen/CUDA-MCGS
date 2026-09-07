@@ -1,294 +1,78 @@
-import {
-  canonicalIdentity,
-  compareRaw,
-  exactKeys,
-  fail,
-  ValidationError,
-} from './validation.mjs';
-import {
-  normalizeContentIdentity,
-  normalizeSchemaReference,
-} from './foundation.mjs';
+import * as core from './composer-core.mjs';
 import { normalizeAcceptedContractAuthority } from './accepted-authority.mjs';
 import {
   buildExecutionPackage,
   composeSearchProgram,
-  normalizeProgramGenerator,
   normalizeProgramPackageProfile,
 } from './program-package.mjs';
+import { canonicalIdentity, ValidationError } from './validation.mjs';
 
-const RESOLVED_INPUT_SCHEMA = 'cuda-mcgs.resolved-composer-input/0.2.0';
-const SEARCH_IR_REPRESENTATION = 'cuda-mcgs.search-ir/0.2.0';
-const PROGRAM_PACKAGE_SCHEMA = 'cuda-mcgs.program-package-profile/0.2.0';
 const STATUS = 'accepted';
-const PROFILE_TEMPLATE_FIELDS = [
-  'schema',
-  'representation',
-  'status',
-  'contract',
-  'id',
-  'version',
-  'semanticEngine',
-  'sourceUnits',
-  'functions',
-  'programUnits',
-  'publicRequirements',
-  'resources',
-  'deliveries',
-  'operations',
-  'manifests',
-  'provenance',
-  'compatibility',
-  'deletion',
-];
-const GENERATOR_FIELDS = [
-  'id',
-  'version',
-  'revision',
-  'language',
-  'canonicalization',
-  'maxSourceBytes',
-  'maxFunctions',
-  'maxCallDepth',
-];
-const REFERENCE_GENERATOR = Object.freeze({
-  id: 'composer.reference-search-program',
-  version: '0.1.0',
-  revision: '711a0570115ecf08d005a07408ee77f3c6671cba',
-  language: 'restricted-device-js',
-  canonicalization: 'utf8-lf-source-units-by-js-code-unit-v1',
-  maxSourceBytes: '1048576',
-  maxFunctions: '1024',
-  maxCallDepth: '64',
-});
-const RULES = Object.freeze([
-  Object.freeze({ field: 'generator.maxCallDepth', key: 'maxCallDepth', reason: 'composer.reason.bounded-call-graph' }),
-  Object.freeze({ field: 'generator.maxFunctions', key: 'maxFunctions', reason: 'composer.reason.bounded-function-set' }),
-  Object.freeze({ field: 'generator.maxSourceBytes', key: 'maxSourceBytes', reason: 'composer.reason.bounded-source-snapshot' }),
-]);
+const PUBLICATION_SCHEMA = 'cuda-mcgs.composer-publication/0.2.0';
 
-function assertString(value, pattern, code, label) {
-  if (typeof value !== 'string' || !pattern.test(value)) fail(code, `${label} is invalid`);
+function profileHasDeviceImports(profile) {
+  return Boolean(profile && Object.hasOwn(profile, 'deviceImports'));
 }
 
-function normalizeRule(input, index, policy, generator) {
-  exactKeys(input, ['field', 'owner', 'reason', 'version', 'revision', 'selection', 'material', 'value'], 'COMPOSER_RULE_FIELDS', `resolution rule ${index}`);
-  const definition = RULES.find(({ field }) => field === input.field);
-  if (!definition) fail('COMPOSER_RULE_FIELD', `resolution rule ${index} names an unsupported field`);
-  if (input.owner !== policy.id || input.version !== policy.version || input.revision !== policy.revision) {
-    fail('COMPOSER_RULE_OWNER', `${input.field} provenance conflicts with its resolution policy`);
-  }
-  if (input.reason !== definition.reason) fail('COMPOSER_RULE_REASON', `${input.field} has an incompatible reason`);
-  if (!['default-equivalent', 'explicit-override'].includes(input.selection)) {
-    fail('COMPOSER_RULE_SELECTION', `${input.field} has an unsupported selection`);
-  }
-  if (input.material !== true) fail('COMPOSER_RULE_MATERIALITY', `${input.field} must remain identity-material`);
-  const value = input.value;
-  if (value !== generator[definition.key]) fail('COMPOSER_RULE_VALUE', `${input.field} differs from the resolved generator`);
-  const expectedSelection = usesReferencePolicy(generator) ? 'default-equivalent' : 'explicit-override';
-  if (input.selection !== expectedSelection) fail('COMPOSER_RULE_SELECTION', `${input.field} selection does not match its effective value`);
-  return {
-    field: input.field,
-    owner: input.owner,
-    reason: input.reason,
-    version: input.version,
-    revision: input.revision,
-    selection: input.selection,
-    material: true,
-    value,
-  };
+function resolvedValue(input) {
+  return input?.normalized ?? input;
 }
 
-function normalizeResolution(input, generator) {
-  exactKeys(input, ['policy', 'rules'], 'COMPOSER_RESOLUTION_FIELDS', 'resolution');
-  exactKeys(input.policy, ['id', 'version', 'revision'], 'COMPOSER_POLICY_FIELDS', 'resolution policy');
-  const policy = {
-    id: input.policy.id,
-    version: input.policy.version,
-    revision: input.policy.revision,
-  };
-  assertString(policy.id, /^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$/, 'COMPOSER_POLICY_OWNER', 'resolution policy id');
-  assertString(policy.version, /^[0-9]+\.[0-9]+\.[0-9]+$/, 'COMPOSER_POLICY_VERSION', 'resolution policy version');
-  assertString(policy.revision, /^[0-9a-f]{40}$/, 'COMPOSER_POLICY_REVISION', 'resolution policy revision');
-  if (policy.id !== generator.id || policy.version !== generator.version || policy.revision !== generator.revision) {
-    fail('COMPOSER_POLICY_CONFLICT', 'resolution policy conflicts with the resolved generator owner/version/revision');
-  }
-  if (!Array.isArray(input.rules) || input.rules.length !== RULES.length) {
-    fail('COMPOSER_RULE_COUNT', `resolution must contain exactly ${RULES.length} material rules`);
-  }
-  const rules = input.rules.map((rule, index) => normalizeRule(rule, index, policy, generator));
-  rules.sort((left, right) => compareRaw(left.field, right.field));
-  if (rules.some((rule, index) => rule.field !== RULES[index].field)) {
-    fail('COMPOSER_RULE_COVERAGE', 'resolution rules must cover every material generator field exactly once');
-  }
-  return { policy, rules };
+function stripProfileDeviceImports(profile) {
+  const stripped = structuredClone(profile);
+  delete stripped.deviceImports;
+  return stripped;
+}
+
+function stripResolvedDeviceImports(input) {
+  const stripped = structuredClone(resolvedValue(input));
+  if (stripped?.profile) delete stripped.profile.deviceImports;
+  return stripped;
 }
 
 function identityReference(identity) {
   return { algorithm: identity.algorithm, sha256: identity.sha256 };
 }
 
-function usesReferencePolicy(generator) {
-  return GENERATOR_FIELDS.every((field) => generator[field] === REFERENCE_GENERATOR[field]);
-}
-
 export function createResolvedComposerInput(profileTemplate, generatorInput) {
-  const templateFields = [...PROFILE_TEMPLATE_FIELDS];
-  if (Object.hasOwn(profileTemplate, 'sidebands')) templateFields.splice(templateFields.indexOf('deliveries'), 0, 'sidebands');
-  exactKeys(profileTemplate, templateFields, 'COMPOSER_PROFILE_TEMPLATE_FIELDS', 'program-package profile template');
-  if (profileTemplate.schema !== PROGRAM_PACKAGE_SCHEMA) fail('COMPOSER_PROFILE_SCHEMA', 'profile template schema is incompatible');
-  const generator = normalizeProgramGenerator(generatorInput);
-  const profile = structuredClone(profileTemplate);
-  profile.generator = generator;
-  const referencePolicy = usesReferencePolicy(generator);
-  const rules = RULES.map(({ field, key, reason }) => ({
-    field,
-    owner: generator.id,
-    reason,
-    version: generator.version,
-    revision: generator.revision,
-    selection: referencePolicy ? 'default-equivalent' : 'explicit-override',
-    material: true,
-    value: generator[key],
-  }));
-  return normalizeResolvedComposerInput({
-    schema: RESOLVED_INPUT_SCHEMA,
-    representation: SEARCH_IR_REPRESENTATION,
-    status: STATUS,
-    profile,
-    resolution: {
-      policy: { id: generator.id, version: generator.version, revision: generator.revision },
-      rules,
-    },
-  });
-}
-
-export function normalizeResolvedComposerInput(input) {
-  exactKeys(input, ['schema', 'representation', 'status', 'profile', 'resolution'], 'COMPOSER_ROOT_FIELDS', 'resolved Composer input');
-  if (input.schema !== RESOLVED_INPUT_SCHEMA || input.representation !== SEARCH_IR_REPRESENTATION) {
-    fail('COMPOSER_SCHEMA', 'resolved Composer input schema/representation is incompatible');
-  }
-  if (input.status !== STATUS) fail('COMPOSER_STATUS', 'resolved Composer input must remain proposal evidence');
-  const profileFields = [...PROFILE_TEMPLATE_FIELDS];
-  if (Object.hasOwn(input.profile, 'sidebands')) profileFields.splice(profileFields.indexOf('deliveries'), 0, 'sidebands');
-  exactKeys(input.profile, [...profileFields, 'generator'], 'COMPOSER_PROFILE_FIELDS', 'resolved program-package profile');
-  if (input.profile.schema !== PROGRAM_PACKAGE_SCHEMA
-      || input.profile.representation !== SEARCH_IR_REPRESENTATION
-      || input.profile.status !== STATUS) {
-    fail('COMPOSER_PROFILE_SCHEMA', 'resolved program-package profile schema/representation/status is incompatible');
-  }
-  const generator = normalizeProgramGenerator(input.profile.generator);
+  if (!profileHasDeviceImports(profileTemplate)) return core.createResolvedComposerInput(profileTemplate, generatorInput);
+  const deviceImports = structuredClone(profileTemplate.deviceImports);
+  const result = core.createResolvedComposerInput(stripProfileDeviceImports(profileTemplate), generatorInput);
   const normalized = {
-    schema: input.schema,
-    representation: input.representation,
-    status: input.status,
-    profile: { ...structuredClone(input.profile), generator },
-    resolution: normalizeResolution(input.resolution, generator),
+    ...result.normalized,
+    profile: { ...result.normalized.profile, deviceImports },
   };
   return { normalized, identity: canonicalIdentity(normalized) };
 }
 
-function contextResultKey(result, label) {
-  if (!result?.normalized || typeof result.normalized.id !== 'string' || !result?.identity) {
-    fail('COMPOSER_CONTEXT_PROFILE', `${label} is not a normalized owner result`);
-  }
-  assertString(result.identity.algorithm, /^sha256$/, 'COMPOSER_CONTEXT_PROFILE', `${label} identity algorithm`);
-  assertString(result.identity.sha256, /^[0-9a-f]{64}$/, 'COMPOSER_CONTEXT_PROFILE', `${label} identity sha256`);
-  assertString(result.schemaSha, /^[0-9a-f]{64}$/, 'COMPOSER_CONTEXT_PROFILE', `${label} schemaSha`);
-  return `${result.normalized.id}\0${result.identity.sha256}\0${result.schemaSha}`;
-}
-
-function selectContextResult(input, profileByKey, label, expectedSchema, optional = false) {
-  if (input === null) {
-    if (!optional) fail('COMPOSER_CONTEXT_PROFILE', `${label} is required`);
-    return null;
-  }
-  const selected = profileByKey.get(contextResultKey(input, label));
-  if (!selected) fail('COMPOSER_CONTEXT_PROFILE', `${label} is not present in profileResults`);
-  if (selected.normalized.schema !== expectedSchema) fail('COMPOSER_CONTEXT_PROFILE', `${label} has the wrong owner schema`);
-  return selected;
+export function normalizeResolvedComposerInput(input) {
+  const value = resolvedValue(input);
+  if (!profileHasDeviceImports(value?.profile)) return core.normalizeResolvedComposerInput(value);
+  const deviceImports = structuredClone(value.profile.deviceImports);
+  const result = core.normalizeResolvedComposerInput(stripResolvedDeviceImports(value));
+  const normalized = {
+    ...result.normalized,
+    profile: { ...result.normalized.profile, deviceImports },
+  };
+  return { normalized, identity: canonicalIdentity(normalized) };
 }
 
 export function createProgramPackageCompositionContext(resolvedInput, selection) {
-  const resolved = normalizeResolvedComposerInput(resolvedInput?.normalized ?? resolvedInput);
-  exactKeys(selection, [
-    'profileResults',
-    'resourceResult',
-    'progressResult',
-    'outputResult',
-    'sessionResult',
-    'stageResult',
-    'channelResult',
-    'composerContributionIdentity',
-  ], 'COMPOSER_CONTEXT_FIELDS', 'program-package composition context');
-  if (!Array.isArray(selection.profileResults) || selection.profileResults.length === 0) {
-    fail('COMPOSER_CONTEXT_PROFILE', 'profileResults must contain selected normalized owner results');
-  }
-  const profileResults = [...selection.profileResults];
-  const profileByKey = new Map();
-  const profileIds = new Set();
-  for (const result of profileResults) {
-    const key = contextResultKey(result, 'profileResults entry');
-    if (profileByKey.has(key) || profileIds.has(result.normalized.id)) fail('COMPOSER_CONTEXT_PROFILE', 'profileResults repeats an owner result');
-    profileByKey.set(key, result);
-    profileIds.add(result.normalized.id);
-  }
-  const resourceResult = selectContextResult(selection.resourceResult, profileByKey, 'resourceResult', 'cuda-mcgs.resource-profile/0.2.0');
-  const progressResult = selectContextResult(selection.progressResult, profileByKey, 'progressResult', 'cuda-mcgs.progress-profile/0.2.0');
-  const outputResult = selectContextResult(selection.outputResult, profileByKey, 'outputResult', 'cuda-mcgs.output-profile/0.2.0');
-  const sessionResult = selectContextResult(selection.sessionResult, profileByKey, 'sessionResult', 'cuda-mcgs.session-profile/0.2.0', true);
-  const stageResult = selectContextResult(selection.stageResult, profileByKey, 'stageResult', 'cuda-mcgs.stage-profile/0.2.0', true);
-  const channelResult = selectContextResult(selection.channelResult, profileByKey, 'channelResult', 'cuda-mcgs.channel-profile/0.2.0', true);
-  const profile = resolved.normalized.profile;
-  const authority = profile.semanticEngine?.authority;
-  if (authority?.repository !== 'iteathen/CUDA-MCGS') fail('COMPOSER_CONTEXT_AUTHORITY', 'resolved profile does not name the CUDA-MCGS authority repository');
-  assertString(authority.revision, /^[0-9a-f]{40}$/, 'COMPOSER_CONTEXT_AUTHORITY', 'resolved profile authority revision');
-  const requirementById = new Map();
-  if (!Array.isArray(profile.publicRequirements)) fail('COMPOSER_CONTEXT_REQUIREMENT', 'resolved profile publicRequirements must be an array');
-  for (let index = 0; index < profile.publicRequirements.length; index += 1) {
-    const contract = normalizeSchemaReference(profile.publicRequirements[index]?.contract, `resolved public requirement ${index}`);
-    if (requirementById.has(contract.id)) fail('COMPOSER_CONTEXT_REQUIREMENT', `resolved profile repeats public requirement ${contract.id}`);
-    requirementById.set(contract.id, contract);
-  }
-  const compatibility = profile.compatibility;
-  const cudaJs = compatibility?.cudaJs;
-  if (!cudaJs || cudaJs.repository !== 'iteathen/CUDA-JS') fail('COMPOSER_CONTEXT_CUDA_JS', 'resolved profile does not name the public CUDA-JS repository');
-  assertString(cudaJs.revision, /^[0-9a-f]{40}$/, 'COMPOSER_CONTEXT_CUDA_JS', 'resolved CUDA-JS revision');
-  assertString(cudaJs.package, /^cuda-js@[0-9A-Za-z.+-]+$/, 'COMPOSER_CONTEXT_CUDA_JS', 'resolved CUDA-JS package');
-  assertString(compatibility.apiSchema, /^[0-9]+$/, 'COMPOSER_CONTEXT_CUDA_JS', 'resolved CUDA-JS API schema');
-  const composerContributionIdentity = normalizeContentIdentity(
-    selection.composerContributionIdentity,
-    'COMPOSER_CONTEXT_CONTRIBUTION',
-    'composerContributionIdentity',
-  );
-  return {
-    profileResults,
-    resourceResult,
-    progressResult,
-    outputResult,
-    sessionResult,
-    stageResult,
-    channelResult,
-    authorityRevision: authority.revision,
-    composerContributionIdentity,
-    requirementById,
-    availableRequirements: new Set(requirementById.keys()),
-    cudaJs: {
-      revision: cudaJs.revision,
-      package: cudaJs.package,
-      apiSchema: compatibility.apiSchema,
-    },
-  };
+  const value = resolvedValue(resolvedInput);
+  if (!profileHasDeviceImports(value?.profile)) return core.createProgramPackageCompositionContext(resolvedInput, selection);
+  return core.createProgramPackageCompositionContext(stripResolvedDeviceImports(value), selection);
 }
 
 export function composeResolvedEngine(resolvedInput, inspected, context) {
-  const resolved = normalizeResolvedComposerInput(resolvedInput);
+  const value = resolvedValue(resolvedInput);
+  if (!profileHasDeviceImports(value?.profile)) return core.composeResolvedEngine(resolvedInput, inspected, context);
+  const resolved = normalizeResolvedComposerInput(value);
   const authority = normalizeAcceptedContractAuthority(inspected);
   const profile = normalizeProgramPackageProfile(resolved.normalized.profile, authority, context);
   const program = composeSearchProgram(profile);
   const executionPackage = buildExecutionPackage(profile, program);
   const normalizedPublication = {
-    schema: 'cuda-mcgs.composer-publication/0.2.0',
+    schema: PUBLICATION_SCHEMA,
     status: STATUS,
     resolvedInput: identityReference(resolved.identity),
     compositionProfile: identityReference(profile.identity),
@@ -300,20 +84,19 @@ export function composeResolvedEngine(resolvedInput, inspected, context) {
 }
 
 export function tryComposeResolvedEngine(resolvedInput, inspected, context) {
+  const value = resolvedValue(resolvedInput);
+  if (!profileHasDeviceImports(value?.profile)) return core.tryComposeResolvedEngine(resolvedInput, inspected, context);
   try {
-    return { status: 'success', publication: composeResolvedEngine(resolvedInput, inspected, context), diagnostic: null };
+    return { status: 'success', publication: composeResolvedEngine(value, inspected, context), diagnostic: null };
   } catch (error) {
     if (!(error instanceof ValidationError)) throw error;
     return { status: 'failure', publication: null, diagnostic: { code: error.code, message: error.message } };
   }
 }
 
+export * from './composer-core.mjs';
+
 export const composerConstants = Object.freeze({
-  resolvedInputSchema: RESOLVED_INPUT_SCHEMA,
-  representation: SEARCH_IR_REPRESENTATION,
-  status: STATUS,
-  profileTemplateFields: Object.freeze([...PROFILE_TEMPLATE_FIELDS]),
-  generatorFields: Object.freeze([...GENERATOR_FIELDS]),
-  referenceGenerator: REFERENCE_GENERATOR,
-  rules: RULES,
+  ...core.composerConstants,
+  optionalProfileTemplateFields: Object.freeze(['deviceImports']),
 });

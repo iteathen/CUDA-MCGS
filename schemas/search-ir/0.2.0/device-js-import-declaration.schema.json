@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iteathen/CUDA-MCGS/schemas/search-ir/0.2.0/device-js-import-declaration.schema.json",
+  "title": "CUDA-MCGS identity-bound external Device-JS import declaration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "ownerProfile", "importName", "alias", "library"],
+  "properties": {
+    "schema": { "const": "cuda-mcgs.device-js-import-declaration/0.1.0" },
+    "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+    "ownerProfile": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+    "importName": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" },
+    "alias": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$", "not": { "const": "gpu" } },
+    "library": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract", "sha256", "format", "architecture", "artifactSha256"],
+      "properties": {
+        "contract": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "format": { "enum": ["ptx", "lto-ir"] },
+        "architecture": { "type": "string", "minLength": 1 },
+        "artifactSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    }
+  }
+}

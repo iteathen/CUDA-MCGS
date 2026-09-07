@@ -23,3 +23,5 @@ jobs:
           node-version: 26.7.0
       - name: Run portable public-contract CUDA-JS adapter capsule
         run: node scripts/run-cuda-js-runtime-adapter.mjs
+      - name: Run external Device-JS import composition capsule
+        run: node scripts/run-device-js-import-composition.mjs
