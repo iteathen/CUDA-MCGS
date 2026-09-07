@@ -85,8 +85,8 @@ function bindReleaseAcquireHelper(fixture, evaluatorId) {
 const contractSet = await readJson(path.join(schemaRoot, 'contract-set.json'));
 const coverage = await readJson(path.join(schemaRoot, 'requirement-coverage.json'));
 const inspected = await inspectCatalog(repositoryRoot, contractSet, coverage);
-const domainSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'domain-profile.schema.json')));
-const graphSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'graph-profile.schema.json')));
+const domainSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'domain-profile.schema.json'), 'utf8'));
+const graphSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'graph-profile.schema.json'), 'utf8'));
 const evaluatorSchemaSource = await readFile(path.join(schemaRoot, 'evaluator-profile.schema.json'), 'utf8');
 const evaluatorSchemaSha = sourceTextSha256(evaluatorSchemaSource);
 const evaluatorSchema = JSON.parse(evaluatorSchemaSource);
