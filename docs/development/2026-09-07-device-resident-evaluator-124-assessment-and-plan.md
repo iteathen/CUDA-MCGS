@@ -4,7 +4,7 @@
 **Issue:** #124  
 **Execution branch:** `feature/124-device-resident-evaluator`  
 **Protected base observed before mutation:** `1419ad81d5845aba0b76bb26d44618b4b409251f`  
-**Status:** assessed; implementation authorized within the bounded path below
+**Status:** Active
 
 ## Required outcome
 
