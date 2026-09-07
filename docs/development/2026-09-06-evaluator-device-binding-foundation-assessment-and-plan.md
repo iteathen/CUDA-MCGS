@@ -1,6 +1,6 @@
 # Evaluator Device-Binding Foundation — Assessment and Plan
 
-**Status:** In Progress
+**Status:** Proposal
 
 **Date:** 2026-09-06
 
