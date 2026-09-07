@@ -4,7 +4,7 @@
 
 The production export is deliberately stateless. It validates the public Tensor callable, finite item/request capacity, parameter roles, workspace total and opaque Device-JS library identity, then provides a fresh owner-produced `DeviceJsImport` only if that import still matches the admitted identity. It does not implement a second evaluator scheduler/runtime.
 
-Tensor mathematics, TensorProgram/TensorPlan meaning, item-axis addressing, the callable ABI and Tensor workspace remain owned by CUDA-JS-Tensor. CUDA-JS owns Device-JS library linking and native execution. CUDA-MCGS retains evaluator request/batch/readiness semantics under SPEC-0009 and will bind this admitted import through its own Search Program/runtime composition boundary.
+Tensor mathematics, TensorProgram/TensorPlan meaning, item-axis addressing, the callable ABI and Tensor workspace remain owned by CUDA-JS-Tensor. CUDA-JS owns Device-JS library linking and native execution. CUDA-MCGS retains evaluator request/batch/readiness semantics under SPEC-0009. PR #241 protected the generic Search Program/execution-package import path and `integration.cuda-js` now validates matching live opaque imports before forwarding them through public `compileDeviceProgram({ imports })`; the remaining #124 work is the evaluator-owned request/batch/scatter/readiness/search-lifecycle runtime above that boundary.
 
 The adapter uses only documented public fields plus `TensorDeviceProgram.importAs()`. It does not import CUDA-JS-Tensor source, inspect generated PTX/LTO, compile a model, or add product semantics.
 
