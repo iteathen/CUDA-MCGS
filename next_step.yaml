@@ -4,6 +4,18 @@
   "status": "design_principle_alignment_active_124_paused",
   "objective": "Align existing CUDA-MCGS implementation, evidence topology and cross-repository current-state ownership with the accepted design principles before any further #124 runtime expansion. Preserve all already-qualified #124 foundations without resuming request/batch/scatter/readiness implementation.",
   "ownership_boundary": "CUDA-MCGS owns universal Search IR/Graph/Policy/Evaluator/Resource/Progress/Output/Session/Stage/Channel semantics and its own readiness/work ordering. CUDA-JS-Tensor owns Tensor mathematics, TensorProgram/TensorPlan, item-axis callable ABI and Tensor workspace. CUDA-JS owns consumer-neutral CUDA/compiler/runtime/provider/resource mechanisms. Product semantics remain downstream and are not execution dependencies for generic CUDA-MCGS framework work.",
+  "authority": [
+    "AGENTS.md",
+    "agent_files/AGENTS.md",
+    "agent_files/AI_RULES.md",
+    "agent_files/DESIGN_ALIGNMENT_CARD.md",
+    "agent_files/general_foundation/PRINCIPLES.md",
+    "agent_files/SYSTEM_REGISTRY.md",
+    "docs/specs/SPEC-0015-native-boundary-and-js-only-implementation.md",
+    "docs/specs/SPEC-0016-optional-cross-domain-physical-memory-policy.md",
+    "components/search-compiler/component.yaml",
+    "https://github.com/iteathen/CUDA-MCGS/issues/245"
+  ],
   "current_focus": {
     "repository": "iteathen/CUDA-MCGS",
     "issue": 245,
@@ -62,6 +74,27 @@
     "state": "open_valid_not_active",
     "resume_rule": "Resume only after issue #245 is completed or explicitly superseded by owner instruction. Preserve the qualified foundation and do not append feature work to the alignment branch."
   },
+  "blockers": [
+    "Design-alignment issue #245 remains open until cross-repository current-state ownership, adapter lifecycle cleanup, evidence-lock maintenance and exact-head qualification are complete.",
+    "Physical NVIDIA qualification remains deferred until suitable directly exposed hardware is available; this is an evidence/infrastructure gap, not a reason to add source work.",
+    "CUDA-MM production remains separately unactivated; no alignment task may make it a hidden dependency."
+  ],
+  "deliverables": [
+    "Current-state documents that keep CUDA-MCGS readiness owned here and lower producer facts owned in their producer repositories.",
+    "Search Compiler documentation that recognizes existing semantic modules as recursive private child LEGOs while preserving one public canonical owner.",
+    "A mechanical fail-closed path for maintaining committed exact evidence locks from successful producer outputs, with the final mutation gate unchanged in meaning.",
+    "CUDA-JS runtime-adapter cleanup that preserves child-before-parent disposal, no implicit retry after failed disposal and stable quarantined repeated-close truth.",
+    "Focused regression coverage plus exact-head package/reference/adapter/documentation qualification.",
+    "A clean handoff to owner-requested documentation work with #124 still paused."
+  ],
+  "do_not": [
+    "Do not resume CUDA-MCGS #124 evaluator request/batch/scatter/readiness/search-lifecycle feature work.",
+    "Do not add new Tensor, CUDA/provider, model or product capability while alignment is active.",
+    "Do not split public owners or schemas solely to reduce file length.",
+    "Do not replace independent frozen evidence with a shared mutable truth source or auto-bless changed producer outputs.",
+    "Do not retry failed close/destroy operations implicitly or close parent resources beneath unproved children.",
+    "Do not promote portable/package evidence to native/provider/hardware support."
+  ],
   "physical_evidence": {
     "disposition": "deferred_not_waived",
     "rule": "Portable, hosted, VM, mock and package evidence prove only the semantics they execute and never promote native/provider/hardware support."
