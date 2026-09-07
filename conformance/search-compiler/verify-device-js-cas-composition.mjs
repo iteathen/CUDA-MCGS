@@ -92,10 +92,10 @@ const context = packageContext(ownerResult);
 
 assert.equal(programPackageConstants.baseDeviceJsCasHelper, CAS, 'Program Package must expose the accepted CAS helper identity');
 
-const baselineFixture = buildProgramPackageProfile(inspected, context, 'cas-composition-baseline');
+const baselineFixture = buildProgramPackageProfile(inspected, context, 'cas-composition');
 const baseline = normalizeProgramPackageProfile(baselineFixture.input, inspected, baselineFixture.context);
 
-const casFixture = buildProgramPackageProfile(inspected, context, 'cas-composition-selected');
+const casFixture = buildProgramPackageProfile(inspected, context, 'cas-composition');
 const selected = bindCas(casFixture, ownerResult.normalized.id);
 const normalized = normalizeProgramPackageProfile(casFixture.input, inspected, casFixture.context);
 const normalizedFunction = normalized.normalized.functions.find(({ name }) => name === selected.fn.name);
