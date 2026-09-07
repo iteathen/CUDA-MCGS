@@ -23,8 +23,9 @@ const CUDA_JS_ADAPTER_REQUIREMENTS_SCHEMA = 'cuda-mcgs.cuda-js-adapter-requireme
 const COMPATIBLE_PAIR_SCHEMA = 'cuda-mcgs.compatible-pair-record/0.2.0';
 const REPRESENTATION = 'cuda-mcgs.search-ir/0.2.0';
 const COMPOSE_CONTRACT = 'SPEC-0005';
-const RESTRICTED_SOURCE_TYPES = new Set(['bool', 'u32', 'i32', 'u64', 'f32', 'ptr<bool>', 'ptr<u32>', 'ptr<i32>', 'ptr<u64>', 'ptr<f32>', 'sideband<host-to-device,u32>', 'sideband<device-to-host,u32>']);
-const RETURN_TYPES = new Set(['void', 'bool', 'u32', 'i32', 'u64', 'f32']);
+const RESTRICTED_SOURCE_TYPES = new Set(['bool', 'u32', 'i32', 'u64', 'f32', 'f64', 'f16', 'bf16', 'ptr<bool>', 'ptr<u32>', 'ptr<i32>', 'ptr<u64>', 'ptr<f32>', 'ptr<f64>', 'ptr<f16>', 'ptr<bf16>', 'sideband<host-to-device,u32>', 'sideband<device-to-host,u32>']);
+const RETURN_TYPES = new Set(['void', 'bool', 'u32', 'i32', 'u64', 'f32', 'f64', 'f16', 'bf16']);
+const RESOURCE_VIEW_WIDTH = new Map([['u32', 4n], ['u64', 8n], ['i32', 4n], ['f32', 4n], ['f64', 8n], ['f16', 2n], ['bf16', 2n]]);
 const HELPER_REQUIREMENTS = new Map([
   ['gpu.atomic.load-acquire-device', 'cuda-js.device-publication-release-acquire/0.1.0'],
   ['gpu.atomic.store-release-device', 'cuda-js.device-publication-release-acquire/0.1.0'],
@@ -364,13 +365,30 @@ function normalizeDelivery(input, index, context) {
   return { id: input.id, semanticOwner: input.semanticOwner, role: input.role, terminalSchema, resource: input.resource, byteOffset, byteLength, readiness: input.readiness, mode: input.mode, maxTransfers, borrow, asyncRead, cleanup, lifetime: input.lifetime };
 }
 
+function normalizeResourceView(input, operationId, parameter, resource) {
+  exactKeys(input, ['dtype', 'byteOffset', 'elementCount'], 'COMPOSE_OPERATION_VIEW_FIELDS', `${operationId} ${parameter.name} resource view`);
+  const width = RESOURCE_VIEW_WIDTH.get(input.dtype);
+  if (!width) fail('COMPOSE_OPERATION_VIEW', `${operationId} ${parameter.name} resource view dtype is unsupported`);
+  if (parameter.type !== `ptr<${input.dtype}>`) fail('COMPOSE_OPERATION_VIEW', `${operationId} ${parameter.name} resource view dtype differs from the parameter type`);
+  const byteOffset = normalizeDecimalUint(input.byteOffset, `${operationId} ${parameter.name} resource view byteOffset`);
+  const elementCount = positiveDecimal(input.elementCount, 'COMPOSE_OPERATION_VIEW', `${operationId} ${parameter.name} resource view elementCount`);
+  const offset = BigInt(byteOffset);
+  const byteLength = BigInt(elementCount) * width;
+  if (offset % width !== 0n || offset + byteLength > BigInt(resource.capacity)) fail('COMPOSE_OPERATION_VIEW', `${operationId} ${parameter.name} resource view range/alignment exceeds the resource`);
+  return { dtype: input.dtype, byteOffset, elementCount };
+}
+
 function normalizeBinding(input, operationId, index, parameters, resources, sidebands) {
   exactKeys(input, ['parameter', 'source'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} binding ${index}`);
   const parameter = parameters.find(({ name }) => name === input.parameter);
   if (!parameter) fail('COMPOSE_OPERATION_BINDING', `${operationId} binds unknown parameter ${input.parameter}`);
   if (input.source?.kind === 'resource') {
     const hasAccess = Object.hasOwn(input.source, 'access');
-    exactKeys(input.source, hasAccess ? ['kind', 'resource', 'access'] : ['kind', 'resource'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} resource`);
+    const hasView = Object.hasOwn(input.source, 'view');
+    const fields = ['kind', 'resource'];
+    if (hasAccess) fields.push('access');
+    if (hasView) fields.push('view');
+    exactKeys(input.source, fields, 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} resource`);
     const resource = resources.get(input.source.resource);
     if (!resource || resource.materialization !== 'resident-storage' || !parameter.type.startsWith('ptr<')) fail('COMPOSE_OPERATION_BINDING', `${operationId} resource binding is incompatible`);
     const source = { kind: 'resource', resource: input.source.resource };
@@ -380,6 +398,7 @@ function normalizeBinding(input, operationId, index, parameters, resources, side
       if ((access === 'write' || access === 'read-write') && !resource.access.includes('write')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} write access exceeds the resource envelope`);
       source.access = access;
     }
+    if (hasView) source.view = normalizeResourceView(input.source.view, operationId, parameter, resource);
     return { parameter: input.parameter, source };
   }
   if (input.source?.kind === 'sideband') {
@@ -388,7 +407,7 @@ function normalizeBinding(input, operationId, index, parameters, resources, side
     if (!sideband || parameter.type !== `sideband<${sideband.direction},${sideband.valueType}>` || parameter.sidebandRole !== sideband.role) fail('COMPOSE_OPERATION_BINDING', `${operationId} sideband binding is incompatible`);
     return { parameter: input.parameter, source: { kind: 'sideband', sideband: input.source.sideband } };
   }
-  if (Object.hasOwn(input.source ?? {}, 'access')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} scalar binding cannot carry access`);
+  if (Object.hasOwn(input.source ?? {}, 'access') || Object.hasOwn(input.source ?? {}, 'view')) fail('COMPOSE_OPERATION_ACCESS', `${operationId} ${input.parameter} scalar binding cannot carry resource fields`);
   exactKeys(input.source, ['kind', 'schema'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} scalar`);
   if (input.source.kind !== 'scalar' || parameter.type.startsWith('ptr<') || parameter.type.startsWith('sideband<')) fail('COMPOSE_OPERATION_BINDING', `${operationId} scalar binding is incompatible`);
   return { parameter: input.parameter, source: { kind: 'scalar', schema: normalizeSchemaReference(input.source.schema, `${operationId} ${input.parameter} scalar schema`) } };
@@ -653,7 +672,7 @@ function buildCudaJsAdapterRequirements(program) {
     id: `operation-${index}`,
     function: entry.entryPoint,
     bindings: entry.bindings.map((binding) => {
-      if (binding.source.kind === 'resource') return { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource), access: binding.source.access } };
+      if (binding.source.kind === 'resource') return { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource), access: binding.source.access, ...(binding.source.view ? { view: { ...binding.source.view } } : {}) } };
       if (binding.source.kind === 'sideband') return { parameter: binding.parameter, source: { kind: 'sideband', sideband: sidebandNames.get(binding.source.sideband) } };
       return { parameter: binding.parameter, source: { kind: 'scalar', schema: { ...binding.source.schema } } };
     }),
