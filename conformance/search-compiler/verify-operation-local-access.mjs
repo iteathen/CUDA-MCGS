@@ -144,24 +144,48 @@ assert.throws(() => normalizeView({ dtype: 'u32', byteOffset: '60', elementCount
 assert.throws(() => normalizeView({ dtype: 'u32', byteOffset: '0', elementCount: '0' }), { code: 'COMPOSE_OPERATION_VIEW' });
 
 const dense = makeFixture();
-const denseFunction = dense.fixture.input.functions.find(({ executionRole }) => executionRole === 'device-callable');
-if (!denseFunction) throw new Error('operation-access fixture lacks a device-callable owner function');
-const denseUnit = dense.fixture.input.sourceUnits.find(({ id }) => id === denseFunction.sourceUnit);
-if (!denseUnit) throw new Error('operation-access fixture lacks the dense function source unit');
-const denseSource = `function ${denseFunction.name}(denseValue) { return denseValue; }\n`;
-denseUnit.source = denseSource;
-denseUnit.sourceIdentity = sourceIdentity(denseSource);
-denseFunction.parameters = [{ name: 'denseValue', type: 'f16' }];
-denseFunction.returns = 'f16';
-denseFunction.calls = [];
-denseFunction.helpers = [];
+const engineUnit = dense.fixture.input.sourceUnits.find(({ functions }) => functions.includes('engine_step'));
+if (!engineUnit) throw new Error('operation-access fixture lacks the composer entry source unit');
+const denseName = 'dense_identity';
+const denseUnitId = 'source.operation-access.dense-helper';
+const denseSource = `function ${denseName}(denseValue) { return denseValue; }\n`;
+dense.fixture.input.sourceUnits.push({
+  ...structuredClone(engineUnit),
+  id: denseUnitId,
+  source: denseSource,
+  sourceIdentity: sourceIdentity(denseSource),
+  functions: [denseName],
+});
+dense.fixture.input.functions.push({
+  name: denseName,
+  executionRole: 'device-callable',
+  parameters: [{ name: 'denseValue', type: 'f16' }],
+  returns: 'f16',
+  sourceUnit: denseUnitId,
+  ownerProfile: engineUnit.ownerProfile,
+  semanticRole: 'program.dense-identity',
+  calls: [],
+  helpers: [],
+});
+dense.fixture.input.programUnits.push({
+  id: 'program-unit.operation-access.dense-helper',
+  kind: 'owner',
+  surface: null,
+  contributors: [engineUnit.semanticOwner],
+  functions: [denseName],
+  effectOrder: [],
+});
+const denseDeletion = dense.fixture.input.deletion.records.find(({ owner }) => owner === engineUnit.semanticOwner);
+if (!denseDeletion) throw new Error('operation-access fixture lacks composer deletion ownership');
+denseDeletion.sourceUnits.push(denseUnitId);
+denseDeletion.functions.push(denseName);
 const denseNormalized = normalizeProgramPackageProfile(dense.fixture.input, dense.inspected, dense.fixture.context);
-const normalizedDenseFunction = denseNormalized.normalized.functions.find(({ name }) => name === denseFunction.name);
+const normalizedDenseFunction = denseNormalized.normalized.functions.find(({ name }) => name === denseName);
 assert.deepEqual(normalizedDenseFunction.parameters, [{ name: 'denseValue', type: 'f16' }]);
 assert.equal(normalizedDenseFunction.returns, 'f16');
 const denseProgram = composeSearchProgram(denseNormalized);
 const denseExecution = buildExecutionPackage(denseNormalized, denseProgram);
-assert.equal(denseExecution.normalized.cudaJsAdapter.searchProgram.functions.find(({ name }) => name === denseFunction.name).returns, 'f16');
+assert.equal(denseExecution.normalized.cudaJsAdapter.searchProgram.functions.find(({ name }) => name === denseName).returns, 'f16');
 
 for (const [file, definition] of [
   ['program-package-profile.schema.json', 'binding'],
