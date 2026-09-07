@@ -1,56 +1,63 @@
-# #124 gap record — Device-JS helper requirement projection
+# #124 gap record — evaluator Device-JS public requirement declaration
 
 **Date:** 2026-09-07  
 **Issue:** #124  
 **Execution branch:** `feature/124-device-resident-evaluator`  
-**Observed head before this record:** `ea45746f36440da141d98eef567225de383cf2ea`  
-**Classification:** real production composition gap; `tool.search-compiler` owner
+**Observed head before initial record:** `ea45746f36440da141d98eef567225de383cf2ea`  
+**Reassessed after authority comparison:** `831d2cd63f8d0e10567be16f384ed446984b9db5`  
+**Classification:** real Search IR / Search Compiler evaluator-profile gap; `tool.search-compiler` implementation owner, SPEC-0009 semantic boundary preserved
 
 ## Gap
 
-The accepted evaluator contract requires complete internal payload publication before ready visibility and permits the physical synchronization mechanism to be selected later through public CUDA-JS contracts. The first #124 evaluator runtime therefore naturally uses the already accepted public Device-JS device-scope release/acquire helpers.
+The accepted evaluator contract requires complete internal payload publication before ready visibility and allows the physical synchronization mechanism to be selected later through public CUDA-JS contracts. The first #124 evaluator runtime therefore naturally requires the already accepted public Device-JS device-scope release/acquire capability.
 
-The Search Compiler already knows that:
+Program Package composition is already designed for this. Its exact public-requirement closure includes:
 
-- `gpu.atomic.load-acquire-device` requires `cuda-js.device-publication-release-acquire/0.1.0`;
-- `gpu.atomic.store-release-device` requires `cuda-js.device-publication-release-acquire/0.1.0`; and
-- helper use without the corresponding public requirement must fail closed.
+- universal base CUDA-JS requirements; and
+- any `programContribution.requirements` declared by selected owner profiles.
 
-However, Program Package public-requirement closure currently derives its exact allowed requirement set only from universal base requirements plus `programContribution.requirements` carried by selected semantic profiles. The evaluator profile schema intentionally has no `programContribution.requirements` field.
+It also already rejects helper use when the corresponding public requirement is absent. Channel Search IR and normalization already use the same pattern: a program contribution carries exact public CUDA-JS requirements without exposing native spelling or private implementation.
 
-That means an evaluator-owned generated source unit cannot truthfully use the accepted release/acquire helper while also satisfying Program Package exact requirement closure unless evaluator semantic authority is widened with a realization-specific CUDA-JS requirement. That would violate the accepted ownership split.
+The evaluator profile is the exception. `evaluator-profile.schema.json` and `normalizeEvaluatorProfile()` define `programContribution` with only `kind`, `language`, `sourceIdentity`, `inputs`, and `provenance`. Therefore an evaluator-owned restricted Device-JS program cannot declare a non-base public CUDA-JS capability that its generated source truthfully needs, even though Program Package already has the generic composition path for that declaration.
 
-## Why this is a gap rather than an evaluator-schema omission
+## Reassessment of the initial diagnosis
 
-SPEC-0009 EVAL-PUB-002/003 require complete payload publication and exact stale/incarnation validation before readiness. EVAL-PUB-008 explicitly states that physical synchronization is selected later through public CUDA-JS contracts and is not evaluator semantic meaning. EVAL-RESIDENT-005/008 likewise place generic mechanism realization in CUDA-JS while requiring CUDA-MCGS to stop rather than use a private workaround.
+The initial gap record classified this as a Program Package projection defect. Further authority/code comparison falsified that diagnosis:
 
-Therefore the semantic evaluator profile should remain mechanism-neutral. The missing behavior belongs to Program Package composition, which already owns projection from generated Search Program implementation to public CUDA-JS requirements.
+1. Program Package already consumes `result.normalized.programContribution.requirements ?? []` generically from selected owners.
+2. Channel Search IR already declares `programContribution.requirements` and validates exact requirement identity.
+3. SPEC-0009 EVAL-PUB-008 says synchronization is selected later through public CUDA-JS contracts; it does **not** prohibit the evaluator Search Program contribution from declaring the public capability contract it requires.
+4. EVAL-IR-002 explicitly permits Search IR to name public publication/resource/progress dependencies while forbidding atomic spelling, raw pointers and native scheduler details.
+
+The correct repair is therefore to make evaluator `programContribution` capable of declaring public CUDA-JS contract requirements. No Program Package algorithm change is required.
 
 ## Selected repair
 
-Search Compiler will derive helper-required public contracts from the normalized generated function helper set during Program Package normalization/composition.
+Extend evaluator Search IR 0.2.0 and its production normalizer so `programContribution` contains a required `requirements` array of exact public schema references.
 
-For every helper with a declared generic CUDA-JS requirement:
+Rules for the first repair:
 
-1. the requirement identity must already be available in the resolved public-requirement catalog before ignition;
-2. the Program Package must include that exact requirement;
-3. the requirement must list the generated function's owner profile as a consumer, so deletion ownership remains exact;
-4. conflicting or unavailable identities fail before valid package publication;
-5. helper-free programs preserve the historical exact requirement set and identities.
+1. `requirements` is finite, unique by contract ID, canonically ordered, and identity-material.
+2. The profile may declare zero requirements when its program needs no non-base public capability; no placeholder requirement is created.
+3. The normalizer validates schema-reference shape/identity but does not interpret CUDA mechanism semantics.
+4. Program Package remains the owner that checks whether declared requirements are available before ignition and projects them to CUDA-JS.
+5. The first #124 Tensor runtime will declare `cuda-js.device-publication-release-acquire/0.1.0` when its evaluator-owned Device-JS uses release/acquire publication.
+6. Evaluator absence remains structural zero and creates no requirement residue.
 
-This keeps evaluator semantics mechanism-neutral while making generated implementation requirements truthful and owner-attributable.
+This records a public contract dependency without importing helper/native spelling into evaluator semantics. Tensor mathematics remains CUDA-JS-Tensor-owned and physical synchronization remains CUDA-JS-owned.
 
 ## Falsifiers
 
 The repair is invalid if any of the following is possible:
 
-- a helper-using function normalizes without its required public contract;
-- a helper-required contract is present but does not name the helper function's owner as a consumer;
-- an unavailable helper contract is silently synthesized;
-- removing the sole helper-using owner leaves the helper-only public requirement behind;
-- helper-free protected fixtures change requirement closure or normalized identity without another material input change;
-- the fix requires evaluator schema changes, CUDA-JS-private imports, or native source.
+- duplicate requirement IDs normalize successfully;
+- requirement order changes evaluator identity after canonical normalization;
+- an undeclared/invalid schema reference survives normalization;
+- Program Package fails to consume the normalized evaluator requirement through its existing generic closure;
+- a helper-using evaluator package can omit its required public contract and still normalize;
+- evaluator-free recomposition leaves the evaluator-only public requirement behind;
+- the change introduces CUDA helper/native spelling into evaluator schema, private CUDA-JS/Tensor imports, or product semantics.
 
 ## Dev-cycle continuation
 
-Proceed through `assess → research → reassess → plan → execute → qualify → review → cleanup/document` at `tool.search-compiler`, then resume the #124 evaluator Device-JS contribution against the repaired projection boundary.
+Proceed through `assess → research → reassess → plan → execute → qualify → review → cleanup/document` at the evaluator Search IR/normalizer boundary. After the gap is qualified, resume the #124 evaluator Device-JS contribution against the now-complete public-requirement seam.
