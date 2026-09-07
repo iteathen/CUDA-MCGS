@@ -4,336 +4,135 @@
   "title": "CUDA-MCGS accepted execution package and CUDA-JS adapter requirements",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "schema",
-    "status",
-    "semantic",
-    "program",
-    "cudaJsAdapter",
-    "manifests",
-    "compatibility",
-    "provenance",
-    "deletion"
-  ],
+  "required": ["schema", "status", "semantic", "program", "cudaJsAdapter", "manifests", "compatibility", "provenance", "deletion"],
   "properties": {
-    "schema": {
-      "const": "cuda-mcgs.execution-package/0.2.0"
-    },
-    "status": {
-      "const": "accepted"
-    },
+    "schema": { "const": "cuda-mcgs.execution-package/0.2.0" },
+    "status": { "const": "accepted" },
     "semantic": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "engineIdentity",
-        "selectedProfiles",
-        "entryPointRoles",
-        "resourcePlan",
-        "progressPlan",
-        "outputProfile",
-        "sessionProfile",
-        "stageProfile",
-        "channelProfile"
-      ],
+      "required": ["engineIdentity", "selectedProfiles", "entryPointRoles", "resourcePlan", "progressPlan", "outputProfile", "sessionProfile", "stageProfile", "channelProfile"],
       "properties": {
-        "engineIdentity": {
-          "$ref": "primitives.schema.json#/$defs/contentIdentity"
-        },
-        "selectedProfiles": {
-          "type": "array",
-          "minItems": 6,
-          "items": {
-            "$ref": "program-package-profile.schema.json#/$defs/profileReference"
-          }
-        },
+        "engineIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
+        "selectedProfiles": { "type": "array", "minItems": 6, "items": { "$ref": "program-package-profile.schema.json#/$defs/profileReference" } },
         "entryPointRoles": {
           "type": "array",
           "minItems": 1,
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "role",
-              "function"
-            ],
+            "required": ["role", "function"],
             "properties": {
-              "role": {
-                "$ref": "primitives.schema.json#/$defs/namespacedId"
-              },
-              "function": {
-                "type": "string"
-              }
+              "role": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+              "function": { "type": "string" }
             }
           }
         },
-        "resourcePlan": {
-          "$ref": "program-package-profile.schema.json#/$defs/profileReference"
-        },
-        "progressPlan": {
-          "$ref": "program-package-profile.schema.json#/$defs/profileReference"
-        },
-        "outputProfile": {
-          "$ref": "program-package-profile.schema.json#/$defs/profileReference"
-        },
-        "sessionProfile": {
-          "$ref": "program-package-profile.schema.json#/$defs/optionalProfileReference"
-        },
-        "stageProfile": {
-          "$ref": "program-package-profile.schema.json#/$defs/optionalProfileReference"
-        },
-        "channelProfile": {
-          "$ref": "program-package-profile.schema.json#/$defs/optionalProfileReference"
-        }
+        "resourcePlan": { "$ref": "program-package-profile.schema.json#/$defs/profileReference" },
+        "progressPlan": { "$ref": "program-package-profile.schema.json#/$defs/profileReference" },
+        "outputProfile": { "$ref": "program-package-profile.schema.json#/$defs/profileReference" },
+        "sessionProfile": { "$ref": "program-package-profile.schema.json#/$defs/optionalProfileReference" },
+        "stageProfile": { "$ref": "program-package-profile.schema.json#/$defs/optionalProfileReference" },
+        "channelProfile": { "$ref": "program-package-profile.schema.json#/$defs/optionalProfileReference" }
       }
     },
     "program": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "schema",
-        "identity",
-        "sourceIdentity",
-        "functions"
-      ],
+      "required": ["schema", "identity", "sourceIdentity", "functions"],
       "properties": {
-        "schema": {
-          "const": "cuda-mcgs.search-program/0.2.0"
-        },
-        "identity": {
-          "$ref": "primitives.schema.json#/$defs/contentIdentity"
-        },
-        "sourceIdentity": {
-          "$ref": "primitives.schema.json#/$defs/contentIdentity"
-        },
-        "functions": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/publicFunction"
-          }
-        }
+        "schema": { "const": "cuda-mcgs.search-program/0.2.0" },
+        "identity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
+        "sourceIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
+        "functions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/publicFunction" } }
       }
     },
-    "manifests": {
-      "$ref": "program-package-profile.schema.json#/$defs/manifests"
-    },
-    "compatibility": {
-      "$ref": "program-package-profile.schema.json#/$defs/compatibility"
-    },
-    "provenance": {
-      "$ref": "program-package-profile.schema.json#/$defs/provenance"
-    },
-    "deletion": {
-      "$ref": "program-package-profile.schema.json#/$defs/deletion"
-    },
+    "manifests": { "$ref": "program-package-profile.schema.json#/$defs/manifests" },
+    "compatibility": { "$ref": "program-package-profile.schema.json#/$defs/compatibility" },
+    "provenance": { "$ref": "program-package-profile.schema.json#/$defs/provenance" },
+    "deletion": { "$ref": "program-package-profile.schema.json#/$defs/deletion" },
     "cudaJsAdapter": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "schema",
-        "publicContracts",
-        "searchProgram",
-        "resourceRequirements",
-        "deliveryRequirements",
-        "operationRequirements",
-        "searchLifecycle"
-      ],
+      "required": ["schema", "publicContracts", "searchProgram", "resourceRequirements", "deliveryRequirements", "operationRequirements", "searchLifecycle"],
       "description": "MCGS-owned input to integration.cuda-js. Actual CUDA-JS request objects, field names, allowed variants, finite lower limits and lower resource lifecycle are validated/constructed by the adapter from the selected public CUDA-JS package.",
       "properties": {
-        "schema": {
-          "const": "cuda-mcgs.cuda-js-adapter-requirements/0.2.0"
-        },
-        "publicContracts": {
-          "type": "array",
-          "minItems": 2,
-          "items": {
-            "$ref": "primitives.schema.json#/$defs/schemaReference"
-          }
-        },
+        "schema": { "const": "cuda-mcgs.cuda-js-adapter-requirements/0.2.0" },
+        "publicContracts": { "type": "array", "minItems": 2, "items": { "$ref": "primitives.schema.json#/$defs/schemaReference" } },
         "searchProgram": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "source",
-            "functions"
-          ],
+          "required": ["source", "functions"],
           "properties": {
-            "source": {
-              "type": "string",
-              "minLength": 1
-            },
-            "functions": {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "$ref": "#/$defs/publicFunction"
-              }
-            }
+            "source": { "type": "string", "minLength": 1 },
+            "functions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/publicFunction" } },
+            "deviceImports": { "type": "array", "minItems": 1, "maxItems": 64, "items": { "$ref": "device-js-import-declaration.schema.json" } }
           }
         },
-        "resourceRequirements": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/resourceRequirement"
-          }
-        },
-        "operationRequirements": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/operationRequirement"
-          }
-        },
+        "resourceRequirements": { "type": "array", "items": { "$ref": "#/$defs/resourceRequirement" } },
+        "operationRequirements": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/operationRequirement" } },
         "searchLifecycle": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "ignition",
-            "cancellation",
-            "completion"
-          ],
+          "required": ["ignition", "cancellation", "completion"],
           "properties": {
-            "ignition": {
-              "const": "device-owned"
-            },
-            "cancellation": {
-              "const": "bounded-external-intent"
-            },
-            "completion": {
-              "const": "device-owned-closure"
-            }
+            "ignition": { "const": "device-owned" },
+            "cancellation": { "const": "bounded-external-intent" },
+            "completion": { "const": "device-owned-closure" }
           }
         },
-        "sidebandRequirements": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/sidebandRequirement"
-          }
-        },
-        "deliveryRequirements": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 1,
-          "items": {
-            "$ref": "#/$defs/deliveryRequirement"
-          }
-        }
+        "sidebandRequirements": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/sidebandRequirement" } },
+        "deliveryRequirements": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "$ref": "#/$defs/deliveryRequirement" } }
       }
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "required": ["cudaJsAdapter"],
+        "properties": {
+          "cudaJsAdapter": {
+            "required": ["searchProgram"],
+            "properties": { "searchProgram": { "required": ["deviceImports"] } }
+          }
+        }
+      },
+      "then": { "properties": { "deletion": { "properties": { "records": { "items": { "required": ["deviceImports"] } } } } } },
+      "else": { "properties": { "deletion": { "properties": { "records": { "items": { "not": { "required": ["deviceImports"] } } } } } } }
+    }
+  ],
   "$defs": {
     "publicFunction": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "name",
-        "executionRole",
-        "parameters",
-        "returns"
-      ],
+      "required": ["name", "executionRole", "parameters", "returns"],
       "properties": {
-        "name": {
-          "type": "string",
-          "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$"
-        },
-        "parameters": {
-          "type": "array",
-          "items": {
-            "$ref": "program-package-profile.schema.json#/$defs/parameter"
-          }
-        },
-        "returns": {
-          "enum": [
-            "void",
-            "bool",
-            "u32",
-            "i32",
-            "u64",
-            "f32"
-          ]
-        },
-        "executionRole": {
-          "enum": [
-            "runtime-entry",
-            "device-callable"
-          ]
-        }
+        "name": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" },
+        "parameters": { "type": "array", "items": { "$ref": "program-package-profile.schema.json#/$defs/parameter" } },
+        "returns": { "enum": ["void", "bool", "u32", "i32", "u64", "f32"] },
+        "executionRole": { "enum": ["runtime-entry", "device-callable"] }
       }
     },
     "publicBinding": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "parameter",
-        "source"
-      ],
+      "required": ["parameter", "source"],
       "properties": {
-        "parameter": {
-          "type": "string",
-          "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$"
-        },
+        "parameter": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" },
         "source": {
           "oneOf": [
             {
               "type": "object",
               "additionalProperties": false,
-              "required": [
-                "kind",
-                "resource"
-              ],
+              "required": ["kind", "resource"],
               "properties": {
-                "kind": {
-                  "const": "resource"
-                },
-                "resource": {
-                  "type": "string",
-                  "pattern": "^resource-[0-9]+$"
-                },
-                "access": {
-                  "enum": [
-                    "read",
-                    "write",
-                    "read-write"
-                  ],
-                  "description": "MCGS-owned ordinary operation-local access intent. Atomic/publication effects require a later accepted extension and cannot be weakened to this field."
-                }
+                "kind": { "const": "resource" },
+                "resource": { "type": "string", "pattern": "^resource-[0-9]+$" },
+                "access": { "enum": ["read", "write", "read-write"], "description": "MCGS-owned ordinary operation-local access intent. Atomic/publication effects require a later accepted extension and cannot be weakened to this field." }
               }
             },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "kind",
-                "schema"
-              ],
-              "properties": {
-                "kind": {
-                  "const": "scalar"
-                },
-                "schema": {
-                  "$ref": "primitives.schema.json#/$defs/schemaReference"
-                }
-              }
-            },
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "kind",
-                "sideband"
-              ],
-              "properties": {
-                "kind": {
-                  "const": "sideband"
-                },
-                "sideband": {
-                  "type": "string",
-                  "pattern": "^sideband-[0-9]+$"
-                }
-              }
-            }
+            { "type": "object", "additionalProperties": false, "required": ["kind", "schema"], "properties": { "kind": { "const": "scalar" }, "schema": { "$ref": "primitives.schema.json#/$defs/schemaReference" } } },
+            { "type": "object", "additionalProperties": false, "required": ["kind", "sideband"], "properties": { "kind": { "const": "sideband" }, "sideband": { "type": "string", "pattern": "^sideband-[0-9]+$" } } }
           ]
         }
       }
@@ -341,96 +140,32 @@
     "resourceRequirement": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "byteLength",
-        "alignment",
-        "memorySpaces",
-        "accessRequirements"
-      ],
+      "required": ["id", "byteLength", "alignment", "memorySpaces", "accessRequirements"],
       "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^resource-[0-9]+$"
-        },
-        "byteLength": {
-          "$ref": "primitives.schema.json#/$defs/decimalUint"
-        },
-        "alignment": {
-          "$ref": "primitives.schema.json#/$defs/decimalUint"
-        },
-        "memorySpaces": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "enum": [
-              "host-admission",
-              "device-search",
-              "device-publication",
-              "durable"
-            ]
-          }
-        },
-        "accessRequirements": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "enum": [
-              "read",
-              "write",
-              "atomic",
-              "publish"
-            ]
-          }
-        }
+        "id": { "type": "string", "pattern": "^resource-[0-9]+$" },
+        "byteLength": { "$ref": "primitives.schema.json#/$defs/decimalUint" },
+        "alignment": { "$ref": "primitives.schema.json#/$defs/decimalUint" },
+        "memorySpaces": { "type": "array", "minItems": 1, "items": { "enum": ["host-admission", "device-search", "device-publication", "durable"] } },
+        "accessRequirements": { "type": "array", "minItems": 1, "items": { "enum": ["read", "write", "atomic", "publish"] } }
       }
     },
     "operationRequirement": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "function",
-        "bindings",
-        "launchPolicy"
-      ],
+      "required": ["id", "function", "bindings", "launchPolicy"],
       "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^operation-[0-9]+$"
-        },
-        "function": {
-          "type": "string",
-          "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$"
-        },
-        "bindings": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/publicBinding"
-          }
-        },
+        "id": { "type": "string", "pattern": "^operation-[0-9]+$" },
+        "function": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" },
+        "bindings": { "type": "array", "items": { "$ref": "#/$defs/publicBinding" } },
         "launchPolicy": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "grid",
-            "block",
-            "dynamicSharedBytes",
-            "maxPending"
-          ],
+          "required": ["grid", "block", "dynamicSharedBytes", "maxPending"],
           "properties": {
-            "grid": {
-              "$ref": "program-package-profile.schema.json#/$defs/dim3"
-            },
-            "block": {
-              "$ref": "program-package-profile.schema.json#/$defs/dim3"
-            },
-            "dynamicSharedBytes": {
-              "$ref": "primitives.schema.json#/$defs/decimalUint"
-            },
-            "maxPending": {
-              "$ref": "primitives.schema.json#/$defs/decimalUint"
-            }
+            "grid": { "$ref": "program-package-profile.schema.json#/$defs/dim3" },
+            "block": { "$ref": "program-package-profile.schema.json#/$defs/dim3" },
+            "dynamicSharedBytes": { "$ref": "primitives.schema.json#/$defs/decimalUint" },
+            "maxPending": { "$ref": "primitives.schema.json#/$defs/decimalUint" }
           }
         }
       }
@@ -438,135 +173,40 @@
     "sidebandRequirement": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "role",
-        "direction",
-        "valueType",
-        "capacity",
-        "publication",
-        "applicationPoint",
-        "lifetime",
-        "residentResource",
-        "semantics",
-        "cleanup"
-      ],
+      "required": ["id", "role", "direction", "valueType", "capacity", "publication", "applicationPoint", "lifetime", "residentResource", "semantics", "cleanup"],
       "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^sideband-[0-9]+$"
-        },
-        "role": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9-]*$"
-        },
-        "direction": {
-          "enum": [
-            "host-to-device",
-            "device-to-host"
-          ]
-        },
-        "valueType": {
-          "const": "u32"
-        },
-        "capacity": {
-          "$ref": "primitives.schema.json#/$defs/decimalUint"
-        },
-        "publication": {
-          "const": "release-acquire"
-        },
-        "applicationPoint": {
-          "$ref": "primitives.schema.json#/$defs/schemaReference"
-        },
-        "lifetime": {
-          "enum": [
-            "operation",
-            "session"
-          ]
-        },
-        "residentResource": {
-          "oneOf": [
-            {
-              "type": "null"
-            },
-            {
-              "type": "string",
-              "pattern": "^resource-[0-9]+$"
-            }
-          ]
-        },
-        "semantics": {
-          "$ref": "primitives.schema.json#/$defs/schemaReference"
-        },
-        "cleanup": {
-          "$ref": "primitives.schema.json#/$defs/schemaReference"
-        }
+        "id": { "type": "string", "pattern": "^sideband-[0-9]+$" },
+        "role": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "direction": { "enum": ["host-to-device", "device-to-host"] },
+        "valueType": { "const": "u32" },
+        "capacity": { "$ref": "primitives.schema.json#/$defs/decimalUint" },
+        "publication": { "const": "release-acquire" },
+        "applicationPoint": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "lifetime": { "enum": ["operation", "session"] },
+        "residentResource": { "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^resource-[0-9]+$" }] },
+        "semantics": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "cleanup": { "$ref": "primitives.schema.json#/$defs/schemaReference" }
       }
     },
     "deliveryRequirement": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "packageDelivery",
-        "role",
-        "terminalSchema",
-        "resource",
-        "byteOffset",
-        "byteLength",
-        "readiness",
-        "mode",
-        "maxTransfers",
-        "borrow",
-        "asyncRead",
-        "cleanup",
-        "lifetime"
-      ],
+      "required": ["id", "packageDelivery", "role", "terminalSchema", "resource", "byteOffset", "byteLength", "readiness", "mode", "maxTransfers", "borrow", "asyncRead", "cleanup", "lifetime"],
       "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^delivery-[0-9]+$"
-        },
-        "packageDelivery": {
-          "$ref": "primitives.schema.json#/$defs/namespacedId"
-        },
-        "role": {
-          "const": "terminal-output"
-        },
-        "terminalSchema": {
-          "$ref": "primitives.schema.json#/$defs/namespacedId"
-        },
-        "resource": {
-          "type": "string",
-          "pattern": "^resource-[0-9]+$"
-        },
-        "byteOffset": {
-          "$ref": "primitives.schema.json#/$defs/decimalUint"
-        },
-        "byteLength": {
-          "$ref": "primitives.schema.json#/$defs/decimalUint"
-        },
-        "readiness": {
-          "const": "terminal-completed"
-        },
-        "mode": {
-          "const": "asynchronous-bounded-read"
-        },
-        "maxTransfers": {
-          "$ref": "primitives.schema.json#/$defs/decimalUint"
-        },
-        "borrow": {
-          "$ref": "primitives.schema.json#/$defs/schemaReference"
-        },
-        "asyncRead": {
-          "$ref": "primitives.schema.json#/$defs/schemaReference"
-        },
-        "cleanup": {
-          "$ref": "primitives.schema.json#/$defs/schemaReference"
-        },
-        "lifetime": {
-          "const": "terminal-result"
-        }
+        "id": { "type": "string", "pattern": "^delivery-[0-9]+$" },
+        "packageDelivery": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "role": { "const": "terminal-output" },
+        "terminalSchema": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+        "resource": { "type": "string", "pattern": "^resource-[0-9]+$" },
+        "byteOffset": { "$ref": "primitives.schema.json#/$defs/decimalUint" },
+        "byteLength": { "$ref": "primitives.schema.json#/$defs/decimalUint" },
+        "readiness": { "const": "terminal-completed" },
+        "mode": { "const": "asynchronous-bounded-read" },
+        "maxTransfers": { "$ref": "primitives.schema.json#/$defs/decimalUint" },
+        "borrow": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "asyncRead": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "cleanup": { "$ref": "primitives.schema.json#/$defs/schemaReference" },
+        "lifetime": { "const": "terminal-result" }
       }
     }
   }

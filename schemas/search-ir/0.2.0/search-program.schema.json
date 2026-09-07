@@ -26,144 +26,60 @@
     "deletion"
   ],
   "properties": {
-    "schema": {
-      "const": "cuda-mcgs.search-program/0.2.0"
-    },
-    "status": {
-      "const": "accepted"
-    },
-    "language": {
-      "const": "restricted-device-js"
-    },
-    "semanticEngineIdentity": {
-      "$ref": "primitives.schema.json#/$defs/contentIdentity"
-    },
-    "compositionProfileIdentity": {
-      "$ref": "primitives.schema.json#/$defs/contentIdentity"
-    },
-    "generator": {
-      "$ref": "program-package-profile.schema.json#/$defs/generator"
-    },
-    "source": {
-      "type": "string",
-      "minLength": 1
-    },
-    "sourceIdentity": {
-      "$ref": "primitives.schema.json#/$defs/contentIdentity"
-    },
+    "schema": { "const": "cuda-mcgs.search-program/0.2.0" },
+    "status": { "const": "accepted" },
+    "language": { "const": "restricted-device-js" },
+    "semanticEngineIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
+    "compositionProfileIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
+    "generator": { "$ref": "program-package-profile.schema.json#/$defs/generator" },
+    "source": { "type": "string", "minLength": 1 },
+    "sourceIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
     "sourceMap": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "id",
-          "ownerProfile",
-          "semanticOwner",
-          "sourceIdentity",
-          "functions"
-        ],
+        "required": ["id", "ownerProfile", "semanticOwner", "sourceIdentity", "functions"],
         "properties": {
-          "id": {
-            "$ref": "primitives.schema.json#/$defs/namespacedId"
-          },
-          "ownerProfile": {
-            "$ref": "primitives.schema.json#/$defs/namespacedId"
-          },
-          "semanticOwner": {
-            "$ref": "primitives.schema.json#/$defs/namespacedId"
-          },
-          "sourceIdentity": {
-            "$ref": "primitives.schema.json#/$defs/contentIdentity"
-          },
-          "functions": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "type": "string"
-            }
-          }
+          "id": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+          "ownerProfile": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+          "semanticOwner": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+          "sourceIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
+          "functions": { "type": "array", "minItems": 1, "items": { "type": "string" } }
         }
       }
     },
-    "functions": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "$ref": "program-package-profile.schema.json#/$defs/function"
-      }
-    },
-    "programUnits": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "$ref": "program-package-profile.schema.json#/$defs/programUnit"
-      }
-    },
+    "functions": { "type": "array", "minItems": 1, "items": { "$ref": "program-package-profile.schema.json#/$defs/function" } },
+    "programUnits": { "type": "array", "minItems": 1, "items": { "$ref": "program-package-profile.schema.json#/$defs/programUnit" } },
     "entryPoints": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "role",
-          "function"
-        ],
+        "required": ["role", "function"],
         "properties": {
-          "role": {
-            "$ref": "primitives.schema.json#/$defs/namespacedId"
-          },
-          "function": {
-            "type": "string"
-          }
+          "role": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+          "function": { "type": "string" }
         }
       }
     },
-    "publicRequirements": {
-      "type": "array",
-      "minItems": 2,
-      "items": {
-        "$ref": "program-package-profile.schema.json#/$defs/publicRequirement"
-      }
-    },
-    "resources": {
-      "type": "array",
-      "items": {
-        "$ref": "program-package-profile.schema.json#/$defs/resource"
-      }
-    },
-    "operations": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "$ref": "program-package-profile.schema.json#/$defs/operation"
-      }
-    },
-    "manifests": {
-      "$ref": "program-package-profile.schema.json#/$defs/manifests"
-    },
-    "provenance": {
-      "$ref": "program-package-profile.schema.json#/$defs/provenance"
-    },
-    "deletion": {
-      "$ref": "program-package-profile.schema.json#/$defs/deletion"
-    },
-    "sidebands": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "$ref": "program-package-profile.schema.json#/$defs/sideband"
-      }
-    },
-    "deliveries": {
-      "type": "array",
-      "minItems": 1,
-      "maxItems": 1,
-      "items": {
-        "$ref": "program-package-profile.schema.json#/$defs/delivery"
-      }
+    "publicRequirements": { "type": "array", "minItems": 2, "items": { "$ref": "program-package-profile.schema.json#/$defs/publicRequirement" } },
+    "deviceImports": { "type": "array", "minItems": 1, "maxItems": 64, "items": { "$ref": "device-js-import-declaration.schema.json" } },
+    "resources": { "type": "array", "items": { "$ref": "program-package-profile.schema.json#/$defs/resource" } },
+    "operations": { "type": "array", "minItems": 1, "items": { "$ref": "program-package-profile.schema.json#/$defs/operation" } },
+    "manifests": { "$ref": "program-package-profile.schema.json#/$defs/manifests" },
+    "provenance": { "$ref": "program-package-profile.schema.json#/$defs/provenance" },
+    "deletion": { "$ref": "program-package-profile.schema.json#/$defs/deletion" },
+    "sidebands": { "type": "array", "minItems": 1, "items": { "$ref": "program-package-profile.schema.json#/$defs/sideband" } },
+    "deliveries": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "$ref": "program-package-profile.schema.json#/$defs/delivery" } }
+  },
+  "allOf": [
+    {
+      "if": { "required": ["deviceImports"] },
+      "then": { "properties": { "deletion": { "properties": { "records": { "items": { "required": ["deviceImports"] } } } } } },
+      "else": { "properties": { "deletion": { "properties": { "records": { "items": { "not": { "required": ["deviceImports"] } } } } } } }
     }
-  }
+  ]
 }
