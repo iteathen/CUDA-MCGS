@@ -18,7 +18,7 @@ Program Package composition is already designed for this. Its exact public-requi
 
 It also already rejects helper use when the corresponding public requirement is absent. Channel Search IR and normalization already use the same pattern: a program contribution carries exact public CUDA-JS requirements without exposing native spelling or private implementation.
 
-The evaluator profile is the exception. `evaluator-profile.schema.json` and `normalizeEvaluatorProfile()` define `programContribution` with only `kind`, `language`, `sourceIdentity`, `inputs`, and `provenance`. Therefore an evaluator-owned restricted Device-JS program cannot declare a non-base public CUDA-JS capability that its generated source truthfully needs, even though Program Package already has the generic composition path for that declaration.
+The evaluator profile is the exception. `evaluator-profile.schema.json` and the protected evaluator normalizer define `programContribution` with only `kind`, `language`, `sourceIdentity`, `inputs`, and `provenance`. Therefore an evaluator-owned restricted Device-JS program cannot declare a non-base public CUDA-JS capability that its generated source truthfully needs, even though Program Package already has the generic composition path for that declaration.
 
 ## Reassessment of the initial diagnosis
 
@@ -33,18 +33,26 @@ The correct repair is therefore to make evaluator `programContribution` capable 
 
 ## Selected repair
 
-Extend evaluator Search IR 0.2.0 and its production normalizer so `programContribution` contains a required `requirements` array of exact public schema references.
+Extend evaluator Search IR 0.2.0 and its production normalizer with an **optional additive** `programContribution.requirements` array of exact public schema references.
 
-Rules for the first repair:
+The field is optional deliberately: Search IR 0.2.0 already has protected evaluator documents and identities. Absence continues to mean zero non-base evaluator program requirements and delegates byte/identity-exactly to the protected normalizer. Only a profile that actually needs a non-base public CUDA-JS capability carries the new field.
 
-1. `requirements` is finite, unique by contract ID, canonically ordered, and identity-material.
-2. The profile may declare zero requirements when its program needs no non-base public capability; no placeholder requirement is created.
+Rules:
+
+1. When present, `requirements` is finite, unique by contract ID, canonically ordered, and identity-material.
+2. Absence is canonical zero; no placeholder requirement or empty-field identity churn is introduced.
 3. The normalizer validates schema-reference shape/identity but does not interpret CUDA mechanism semantics.
 4. Program Package remains the owner that checks whether declared requirements are available before ignition and projects them to CUDA-JS.
 5. The first #124 Tensor runtime will declare `cuda-js.device-publication-release-acquire/0.1.0` when its evaluator-owned Device-JS uses release/acquire publication.
 6. Evaluator absence remains structural zero and creates no requirement residue.
 
 This records a public contract dependency without importing helper/native spelling into evaluator semantics. Tensor mathematics remains CUDA-JS-Tensor-owned and physical synchronization remains CUDA-JS-owned.
+
+## Implementation disposition
+
+The large protected evaluator normalizer is retained byte-for-byte as private `evaluator-core.mjs`. Current `evaluator.mjs` is a thin additive wrapper: it delegates profiles without `requirements` exactly to the protected core, and for profiles with the field it strips only that field for core validation, validates/canonicalizes the requirement references, reattaches them to the normalized program contribution, and recomputes canonical evaluator identity.
+
+This follows the existing Search Compiler core/wrapper evolution pattern and minimizes regression surface while leaving one current public evaluator normalizer owner.
 
 ## Falsifiers
 
@@ -53,6 +61,7 @@ The repair is invalid if any of the following is possible:
 - duplicate requirement IDs normalize successfully;
 - requirement order changes evaluator identity after canonical normalization;
 - an undeclared/invalid schema reference survives normalization;
+- a legacy evaluator without the new field changes normalized bytes/identity;
 - Program Package fails to consume the normalized evaluator requirement through its existing generic closure;
 - a helper-using evaluator package can omit its required public contract and still normalize;
 - evaluator-free recomposition leaves the evaluator-only public requirement behind;
