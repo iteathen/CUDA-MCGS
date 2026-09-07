@@ -1,129 +1,75 @@
 {
-  "schema_version": 122,
-  "updated": "2026-09-06",
-  "status": "design_principle_alignment_complete_documentation_next_124_paused",
-  "objective": "Preserve the completed existing-code design alignment, keep all qualified #124 foundations unchanged and paused, and hand the active workstream to owner-directed documentation updates.",
-  "ownership_boundary": "CUDA-MCGS owns universal Search IR/Graph/Policy/Evaluator/Resource/Progress/Output/Session/Stage/Channel semantics and its own readiness/work ordering. CUDA-JS-Tensor owns Tensor mathematics, TensorProgram/TensorPlan, item-axis callable ABI and Tensor workspace. CUDA-JS owns consumer-neutral CUDA/compiler/runtime/provider/resource mechanisms. Product semantics remain downstream and are not execution dependencies for generic CUDA-MCGS framework work.",
+  "schema_version": 123,
+  "updated": "2026-09-07",
+  "status": "issue_124_resumed_device_resident_evaluator_lifecycle_active",
+  "objective": "Complete the generic CUDA-MCGS-owned device-resident evaluator request/batch/scatter/freshness/failure/cleanup runtime through existing public CUDA-JS-Tensor and CUDA-JS composition surfaces, preserving all protected #124 foundations and strict ownership boundaries.",
+  "ownership_boundary": "CUDA-MCGS owns evaluator request identity/incarnation/freshness, finite queue/batch/resource semantics, scatter/readiness/publication, failure/cancellation/retryability and search lifecycle. CUDA-JS-Tensor owns Tensor mathematics, TensorProgram/TensorPlan, item-axis callable ABI and Tensor workspace. CUDA-JS owns consumer-neutral Device-JS/compiler/runtime/provider/memory/lifecycle mechanisms. Product semantics remain downstream.",
   "authority": [
+    "explicit owner instruction: resume CUDA-MCGS #124",
     "AGENTS.md",
     "agent_files/AGENTS.md",
     "agent_files/AI_RULES.md",
-    "agent_files/DESIGN_ALIGNMENT_CARD.md",
     "agent_files/general_foundation/PRINCIPLES.md",
-    "agent_files/SYSTEM_REGISTRY.md",
     "docs/specs/SPEC-0015-native-boundary-and-js-only-implementation.md",
     "docs/specs/SPEC-0016-optional-cross-domain-physical-memory-policy.md",
-    "components/search-compiler/component.yaml",
-    "https://github.com/iteathen/CUDA-MCGS/issues/245"
+    "https://github.com/iteathen/CUDA-MCGS/issues/124"
   ],
   "current_focus": {
     "repository": "iteathen/CUDA-MCGS",
-    "issue": 245,
-    "name": "completed design alignment and documentation handoff",
-    "state": "alignment_complete_owner_documentation_input_next",
-    "next_action": "Accept and implement the project owner's documentation additions. Do not resume CUDA-MCGS #124 unless the owner later gives an explicit resume instruction.",
-    "completed_alignment": [
-      "producer/consumer readiness truth has one owner",
-      "Search Compiler private topology was reassessed against recursive full-attention LEGO rules without unjustified source splitting",
-      "exact reference-evidence lock maintenance has a fail-closed producer-driven tool while frozen independent locks remain committed",
-      "CUDA-JS adapter cleanup preserves child-before-parent terminality, no implicit failed-disposal retry and stable repeated quarantine",
-      "Tensor connector audit found no source-level ownership defect",
-      "no #124 feature work was included"
-    ],
-    "stop_conditions": [
-      "do not implement evaluator request accumulation, batching, scatter/readiness or search-lifecycle expansion",
-      "do not change public schemas/APIs merely to make files smaller",
-      "do not weaken frozen evidence, compatibility, lifecycle or cleanup gates",
-      "do not create a new CUDA semantic layer without independent consumer evidence",
-      "route any discovered lower generic gap to its natural owner"
+    "issue": 124,
+    "branch": "feature/124-device-resident-evaluator",
+    "base": "893a1676a303bf28aff8f24847b0be1559ba859c",
+    "name": "device-resident Tensor evaluator lifecycle through public composition",
+    "state": "active_owner_directed",
+    "next_action": "Read actual protected evaluator ports, Program Package, Tensor connector, CUDA-JS runtime adapter, lifecycle/cleanup implementation and tests; derive the smallest single-owner runtime seam for device-owned request accumulation, batching, scatter and freshness before mutation.",
+    "execution_sequence": [
+      "assess protected source and exact #124 foundations",
+      "research public producer/runtime contracts and existing falsifiers",
+      "reassess ownership and deletion/substitution constraints",
+      "plan one bounded runtime lifecycle unit",
+      "execute without product semantics or private imports",
+      "qualify normal/partial/stale/pressure/cancel/retry/cleanup behavior",
+      "review host-progression and lifecycle closure",
+      "cleanup/document and integrate only after exact-head CI"
     ]
   },
   "protected_foundations": {
-    "semantic_acceptance": {
-      "issue": 122,
-      "composer_requirements": 989,
-      "accepted_reference": 937,
-      "deferred_native": 52,
-      "composer_cases": 883,
-      "cuda_free_reference_routes": 393
-    },
-    "device_js_import_composition": {
-      "issue": 124,
-      "pull_request": 241,
-      "state": "protected_complete"
-    },
-    "evaluator_device_binding_foundation": {
-      "issue": 124,
-      "pull_request": 244,
-      "protected_main_before_alignment": "3c82dc430730fe88207e6d5f94040421686b2c0f",
-      "tree": "be30d8ae638ea61afd6f8818dfdc5df70e0e1df7",
-      "qualified_head_tree_preserved": true,
-      "meaning": "Dense Device-JS kinds, typed resource subviews, public CUDA-JS view translation/cleanup and richer public Tensor descriptor preservation remain integrated. Full evaluator runtime composition is intentionally paused."
-    },
-    "native_boundary": {
-      "spec": "SPEC-0015",
-      "rule": "maintained CUDA-MCGS remains JavaScript/TypeScript plus restricted Device-JS; CUDA-JS is the sole native CUDA/provider owner"
-    },
-    "optional_cuda_mm": {
-      "spec": "SPEC-0016",
-      "state": "recognized_unactivated",
-      "governance_remainder": "CUDA-MM main protection remains an external repository-setting deficit tracked by CUDA-MM #2; it is not a CUDA-MCGS production dependency"
-    }
+    "semantic_acceptance_issue": 122,
+    "runtime_path_issue": 125,
+    "device_js_import_pr": 241,
+    "tensor_binding_pr": 244,
+    "aligned_main": "893a1676a303bf28aff8f24847b0be1559ba859c",
+    "meaning": "Evaluator semantics, public runtime composition, public Tensor callable binding and lifecycle ownership are protected foundations; full active evaluator runtime composition remains the work of #124."
   },
-  "paused_work": {
-    "issue": 124,
-    "state": "open_valid_explicitly_paused",
-    "resume_rule": "Issue #245 completion does not resume #124. Resume only after a later explicit project-owner instruction. Preserve the qualified foundations while documentation work proceeds."
-  },
+  "acceptance_remaining": [
+    "multiple device-owned requests progress without host gather/launch/poll/relaunch progression",
+    "full and partial batches preserve request/item identity",
+    "stale results cannot publish into reused slots",
+    "pressure/failure/cancellation/unavailable capability map to explicit evaluator/search dispositions",
+    "evaluator-free and non-Tensor alternatives prove deletion/substitution",
+    "all owned resources terminate or retain honest quarantine/orphan truth",
+    "portable conformance covers normal pressure stale cancellation retry and cleanup without physical-support promotion"
+  ],
   "blockers": [
-    "No technical blocker remains in the completed existing-code alignment candidate.",
-    "The next requested work depends on owner-provided documentation additions.",
-    "Physical NVIDIA qualification remains deferred until suitable directly exposed hardware is available; this is an evidence/infrastructure gap, not a reason to add source work.",
-    "CUDA-MM main protection remains a separately tracked repository-governance deficit and cannot be treated as an activated runtime dependency."
+    "No product numerical oracle is a blocker or prerequisite for generic #124 work.",
+    "Direct physical NVIDIA qualification remains deferred until suitable hardware is actually exposed."
   ],
-  "deliverables": [
-    "Cross-repository current-state ownership aligned in CUDA-JS, CUDA-JS-Tensor and CUDA-MCGS.",
-    "Search Compiler recursive private LEGO structure documented while one public canonical owner is preserved.",
-    "Mechanical fail-closed maintenance for committed exact evidence locks with the final mutation gate unchanged in meaning.",
-    "CUDA-JS runtime-adapter cleanup corrected for child-before-parent disposal, no implicit retry and stable quarantine.",
-    "Focused cleanup-dependency regression coverage and exact-head package/reference/adapter/documentation qualification.",
-    "Clean handoff to owner-requested documentation work with #124 still paused."
-  ],
+  "downstream_state": {
+    "Connect4": "paused after C4-0001 through C4-0005; dependency assessment confirms it must wait for this generic lifecycle rather than reimplement it downstream"
+  },
   "do_not": [
-    "Do not resume CUDA-MCGS #124 evaluator request/batch/scatter/readiness/search-lifecycle feature work without explicit owner instruction.",
-    "Do not add new Tensor, CUDA/provider, model or product capability as part of documentation follow-up unless separately authorized.",
-    "Do not split public owners or schemas solely to reduce file length.",
-    "Do not replace independent frozen evidence with a shared mutable truth source or auto-bless changed producer outputs.",
-    "Do not retry failed close/destroy operations implicitly or close parent resources beneath unproved children.",
+    "Do not move Connect4 or other product semantics upstream.",
+    "Do not deep-import CUDA-JS or CUDA-JS-Tensor internals.",
+    "Do not create a second Tensor planner/runtime, scheduler, provider registry or native path.",
+    "Do not use a host read-decide-write/relaunch loop to advance the selected device-resident evaluator profile after ignition.",
+    "Do not weaken stale-result, lifecycle, cleanup, quarantine or compatibility gates.",
     "Do not promote portable/package evidence to native/provider/hardware support."
   ],
-  "physical_evidence": {
-    "disposition": "deferred_not_waived",
-    "rule": "Portable, hosted, VM, mock and package evidence prove only the semantics they execute and never promote native/provider/hardware support."
-  },
-  "validation": {
-    "alignment_exact_head": [
-      "documentation",
-      "Engine reference integration",
-      "cuda-js-compatible-pair",
-      "cuda-js-runtime-adapter",
-      "CUDA-JS-Tensor evaluator connector",
-      "library-interface",
-      "Terminal slice reference",
-      "Session behavioral reference",
-      "Stage behavioral reference"
-    ],
-    "required_after_any_documentation_change": [
-      "./scripts/verify-docs.sh",
-      "any owning contract/current-state checks triggered by the changed documentation surface"
-    ]
-  },
   "hard_constraints": [
     "one semantic/resource/lifecycle/compatibility fact has one visible owner",
     "no Python or maintained native CUDA source in CUDA-MCGS",
     "no private sibling imports",
-    "no product semantics upstream",
-    "no portable evidence promoted to native/provider support",
-    "documentation is the next owner-directed seam and #124 remains paused until explicitly resumed"
+    "product-neutral generic implementation only",
+    "preserve exact protected foundations and qualify every meaningful unit"
   ]
 }

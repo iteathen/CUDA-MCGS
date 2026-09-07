@@ -1,50 +1,68 @@
 # CUDA-MCGS Status
 
-**Status:** Design-principle alignment complete — documentation next
+**Status:** #124 resumed — device-resident evaluator lifecycle is the active seam
 
-**Updated:** 2026-09-06
+**Updated:** 2026-09-07
 
 ## Current execution seam
 
-The existing-code design-alignment pass tracked by **#245** is complete on the integration candidate. The next owner-directed work is **documentation**.
+By explicit project-owner instruction, **#124 — Device-resident evaluator connector through public CUDA-JS-Tensor — is resumed and active**.
 
-By explicit owner instruction, **#124 remains open, valid, and paused**. Completion of #245 does **not** automatically resume evaluator request accumulation, batching, scatter/readiness/publication, or search-lifecycle work. Resume #124 only from a later explicit owner instruction.
+Execution branch: `feature/124-device-resident-evaluator` from protected `main@893a1676a303bf28aff8f24847b0be1559ba859c`.
 
-## Preserved #124 foundation
+Preserve all valid protected foundations. Do not restart evaluator/search semantic design or the public Tensor/CUDA-JS composition work from zero.
 
-PR #244 remains the protected evaluator device-binding foundation. Its protected integration before this alignment pass was `main@3c82dc430730fe88207e6d5f94040421686b2c0f`, tree `be30d8ae638ea61afd6f8818dfdc5df70e0e1df7`, with the qualified PR-head tree preserved exactly by integration.
+## Protected #124 foundations
 
-That foundation includes:
+Already protected before resumption:
 
-- public CUDA-JS dense Device-JS scalar/pointer parity for `f64`, `f16`, and `bf16`;
-- identity-material typed resource subviews with compiler-owned validation/identity;
-- public CUDA-JS memory-view translation with view-relative access and truthful child-before-parent cleanup/quarantine;
-- richer stateless public Tensor callable/resource descriptor preservation for a future evaluator binding;
-- portable falsifiers only; no physical/native/provider promotion.
+- accepted evaluator/search semantics through #122;
+- public CUDA-JS runtime/compatible-pair production path through #125;
+- public external Device-JS import composition through PR #241;
+- stateless public Tensor evaluator device-binding foundation through PR #244;
+- public CUDA-JS-Tensor `TensorDeviceProgram` / item-axis callable / workspace facts;
+- public CUDA-JS memory/view/compiler/import/lifecycle mechanisms needed by the bounded connector;
+- design-principle alignment and corrected child-before-parent runtime-adapter cleanup from `main@893a1676...`.
 
-PR #241 remains the protected external Device-JS import-composition foundation. Neither foundation was expanded into full #124 runtime composition during the alignment pass.
+These are evidence/authority to preserve, not permission to duplicate lower owners.
 
-## Alignment result
+## Active generic outcome
 
-1. **Current-state ownership corrected.** CUDA-MCGS owns its own readiness and work ordering. CUDA-JS and CUDA-JS-Tensor own producer capability/qualification facts and no longer gate CUDA-MCGS on a downstream product oracle.
-2. **Search Compiler reassessed rather than mechanically split.** `tool.search-compiler` remains one coherent public canonical pre-ignition owner. Existing semantic source modules already form private recursive child LEGOs; no source split was justified merely by file length.
-3. **Evidence maintenance mechanized without weakening evidence.** Frozen committed reference identities remain independent expectations. A fail-closed maintenance tool derives/checks recognized locks only from successful producer evidence, while the final integration gate retains an explicit required-owner set and mutation matrix.
-4. **Runtime adapter lifecycle corrected.** A failed public child disposal no longer permits parent disposal underneath unproved state; failed disposal is not implicitly retried; repeated close preserves the original quarantined truth. The correction follows accepted CUDA-JS disposal semantics and has focused regression coverage.
-5. **Tensor adapter audit found no ownership defect requiring source change.** The connector remains a stateless projection of public Tensor callable/resource facts and does not become a second Tensor planner/runtime or evaluator lifecycle owner.
+Complete the CUDA-MCGS-owned runtime bridge between accepted evaluator lifecycle semantics and the already-public Tensor/Device-JS callable binding:
 
-## Stable ownership boundary
+- request identity, incarnation and freshness;
+- finite device-owned request accumulation;
+- full and partial batch formation;
+- request/item mapping;
+- result scatter, readiness and publication;
+- stale-result rejection across slot reuse;
+- explicit resource/workspace pressure;
+- failure, cancellation and unavailable-capability dispositions;
+- retryability;
+- evaluator-free and non-Tensor deletion/substitution;
+- terminal or truthfully quarantined cleanup.
 
-CUDA-MCGS owns Search IR, Graph, Policy, Evaluator, Resource, Progress, Output, Session, Stage, Channel, finite search-resource/pressure policy, deterministic restricted Search Program generation, and canonical pre-ignition composition.
+The bounded selected semantic profile must not require a host gather/launch/poll/relaunch loop to advance active evaluator work after ignition.
 
-CUDA-JS owns consumer-neutral device/context/memory/compiler/artifact/module/function/operation/publication/provider mechanisms and lower lifecycle/compatibility facts. CUDA-JS-Tensor owns generic Tensor mathematics/planning/device-callable item/workspace semantics. Product/model/checkpoint/domain numerical meaning remains downstream.
+## Ownership boundary
 
-A producer repository owns the public facts it exposes. The consuming repository owns whether those facts are sufficient. No sibling repository is a second owner of CUDA-MCGS readiness.
+CUDA-MCGS owns Search IR, Graph, Policy, Evaluator, Resource, Progress, Output, Session, Stage, Channel, finite search-resource/pressure policy, deterministic Search Program generation, and canonical pre-ignition composition.
 
-## Portfolio remainder
+CUDA-JS-Tensor owns generic Tensor mathematics, TensorProgram/TensorPlan, item-axis independence, typed callable ABI and Tensor workspace.
 
-The dormant/reserved CUDA semantic repositories remain activation-gated and gained no production code during this pass. CUDA-MM remains an unactivated reserved physical-policy owner; its live repository governance issue #2 still truthfully records that `main` protection is not yet aligned. That external repository-setting deficit does not authorize a hidden CUDA-MM dependency or new CUDA-MCGS capability.
+CUDA-JS owns consumer-neutral Device-JS/compiler/artifact/module/function/operation/memory/provider/lifecycle mechanisms.
 
-Direct physical NVIDIA qualification also remains deferred, not waived. Portable, hosted, VM, mock, and package evidence prove only the semantics they execute.
+Product/domain/model/checkpoint/numerical meaning remains downstream. Connect4 is deliberately paused and is not an execution dependency for #124.
+
+## First execution gate
+
+Before mutation of the runtime seam:
+
+1. read the actual evaluator semantic ports, Program Package, Tensor connector, CUDA-JS runtime adapter, lifecycle/cleanup code and their tests from protected main;
+2. identify the smallest single-owner implementation seam for device-owned evaluator request/batch/scatter state;
+3. prove deletion/substitution and no host-driven active-search progression in the design before broad implementation;
+4. implement and qualify in ownership-sized units with portable evidence only;
+5. keep physical NVIDIA qualification deferred unless direct hardware evidence is actually available.
 
 ## Hard limits
 
@@ -52,7 +70,11 @@ Direct physical NVIDIA qualification also remains deferred, not waived. Portable
 - No Python.
 - No private/deep CUDA-JS or CUDA-JS-Tensor imports.
 - No product semantics moved upstream.
-- No #124 feature expansion in the alignment pass.
-- No public schema/API churn solely to reduce file size.
-- No weakening of exact evidence, lifecycle, cleanup, or compatibility gates.
-- Documentation is the next owner-directed seam; #124 stays paused until explicitly resumed.
+- No second scheduler/provider registry/Tensor planner/runtime.
+- No host-produced active-search intermediate after ignition in the selected device-resident profile.
+- No portable/package evidence promoted to native/provider/hardware support.
+- No weakening of exact evidence, compatibility, lifecycle, cleanup or quarantine truth.
+
+## Product handoff
+
+Connect4 has secured its C4-0001 through C4-0005 baseline and recorded the dependency map. When #124 is protected-complete enough to expose the public executable evaluator lifecycle, Connect4 can resume downstream and freeze its comparison contract without pushing Connect Four semantics into CUDA-MCGS.
