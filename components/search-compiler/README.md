@@ -14,7 +14,7 @@ The public Search Compiler is an encapsulated parent LEGO. Its `src/` modules ar
 | `domain.mjs` | domain-profile normalization and canonical identity |
 | `graph.mjs` | graph-profile normalization and canonical identity |
 | `policy.mjs` | policy-profile normalization and canonical identity |
-| `evaluator.mjs` | evaluator-profile normalization and canonical identity |
+| `evaluator-core.mjs`, `evaluator.mjs` | protected evaluator-profile normalization plus the current additive evaluator program-requirement projection/canonicalization wrapper |
 | `resource.mjs` | resource-profile normalization and canonical identity |
 | `progress.mjs` | progress-profile normalization and canonical identity |
 | `output.mjs` | output-profile normalization and canonical identity |

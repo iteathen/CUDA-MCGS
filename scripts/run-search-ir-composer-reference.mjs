@@ -5,4 +5,5 @@ import '../conformance/search-compiler/verify-progress-stop-disposition-authorit
 import '../conformance/search-compiler/verify-operation-local-access.mjs';
 import '../conformance/search-compiler/verify-terminal-output-host-delivery.mjs';
 import '../conformance/search-compiler/verify-external-control-sideband-authority.mjs';
+import '../conformance/search-compiler/verify-evaluator-program-requirements.mjs';
 import '../conformance/search-compiler/verify-promotion-boundary.mjs';
