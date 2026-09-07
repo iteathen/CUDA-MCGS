@@ -11,6 +11,7 @@ import { fail } from './src/errors.mjs';
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'integration-cases.json');
+const frozenLocksPath = path.join(experimentRoot, 'fixtures', 'integration-evidence-locks.json');
 const coveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 const verifierPath = path.join(experimentRoot, 'run-integration.mjs');
 const integrationEvidencePath = path.join(experimentRoot, 'build', 'integration-evidence.json');
@@ -42,114 +43,6 @@ const requiredEvidenceIds = [
   'channel',
 ];
 
-const frozenEvidenceIdentities = {
-  "search-ir": {
-    "algorithm": "sha256",
-    "byteLength": 7749,
-    "sha256": "bd6679178c6754fe9b06d6fa54d038166b7ef39e32fb5f51513cc303cfd63a96"
-  },
-  "composer": {
-    "algorithm": "sha256",
-    "byteLength": 708983,
-    "sha256": "6f56f4afef54e573a9d977003cbf0dd208378a8b1fcbf6e748fb4d61f7694d70"
-  },
-  "domain": {
-    "algorithm": "sha256",
-    "byteLength": 30359,
-    "sha256": "4f7f5f3337f2f898ab6f75cb28d9e6563fa720c1c801a50163dc8339b381992e"
-  },
-  "graph-node": {
-    "algorithm": "sha256",
-    "byteLength": 10034,
-    "sha256": "0b27aa7e69638d3ad407434d332d615612d63fb3c1eea9e3a6b13aa0e4e07886"
-  },
-  "graph-edge": {
-    "algorithm": "sha256",
-    "byteLength": 11661,
-    "sha256": "aa84484f020effa7994f4d8be3fb8a1019c8076aae01a05a9d592ca3c004d874"
-  },
-  "graph-ref": {
-    "algorithm": "sha256",
-    "byteLength": 9126,
-    "sha256": "43a1d17f34768b13ba7b5474335e157d9abb9919106ffed5fac9825887e2cee1"
-  },
-  "graph-path": {
-    "algorithm": "sha256",
-    "byteLength": 9490,
-    "sha256": "6344238fb56de2bbc8a6b930e42c0485de02f6cb00e16b0844867ac3275525ee"
-  },
-  "graph-root": {
-    "algorithm": "sha256",
-    "byteLength": 9954,
-    "sha256": "6ee5e625278ce60c547ef35ad0d4eb76395e6cef86f256ad162b153787e3826e"
-  },
-  "graph-reclaim": {
-    "algorithm": "sha256",
-    "byteLength": 12099,
-    "sha256": "a25121f5ec687e140a6005ed7ec5aacf778dd39d1c7857fb5a42c6d2e8aa992f"
-  },
-  "graph-advance": {
-    "algorithm": "sha256",
-    "byteLength": 4194,
-    "sha256": "fa439202ed3397b58a8b6d3e6b4b57ac5ece5986e0cac8b16fc0e7c5fcc98b53"
-  },
-  "graph-cleanup": {
-    "algorithm": "sha256",
-    "byteLength": 5465,
-    "sha256": "96fdf3558f5a7eb33cdeae687d1bb0ca49b11c4381538bdfe1618228e5338184"
-  },
-  "policy": {
-    "algorithm": "sha256",
-    "byteLength": 13091,
-    "sha256": "2b939bee3971fd1387ab0899f3f557eb66d9514cde7d7d4a9b03f9ce0b166172"
-  },
-  "evaluator": {
-    "algorithm": "sha256",
-    "byteLength": 18038,
-    "sha256": "aacf0ccfa4688b3573d82a5057bfeb4ea2bf317cc371941edf398521ce5ec830"
-  },
-  "resource": {
-    "algorithm": "sha256",
-    "byteLength": 12499,
-    "sha256": "8432eac222a545836772152e17802b20683b7f00c3b752318e7f06ebbe014c25"
-  },
-  "progress": {
-    "algorithm": "sha256",
-    "byteLength": 11993,
-    "sha256": "640ea5b28f04cd61159b334550c1e14eaf9fc19c90cbfcbb36067d67e923568a"
-  },
-  "output": {
-    "algorithm": "sha256",
-    "byteLength": 16525,
-    "sha256": "8ab0c69ad23facab30b9553f602c36f43dee47988622a0badab6acf3c61c639f"
-  },
-  "framework": {
-    "algorithm": "sha256",
-    "byteLength": 6517,
-    "sha256": "00d1be70cfa7db1f71267331dd2373657c3fc27da21fbb03975e96d9d9068860"
-  },
-  "terminal": {
-    "algorithm": "sha256",
-    "byteLength": 9297,
-    "sha256": "9b4f86e76ad8da2034fcf3ceebaf3855dd423fb778a2c647b80183ab04440d3d"
-  },
-  "session": {
-    "algorithm": "sha256",
-    "byteLength": 18539,
-    "sha256": "0bfb273c861af024bf3a6acf091f12415af1ab236a5e10e5fcd9044cc9df0bda"
-  },
-  "stage": {
-    "algorithm": "sha256",
-    "byteLength": 9355,
-    "sha256": "16240b192f1e177ce625f9110d62857de6df5f9be7139e12f061455895402c72"
-  },
-  "channel": {
-    "algorithm": "sha256",
-    "byteLength": 17031,
-    "sha256": "cea0e53e06371958123bfdc34137dcce2ba18bca9b62e95693e567066f034ce7"
-  }
-};
-
 const requiredComposerWitnesses = {
   productNeutral: [
     'materially-different-composer-engines-cannot-collide',
@@ -171,6 +64,12 @@ const requiredComposerWitnesses = {
 async function readJson(absolutePath) {
   return JSON.parse(await readFile(absolutePath, 'utf8'));
 }
+
+const frozenLocks = await readJson(frozenLocksPath);
+assert.equal(frozenLocks.schema, 'cuda-mcgs.reference-integration-evidence-locks/0.1.0');
+assert(frozenLocks.identities && typeof frozenLocks.identities === 'object' && !Array.isArray(frozenLocks.identities), 'frozen integration lock identities must be an object');
+assert.deepEqual(Object.keys(frozenLocks.identities).sort(), [...requiredEvidenceIds].sort(), 'frozen integration lock ids must exactly match required owner evidence ids');
+const frozenEvidenceIdentities = frozenLocks.identities;
 
 function identityOf(id, evidence) {
   if (id === 'composer') return evidence.representationCompositionEvidenceKey;
@@ -341,6 +240,7 @@ assert.deepEqual(baselineAfter.evidenceIdentity, baselineBefore.evidenceIdentity
 const sourcePaths = [
   'docs/development/2026-09-02-ref-integrate-01-assessment-and-plan.md',
   'experiments/search-semantics-reference/fixtures/integration-cases.json',
+  'experiments/search-semantics-reference/fixtures/integration-evidence-locks.json',
   'experiments/search-semantics-reference/run-integration.mjs',
   'experiments/search-semantics-reference/run-integration-gate.mjs',
   'scripts/run-engine-reference-integration.mjs',
