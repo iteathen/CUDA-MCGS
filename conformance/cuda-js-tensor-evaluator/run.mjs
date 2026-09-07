@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   TensorEvaluatorConnectorError,
   createTensorEvaluatorConnector,
+  tensorEvaluatorConnectorConstants,
 } from '../../adapters/evaluators/cuda-js-tensor/index.mjs';
 import { createTensorEvaluatorReference } from './reference.mjs';
 
@@ -26,6 +27,16 @@ function fakeTensorDeviceProgram(overrides = {}) {
     { parameterIndex: 3, parameterName: 'scores', role: 'output', type: 'ptr<f32>', dtype: 'f32', access: 'write', itemVarying: true, byteLength: 16 },
     { parameterIndex: 4, parameterName: 'workspace', role: 'workspace', type: 'ptr<f32>', dtype: 'f32', access: 'read-write', itemVarying: true, byteLength: 32 },
   ];
+  const inputs = [
+    { ...parameters[1], name: 'features', valueId: 'value.features', elementCount: 8 },
+    { ...parameters[2], name: 'weights', valueId: 'value.weights', elementCount: 16 },
+  ];
+  const outputs = [
+    { ...parameters[3], name: 'scores', valueId: 'value.scores', perItemElements: 2, elementCount: 4 },
+  ];
+  const workspace = [
+    { ...parameters[4], perItemElements: 4, elementCount: 8, alignmentBytes: 16 },
+  ];
   const fn = { name: 'tensorRunItem', parameters: parameters.map(({ parameterName: name, type }) => ({ name, type })), returns: 'u32' };
   const library = {
     schemaVersion: 1,
@@ -42,9 +53,9 @@ function fakeTensorDeviceProgram(overrides = {}) {
     itemCapacity: 2,
     outputFormat: 'lto-ir',
     parameters,
-    inputs: parameters.filter(({ role }) => role === 'input'),
-    outputs: parameters.filter(({ role }) => role === 'output'),
-    workspace: parameters.filter(({ role }) => role === 'workspace'),
+    inputs,
+    outputs,
+    workspace,
     totalWorkspaceBytes: 32,
     function: fn,
     compatibilityIdentity: 'tensor-fixture-identity-v1',
@@ -72,6 +83,28 @@ runCase('TENSOR-EVAL-C01-public-callable-admission', () => {
   assert(imported.library.artifact.bytes instanceof Uint8Array, 'opaque Tensor library bytes must retain their public Uint8Array type');
   assert.match(connector.source, /return mcgsTensorRunItem\(/);
   assert.deepEqual(connector.claimLimits, ['public-tensor-callable-only', 'no-product-semantics', 'no-native-or-provider-qualification']);
+});
+
+runCase('TENSOR-EVAL-C01A-public-binding-descriptors-preserved', () => {
+  const connector = createTensorEvaluatorConnector(fakeTensorDeviceProgram());
+  const features = connector.parameters.find(({ parameterName }) => parameterName === 'features');
+  const weights = connector.parameters.find(({ parameterName }) => parameterName === 'weights');
+  const scores = connector.parameters.find(({ parameterName }) => parameterName === 'scores');
+  const workspace = connector.parameters.find(({ parameterName }) => parameterName === 'workspace');
+  assert.deepEqual(features, {
+    parameterIndex: 1, parameterName: 'features', role: 'input', type: 'ptr<f32>', dtype: 'f32', access: 'read', itemVarying: true,
+    byteLength: 32, name: 'features', valueId: 'value.features', elementCount: 8,
+  });
+  assert.equal(weights.itemVarying, false);
+  assert.equal(weights.valueId, 'value.weights');
+  assert.equal(scores.valueId, 'value.scores');
+  assert.equal(scores.perItemElements, 2);
+  assert.equal(scores.elementCount, 4);
+  assert.equal(workspace.perItemElements, 4);
+  assert.equal(workspace.elementCount, 8);
+  assert.equal(workspace.alignmentBytes, 16);
+  assert(Object.isFrozen(connector.parameters));
+  assert(Object.isFrozen(workspace));
 });
 
 runCase('TENSOR-EVAL-C02-full-batch-request-item-scatter', () => {
@@ -154,6 +187,13 @@ runCase('TENSOR-EVAL-F03-invalid-public-shapes-reject', () => {
   assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram({ totalWorkspaceBytes: 31 })), (error) => error?.code === 'TENSOR_EVALUATOR_WORKSPACE');
   assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram({ outputFormat: 'ptx' })), (error) => error?.code === 'TENSOR_EVALUATOR_IMPORT');
   assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram(), { requestCapacity: 0 }), (error) => error?.code === 'TENSOR_EVALUATOR_BOUNDS');
+  assert.throws(() => createTensorEvaluatorConnector(fakeTensorDeviceProgram(), { requestCapacity: tensorEvaluatorConnectorConstants.maximumRequestCapacity + 1 }), (error) => error?.code === 'TENSOR_EVALUATOR_BOUNDS');
+  const malformedWorkspace = fakeTensorDeviceProgram();
+  malformedWorkspace.workspace = malformedWorkspace.workspace.map((entry) => ({ ...entry, alignmentBytes: 0 }));
+  assert.throws(() => createTensorEvaluatorConnector(malformedWorkspace), (error) => error?.code === 'TENSOR_EVALUATOR_BOUNDS');
+  const malformedOutput = fakeTensorDeviceProgram();
+  malformedOutput.outputs = malformedOutput.outputs.map((entry) => ({ ...entry, valueId: '' }));
+  assert.throws(() => createTensorEvaluatorConnector(malformedOutput), (error) => error?.code === 'TENSOR_EVALUATOR_INPUT');
 });
 
 runCase('TENSOR-EVAL-F04-device-import-drift-rejected', () => {
