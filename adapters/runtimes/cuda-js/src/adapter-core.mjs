@@ -608,9 +608,9 @@ export async function prepareCudaJsExecution(executionPackage, { cudaJs, peer, r
     return new PreparedExecution(plan, owned);
   } catch (error) {
     if (error instanceof CudaJsRuntimeAdapterError && !owned.runtime) throw error;
+    const allocation = Boolean(owned.function);
     const report = await cleanup(owned);
     if (error instanceof CudaJsRuntimeAdapterError) { error.cleanup = freeze(report); throw error; }
-    const allocation = Boolean(owned.function);
     throw wrapped(allocation ? 'CUDA_JS_ADAPTER_ALLOCATION' : 'CUDA_JS_ADAPTER_COMPILE', allocation ? 'allocation' : 'compilation', `CUDA-JS ${allocation ? 'allocation' : 'preparation'} failed`, error, allocation ? 'allocation' : 'compilation', report);
   }
 }
