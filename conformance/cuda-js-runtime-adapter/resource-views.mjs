@@ -44,7 +44,7 @@ function addPublicViews(fake, { closeError = false } = {}) {
 const fake = addPublicViews(publicCudaJsFake());
 const execution = await prepareCudaJsExecution(viewedPackage(), { cudaJs: fake.cudaJs, peer: PEER });
 const compile = call(fake, 'compileDeviceProgram');
-assert.equal(compile[2].compile.headerProfile, 'cuda-device', 'dense + publication source must select the public combined header profile');
+assert.equal(compile[1].compile.headerProfile, 'cuda-device', 'dense + publication source must select the public combined header profile');
 assert.deepEqual(call(fake, 'memory.view')[1], { dtype: 'f16', byteOffset: 2, elementCount: 4, access: 'write' });
 await execution.ignite();
 const submit = call(fake, 'function.submit')[1];
