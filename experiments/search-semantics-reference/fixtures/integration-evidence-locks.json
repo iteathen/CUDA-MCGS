@@ -49,7 +49,7 @@
     "graph-advance": {
       "algorithm": "sha256",
       "byteLength": 4194,
-      "sha256": "fa439202ed3397b58a8b6d3e6b4b57ac5ece5986e0cac8b16fc0e7c5fcc98b53"
+      "sha256": "2f59a4bc2f5b63706282cd62f9677dcaf576e91c5b0204492b666c82f26c202f"
     },
     "graph-cleanup": {
       "algorithm": "sha256",
