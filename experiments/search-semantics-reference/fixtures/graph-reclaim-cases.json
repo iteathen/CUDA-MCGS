@@ -14,7 +14,7 @@
   "nodeEvidence": {
     "algorithm": "sha256",
     "byteLength": 10034,
-    "sha256": "0b27aa7e4619a6b91fa6cd741ba74399dd95f254639ea93a006f2e06a3e72987"
+    "sha256": "0b27aa7e69638d3ad407434d332d615612d63fb3c1eea9e3a6b13aa0e4e07886"
   },
   "edgeEvidence": {
     "algorithm": "sha256",
