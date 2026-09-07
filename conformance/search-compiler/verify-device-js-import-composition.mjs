@@ -9,8 +9,8 @@ import {
   buildExecutionPackage,
   composeSearchProgram,
   normalizeProgramPackageProfile,
+  protectedNoImportProgramPackageOracle as core,
 } from '../../components/search-compiler/testing.mjs';
-import * as core from '../../components/search-compiler/src/program-package-core.mjs';
 import { buildProgramPackageProfile } from './src/program-package-fixtures.mjs';
 
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
