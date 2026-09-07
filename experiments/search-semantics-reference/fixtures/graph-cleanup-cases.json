@@ -44,7 +44,7 @@
   "advanceOccurrenceEvidence": {
     "algorithm": "sha256",
     "byteLength": 4194,
-    "sha256": "6d0ac681b6106dfde2bebc3b6198bc94e95b44ff69bb012498aba9e6c0b37b7e"
+    "sha256": "fa439202ed3397b58a8b6d3e6b4b57ac5ece5986e0cac8b16fc0e7c5fcc98b53"
   },
   "expectedCases": [
     "graph-cleanup-upstream-evidence-exact",
