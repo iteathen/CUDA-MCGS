@@ -24,7 +24,7 @@
   "refEvidence": {
     "algorithm": "sha256",
     "byteLength": 9126,
-    "sha256": "43a1e2f952252b48b4de797199833c6c169180d5f9ab05c48b4df9d01cab9b26"
+    "sha256": "43a1d17f34768b13ba7b5474335e157d9abb9919106ffed5fac9825887e2cee1"
   },
   "pathEvidence": {
     "algorithm": "sha256",
