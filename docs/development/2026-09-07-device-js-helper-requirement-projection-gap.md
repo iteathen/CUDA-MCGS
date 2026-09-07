@@ -1,7 +1,7 @@
 # #124 gap record — evaluator Device-JS public requirement declaration
 
 **Date:** 2026-09-07  
-**Status:** Active
+**Status:** Proposal
 **Issue:** #124  
 **Execution branch:** `feature/124-device-resident-evaluator`  
 **Observed head before initial record:** `ea45746f36440da141d98eef567225de383cf2ea`  
