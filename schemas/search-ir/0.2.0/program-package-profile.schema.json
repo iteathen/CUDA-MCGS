@@ -283,7 +283,7 @@
           "additionalProperties": false,
           "required": ["repository", "revision", "package"],
           "properties": {
-            "repository": { "const": "iteathen/CUDA-MCGS" },
+            "repository": { "const": "iteathen/CUDA-JS" },
             "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
             "package": { "type": "string", "pattern": "^cuda-js@[0-9]+\\.[0-9]+\\.[0-9]+-alpha\\.[0-9]+$" }
           }
