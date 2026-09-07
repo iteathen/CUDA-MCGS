@@ -5,6 +5,8 @@ import { assertString, canonicalIdentity, compareRaw, exactKeys, fail } from './
 const DEVICE_IMPORT_SCHEMA = 'cuda-mcgs.device-js-import-declaration/0.1.0';
 const MAX_DEVICE_IMPORTS = 64;
 const MAX_DEVICE_LIBRARIES = 32;
+const BASE_DEVICE_JS_CAS_HELPER = 'gpu.atomic.cas';
+const BASE_DEVICE_JS_CAS_SOURCE_NAME = 'gpu.atomic.cas';
 const IDENTIFIER = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
 const HEX64 = /^[0-9a-f]{64}$/;
 
@@ -46,6 +48,40 @@ function normalizeDeviceImports(input, baseProfile) {
   const libraryKeys = new Set(imports.map(({ library }) => `${library.sha256}\0${library.format}\0${library.architecture}\0${library.artifactSha256}`));
   if (libraryKeys.size > MAX_DEVICE_LIBRARIES) fail('COMPOSE_DEVICE_IMPORT_COUNT', `deviceImports exceed the public CUDA-JS limit of ${MAX_DEVICE_LIBRARIES} distinct libraries`);
   return imports;
+}
+
+function hasBaseDeviceJsCasHelper(input) {
+  return Array.isArray(input?.functions)
+    && input.functions.some((fn) => Array.isArray(fn?.helpers) && fn.helpers.includes(BASE_DEVICE_JS_CAS_HELPER));
+}
+
+function stripBaseDeviceJsCasHelper(input) {
+  const stripped = structuredClone(input);
+  for (const fn of stripped.functions ?? []) {
+    if (!Array.isArray(fn?.helpers)) continue;
+    const casCount = fn.helpers.filter((helper) => helper === BASE_DEVICE_JS_CAS_HELPER).length;
+    if (casCount > 1) fail('COMPOSE_FUNCTION_CALLS', `${fn?.name ?? '<missing>'} repeats a call/helper`);
+    if (casCount === 1) fn.helpers = fn.helpers.filter((helper) => helper !== BASE_DEVICE_JS_CAS_HELPER);
+  }
+  return stripped;
+}
+
+function restoreBaseDeviceJsCasHelper(input, normalizedProfile) {
+  const casFunctions = new Set();
+  for (const fn of input?.functions ?? []) {
+    if (Array.isArray(fn?.helpers) && fn.helpers.includes(BASE_DEVICE_JS_CAS_HELPER)) casFunctions.add(fn.name);
+  }
+  if (casFunctions.size === 0) return normalizedProfile;
+  const sourceById = new Map(normalizedProfile.sourceUnits.map((unit) => [unit.id, unit]));
+  const functions = normalizedProfile.functions.map((fn) => {
+    if (!casFunctions.has(fn.name)) return fn;
+    const sourceUnit = sourceById.get(fn.sourceUnit);
+    if (!sourceUnit?.source.includes(BASE_DEVICE_JS_CAS_SOURCE_NAME)) {
+      fail('COMPOSE_HELPER_MAPPING', `${fn.name} helper is absent from its source unit`);
+    }
+    return { ...fn, helpers: [...fn.helpers, BASE_DEVICE_JS_CAS_HELPER].sort(compareRaw) };
+  });
+  return { ...normalizedProfile, functions };
 }
 
 function stripImportOwnership(input) {
@@ -94,14 +130,23 @@ function normalizeImportDeletion(input, normalizedDeletion, imports) {
 }
 
 export function normalizeProgramPackageProfile(input, inspected, suppliedContext) {
-  if (!Object.hasOwn(input ?? {}, 'deviceImports')) return core.normalizeProgramPackageProfile(input, inspected, suppliedContext);
-  for (const record of input?.deletion?.records ?? []) {
-    if (!Object.hasOwn(record, 'deviceImports')) fail('COMPOSE_DEVICE_IMPORT_DELETION', `${record?.owner ?? '<missing>'} lacks deviceImports deletion ownership`);
+  const hasDeviceImports = Object.hasOwn(input ?? {}, 'deviceImports');
+  const hasCasHelper = hasBaseDeviceJsCasHelper(input);
+  if (!hasDeviceImports && !hasCasHelper) return core.normalizeProgramPackageProfile(input, inspected, suppliedContext);
+  if (hasDeviceImports) {
+    for (const record of input?.deletion?.records ?? []) {
+      if (!Object.hasOwn(record, 'deviceImports')) fail('COMPOSE_DEVICE_IMPORT_DELETION', `${record?.owner ?? '<missing>'} lacks deviceImports deletion ownership`);
+    }
   }
-  const base = core.normalizeProgramPackageProfile(stripImportOwnership(input), inspected, suppliedContext);
-  const deviceImports = normalizeDeviceImports(input.deviceImports, base.normalized);
-  const deletion = normalizeImportDeletion(input.deletion, base.normalized.deletion, deviceImports);
-  const normalized = { ...base.normalized, deviceImports, deletion };
+  let delegatedInput = hasCasHelper ? stripBaseDeviceJsCasHelper(input) : input;
+  if (hasDeviceImports) delegatedInput = stripImportOwnership(delegatedInput);
+  const base = core.normalizeProgramPackageProfile(delegatedInput, inspected, suppliedContext);
+  let normalized = hasCasHelper ? restoreBaseDeviceJsCasHelper(input, base.normalized) : base.normalized;
+  if (hasDeviceImports) {
+    const deviceImports = normalizeDeviceImports(input.deviceImports, normalized);
+    const deletion = normalizeImportDeletion(input.deletion, normalized.deletion, deviceImports);
+    normalized = { ...normalized, deviceImports, deletion };
+  }
   return { normalized, identity: canonicalIdentity(normalized), semanticEngineIdentity: base.semanticEngineIdentity };
 }
 
@@ -151,4 +196,5 @@ export const programPackageConstants = Object.freeze({
   deviceImportDeclarationSchema: DEVICE_IMPORT_SCHEMA,
   maxDeviceImports: MAX_DEVICE_IMPORTS,
   maxDeviceLibraries: MAX_DEVICE_LIBRARIES,
+  baseDeviceJsCasHelper: BASE_DEVICE_JS_CAS_HELPER,
 });
