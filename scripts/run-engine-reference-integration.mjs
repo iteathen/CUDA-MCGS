@@ -35,6 +35,7 @@ const commands = [
   'scripts/run-session-reference.mjs',
   'scripts/run-stage-reference.mjs',
   'scripts/run-channel-reference-evidence.mjs',
+  'tools/reference-evidence-locks.mjs',
 ];
 
 for (const relative of commands) {
