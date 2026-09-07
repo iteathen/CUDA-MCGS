@@ -39,7 +39,7 @@
   "rootEvidence": {
     "algorithm": "sha256",
     "byteLength": 9954,
-    "sha256": "9043941ea5d232f6d055b871826a33b7fec93e470e7a18ef50ac99e822a52bbe"
+    "sha256": "6ee5e625278ce60c547ef35ad0d4eb76395e6cef86f256ad162b153787e3826e"
   },
   "reclaimEvidence": {
     "algorithm": "sha256",
