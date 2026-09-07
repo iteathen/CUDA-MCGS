@@ -1,0 +1,123 @@
+name: temporary-249-evidence-maintenance
+
+on:
+  push:
+    branches:
+      - feature/124-device-resident-evaluator
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-249-evidence-maintenance
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feature/124-device-resident-evaluator
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+          check-latest: false
+      - name: Refresh retained evidence in producer order
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          node scripts/run-search-ir-reference.mjs
+          node tools/reference-evidence-locks.mjs --write search-ir
+
+          node scripts/run-search-ir-composer-reference.mjs
+          node scripts/export-search-ir-composer-domain-profiles.mjs
+          node scripts/export-search-ir-composer-graph-profiles.mjs
+          node scripts/export-search-ir-composer-policy-profiles.mjs
+          node scripts/export-search-ir-composer-evaluator-profiles.mjs
+          node scripts/export-search-ir-composer-resource-profiles.mjs
+          node scripts/export-search-ir-composer-progress-profiles.mjs
+          node scripts/export-search-ir-composer-output-profiles.mjs
+          node scripts/export-search-ir-composer-session-profiles.mjs
+          node scripts/export-search-ir-composer-stage-profiles.mjs
+
+          node tools/reference-evidence-locks.mjs --write composer
+          node tools/reference-evidence-locks.mjs --write projection:domain
+          node tools/reference-evidence-locks.mjs --write projection:graph
+          node tools/reference-evidence-locks.mjs --write projection:policy
+          node tools/reference-evidence-locks.mjs --write projection:evaluator
+          node tools/reference-evidence-locks.mjs --write projection:resource
+          node tools/reference-evidence-locks.mjs --write root-control
+
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          const path = 'experiments/search-semantics-reference/fixtures/neutral-schedules.json';
+          const oldSha = '1a356c6b91002329a53e15dacc59bbb0b600d1a64264c4677e9d9899392f158f';
+          const newSha = 'b09622fe1c3faeb4cb37c58e45241aa035e7caec92d107fc81990220fa0e437f';
+          const fixture = JSON.parse(await readFile(path, 'utf8'));
+          for (const schedule of Object.values(fixture.schedules ?? {})) {
+            if (schedule.evidenceKey === oldSha) schedule.evidenceKey = newSha;
+            else if (schedule.evidenceKey !== newSha) throw new Error(`unexpected neutral schedule evidenceKey ${schedule.evidenceKey}`);
+          }
+          await writeFile(path, `${JSON.stringify(fixture, null, 2)}\n`);
+          NODE
+
+          node scripts/run-search-semantics-reference.mjs
+          node tools/reference-evidence-locks.mjs --write domain
+
+          node scripts/run-graph-node-reference.mjs
+          node tools/reference-evidence-locks.mjs --write graph-node
+          node scripts/run-graph-edge-reference.mjs
+          node tools/reference-evidence-locks.mjs --write graph-edge
+          node scripts/run-graph-ref-reference.mjs
+          node tools/reference-evidence-locks.mjs --write graph-ref
+          node scripts/run-graph-path-reference.mjs
+          node tools/reference-evidence-locks.mjs --write graph-path
+          node scripts/run-graph-root-reference.mjs
+          node tools/reference-evidence-locks.mjs --write graph-root
+          node scripts/run-graph-reclaim-reference.mjs
+          node tools/reference-evidence-locks.mjs --write graph-reclaim
+          node scripts/run-graph-advance-occurrence-reference.mjs
+          node tools/reference-evidence-locks.mjs --write graph-advance
+          node scripts/run-graph-cleanup-reference.mjs
+          node tools/reference-evidence-locks.mjs --write graph-cleanup
+
+          node scripts/run-policy-reference.mjs
+          node tools/reference-evidence-locks.mjs --write policy
+          node scripts/run-evaluator-reference.mjs
+          node tools/reference-evidence-locks.mjs --write evaluator
+          node scripts/run-resource-reference.mjs
+          node tools/reference-evidence-locks.mjs --write resource
+          node scripts/run-progress-reference.mjs
+          node tools/reference-evidence-locks.mjs --write progress
+          node scripts/run-output-reference.mjs
+          node tools/reference-evidence-locks.mjs --write output
+          node scripts/run-framework-lifecycle-reference.mjs
+          node tools/reference-evidence-locks.mjs --write framework
+          node scripts/run-terminal-slice-reference.mjs
+          node tools/reference-evidence-locks.mjs --write terminal
+          node scripts/run-session-reference.mjs
+          node tools/reference-evidence-locks.mjs --write session
+          node scripts/run-stage-reference.mjs
+          node tools/reference-evidence-locks.mjs --write stage
+          node scripts/run-channel-reference-evidence.mjs
+          node tools/reference-evidence-locks.mjs --write channel
+
+          node tools/reference-evidence-locks.mjs --check
+          node scripts/run-engine-reference-integration.mjs
+      - name: Commit maintained fixture locks
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- experiments/search-semantics-reference/fixtures; then
+            echo 'No fixture changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add experiments/search-semantics-reference/fixtures
+          git commit -m 'test: refresh retained evidence after Program Package CAS support #124 [evidence-maintainer]'
+          git push origin HEAD:feature/124-device-resident-evaluator
