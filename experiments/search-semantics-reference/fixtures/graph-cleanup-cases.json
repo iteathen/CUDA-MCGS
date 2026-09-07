@@ -19,12 +19,12 @@
   "edgeEvidence": {
     "algorithm": "sha256",
     "byteLength": 11661,
-    "sha256": "69340820c3595d783752a7a672b948ffc2605d3431a827281bfdeca214e2e804"
+    "sha256": "aa84484f020effa7994f4d8be3fb8a1019c8076aae01a05a9d592ca3c004d874"
   },
   "refEvidence": {
     "algorithm": "sha256",
     "byteLength": 9126,
-    "sha256": "08b91927027826a4421a93efe30068dd9fb680dbc40daeeec1f02117d05eceee"
+    "sha256": "43a1e2f952252b48b4de797199833c6c169180d5f9ab05c48b4df9d01cab9b26"
   },
   "pathEvidence": {
     "algorithm": "sha256",
