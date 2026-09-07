@@ -85,11 +85,11 @@ function bindReleaseAcquireHelper(fixture, evaluatorId) {
 const contractSet = await readJson(path.join(schemaRoot, 'contract-set.json'));
 const coverage = await readJson(path.join(schemaRoot, 'requirement-coverage.json'));
 const inspected = await inspectCatalog(repositoryRoot, contractSet, coverage);
-const domainSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'domain-profile.schema.json'), 'utf8'));
-const graphSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'graph-profile.schema.json'), 'utf8'));
-const evaluatorSchemaSource = await readFile(path.join(schemaRoot, 'evaluator-profile.schema.json'), 'utf8');
-const evaluatorSchemaSha = sourceTextSha256(evaluatorSchemaSource);
-const evaluatorSchema = JSON.parse(evaluatorSchemaSource);
+const domainSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'domain-profile.schema.json')));
+const graphSchemaSha = sourceTextSha256(await readFile(path.join(schemaRoot, 'graph-profile.schema.json')));
+const evaluatorSchemaBytes = await readFile(path.join(schemaRoot, 'evaluator-profile.schema.json'));
+const evaluatorSchemaSha = sourceTextSha256(evaluatorSchemaBytes);
+const evaluatorSchema = JSON.parse(evaluatorSchemaBytes.toString('utf8'));
 
 assert.equal(evaluatorSchema.$defs.programContribution.properties.requirements.maxItems, evaluatorProgramRequirementConstants.maxRequirements);
 assert.equal(evaluatorSchema.$defs.programContribution.required.includes('requirements'), false, 'additive requirement declaration must preserve legacy 0.2.0 documents');
