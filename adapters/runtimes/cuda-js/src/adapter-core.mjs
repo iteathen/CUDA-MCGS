@@ -2,6 +2,8 @@ const PACKAGE_SCHEMA = 'cuda-mcgs.execution-package/0.2.0';
 const ADAPTER_SCHEMA = 'cuda-mcgs.cuda-js-adapter-requirements/0.2.0';
 const CUDA_JS_REPOSITORY = 'iteathen/CUDA-JS';
 const UINT32_MAX = 0xffff_ffff;
+const DEVICE_VIEW_WIDTH = Object.freeze({ u32: 4, u64: 8, i32: 4, f32: 4, f64: 8, f16: 2, bf16: 2 });
+const DENSE_DEVICE_TYPE = /(?:^|<)(?:f64|f16|bf16)(?:>|$)/;
 const CONTRACT_CAPABILITIES = new Map([
   ['cuda-js.device-js/0.1.0', 'deviceJsFrontend'],
   ['cuda-js.operation-lifecycle/0.1.0', 'gpuOperationLifecycle'],
@@ -42,6 +44,14 @@ function fail(code, phase, message, options) {
 
 function object(value, label) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `${label} must be an object`);
+  return value;
+}
+
+function exactObject(value, fields, label) {
+  object(value, label);
+  const allowed = new Set(fields);
+  for (const key of Object.keys(value)) if (!allowed.has(key)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `${label} contains unknown key ${key}`);
+  for (const key of fields) if (!Object.hasOwn(value, key)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `${label} is missing ${key}`);
   return value;
 }
 
@@ -112,7 +122,24 @@ function compileOptions(requirements) {
   const contracts = new Set(requirements.publicContracts.map(({ id }) => id));
   const needsCccl = contracts.has('cuda-js.device-publication-release-acquire/0.1.0')
     || requirements.sidebandRequirements?.some(({ publication }) => publication === 'release-acquire');
+  const needsDense = requirements.searchProgram?.functions?.some((fn) => fn.returns && DENSE_DEVICE_TYPE.test(fn.returns)
+    || fn.parameters?.some(({ type }) => DENSE_DEVICE_TYPE.test(type)));
+  if (needsCccl && needsDense) return Object.freeze({ headerProfile: 'cuda-device' });
+  if (needsDense) return Object.freeze({ headerProfile: 'cuda-numeric' });
   return needsCccl ? Object.freeze({ headerProfile: 'cuda-cccl' }) : Object.freeze({});
+}
+
+function normalizeResourceView(source, resource, parameterName) {
+  if (!Object.hasOwn(source, 'view')) return null;
+  exactObject(source.view, ['dtype', 'byteOffset', 'elementCount'], `${parameterName} resource view`);
+  const width = DEVICE_VIEW_WIDTH[source.view.dtype];
+  if (!width) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `${parameterName} resource view dtype is unsupported`);
+  const byteOffset = decimal(source.view.byteOffset, `${parameterName} resource view byteOffset`);
+  const elementCount = decimal(source.view.elementCount, `${parameterName} resource view elementCount`, true);
+  if (elementCount > Math.floor(Number.MAX_SAFE_INTEGER / width)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `${parameterName} resource view byteLength exceeds the safe integer domain`);
+  const byteLength = elementCount * width;
+  if (byteOffset % width !== 0 || byteOffset + byteLength > resource.byteLengthNumber) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `${parameterName} resource view range/alignment is invalid`);
+  return { dtype: source.view.dtype, byteOffset: source.view.byteOffset, elementCount: source.view.elementCount, byteOffsetNumber: byteOffset, elementCountNumber: elementCount, byteLengthNumber: byteLength };
 }
 
 function admitPackage(executionPackage, lower) {
@@ -166,20 +193,30 @@ function admitPackage(executionPackage, lower) {
   for (const binding of operation.bindings) {
     if (bindings.has(binding.parameter)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `binding repeats: ${binding.parameter}`);
     const source = binding.source;
+    let normalizedBinding = binding;
     if (source?.kind === 'resource') {
-      if (!resources.has(source.resource) || !['read', 'write', 'read-write'].includes(source.access)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `invalid resource binding ${binding.parameter}`);
+      const resource = resources.get(source.resource);
+      if (!resource || !['read', 'write', 'read-write'].includes(source.access)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `invalid resource binding ${binding.parameter}`);
+      const view = normalizeResourceView(source, resource, binding.parameter);
+      normalizedBinding = { parameter: binding.parameter, source: { kind: 'resource', resource: source.resource, access: source.access, ...(view ? { view } : {}) } };
       allocatedResourceIds.add(source.resource);
     } else if (source?.kind === 'sideband') {
       if (!sidebands.has(source.sideband)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `invalid sideband binding ${binding.parameter}`);
     } else if (source?.kind !== 'scalar' || !source.schema) {
       fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `unsupported binding ${binding.parameter}`);
     }
-    bindings.set(binding.parameter, binding);
+    bindings.set(binding.parameter, normalizedBinding);
   }
 
   const searchProgram = object(requirements.searchProgram, 'searchProgram');
   const entry = searchProgram.functions?.find((fn) => fn.name === operation.function && fn.executionRole === 'runtime-entry');
   if (!entry || !Array.isArray(entry.parameters) || entry.parameters.length !== bindings.size || entry.parameters.some(({ name }) => !bindings.has(name))) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'runtime entry and operation bindings differ');
+  for (const parameter of entry.parameters) {
+    const binding = bindings.get(parameter.name);
+    if (binding.source.kind === 'resource' && binding.source.view && parameter.type !== `ptr<${binding.source.view.dtype}>`) {
+      fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `${parameter.name} resource view dtype differs from the runtime entry parameter`);
+    }
+  }
   const allocatedResources = new Map([...resources].filter(([id]) => allocatedResourceIds.has(id)));
   return {
     operation, resources, allocatedResources, sidebands, deliveries, bindings, searchProgram, entry,
@@ -205,6 +242,7 @@ async function cleanup(owned) {
   await closeOne('function', owned.function, failures);
   await closeOne('module', owned.module, failures);
   for (const [id, mailbox] of [...owned.mailboxes].reverse()) await closeOne(`mailbox:${id}`, mailbox, failures);
+  for (const [id, view] of [...owned.views].reverse()) await closeOne(`view:${id}`, view, failures);
   const retained = [];
   let runtime = null;
   if (deliveryChildrenTerminal) {
@@ -276,7 +314,7 @@ class PreparedExecution {
     const scalarInputs = inputRecord(inputs.scalars?.[this.#plan.operation.id], scalarNames, 'scalar inputs');
 
     for (const [id, resource] of this.#plan.allocatedResources) {
-      const modes = this.#plan.operation.bindings.filter(({ source }) => source.kind === 'resource' && source.resource === id).map(({ source }) => source.access);
+      const modes = [...this.#plan.bindings.values()].filter(({ source }) => source.kind === 'resource' && source.resource === id).map(({ source }) => source.access);
       const bytes = resourceInputs[id];
       if (bytes === undefined && modes.some((mode) => mode !== 'write')) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} requires explicit initial bytes`);
       if (bytes !== undefined && (!(bytes instanceof Uint8Array) || bytes.byteLength !== resource.byteLengthNumber)) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} initial bytes must exactly match byteLength`);
@@ -288,7 +326,7 @@ class PreparedExecution {
       scalar(parameter.type, scalarInputs[parameter.name], parameter.name);
     }
 
-    for (const [id, resource] of this.#plan.allocatedResources) {
+    for (const [id] of this.#plan.allocatedResources) {
       const bytes = resourceInputs[id];
       if (bytes === undefined) continue;
       try { await this.#owned.memories.get(id).write(bytes); }
@@ -304,9 +342,15 @@ class PreparedExecution {
       const parameter = this.#plan.entry.parameters[index];
       const binding = this.#plan.bindings.get(parameter.name);
       if (binding.source.kind === 'resource') {
-        const resource = this.#plan.resources.get(binding.source.resource);
-        args.push(this.#owned.memories.get(binding.source.resource));
-        accesses.push({ argumentIndex: index, byteOffset: 0, byteLength: resource.byteLengthNumber, mode: binding.source.access });
+        if (binding.source.view) {
+          const view = this.#owned.views.get(parameter.name);
+          args.push(view);
+          accesses.push({ argumentIndex: index, byteOffset: 0, byteLength: binding.source.view.byteLengthNumber, mode: binding.source.access });
+        } else {
+          const resource = this.#plan.resources.get(binding.source.resource);
+          args.push(this.#owned.memories.get(binding.source.resource));
+          accesses.push({ argumentIndex: index, byteOffset: 0, byteLength: resource.byteLengthNumber, mode: binding.source.access });
+        }
       } else if (binding.source.kind === 'sideband') {
         args.push({ kind: 'publication-mailbox', mailbox: this.#owned.mailboxes.get(binding.source.sideband), lane: binding.source.sideband });
       } else {
@@ -418,7 +462,7 @@ export async function prepareCudaJsExecution(executionPackage, { cudaJs, peer, r
   if (runtimeOptions.compiler === false) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'compiler=false is incompatible with preparation');
   if (runtimeOptions.driver?.maxPending !== undefined && runtimeOptions.driver.maxPending !== 1) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'runtimeOptions.driver.maxPending must remain 1');
   if (runtimeOptions.driver?.execution?.maxPendingGpuOperations !== undefined && runtimeOptions.driver.execution.maxPendingGpuOperations !== 2) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'runtimeOptions.driver.execution.maxPendingGpuOperations must remain 2 for terminal delivery');
-  const owned = { runtime: null, module: null, function: null, operation: null, deliveryOperations: new Map(), nextDeliverySequence: 0, memories: new Map(), mailboxes: new Map() };
+  const owned = { runtime: null, module: null, function: null, operation: null, deliveryOperations: new Map(), nextDeliverySequence: 0, memories: new Map(), views: new Map(), mailboxes: new Map() };
   try {
     owned.runtime = await cudaJs.openCudaRuntime({
       ...runtimeOptions,
@@ -433,6 +477,13 @@ export async function prepareCudaJsExecution(executionPackage, { cudaJs, peer, r
     if (!kernel || !Array.isArray(kernel.parameters)) fail('CUDA_JS_ADAPTER_COMPILE', 'compilation', 'CUDA-JS device program exposed no runtime-entry kernel', { classification: 'compilation' });
     owned.function = await owned.module.getFunction({ name: kernel.functionName, parameters: kernel.parameters });
     for (const [id, resource] of plan.allocatedResources) owned.memories.set(id, await owned.runtime.allocateDevice({ byteLength: resource.byteLengthNumber }));
+    for (const [parameter, binding] of plan.bindings) {
+      if (binding.source.kind !== 'resource' || !binding.source.view) continue;
+      const memory = owned.memories.get(binding.source.resource);
+      if (!memory || typeof memory.view !== 'function') fail('CUDA_JS_ADAPTER_CAPABILITY', 'allocation', `${parameter} requires the public device-memory view capability`, { classification: 'unsupported-capability' });
+      const view = binding.source.view;
+      owned.views.set(parameter, await memory.view({ dtype: view.dtype, byteOffset: view.byteOffsetNumber, elementCount: view.elementCountNumber, access: binding.source.access }));
+    }
     for (const delivery of plan.deliveries.values()) if (typeof owned.memories.get(delivery.resource)?.readAsync !== 'function') fail('CUDA_JS_ADAPTER_CAPABILITY', 'allocation', `${delivery.id} public asynchronous memory read is unavailable`, { classification: 'unsupported-capability' });
     for (const [id, sideband] of plan.sidebands) owned.mailboxes.set(id, await owned.runtime.createPublicationMailbox({ lanes: [{ name: id, direction: sideband.direction }] }));
     return new PreparedExecution(plan, owned);
