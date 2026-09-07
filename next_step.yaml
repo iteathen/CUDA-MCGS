@@ -1,8 +1,8 @@
 {
-  "schema_version": 121,
+  "schema_version": 122,
   "updated": "2026-09-06",
-  "status": "design_principle_alignment_active_124_paused",
-  "objective": "Align existing CUDA-MCGS implementation, evidence topology and cross-repository current-state ownership with the accepted design principles before any further #124 runtime expansion. Preserve all already-qualified #124 foundations without resuming request/batch/scatter/readiness implementation.",
+  "status": "design_principle_alignment_complete_documentation_next_124_paused",
+  "objective": "Preserve the completed existing-code design alignment, keep all qualified #124 foundations unchanged and paused, and hand the active workstream to owner-directed documentation updates.",
   "ownership_boundary": "CUDA-MCGS owns universal Search IR/Graph/Policy/Evaluator/Resource/Progress/Output/Session/Stage/Channel semantics and its own readiness/work ordering. CUDA-JS-Tensor owns Tensor mathematics, TensorProgram/TensorPlan, item-axis callable ABI and Tensor workspace. CUDA-JS owns consumer-neutral CUDA/compiler/runtime/provider/resource mechanisms. Product semantics remain downstream and are not execution dependencies for generic CUDA-MCGS framework work.",
   "authority": [
     "AGENTS.md",
@@ -19,16 +19,16 @@
   "current_focus": {
     "repository": "iteathen/CUDA-MCGS",
     "issue": 245,
-    "name": "design-principle alignment before further runtime expansion",
-    "state": "active_maintenance_alignment",
-    "implementation_outcome": "Correct duplicated readiness truth, recursively decompose existing private implementation only where real attention-bounded seams are demonstrated, mechanize exact evidence maintenance without weakening frozen provenance, audit adapter ownership/lifecycle, and leave public behavior unchanged unless an existing contract is independently falsified.",
-    "acceptance": [
-      "cross-repository producer/consumer readiness truth has one owner",
-      "Search Compiler keeps one public owner while private implementation satisfies recursive full-attention LEGO boundaries",
-      "exact evidence propagation has a fail-closed mechanical maintenance path and committed evidence remains independently checkable",
-      "runtime and Tensor adapters translate public facts without acquiring foreign semantic/lifecycle authority",
-      "existing public package/reference semantics pass exact-head qualification",
-      "no #124 feature work is included"
+    "name": "completed design alignment and documentation handoff",
+    "state": "alignment_complete_owner_documentation_input_next",
+    "next_action": "Accept and implement the project owner's documentation additions. Do not resume CUDA-MCGS #124 unless the owner later gives an explicit resume instruction.",
+    "completed_alignment": [
+      "producer/consumer readiness truth has one owner",
+      "Search Compiler private topology was reassessed against recursive full-attention LEGO rules without unjustified source splitting",
+      "exact reference-evidence lock maintenance has a fail-closed producer-driven tool while frozen independent locks remain committed",
+      "CUDA-JS adapter cleanup preserves child-before-parent terminality, no implicit failed-disposal retry and stable repeated quarantine",
+      "Tensor connector audit found no source-level ownership defect",
+      "no #124 feature work was included"
     ],
     "stop_conditions": [
       "do not implement evaluator request accumulation, batching, scatter/readiness or search-lifecycle expansion",
@@ -55,10 +55,10 @@
     "evaluator_device_binding_foundation": {
       "issue": 124,
       "pull_request": 244,
-      "protected_main": "3c82dc430730fe88207e6d5f94040421686b2c0f",
+      "protected_main_before_alignment": "3c82dc430730fe88207e6d5f94040421686b2c0f",
       "tree": "be30d8ae638ea61afd6f8818dfdc5df70e0e1df7",
       "qualified_head_tree_preserved": true,
-      "meaning": "Dense Device-JS kinds, typed resource subviews, public CUDA-JS view translation/cleanup and richer public Tensor descriptor preservation are integrated. Full evaluator runtime composition remains intentionally paused."
+      "meaning": "Dense Device-JS kinds, typed resource subviews, public CUDA-JS view translation/cleanup and richer public Tensor descriptor preservation remain integrated. Full evaluator runtime composition is intentionally paused."
     },
     "native_boundary": {
       "spec": "SPEC-0015",
@@ -66,30 +66,32 @@
     },
     "optional_cuda_mm": {
       "spec": "SPEC-0016",
-      "state": "recognized_unactivated"
+      "state": "recognized_unactivated",
+      "governance_remainder": "CUDA-MM main protection remains an external repository-setting deficit tracked by CUDA-MM #2; it is not a CUDA-MCGS production dependency"
     }
   },
   "paused_work": {
     "issue": 124,
-    "state": "open_valid_not_active",
-    "resume_rule": "Resume only after issue #245 is completed or explicitly superseded by owner instruction. Preserve the qualified foundation and do not append feature work to the alignment branch."
+    "state": "open_valid_explicitly_paused",
+    "resume_rule": "Issue #245 completion does not resume #124. Resume only after a later explicit project-owner instruction. Preserve the qualified foundations while documentation work proceeds."
   },
   "blockers": [
-    "Design-alignment issue #245 remains open until cross-repository current-state ownership, adapter lifecycle cleanup, evidence-lock maintenance and exact-head qualification are complete.",
+    "No technical blocker remains in the completed existing-code alignment candidate.",
+    "The next requested work depends on owner-provided documentation additions.",
     "Physical NVIDIA qualification remains deferred until suitable directly exposed hardware is available; this is an evidence/infrastructure gap, not a reason to add source work.",
-    "CUDA-MM production remains separately unactivated; no alignment task may make it a hidden dependency."
+    "CUDA-MM main protection remains a separately tracked repository-governance deficit and cannot be treated as an activated runtime dependency."
   ],
   "deliverables": [
-    "Current-state documents that keep CUDA-MCGS readiness owned here and lower producer facts owned in their producer repositories.",
-    "Search Compiler documentation that recognizes existing semantic modules as recursive private child LEGOs while preserving one public canonical owner.",
-    "A mechanical fail-closed path for maintaining committed exact evidence locks from successful producer outputs, with the final mutation gate unchanged in meaning.",
-    "CUDA-JS runtime-adapter cleanup that preserves child-before-parent disposal, no implicit retry after failed disposal and stable quarantined repeated-close truth.",
-    "Focused regression coverage plus exact-head package/reference/adapter/documentation qualification.",
-    "A clean handoff to owner-requested documentation work with #124 still paused."
+    "Cross-repository current-state ownership aligned in CUDA-JS, CUDA-JS-Tensor and CUDA-MCGS.",
+    "Search Compiler recursive private LEGO structure documented while one public canonical owner is preserved.",
+    "Mechanical fail-closed maintenance for committed exact evidence locks with the final mutation gate unchanged in meaning.",
+    "CUDA-JS runtime-adapter cleanup corrected for child-before-parent disposal, no implicit retry and stable quarantine.",
+    "Focused cleanup-dependency regression coverage and exact-head package/reference/adapter/documentation qualification.",
+    "Clean handoff to owner-requested documentation work with #124 still paused."
   ],
   "do_not": [
-    "Do not resume CUDA-MCGS #124 evaluator request/batch/scatter/readiness/search-lifecycle feature work.",
-    "Do not add new Tensor, CUDA/provider, model or product capability while alignment is active.",
+    "Do not resume CUDA-MCGS #124 evaluator request/batch/scatter/readiness/search-lifecycle feature work without explicit owner instruction.",
+    "Do not add new Tensor, CUDA/provider, model or product capability as part of documentation follow-up unless separately authorized.",
     "Do not split public owners or schemas solely to reduce file length.",
     "Do not replace independent frozen evidence with a shared mutable truth source or auto-bless changed producer outputs.",
     "Do not retry failed close/destroy operations implicitly or close parent resources beneath unproved children.",
@@ -100,19 +102,20 @@
     "rule": "Portable, hosted, VM, mock and package evidence prove only the semantics they execute and never promote native/provider/hardware support."
   },
   "validation": {
-    "existing": [
-      "node scripts/run-search-ir-composer-reference.mjs",
-      "node scripts/run-engine-reference-integration.mjs",
-      "node scripts/run-cuda-js-runtime-adapter.mjs",
-      "node scripts/run-cuda-js-tensor-evaluator.mjs",
-      "node scripts/run-library-interface.mjs",
-      "./scripts/verify-docs.sh"
+    "alignment_exact_head": [
+      "documentation",
+      "Engine reference integration",
+      "cuda-js-compatible-pair",
+      "cuda-js-runtime-adapter",
+      "CUDA-JS-Tensor evaluator connector",
+      "library-interface",
+      "Terminal slice reference",
+      "Session behavioral reference",
+      "Stage behavioral reference"
     ],
-    "alignment_required": [
-      "exact public behavior before/after private refactors",
-      "source-boundary and project-organization gates",
-      "evidence-refresh/check tooling falsifiers",
-      "adapter lifecycle/deletion/substitution regressions"
+    "required_after_any_documentation_change": [
+      "./scripts/verify-docs.sh",
+      "any owning contract/current-state checks triggered by the changed documentation surface"
     ]
   },
   "hard_constraints": [
@@ -121,6 +124,6 @@
     "no private sibling imports",
     "no product semantics upstream",
     "no portable evidence promoted to native/provider support",
-    "protected integration requires exact-head qualification, complete review, exact base/tree validation and protected read-back"
+    "documentation is the next owner-directed seam and #124 remains paused until explicitly resumed"
   ]
 }
