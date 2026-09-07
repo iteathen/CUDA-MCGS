@@ -226,45 +226,148 @@ function admitPackage(executionPackage, lower) {
   };
 }
 
-async function closeOne(label, value, failures) {
+function cleanupFailure(label, error) {
+  return Object.freeze({ label, lower: lowerFacts(error) });
+}
+
+async function closeOne(label, value, owned, failures) {
   if (!value || typeof value.close !== 'function') return true;
-  try { await value.close(); return true; } catch (error) { failures.push(Object.freeze({ label, lower: lowerFacts(error) })); return false; }
+  const prior = owned.failedClosures.get(label);
+  if (prior) {
+    failures.push(prior);
+    return false;
+  }
+  try {
+    await value.close();
+    return true;
+  } catch (error) {
+    const failure = cleanupFailure(label, error);
+    owned.failedClosures.set(label, failure);
+    failures.push(failure);
+    return false;
+  }
+}
+
+function cleanupReport(failures, runtime, retained) {
+  const unhealthy = runtime && (runtime.graceful === false || runtime.restartRequired === true);
+  return Object.freeze({
+    status: failures.length === 0 && !unhealthy && retained.size === 0 ? 'complete' : 'quarantined',
+    failures: Object.freeze(failures),
+    runtime: runtime ? freeze(runtime) : null,
+    ...(retained.size > 0 ? { retained: Object.freeze([...retained]) } : {}),
+  });
 }
 
 async function cleanup(owned) {
   const failures = [];
+  const retained = new Set();
+  let runtime = null;
+
   let deliveryChildrenTerminal = true;
   for (const [id, operation] of [...owned.deliveryOperations].reverse()) {
-    const closed = await closeOne(`delivery-operation:${id}`, operation, failures);
-    if (closed) owned.deliveryOperations.delete(id); else deliveryChildrenTerminal = false;
+    const label = `delivery-operation:${id}`;
+    const closed = await closeOne(label, operation, owned, failures);
+    if (closed) owned.deliveryOperations.delete(id);
+    else {
+      deliveryChildrenTerminal = false;
+      retained.add(label);
+    }
   }
-  await closeOne('operation', owned.operation, failures);
-  await closeOne('function', owned.function, failures);
-  await closeOne('module', owned.module, failures);
-  for (const [id, mailbox] of [...owned.mailboxes].reverse()) await closeOne(`mailbox:${id}`, mailbox, failures);
+
+  const operationTerminal = await closeOne('operation', owned.operation, owned, failures);
+  if (operationTerminal) owned.operation = null;
+  else if (owned.operation) retained.add('operation');
+
+  if (!operationTerminal) {
+    if (owned.function) retained.add('function');
+    if (owned.module) retained.add('module');
+    for (const id of owned.mailboxes.keys()) retained.add(`mailbox:${id}`);
+    for (const id of owned.views.keys()) retained.add(`view:${id}`);
+    for (const id of owned.memories.keys()) retained.add(`memory:${id}`);
+    if (owned.runtime) retained.add('runtime');
+    return cleanupReport(failures, runtime, retained);
+  }
+
+  const functionTerminal = await closeOne('function', owned.function, owned, failures);
+  if (functionTerminal) owned.function = null;
+  else if (owned.function) retained.add('function');
+
+  let moduleTerminal = functionTerminal;
+  if (functionTerminal) {
+    moduleTerminal = await closeOne('module', owned.module, owned, failures);
+    if (moduleTerminal) owned.module = null;
+    else if (owned.module) retained.add('module');
+  } else if (owned.module) {
+    retained.add('module');
+  }
+
+  let mailboxChildrenTerminal = true;
+  for (const [id, mailbox] of [...owned.mailboxes].reverse()) {
+    const label = `mailbox:${id}`;
+    const closed = await closeOne(label, mailbox, owned, failures);
+    if (closed) owned.mailboxes.delete(id);
+    else {
+      mailboxChildrenTerminal = false;
+      retained.add(label);
+    }
+  }
+
   let viewChildrenTerminal = true;
   for (const [id, view] of [...owned.views].reverse()) {
-    const closed = await closeOne(`view:${id}`, view, failures);
-    if (closed) owned.views.delete(id); else viewChildrenTerminal = false;
-  }
-  const retained = [];
-  let runtime = null;
-  if (deliveryChildrenTerminal && viewChildrenTerminal) {
-    for (const [id, memory] of [...owned.memories].reverse()) await closeOne(`memory:${id}`, memory, failures);
-    if (owned.runtime?.close) {
-      try { runtime = await owned.runtime.close(); } catch (error) { failures.push(Object.freeze({ label: 'runtime', lower: lowerFacts(error) })); }
+    const label = `view:${id}`;
+    const closed = await closeOne(label, view, owned, failures);
+    if (closed) owned.views.delete(id);
+    else {
+      viewChildrenTerminal = false;
+      retained.add(label);
     }
-  } else {
-    for (const id of owned.views.keys()) retained.push(`view:${id}`);
-    for (const id of owned.memories.keys()) retained.push(`memory:${id}`);
-    if (owned.runtime) retained.push('runtime');
   }
-  const unhealthy = runtime && (runtime.graceful === false || runtime.restartRequired === true);
-  return Object.freeze({
-    status: failures.length === 0 && !unhealthy ? 'complete' : 'quarantined',
-    failures: Object.freeze(failures), runtime: runtime ? freeze(runtime) : null,
-    ...(retained.length > 0 ? { retained: Object.freeze(retained) } : {}),
-  });
+
+  if (!deliveryChildrenTerminal || !viewChildrenTerminal) {
+    for (const id of owned.memories.keys()) retained.add(`memory:${id}`);
+  }
+
+  let memoryChildrenTerminal = deliveryChildrenTerminal && viewChildrenTerminal;
+  if (memoryChildrenTerminal) {
+    for (const [id, memory] of [...owned.memories].reverse()) {
+      const label = `memory:${id}`;
+      const closed = await closeOne(label, memory, owned, failures);
+      if (closed) owned.memories.delete(id);
+      else {
+        memoryChildrenTerminal = false;
+        retained.add(label);
+      }
+    }
+  }
+
+  const allChildrenTerminal = deliveryChildrenTerminal
+    && functionTerminal
+    && moduleTerminal
+    && mailboxChildrenTerminal
+    && viewChildrenTerminal
+    && memoryChildrenTerminal;
+
+  if (allChildrenTerminal && owned.runtime?.close) {
+    const prior = owned.failedClosures.get('runtime');
+    if (prior) {
+      failures.push(prior);
+      retained.add('runtime');
+    } else {
+      try {
+        runtime = await owned.runtime.close();
+        owned.runtime = null;
+      } catch (error) {
+        const failure = cleanupFailure('runtime', error);
+        owned.failedClosures.set('runtime', failure);
+        failures.push(failure);
+        retained.add('runtime');
+      }
+    }
+  } else if (owned.runtime) {
+    retained.add('runtime');
+  }
+
+  return cleanupReport(failures, runtime, retained);
 }
 
 function wrapped(code, phase, message, error, classification, report = null) {
@@ -305,6 +408,7 @@ class PreparedExecution {
   #owned;
   #closed = false;
   #activeDeliveries = 0;
+  #closeReport = null;
   constructor(plan, owned) { this.kind = 'cuda-js-execution'; this.state = 'prepared'; this.#plan = plan; this.#owned = owned; }
 
   async ignite(inputs = {}) {
@@ -336,7 +440,7 @@ class PreparedExecution {
       if (bytes === undefined) continue;
       try { await this.#owned.memories.get(id).write(bytes); }
       catch (error) {
-        const report = await cleanup(this.#owned); this.#closed = true; this.state = 'closed';
+        const report = await cleanup(this.#owned); this.#closeReport = report; this.#closed = true; this.state = 'closed';
         throw wrapped('CUDA_JS_ADAPTER_ALLOCATION', 'initialization', `failed to initialize ${id}`, error, 'allocation', report);
       }
     }
@@ -368,7 +472,7 @@ class PreparedExecution {
       this.state = 'running';
       return this.status();
     } catch (error) {
-      const report = await cleanup(this.#owned); this.#closed = true; this.state = 'closed';
+      const report = await cleanup(this.#owned); this.#closeReport = report; this.#closed = true; this.state = 'closed';
       throw wrapped('CUDA_JS_ADAPTER_OPERATION', 'ignition', 'CUDA-JS operation submission failed', error, 'operation', report);
     }
   }
@@ -411,15 +515,21 @@ class PreparedExecution {
     } catch (error) { primary = error; }
     finally {
       if (transfer) {
-        try { await transfer.close(); this.#owned.deliveryOperations.delete(transferId); }
-        catch (error) { closeError = error; }
+        try {
+          await transfer.close();
+          this.#owned.deliveryOperations.delete(transferId);
+        } catch (error) {
+          closeError = error;
+          const label = `delivery-operation:${transferId}`;
+          if (!this.#owned.failedClosures.has(label)) this.#owned.failedClosures.set(label, cleanupFailure(label, error));
+        }
       }
       this.#activeDeliveries -= 1;
     }
     if (closeError) {
       const cleanupReport = Object.freeze({
         status: 'quarantined',
-        failures: Object.freeze([{ label: `delivery-operation:${transferId}`, lower: lowerFacts(closeError) }]),
+        failures: Object.freeze([this.#owned.failedClosures.get(`delivery-operation:${transferId}`)]),
         runtime: null,
         retained: Object.freeze([`delivery-operation:${transferId}`, `memory:${delivery.resource}`, 'runtime']),
         ...(primary ? { primary: primary instanceof CudaJsRuntimeAdapterError ? freeze({ code: primary.code, phase: primary.phase, classification: primary.classification, lower: primary.lower }) : lowerFacts(primary) } : {}),
@@ -452,9 +562,13 @@ class PreparedExecution {
   }
 
   async close() {
-    if (this.#closed) return Object.freeze({ status: 'complete', failures: Object.freeze([]), runtime: null, repeated: true });
+    if (this.#closed) return Object.freeze({ ...(this.#closeReport ?? { status: 'complete', failures: Object.freeze([]), runtime: null }), repeated: true });
     if (this.#activeDeliveries !== 0) fail('CUDA_JS_ADAPTER_STATE', 'cleanup', 'cannot close while terminal delivery is in flight');
-    const report = await cleanup(this.#owned); this.#closed = true; this.state = 'closed'; return report;
+    const report = await cleanup(this.#owned);
+    this.#closeReport = report;
+    this.#closed = true;
+    this.state = 'closed';
+    return report;
   }
 }
 
@@ -467,7 +581,7 @@ export async function prepareCudaJsExecution(executionPackage, { cudaJs, peer, r
   if (runtimeOptions.compiler === false) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'compiler=false is incompatible with preparation');
   if (runtimeOptions.driver?.maxPending !== undefined && runtimeOptions.driver.maxPending !== 1) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'runtimeOptions.driver.maxPending must remain 1');
   if (runtimeOptions.driver?.execution?.maxPendingGpuOperations !== undefined && runtimeOptions.driver.execution.maxPendingGpuOperations !== 2) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'runtimeOptions.driver.execution.maxPendingGpuOperations must remain 2 for terminal delivery');
-  const owned = { runtime: null, module: null, function: null, operation: null, deliveryOperations: new Map(), nextDeliverySequence: 0, memories: new Map(), views: new Map(), mailboxes: new Map() };
+  const owned = { runtime: null, module: null, function: null, operation: null, deliveryOperations: new Map(), nextDeliverySequence: 0, memories: new Map(), views: new Map(), mailboxes: new Map(), failedClosures: new Map() };
   try {
     owned.runtime = await cudaJs.openCudaRuntime({
       ...runtimeOptions,
