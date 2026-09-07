@@ -104,6 +104,14 @@ assert(analytic, 'analytic evaluator fixture is required');
 const legacy = normalizeEvaluatorProfile(analytic.input, inspected, analytic.domain, analytic.graph);
 assert.equal(Object.hasOwn(legacy.normalized.programContribution, 'requirements'), false, 'legacy evaluator normalization must remain exact-delegate');
 
+const empty = structuredClone(analytic.input);
+empty.programContribution.requirements = [];
+assert.throws(
+  () => normalizeEvaluatorProfile(empty, inspected, analytic.domain, analytic.graph),
+  { code: 'EVALUATOR_PROGRAM_REQUIREMENT_COUNT' },
+  'present empty requirements must not create a second zero representation',
+);
+
 const releaseAcquire = evaluatorSyntheticSchemaReference('cuda-js.device-publication-release-acquire');
 const mailbox = evaluatorSyntheticSchemaReference('cuda-js.publication-mailbox');
 const withRequirements = structuredClone(analytic.input);
@@ -151,4 +159,4 @@ const absentPackage = normalizeProgramPackageProfile(absentFixture.input, inspec
 assert.equal(absentPackage.normalized.publicRequirements.some(({ contract }) => contract.id === RELEASE_ACQUIRE_ID), false, 'evaluator absence must remove evaluator-only public requirement');
 assert.equal(JSON.stringify(absentPackage.normalized).includes('evaluator.synthetic-analytic-evaluation-only'), false, 'evaluator absence must leave no evaluator profile residue');
 
-console.log('evaluator_program_requirements=pass legacy=exact-delegate canonical=proved duplicate=reject bounded=64 package_projection=owned helper_omission=reject absence=zero-residue');
+console.log('evaluator_program_requirements=pass legacy=exact-delegate empty=reject canonical=proved duplicate=reject bounded=64 package_projection=owned helper_omission=reject absence=zero-residue');

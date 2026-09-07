@@ -5,8 +5,8 @@ import { normalizeSchemaReference } from './foundation.mjs';
 const MAX_PROGRAM_REQUIREMENTS = 64;
 
 function normalizeProgramRequirements(input) {
-  if (!Array.isArray(input) || input.length > MAX_PROGRAM_REQUIREMENTS) {
-    fail('EVALUATOR_PROGRAM_REQUIREMENT_COUNT', `program requirements must contain at most ${MAX_PROGRAM_REQUIREMENTS} entries`);
+  if (!Array.isArray(input) || input.length === 0 || input.length > MAX_PROGRAM_REQUIREMENTS) {
+    fail('EVALUATOR_PROGRAM_REQUIREMENT_COUNT', `program requirements must contain between 1 and ${MAX_PROGRAM_REQUIREMENTS} entries when present`);
   }
   const requirements = input.map((entry, index) => normalizeSchemaReference(entry, `program requirement ${index}`));
   requirements.sort((left, right) => compareRaw(left.id, right.id));
