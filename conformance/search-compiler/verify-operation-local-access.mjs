@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -16,8 +17,10 @@ const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const schemaRoot = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0');
 const ordinaryAccess = ['read', 'write', 'read-write'];
 const broadAccess = ['read', 'write', 'atomic', 'publish'];
+const denseScalars = ['f64', 'f16', 'bf16'];
 const digest = (character) => ({ algorithm: 'sha256', sha256: character.repeat(64) });
 const profile = (id, schema, character) => ({ normalized: { id, schema }, schemaSha: character.repeat(64), identity: digest(character) });
+const sourceIdentity = (source) => ({ algorithm: 'sha256', sha256: createHash('sha256').update(source, 'utf8').digest('hex') });
 
 function makeFixture(providerAccess = broadAccess, bindingAccess = 'write') {
   const progressResult = profile('progress.operation-access', 'cuda-mcgs.progress-profile/0.2.0', '2');
@@ -82,6 +85,13 @@ function normalizeCase(providerAccess = broadAccess, bindingAccess = 'write') {
   return { ...subject, normalized };
 }
 
+function normalizeView(view) {
+  const subject = makeFixture();
+  subject.binding.source.view = view;
+  const normalized = normalizeProgramPackageProfile(subject.fixture.input, subject.inspected, subject.fixture.context);
+  return { ...subject, normalized };
+}
+
 const accepted = normalizeCase();
 const acceptedBinding = accepted.normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output');
 assert.equal(acceptedBinding.source.access, 'write');
@@ -120,6 +130,39 @@ assert.throws(() => buildExecutionPackage(historical.normalized, composeSearchPr
 const readWriteSameEnvelope = normalizeCase(broadAccess, 'read-write');
 assert.notEqual(readWriteSameEnvelope.normalized.identity.sha256, accepted.normalized.identity.sha256);
 
+const viewed = normalizeView({ dtype: 'u32', byteOffset: '4', elementCount: '4' });
+const viewedBinding = viewed.normalized.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output');
+assert.deepEqual(viewedBinding.source.view, { dtype: 'u32', byteOffset: '4', elementCount: '4' });
+const viewedProgram = composeSearchProgram(viewed.normalized);
+assert.deepEqual(viewedProgram.normalized.operations[0].bindings.find(({ parameter }) => parameter === 'output').source.view, viewedBinding.source.view);
+const viewedExecution = buildExecutionPackage(viewed.normalized, viewedProgram);
+assert.deepEqual(viewedExecution.normalized.cudaJsAdapter.operationRequirements[0].bindings.find(({ parameter }) => parameter === 'output').source.view, viewedBinding.source.view);
+assert.notEqual(viewed.normalized.identity.sha256, accepted.normalized.identity.sha256);
+assert.throws(() => normalizeView({ dtype: 'f32', byteOffset: '4', elementCount: '4' }), { code: 'COMPOSE_OPERATION_VIEW' });
+assert.throws(() => normalizeView({ dtype: 'u32', byteOffset: '2', elementCount: '4' }), { code: 'COMPOSE_OPERATION_VIEW' });
+assert.throws(() => normalizeView({ dtype: 'u32', byteOffset: '60', elementCount: '2' }), { code: 'COMPOSE_OPERATION_VIEW' });
+assert.throws(() => normalizeView({ dtype: 'u32', byteOffset: '0', elementCount: '0' }), { code: 'COMPOSE_OPERATION_VIEW' });
+
+const dense = makeFixture();
+const denseFunction = dense.fixture.input.functions.find(({ executionRole }) => executionRole === 'device-callable');
+if (!denseFunction) throw new Error('operation-access fixture lacks a device-callable owner function');
+const denseUnit = dense.fixture.input.sourceUnits.find(({ id }) => id === denseFunction.sourceUnit);
+if (!denseUnit) throw new Error('operation-access fixture lacks the dense function source unit');
+const denseSource = `function ${denseFunction.name}(denseValue) { return denseValue; }\n`;
+denseUnit.source = denseSource;
+denseUnit.sourceIdentity = sourceIdentity(denseSource);
+denseFunction.parameters = [{ name: 'denseValue', type: 'f16' }];
+denseFunction.returns = 'f16';
+denseFunction.calls = [];
+denseFunction.helpers = [];
+const denseNormalized = normalizeProgramPackageProfile(dense.fixture.input, dense.inspected, dense.fixture.context);
+const normalizedDenseFunction = denseNormalized.normalized.functions.find(({ name }) => name === denseFunction.name);
+assert.deepEqual(normalizedDenseFunction.parameters, [{ name: 'denseValue', type: 'f16' }]);
+assert.equal(normalizedDenseFunction.returns, 'f16');
+const denseProgram = composeSearchProgram(denseNormalized);
+const denseExecution = buildExecutionPackage(denseNormalized, denseProgram);
+assert.equal(denseExecution.normalized.cudaJsAdapter.searchProgram.functions.find(({ name }) => name === denseFunction.name).returns, 'f16');
+
 for (const [file, definition] of [
   ['program-package-profile.schema.json', 'binding'],
   ['execution-package.schema.json', 'publicBinding'],
@@ -131,6 +174,18 @@ for (const [file, definition] of [
   assert.deepEqual(resource.properties.access.enum, ordinaryAccess);
   assert(!resource.required.includes('access'), 'historical resource bindings must retain structural validity');
   assert.equal(Object.hasOwn(scalar.properties, 'access'), false);
+  assert.equal(resource.properties.view.$ref, '#/$defs/resourceView');
+  assert(!resource.required.includes('view'), 'historical whole-resource bindings must remain structurally valid');
+  assert.deepEqual(schema.$defs.resourceView.properties.dtype.enum, ['u32', 'u64', 'i32', 'f32', 'f64', 'f16', 'bf16']);
 }
 
-console.log('operation_local_access=pass ordinary=read,write,read-write historical=non-realizable atomic_publication=fail-closed adapter=inference-free');
+const compositionSchema = JSON.parse(await readFile(path.join(schemaRoot, 'program-package-profile.schema.json'), 'utf8'));
+for (const dtype of denseScalars) {
+  assert(compositionSchema.$defs.parameter.properties.type.enum.includes(dtype));
+  assert(compositionSchema.$defs.parameter.properties.type.enum.includes(`ptr<${dtype}>`));
+  assert(compositionSchema.$defs.function.properties.returns.enum.includes(dtype));
+}
+const executionSchema = JSON.parse(await readFile(path.join(schemaRoot, 'execution-package.schema.json'), 'utf8'));
+for (const dtype of denseScalars) assert(executionSchema.$defs.publicFunction.properties.returns.enum.includes(dtype));
+
+console.log('operation_local_access=pass ordinary=read,write,read-write views=typed-bounded-identity-material dense=f64,f16,bf16 historical=non-realizable atomic_publication=fail-closed adapter=inference-free');
