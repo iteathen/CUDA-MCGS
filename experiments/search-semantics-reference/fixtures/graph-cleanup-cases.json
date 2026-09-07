@@ -19,7 +19,7 @@
   "edgeEvidence": {
     "algorithm": "sha256",
     "byteLength": 11661,
-    "sha256": "dbeaad7a6a5c81466ebe8fe46db04a60319eeef7468e07ce8373e3fe9f68e063"
+    "sha256": "dbeaad7acb39f46a12a0ebbe7b34fa57d8bc4ae73ace456919afcede80ea136a"
   },
   "refEvidence": {
     "algorithm": "sha256",
@@ -29,12 +29,12 @@
   "pathEvidence": {
     "algorithm": "sha256",
     "byteLength": 9490,
-    "sha256": "6344238fb56de2bbc8a6b930e42c0485de02f6cb00e16b0844867ac3275525ee"
+    "sha256": "5ae7141f3b7a018d873da0fa449ffd811cc8f62dc7b50ec8cbb2c67dfdec1e0c"
   },
   "rootEvidence": {
     "algorithm": "sha256",
     "byteLength": 9954,
-    "sha256": "6ee5e625278ce60c547ef35ad0d4eb76395e6cef86f256ad162b153787e3826e"
+    "sha256": "6773b5930fd8e4ec8fe02d1d47bfc36bc6f21016fe26cd8fefb8c585f3d7f0fb"
   },
   "reclaimEvidence": {
     "algorithm": "sha256",

@@ -39,7 +39,7 @@
     "graph-root": {
       "algorithm": "sha256",
       "byteLength": 9954,
-      "sha256": "6ee5e625278ce60c547ef35ad0d4eb76395e6cef86f256ad162b153787e3826e"
+      "sha256": "6773b5930fd8e4ec8fe02d1d47bfc36bc6f21016fe26cd8fefb8c585f3d7f0fb"
     },
     "graph-reclaim": {
       "algorithm": "sha256",
