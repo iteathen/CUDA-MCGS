@@ -5,6 +5,7 @@ const TENSOR_CONTRACTS = new Set([
 ]);
 const IDENTIFIER = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
 const HEX64 = /^[0-9a-f]{64}$/;
+const UINT32_MAX = 0xffff_ffff;
 
 function freeze(value) {
   if (value === null || typeof value !== 'object') return value;
@@ -31,8 +32,8 @@ function object(value, label) {
   return value;
 }
 
-function positiveInteger(value, label) {
-  if (!Number.isSafeInteger(value) || value <= 0) fail('TENSOR_EVALUATOR_BOUNDS', `${label} must be a positive safe integer`);
+function positiveInteger(value, label, maximum = Number.MAX_SAFE_INTEGER) {
+  if (!Number.isSafeInteger(value) || value <= 0 || value > maximum) fail('TENSOR_EVALUATOR_BOUNDS', `${label} must be a positive integer no greater than ${maximum}`);
   return value;
 }
 
@@ -67,9 +68,17 @@ function normalizeProgramParameters(value) {
   const parameters = value.map((parameter, index) => {
     object(parameter, `Tensor program parameter ${index}`);
     if (parameter.parameterIndex !== index || !IDENTIFIER.test(parameter.parameterName) || typeof parameter.type !== 'string'
+        || typeof parameter.dtype !== 'string' || parameter.dtype.length === 0
         || !['item-index', 'input', 'output', 'workspace'].includes(parameter.role)
         || !['read', 'write', 'read-write'].includes(parameter.access) || typeof parameter.itemVarying !== 'boolean') {
       fail('TENSOR_EVALUATOR_CALLABLE', `Tensor program parameter ${index} is malformed`);
+    }
+    if (parameter.role === 'item-index') {
+      if (parameter.type !== 'u32' || parameter.dtype !== 'u32' || parameter.access !== 'read' || parameter.itemVarying !== false) {
+        fail('TENSOR_EVALUATOR_ITEM_AXIS', 'Tensor item-index parameter must be the public read-only u32 item index');
+      }
+    } else if (parameter.type !== `ptr<${parameter.dtype}>`) {
+      fail('TENSOR_EVALUATOR_CALLABLE', `${parameter.parameterName} type/dtype differ`);
     }
     const byteLength = parameter.role === 'item-index' ? 0 : nonnegativeInteger(parameter.byteLength, `${parameter.parameterName} byteLength`);
     return {
@@ -90,17 +99,42 @@ function normalizeProgramParameters(value) {
   return parameters;
 }
 
-function requireRoleProjection(value, parameters, role, label) {
+function normalizeRoleProjection(value, parameters, role, label) {
   if (!Array.isArray(value)) fail('TENSOR_EVALUATOR_CALLABLE', `${label} must be an array`);
   const expected = parameters.filter((entry) => entry.role === role);
   if (value.length !== expected.length) fail('TENSOR_EVALUATOR_CALLABLE', `${label} differs from Tensor parameter roles`);
-  value.forEach((entry, index) => {
+  return value.map((entry, index) => {
     object(entry, `${label} ${index}`);
     const parameter = expected[index];
     if (entry.parameterIndex !== parameter.parameterIndex || entry.parameterName !== parameter.parameterName
-        || entry.type !== parameter.type || entry.role !== role || entry.byteLength !== parameter.byteLength) {
+        || entry.type !== parameter.type || entry.dtype !== parameter.dtype || entry.role !== role
+        || entry.access !== parameter.access || entry.itemVarying !== parameter.itemVarying
+        || entry.byteLength !== parameter.byteLength) {
       fail('TENSOR_EVALUATOR_CALLABLE', `${label} differs from Tensor parameter ${parameter.parameterName}`);
     }
+    if (role === 'input') {
+      return {
+        ...parameter,
+        name: text(entry.name, `${parameter.parameterName} input name`),
+        valueId: text(entry.valueId, `${parameter.parameterName} input valueId`),
+        elementCount: positiveInteger(entry.elementCount, `${parameter.parameterName} elementCount`),
+      };
+    }
+    if (role === 'output') {
+      return {
+        ...parameter,
+        name: text(entry.name, `${parameter.parameterName} output name`),
+        valueId: text(entry.valueId, `${parameter.parameterName} output valueId`),
+        perItemElements: positiveInteger(entry.perItemElements, `${parameter.parameterName} perItemElements`),
+        elementCount: positiveInteger(entry.elementCount, `${parameter.parameterName} elementCount`),
+      };
+    }
+    return {
+      ...parameter,
+      perItemElements: positiveInteger(entry.perItemElements, `${parameter.parameterName} perItemElements`),
+      elementCount: positiveInteger(entry.elementCount, `${parameter.parameterName} elementCount`),
+      alignmentBytes: positiveInteger(entry.alignmentBytes, `${parameter.parameterName} alignmentBytes`),
+    };
   });
 }
 
@@ -148,19 +182,21 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
   if (tensorDeviceProgram.kind !== 'tensor-device-program' || !TENSOR_CONTRACTS.has(tensorDeviceProgram.contract)) {
     fail('TENSOR_EVALUATOR_CONTRACT', 'unsupported TensorDeviceProgram contract');
   }
-  const itemCapacity = positiveInteger(tensorDeviceProgram.itemCapacity, 'Tensor itemCapacity');
-  const requestCapacity = positiveInteger(options.requestCapacity ?? itemCapacity, 'requestCapacity');
+  const itemCapacity = positiveInteger(tensorDeviceProgram.itemCapacity, 'Tensor itemCapacity', UINT32_MAX);
+  const requestCapacity = positiveInteger(options.requestCapacity ?? itemCapacity, 'requestCapacity', UINT32_MAX);
   const alias = options.alias ?? 'mcgsTensorRunItem';
   if (!IDENTIFIER.test(alias) || alias === 'gpu') fail('TENSOR_EVALUATOR_ALIAS', 'Tensor import alias must be a non-gpu Device-JS identifier');
   const callable = normalizeFunction(tensorDeviceProgram.function);
-  const parameters = normalizeProgramParameters(tensorDeviceProgram.parameters);
-  if (callable.parameters.length !== parameters.length
-      || callable.parameters.some((parameter, index) => parameter.name !== parameters[index].parameterName || parameter.type !== parameters[index].type)) {
+  const baseParameters = normalizeProgramParameters(tensorDeviceProgram.parameters);
+  if (callable.parameters.length !== baseParameters.length
+      || callable.parameters.some((parameter, index) => parameter.name !== baseParameters[index].parameterName || parameter.type !== baseParameters[index].type)) {
     fail('TENSOR_EVALUATOR_CALLABLE', 'Tensor function and parameter descriptors differ');
   }
-  requireRoleProjection(tensorDeviceProgram.inputs, parameters, 'input', 'Tensor inputs');
-  requireRoleProjection(tensorDeviceProgram.outputs, parameters, 'output', 'Tensor outputs');
-  requireRoleProjection(tensorDeviceProgram.workspace, parameters, 'workspace', 'Tensor workspace');
+  const projected = new Map();
+  for (const entry of normalizeRoleProjection(tensorDeviceProgram.inputs, baseParameters, 'input', 'Tensor inputs')) projected.set(entry.parameterIndex, entry);
+  for (const entry of normalizeRoleProjection(tensorDeviceProgram.outputs, baseParameters, 'output', 'Tensor outputs')) projected.set(entry.parameterIndex, entry);
+  for (const entry of normalizeRoleProjection(tensorDeviceProgram.workspace, baseParameters, 'workspace', 'Tensor workspace')) projected.set(entry.parameterIndex, entry);
+  const parameters = baseParameters.map((entry) => projected.get(entry.parameterIndex) ?? entry);
   const totalWorkspaceBytes = nonnegativeInteger(tensorDeviceProgram.totalWorkspaceBytes, 'totalWorkspaceBytes');
   const workspaceBytes = parameters.filter(({ role }) => role === 'workspace').reduce((total, entry) => total + entry.byteLength, 0);
   if (workspaceBytes !== totalWorkspaceBytes) fail('TENSOR_EVALUATOR_WORKSPACE', 'Tensor workspace descriptors differ from totalWorkspaceBytes');
@@ -201,4 +237,5 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
 export const tensorEvaluatorConnectorConstants = Object.freeze({
   connectorContract: CONNECTOR_CONTRACT,
   tensorContracts: Object.freeze([...TENSOR_CONTRACTS]),
+  maximumRequestCapacity: UINT32_MAX,
 });
