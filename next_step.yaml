@@ -1,25 +1,31 @@
 {
-  "schema_version": 120,
+  "schema_version": 121,
   "updated": "2026-09-06",
-  "status": "generic_tensor_evaluator_runtime_composition_active_physical_deferred",
-  "objective": "Continue CUDA-MCGS as a product-neutral JavaScript/TypeScript framework. The canonical external Device-JS import-composition prerequisite is protected-complete; build and qualify the remaining optional generic device-resident Tensor evaluator request/batch/scatter/readiness/search-lifecycle composition through public CUDA-JS-Tensor and CUDA-JS contracts while deferring directly exposed physical NVIDIA qualification. Physical evidence remains open/resumable and is never inferred from portable/package evidence.",
-  "ownership_boundary": "CUDA-MCGS owns universal Search IR/Graph/Policy/Evaluator/Resource/Progress/Output/Session/Stage/Channel semantics and generic search composition/runtime boundaries. CUDA-JS-Tensor owns Tensor mathematics, TensorProgram/TensorPlan, item-axis semantics, callable ABI and Tensor workspace. CUDA-JS owns all consumer-neutral native CUDA/provider/compiler/runtime/resource and generic Device-JS library/import mechanisms. Product semantics remain downstream and are not execution dependencies.",
-  "authority": [
-    "AGENTS.md",
-    "agent_files/AGENTS.md",
-    "agent_files/AI_RULES.md",
-    "agent_files/DESIGN_ALIGNMENT_CARD.md",
-    "agent_files/SYSTEM_REGISTRY.md",
-    "docs/specs/SPEC-0009-evaluator-contract.md",
-    "docs/specs/SPEC-0011-finite-search-resources.md",
-    "docs/specs/SPEC-0012-device-owned-search-progress.md",
-    "docs/specs/SPEC-0015-native-boundary-and-js-only-implementation.md",
-    "components/search-compiler/src/evaluator.mjs",
-    "components/search-compiler/src/program-package.mjs",
-    "adapters/runtimes/cuda-js/src/adapter.mjs",
-    "adapters/evaluators/cuda-js-tensor/src/connector.mjs",
-    "https://github.com/iteathen/CUDA-MCGS/issues/124"
-  ],
+  "status": "design_principle_alignment_active_124_paused",
+  "objective": "Align existing CUDA-MCGS implementation, evidence topology and cross-repository current-state ownership with the accepted design principles before any further #124 runtime expansion. Preserve all already-qualified #124 foundations without resuming request/batch/scatter/readiness implementation.",
+  "ownership_boundary": "CUDA-MCGS owns universal Search IR/Graph/Policy/Evaluator/Resource/Progress/Output/Session/Stage/Channel semantics and its own readiness/work ordering. CUDA-JS-Tensor owns Tensor mathematics, TensorProgram/TensorPlan, item-axis callable ABI and Tensor workspace. CUDA-JS owns consumer-neutral CUDA/compiler/runtime/provider/resource mechanisms. Product semantics remain downstream and are not execution dependencies for generic CUDA-MCGS framework work.",
+  "current_focus": {
+    "repository": "iteathen/CUDA-MCGS",
+    "issue": 245,
+    "name": "design-principle alignment before further runtime expansion",
+    "state": "active_maintenance_alignment",
+    "implementation_outcome": "Correct duplicated readiness truth, recursively decompose existing private implementation only where real attention-bounded seams are demonstrated, mechanize exact evidence maintenance without weakening frozen provenance, audit adapter ownership/lifecycle, and leave public behavior unchanged unless an existing contract is independently falsified.",
+    "acceptance": [
+      "cross-repository producer/consumer readiness truth has one owner",
+      "Search Compiler keeps one public owner while private implementation satisfies recursive full-attention LEGO boundaries",
+      "exact evidence propagation has a fail-closed mechanical maintenance path and committed evidence remains independently checkable",
+      "runtime and Tensor adapters translate public facts without acquiring foreign semantic/lifecycle authority",
+      "existing public package/reference semantics pass exact-head qualification",
+      "no #124 feature work is included"
+    ],
+    "stop_conditions": [
+      "do not implement evaluator request accumulation, batching, scatter/readiness or search-lifecycle expansion",
+      "do not change public schemas/APIs merely to make files smaller",
+      "do not weaken frozen evidence, compatibility, lifecycle or cleanup gates",
+      "do not create a new CUDA semantic layer without independent consumer evidence",
+      "route any discovered lower generic gap to its natural owner"
+    ]
+  },
   "protected_foundations": {
     "semantic_acceptance": {
       "issue": 122,
@@ -29,169 +35,59 @@
       "composer_cases": 883,
       "cuda_free_reference_routes": 393
     },
-    "public_library": {
-      "issue": 109,
-      "implementation_provenance": "7c02c33373dd3aa517655965f10994a46bc6699a"
-    },
-    "cuda_js_runtime_adapter": {
-      "issue": 125,
-      "implementation_provenance": "5b7b4c7e918ca3e8e812c6e22e58bf1621061bc6"
-    },
     "device_js_import_composition": {
       "issue": 124,
       "pull_request": 241,
-      "implementation_provenance": "a1d2b93b0256929cac4bb76b765e7105b4714614",
-      "tree": "45e903c3cbee6ede51df8b99870c0282856672e7",
-      "meaning": "Program Package/Search Program own optional canonical identity-bound external Device-JS import declarations; integration.cuda-js validates matching live opaque public DeviceJsImport values before any lower mutation and forwards them through public compileDeviceProgram imports."
+      "state": "protected_complete"
+    },
+    "evaluator_device_binding_foundation": {
+      "issue": 124,
+      "pull_request": 244,
+      "protected_main": "3c82dc430730fe88207e6d5f94040421686b2c0f",
+      "tree": "be30d8ae638ea61afd6f8818dfdc5df70e0e1df7",
+      "qualified_head_tree_preserved": true,
+      "meaning": "Dense Device-JS kinds, typed resource subviews, public CUDA-JS view translation/cleanup and richer public Tensor descriptor preservation are integrated. Full evaluator runtime composition remains intentionally paused."
     },
     "native_boundary": {
       "spec": "SPEC-0015",
-      "rule": "maintained CUDA-MCGS is JavaScript/TypeScript plus restricted Device-JS; CUDA-JS is sole native CUDA/provider owner"
+      "rule": "maintained CUDA-MCGS remains JavaScript/TypeScript plus restricted Device-JS; CUDA-JS is the sole native CUDA/provider owner"
     },
     "optional_cuda_mm": {
       "spec": "SPEC-0016",
       "state": "recognized_unactivated"
     }
   },
-  "current_focus": {
-    "repository": "iteathen/CUDA-MCGS",
+  "paused_work": {
     "issue": 124,
-    "name": "generic device-resident Tensor evaluator request/batch/scatter runtime composition",
-    "state": "active_nonphysical_framework_runtime_work",
-    "prerequisites": [
-      "accepted SPEC-0009 evaluator semantics",
-      "protected public CUDA-JS runtime adapter",
-      "public CUDA-JS-Tensor TensorDeviceProgram callable/item/workspace mechanism",
-      "protected canonical external Device-JS import composition from PR #241"
-    ],
-    "protected_import_composition": {
-      "provenance": "a1d2b93b0256929cac4bb76b765e7105b4714614",
-      "declaration": "cuda-mcgs.device-js-import-declaration/0.1.0",
-      "properties": [
-        "optional canonical identity-bound Program Package/Search Program dependency",
-        "owner-bound deletion and zero residue",
-        "maximum 64 imports and 32 distinct libraries per current public CUDA-JS profile",
-        "pre-lower exact live DeviceJsImport matching",
-        "exact opaque forwarding through public compileDeviceProgram imports",
-        "unchanged no-import behavior"
-      ],
-      "claim_limit": "portable/reference composition evidence only; no native/provider/hardware promotion"
-    },
-    "tensor_public_contract": {
-      "package": "cuda-js-tensor",
-      "required_surface": [
-        "TensorDeviceProgram",
-        "compileTensorDeviceProgram",
-        "itemCapacity",
-        "parameters",
-        "inputs",
-        "outputs",
-        "workspace",
-        "totalWorkspaceBytes",
-        "function tensorRunItem",
-        "public DeviceJsLibrary/importAs composition",
-        "compatibilityIdentity"
-      ],
-      "ownership_rule": "CUDA-MCGS may consume these public generic facts but may not redefine Tensor mathematics, TensorPlan semantics, item-axis independence, callable ABI or workspace meaning."
-    },
-    "implementation_outcome": "Complete the optional evaluator execution path above the protected import-composition seam. CUDA-MCGS owns request incarnation and freshness, finite queue/batch formation, request-to-item assignment, full and partial batch identity, scatter/readiness/publication, stale rejection, failure/pressure/cancellation mapping, retryability and cleanup. Evaluator-free and non-Tensor profiles remain complete alternatives. The adapter does not become a second evaluator scheduler or Tensor runtime.",
-    "acceptance": [
-      "public package contracts only; no private/deep imports",
-      "no native/CUDA/PTX/FFI source in CUDA-MCGS",
-      "finite capacity and workspace admission before execution",
-      "multiple device-owned requests preserve exact item identity without host gather/launch/poll/relaunch progression",
-      "partial batches do not fabricate occupancy or results",
-      "reused slots reject stale result generations",
-      "Tensor pressure/failure/cancellation/unavailable capability map to typed evaluator dispositions",
-      "failed or cancelled attempts remain retryable where semantics permit",
-      "resources close terminally or retain truthful orphan/restart-required disposition",
-      "evaluator-free deletion/substitution remains complete",
-      "portable conformance claims only portable semantic evidence"
-    ],
-    "stop_conditions": [
-      "do not introduce downstream product-specific state, protocol, model, output or correctness meaning",
-      "do not create a second Tensor planner/compiler/runtime or evaluator scheduler/runtime",
-      "do not inspect or depend on Tensor private source layout or CUDA-JS private implementation",
-      "do not add host read-decide-write/relaunch progression for active evaluation",
-      "route missing generic Tensor capability to CUDA-JS-Tensor",
-      "route missing generic native/provider mechanism to CUDA-JS"
-    ]
+    "state": "open_valid_not_active",
+    "resume_rule": "Resume only after issue #245 is completed or explicitly superseded by owner instruction. Preserve the qualified foundation and do not append feature work to the alignment branch."
   },
-  "parked_physical_evidence": {
+  "physical_evidence": {
     "disposition": "deferred_not_waived",
-    "resume_condition": "suitable directly exposed physical NVIDIA hardware becomes available",
-    "gates": [
-      {
-        "repository": "iteathen/CUDA-JS",
-        "issue": 32,
-        "meaning": "exact CUDA-MCGS/CUDA-JS physical compatible pair"
-      },
-      {
-        "repository": "iteathen/CUDA-MCGS",
-        "issue": 37,
-        "meaning": "first native Linux qualification and representative performance"
-      },
-      {
-        "repository": "iteathen/CUDA-MCGS",
-        "issue": 105,
-        "meaning": "multi-GPU replicas after exact single-device physical qualification"
-      }
-    ],
-    "rule": "Hosted, portable, VM, mock and package evidence may continue to prove only the semantics they execute. None of it closes or weakens these physical gates."
+    "rule": "Portable, hosted, VM, mock and package evidence prove only the semantics they execute and never promote native/provider/hardware support."
   },
-  "completed_external_package_evidence": {
-    "issue": 123,
-    "state": "cuda_free_pre_ignition_slice_protected_complete_physical_remainder_deferred",
-    "meaning": "One unrelated repository proved installed public package normalization, accepted authority/context construction, resolve/compose, fail-closed stale or wrong authority, retryability, private/testing export rejection and cleanup. The consumer repository identity is historical evidence only and is not a current product dependency or semantic owner."
-  },
-  "completed_device_js_import_composition": {
-    "issue": 124,
-    "pull_request": 241,
-    "state": "protected_complete",
-    "provenance": "a1d2b93b0256929cac4bb76b765e7105b4714614",
-    "meaning": "External Device-JS library imports are explicit identity-material Search Program/package dependencies rather than compatibility evidence; runtime composition validates exact live public imports fail-closed before lower mutation and preserves the no-import path."
-  },
-  "blockers": [
-    "Full #124 request/batch/scatter/readiness/search-lifecycle runtime composition remains after the now-protected admission/import/package slice; conformance reference behavior is evidence only and is not production runtime authority.",
-    "Physical NVIDIA qualification remains deferred until suitable directly exposed hardware is available and cannot be substituted by portable evidence."
-  ],
-  "deliverables": [
-    "Product-neutral device-owned evaluator request accumulation, finite full/partial batch formation, request-to-item assignment, scatter/readiness/publication and stale-slot rejection above the protected public Tensor/import boundary.",
-    "Typed pressure/failure/cancellation/unavailable-capability disposition, retryability and terminal/truthful retained cleanup with no host-driven active-evaluation progression.",
-    "CUDA-free Ubuntu/Windows conformance for multiple requests, full/partial batches, stale rejection, pressure, cancellation, retry, deletion/substitution and cleanup.",
-    "Installed-package evidence that cuda-mcgs/evaluator/cuda-js-tensor remains exported while conformance/reference source remains physically absent and unexported.",
-    "Current STATUS.md, next_step.yaml and SYSTEM_REGISTRY.md keep #124 generic, import composition protected-complete and physical-only gates explicitly deferred."
-  ],
-  "do_not": [
-    "Do not add downstream product-specific state, protocol, model, output, correctness or release semantics to CUDA-MCGS.",
-    "Do not create a second Tensor planner/compiler/runtime or a second evaluator scheduler/runtime in the adapter.",
-    "Do not import CUDA-JS-Tensor or CUDA-JS private/deep source or inspect generated native artifacts as semantic authority.",
-    "Do not add C/C++/CUDA/PTX/native FFI or Python.",
-    "Do not relabel hosted, portable, VM, mock or package evidence as native/provider/hardware qualification.",
-    "Do not close #124 from the import-composition slice; continue with generic evaluator request/batch/scatter/readiness/search-lifecycle composition."
-  ],
   "validation": {
     "existing": [
-      "node scripts/run-evaluator-reference.mjs",
       "node scripts/run-search-ir-composer-reference.mjs",
+      "node scripts/run-engine-reference-integration.mjs",
       "node scripts/run-cuda-js-runtime-adapter.mjs",
-      "node scripts/run-device-js-import-composition.mjs",
+      "node scripts/run-cuda-js-tensor-evaluator.mjs",
+      "node scripts/run-library-interface.mjs",
       "./scripts/verify-docs.sh"
     ],
-    "new_required": [
-      "product-neutral Tensor evaluator request/batch/scatter runtime conformance",
-      "evaluator-free and non-Tensor deletion/substitution controls",
-      "multiple-request full/partial/stale/pressure/cancellation/retry/cleanup falsifiers"
+    "alignment_required": [
+      "exact public behavior before/after private refactors",
+      "source-boundary and project-organization gates",
+      "evidence-refresh/check tooling falsifiers",
+      "adapter lifecycle/deletion/substitution regressions"
     ]
   },
   "hard_constraints": [
     "one semantic/resource/lifecycle/compatibility fact has one visible owner",
-    "maintained CUDA-MCGS source is JavaScript/TypeScript plus restricted Device-JS only",
-    "no Python",
+    "no Python or maintained native CUDA source in CUDA-MCGS",
     "no private sibling imports",
     "no product semantics upstream",
-    "no host-produced active-search intermediate after ignition",
-    "no portable/package evidence promoted to native/provider/hardware support",
+    "no portable evidence promoted to native/provider support",
     "protected integration requires exact-head qualification, complete review, exact base/tree validation and protected read-back"
   ]
 }
