@@ -242,15 +242,20 @@ async function cleanup(owned) {
   await closeOne('function', owned.function, failures);
   await closeOne('module', owned.module, failures);
   for (const [id, mailbox] of [...owned.mailboxes].reverse()) await closeOne(`mailbox:${id}`, mailbox, failures);
-  for (const [id, view] of [...owned.views].reverse()) await closeOne(`view:${id}`, view, failures);
+  let viewChildrenTerminal = true;
+  for (const [id, view] of [...owned.views].reverse()) {
+    const closed = await closeOne(`view:${id}`, view, failures);
+    if (closed) owned.views.delete(id); else viewChildrenTerminal = false;
+  }
   const retained = [];
   let runtime = null;
-  if (deliveryChildrenTerminal) {
+  if (deliveryChildrenTerminal && viewChildrenTerminal) {
     for (const [id, memory] of [...owned.memories].reverse()) await closeOne(`memory:${id}`, memory, failures);
     if (owned.runtime?.close) {
       try { runtime = await owned.runtime.close(); } catch (error) { failures.push(Object.freeze({ label: 'runtime', lower: lowerFacts(error) })); }
     }
   } else {
+    for (const id of owned.views.keys()) retained.push(`view:${id}`);
     for (const id of owned.memories.keys()) retained.push(`memory:${id}`);
     if (owned.runtime) retained.push('runtime');
   }
