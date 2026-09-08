@@ -142,9 +142,9 @@ assert(binding.functions.every(({ ownerProfile, executionRole, helpers }) => own
 const connectorFunction = binding.functions.find(({ name }) => name === connector.deviceFunction.name);
 assert.deepEqual(connectorFunction.calls, [], 'external Tensor import alias must not become a local call-graph edge');
 const executeFunction = binding.functions.find(({ name }) => name === 'mcgsTensorEvaluatorExecuteItem');
-assert.deepEqual(executeFunction.calls.sort(), ['mcgsTensorEvaluateItem', 'mcgsTensorEvaluatorBatchItemMatches'].sort());
+assert.deepEqual([...executeFunction.calls].sort(), ['mcgsTensorEvaluateItem', 'mcgsTensorEvaluatorBatchItemMatches'].sort());
 const publishFunction = binding.functions.find(({ name }) => name === 'mcgsTensorEvaluatorPublishItem');
-assert.deepEqual(publishFunction.calls.sort(), ['mcgsTensorEvaluatorBatchItemMatches', 'mcgsTensorEvaluatorFinishBatchItem'].sort());
+assert.deepEqual([...publishFunction.calls].sort(), ['mcgsTensorEvaluatorBatchItemMatches', 'mcgsTensorEvaluatorFinishBatchItem'].sort());
 assert.deepEqual(binding.ownership.deviceImports, ['evaluator.tensor.program-binding.tensor-import']);
 assert(binding.claimLimits.includes('resource-plan-binding-not-included'));
 assert(binding.claimLimits.includes('progress-runtime-entry-binding-not-included'));
