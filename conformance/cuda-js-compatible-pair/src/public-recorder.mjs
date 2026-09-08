@@ -97,6 +97,8 @@ export function createPublicCudaJsRecorder(publicCudaJs) {
   const counters = new Map();
   const evidence = {
     compatibility: clonePublic(publicCudaJs.CUDA_JS_COMPATIBILITY),
+    inspectionRequests: [],
+    inspectionResults: [],
     openOptions: [],
     runtimeDescriptions: [],
     compileRequests: [],
@@ -439,6 +441,21 @@ export function createPublicCudaJsRecorder(publicCudaJs) {
 
   const cudaJs = Object.freeze({
     CUDA_JS_COMPATIBILITY: publicCudaJs.CUDA_JS_COMPATIBILITY,
+    inspectDeviceProgram(request) {
+      evidence.inspectionRequests.push(requestFacts(request));
+      try {
+        const result = publicCudaJs.inspectDeviceProgram(request);
+        evidence.inspectionResults.push(Object.freeze({
+          schemaVersion: result?.schemaVersion ?? null,
+          deviceProgram: deviceProgramFacts(result?.deviceProgram),
+          inspection: clonePublic(result?.inspection ?? null),
+        }));
+        return result;
+      } catch (error) {
+        evidence.inspectionResults.push(Object.freeze({ error: errorFacts(error) }));
+        throw error;
+      }
+    },
     async openCudaRuntime(options) {
       evidence.openOptions.push(clonePublic(options));
       const actual = await publicCudaJs.openCudaRuntime(options);
@@ -469,19 +486,26 @@ export function createPublicCudaJsRecorder(publicCudaJs) {
 }
 
 export function assertPhysicalPublicEvidence(snapshot) {
-  if (!snapshot || snapshot.compileRequests?.length !== 1 || snapshot.compilerResults?.length !== 1) {
-    throw Object.assign(new Error('exact pair requires exactly one public Device-JS compilation'), { code: 'PAIR_EVIDENCE_COMPILE' });
+  if (!snapshot || snapshot.inspectionRequests?.length !== 1 || snapshot.inspectionResults?.length !== 1
+      || snapshot.compileRequests?.length !== 1 || snapshot.compilerResults?.length !== 1) {
+    throw Object.assign(new Error('exact pair requires exactly one public Device-JS inspection and compilation'), { code: 'PAIR_EVIDENCE_COMPILE' });
   }
   if (snapshot.moduleLoads?.length !== 1) throw Object.assign(new Error('exact pair requires exactly one public module load'), { code: 'PAIR_EVIDENCE_LOAD' });
   if (snapshot.functionSubmits?.length !== 1) throw Object.assign(new Error('exact pair requires exactly one public function submission'), { code: 'PAIR_EVIDENCE_SUBMIT' });
   if (snapshot.memoryReadsAsync?.length !== 1) throw Object.assign(new Error('exact pair requires exactly one terminal asynchronous D2H request'), { code: 'PAIR_EVIDENCE_DELIVERY' });
 
+  const inspection = snapshot.inspectionResults[0];
   const compile = snapshot.compilerResults[0];
   const artifact = compile.linker?.artifact ?? compile.compiler?.artifact;
   const load = snapshot.moduleLoads[0];
   const loaded = load.result;
-  if (!compile.deviceProgram?.sha256 || !artifact?.sha256 || !artifact?.bytesSha256 || !loaded?.sha256 || !load.request?.bytesSha256) {
-    throw Object.assign(new Error('public Device-JS/artifact/module identities are incomplete'), { code: 'PAIR_EVIDENCE_IDENTITY' });
+  if (!inspection.deviceProgram?.sha256 || !compile.deviceProgram?.sha256 || inspection.deviceProgram.sha256 !== compile.deviceProgram.sha256
+      || !artifact?.sha256 || !artifact?.bytesSha256 || !loaded?.sha256 || !load.request?.bytesSha256) {
+    throw Object.assign(new Error('public Device-JS inspection/compile/artifact/module identities are incomplete or divergent'), { code: 'PAIR_EVIDENCE_IDENTITY' });
+  }
+  if (snapshot.inspectionRequests[0].source?.sha256 !== snapshot.compileRequests[0].source?.sha256
+      || JSON.stringify(snapshot.inspectionRequests[0].compile) !== JSON.stringify(snapshot.compileRequests[0].compile)) {
+    throw Object.assign(new Error('public Device-JS inspection and compilation did not consume the same source/compile request'), { code: 'PAIR_EVIDENCE_INSPECTION_MISMATCH' });
   }
   if (artifact.bytesSha256 !== load.request.bytesSha256 || artifact.sha256 !== load.request.bytesSha256
       || loaded.sha256 !== load.request.bytesSha256 || artifact.format !== loaded.format || artifact.byteLength !== loaded.byteLength) {
