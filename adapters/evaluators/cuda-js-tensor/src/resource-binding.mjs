@@ -124,6 +124,7 @@ function runtimeDescriptor(entry) {
     'id', 'resourceKey', 'representationRole', 'parameterName', 'dtype', 'dtypeWidth', 'access', 'resourceClass', 'pressureStatus',
     'resourceAccess', 'elementCount', 'byteLength', 'alignmentBytes', 'initialization',
     ...(Object.hasOwn(entry, 'perRequestElements') ? ['perRequestElements', 'members'] : []),
+    ...(Object.hasOwn(entry, 'deviceEffects') ? ['deviceEffects'] : []),
   ], 'TENSOR_EVALUATOR_RESOURCE_BINDING_LOGICAL', 'runtime resource requirement');
   if (typeof entry.id !== 'string' || !entry.id.startsWith('runtime.')) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_LOGICAL', 'runtime resource id is invalid');
   const resourceKey = kebab(entry.resourceKey, `${entry.id} resourceKey`);
@@ -156,6 +157,7 @@ function runtimeDescriptor(entry) {
     requiredAccess,
     initialization: entry.initialization,
     source: 'runtime-resource',
+    ...(entry.deviceEffects ? { deviceEffects: [...entry.deviceEffects] } : {}),
     external: false,
   };
 }
@@ -354,11 +356,12 @@ function requireAccess(envelope, required, label) {
   for (const access of required) if (!envelope.includes(access)) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_ACCESS', `${label} omits required ${access} access`);
 }
 
-function bindDescriptor(descriptor, evaluator, resource, contributor) {
-  const evaluatorResourceId = generatedResourceId(evaluator.id, descriptor);
+function bindDescriptor(descriptor, evaluator, resource, contributor, selectedId = generatedResourceId(evaluator.id, descriptor)) {
+  const evaluatorResourceId = selectedId;
   const evaluatorResource = evaluator.resources.find(({ id }) => id === evaluatorResourceId);
   if (!evaluatorResource) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE', `${descriptor.parameterName} evaluator representation resource ${evaluatorResourceId} is absent`);
   const expected = resourceRecord(evaluator.id, descriptor);
+  expected.id = selectedId;
   if (!sameResource(evaluatorResource, expected)) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE', `${evaluatorResourceId} differs from the exact runtime layout`);
   const chain = exactResourceChain(resource, contributor.id, evaluatorResource);
   const byteLength = descriptor.byteLength;
@@ -404,6 +407,7 @@ function bindDescriptor(descriptor, evaluator, resource, contributor) {
     byteLength: byteLength.toString(),
     alignment: alignment.toString(),
     initialization: descriptor.initialization,
+    ...(descriptor.deviceEffects ? { deviceEffects: [...descriptor.deviceEffects] } : {}),
   };
 }
 
@@ -452,6 +456,62 @@ export function createTensorEvaluatorResourceBinding(runtimeContributionInput, e
       'progress-runtime-entry-and-service-order-not-included',
       'no-native-or-provider-qualification',
     ],
+  });
+}
+
+export function createTensorEvaluatorOperationBindings(runtimeInput, evaluatorInput, resourceInput, packageResources, selections = []) {
+  const contribution = runtime(runtimeInput);
+  const evaluatorResult = evaluatorProfileResult(evaluatorInput, contribution);
+  const evaluator = evaluatorResult.normalized;
+  const { normalized: resource, contributor } = resourceProfileResult(resourceInput, evaluatorResult);
+  const { materialized, external } = descriptors(contribution.resources, contribution.tensorBindings);
+  if (!Array.isArray(selections) || selections.length !== external.length) fail('TENSOR_EVALUATOR_INPUT_SELECTION', 'every shared input requires one explicit artifact/resource selection');
+  const selected = new Map();
+  for (const selection of selections) {
+    exactKeys(selection, ['parameter', 'artifact', 'resource'], 'TENSOR_EVALUATOR_INPUT_SELECTION', 'shared input selection');
+    if (selected.has(selection.parameter) || !external.some(({ parameterName }) => parameterName === selection.parameter)) fail('TENSOR_EVALUATOR_INPUT_SELECTION', 'duplicate or unknown shared input');
+    selected.set(selection.parameter, selection);
+  }
+  const resolved = materialized.map((descriptor) => bindDescriptor(descriptor, evaluator, resource, contributor));
+  for (const descriptor of external) {
+    const selection = selected.get(descriptor.parameterName);
+    const artifact = evaluator.artifacts.find(({ id }) => id === selection.artifact);
+    const owned = evaluator.resources.find(({ id }) => id === selection.resource);
+    if (!artifact || artifact.mutability !== 'immutable' || artifact.scope !== 'engine' || artifact.residentBeforeIgnition !== true
+        || owned?.class !== 'artifact' || owned.scope !== 'per-engine') fail('TENSOR_EVALUATOR_INPUT_OWNER', 'shared inputs require existing immutable engine artifact and Resource owners');
+    if (BigInt(artifact.maxBytes) < descriptor.byteLength || BigInt(artifact.maxElements) < descriptor.elementCount
+        || BigInt(owned.alignment) < descriptor.alignment || BigInt(owned.alignment) % descriptor.alignment !== 0n) fail('TENSOR_EVALUATOR_INPUT_LAYOUT', 'selected artifact does not satisfy public Tensor layout');
+    const bound = bindDescriptor({ ...descriptor, resourceClass: 'artifact', pressureStatus: owned.pressureStatus, alignment: BigInt(owned.alignment) }, evaluator, resource, contributor, owned.id);
+    bound.artifact = { ownerProfile: evaluator.id, artifactId: artifact.id, artifactIdentity: contentIdentity(artifact.identity, 'artifact identity'), evaluatorResource: owned.id, contentSha256: artifact.provenance.contentSha256 };
+    resolved.push(bound);
+  }
+  if (!Array.isArray(packageResources)) fail('TENSOR_EVALUATOR_POINTER_RESOURCE', 'Program Package resource declarations are required');
+  const bindings = resolved.map((entry) => {
+    const matches = packageResources.filter(({ providerRequirement }) => providerRequirement === entry.providerRequirement);
+    const provider = resource.providerRequirements.find(({ id }) => id === entry.providerRequirement);
+    const target = matches[0];
+    if (matches.length !== 1 || target.materialization !== 'resident-storage' || target.ownerProfile !== resource.id
+        || target.capacity !== provider.capacity || target.alignment !== provider.alignment || target.unit !== 'bytes') fail('TENSOR_EVALUATOR_POINTER_RESOURCE', 'pointer requires the exact Resource provider materialization');
+    requireAccess(target.access, entry.requiredAccess, target.id);
+    return { parameter: entry.parameterName, source: { kind: 'resource', resource: target.id, access: entry.access, view: entry.view,
+      ...(!entry.artifact ? { initialization: 'zero' } : {}),
+      ...(entry.deviceEffects ? { deviceEffects: entry.deviceEffects } : {}), ...(entry.artifact ? { artifact: entry.artifact } : {}) } };
+  }).sort((a, b) => a.parameter < b.parameter ? -1 : a.parameter > b.parameter ? 1 : 0);
+  const byName = new Map(bindings.map((binding) => [binding.parameter, binding]));
+  const used = new Set();
+  for (const fn of contribution.device.functions) for (const parameter of fn.parameters) if (parameter.type.startsWith('ptr<')) {
+    const binding = byName.get(parameter.name);
+    if (!binding || parameter.type !== `ptr<${binding.source.view.dtype}>`) fail('TENSOR_EVALUATOR_POINTER_ABI', 'runtime callable pointer is absent or differs from its Resource view');
+    used.add(parameter.name);
+  }
+  if (used.size !== bindings.length) fail('TENSOR_EVALUATOR_POINTER_ABI', 'Resource binding contains pointers absent from the runtime ABI');
+  return freeze({
+    ownerProfile: evaluator.id,
+    evaluatorIdentity: evaluatorResult.identity,
+    resourcePlan: { id: resource.id, identity: resourceInput.identity },
+    parameters: bindings.map(({ parameter, source }) => ({ name: parameter, type: `ptr<${source.view.dtype}>` })),
+    bindings,
+    initialization: resolved.map((entry) => ({ parameter: entry.parameterName, providerRequirement: entry.providerRequirement, byteOffset: entry.view.byteOffset, byteLength: entry.byteLength, kind: entry.artifact ? 'artifact' : 'zero' })),
   });
 }
 

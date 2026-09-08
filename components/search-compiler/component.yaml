@@ -34,7 +34,7 @@
         "product/domain production semantics",
         "CUDA runtime/provider/resource lifecycle",
         "native realization",
-        "post-ignition search scheduling/progression",
+        "post-ignition host scheduling or ownership of evaluator/Progress state",
         "package-root public SDK policy"
       ],
       "authoritative_state_owner": "stateless; accepted schemas/specifications own semantic truth and each call owns only its returned immutable normalized values",
@@ -95,7 +95,8 @@
       "canonical normalization implementation",
       "resolved Composer implementation",
       "Search Compiler validation-diagnostic classification",
-      "Search Program/Program Package/execution-package implementation projection"
+      "Search Program/Program Package/execution-package implementation projection",
+      "candidate explicit artifact/initialization/device-effect/launch binding validation and finite Progress cohort source generation"
     ],
     "persistent_state": [],
     "generated_artifacts": [

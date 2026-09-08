@@ -92,7 +92,8 @@
       "cuda-mcgs.tensor-evaluator-connector/0.2.0",
       "cuda-mcgs.tensor-evaluator-device-runtime/0.3.0",
       "cuda-mcgs.tensor-evaluator-program-binding/0.3.0",
-      "cuda-mcgs.tensor-evaluator-resource-binding/0.3.0"
+      "cuda-mcgs.tensor-evaluator-resource-binding/0.3.0",
+      "cuda-mcgs.evaluator-finite-cohort-service/0.1.0"
     ],
     "owns": [
       "Tensor evaluator connector admission and import drift rejection",
@@ -101,7 +102,8 @@
       "Tensor batch gather/scatter and terminal publication transitions",
       "adapter-local evaluator program source/function/import binding plus requirement-consumer ownership and structural deletion",
       "adapter-local derivation of exact evaluator representation byte resources from admitted runtime/Tensor layouts",
-      "verification of exact evaluator/Resource identities and Resource-owned provider/view chains without placement authority"
+      "verification of exact evaluator/Resource identities and Resource-owned provider/view chains without placement authority",
+      "candidate complete operation pointer bindings with selected immutable evaluator artifacts and evaluator-owned aggregate service/quiescence callables"
     ],
     "persistent_state": [],
     "generated_artifacts": ["immutable connector descriptor", "immutable Device-JS runtime contribution descriptor/source", "immutable evaluator program-binding descriptor", "immutable evaluator Resource-binding descriptor", "portable conformance evidence"],

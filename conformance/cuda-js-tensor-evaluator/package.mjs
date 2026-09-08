@@ -79,6 +79,7 @@ export async function importConformanceReference() { return import('cuda-mcgs/co
   assert.equal(typeof shim.tensorEvaluator.tensorEvaluatorProgramBindingConstants, 'object');
   assert.equal(typeof shim.tensorEvaluator.bindTensorEvaluatorProfileResources, 'function');
   assert.equal(typeof shim.tensorEvaluator.createTensorEvaluatorResourceBinding, 'function');
+  assert.equal(typeof shim.tensorEvaluator.createTensorEvaluatorOperationBindings, 'function');
   assert.equal(typeof shim.tensorEvaluator.tensorEvaluatorResourceBindingConstants, 'object');
   assert.equal('createTensorEvaluatorReference' in shim.tensorEvaluator, false, 'conformance reference must not be a production export');
   await assert.rejects(access(path.join(installedRoot, 'conformance', 'cuda-js-tensor-evaluator')), (error) => error?.code === 'ENOENT');

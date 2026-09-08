@@ -23,6 +23,9 @@ const GENERATED_NAMES = Object.freeze({
   requestMatches: 'mcgsTensorEvaluatorRequestMatches',
   batchItemMatches: 'mcgsTensorEvaluatorBatchItemMatches',
   finishBatchItem: 'mcgsTensorEvaluatorFinishBatchItem',
+  serviceItem: 'mcgsTensorEvaluatorServiceItem',
+  cancelPending: 'mcgsTensorEvaluatorCancelPending',
+  quiescent: 'mcgsTensorEvaluatorQuiescent',
 });
 
 const SLOT = Object.freeze({ free: 0, claimed: 1, queued: 2, inflight: 3, publishing: 4, ready: 5, failed: 6, cancelled: 7, stale: 8, retired: 9 });
@@ -224,6 +227,15 @@ function assertGeneratedNameSafety(connector, layout) {
     identifier(name, 'generated runtime parameter');
     if (used.has(name)) fail('TENSOR_EVALUATOR_RUNTIME_COLLISION', `Tensor parameter ${name} collides with a generated evaluator runtime parameter`);
   }
+}
+
+function serviceParameters(connector, layout) {
+  return [param('itemIndex', 'u32'),
+    param(GENERATED_NAMES.requestControl32, 'ptr<u32>'), param(GENERATED_NAMES.requestControl64, 'ptr<u64>'),
+    param(GENERATED_NAMES.batchControl32, 'ptr<u32>'), param(GENERATED_NAMES.batchControl64, 'ptr<u64>'),
+    ...partitionParameters('request', layout.requestInputPartitions),
+    ...connector.deviceFunction.parameters.filter(({ name }) => name !== 'itemIndex'),
+    ...partitionParameters('result', layout.resultOutputPartitions)];
 }
 
 function generateSource(connector, state, layout) {
@@ -526,6 +538,38 @@ ${scatterCopies.join('\n')}
   return ${u32(RESULT.ok)};
 }`);
 
+  const calls = new Map(functionMetadata(connector, layout).map((fn) => [fn.name, fn.parameters.map(({ name }) => name).join(', ')]));
+  const invoke = (name) => `${name}(${calls.get(name)})`;
+  source.push(`function ${GENERATED_NAMES.serviceItem}(${serviceParameters(connector, layout).map(({ name }) => name).join(', ')}) {
+  if (itemIndex >= ${u32(I)}) { return ${u32(RESULT.invalid)}; }
+  if (gpu.atomic.loadAcquireDevice(${batchControl32}, ${u64(b32.batchState)}) !== ${u32(BATCH.ready)}) { return ${u32(RESULT.notReady)}; }
+  if (itemIndex >= ${batchControl32}[${u64(b32.batchOccupancy)}]) { return ${u32(RESULT.noWork)}; }
+  let expectedSlot = ${batchControl32}[gpu.u64(itemIndex) + ${u64(b32.batchSlots)}];
+  let expectedSlotGeneration = ${batchControl64}[gpu.u64(itemIndex) + ${u64(b64.batchSlotGeneration)}];
+  let expectedRequestGeneration = ${batchControl64}[gpu.u64(itemIndex) + ${u64(b64.batchRequestGeneration)}];
+  let expectedBatchGeneration = ${batchControl64}[${u64(b64.batchGeneration)}];
+  let prepared = ${invoke(GENERATED_NAMES.prepareItem)};
+  if (prepared === ${u32(RESULT.ok)}) {
+    let executed = ${invoke(GENERATED_NAMES.executeItem)};
+    if (executed === ${u32(RESULT.ok)}) { ${invoke(GENERATED_NAMES.scatterItem)}; }
+  }
+  return ${invoke(GENERATED_NAMES.publishItem)};
+}`);
+  source.push(`function ${GENERATED_NAMES.cancelPending}(${requestControl32}, ${requestControl64}) {
+  for (let slot = gpu.u32(0); slot < ${u32(R)}; slot = slot + gpu.u32(1)) {
+    let expectedSlotGeneration = ${requestControl64}[gpu.u64(slot) + ${u64(r64.slotGeneration)}];
+    let expectedRequestGeneration = ${requestControl64}[gpu.u64(slot) + ${u64(r64.requestGeneration)}];
+    ${GENERATED_NAMES.cancel}(slot, expectedSlotGeneration, expectedRequestGeneration, ${requestControl32}, ${requestControl64});
+  }
+}`);
+  source.push(`function ${GENERATED_NAMES.quiescent}(${requestControl32}, ${batchControl32}) {
+  if (gpu.atomic.loadAcquireDevice(${batchControl32}, ${u64(b32.batchState)}) !== ${u32(BATCH.free)}) { return false; }
+  for (let slot = gpu.u32(0); slot < ${u32(R)}; slot = slot + gpu.u32(1)) {
+    let status = gpu.atomic.loadAcquireDevice(${requestControl32}, gpu.u64(slot) + ${u64(r32.slotState)});
+    if (status !== ${u32(SLOT.free)} && status !== ${u32(SLOT.ready)} && status !== ${u32(SLOT.failed)} && status !== ${u32(SLOT.cancelled)} && status !== ${u32(SLOT.stale)} && status !== ${u32(SLOT.retired)}) { return false; }
+  }
+  return true;
+}`);
   return `${source.join('\n\n')}\n`;
 }
 
@@ -559,6 +603,9 @@ function functionMetadata(connector, layout) {
     deviceFunction(GENERATED_NAMES.publishItem, [...token, ...controls], 'u32', [GENERATED_NAMES.batchItemMatches, GENERATED_NAMES.finishBatchItem]),
     deviceFunction(GENERATED_NAMES.retryItem, [...token, ...controls], 'u32', [GENERATED_NAMES.batchItemMatches, GENERATED_NAMES.finishBatchItem]),
     deviceFunction(GENERATED_NAMES.recycle, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), r32, r64], 'u32', [GENERATED_NAMES.requestMatches]),
+    deviceFunction(GENERATED_NAMES.serviceItem, serviceParameters(connector, layout), 'u32', [GENERATED_NAMES.prepareItem, GENERATED_NAMES.executeItem, GENERATED_NAMES.scatterItem, GENERATED_NAMES.publishItem]),
+    deviceFunction(GENERATED_NAMES.cancelPending, [r32, r64], 'void', [GENERATED_NAMES.cancel]),
+    deviceFunction(GENERATED_NAMES.quiescent, [r32, b32], 'bool'),
   ];
 }
 
@@ -567,6 +614,7 @@ function resourcePlan(state, layout) {
     {
       id: 'runtime.request-control32', resourceKey: 'tensor-runtime-request-control32', representationRole: 'request-control',
       parameterName: GENERATED_NAMES.requestControl32, dtype: 'u32', dtypeWidth: 4, access: 'read-write', resourceClass: 'request',
+      deviceEffects: ['atomic-cas-relaxed-device', 'atomic-load-acquire-device', 'atomic-store-release-device'],
       pressureStatus: 'evaluator-internal-failure', resourceAccess: ['read', 'write', 'atomic'],
       elementCount: state.requestControl32.elementCount, byteLength: state.requestControl32.byteLength, alignmentBytes: 4,
       initialization: 'zero-before-ignition',
@@ -581,6 +629,7 @@ function resourcePlan(state, layout) {
     {
       id: 'runtime.batch-control32', resourceKey: 'tensor-runtime-batch-control32', representationRole: 'batch-control',
       parameterName: GENERATED_NAMES.batchControl32, dtype: 'u32', dtypeWidth: 4, access: 'read-write', resourceClass: 'batch',
+      deviceEffects: ['atomic-add-relaxed-device', 'atomic-cas-relaxed-device', 'atomic-load-acquire-device', 'atomic-store-release-device'],
       pressureStatus: 'evaluator-internal-failure', resourceAccess: ['read', 'write', 'atomic'],
       elementCount: state.batchControl32.elementCount, byteLength: state.batchControl32.byteLength, alignmentBytes: 4,
       initialization: 'zero-before-ignition',
@@ -707,6 +756,7 @@ export function createTensorEvaluatorRuntimeContribution(connector, options = {}
     device: {
       source,
       functions,
+      serviceProtocol: { contract: 'cuda-mcgs.evaluator-finite-cohort-service/0.1.0', formBatch: GENERATED_NAMES.formBatch, serviceItem: GENERATED_NAMES.serviceItem, cancelPending: GENERATED_NAMES.cancelPending, quiescent: GENERATED_NAMES.quiescent },
       importIdentity: connector.deviceImportIdentity,
       createDeviceImport: connector.createDeviceImport,
       workClasses,

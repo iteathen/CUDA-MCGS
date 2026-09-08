@@ -51,8 +51,9 @@ function fakeTensorDeviceProgram() {
     sha256: '1'.repeat(64),
     format: 'lto-ir',
     architecture: 'compute_90',
-    exports: [{ name: 'tensorRunItem', symbol: 'tensorRunItem', parameters: fn.parameters, returns: 'u32' }],
-    artifact: { format: 'lto-ir', bytes: new Uint8Array([1]), byteLength: 1, sha256: '2'.repeat(64), architecture: 'compute_90', producer: { profile: 'fixture', nvrtcVersion: 'fixture' } },
+    // Synthetic lower-owned export/artifact fixture; no native qualification.
+    exports: [{ name: 'tensorRunItem', symbol: `djs_lib_${'1'.repeat(64)}_0`, parameters: fn.parameters, returns: 'u32' }],
+    artifact: { format: 'lto-ir', bytes: new Uint8Array([1]), byteLength: 1, sha256: sha256(new Uint8Array([1])), architecture: 'compute_90', producer: { profile: 'synthetic-fixture', nvrtcVersion: '13.3' } },
   };
   return {
     kind: 'tensor-device-program',
@@ -89,6 +90,10 @@ const baselineEvaluatorFixtures = buildEvaluatorProfiles(inspected, domainProfil
 const baselineEvaluatorProfiles = baselineEvaluatorFixtures.map(({ input, domain, graph }) => normalizeEvaluatorProfile(input, inspected, domain, graph));
 const selectedFixture = baselineEvaluatorFixtures[0];
 const selectedInput = structuredClone(selectedFixture.input);
+const artifactPayload = new Uint8Array(new Float32Array([2, 3, 4, 5]).buffer);
+selectedInput.artifacts[0].provenance.contentSha256 = sha256(artifactPayload);
+const artifactResource = selectedInput.resources.find(({ class: kind }) => kind === 'artifact');
+Object.assign(artifactResource, { minimum: '16', maximum: '16', alignment: '128' });
 selectedInput.request.maxActive = '3';
 selectedInput.batching.maximumItems = '2';
 const originalSemanticResources = structuredClone(selectedInput.resources);
@@ -171,6 +176,7 @@ const knownProfiles = [
   withSchema(evaluatorResult, evaluatorSchemaSha),
 ];
 const resourceResult = normalizeResourceProfile(resourceInput, inspected, knownProfiles);
+export const composedOwnerFixture = { runtime, evaluatorResult, resourceResult, programBinding, inspected, knownProfiles, artifactPayload, artifactResource, evaluatorSchemaSha };
 assert.equal('resourceRequirements' in programBinding, false);
 assert.equal('tensorBindings' in programBinding, false);
 const binding = createTensorEvaluatorResourceBinding(runtime, evaluatorResult, resourceResult);

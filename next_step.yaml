@@ -1,7 +1,7 @@
 {
   "schema_version": 124,
   "updated": "2026-09-08",
-  "status": "issue_124_active_shared_immutable_tensor_input_binding_next",
+  "status": "issue_124_bounded_composed_path_review_candidate",
   "objective": "Complete CUDA-MCGS #124 from the protected Tensor evaluator audit-closure checkpoint without restarting accepted evaluator, Tensor or CUDA-JS foundations.",
   "agent_authority": {
     "global": "https://github.com/iteathen/.github/blob/main/AGENTS.md",
@@ -24,11 +24,11 @@
   "current_focus": {
     "repository": "iteathen/CUDA-MCGS",
     "issue": 124,
-    "protected_main": "9db49de37c8d9d6507bac70ef62b4095a1d6faa7",
+    "protected_main": "e2047bf0adcd49c7e31b9715324ce5ee127fc95f",
     "protected_checkpoint_pr": 262,
-    "name": "shared immutable Tensor input ownership and binding",
-    "state": "active_owner_directed",
-    "next_action": "Read the protected selected-evaluator/artifact/input ownership surfaces plus the public Tensor and Resource/runtime entry contracts; bind shared immutable Tensor inputs only through their natural selected owner, then complete the pointer-binding ABI before Progress integration.",
+    "name": "review immutable input/pointer bindings and finite evaluator cohort composition",
+    "state": "fresh_candidate_pending_review",
+    "next_action": "Review the fresh candidate and proposed operation-binding/finite-cohort contracts against current-head CI; retain #124 for general Graph/Search closure, broader service profiles and physical CUDA qualification.",
     "execution_sequence": [
       "refresh account-global AGENTS.md, AGENT_LOCAL.md and exact protected repository state",
       "assess shared immutable Tensor input meaning and current selected-owner contracts",
@@ -39,7 +39,8 @@
       "qualify exact owner identity, immutable binding, Resource views, deletion/substitution and failure/drift cases",
       "review the complete pointer ABI before any Progress mutation",
       "cleanup/document and integrate only after exact-head normal CI"
-    ]
+    ],
+    "evidence": "docs/development/2026-09-08-evaluator-composed-path-124.md"
   },
   "protected_foundations": {
     "semantic_acceptance_issue": 122,
