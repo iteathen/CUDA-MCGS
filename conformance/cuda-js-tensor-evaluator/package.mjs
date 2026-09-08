@@ -74,6 +74,9 @@ export async function importConformanceReference() { return import('cuda-mcgs/co
   assert.equal(typeof shim.tensorEvaluator.TensorEvaluatorConnectorError, 'function');
   assert.equal(typeof shim.tensorEvaluator.createTensorEvaluatorRuntimeContribution, 'function');
   assert.equal(typeof shim.tensorEvaluator.tensorEvaluatorRuntimeConstants, 'object');
+  assert.equal(typeof shim.tensorEvaluator.bindTensorEvaluatorProfileProgram, 'function');
+  assert.equal(typeof shim.tensorEvaluator.createTensorEvaluatorProgramBinding, 'function');
+  assert.equal(typeof shim.tensorEvaluator.tensorEvaluatorProgramBindingConstants, 'object');
   assert.equal('createTensorEvaluatorReference' in shim.tensorEvaluator, false, 'conformance reference must not be a production export');
   await assert.rejects(access(path.join(installedRoot, 'conformance', 'cuda-js-tensor-evaluator')), (error) => error?.code === 'ENOENT');
   await assert.rejects(shim.importConformanceReference(), (error) => error?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED');
@@ -91,7 +94,7 @@ export async function importConformanceReference() { return import('cuda-mcgs/co
     status: 'pass',
     package: { name: packageJson.name, version: packageJson.version, filename: packed[0].filename, shasum: packed[0].shasum, entryCount: packed[0].entryCount },
     export: 'cuda-mcgs/evaluator/cuda-js-tensor',
-    productionSurface: ['connector', 'device-runtime-contribution'],
+    productionSurface: ['connector', 'device-runtime-contribution', 'program-binding'],
     conformanceReference: 'physically-absent-and-not-exported',
     exactGitBlobFiles: gitExactFiles.length,
     claimLimits: ['installed-package-only', 'cuda-free', 'no-native-or-provider-qualification'],
