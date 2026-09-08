@@ -115,6 +115,7 @@ assert.equal(contribution.device.source.includes('gpu.atomic.add'), true);
 // transitions and item data flow. It does not qualify CUDA memory ordering,
 // physical scheduling, native compilation, a provider, or hardware behavior.
 const atomicIndex = (value) => typeof value === 'bigint' ? Number(value) : value;
+let beforeCas = null;
 const gpu = {
   u32(value) { return Number(value) >>> 0; },
   i32(value) { return Number(value) | 0; },
@@ -125,6 +126,7 @@ const gpu = {
     storeReleaseDevice(pointer, index, value) { pointer[atomicIndex(index)] = value; },
     cas(pointer, index, compare, value) {
       const i = atomicIndex(index);
+      if (beforeCas) beforeCas(pointer, i, compare, value);
       const prior = pointer[i];
       if (prior === compare) pointer[i] = value;
       return prior;
@@ -186,6 +188,23 @@ const retry = (tokenValue) => fn.mcgsTensorEvaluatorRetryItem(...tokenValue, c32
 assert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), result.noWork);
 assert.equal(readBatchGeneration(), 0n);
 
+// Losing every observed queued slot before claim is still no-work and must not
+// consume batch-generation identity. This injects one adversarial cancellation
+// exactly at the slot claim CAS without pretending to model physical scheduling.
+assert.equal(fn.mcgsTensorEvaluatorAdmit(6, 7n, c32, c64), result.ok);
+const lostClaimSlotGeneration = readSlotGeneration(6);
+beforeCas = (pointer, index, compare, value) => {
+  if (pointer === c32 && index === o32.slotState + 6 && compare === slotState.queued && value === slotState.inflight) {
+    pointer[index] = slotState.cancelled;
+    beforeCas = null;
+  }
+};
+assert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), result.noWork);
+assert.equal(beforeCas, null);
+assert.equal(readBatchGeneration(), 0n);
+assert.equal(c32[o32.batchState], batchState.free);
+assert.equal(fn.mcgsTensorEvaluatorRecycle(6, lostClaimSlotGeneration, 7n, c32, c64), result.ok);
+
 // Two ready requests form a partial batch and preserve request/item identity.
 requestInput.splice(0, 4, 1, 2, 10, 20);
 assert.equal(fn.mcgsTensorEvaluatorAdmit(0, 10n, c32, c64), result.ok);
@@ -237,7 +256,7 @@ assert.equal(scatter(second0), result.ok);
 assert.equal(publish(second0), result.ok);
 assert.deepEqual(resultOutput.slice(0, 3), [107, 208, 315]);
 
-// Inflight cancellation wins before the publication CAS and suppresses readiness.
+// Inflight cancellation observed at the declared pre-publication ordering point suppresses readiness.
 assert.equal(fn.mcgsTensorEvaluatorRecycle(1, 1n, 20n, c32, c64), result.ok);
 requestInput[2] = 3;
 requestInput[3] = 4;
@@ -287,6 +306,7 @@ console.log(JSON.stringify({
   execution: 'emitted-device-js-sequential-oracle',
   cases: [
     'no-work-generation-stability',
+    'lost-claim-no-work-generation-stability',
     'partial-batch-request-item-identity',
     'request-pressure',
     'stale-reused-lane-read-only-rejection',

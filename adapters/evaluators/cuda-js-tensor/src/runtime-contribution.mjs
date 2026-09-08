@@ -324,7 +324,6 @@ function generateSource(connector, state, layout) {
     return ${u32(RESULT.generationExhausted)};
   }
   generation += gpu.u64(1n);
-  ${control64}[${u64(c64.batchGeneration)}] = generation;
   ${control32}[${u64(c32.batchOccupancy)}] = gpu.u32(0);
   ${control32}[${u64(c32.batchCompleted)}] = gpu.u32(0);
   let occupancy = gpu.u32(0);
@@ -348,6 +347,7 @@ function generateSource(connector, state, layout) {
     gpu.atomic.storeReleaseDevice(${control32}, ${u64(c32.batchState)}, ${u32(BATCH.free)});
     return ${u32(RESULT.noWork)};
   }
+  ${control64}[${u64(c64.batchGeneration)}] = generation;
   ${control32}[${u64(c32.batchOccupancy)}] = occupancy;
   gpu.atomic.storeReleaseDevice(${control32}, ${u64(c32.batchState)}, ${u32(BATCH.ready)});
   return occupancy;
