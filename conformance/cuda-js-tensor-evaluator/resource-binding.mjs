@@ -25,7 +25,7 @@ import { inspectCatalog, sourceTextSha256 } from '../search-compiler/src/catalog
 import { buildDomainProfiles } from '../search-compiler/src/domain-fixtures.mjs';
 import { buildEvaluatorProfiles } from '../search-compiler/src/evaluator-fixtures.mjs';
 import { buildGraphProfiles } from '../search-compiler/src/graph-fixtures.mjs';
-import { buildPolicyProfiles } from '../search-compiler/src/policy-fixtures.mjs';
+import { buildPolicyProfile } from '../search-compiler/src/policy-fixtures.mjs';
 import { buildResourceProfile } from '../search-compiler/src/resource-fixtures.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -87,9 +87,6 @@ const graphFixtures = buildGraphProfiles(inspected, domainProfiles, domainSchema
 const graphProfiles = graphFixtures.map(({ input, domain }) => normalizeGraphProfile(input, inspected, domain));
 const baselineEvaluatorFixtures = buildEvaluatorProfiles(inspected, domainProfiles, graphProfiles, domainSchemaSha, graphSchemaSha);
 const baselineEvaluatorProfiles = baselineEvaluatorFixtures.map(({ input, domain, graph }) => normalizeEvaluatorProfile(input, inspected, domain, graph));
-const policyFixtures = buildPolicyProfiles(inspected, domainProfiles, graphProfiles, domainSchemaSha, graphSchemaSha, baselineEvaluatorProfiles, evaluatorSchemaSha);
-const policyProfiles = policyFixtures.map(({ input, domain, graph }) => normalizePolicyProfile(input, inspected, domain, graph));
-
 const selectedFixture = baselineEvaluatorFixtures[0];
 const selectedInput = structuredClone(selectedFixture.input);
 selectedInput.request.maxActive = '3';
@@ -105,28 +102,54 @@ assert.deepEqual(resourceBound.resources.slice(0, originalSemanticResources.leng
 const representationResources = resourceBound.resources.slice(originalSemanticResources.length);
 assert(representationResources.length > 0);
 assert(representationResources.every(({ unit, minimum, maximum }) => unit === 'bytes' && minimum === maximum));
-assert(representationResources.filter(({ id }) => id.includes('tensor-runtime-control')).every(({ class: resourceClass }) => resourceClass === 'batch'), 'runtime controls must not be disguised as workspace');
-assert.equal(representationResources.some(({ id }) => id.endsWith('tensor-parameter-2')), false, 'shared immutable Tensor input must not be synthesized as adapter-owned storage');
-const scratchResource = representationResources.find(({ id }) => id.endsWith('tensor-parameter-4'));
+const representationById = new Map(representationResources.map((entry) => [entry.id, entry]));
+const evaluatorResourceId = ({ resourceKey }) => resourceBound.id + '.resource-' + resourceKey;
+const controlDescriptors = runtime.resources.filter(({ representationRole }) => representationRole === 'runtime-control');
+assert(controlDescriptors.length > 0);
+assert(controlDescriptors.every((descriptor) => representationById.get(evaluatorResourceId(descriptor))?.class === descriptor.resourceClass), 'runtime-control accounting class must come from explicit runtime metadata');
+const externalDescriptor = runtime.tensorBindings.find(({ storageDisposition }) => storageDisposition === 'external-owner-required');
+assert(externalDescriptor);
+assert.equal(representationById.has(evaluatorResourceId(externalDescriptor)), false, 'external-owner-required Tensor input must not be synthesized as adapter-owned storage');
+const workspaceDescriptor = runtime.tensorBindings.find(({ representationRole }) => representationRole === 'tensor-workspace');
+assert(workspaceDescriptor);
+const scratchResource = representationById.get(evaluatorResourceId(workspaceDescriptor));
 assert(scratchResource);
-assert.equal(scratchResource.class, 'workspace');
-assert.equal(scratchResource.alignment, '256');
+assert.equal(scratchResource.class, workspaceDescriptor.resourceClass);
+assert.equal(scratchResource.alignment, String(workspaceDescriptor.alignmentBytes));
 
 const evaluatorResult = normalizeEvaluatorProfile(resourceBound, inspected, selectedFixture.domain, selectedFixture.graph);
 assert.notDeepEqual(evaluatorResult.identity, baselineEvaluatorProfiles[0].identity, 'runtime representation resources must be evaluator-identity material');
 for (const semantic of originalSemanticResources) assert(evaluatorResult.normalized.resources.some((entry) => entry.id === semantic.id && entry.class === semantic.class && entry.unit === semantic.unit));
 
-const evaluatorWorkClasses = Object.fromEntries(['encode', 'admit', 'batch', 'execute', 'scatter', 'publish'].map((name) => {
-  const id = evaluatorResult.normalized.execution.workClasses.find((entry) => entry.endsWith(`work-${name}`));
-  assert(id, `missing evaluator ${name} work class`);
-  return [name, id];
-}));
+const evaluatorWorkClasses = Object.freeze({
+  encode: 'evaluator.synthetic-vector-combined.work-encode',
+  admit: 'evaluator.synthetic-vector-combined.work-admit',
+  batch: 'evaluator.synthetic-vector-combined.work-batch',
+  execute: 'evaluator.synthetic-vector-combined.work-execute',
+  scatter: 'evaluator.synthetic-vector-combined.work-scatter',
+  publish: 'evaluator.synthetic-vector-combined.work-publish',
+});
+assert.deepEqual(new Set(Object.values(evaluatorWorkClasses)), new Set(evaluatorResult.normalized.execution.workClasses), 'explicit fixture work-class mapping must cover the normalized evaluator work set');
 const programBinding = createTensorEvaluatorProgramBinding(runtime, evaluatorResult.normalized, {
   id: 'evaluator.tensor.resource-layout-program',
   workClasses: evaluatorWorkClasses,
 });
 
-const selectedPolicy = policyProfiles[1];
+const exactEvaluatorReference = {
+  id: evaluatorResult.normalized.id,
+  schema: { id: evaluatorResult.normalized.schema, version: '0.2.0', sha256: evaluatorSchemaSha },
+  identity: contentIdentity(evaluatorResult.identity),
+};
+const selectedPolicyInput = buildPolicyProfile(
+  'synthetic-vector-combined', inspected, selectedFixture.domain, selectedFixture.graph, domainSchemaSha, graphSchemaSha,
+  { evaluatorMode: 'combined', evaluatorProfile: exactEvaluatorReference, value: 'vector', reservation: true, admissionMode: 'sampled', stochastic: true },
+);
+const selectedPolicy = normalizePolicyProfile(selectedPolicyInput, inspected, selectedFixture.domain, selectedFixture.graph);
+const evaluatorValueAdapter = selectedPolicy.normalized.value.adapters.find(({ kind }) => kind === 'evaluator');
+const evaluatorProposalSource = selectedPolicy.normalized.admission.sources.find(({ kind }) => kind === 'evaluator-proposal');
+assert(evaluatorValueAdapter && evaluatorProposalSource, 'combined policy fixture must consume evaluator value and proposal surfaces');
+assert.deepEqual(evaluatorValueAdapter.sourceProfile, exactEvaluatorReference, 'policy value adapter must bind the exact mutated evaluator identity');
+assert.deepEqual(evaluatorProposalSource.producerProfile, exactEvaluatorReference, 'policy proposal source must bind the exact mutated evaluator identity');
 const resourceInput = buildResourceProfile('tensor-resource-layout', inspected, {
   domain: selectedFixture.domain,
   graph: selectedFixture.graph,
@@ -141,7 +164,7 @@ const resourceInput = buildResourceProfile('tensor-resource-layout', inspected, 
 const knownProfiles = [
   ...domainProfiles.map((result) => withSchema(result, domainSchemaSha)),
   ...graphProfiles.map((result) => withSchema(result, graphSchemaSha)),
-  ...policyProfiles.map((result) => withSchema(result, policySchemaSha)),
+  withSchema(selectedPolicy, policySchemaSha),
   withSchema(evaluatorResult, evaluatorSchemaSha),
 ];
 const resourceResult = normalizeResourceProfile(resourceInput, inspected, knownProfiles);
@@ -166,14 +189,16 @@ assert(Object.isFrozen(binding));
 assert(Object.isFrozen(binding.resourceBindings[0]));
 
 const missingRepresentation = structuredClone(evaluatorResult);
-missingRepresentation.normalized.resources = missingRepresentation.normalized.resources.filter(({ id }) => !id.endsWith('tensor-runtime-control32'));
+const atomicControlDescriptor = runtime.resources.find(({ representationRole, resourceAccess }) => representationRole === 'runtime-control' && resourceAccess.includes('atomic'));
+assert(atomicControlDescriptor);
+missingRepresentation.normalized.resources = missingRepresentation.normalized.resources.filter(({ id }) => id !== evaluatorResourceId(atomicControlDescriptor));
 assert.throws(
   () => createTensorEvaluatorResourceBinding(programBinding, missingRepresentation, resourceResult),
   (error) => error instanceof TensorEvaluatorConnectorError && error.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE',
 );
 
 const providerDrift = structuredClone(resourceResult);
-const controlAllocation = binding.resourceBindings.find(({ parameterName }) => parameterName === 'mcgsEvalControl32');
+const controlAllocation = binding.resourceBindings.find(({ representationRole, requiredAccess }) => representationRole === 'runtime-control' && requiredAccess.includes('atomic'));
 providerDrift.normalized.providerRequirements.find(({ id }) => id === controlAllocation.providerRequirement).access = ['read', 'write'];
 assert.throws(
   () => createTensorEvaluatorResourceBinding(programBinding, evaluatorResult, providerDrift),
@@ -181,7 +206,7 @@ assert.throws(
 );
 
 const placementDrift = structuredClone(resourceResult);
-placementDrift.normalized.partitions.find(({ id }) => id === binding.resourceBindings.find(({ parameterName }) => parameterName === 'scratch').partition).offset = '4';
+placementDrift.normalized.partitions.find(({ id }) => id === binding.resourceBindings.find(({ representationRole }) => representationRole === 'tensor-workspace').partition).offset = '4';
 assert.throws(
   () => createTensorEvaluatorResourceBinding(programBinding, evaluatorResult, placementDrift),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_ALIGNMENT',
@@ -204,10 +229,10 @@ assert.throws(
 );
 
 console.log(JSON.stringify({
-  schema: 'cuda-mcgs.tensor-evaluator-resource-layout-binding-portable-evidence/0.1.0',
+  schema: 'cuda-mcgs.tensor-evaluator-resource-layout-binding-portable-evidence/0.2.0',
   status: 'pass',
   evaluatorRepresentationResources: representationResources.length,
-  boundAllocations: binding.resourceBindings.length,
+  resourceBindings: binding.resourceBindings.length,
   externalTensorParameters: binding.externalTensorParameters.map(({ parameterName }) => parameterName),
   cases: [
     'semantic-resource-counts-preserved',
