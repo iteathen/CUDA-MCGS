@@ -1,23 +1,16 @@
 import { TensorEvaluatorConnectorError } from './connector.mjs';
 
-const RUNTIME_CONTRACT = 'cuda-mcgs.tensor-evaluator-device-runtime/0.2.0';
+const RUNTIME_CONTRACT = 'cuda-mcgs.tensor-evaluator-device-runtime/0.3.0';
 const REQUIRED_CUDA_JS_CONTRACTS = Object.freeze([
   'cuda-js.device-js/0.1.0',
   'cuda-js.device-publication-release-acquire/0.1.0',
 ]);
 const UINT32_MAX = 0xffff_ffff;
-const DTYPE_WIDTH = Object.freeze({
-  u32: 4,
-  i32: 4,
-  u64: 8,
-  f32: 4,
-  f64: 8,
-  f16: 2,
-  bf16: 2,
-});
 const GENERATED_NAMES = Object.freeze({
-  control32: 'mcgsEvalControl32',
-  control64: 'mcgsEvalControl64',
+  requestControl32: 'mcgsEvalRequestControl32',
+  requestControl64: 'mcgsEvalRequestControl64',
+  batchControl32: 'mcgsEvalBatchControl32',
+  batchControl64: 'mcgsEvalBatchControl64',
   admit: 'mcgsTensorEvaluatorAdmit',
   cancel: 'mcgsTensorEvaluatorCancel',
   formBatch: 'mcgsTensorEvaluatorFormBatch',
@@ -122,8 +115,11 @@ function normalizeTensorLayout(connector) {
 
   for (const descriptor of connector.parameters) {
     if (descriptor.role === 'item-index') continue;
-    const width = DTYPE_WIDTH[descriptor.dtype];
-    if (!width) fail('TENSOR_EVALUATOR_RUNTIME_DTYPE', `Tensor parameter ${descriptor.parameterName} uses unsupported runtime-copy dtype ${descriptor.dtype}`);
+    const width = descriptor.dtypeWidth;
+    if (!Number.isSafeInteger(width) || width <= 0) fail('TENSOR_EVALUATOR_RUNTIME_DTYPE', `Tensor parameter ${descriptor.parameterName} has no admitted dtype width`);
+    if (!Number.isSafeInteger(descriptor.alignmentBytes) || descriptor.alignmentBytes < width || descriptor.alignmentBytes % width !== 0) {
+      fail('TENSOR_EVALUATOR_RUNTIME_LAYOUT', `Tensor parameter ${descriptor.parameterName} has invalid admitted alignment`);
+    }
     if (descriptor.byteLength !== checkedBytes(descriptor.elementCount, width, `${descriptor.parameterName} Tensor parameter`)) {
       fail('TENSOR_EVALUATOR_RUNTIME_LAYOUT', `Tensor parameter ${descriptor.parameterName} byteLength differs from its public element layout`);
     }
@@ -149,6 +145,8 @@ function normalizeTensorLayout(connector) {
   function buildPartitions(entriesByDtype, kind, capacity) {
     const partitions = [];
     for (const [dtype, entries] of [...entriesByDtype].sort(([left], [right]) => left.localeCompare(right))) {
+      const dtypeWidth = entries[0].dtypeWidth;
+      if (entries.some((entry) => entry.dtypeWidth !== dtypeWidth)) fail('TENSOR_EVALUATOR_RUNTIME_DTYPE', `${kind}.${dtype} has conflicting public dtype widths`);
       let perRequestElements = 0;
       const members = entries.map((entry) => {
         const perItemElements = entry.perItemElements;
@@ -157,11 +155,12 @@ function normalizeTensorLayout(connector) {
         return { parameterName: entry.parameterName, perItemElements, offset };
       });
       const elementCount = checkedMultiply(capacity, perRequestElements, `${kind}.${dtype} elementCount`);
-      const byteLength = checkedBytes(elementCount, DTYPE_WIDTH[dtype], `${kind}.${dtype}`);
+      const byteLength = checkedBytes(elementCount, dtypeWidth, `${kind}.${dtype}`);
       partitions.push({
         id: `runtime.${kind}.${dtype}`,
         parameterName: `mcgsEval${kind === 'request-input' ? 'RequestInput' : 'ResultOutput'}_${dtype}`,
         dtype,
+        dtypeWidth,
         access: 'read-write',
         perRequestElements,
         elementCount,
@@ -180,35 +179,48 @@ function normalizeTensorLayout(connector) {
 }
 
 function stateLayouts(requestCapacity, itemCapacity) {
-  const c32 = {};
-  let cursor32 = 0;
-  c32.slotState = cursor32; cursor32 = checkedAdd(cursor32, requestCapacity, 'control32 slotState');
-  c32.cancelRequested = cursor32; cursor32 = checkedAdd(cursor32, requestCapacity, 'control32 cancelRequested');
-  c32.slotBatchItem = cursor32; cursor32 = checkedAdd(cursor32, requestCapacity, 'control32 slotBatchItem');
-  c32.batchSlots = cursor32; cursor32 = checkedAdd(cursor32, itemCapacity, 'control32 batchSlots');
-  c32.itemStatus = cursor32; cursor32 = checkedAdd(cursor32, itemCapacity, 'control32 itemStatus');
-  c32.batchState = cursor32; cursor32 = checkedAdd(cursor32, 1, 'control32 batchState');
-  c32.batchOccupancy = cursor32; cursor32 = checkedAdd(cursor32, 1, 'control32 batchOccupancy');
-  c32.batchCompleted = cursor32; cursor32 = checkedAdd(cursor32, 1, 'control32 batchCompleted');
+  const request32 = {};
+  let requestCursor32 = 0;
+  request32.slotState = requestCursor32; requestCursor32 = checkedAdd(requestCursor32, requestCapacity, 'requestControl32 slotState');
+  request32.cancelRequested = requestCursor32; requestCursor32 = checkedAdd(requestCursor32, requestCapacity, 'requestControl32 cancelRequested');
+  request32.slotBatchItem = requestCursor32; requestCursor32 = checkedAdd(requestCursor32, requestCapacity, 'requestControl32 slotBatchItem');
 
-  const c64 = {};
-  let cursor64 = 0;
-  c64.slotGeneration = cursor64; cursor64 = checkedAdd(cursor64, requestCapacity, 'control64 slotGeneration');
-  c64.requestGeneration = cursor64; cursor64 = checkedAdd(cursor64, requestCapacity, 'control64 requestGeneration');
-  c64.slotBatchGeneration = cursor64; cursor64 = checkedAdd(cursor64, requestCapacity, 'control64 slotBatchGeneration');
-  c64.batchSlotGeneration = cursor64; cursor64 = checkedAdd(cursor64, itemCapacity, 'control64 batchSlotGeneration');
-  c64.batchRequestGeneration = cursor64; cursor64 = checkedAdd(cursor64, itemCapacity, 'control64 batchRequestGeneration');
-  c64.batchGeneration = cursor64; cursor64 = checkedAdd(cursor64, 1, 'control64 batchGeneration');
+  const request64 = {};
+  let requestCursor64 = 0;
+  request64.slotGeneration = requestCursor64; requestCursor64 = checkedAdd(requestCursor64, requestCapacity, 'requestControl64 slotGeneration');
+  request64.requestGeneration = requestCursor64; requestCursor64 = checkedAdd(requestCursor64, requestCapacity, 'requestControl64 requestGeneration');
+  request64.slotBatchGeneration = requestCursor64; requestCursor64 = checkedAdd(requestCursor64, requestCapacity, 'requestControl64 slotBatchGeneration');
+
+  const batch32 = {};
+  let batchCursor32 = 0;
+  batch32.batchSlots = batchCursor32; batchCursor32 = checkedAdd(batchCursor32, itemCapacity, 'batchControl32 batchSlots');
+  batch32.itemStatus = batchCursor32; batchCursor32 = checkedAdd(batchCursor32, itemCapacity, 'batchControl32 itemStatus');
+  batch32.batchState = batchCursor32; batchCursor32 = checkedAdd(batchCursor32, 1, 'batchControl32 batchState');
+  batch32.batchOccupancy = batchCursor32; batchCursor32 = checkedAdd(batchCursor32, 1, 'batchControl32 batchOccupancy');
+  batch32.batchCompleted = batchCursor32; batchCursor32 = checkedAdd(batchCursor32, 1, 'batchControl32 batchCompleted');
+
+  const batch64 = {};
+  let batchCursor64 = 0;
+  batch64.batchSlotGeneration = batchCursor64; batchCursor64 = checkedAdd(batchCursor64, itemCapacity, 'batchControl64 batchSlotGeneration');
+  batch64.batchRequestGeneration = batchCursor64; batchCursor64 = checkedAdd(batchCursor64, itemCapacity, 'batchControl64 batchRequestGeneration');
+  batch64.batchGeneration = batchCursor64; batchCursor64 = checkedAdd(batchCursor64, 1, 'batchControl64 batchGeneration');
 
   return {
-    control32: { ...c32, elementCount: cursor32, byteLength: checkedBytes(cursor32, 4, 'control32') },
-    control64: { ...c64, elementCount: cursor64, byteLength: checkedBytes(cursor64, 8, 'control64') },
+    requestControl32: { ...request32, elementCount: requestCursor32, byteLength: checkedBytes(requestCursor32, 4, 'requestControl32') },
+    requestControl64: { ...request64, elementCount: requestCursor64, byteLength: checkedBytes(requestCursor64, 8, 'requestControl64') },
+    batchControl32: { ...batch32, elementCount: batchCursor32, byteLength: checkedBytes(batchCursor32, 4, 'batchControl32') },
+    batchControl64: { ...batch64, elementCount: batchCursor64, byteLength: checkedBytes(batchCursor64, 8, 'batchControl64') },
   };
 }
 
 function assertGeneratedNameSafety(connector, layout) {
   const used = new Set(connector.deviceFunction.parameters.map(({ name }) => name));
-  for (const name of [GENERATED_NAMES.control32, GENERATED_NAMES.control64, ...layout.requestInputPartitions.map(({ parameterName }) => parameterName), ...layout.resultOutputPartitions.map(({ parameterName }) => parameterName)]) {
+  for (const name of [
+    GENERATED_NAMES.requestControl32, GENERATED_NAMES.requestControl64,
+    GENERATED_NAMES.batchControl32, GENERATED_NAMES.batchControl64,
+    ...layout.requestInputPartitions.map(({ parameterName }) => parameterName),
+    ...layout.resultOutputPartitions.map(({ parameterName }) => parameterName),
+  ]) {
     identifier(name, 'generated runtime parameter');
     if (used.has(name)) fail('TENSOR_EVALUATOR_RUNTIME_COLLISION', `Tensor parameter ${name} collides with a generated evaluator runtime parameter`);
   }
@@ -217,143 +229,147 @@ function assertGeneratedNameSafety(connector, layout) {
 function generateSource(connector, state, layout) {
   const R = connector.requestCapacity;
   const I = connector.tensor.itemCapacity;
-  const c32 = state.control32;
-  const c64 = state.control64;
-  const control32 = GENERATED_NAMES.control32;
-  const control64 = GENERATED_NAMES.control64;
+  const r32 = state.requestControl32;
+  const r64 = state.requestControl64;
+  const b32 = state.batchControl32;
+  const b64 = state.batchControl64;
+  const requestControl32 = GENERATED_NAMES.requestControl32;
+  const requestControl64 = GENERATED_NAMES.requestControl64;
+  const batchControl32 = GENERATED_NAMES.batchControl32;
+  const batchControl64 = GENERATED_NAMES.batchControl64;
   const source = [];
   source.push(connector.source.trimEnd());
 
-  source.push(`function ${GENERATED_NAMES.requestMatches}(slot, expectedSlotGeneration, expectedRequestGeneration, ${control64}) {
+  source.push(`function ${GENERATED_NAMES.requestMatches}(slot, expectedSlotGeneration, expectedRequestGeneration, ${requestControl64}) {
   if (slot >= ${u32(R)}) { return false; }
   let slotIndex = gpu.u64(slot);
-  return ${control64}[slotIndex + ${u64(c64.slotGeneration)}] === expectedSlotGeneration && ${control64}[slotIndex + ${u64(c64.requestGeneration)}] === expectedRequestGeneration;
+  return ${requestControl64}[slotIndex + ${u64(r64.slotGeneration)}] === expectedSlotGeneration && ${requestControl64}[slotIndex + ${u64(r64.requestGeneration)}] === expectedRequestGeneration;
 }`);
 
-  source.push(`function ${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${control32}, ${control64}) {
+  source.push(`function ${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${requestControl32}, ${requestControl64}, ${batchControl32}, ${batchControl64}) {
   if (itemIndex >= ${u32(I)} || expectedSlot >= ${u32(R)}) { return false; }
-  let batchStateValue = gpu.atomic.loadAcquireDevice(${control32}, ${u64(c32.batchState)});
+  let batchStateValue = gpu.atomic.loadAcquireDevice(${batchControl32}, ${u64(b32.batchState)});
   if (batchStateValue !== ${u32(BATCH.ready)}) { return false; }
-  let batchGenerationValue = ${control64}[${u64(c64.batchGeneration)}];
+  let batchGenerationValue = ${batchControl64}[${u64(b64.batchGeneration)}];
   if (batchGenerationValue !== expectedBatchGeneration) { return false; }
-  let occupancy = ${control32}[${u64(c32.batchOccupancy)}];
+  let occupancy = ${batchControl32}[${u64(b32.batchOccupancy)}];
   if (itemIndex >= occupancy) { return false; }
   let item = gpu.u64(itemIndex);
-  let slot = ${control32}[item + ${u64(c32.batchSlots)}];
+  let slot = ${batchControl32}[item + ${u64(b32.batchSlots)}];
   if (slot !== expectedSlot) { return false; }
   let slotIndex = gpu.u64(slot);
-  let slotStateValue = gpu.atomic.loadAcquireDevice(${control32}, slotIndex + ${u64(c32.slotState)});
+  let slotStateValue = gpu.atomic.loadAcquireDevice(${requestControl32}, slotIndex + ${u64(r32.slotState)});
   if (slotStateValue !== ${u32(SLOT.inflight)}) { return false; }
-  return ${control64}[slotIndex + ${u64(c64.slotGeneration)}] === expectedSlotGeneration
-    && ${control64}[slotIndex + ${u64(c64.requestGeneration)}] === expectedRequestGeneration
-    && ${control64}[slotIndex + ${u64(c64.slotBatchGeneration)}] === expectedBatchGeneration
-    && ${control64}[item + ${u64(c64.batchSlotGeneration)}] === expectedSlotGeneration
-    && ${control64}[item + ${u64(c64.batchRequestGeneration)}] === expectedRequestGeneration
-    && ${control32}[slotIndex + ${u64(c32.slotBatchItem)}] === itemIndex;
+  return ${requestControl64}[slotIndex + ${u64(r64.slotGeneration)}] === expectedSlotGeneration
+    && ${requestControl64}[slotIndex + ${u64(r64.requestGeneration)}] === expectedRequestGeneration
+    && ${requestControl64}[slotIndex + ${u64(r64.slotBatchGeneration)}] === expectedBatchGeneration
+    && ${batchControl64}[item + ${u64(b64.batchSlotGeneration)}] === expectedSlotGeneration
+    && ${batchControl64}[item + ${u64(b64.batchRequestGeneration)}] === expectedRequestGeneration
+    && ${requestControl32}[slotIndex + ${u64(r32.slotBatchItem)}] === itemIndex;
 }`);
 
-  source.push(`function ${GENERATED_NAMES.finishBatchItem}(itemIndex, expectedItemStatus, expectedBatchGeneration, ${control32}, ${control64}) {
+  source.push(`function ${GENERATED_NAMES.finishBatchItem}(itemIndex, expectedItemStatus, expectedBatchGeneration, ${batchControl32}, ${batchControl64}) {
   if (itemIndex >= ${u32(I)}) { return ${u32(RESULT.invalid)}; }
-  let batchStateValue = gpu.atomic.loadAcquireDevice(${control32}, ${u64(c32.batchState)});
-  if (batchStateValue !== ${u32(BATCH.ready)} || ${control64}[${u64(c64.batchGeneration)}] !== expectedBatchGeneration) { return ${u32(RESULT.stale)}; }
+  let batchStateValue = gpu.atomic.loadAcquireDevice(${batchControl32}, ${u64(b32.batchState)});
+  if (batchStateValue !== ${u32(BATCH.ready)} || ${batchControl64}[${u64(b64.batchGeneration)}] !== expectedBatchGeneration) { return ${u32(RESULT.stale)}; }
   let item = gpu.u64(itemIndex);
-  let prior = gpu.atomic.cas(${control32}, item + ${u64(c32.itemStatus)}, expectedItemStatus, ${u32(ITEM.published)});
+  let prior = gpu.atomic.cas(${batchControl32}, item + ${u64(b32.itemStatus)}, expectedItemStatus, ${u32(ITEM.published)});
   if (prior !== expectedItemStatus) { return ${u32(RESULT.notReady)}; }
-  let previousCompleted = gpu.atomic.add(${control32}, ${u64(c32.batchCompleted)}, ${u32(1)});
-  let occupancy = ${control32}[${u64(c32.batchOccupancy)}];
+  let previousCompleted = gpu.atomic.add(${batchControl32}, ${u64(b32.batchCompleted)}, ${u32(1)});
+  let occupancy = ${batchControl32}[${u64(b32.batchOccupancy)}];
   if (previousCompleted + ${u32(1)} === occupancy) {
-    gpu.atomic.storeReleaseDevice(${control32}, ${u64(c32.batchState)}, ${u32(BATCH.free)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, ${u64(b32.batchState)}, ${u32(BATCH.free)});
   }
   return ${u32(RESULT.ok)};
 }`);
 
-  source.push(`function ${GENERATED_NAMES.admit}(slot, requestGenerationValue, ${control32}, ${control64}) {
+  source.push(`function ${GENERATED_NAMES.admit}(slot, requestGenerationValue, ${requestControl32}, ${requestControl64}) {
   if (slot >= ${u32(R)}) { return ${u32(RESULT.invalid)}; }
   let slotIndex = gpu.u64(slot);
-  let prior = gpu.atomic.cas(${control32}, slotIndex + ${u64(c32.slotState)}, ${u32(SLOT.free)}, ${u32(SLOT.claimed)});
+  let prior = gpu.atomic.cas(${requestControl32}, slotIndex + ${u64(r32.slotState)}, ${u32(SLOT.free)}, ${u32(SLOT.claimed)});
   if (prior !== ${u32(SLOT.free)}) { return ${u32(RESULT.pressure)}; }
-  let generation = ${control64}[slotIndex + ${u64(c64.slotGeneration)}];
+  let generation = ${requestControl64}[slotIndex + ${u64(r64.slotGeneration)}];
   if (generation === gpu.u64(18446744073709551615n)) {
-    gpu.atomic.storeReleaseDevice(${control32}, slotIndex + ${u64(c32.slotState)}, ${u32(SLOT.retired)});
+    gpu.atomic.storeReleaseDevice(${requestControl32}, slotIndex + ${u64(r32.slotState)}, ${u32(SLOT.retired)});
     return ${u32(RESULT.generationExhausted)};
   }
   generation += gpu.u64(1n);
-  ${control64}[slotIndex + ${u64(c64.slotGeneration)}] = generation;
-  ${control64}[slotIndex + ${u64(c64.requestGeneration)}] = requestGenerationValue;
-  ${control64}[slotIndex + ${u64(c64.slotBatchGeneration)}] = gpu.u64(0n);
-  ${control32}[slotIndex + ${u64(c32.slotBatchItem)}] = gpu.u32(0);
-  gpu.atomic.storeReleaseDevice(${control32}, slotIndex + ${u64(c32.cancelRequested)}, gpu.u32(0));
-  gpu.atomic.storeReleaseDevice(${control32}, slotIndex + ${u64(c32.slotState)}, ${u32(SLOT.queued)});
+  ${requestControl64}[slotIndex + ${u64(r64.slotGeneration)}] = generation;
+  ${requestControl64}[slotIndex + ${u64(r64.requestGeneration)}] = requestGenerationValue;
+  ${requestControl64}[slotIndex + ${u64(r64.slotBatchGeneration)}] = gpu.u64(0n);
+  ${requestControl32}[slotIndex + ${u64(r32.slotBatchItem)}] = gpu.u32(0);
+  gpu.atomic.storeReleaseDevice(${requestControl32}, slotIndex + ${u64(r32.cancelRequested)}, gpu.u32(0));
+  gpu.atomic.storeReleaseDevice(${requestControl32}, slotIndex + ${u64(r32.slotState)}, ${u32(SLOT.queued)});
   return ${u32(RESULT.ok)};
 }`);
 
-  source.push(`function ${GENERATED_NAMES.cancel}(slot, expectedSlotGeneration, expectedRequestGeneration, ${control32}, ${control64}) {
+  source.push(`function ${GENERATED_NAMES.cancel}(slot, expectedSlotGeneration, expectedRequestGeneration, ${requestControl32}, ${requestControl64}) {
   if (slot >= ${u32(R)}) { return ${u32(RESULT.invalid)}; }
   let slotIndex = gpu.u64(slot);
-  let stateValue = gpu.atomic.loadAcquireDevice(${control32}, slotIndex + ${u64(c32.slotState)});
-  if (!${GENERATED_NAMES.requestMatches}(slot, expectedSlotGeneration, expectedRequestGeneration, ${control64})) { return ${u32(RESULT.stale)}; }
+  let stateValue = gpu.atomic.loadAcquireDevice(${requestControl32}, slotIndex + ${u64(r32.slotState)});
+  if (!${GENERATED_NAMES.requestMatches}(slot, expectedSlotGeneration, expectedRequestGeneration, ${requestControl64})) { return ${u32(RESULT.stale)}; }
   if (stateValue !== ${u32(SLOT.queued)} && stateValue !== ${u32(SLOT.inflight)}) { return ${u32(RESULT.notReady)}; }
-  gpu.atomic.storeReleaseDevice(${control32}, slotIndex + ${u64(c32.cancelRequested)}, gpu.u32(1));
+  gpu.atomic.storeReleaseDevice(${requestControl32}, slotIndex + ${u64(r32.cancelRequested)}, gpu.u32(1));
   if (stateValue === ${u32(SLOT.queued)}) {
-    let prior = gpu.atomic.cas(${control32}, slotIndex + ${u64(c32.slotState)}, ${u32(SLOT.queued)}, ${u32(SLOT.publishing)});
+    let prior = gpu.atomic.cas(${requestControl32}, slotIndex + ${u64(r32.slotState)}, ${u32(SLOT.queued)}, ${u32(SLOT.publishing)});
     if (prior === ${u32(SLOT.queued)}) {
-      gpu.atomic.storeReleaseDevice(${control32}, slotIndex + ${u64(c32.slotState)}, ${u32(SLOT.cancelled)});
+      gpu.atomic.storeReleaseDevice(${requestControl32}, slotIndex + ${u64(r32.slotState)}, ${u32(SLOT.cancelled)});
       return ${u32(RESULT.cancelled)};
     }
   }
-  let after = gpu.atomic.loadAcquireDevice(${control32}, slotIndex + ${u64(c32.slotState)});
+  let after = gpu.atomic.loadAcquireDevice(${requestControl32}, slotIndex + ${u64(r32.slotState)});
   if (after === ${u32(SLOT.inflight)}) { return ${u32(RESULT.cancelled)}; }
   return ${u32(RESULT.notReady)};
 }`);
 
-  source.push(`function ${GENERATED_NAMES.formBatch}(${control32}, ${control64}) {
-  let priorBatch = gpu.atomic.cas(${control32}, ${u64(c32.batchState)}, ${u32(BATCH.free)}, ${u32(BATCH.forming)});
+  source.push(`function ${GENERATED_NAMES.formBatch}(${requestControl32}, ${requestControl64}, ${batchControl32}, ${batchControl64}) {
+  let priorBatch = gpu.atomic.cas(${batchControl32}, ${u64(b32.batchState)}, ${u32(BATCH.free)}, ${u32(BATCH.forming)});
   if (priorBatch !== ${u32(BATCH.free)}) { return ${u32(RESULT.busy)}; }
   let hasQueued = false;
   for (let probe = gpu.u32(0); probe < ${u32(R)}; probe += gpu.u32(1)) {
-    let observed = gpu.atomic.loadAcquireDevice(${control32}, gpu.u64(probe) + ${u64(c32.slotState)});
+    let observed = gpu.atomic.loadAcquireDevice(${requestControl32}, gpu.u64(probe) + ${u64(r32.slotState)});
     if (observed === ${u32(SLOT.queued)}) { hasQueued = true; break; }
   }
   if (!hasQueued) {
-    gpu.atomic.storeReleaseDevice(${control32}, ${u64(c32.batchState)}, ${u32(BATCH.free)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, ${u64(b32.batchState)}, ${u32(BATCH.free)});
     return ${u32(RESULT.noWork)};
   }
-  let generation = ${control64}[${u64(c64.batchGeneration)}];
+  let generation = ${batchControl64}[${u64(b64.batchGeneration)}];
   if (generation === gpu.u64(18446744073709551615n)) {
-    gpu.atomic.storeReleaseDevice(${control32}, ${u64(c32.batchState)}, ${u32(BATCH.retired)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, ${u64(b32.batchState)}, ${u32(BATCH.retired)});
     return ${u32(RESULT.generationExhausted)};
   }
   generation += gpu.u64(1n);
-  ${control32}[${u64(c32.batchOccupancy)}] = gpu.u32(0);
-  ${control32}[${u64(c32.batchCompleted)}] = gpu.u32(0);
+  ${batchControl32}[${u64(b32.batchOccupancy)}] = gpu.u32(0);
+  ${batchControl32}[${u64(b32.batchCompleted)}] = gpu.u32(0);
   let occupancy = gpu.u32(0);
   for (let slot = gpu.u32(0); slot < ${u32(R)}; slot += gpu.u32(1)) {
     if (occupancy >= ${u32(I)}) { break; }
     let slotIndex = gpu.u64(slot);
-    let observed = gpu.atomic.loadAcquireDevice(${control32}, slotIndex + ${u64(c32.slotState)});
+    let observed = gpu.atomic.loadAcquireDevice(${requestControl32}, slotIndex + ${u64(r32.slotState)});
     if (observed !== ${u32(SLOT.queued)}) { continue; }
-    let claimed = gpu.atomic.cas(${control32}, slotIndex + ${u64(c32.slotState)}, ${u32(SLOT.queued)}, ${u32(SLOT.inflight)});
+    let claimed = gpu.atomic.cas(${requestControl32}, slotIndex + ${u64(r32.slotState)}, ${u32(SLOT.queued)}, ${u32(SLOT.inflight)});
     if (claimed !== ${u32(SLOT.queued)}) { continue; }
     let item = gpu.u64(occupancy);
-    ${control32}[item + ${u64(c32.batchSlots)}] = slot;
-    ${control32}[slotIndex + ${u64(c32.slotBatchItem)}] = occupancy;
-    ${control32}[item + ${u64(c32.itemStatus)}] = ${u32(ITEM.pending)};
-    ${control64}[slotIndex + ${u64(c64.slotBatchGeneration)}] = generation;
-    ${control64}[item + ${u64(c64.batchSlotGeneration)}] = ${control64}[slotIndex + ${u64(c64.slotGeneration)}];
-    ${control64}[item + ${u64(c64.batchRequestGeneration)}] = ${control64}[slotIndex + ${u64(c64.requestGeneration)}];
+    ${batchControl32}[item + ${u64(b32.batchSlots)}] = slot;
+    ${requestControl32}[slotIndex + ${u64(r32.slotBatchItem)}] = occupancy;
+    ${batchControl32}[item + ${u64(b32.itemStatus)}] = ${u32(ITEM.pending)};
+    ${requestControl64}[slotIndex + ${u64(r64.slotBatchGeneration)}] = generation;
+    ${batchControl64}[item + ${u64(b64.batchSlotGeneration)}] = ${requestControl64}[slotIndex + ${u64(r64.slotGeneration)}];
+    ${batchControl64}[item + ${u64(b64.batchRequestGeneration)}] = ${requestControl64}[slotIndex + ${u64(r64.requestGeneration)}];
     occupancy += gpu.u32(1);
   }
   if (occupancy === gpu.u32(0)) {
-    gpu.atomic.storeReleaseDevice(${control32}, ${u64(c32.batchState)}, ${u32(BATCH.free)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, ${u64(b32.batchState)}, ${u32(BATCH.free)});
     return ${u32(RESULT.noWork)};
   }
-  ${control64}[${u64(c64.batchGeneration)}] = generation;
-  ${control32}[${u64(c32.batchOccupancy)}] = occupancy;
-  gpu.atomic.storeReleaseDevice(${control32}, ${u64(c32.batchState)}, ${u32(BATCH.ready)});
+  ${batchControl64}[${u64(b64.batchGeneration)}] = generation;
+  ${batchControl32}[${u64(b32.batchOccupancy)}] = occupancy;
+  gpu.atomic.storeReleaseDevice(${batchControl32}, ${u64(b32.batchState)}, ${u32(BATCH.ready)});
   return occupancy;
 }`);
 
-  const prepareParams = [param('itemIndex', 'u32'), param('expectedSlot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), param('expectedBatchGeneration', 'u64'), param(control32, 'ptr<u32>'), param(control64, 'ptr<u64>'), ...partitionParameters('request', layout.requestInputPartitions)];
+  const prepareParams = [param('itemIndex', 'u32'), param('expectedSlot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), param('expectedBatchGeneration', 'u64'), param(requestControl32, 'ptr<u32>'), param(requestControl64, 'ptr<u64>'), param(batchControl32, 'ptr<u32>'), param(batchControl64, 'ptr<u64>'), ...partitionParameters('request', layout.requestInputPartitions)];
   for (const descriptor of layout.tensorParameters.filter(({ role, itemVarying }) => role === 'input' && itemVarying)) prepareParams.push(param(descriptor.parameterName, descriptor.type));
   const prepareCopies = [];
   let prepareCopyIndex = 0;
@@ -369,16 +385,16 @@ function generateSource(connector, state, layout) {
   }
   source.push(`function ${GENERATED_NAMES.prepareItem}(${prepareParams.map(({ name }) => name).join(', ')}) {
   if (itemIndex >= ${u32(I)}) { return ${u32(RESULT.invalid)}; }
-  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${control32}, ${control64})) { return ${u32(RESULT.stale)}; }
+  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${requestControl32}, ${requestControl64}, ${batchControl32}, ${batchControl64})) { return ${u32(RESULT.stale)}; }
   let item = gpu.u64(itemIndex);
   let slot = expectedSlot;
-  let cancelled = gpu.atomic.loadAcquireDevice(${control32}, gpu.u64(slot) + ${u64(c32.cancelRequested)});
+  let cancelled = gpu.atomic.loadAcquireDevice(${requestControl32}, gpu.u64(slot) + ${u64(r32.cancelRequested)});
   if (cancelled !== gpu.u32(0)) {
-    gpu.atomic.storeReleaseDevice(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.cancelled)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.cancelled)});
     return ${u32(RESULT.cancelled)};
   }
 ${prepareCopies.join('\n')}
-  gpu.atomic.storeReleaseDevice(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.prepared)});
+  gpu.atomic.storeReleaseDevice(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.prepared)});
   return ${u32(RESULT.ok)};
 }`);
 
@@ -386,35 +402,35 @@ ${prepareCopies.join('\n')}
   const executeParams = [
     param('itemIndex', 'u32'), param('expectedSlot', 'u32'), param('expectedSlotGeneration', 'u64'),
     param('expectedRequestGeneration', 'u64'), param('expectedBatchGeneration', 'u64'),
-    param(control32, 'ptr<u32>'), param(control64, 'ptr<u64>'), ...executeTensorParams,
+    param(requestControl32, 'ptr<u32>'), param(requestControl64, 'ptr<u64>'), param(batchControl32, 'ptr<u32>'), param(batchControl64, 'ptr<u64>'), ...executeTensorParams,
   ];
   const tensorCallArguments = ['itemIndex', ...executeTensorParams.map(({ name }) => name)].join(', ');
   source.push(`function ${GENERATED_NAMES.executeItem}(${executeParams.map(({ name }) => name).join(', ')}) {
-  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${control32}, ${control64})) { return ${u32(RESULT.stale)}; }
+  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${requestControl32}, ${requestControl64}, ${batchControl32}, ${batchControl64})) { return ${u32(RESULT.stale)}; }
   let item = gpu.u64(itemIndex);
-  let itemState = gpu.atomic.loadAcquireDevice(${control32}, item + ${u64(c32.itemStatus)});
+  let itemState = gpu.atomic.loadAcquireDevice(${batchControl32}, item + ${u64(b32.itemStatus)});
   if (itemState !== ${u32(ITEM.prepared)}) { return ${u32(RESULT.notReady)}; }
-  let cancelled = gpu.atomic.loadAcquireDevice(${control32}, gpu.u64(expectedSlot) + ${u64(c32.cancelRequested)});
+  let cancelled = gpu.atomic.loadAcquireDevice(${requestControl32}, gpu.u64(expectedSlot) + ${u64(r32.cancelRequested)});
   if (cancelled !== gpu.u32(0)) {
-    gpu.atomic.storeReleaseDevice(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.cancelled)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.cancelled)});
     return ${u32(RESULT.cancelled)};
   }
   let tensorStatus = ${connector.deviceFunction.name}(${tensorCallArguments});
-  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${control32}, ${control64})) { return ${u32(RESULT.stale)}; }
-  cancelled = gpu.atomic.loadAcquireDevice(${control32}, gpu.u64(expectedSlot) + ${u64(c32.cancelRequested)});
+  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${requestControl32}, ${requestControl64}, ${batchControl32}, ${batchControl64})) { return ${u32(RESULT.stale)}; }
+  cancelled = gpu.atomic.loadAcquireDevice(${requestControl32}, gpu.u64(expectedSlot) + ${u64(r32.cancelRequested)});
   if (cancelled !== gpu.u32(0)) {
-    gpu.atomic.storeReleaseDevice(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.cancelled)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.cancelled)});
     return ${u32(RESULT.cancelled)};
   }
   if (tensorStatus === gpu.u32(0)) {
-    gpu.atomic.storeReleaseDevice(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.computed)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.computed)});
     return ${u32(RESULT.ok)};
   }
-  gpu.atomic.storeReleaseDevice(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.failed)});
+  gpu.atomic.storeReleaseDevice(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.failed)});
   return ${u32(RESULT.failed)};
 }`);
 
-  const scatterParams = [param('itemIndex', 'u32'), param('expectedSlot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), param('expectedBatchGeneration', 'u64'), param(control32, 'ptr<u32>'), param(control64, 'ptr<u64>')];
+  const scatterParams = [param('itemIndex', 'u32'), param('expectedSlot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), param('expectedBatchGeneration', 'u64'), param(requestControl32, 'ptr<u32>'), param(requestControl64, 'ptr<u64>'), param(batchControl32, 'ptr<u32>'), param(batchControl64, 'ptr<u64>')];
   for (const descriptor of layout.tensorParameters.filter(({ role }) => role === 'output')) scatterParams.push(param(descriptor.parameterName, descriptor.type));
   scatterParams.push(...partitionParameters('result', layout.resultOutputPartitions));
   const scatterCopies = [];
@@ -431,33 +447,33 @@ ${prepareCopies.join('\n')}
   }
   source.push(`function ${GENERATED_NAMES.scatterItem}(${scatterParams.map(({ name }) => name).join(', ')}) {
   if (itemIndex >= ${u32(I)}) { return ${u32(RESULT.invalid)}; }
-  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${control32}, ${control64})) { return ${u32(RESULT.stale)}; }
+  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${requestControl32}, ${requestControl64}, ${batchControl32}, ${batchControl64})) { return ${u32(RESULT.stale)}; }
   let item = gpu.u64(itemIndex);
-  let itemState = gpu.atomic.loadAcquireDevice(${control32}, item + ${u64(c32.itemStatus)});
+  let itemState = gpu.atomic.loadAcquireDevice(${batchControl32}, item + ${u64(b32.itemStatus)});
   if (itemState !== ${u32(ITEM.computed)}) {
     if (itemState === ${u32(ITEM.failed)}) { return ${u32(RESULT.failed)}; }
     return ${u32(RESULT.notReady)};
   }
-  let cancelled = gpu.atomic.loadAcquireDevice(${control32}, gpu.u64(expectedSlot) + ${u64(c32.cancelRequested)});
+  let cancelled = gpu.atomic.loadAcquireDevice(${requestControl32}, gpu.u64(expectedSlot) + ${u64(r32.cancelRequested)});
   if (cancelled !== gpu.u32(0)) {
-    gpu.atomic.storeReleaseDevice(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.cancelled)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.cancelled)});
     return ${u32(RESULT.cancelled)};
   }
 ${scatterCopies.join('\n')}
-  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${control32}, ${control64})) { return ${u32(RESULT.stale)}; }
-  gpu.atomic.storeReleaseDevice(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.scattered)});
+  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${requestControl32}, ${requestControl64}, ${batchControl32}, ${batchControl64})) { return ${u32(RESULT.stale)}; }
+  gpu.atomic.storeReleaseDevice(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.scattered)});
   return ${u32(RESULT.ok)};
 }`);
 
-  source.push(`function ${GENERATED_NAMES.publishItem}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${control32}, ${control64}) {
-  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${control32}, ${control64})) { return ${u32(RESULT.stale)}; }
+  source.push(`function ${GENERATED_NAMES.publishItem}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${requestControl32}, ${requestControl64}, ${batchControl32}, ${batchControl64}) {
+  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${requestControl32}, ${requestControl64}, ${batchControl32}, ${batchControl64})) { return ${u32(RESULT.stale)}; }
   let item = gpu.u64(itemIndex);
-  let itemState = gpu.atomic.loadAcquireDevice(${control32}, item + ${u64(c32.itemStatus)});
+  let itemState = gpu.atomic.loadAcquireDevice(${batchControl32}, item + ${u64(b32.itemStatus)});
   if (itemState !== ${u32(ITEM.scattered)} && itemState !== ${u32(ITEM.failed)} && itemState !== ${u32(ITEM.cancelled)} && itemState !== ${u32(ITEM.stale)}) { return ${u32(RESULT.notReady)}; }
   let slotIndex = gpu.u64(expectedSlot);
-  let cancelled = gpu.atomic.loadAcquireDevice(${control32}, slotIndex + ${u64(c32.cancelRequested)});
+  let cancelled = gpu.atomic.loadAcquireDevice(${requestControl32}, slotIndex + ${u64(r32.cancelRequested)});
   if (cancelled !== gpu.u32(0) && itemState === ${u32(ITEM.scattered)}) {
-    gpu.atomic.storeReleaseDevice(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.cancelled)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.cancelled)});
     itemState = ${u32(ITEM.cancelled)};
   }
   let targetState = ${u32(SLOT.stale)};
@@ -465,48 +481,48 @@ ${scatterCopies.join('\n')}
   if (itemState === ${u32(ITEM.scattered)}) { targetState = ${u32(SLOT.ready)}; resultCode = ${u32(RESULT.ok)}; }
   else if (itemState === ${u32(ITEM.failed)}) { targetState = ${u32(SLOT.failed)}; resultCode = ${u32(RESULT.failed)}; }
   else if (itemState === ${u32(ITEM.cancelled)}) { targetState = ${u32(SLOT.cancelled)}; resultCode = ${u32(RESULT.cancelled)}; }
-  let publicationClaim = gpu.atomic.cas(${control32}, slotIndex + ${u64(c32.slotState)}, ${u32(SLOT.inflight)}, ${u32(SLOT.publishing)});
+  let publicationClaim = gpu.atomic.cas(${requestControl32}, slotIndex + ${u64(r32.slotState)}, ${u32(SLOT.inflight)}, ${u32(SLOT.publishing)});
   if (publicationClaim !== ${u32(SLOT.inflight)}) { return ${u32(RESULT.stale)}; }
-  let finishResult = ${GENERATED_NAMES.finishBatchItem}(itemIndex, itemState, expectedBatchGeneration, ${control32}, ${control64});
+  let finishResult = ${GENERATED_NAMES.finishBatchItem}(itemIndex, itemState, expectedBatchGeneration, ${batchControl32}, ${batchControl64});
   if (finishResult !== ${u32(RESULT.ok)}) {
-    gpu.atomic.storeReleaseDevice(${control32}, slotIndex + ${u64(c32.slotState)}, ${u32(SLOT.stale)});
+    gpu.atomic.storeReleaseDevice(${requestControl32}, slotIndex + ${u64(r32.slotState)}, ${u32(SLOT.stale)});
     return ${u32(RESULT.failed)};
   }
-  gpu.atomic.storeReleaseDevice(${control32}, slotIndex + ${u64(c32.slotState)}, targetState);
+  gpu.atomic.storeReleaseDevice(${requestControl32}, slotIndex + ${u64(r32.slotState)}, targetState);
   return resultCode;
 }`);
 
-  source.push(`function ${GENERATED_NAMES.retryItem}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${control32}, ${control64}) {
-  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${control32}, ${control64})) { return ${u32(RESULT.stale)}; }
+  source.push(`function ${GENERATED_NAMES.retryItem}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${requestControl32}, ${requestControl64}, ${batchControl32}, ${batchControl64}) {
+  if (!${GENERATED_NAMES.batchItemMatches}(itemIndex, expectedSlot, expectedSlotGeneration, expectedRequestGeneration, expectedBatchGeneration, ${requestControl32}, ${requestControl64}, ${batchControl32}, ${batchControl64})) { return ${u32(RESULT.stale)}; }
   let item = gpu.u64(itemIndex);
-  let cancelled = gpu.atomic.loadAcquireDevice(${control32}, gpu.u64(expectedSlot) + ${u64(c32.cancelRequested)});
+  let cancelled = gpu.atomic.loadAcquireDevice(${requestControl32}, gpu.u64(expectedSlot) + ${u64(r32.cancelRequested)});
   if (cancelled !== gpu.u32(0)) {
-    gpu.atomic.storeReleaseDevice(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.cancelled)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.cancelled)});
     return ${u32(RESULT.cancelled)};
   }
-  let priorItem = gpu.atomic.cas(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.failed)}, ${u32(ITEM.retrying)});
+  let priorItem = gpu.atomic.cas(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.failed)}, ${u32(ITEM.retrying)});
   if (priorItem !== ${u32(ITEM.failed)}) { return ${u32(RESULT.notReady)}; }
-  let priorSlot = gpu.atomic.cas(${control32}, gpu.u64(expectedSlot) + ${u64(c32.slotState)}, ${u32(SLOT.inflight)}, ${u32(SLOT.claimed)});
+  let priorSlot = gpu.atomic.cas(${requestControl32}, gpu.u64(expectedSlot) + ${u64(r32.slotState)}, ${u32(SLOT.inflight)}, ${u32(SLOT.claimed)});
   if (priorSlot !== ${u32(SLOT.inflight)}) {
-    gpu.atomic.storeReleaseDevice(${control32}, item + ${u64(c32.itemStatus)}, ${u32(ITEM.failed)});
+    gpu.atomic.storeReleaseDevice(${batchControl32}, item + ${u64(b32.itemStatus)}, ${u32(ITEM.failed)});
     return ${u32(RESULT.stale)};
   }
-  gpu.atomic.storeReleaseDevice(${control32}, gpu.u64(expectedSlot) + ${u64(c32.slotState)}, ${u32(SLOT.queued)});
-  let finishResult = ${GENERATED_NAMES.finishBatchItem}(itemIndex, ${u32(ITEM.retrying)}, expectedBatchGeneration, ${control32}, ${control64});
+  gpu.atomic.storeReleaseDevice(${requestControl32}, gpu.u64(expectedSlot) + ${u64(r32.slotState)}, ${u32(SLOT.queued)});
+  let finishResult = ${GENERATED_NAMES.finishBatchItem}(itemIndex, ${u32(ITEM.retrying)}, expectedBatchGeneration, ${batchControl32}, ${batchControl64});
   if (finishResult !== ${u32(RESULT.ok)}) { return ${u32(RESULT.failed)}; }
   return ${u32(RESULT.retried)};
 }`);
 
-  source.push(`function ${GENERATED_NAMES.recycle}(slot, expectedSlotGeneration, expectedRequestGeneration, ${control32}, ${control64}) {
+  source.push(`function ${GENERATED_NAMES.recycle}(slot, expectedSlotGeneration, expectedRequestGeneration, ${requestControl32}, ${requestControl64}) {
   if (slot >= ${u32(R)}) { return ${u32(RESULT.invalid)}; }
   let slotIndex = gpu.u64(slot);
-  let stateValue = gpu.atomic.loadAcquireDevice(${control32}, slotIndex + ${u64(c32.slotState)});
+  let stateValue = gpu.atomic.loadAcquireDevice(${requestControl32}, slotIndex + ${u64(r32.slotState)});
   if (stateValue !== ${u32(SLOT.ready)} && stateValue !== ${u32(SLOT.failed)} && stateValue !== ${u32(SLOT.cancelled)} && stateValue !== ${u32(SLOT.stale)}) { return ${u32(RESULT.notReady)}; }
-  if (!${GENERATED_NAMES.requestMatches}(slot, expectedSlotGeneration, expectedRequestGeneration, ${control64})) { return ${u32(RESULT.stale)}; }
-  let prior = gpu.atomic.cas(${control32}, slotIndex + ${u64(c32.slotState)}, stateValue, ${u32(SLOT.claimed)});
+  if (!${GENERATED_NAMES.requestMatches}(slot, expectedSlotGeneration, expectedRequestGeneration, ${requestControl64})) { return ${u32(RESULT.stale)}; }
+  let prior = gpu.atomic.cas(${requestControl32}, slotIndex + ${u64(r32.slotState)}, stateValue, ${u32(SLOT.claimed)});
   if (prior !== stateValue) { return ${u32(RESULT.stale)}; }
-  gpu.atomic.storeReleaseDevice(${control32}, slotIndex + ${u64(c32.cancelRequested)}, gpu.u32(0));
-  gpu.atomic.storeReleaseDevice(${control32}, slotIndex + ${u64(c32.slotState)}, ${u32(SLOT.free)});
+  gpu.atomic.storeReleaseDevice(${requestControl32}, slotIndex + ${u64(r32.cancelRequested)}, gpu.u32(0));
+  gpu.atomic.storeReleaseDevice(${requestControl32}, slotIndex + ${u64(r32.slotState)}, ${u32(SLOT.free)});
   return ${u32(RESULT.ok)};
 }`);
 
@@ -514,62 +530,79 @@ ${scatterCopies.join('\n')}
 }
 
 function functionMetadata(connector, layout) {
-  const c32 = param(GENERATED_NAMES.control32, 'ptr<u32>');
-  const c64 = param(GENERATED_NAMES.control64, 'ptr<u64>');
+  const r32 = param(GENERATED_NAMES.requestControl32, 'ptr<u32>');
+  const r64 = param(GENERATED_NAMES.requestControl64, 'ptr<u64>');
+  const b32 = param(GENERATED_NAMES.batchControl32, 'ptr<u32>');
+  const b64 = param(GENERATED_NAMES.batchControl64, 'ptr<u64>');
+  const controls = [r32, r64, b32, b64];
   const token = [
     param('itemIndex', 'u32'), param('expectedSlot', 'u32'), param('expectedSlotGeneration', 'u64'),
     param('expectedRequestGeneration', 'u64'), param('expectedBatchGeneration', 'u64'),
   ];
-  const prepare = [...token, c32, c64, ...partitionParameters('request', layout.requestInputPartitions)];
+  const prepare = [...token, ...controls, ...partitionParameters('request', layout.requestInputPartitions)];
   for (const descriptor of layout.tensorParameters.filter(({ role, itemVarying }) => role === 'input' && itemVarying)) prepare.push(param(descriptor.parameterName, descriptor.type));
-  const execute = [...token, c32, c64, ...connector.deviceFunction.parameters.filter(({ name }) => name !== 'itemIndex').map(({ name, type }) => param(name, type))];
-  const scatter = [...token, c32, c64];
+  const execute = [...token, ...controls, ...connector.deviceFunction.parameters.filter(({ name }) => name !== 'itemIndex').map(({ name, type }) => param(name, type))];
+  const scatter = [...token, ...controls];
   for (const descriptor of layout.tensorParameters.filter(({ role }) => role === 'output')) scatter.push(param(descriptor.parameterName, descriptor.type));
   scatter.push(...partitionParameters('result', layout.resultOutputPartitions));
   return [
     { ...connector.deviceFunction, calls: [] },
-    deviceFunction(GENERATED_NAMES.requestMatches, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), c64], 'bool'),
-    deviceFunction(GENERATED_NAMES.batchItemMatches, [...token, c32, c64], 'bool'),
-    deviceFunction(GENERATED_NAMES.finishBatchItem, [param('itemIndex', 'u32'), param('expectedItemStatus', 'u32'), param('expectedBatchGeneration', 'u64'), c32, c64]),
-    deviceFunction(GENERATED_NAMES.admit, [param('slot', 'u32'), param('requestGenerationValue', 'u64'), c32, c64]),
-    deviceFunction(GENERATED_NAMES.cancel, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), c32, c64], 'u32', [GENERATED_NAMES.requestMatches]),
-    deviceFunction(GENERATED_NAMES.formBatch, [c32, c64]),
+    deviceFunction(GENERATED_NAMES.requestMatches, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), r64], 'bool'),
+    deviceFunction(GENERATED_NAMES.batchItemMatches, [...token, ...controls], 'bool'),
+    deviceFunction(GENERATED_NAMES.finishBatchItem, [param('itemIndex', 'u32'), param('expectedItemStatus', 'u32'), param('expectedBatchGeneration', 'u64'), b32, b64]),
+    deviceFunction(GENERATED_NAMES.admit, [param('slot', 'u32'), param('requestGenerationValue', 'u64'), r32, r64]),
+    deviceFunction(GENERATED_NAMES.cancel, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), r32, r64], 'u32', [GENERATED_NAMES.requestMatches]),
+    deviceFunction(GENERATED_NAMES.formBatch, controls),
     deviceFunction(GENERATED_NAMES.prepareItem, prepare, 'u32', [GENERATED_NAMES.batchItemMatches]),
     deviceFunction(GENERATED_NAMES.executeItem, execute, 'u32', [GENERATED_NAMES.batchItemMatches, connector.deviceFunction.name]),
     deviceFunction(GENERATED_NAMES.scatterItem, scatter, 'u32', [GENERATED_NAMES.batchItemMatches]),
-    deviceFunction(GENERATED_NAMES.publishItem, [...token, c32, c64], 'u32', [GENERATED_NAMES.batchItemMatches, GENERATED_NAMES.finishBatchItem]),
-    deviceFunction(GENERATED_NAMES.retryItem, [...token, c32, c64], 'u32', [GENERATED_NAMES.batchItemMatches, GENERATED_NAMES.finishBatchItem]),
-    deviceFunction(GENERATED_NAMES.recycle, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), c32, c64], 'u32', [GENERATED_NAMES.requestMatches]),
+    deviceFunction(GENERATED_NAMES.publishItem, [...token, ...controls], 'u32', [GENERATED_NAMES.batchItemMatches, GENERATED_NAMES.finishBatchItem]),
+    deviceFunction(GENERATED_NAMES.retryItem, [...token, ...controls], 'u32', [GENERATED_NAMES.batchItemMatches, GENERATED_NAMES.finishBatchItem]),
+    deviceFunction(GENERATED_NAMES.recycle, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), r32, r64], 'u32', [GENERATED_NAMES.requestMatches]),
   ];
 }
 
 function resourcePlan(state, layout) {
   return [
     {
-      id: 'runtime.control32', resourceKey: 'tensor-runtime-control32', representationRole: 'runtime-control',
-      parameterName: GENERATED_NAMES.control32, dtype: 'u32', access: 'read-write', resourceClass: 'batch',
+      id: 'runtime.request-control32', resourceKey: 'tensor-runtime-request-control32', representationRole: 'request-control',
+      parameterName: GENERATED_NAMES.requestControl32, dtype: 'u32', dtypeWidth: 4, access: 'read-write', resourceClass: 'request',
       pressureStatus: 'evaluator-internal-failure', resourceAccess: ['read', 'write', 'atomic'],
-      elementCount: state.control32.elementCount, byteLength: state.control32.byteLength, alignmentBytes: 4,
+      elementCount: state.requestControl32.elementCount, byteLength: state.requestControl32.byteLength, alignmentBytes: 4,
       initialization: 'zero-before-ignition',
     },
     {
-      id: 'runtime.control64', resourceKey: 'tensor-runtime-control64', representationRole: 'runtime-control',
-      parameterName: GENERATED_NAMES.control64, dtype: 'u64', access: 'read-write', resourceClass: 'batch',
+      id: 'runtime.request-control64', resourceKey: 'tensor-runtime-request-control64', representationRole: 'request-control',
+      parameterName: GENERATED_NAMES.requestControl64, dtype: 'u64', dtypeWidth: 8, access: 'read-write', resourceClass: 'request',
       pressureStatus: 'evaluator-internal-failure', resourceAccess: ['read', 'write'],
-      elementCount: state.control64.elementCount, byteLength: state.control64.byteLength, alignmentBytes: 8,
+      elementCount: state.requestControl64.elementCount, byteLength: state.requestControl64.byteLength, alignmentBytes: 8,
+      initialization: 'zero-before-ignition',
+    },
+    {
+      id: 'runtime.batch-control32', resourceKey: 'tensor-runtime-batch-control32', representationRole: 'batch-control',
+      parameterName: GENERATED_NAMES.batchControl32, dtype: 'u32', dtypeWidth: 4, access: 'read-write', resourceClass: 'batch',
+      pressureStatus: 'evaluator-internal-failure', resourceAccess: ['read', 'write', 'atomic'],
+      elementCount: state.batchControl32.elementCount, byteLength: state.batchControl32.byteLength, alignmentBytes: 4,
+      initialization: 'zero-before-ignition',
+    },
+    {
+      id: 'runtime.batch-control64', resourceKey: 'tensor-runtime-batch-control64', representationRole: 'batch-control',
+      parameterName: GENERATED_NAMES.batchControl64, dtype: 'u64', dtypeWidth: 8, access: 'read-write', resourceClass: 'batch',
+      pressureStatus: 'evaluator-internal-failure', resourceAccess: ['read', 'write'],
+      elementCount: state.batchControl64.elementCount, byteLength: state.batchControl64.byteLength, alignmentBytes: 8,
       initialization: 'zero-before-ignition',
     },
     ...layout.requestInputPartitions.map((entry) => ({
       ...entry,
       resourceKey: 'tensor-runtime-request-input-' + entry.dtype,
       representationRole: 'request-staging', resourceClass: 'input', pressureStatus: 'invalid-evaluator-input',
-      resourceAccess: ['read', 'write'], alignmentBytes: DTYPE_WIDTH[entry.dtype], initialization: 'zero-before-ignition',
+      resourceAccess: ['read', 'write'], alignmentBytes: entry.dtypeWidth, initialization: 'zero-before-ignition',
     })),
     ...layout.resultOutputPartitions.map((entry) => ({
       ...entry,
       resourceKey: 'tensor-runtime-result-output-' + entry.dtype,
       representationRole: 'result-staging', resourceClass: 'result', pressureStatus: 'evaluator-output-invalid',
-      resourceAccess: ['read', 'write'], alignmentBytes: DTYPE_WIDTH[entry.dtype], initialization: 'zero-before-ignition',
+      resourceAccess: ['read', 'write'], alignmentBytes: entry.dtypeWidth, initialization: 'zero-before-ignition',
     })),
   ];
 }
@@ -577,7 +610,7 @@ function resourcePlan(state, layout) {
 export function createTensorEvaluatorRuntimeContribution(connector, options = {}) {
   object(connector, 'Tensor evaluator connector');
   exactOptions(options);
-  if (connector.kind !== 'cuda-mcgs-tensor-evaluator-connector' || connector.contract !== 'cuda-mcgs.tensor-evaluator-connector/0.1.0') {
+  if (connector.kind !== 'cuda-mcgs-tensor-evaluator-connector' || connector.contract !== 'cuda-mcgs.tensor-evaluator-connector/0.2.0') {
     fail('TENSOR_EVALUATOR_RUNTIME_CONNECTOR', 'runtime contribution requires the admitted public Tensor evaluator connector');
   }
   const id = options.id ?? 'evaluator.tensor-device-runtime';
@@ -608,12 +641,14 @@ export function createTensorEvaluatorRuntimeContribution(connector, options = {}
       dtype: entry.dtype,
       access: external ? 'read' : 'read-write',
       itemVarying: entry.itemVarying,
+      elementCount: entry.elementCount,
       byteLength: entry.byteLength,
+      dtypeWidth: entry.dtypeWidth,
       storageDisposition: external ? 'external-owner-required' : 'evaluator-resource',
       resourceClass,
       pressureStatus,
       resourceAccess: external ? ['read'] : ['read', 'write'],
-      alignmentBytes: entry.role === 'workspace' ? entry.alignmentBytes : DTYPE_WIDTH[entry.dtype],
+      alignmentBytes: entry.alignmentBytes,
       initialization: external ? 'external-before-ignition' : 'zero-before-ignition',
     };
   });
@@ -659,8 +694,10 @@ export function createTensorEvaluatorRuntimeContribution(connector, options = {}
       itemStates: { ...ITEM },
       resultCodes: { ...RESULT },
       dispositions: { ...DISPOSITION },
-      control32: { ...state.control32 },
-      control64: { ...state.control64 },
+      requestControl32: { ...state.requestControl32 },
+      requestControl64: { ...state.requestControl64 },
+      batchControl32: { ...state.batchControl32 },
+      batchControl64: { ...state.batchControl64 },
     },
     resources,
     tensorBindings,
@@ -691,6 +728,7 @@ export function createTensorEvaluatorRuntimeContribution(connector, options = {}
       'progress-owner-selects-service-order',
       'evaluator-profile-search-program-owns-encoded-request-inputs',
       'post-batch-work-requires-captured-incarnation-token',
+      'request-and-batch-control-storage-are-physically-distinct',
       'one-concurrent-tensor-batch-first-realization',
       'portable-source-and-state-layout-only',
       'no-native-or-provider-qualification',
@@ -708,5 +746,4 @@ export const tensorEvaluatorRuntimeConstants = Object.freeze({
   itemStates: ITEM,
   resultCodes: RESULT,
   dispositions: DISPOSITION,
-  dtypeWidth: DTYPE_WIDTH,
 });

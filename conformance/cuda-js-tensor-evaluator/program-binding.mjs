@@ -44,10 +44,10 @@ function fakeTensorDeviceProgram(overrides = {}) {
     outputFormat: 'lto-ir',
     parameters,
     inputs: [
-      { ...parameters[1], name: 'features', valueId: 'value.features', elementCount: 8 },
-      { ...parameters[2], name: 'weights', valueId: 'value.weights', elementCount: 16 },
+      { ...parameters[1], name: 'features', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 64 }, valueId: 'value.features', elementCount: 8 },
+      { ...parameters[2], name: 'weights', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 128 }, valueId: 'value.weights', elementCount: 16 },
     ],
-    outputs: [{ ...parameters[3], name: 'scores', valueId: 'value.scores', perItemElements: 2, elementCount: 4 }],
+    outputs: [{ ...parameters[3], name: 'scores', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 32 }, valueId: 'value.scores', perItemElements: 2, elementCount: 4 }],
     workspace: [{ ...parameters[4], perItemElements: 4, elementCount: 8, alignmentBytes: 16 }],
     totalWorkspaceBytes: 32,
     function: fn,
@@ -151,6 +151,8 @@ assert.deepEqual(binding.ownership.publicRequirementConsumers, runtime.requiredC
   .sort()
   .map((contractId) => ({ contractId, consumer: boundInput.id })));
 assert(binding.claimLimits.includes('resource-plan-binding-not-included'));
+assert.equal('resourceRequirements' in binding, false, 'Program Binding must not relay Resource descriptors');
+assert.equal('tensorBindings' in binding, false, 'Program Binding must not relay Tensor storage descriptors');
 assert(binding.claimLimits.includes('progress-runtime-entry-binding-not-included'));
 assert(Object.isFrozen(binding));
 assert(Object.isFrozen(binding.sourceUnit));
@@ -231,7 +233,7 @@ assert.throws(
 );
 
 console.log(JSON.stringify({
-  schema: 'cuda-mcgs.tensor-evaluator-program-binding-portable-evidence/0.1.0',
+  schema: 'cuda-mcgs.tensor-evaluator-program-binding-portable-evidence/0.2.0',
   status: 'pass',
   sourceSha256: expectedSourceSha,
   functions: binding.functions.length,

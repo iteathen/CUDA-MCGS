@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   createTensorEvaluatorConnector,
   createTensorEvaluatorRuntimeContribution,
+  tensorEvaluatorRuntimeConstants,
 } from '../../adapters/evaluators/cuda-js-tensor/index.mjs';
 
 const callable = {
@@ -33,11 +34,11 @@ function makeTensorDeviceProgram() {
     function: callable,
     parameters,
     inputs: [
-      { ...parameters[1], name: 'features', valueId: 'input.features', elementCount: 8 },
-      { ...parameters[2], name: 'weights', valueId: 'input.weights', elementCount: 3 },
+      { ...parameters[1], name: 'features', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 64 }, valueId: 'input.features', elementCount: 8 },
+      { ...parameters[2], name: 'weights', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 128 }, valueId: 'input.weights', elementCount: 3 },
     ],
     outputs: [
-      { ...parameters[3], name: 'scores', valueId: 'output.scores', perItemElements: 3, elementCount: 12 },
+      { ...parameters[3], name: 'scores', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 32 }, valueId: 'output.scores', perItemElements: 3, elementCount: 12 },
     ],
     workspace: [
       { ...parameters[4], perItemElements: 2, elementCount: 8, alignmentBytes: 256 },
@@ -77,9 +78,15 @@ const slotState = state.slotStates;
 const batchState = state.batchStates;
 
 assert.equal(contribution.kind, 'cuda-mcgs-tensor-evaluator-runtime-contribution');
-assert.equal(contribution.contract, 'cuda-mcgs.tensor-evaluator-device-runtime/0.2.0');
+assert.equal(contribution.contract, 'cuda-mcgs.tensor-evaluator-device-runtime/0.3.0');
 assert(contribution.resources.every(({ resourceKey, representationRole, resourceClass, pressureStatus, resourceAccess, alignmentBytes }) => typeof resourceKey === 'string' && typeof representationRole === 'string' && typeof resourceClass === 'string' && typeof pressureStatus === 'string' && Array.isArray(resourceAccess) && Number.isSafeInteger(alignmentBytes)));
-assert(contribution.tensorBindings.every(({ parameterIndex, resourceKey, representationRole, storageDisposition, resourceAccess, alignmentBytes }) => Number.isSafeInteger(parameterIndex) && typeof resourceKey === 'string' && typeof representationRole === 'string' && typeof storageDisposition === 'string' && Array.isArray(resourceAccess) && Number.isSafeInteger(alignmentBytes)));
+assert(contribution.tensorBindings.every(({ parameterIndex, resourceKey, representationRole, storageDisposition, resourceAccess, elementCount, dtypeWidth, alignmentBytes }) => Number.isSafeInteger(parameterIndex) && typeof resourceKey === 'string' && typeof representationRole === 'string' && typeof storageDisposition === 'string' && Array.isArray(resourceAccess) && Number.isSafeInteger(elementCount) && Number.isSafeInteger(dtypeWidth) && Number.isSafeInteger(alignmentBytes)));
+assert.equal('dtypeWidth' in tensorEvaluatorRuntimeConstants, false, 'runtime must not publish a shadow Tensor dtype-width catalog');
+assert.equal(contribution.tensorBindings.find(({ parameterName }) => parameterName === 'features').alignmentBytes, 64);
+assert.equal(contribution.tensorBindings.find(({ parameterName }) => parameterName === 'weights').alignmentBytes, 128);
+assert.equal(contribution.tensorBindings.find(({ parameterName }) => parameterName === 'scores').alignmentBytes, 32);
+assert.deepEqual(contribution.resources.filter(({ representationRole }) => representationRole === 'request-control').map(({ resourceClass }) => resourceClass), ['request', 'request']);
+assert.deepEqual(contribution.resources.filter(({ representationRole }) => representationRole === 'batch-control').map(({ resourceClass }) => resourceClass), ['batch', 'batch']);
 assert(contribution.device.functions.every(({ calls }) => Array.isArray(calls)), 'runtime must publish explicit local call graph metadata');
 assert.equal(contribution.execution.deviceOwned, true);
 assert.equal(contribution.execution.hostProgress, 'none');
@@ -164,56 +171,61 @@ function mcgsTensorRunItem(itemIndex, features, weights, scores, scratch) {
 const functionNames = contribution.device.functions.map(({ name }) => name);
 const loadGenerated = new Function('gpu', 'mcgsTensorRunItem', `${contribution.device.source}\nreturn { ${functionNames.join(', ')} };`);
 const fn = loadGenerated(gpu, mcgsTensorRunItem);
-const c32 = Array(state.control32.elementCount).fill(0);
-const c64 = Array(state.control64.elementCount).fill(0n);
+const request32 = Array(state.requestControl32.elementCount).fill(0);
+const request64 = Array(state.requestControl64.elementCount).fill(0n);
+const batch32 = Array(state.batchControl32.elementCount).fill(0);
+const batch64 = Array(state.batchControl64.elementCount).fill(0n);
 const requestInput = Array(contribution.requestInputPartitions[0].elementCount).fill(0);
 const resultOutput = Array(contribution.resultOutputPartitions[0].elementCount).fill(0);
 const features = Array(8).fill(0);
 const weights = [100, 200, 300];
 const scores = Array(12).fill(0);
 const scratch = Array(8).fill(0);
-const o32 = state.control32;
-const o64 = state.control64;
-const readSlotGeneration = (slot) => c64[o64.slotGeneration + slot];
-const readBatchGeneration = () => c64[o64.batchGeneration];
-const readBatchSlot = (item) => c32[o32.batchSlots + item];
+const r32 = state.requestControl32;
+const r64 = state.requestControl64;
+const b32 = state.batchControl32;
+const b64 = state.batchControl64;
+const readSlotGeneration = (slot) => request64[r64.slotGeneration + slot];
+const readBatchGeneration = () => batch64[b64.batchGeneration];
+const readBatchSlot = (item) => batch32[b32.batchSlots + item];
 const token = (item) => {
   const slot = readBatchSlot(item);
-  return [item, slot, c64[o64.batchSlotGeneration + item], c64[o64.batchRequestGeneration + item], readBatchGeneration()];
+  return [item, slot, batch64[b64.batchSlotGeneration + item], batch64[b64.batchRequestGeneration + item], readBatchGeneration()];
 };
-const prepare = (tokenValue) => fn.mcgsTensorEvaluatorPrepareItem(...tokenValue, c32, c64, requestInput, features);
-const execute = (tokenValue) => fn.mcgsTensorEvaluatorExecuteItem(...tokenValue, c32, c64, features, weights, scores, scratch);
-const scatter = (tokenValue) => fn.mcgsTensorEvaluatorScatterItem(...tokenValue, c32, c64, scores, resultOutput);
-const publish = (tokenValue) => fn.mcgsTensorEvaluatorPublishItem(...tokenValue, c32, c64);
-const retry = (tokenValue) => fn.mcgsTensorEvaluatorRetryItem(...tokenValue, c32, c64);
+const controls = [request32, request64, batch32, batch64];
+const prepare = (tokenValue) => fn.mcgsTensorEvaluatorPrepareItem(...tokenValue, ...controls, requestInput, features);
+const execute = (tokenValue) => fn.mcgsTensorEvaluatorExecuteItem(...tokenValue, ...controls, features, weights, scores, scratch);
+const scatter = (tokenValue) => fn.mcgsTensorEvaluatorScatterItem(...tokenValue, ...controls, scores, resultOutput);
+const publish = (tokenValue) => fn.mcgsTensorEvaluatorPublishItem(...tokenValue, ...controls);
+const retry = (tokenValue) => fn.mcgsTensorEvaluatorRetryItem(...tokenValue, ...controls);
 
 // No-work service must not consume batch-generation identity.
-assert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), result.noWork);
+assert.equal(fn.mcgsTensorEvaluatorFormBatch(request32, request64, batch32, batch64), result.noWork);
 assert.equal(readBatchGeneration(), 0n);
 
 // Losing every observed queued slot before claim is still no-work and must not
 // consume batch-generation identity. This injects one adversarial cancellation
 // exactly at the slot claim CAS without pretending to model physical scheduling.
-assert.equal(fn.mcgsTensorEvaluatorAdmit(6, 7n, c32, c64), result.ok);
+assert.equal(fn.mcgsTensorEvaluatorAdmit(6, 7n, request32, request64), result.ok);
 const lostClaimSlotGeneration = readSlotGeneration(6);
 beforeCas = (pointer, index, compare, value) => {
-  if (pointer === c32 && index === o32.slotState + 6 && compare === slotState.queued && value === slotState.inflight) {
+  if (pointer === request32 && index === r32.slotState + 6 && compare === slotState.queued && value === slotState.inflight) {
     pointer[index] = slotState.cancelled;
     beforeCas = null;
   }
 };
-assert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), result.noWork);
+assert.equal(fn.mcgsTensorEvaluatorFormBatch(request32, request64, batch32, batch64), result.noWork);
 assert.equal(beforeCas, null);
 assert.equal(readBatchGeneration(), 0n);
-assert.equal(c32[o32.batchState], batchState.free);
-assert.equal(fn.mcgsTensorEvaluatorRecycle(6, lostClaimSlotGeneration, 7n, c32, c64), result.ok);
+assert.equal(batch32[b32.batchState], batchState.free);
+assert.equal(fn.mcgsTensorEvaluatorRecycle(6, lostClaimSlotGeneration, 7n, request32, request64), result.ok);
 
 // Two ready requests form a partial batch and preserve request/item identity.
 requestInput.splice(0, 4, 1, 2, 10, 20);
-assert.equal(fn.mcgsTensorEvaluatorAdmit(0, 10n, c32, c64), result.ok);
-assert.equal(fn.mcgsTensorEvaluatorAdmit(1, 20n, c32, c64), result.ok);
-assert.equal(fn.mcgsTensorEvaluatorAdmit(0, 99n, c32, c64), result.pressure);
-assert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), 2);
+assert.equal(fn.mcgsTensorEvaluatorAdmit(0, 10n, request32, request64), result.ok);
+assert.equal(fn.mcgsTensorEvaluatorAdmit(1, 20n, request32, request64), result.ok);
+assert.equal(fn.mcgsTensorEvaluatorAdmit(0, 99n, request32, request64), result.pressure);
+assert.equal(fn.mcgsTensorEvaluatorFormBatch(request32, request64, batch32, batch64), 2);
 const first0 = token(0);
 const first1 = token(1);
 assert.deepEqual(first0, [0, 0, 1n, 10n, 1n]);
@@ -226,33 +238,33 @@ assert.equal(execute(first1), result.ok);
 assert.equal(scatter(first0), result.ok);
 assert.equal(scatter(first1), result.ok);
 assert.equal(publish(first0), result.ok);
-assert.equal(c32[o32.batchState], batchState.ready);
+assert.equal(batch32[b32.batchState], batchState.ready);
 assert.equal(publish(first1), result.ok);
-assert.equal(c32[o32.batchState], batchState.free);
-assert.equal(c32[o32.slotState], slotState.ready);
-assert.equal(c32[o32.slotState + 1], slotState.ready);
+assert.equal(batch32[b32.batchState], batchState.free);
+assert.equal(request32[r32.slotState], slotState.ready);
+assert.equal(request32[r32.slotState + 1], slotState.ready);
 assert.deepEqual(resultOutput.slice(0, 6), [101, 202, 303, 110, 220, 330]);
 
 // Reuse slot 0. Old delayed execute/scatter/publish must be read-only stale.
-assert.equal(fn.mcgsTensorEvaluatorRecycle(0, 1n, 10n, c32, c64), result.ok);
+assert.equal(fn.mcgsTensorEvaluatorRecycle(0, 1n, 10n, request32, request64), result.ok);
 requestInput[0] = 7;
 requestInput[1] = 8;
-assert.equal(fn.mcgsTensorEvaluatorAdmit(0, 30n, c32, c64), result.ok);
+assert.equal(fn.mcgsTensorEvaluatorAdmit(0, 30n, request32, request64), result.ok);
 assert.equal(readSlotGeneration(0), 2n);
-assert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), 1);
+assert.equal(fn.mcgsTensorEvaluatorFormBatch(request32, request64, batch32, batch64), 1);
 const second0 = token(0);
 assert.deepEqual(second0, [0, 0, 2n, 30n, 2n]);
 const resultBeforeStale = resultOutput.slice(0, 3);
-const itemStateBeforeStale = c32[o32.itemStatus];
-const slotStateBeforeStale = c32[o32.slotState];
+const itemStateBeforeStale = batch32[b32.itemStatus];
+const slotStateBeforeStale = request32[r32.slotState];
 const callsBeforeStale = tensorCalls;
 assert.equal(execute(first0), result.stale);
 assert.equal(scatter(first0), result.stale);
 assert.equal(publish(first0), result.stale);
 assert.equal(tensorCalls, callsBeforeStale, 'stale delayed execute must not invoke Tensor');
 assert.deepEqual(resultOutput.slice(0, 3), resultBeforeStale, 'stale delayed scatter must not overwrite a reused result slot');
-assert.equal(c32[o32.itemStatus], itemStateBeforeStale, 'stale delayed work must not mutate the current batch lane');
-assert.equal(c32[o32.slotState], slotStateBeforeStale, 'stale delayed publication must not mutate the current request slot');
+assert.equal(batch32[b32.itemStatus], itemStateBeforeStale, 'stale delayed work must not mutate the current batch lane');
+assert.equal(request32[r32.slotState], slotStateBeforeStale, 'stale delayed publication must not mutate the current request slot');
 assert.equal(prepare(second0), result.ok);
 assert.equal(execute(second0), result.ok);
 assert.equal(scatter(second0), result.ok);
@@ -260,39 +272,39 @@ assert.equal(publish(second0), result.ok);
 assert.deepEqual(resultOutput.slice(0, 3), [107, 208, 315]);
 
 // Inflight cancellation observed at the declared pre-publication ordering point suppresses readiness.
-assert.equal(fn.mcgsTensorEvaluatorRecycle(1, 1n, 20n, c32, c64), result.ok);
+assert.equal(fn.mcgsTensorEvaluatorRecycle(1, 1n, 20n, request32, request64), result.ok);
 requestInput[2] = 3;
 requestInput[3] = 4;
-assert.equal(fn.mcgsTensorEvaluatorAdmit(1, 40n, c32, c64), result.ok);
-assert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), 1);
+assert.equal(fn.mcgsTensorEvaluatorAdmit(1, 40n, request32, request64), result.ok);
+assert.equal(fn.mcgsTensorEvaluatorFormBatch(request32, request64, batch32, batch64), 1);
 const cancelToken = token(0);
 assert.equal(prepare(cancelToken), result.ok);
-assert.equal(fn.mcgsTensorEvaluatorCancel(1, cancelToken[2], cancelToken[3], c32, c64), result.cancelled);
+assert.equal(fn.mcgsTensorEvaluatorCancel(1, cancelToken[2], cancelToken[3], request32, request64), result.cancelled);
 assert.equal(execute(cancelToken), result.cancelled);
 assert.equal(publish(cancelToken), result.cancelled);
-assert.equal(c32[o32.slotState + 1], slotState.cancelled);
-assert.equal(c32[o32.batchState], batchState.free);
+assert.equal(request32[r32.slotState + 1], slotState.cancelled);
+assert.equal(batch32[b32.batchState], batchState.free);
 
 // Queued cancellation terminalizes without creating a batch item.
-assert.equal(fn.mcgsTensorEvaluatorAdmit(2, 50n, c32, c64), result.ok);
+assert.equal(fn.mcgsTensorEvaluatorAdmit(2, 50n, request32, request64), result.ok);
 const slot2Generation = readSlotGeneration(2);
-assert.equal(fn.mcgsTensorEvaluatorCancel(2, slot2Generation, 50n, c32, c64), result.cancelled);
-assert.equal(c32[o32.slotState + 2], slotState.cancelled);
+assert.equal(fn.mcgsTensorEvaluatorCancel(2, slot2Generation, 50n, request32, request64), result.cancelled);
+assert.equal(request32[r32.slotState + 2], slotState.cancelled);
 
 // Tensor failure is retryable as the same request in a new batch incarnation.
-assert.equal(fn.mcgsTensorEvaluatorRecycle(0, 2n, 30n, c32, c64), result.ok);
+assert.equal(fn.mcgsTensorEvaluatorRecycle(0, 2n, 30n, request32, request64), result.ok);
 requestInput[0] = 11;
 requestInput[1] = 12;
-assert.equal(fn.mcgsTensorEvaluatorAdmit(0, 60n, c32, c64), result.ok);
-assert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), 1);
+assert.equal(fn.mcgsTensorEvaluatorAdmit(0, 60n, request32, request64), result.ok);
+assert.equal(fn.mcgsTensorEvaluatorFormBatch(request32, request64, batch32, batch64), 1);
 const failedToken = token(0);
 assert.equal(prepare(failedToken), result.ok);
 failNextTensorCall = true;
 assert.equal(execute(failedToken), result.failed);
 assert.equal(retry(failedToken), result.retried);
-assert.equal(c32[o32.slotState], slotState.queued);
-assert.equal(c32[o32.batchState], batchState.free);
-assert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), 1);
+assert.equal(request32[r32.slotState], slotState.queued);
+assert.equal(batch32[b32.batchState], batchState.free);
+assert.equal(fn.mcgsTensorEvaluatorFormBatch(request32, request64, batch32, batch64), 1);
 const retryToken = token(0);
 assert.equal(retryToken[2], failedToken[2]);
 assert.equal(retryToken[3], failedToken[3]);
@@ -304,7 +316,7 @@ assert.equal(publish(retryToken), result.ok);
 assert.deepEqual(resultOutput.slice(0, 3), [111, 212, 323]);
 
 console.log(JSON.stringify({
-  schema: 'cuda-mcgs.tensor-evaluator-device-runtime-portable-evidence/0.1.0',
+  schema: 'cuda-mcgs.tensor-evaluator-device-runtime-portable-evidence/0.2.0',
   status: 'pass',
   execution: 'emitted-device-js-sequential-oracle',
   cases: [
