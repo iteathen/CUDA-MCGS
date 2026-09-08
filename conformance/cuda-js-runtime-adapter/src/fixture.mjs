@@ -1,5 +1,5 @@
-export const CUDA_JS_REVISION = '49a2f77d2c8364d67030fbc1c2e870e58e70d334';
-export const CUDA_JS_PACKAGE = 'cuda-js@0.1.0-alpha.18';
+export const CUDA_JS_REVISION = '844e9392ded7841fdac8b7d2b438e1c6d8cafc85';
+export const CUDA_JS_PACKAGE = 'cuda-js@0.1.0-alpha.19';
 export const PEER = Object.freeze({ repository: 'iteathen/CUDA-JS', revision: CUDA_JS_REVISION, package: CUDA_JS_PACKAGE });
 
 export function executionPackage() {
@@ -163,16 +163,30 @@ export function publicCudaJsFake(flags = {}) {
   const cudaJs = {
     CUDA_JS_COMPATIBILITY: {
       schemaVersion: 1,
-      package: { name: 'cuda-js', version: '0.1.0-alpha.18' },
+      package: { name: 'cuda-js', version: '0.1.0-alpha.19' },
       publicApi: { schemaVersion: 1, entries: ['cuda-js', 'cuda-js/compatibility', 'cuda-js/testing'] },
       capabilities: {
         deviceMemory: 'bounded-synchronous-copied-bytes',
         asyncTransfers: 'opt-in-capacity-two-internal-pinned-staging-contiguous-h2d-d2h-d2d',
         deviceMemoryAllocationMinimumAlignmentBytes: 256,
         deviceJsFrontend: 'restricted-device-js-publication',
+        deviceJsInspection: 'pure-cuda-free-public-program-semantic-inspection-shared-with-compile',
         gpuOperationLifecycle: 'opaque-submit-status-wait-close-one-pending',
         publicationMailboxes: 'private-mapped-named-u32-one-operation-lease-system-acquire-release',
       },
+    },
+    inspectDeviceProgram(request) {
+      push('inspectDeviceProgram', request);
+      if (flags.inspectError) throw flags.inspectError === true ? lowerError('DEVICE_JS_HELPER_UNKNOWN', 'validation', 'device-js.inspect') : flags.inspectError;
+      const entry = request.functions.find(({ kind }) => kind === 'kernel');
+      return {
+        schemaVersion: 1,
+        deviceProgram: { kernels: entry ? [{ name: entry.name, functionName: `kernel_${entry.name}`, parameters: [] }] : [] },
+        inspection: {
+          compile: { architecture: 'compute_75', languageStandard: 'c++17', fmad: false, deviceAsDefaultExecutionSpace: false, relocatableDeviceCode: false, headerProfile: 'none', ...request.compile },
+          publicHelperUsage: request.functions.map(({ name }) => ({ function: name, helpers: [] })),
+        },
+      };
     },
     async openCudaRuntime(options) {
       push('openCudaRuntime', options);
