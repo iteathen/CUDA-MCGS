@@ -1,36 +1,44 @@
 {
-  "schema_version": 123,
-  "updated": "2026-09-07",
-  "status": "issue_124_resumed_device_resident_evaluator_lifecycle_active",
-  "objective": "Complete the generic CUDA-MCGS-owned device-resident evaluator request/batch/scatter/freshness/failure/cleanup runtime through existing public CUDA-JS-Tensor and CUDA-JS composition surfaces, preserving all protected #124 foundations and strict ownership boundaries.",
-  "ownership_boundary": "CUDA-MCGS owns evaluator request identity/incarnation/freshness, finite queue/batch/resource semantics, scatter/readiness/publication, failure/cancellation/retryability and search lifecycle. CUDA-JS-Tensor owns Tensor mathematics, TensorProgram/TensorPlan, item-axis callable ABI and Tensor workspace. CUDA-JS owns consumer-neutral Device-JS/compiler/runtime/provider/memory/lifecycle mechanisms. Product semantics remain downstream.",
+  "schema_version": 124,
+  "updated": "2026-09-08",
+  "status": "issue_124_active_shared_immutable_tensor_input_binding_next",
+  "objective": "Complete CUDA-MCGS #124 from the protected Tensor evaluator audit-closure checkpoint without restarting accepted evaluator, Tensor or CUDA-JS foundations.",
+  "agent_authority": {
+    "global": "https://github.com/iteathen/.github/blob/main/AGENTS.md",
+    "repository_entry": "AGENT_LOCAL.md",
+    "repository_agent_index": "agent_files/README.md",
+    "rule": "The root AGENTS.md is a compatibility pointer only. Account-global AGENTS.md owns reusable engineering/process doctrine; AGENT_LOCAL.md and accepted local authority specialize repository facts. Retained legacy agent_files doctrine is not a second universal instruction chain."
+  },
   "authority": [
-    "explicit owner instruction: resume CUDA-MCGS #124",
-    "AGENTS.md",
-    "agent_files/AGENTS.md",
-    "agent_files/AI_RULES.md",
-    "agent_files/general_foundation/PRINCIPLES.md",
+    "explicit owner instruction: continue CUDA-MCGS #124 from protected state",
+    "AGENT_LOCAL.md",
+    "agent_files/README.md",
+    "agent_files/SYSTEM_REGISTRY.md",
+    "agent_files/VALIDATION_POLICY.md",
+    "docs/specs/SPEC-0009-evaluator-contract.md",
+    "docs/specs/SPEC-0011-finite-search-resources.md",
+    "docs/specs/SPEC-0012-device-owned-search-progress.md",
     "docs/specs/SPEC-0015-native-boundary-and-js-only-implementation.md",
-    "docs/specs/SPEC-0016-optional-cross-domain-physical-memory-policy.md",
     "https://github.com/iteathen/CUDA-MCGS/issues/124"
   ],
   "current_focus": {
     "repository": "iteathen/CUDA-MCGS",
     "issue": 124,
-    "branch": "feature/124-device-resident-evaluator",
-    "base": "893a1676a303bf28aff8f24847b0be1559ba859c",
-    "name": "device-resident Tensor evaluator lifecycle through public composition",
+    "protected_main": "9db49de37c8d9d6507bac70ef62b4095a1d6faa7",
+    "protected_checkpoint_pr": 262,
+    "name": "shared immutable Tensor input ownership and binding",
     "state": "active_owner_directed",
-    "next_action": "Read actual protected evaluator ports, Program Package, Tensor connector, CUDA-JS runtime adapter, lifecycle/cleanup implementation and tests; derive the smallest single-owner runtime seam for device-owned request accumulation, batching, scatter and freshness before mutation.",
+    "next_action": "Read the protected selected-evaluator/artifact/input ownership surfaces plus the public Tensor and Resource/runtime entry contracts; bind shared immutable Tensor inputs only through their natural selected owner, then complete the pointer-binding ABI before Progress integration.",
     "execution_sequence": [
-      "assess protected source and exact #124 foundations",
-      "research public producer/runtime contracts and existing falsifiers",
-      "reassess ownership and deletion/substitution constraints",
-      "plan one bounded runtime lifecycle unit",
-      "execute without product semantics or private imports",
-      "qualify normal/partial/stale/pressure/cancel/retry/cleanup behavior",
-      "review host-progression and lifecycle closure",
-      "cleanup/document and integrate only after exact-head CI"
+      "refresh account-global AGENTS.md, AGENT_LOCAL.md and exact protected repository state",
+      "assess shared immutable Tensor input meaning and current selected-owner contracts",
+      "research public Tensor/CUDA-JS/Resource/runtime-entry surfaces and existing falsifiers",
+      "reassess ownership, deletion/substitution, lifecycle and compatibility consequences",
+      "plan one bounded input-binding ownership unit",
+      "execute without product semantics, private imports, caller placement or new planner authority",
+      "qualify exact owner identity, immutable binding, Resource views, deletion/substitution and failure/drift cases",
+      "review the complete pointer ABI before any Progress mutation",
+      "cleanup/document and integrate only after exact-head normal CI"
     ]
   },
   "protected_foundations": {
@@ -38,61 +46,61 @@
     "runtime_path_issue": 125,
     "device_js_import_pr": 241,
     "tensor_binding_pr": 244,
-    "aligned_main": "893a1676a303bf28aff8f24847b0be1559ba859c",
-    "meaning": "Evaluator semantics, public runtime composition, public Tensor callable binding and lifecycle ownership are protected foundations; full active evaluator runtime composition remains the work of #124."
+    "ownership_audit_closure_pr": 262,
+    "protected_main": "9db49de37c8d9d6507bac70ef62b4095a1d6faa7",
+    "meaning": "Evaluator semantics, public runtime composition, public Tensor callable admission, finite runtime transitions, exact Program identity and Resource representation/placement verification are protected foundations."
   },
+  "remaining_order": [
+    "shared immutable Tensor input ownership and binding",
+    "complete Resource/runtime-entry pointer-binding ABI",
+    "Progress-owned evaluator service opportunity/runtime-entry integration",
+    "terminal cross-owner Resource/Progress/Search lifecycle cleanup",
+    "native/provider/hardware qualification"
+  ],
   "acceptance_remaining": [
+    "shared immutable Tensor inputs are bound by an explicit natural semantic owner and never guessed by the generic Tensor adapter",
+    "all runtime entry pointers/views have exact Resource-owned identity, extent, alignment, access and placement",
     "multiple device-owned requests progress without host gather/launch/poll/relaunch progression",
-    "full and partial batches preserve request/item identity",
-    "stale results cannot publish into reused slots",
-    "pressure/failure/cancellation/unavailable capability map to explicit evaluator/search dispositions",
-    "evaluator-free and non-Tensor alternatives prove deletion/substitution",
-    "all owned resources terminate or retain honest quarantine/orphan truth",
-    "portable conformance covers normal pressure stale cancellation retry and cleanup without physical-support promotion"
+    "Progress owns service opportunity/order rather than the evaluator adapter",
+    "all cross-owner resources terminate or retain honest quarantine/orphan truth",
+    "portable conformance remains separated from native/provider/hardware evidence"
   ],
   "blockers": [
-    "No product numerical oracle is a blocker or prerequisite for generic #124 work.",
+    "No product numerical oracle is a prerequisite for generic #124 work.",
     "Direct physical NVIDIA qualification remains deferred until suitable hardware is actually exposed."
-  ],
-  "deliverables": [
-    "Protected active #124 state with exact branch/base identity and preserved prerequisites.",
-    "One bounded generic device-owned evaluator request/batch/scatter lifecycle implementation through public Tensor/CUDA-JS surfaces.",
-    "Portable conformance for normal, full/partial batch, stale slot reuse, pressure, cancellation, failure, retry and cleanup behavior.",
-    "Deletion/substitution evidence proving evaluator-free and materially non-Tensor alternatives remain valid.",
-    "Explicit evidence that the selected device-resident profile does not require host gather/launch/poll/relaunch progression after ignition."
   ],
   "validation": {
     "required_before_mutation": [
-      "read protected evaluator/search semantic ports and current implementation",
-      "read public Tensor connector and CUDA-JS runtime adapter implementation/tests",
-      "reconfirm #124 issue acceptance and ownership boundaries"
+      "refresh current account-global AGENTS.md and repository AGENT_LOCAL.md",
+      "read exact protected evaluator, Resource, runtime adapter and public Tensor input/callable surfaces",
+      "reconfirm issue #124 acceptance and owner boundaries"
     ],
-    "required_after_each_meaningful_unit": [
-      "focused owner-level tests",
-      "documentation/governance verification when authority files change",
-      "cuda-js-runtime-adapter",
-      "cuda-js-compatible-pair",
+    "required_after_meaningful_unit": [
+      "focused owner-level falsifiers",
+      "./scripts/verify-docs.sh when durable repository authority/current-state files change",
+      "cuda-js-runtime-adapter when runtime composition changes",
+      "cuda-js-compatible-pair when peer contract composition changes",
       "CUDA-JS-Tensor evaluator connector",
       "library-interface when public composition changes"
     ],
-    "integration_gate": "exact-head required checks including verify must be green before protected-main promotion"
-  },
-  "downstream_state": {
-    "Connect4": "paused after C4-0001 through C4-0005; dependency assessment confirms it must wait for this generic lifecycle rather than reimplement it downstream"
+    "integration_gate": "exact-head required checks, discussion/review reconciliation and post-merge target readback before protected-main completion claims"
   },
   "do_not": [
+    "Do not treat root AGENTS.md or retained legacy agent_files doctrine as a competing universal authority.",
     "Do not move Connect4 or other product semantics upstream.",
     "Do not deep-import CUDA-JS or CUDA-JS-Tensor internals.",
-    "Do not create a second Tensor planner/runtime, scheduler, provider registry or native path.",
+    "Do not create a second Tensor planner/runtime, scheduler, provider registry or Resource planner.",
+    "Do not accept caller-supplied Resource placement offsets.",
+    "Do not implement Progress service order before the runtime pointer-binding ABI is complete.",
     "Do not use a host read-decide-write/relaunch loop to advance the selected device-resident evaluator profile after ignition.",
-    "Do not weaken stale-result, lifecycle, cleanup, quarantine or compatibility gates.",
-    "Do not promote portable/package evidence to native/provider/hardware support."
+    "Do not weaken stale-result, lifecycle, cleanup, quarantine, compatibility or exact-identity gates.",
+    "Do not promote portable/package/reference evidence to native/provider/hardware support."
   ],
   "hard_constraints": [
     "one semantic/resource/lifecycle/compatibility fact has one visible owner",
     "no Python or maintained native CUDA source in CUDA-MCGS",
     "no private sibling imports",
     "product-neutral generic implementation only",
-    "preserve exact protected foundations and qualify every meaningful unit"
+    "preserve protected foundations and qualify every meaningful unit"
   ]
 }
