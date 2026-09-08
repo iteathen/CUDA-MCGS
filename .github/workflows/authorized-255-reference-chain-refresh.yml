@@ -73,9 +73,9 @@ jobs:
               data.composerEvidence = structuredClone(composer);
               changed = true;
             }
-            if (data.profileProjection !== undefined) {
-              const expected = projectionsBySchema.get(data.profileProjection?.schema);
-              if (!expected) throw new Error(`${p}: unknown profileProjection schema ${data.profileProjection?.schema}`);
+            if (typeof data.profileProjection?.schema === 'string') {
+              const expected = projectionsBySchema.get(data.profileProjection.schema);
+              if (!expected) throw new Error(`${p}: unknown profileProjection schema ${data.profileProjection.schema}`);
               if (!same(data.profileProjection, expected)) {
                 data.profileProjection = structuredClone(expected);
                 changed = true;
