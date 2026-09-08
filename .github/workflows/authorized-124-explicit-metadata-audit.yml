@@ -1,0 +1,37 @@
+name: authorized-124-explicit-metadata-audit
+
+on:
+  push:
+    branches:
+      - feature/124-explicit-runtime-metadata-audit
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ hashFiles('.github/authorized-124-explicit-metadata-audit.cjs') != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feature/124-explicit-runtime-metadata-audit
+          fetch-depth: 0
+      - name: Apply fail-closed audit refactor
+        run: node .github/authorized-124-explicit-metadata-audit.cjs
+      - name: Remove one-shot transport
+        run: git rm .github/authorized-124-explicit-metadata-audit.cjs .github/workflows/authorized-124-explicit-metadata-audit.yml
+      - name: Syntax and focused qualification
+        run: |
+          node --check adapters/evaluators/cuda-js-tensor/src/runtime-contribution.mjs
+          node --check adapters/evaluators/cuda-js-tensor/src/program-binding.mjs
+          node --check adapters/evaluators/cuda-js-tensor/src/resource-binding.mjs
+          node scripts/run-cuda-js-tensor-evaluator.mjs
+      - name: Commit corrected candidate
+        run: |
+          git config user.name iteathen
+          git config user.email josh.oshiro@gmail.com
+          git add -A
+          git diff --cached --check
+          git commit -m "Replace inferred Tensor binding metadata with explicit ownership"
+          git push origin HEAD:feature/124-explicit-runtime-metadata-audit
