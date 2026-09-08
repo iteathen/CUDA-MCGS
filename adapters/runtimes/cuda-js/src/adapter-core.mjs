@@ -1,6 +1,7 @@
 const PACKAGE_SCHEMA = 'cuda-mcgs.execution-package/0.2.0';
 const ADAPTER_SCHEMA = 'cuda-mcgs.cuda-js-adapter-requirements/0.2.0';
 const CUDA_JS_REPOSITORY = 'iteathen/CUDA-JS';
+const DEVICE_JS_INSPECTION_CAPABILITY = 'pure-cuda-free-public-program-semantic-inspection-shared-with-compile';
 const UINT32_MAX = 0xffff_ffff;
 const DEVICE_VIEW_WIDTH = Object.freeze({ u32: 4, u64: 8, i32: 4, f32: 4, f64: 8, f16: 2, bf16: 2 });
 const DENSE_DEVICE_TYPE = /(?:^|<)(?:f64|f16|bf16)(?:>|$)/;
@@ -105,7 +106,10 @@ function admitPeer(executionPackage, cudaJs, peer) {
     fail('CUDA_JS_ADAPTER_PEER', 'admission', 'execution package, injected peer and public CUDA-JS identity must match exactly', { classification: 'unsupported-capability' });
   }
   if (requested.capabilityNegotiation !== 'pre-allocation-fail-closed' || requested.fallback !== 'none') fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'unsupported compatibility policy');
-  if (typeof cudaJs.openCudaRuntime !== 'function' || typeof cudaJs.compileDeviceProgram !== 'function') fail('CUDA_JS_ADAPTER_CAPABILITY', 'admission', 'injected public CUDA-JS port is incomplete', { classification: 'unsupported-capability' });
+  if (typeof cudaJs.openCudaRuntime !== 'function' || typeof cudaJs.inspectDeviceProgram !== 'function' || typeof cudaJs.compileDeviceProgram !== 'function'
+      || lower?.capabilities?.deviceJsInspection !== DEVICE_JS_INSPECTION_CAPABILITY) {
+    fail('CUDA_JS_ADAPTER_CAPABILITY', 'admission', 'injected public CUDA-JS port lacks the required Device-JS inspection/compile surface', { classification: 'unsupported-capability' });
+  }
   return lower;
 }
 
@@ -375,6 +379,24 @@ function wrapped(code, phase, message, error, classification, report = null) {
   return new CudaJsRuntimeAdapterError(code, phase, message, { classification: effective, lower: error, cleanup: report, cause: error });
 }
 
+function preflightDeviceProgram(cudaJs, plan) {
+  let inspected;
+  try {
+    inspected = cudaJs.inspectDeviceProgram({ source: plan.searchProgram.source, functions: plan.functions, compile: plan.compile });
+  } catch (error) {
+    throw wrapped('CUDA_JS_ADAPTER_DEVICE_JS_PREFLIGHT', 'admission', 'CUDA-JS rejected the Search Program before runtime creation', error, 'validation');
+  }
+  if (inspected?.schemaVersion !== 1 || !inspected.deviceProgram || inspected.inspection?.compile === undefined || !Array.isArray(inspected.inspection?.publicHelperUsage)) {
+    fail('CUDA_JS_ADAPTER_DEVICE_JS_PREFLIGHT', 'admission', 'CUDA-JS inspection returned an incomplete public result', { classification: 'unsupported-capability' });
+  }
+  for (const [key, value] of Object.entries(plan.compile)) {
+    if (inspected.inspection.compile?.[key] !== value) {
+      fail('CUDA_JS_ADAPTER_DEVICE_JS_PREFLIGHT', 'admission', `CUDA-JS inspection changed selected compile option ${key}`, { classification: 'validation' });
+    }
+  }
+  return inspected;
+}
+
 function inputRecord(value, allowed, label) {
   if (value === undefined) return {};
   object(value, label);
@@ -581,6 +603,7 @@ export async function prepareCudaJsExecution(executionPackage, { cudaJs, peer, r
   if (runtimeOptions.compiler === false) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'compiler=false is incompatible with preparation');
   if (runtimeOptions.driver?.maxPending !== undefined && runtimeOptions.driver.maxPending !== 1) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'runtimeOptions.driver.maxPending must remain 1');
   if (runtimeOptions.driver?.execution?.maxPendingGpuOperations !== undefined && runtimeOptions.driver.execution.maxPendingGpuOperations !== 2) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'runtimeOptions.driver.execution.maxPendingGpuOperations must remain 2 for terminal delivery');
+  preflightDeviceProgram(cudaJs, plan);
   const owned = { runtime: null, module: null, function: null, operation: null, deliveryOperations: new Map(), nextDeliverySequence: 0, memories: new Map(), views: new Map(), mailboxes: new Map(), failedClosures: new Map() };
   try {
     owned.runtime = await cudaJs.openCudaRuntime({
