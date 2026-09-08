@@ -1,0 +1,95 @@
+name: Authorized #255 ownership-test correction
+
+on:
+  push:
+    branches:
+      - feature/124-device-resident-evaluator
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply exact conformance substitution and self-remove
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = 'conformance/search-compiler/run.mjs';
+          let source = fs.readFileSync(path, 'utf8');
+
+          const replacements = [
+            [
+`await runCase('reject-unsupported-device-js-helper', () => {
+  const mutated = clone(programPackageFixtures[0].input); mutated.functions.find(({ executionRole }) => executionRole === 'device-callable').helpers = ['gpu.native.cuda'];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_HELPER_UNSUPPORTED' });
+});`,
+`await runCase('legacy-helper-metadata-is-opaque-to-lower-language', () => {
+  const mutated = clone(programPackageFixtures[0].input);
+  const fn = mutated.functions.find(({ executionRole }) => executionRole === 'device-callable');
+  fn.helpers = ['gpu.native.cuda'];
+  const normalized = normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context);
+  assert.deepEqual(normalized.normalized.publicRequirements, programPackageProfiles[0].normalized.publicRequirements);
+  assert.deepEqual(
+    normalized.normalized.functions.find(({ name }) => name === fn.name).helpers,
+    ['gpu.native.cuda'],
+  );
+  assert.notEqual(normalized.identity.sha256, programPackageProfiles[0].identity.sha256);
+});`
+            ],
+            [
+`await runCase('reject-helper-without-public-requirement', () => {
+  const mutated = clone(programPackageFixtures[0].input); const fn = mutated.functions.find(({ executionRole }) => executionRole === 'device-callable'); const unit = mutated.sourceUnits.find(({ id }) => id === fn.sourceUnit); unit.source += '// gpu.atomic.storeReleaseDevice\\n'; unit.sourceIdentity.sha256 = sourceTextSha256(Buffer.from(unit.source)); fn.helpers = ['gpu.atomic.store-release-device'];
+  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_HELPER_REQUIREMENT' });
+});`,
+`await runCase('helper-looking-source-does-not-synthesize-public-requirement', () => {
+  const mutated = clone(programPackageFixtures[0].input);
+  const fn = mutated.functions.find(({ executionRole }) => executionRole === 'device-callable');
+  const unit = mutated.sourceUnits.find(({ id }) => id === fn.sourceUnit);
+  unit.source += '// gpu.atomic.storeReleaseDevice\\n';
+  unit.sourceIdentity.sha256 = sourceTextSha256(Buffer.from(unit.source));
+  fn.helpers = ['gpu.atomic.store-release-device'];
+  const normalized = normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context);
+  assert.deepEqual(normalized.normalized.publicRequirements, programPackageProfiles[0].normalized.publicRequirements);
+  assert.notEqual(normalized.identity.sha256, programPackageProfiles[0].identity.sha256);
+});`
+            ],
+          ];
+
+          for (const [before, after] of replacements) {
+            const first = source.indexOf(before);
+            if (first < 0 || source.indexOf(before, first + before.length) >= 0) {
+              throw new Error('expected exactly one stale conformance block');
+            }
+            source = source.slice(0, first) + after + source.slice(first + before.length);
+          }
+
+          if (source.includes('reject-unsupported-device-js-helper') ||
+              source.includes('reject-helper-without-public-requirement') ||
+              source.includes("code: 'COMPOSE_HELPER_UNSUPPORTED'") ||
+              source.includes("code: 'COMPOSE_HELPER_REQUIREMENT'")) {
+            throw new Error('stale helper-authority assertion remains');
+          }
+          if (!source.includes("expected: 883")) {
+            throw new Error('Search Compiler suite cardinality changed unexpectedly');
+          }
+
+          fs.writeFileSync(path, source);
+          NODE
+
+          rm -- .github/workflows/authorized-255-ownership-test-fix.yml
+          git config user.name "OpenAI authorized project agent"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add conformance/search-compiler/run.mjs .github/workflows/authorized-255-ownership-test-fix.yml
+          git diff --cached --check
+          git commit -m "Replace stale Device-JS helper authority tests"
+          git push origin HEAD:refs/heads/feature/124-device-resident-evaluator
