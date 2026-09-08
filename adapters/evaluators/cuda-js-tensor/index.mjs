@@ -8,3 +8,9 @@ export {
   createTensorEvaluatorRuntimeContribution,
   tensorEvaluatorRuntimeConstants,
 } from './src/runtime-contribution.mjs';
+
+export {
+  bindTensorEvaluatorProfileProgram,
+  createTensorEvaluatorProgramBinding,
+  tensorEvaluatorProgramBindingConstants,
+} from './src/program-binding.mjs';
