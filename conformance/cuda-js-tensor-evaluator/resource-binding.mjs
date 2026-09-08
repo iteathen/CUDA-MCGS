@@ -99,15 +99,15 @@ const connector = createTensorEvaluatorConnector(fakeTensorDeviceProgram(), { re
 const runtime = createTensorEvaluatorRuntimeContribution(connector);
 const lowerRequirements = runtime.requiredCudaJsContracts.map(schemaReference);
 const programBound = bindTensorEvaluatorProfileProgram(selectedInput, runtime, { publicRequirements: lowerRequirements });
-const resourceBound = bindTensorEvaluatorProfileResources(programBound, runtime, connector);
+const resourceBound = bindTensorEvaluatorProfileResources(programBound, runtime);
 
 assert.deepEqual(resourceBound.resources.slice(0, originalSemanticResources.length), originalSemanticResources, 'adapter resource binding must not rewrite semantic evaluator resources');
 const representationResources = resourceBound.resources.slice(originalSemanticResources.length);
 assert(representationResources.length > 0);
 assert(representationResources.every(({ unit, minimum, maximum }) => unit === 'bytes' && minimum === maximum));
-assert(representationResources.filter(({ id }) => id.includes('runtime-control')).every(({ class: resourceClass }) => resourceClass === 'batch'), 'runtime controls must not be disguised as workspace');
-assert.equal(representationResources.some(({ id }) => id.endsWith('tensor-weights')), false, 'shared immutable Tensor input must not be synthesized as adapter-owned storage');
-const scratchResource = representationResources.find(({ id }) => id.endsWith('tensor-scratch'));
+assert(representationResources.filter(({ id }) => id.includes('tensor-runtime-control')).every(({ class: resourceClass }) => resourceClass === 'batch'), 'runtime controls must not be disguised as workspace');
+assert.equal(representationResources.some(({ id }) => id.endsWith('tensor-parameter-2')), false, 'shared immutable Tensor input must not be synthesized as adapter-owned storage');
+const scratchResource = representationResources.find(({ id }) => id.endsWith('tensor-parameter-4'));
 assert(scratchResource);
 assert.equal(scratchResource.class, 'workspace');
 assert.equal(scratchResource.alignment, '256');
@@ -145,7 +145,7 @@ const knownProfiles = [
   withSchema(evaluatorResult, evaluatorSchemaSha),
 ];
 const resourceResult = normalizeResourceProfile(resourceInput, inspected, knownProfiles);
-const binding = createTensorEvaluatorResourceBinding(programBinding, connector, evaluatorResult, resourceResult);
+const binding = createTensorEvaluatorResourceBinding(programBinding, evaluatorResult, resourceResult);
 
 assert.equal(binding.contract, tensorEvaluatorResourceBindingConstants.contract);
 assert.equal(binding.ownerProfile, evaluatorResult.normalized.id);
@@ -153,44 +153,44 @@ assert.deepEqual(binding.evaluatorProfileIdentity, contentIdentity(evaluatorResu
 assert.deepEqual(binding.resourcePlan, { id: resourceResult.normalized.id, identity: contentIdentity(resourceResult.identity) });
 assert.equal(binding.externalTensorParameters.length, 1);
 assert.deepEqual(binding.externalTensorParameters.map(({ parameterName }) => parameterName), ['weights']);
-assert.equal(binding.allocations.length, representationResources.length);
-assert(binding.allocations.every(({ evaluatorResource }) => representationResources.some(({ id }) => id === evaluatorResource)));
-assert(binding.allocations.every(({ providerRequirement }) => resourceResult.normalized.providerRequirements.some(({ id, unit }) => id === providerRequirement && unit === 'bytes')));
-assert(binding.allocations.every(({ partition, view }) => resourceResult.normalized.partitions.find(({ id }) => id === partition)?.offset === view.byteOffset), 'provider-relative offsets must come from Resource-owned partitions');
-assert(binding.allocations.some(({ parameterName, evaluatorResourceClass, requiredAccess }) => parameterName === 'mcgsEvalControl32' && evaluatorResourceClass === 'batch' && requiredAccess.includes('atomic')));
-assert(binding.allocations.some(({ parameterName, alignment }) => parameterName === 'scratch' && alignment === '256'));
+assert.equal(binding.resourceBindings.length, representationResources.length);
+assert(binding.resourceBindings.every(({ evaluatorResource }) => representationResources.some(({ id }) => id === evaluatorResource)));
+assert(binding.resourceBindings.every(({ providerRequirement }) => resourceResult.normalized.providerRequirements.some(({ id, unit }) => id === providerRequirement && unit === 'bytes')));
+assert(binding.resourceBindings.every(({ partition, view }) => resourceResult.normalized.partitions.find(({ id }) => id === partition)?.offset === view.byteOffset), 'provider-relative offsets must come from Resource-owned partitions');
+assert(binding.resourceBindings.some(({ parameterName, evaluatorResourceClass, requiredAccess }) => parameterName === 'mcgsEvalControl32' && evaluatorResourceClass === 'batch' && requiredAccess.includes('atomic')));
+assert(binding.resourceBindings.some(({ parameterName, alignment }) => parameterName === 'scratch' && alignment === '256'));
 assert.equal(binding.ownership.placement, 'resource-plan-partitions');
 assert(binding.claimLimits.includes('no-caller-supplied-resource-offsets'));
 assert(binding.claimLimits.includes('shared-immutable-tensor-input-binding-remains-explicit'));
 assert(Object.isFrozen(binding));
-assert(Object.isFrozen(binding.allocations[0]));
+assert(Object.isFrozen(binding.resourceBindings[0]));
 
 const missingRepresentation = structuredClone(evaluatorResult);
-missingRepresentation.normalized.resources = missingRepresentation.normalized.resources.filter(({ id }) => !id.includes('runtime-control32'));
+missingRepresentation.normalized.resources = missingRepresentation.normalized.resources.filter(({ id }) => !id.endsWith('tensor-runtime-control32'));
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(programBinding, connector, missingRepresentation, resourceResult),
+  () => createTensorEvaluatorResourceBinding(programBinding, missingRepresentation, resourceResult),
   (error) => error instanceof TensorEvaluatorConnectorError && error.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE',
 );
 
 const providerDrift = structuredClone(resourceResult);
-const controlAllocation = binding.allocations.find(({ parameterName }) => parameterName === 'mcgsEvalControl32');
+const controlAllocation = binding.resourceBindings.find(({ parameterName }) => parameterName === 'mcgsEvalControl32');
 providerDrift.normalized.providerRequirements.find(({ id }) => id === controlAllocation.providerRequirement).access = ['read', 'write'];
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(programBinding, connector, evaluatorResult, providerDrift),
+  () => createTensorEvaluatorResourceBinding(programBinding, evaluatorResult, providerDrift),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_ACCESS',
 );
 
 const placementDrift = structuredClone(resourceResult);
-placementDrift.normalized.partitions.find(({ id }) => id === binding.allocations.find(({ parameterName }) => parameterName === 'scratch').partition).offset = '4';
+placementDrift.normalized.partitions.find(({ id }) => id === binding.resourceBindings.find(({ parameterName }) => parameterName === 'scratch').partition).offset = '4';
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(programBinding, connector, evaluatorResult, placementDrift),
+  () => createTensorEvaluatorResourceBinding(programBinding, evaluatorResult, placementDrift),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_ALIGNMENT',
 );
 
 const noWorkspace = structuredClone(programBound);
 noWorkspace.workspaces = [];
 assert.throws(
-  () => bindTensorEvaluatorProfileResources(noWorkspace, runtime, connector),
+  () => bindTensorEvaluatorProfileResources(noWorkspace, runtime),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_WORKSPACE',
   'adapter must not manufacture workspace semantics just to host runtime buffers',
 );
@@ -199,7 +199,7 @@ const conflictingResource = structuredClone(programBound);
 const conflictId = representationResources[0].id;
 conflictingResource.resources.push({ id: conflictId, class: 'input', unit: 'bytes', minimum: '1', maximum: '1', alignment: '1', scope: 'per-engine', pressureStatus: 'invalid-evaluator-input' });
 assert.throws(
-  () => bindTensorEvaluatorProfileResources(conflictingResource, runtime, connector),
+  () => bindTensorEvaluatorProfileResources(conflictingResource, runtime),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE',
 );
 
@@ -207,7 +207,7 @@ console.log(JSON.stringify({
   schema: 'cuda-mcgs.tensor-evaluator-resource-layout-binding-portable-evidence/0.1.0',
   status: 'pass',
   evaluatorRepresentationResources: representationResources.length,
-  boundAllocations: binding.allocations.length,
+  boundAllocations: binding.resourceBindings.length,
   externalTensorParameters: binding.externalTensorParameters.map(({ parameterName }) => parameterName),
   cases: [
     'semantic-resource-counts-preserved',

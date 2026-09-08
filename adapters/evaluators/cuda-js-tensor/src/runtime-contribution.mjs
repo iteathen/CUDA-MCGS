@@ -1,6 +1,6 @@
 import { TensorEvaluatorConnectorError } from './connector.mjs';
 
-const RUNTIME_CONTRACT = 'cuda-mcgs.tensor-evaluator-device-runtime/0.1.0';
+const RUNTIME_CONTRACT = 'cuda-mcgs.tensor-evaluator-device-runtime/0.2.0';
 const REQUIRED_CUDA_JS_CONTRACTS = Object.freeze([
   'cuda-js.device-js/0.1.0',
   'cuda-js.device-publication-release-acquire/0.1.0',
@@ -106,8 +106,8 @@ function param(name, type) {
   return { name, type };
 }
 
-function deviceFunction(name, parameters, returns = 'u32') {
-  return { name, kind: 'device', parameters, returns };
+function deviceFunction(name, parameters, returns = 'u32', calls = []) {
+  return { name, kind: 'device', parameters, returns, calls };
 }
 
 function partitionParameters(prefix, partitions) {
@@ -527,30 +527,51 @@ function functionMetadata(connector, layout) {
   for (const descriptor of layout.tensorParameters.filter(({ role }) => role === 'output')) scatter.push(param(descriptor.parameterName, descriptor.type));
   scatter.push(...partitionParameters('result', layout.resultOutputPartitions));
   return [
-    connector.deviceFunction,
+    { ...connector.deviceFunction, calls: [] },
     deviceFunction(GENERATED_NAMES.requestMatches, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), c64], 'bool'),
     deviceFunction(GENERATED_NAMES.batchItemMatches, [...token, c32, c64], 'bool'),
     deviceFunction(GENERATED_NAMES.finishBatchItem, [param('itemIndex', 'u32'), param('expectedItemStatus', 'u32'), param('expectedBatchGeneration', 'u64'), c32, c64]),
     deviceFunction(GENERATED_NAMES.admit, [param('slot', 'u32'), param('requestGenerationValue', 'u64'), c32, c64]),
-    deviceFunction(GENERATED_NAMES.cancel, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), c32, c64]),
+    deviceFunction(GENERATED_NAMES.cancel, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), c32, c64], 'u32', [GENERATED_NAMES.requestMatches]),
     deviceFunction(GENERATED_NAMES.formBatch, [c32, c64]),
-    deviceFunction(GENERATED_NAMES.prepareItem, prepare),
-    deviceFunction(GENERATED_NAMES.executeItem, execute),
-    deviceFunction(GENERATED_NAMES.scatterItem, scatter),
-    deviceFunction(GENERATED_NAMES.publishItem, [...token, c32, c64]),
-    deviceFunction(GENERATED_NAMES.retryItem, [...token, c32, c64]),
-    deviceFunction(GENERATED_NAMES.recycle, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), c32, c64]),
+    deviceFunction(GENERATED_NAMES.prepareItem, prepare, 'u32', [GENERATED_NAMES.batchItemMatches]),
+    deviceFunction(GENERATED_NAMES.executeItem, execute, 'u32', [GENERATED_NAMES.batchItemMatches, connector.deviceFunction.name]),
+    deviceFunction(GENERATED_NAMES.scatterItem, scatter, 'u32', [GENERATED_NAMES.batchItemMatches]),
+    deviceFunction(GENERATED_NAMES.publishItem, [...token, c32, c64], 'u32', [GENERATED_NAMES.batchItemMatches, GENERATED_NAMES.finishBatchItem]),
+    deviceFunction(GENERATED_NAMES.retryItem, [...token, c32, c64], 'u32', [GENERATED_NAMES.batchItemMatches, GENERATED_NAMES.finishBatchItem]),
+    deviceFunction(GENERATED_NAMES.recycle, [param('slot', 'u32'), param('expectedSlotGeneration', 'u64'), param('expectedRequestGeneration', 'u64'), c32, c64], 'u32', [GENERATED_NAMES.requestMatches]),
   ];
 }
 
 function resourcePlan(state, layout) {
-  const resources = [
-    { id: 'runtime.control32', parameterName: GENERATED_NAMES.control32, dtype: 'u32', access: 'read-write', elementCount: state.control32.elementCount, byteLength: state.control32.byteLength, initialization: 'zero-before-ignition' },
-    { id: 'runtime.control64', parameterName: GENERATED_NAMES.control64, dtype: 'u64', access: 'read-write', elementCount: state.control64.elementCount, byteLength: state.control64.byteLength, initialization: 'zero-before-ignition' },
-    ...layout.requestInputPartitions.map((entry) => ({ ...entry, initialization: 'zero-before-ignition' })),
-    ...layout.resultOutputPartitions.map((entry) => ({ ...entry, initialization: 'zero-before-ignition' })),
+  return [
+    {
+      id: 'runtime.control32', resourceKey: 'tensor-runtime-control32', representationRole: 'runtime-control',
+      parameterName: GENERATED_NAMES.control32, dtype: 'u32', access: 'read-write', resourceClass: 'batch',
+      pressureStatus: 'evaluator-internal-failure', resourceAccess: ['read', 'write', 'atomic'],
+      elementCount: state.control32.elementCount, byteLength: state.control32.byteLength, alignmentBytes: 4,
+      initialization: 'zero-before-ignition',
+    },
+    {
+      id: 'runtime.control64', resourceKey: 'tensor-runtime-control64', representationRole: 'runtime-control',
+      parameterName: GENERATED_NAMES.control64, dtype: 'u64', access: 'read-write', resourceClass: 'batch',
+      pressureStatus: 'evaluator-internal-failure', resourceAccess: ['read', 'write'],
+      elementCount: state.control64.elementCount, byteLength: state.control64.byteLength, alignmentBytes: 8,
+      initialization: 'zero-before-ignition',
+    },
+    ...layout.requestInputPartitions.map((entry) => ({
+      ...entry,
+      resourceKey: 'tensor-runtime-request-input-' + entry.dtype,
+      representationRole: 'request-staging', resourceClass: 'input', pressureStatus: 'invalid-evaluator-input',
+      resourceAccess: ['read', 'write'], alignmentBytes: DTYPE_WIDTH[entry.dtype], initialization: 'zero-before-ignition',
+    })),
+    ...layout.resultOutputPartitions.map((entry) => ({
+      ...entry,
+      resourceKey: 'tensor-runtime-result-output-' + entry.dtype,
+      representationRole: 'result-staging', resourceClass: 'result', pressureStatus: 'evaluator-output-invalid',
+      resourceAccess: ['read', 'write'], alignmentBytes: DTYPE_WIDTH[entry.dtype], initialization: 'zero-before-ignition',
+    })),
   ];
-  return resources;
 }
 
 export function createTensorEvaluatorRuntimeContribution(connector, options = {}) {
@@ -572,16 +593,30 @@ export function createTensorEvaluatorRuntimeContribution(connector, options = {}
   const source = generateSource(connector, state, layout);
   const functions = functionMetadata(connector, layout);
   const resources = resourcePlan(state, layout);
-  const tensorBindings = layout.tensorParameters.map((entry) => ({
-    parameterName: entry.parameterName,
-    role: entry.role,
-    type: entry.type,
-    dtype: entry.dtype,
-    access: entry.role === 'input' && !entry.itemVarying ? 'read' : 'read-write',
-    itemVarying: entry.itemVarying,
-    byteLength: entry.byteLength,
-    initialization: entry.role === 'input' && !entry.itemVarying ? 'external-before-ignition' : 'zero-before-ignition',
-  }));
+  const tensorBindings = layout.tensorParameters.map((entry) => {
+    const external = entry.role === 'input' && !entry.itemVarying;
+    const resourceClass = external ? null : (entry.role === 'input' ? 'input' : (entry.role === 'output' ? 'result' : 'workspace'));
+    const pressureStatus = external ? null : (entry.role === 'input' ? 'invalid-evaluator-input' : (entry.role === 'output' ? 'evaluator-output-invalid' : 'evaluator-workspace-capacity'));
+    const representationRole = external ? 'external-tensor-input' : (entry.role === 'input' ? 'tensor-input-staging' : (entry.role === 'output' ? 'tensor-output-staging' : 'tensor-workspace'));
+    return {
+      parameterIndex: entry.parameterIndex,
+      resourceKey: 'tensor-parameter-' + entry.parameterIndex,
+      representationRole,
+      parameterName: entry.parameterName,
+      role: entry.role,
+      type: entry.type,
+      dtype: entry.dtype,
+      access: external ? 'read' : 'read-write',
+      itemVarying: entry.itemVarying,
+      byteLength: entry.byteLength,
+      storageDisposition: external ? 'external-owner-required' : 'evaluator-resource',
+      resourceClass,
+      pressureStatus,
+      resourceAccess: external ? ['read'] : ['read', 'write'],
+      alignmentBytes: entry.role === 'workspace' ? entry.alignmentBytes : DTYPE_WIDTH[entry.dtype],
+      initialization: external ? 'external-before-ignition' : 'zero-before-ignition',
+    };
+  });
   const workClasses = {
     encode: {
       owner: 'evaluator-profile-and-search-program',

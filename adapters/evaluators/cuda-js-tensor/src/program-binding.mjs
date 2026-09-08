@@ -2,8 +2,8 @@ import { createHash } from 'node:crypto';
 
 import { TensorEvaluatorConnectorError } from './connector.mjs';
 
-const BINDING_CONTRACT = 'cuda-mcgs.tensor-evaluator-program-binding/0.1.0';
-const RUNTIME_CONTRACT = 'cuda-mcgs.tensor-evaluator-device-runtime/0.1.0';
+const BINDING_CONTRACT = 'cuda-mcgs.tensor-evaluator-program-binding/0.2.0';
+const RUNTIME_CONTRACT = 'cuda-mcgs.tensor-evaluator-device-runtime/0.2.0';
 const EVALUATOR_SCHEMA = 'cuda-mcgs.evaluator-profile/0.2.0';
 const DEVICE_IMPORT_SCHEMA = 'cuda-mcgs.device-js-import-declaration/0.1.0';
 const WORK_CLASS_KEYS = Object.freeze(['encode', 'admit', 'batch', 'execute', 'scatter', 'publish']);
@@ -201,40 +201,6 @@ function programProvenance(profile) {
   };
 }
 
-function callMetadata(contribution) {
-  const names = contribution.device.functions.map(({ name }) => name);
-  const generated = contribution.device.functions.filter(({ name }) => name.startsWith('mcgsTensorEvaluator'));
-  const connector = contribution.device.functions.filter(({ name }) => !name.startsWith('mcgsTensorEvaluator'));
-  if (connector.length !== 1) fail('TENSOR_EVALUATOR_PROGRAM_BINDING_FUNCTION', 'runtime contribution must expose exactly one admitted Tensor connector callable');
-  const lookup = (suffix) => {
-    const value = names.find((name) => name.endsWith(suffix));
-    if (!value) fail('TENSOR_EVALUATOR_PROGRAM_BINDING_FUNCTION', `runtime contribution omits generated ${suffix}`);
-    return value;
-  };
-  const requestMatches = lookup('RequestMatches');
-  const batchItemMatches = lookup('BatchItemMatches');
-  const finishBatchItem = lookup('FinishBatchItem');
-  const cancel = lookup('Cancel');
-  const prepare = lookup('PrepareItem');
-  const execute = lookup('ExecuteItem');
-  const scatter = lookup('ScatterItem');
-  const publish = lookup('PublishItem');
-  const retry = lookup('RetryItem');
-  const recycle = lookup('Recycle');
-  return new Map([
-    [connector[0].name, []],
-    [requestMatches, []],
-    [batchItemMatches, []],
-    [finishBatchItem, []],
-    [cancel, [requestMatches]],
-    [prepare, [batchItemMatches]],
-    [execute, [batchItemMatches, connector[0].name]],
-    [scatter, [batchItemMatches]],
-    [publish, [batchItemMatches, finishBatchItem]],
-    [retry, [batchItemMatches, finishBatchItem]],
-    [recycle, [requestMatches]],
-  ]);
-}
 
 function functionRoles(contribution, profile, workClasses) {
   const roles = new Map();
@@ -262,12 +228,17 @@ export function createTensorEvaluatorProgramBinding(runtimeContribution, normali
   const sourceId = `${id}.source`;
   const importId = `${id}.tensor-import`;
   const exactSourceIdentity = sourceIdentity(contribution.device.source);
-  const calls = callMetadata(contribution);
   const roles = functionRoles(contribution, profile, workClasses);
+  const localFunctionNames = new Set(contribution.device.functions.map(({ name }) => name));
   const functions = contribution.device.functions.map((fn) => {
-    if (fn.kind !== 'device' || !Array.isArray(fn.parameters) || typeof fn.returns !== 'string') {
-      fail('TENSOR_EVALUATOR_PROGRAM_BINDING_FUNCTION', `${fn.name ?? '<missing>'} is not a Device-JS callable descriptor`);
+    if (fn.kind !== 'device' || !Array.isArray(fn.parameters) || typeof fn.returns !== 'string' || !Array.isArray(fn.calls)) {
+      fail('TENSOR_EVALUATOR_PROGRAM_BINDING_FUNCTION', (fn.name ?? '<missing>') + ' is not an explicit Device-JS callable descriptor');
     }
+    const calls = fn.calls.map((name) => {
+      if (typeof name !== 'string' || !localFunctionNames.has(name)) fail('TENSOR_EVALUATOR_PROGRAM_BINDING_FUNCTION', fn.name + ' names unknown local call ' + String(name));
+      return name;
+    });
+    if (new Set(calls).size !== calls.length) fail('TENSOR_EVALUATOR_PROGRAM_BINDING_FUNCTION', fn.name + ' repeats a local call edge');
     return {
       name: fn.name,
       executionRole: 'device-callable',
@@ -276,7 +247,7 @@ export function createTensorEvaluatorProgramBinding(runtimeContribution, normali
       sourceUnit: sourceId,
       ownerProfile: profile.id,
       semanticRole: roles.get(fn.name),
-      calls: [...(calls.get(fn.name) ?? [])],
+      calls,
       helpers: [],
     };
   });
