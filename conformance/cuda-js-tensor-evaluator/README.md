@@ -23,10 +23,14 @@ node scripts/run-cuda-js-tensor-evaluator.mjs
 node conformance/cuda-js-tensor-evaluator/package.mjs
 ```
 
-The #124 composed-path candidate adds three capsules to the normal runner:
+The #124 composed-path candidate includes these capsules in the normal runner:
 
 - `operation-composition.mjs`: real normalized evaluator/Resource/Progress/Output owners and actual runtime pointers reach Program Package and execution-package projection. Artifact/effect identity, immutable overlap, missing pointers and exact launch constraints have negative cases.
 - `runtime-composition.mjs`: digest and zero-state rejection before writes, snapshots before asynchronous upload, simultaneous ignition rejection, one submission, and view-before-allocation-before-runtime cleanup or quarantine through the public runtime adapter.
 - `service-composition.mjs`: the composed source runs a finite three-request/two-item cohort through collective lane yields. It checks full/partial batches, reversed lane order, pressure, cancellation before service and between batches, Tensor failure, recycling and stale scatter rejection. The synthetic Tensor callable multiplies meaningful nonzero inputs/weights. Barriers/atomics are a portable oracle, not a physical scheduler or memory model.
 
 `public-inspection.mjs <cuda-js-root>` additionally uses only the exact peer's declared public root export to inspect both composed entry variants. CI checks out CUDA-JS `844e9392ded7841fdac8b7d2b438e1c6d8cafc85` (`cuda-js@0.1.0-alpha.19`, AGPL-3.0-or-later), installs only its parser dependency without lifecycle scripts, and runs this check. The Tensor library artifact is synthetic; frontend acceptance proves source/type/helper/import-metadata admission, not native compilation/linking, actual Tensor arithmetic or hardware behavior. No third-party implementation is copied into production.
+
+`input-admission.mjs` adapts #265's useful tests to the surviving operation-binding/ignition interfaces: selected artifact identity/lifetime/extent/alignment/access, a synthetic table artifact with `lookupEntries`, unchanged owners, identical read-only artifact sharing, malformed resource input coverage/type/extent/content, Buffer subranges, retry after rejection, and caller mutation during asynchronous writes. Customized iterators and shadowed byte-length/backing-buffer properties cannot substitute different bytes for the actual typed-array view. It does not introduce or test a second public artifact-admission API.
+
+Portable compatibility is exercised on Node 24 and 26. The exact public CUDA-JS frontend check runs on both versions; neither lane changes the Node/platform requirements of a separately qualified native compatible pair.

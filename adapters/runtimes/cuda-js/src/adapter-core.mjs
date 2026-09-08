@@ -1,4 +1,9 @@
 import { createHash } from 'node:crypto';
+import { isSharedArrayBuffer, isUint8Array } from 'node:util/types';
+
+const typedArrayPrototype = Object.getPrototypeOf(Uint8Array.prototype);
+const typedArrayBuffer = Object.getOwnPropertyDescriptor(typedArrayPrototype, 'buffer').get;
+const typedArrayByteLength = Object.getOwnPropertyDescriptor(typedArrayPrototype, 'byteLength').get;
 
 const PACKAGE_SCHEMA = 'cuda-mcgs.execution-package/0.2.0';
 const ADAPTER_SCHEMA = 'cuda-mcgs.cuda-js-adapter-requirements/0.2.0';
@@ -478,6 +483,21 @@ function scalar(type, value, label) {
   fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${label} has unsupported scalar type ${type}`);
 }
 
+// Read typed-array internal state and copy its elements, not a caller-provided
+// iterator, species, buffer getter or byteLength property. Host snapshotting owns
+// initialization admission here; it creates no additional public admission API.
+function snapshotInitialization(bytes, byteLength, id) {
+  if (!isUint8Array(bytes) || typedArrayByteLength.call(bytes) !== byteLength) {
+    fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} initial bytes must exactly match byteLength`);
+  }
+  if (isSharedArrayBuffer(typedArrayBuffer.call(bytes))) {
+    fail('CUDA_JS_ADAPTER_INPUT', 'ignition', 'shared initialization bytes require an explicit coherent-snapshot contract');
+  }
+  const snapshot = new Uint8Array(bytes);
+  if (snapshot.byteLength !== byteLength) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} snapshot extent differs from the admitted resource`);
+  return snapshot;
+}
+
 class PreparedExecution {
   #plan;
   #owned;
@@ -503,11 +523,7 @@ class PreparedExecution {
       const modes = [...this.#plan.bindings.values()].filter(({ source }) => source.kind === 'resource' && source.resource === id).map(({ source }) => source.access);
       const bytes = resourceInputs[id];
       if (bytes === undefined && modes.some((mode) => mode !== 'write')) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} requires explicit initial bytes`);
-      if (bytes !== undefined && (!(bytes instanceof Uint8Array) || bytes.byteLength !== resource.byteLengthNumber)) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} initial bytes must exactly match byteLength`);
-      if (bytes !== undefined) {
-        if (typeof SharedArrayBuffer !== 'undefined' && bytes.buffer instanceof SharedArrayBuffer) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', 'shared initialization bytes require an explicit coherent-snapshot contract');
-        initialSnapshots.set(id, Uint8Array.from(bytes));
-      }
+      if (bytes !== undefined) initialSnapshots.set(id, snapshotInitialization(bytes, resource.byteLengthNumber, id));
     }
     // All snapshots and digests are checked before the first asynchronous write.
     for (const { source } of this.#plan.bindings.values()) if (source.initialContentSha256) {

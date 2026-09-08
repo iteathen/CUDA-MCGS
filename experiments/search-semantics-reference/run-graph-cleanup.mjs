@@ -24,7 +24,7 @@ const advanceOccurrenceEvidencePath = path.join(experimentRoot, 'build', 'graph-
 const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 const graphSpecPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0010-graph-storage-and-reclamation.md');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Graph cleanup reference requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Graph cleanup reference requires Node 24 or newer; found ${process.version}`);
 
 async function readJson(absolutePath, missingCode) {
   try {

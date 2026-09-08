@@ -2,11 +2,31 @@
 
 **Status:** Proposal
 
-Status: fresh implementation and review candidate. Base: `e2047bf0adcd49c7e31b9715324ce5ee127fc95f` on `codex/124-integration-fresh`.
+Status: consolidated implementation and review candidate. Base: `e2047bf0adcd49c7e31b9715324ce5ee127fc95f` on `codex/124-integration-fresh`.
 
-The owner requested an independent attempt ending in a reviewable PR. The original research branch is preserved separately by explicit owner choice. This attempt uses protected source and accepted contracts; other unmerged implementations and their conclusions are not inputs.
+The owner requested an independent attempt ending in a reviewable PR. The original research branch is preserved separately by explicit owner choice. The original #266 attempt used protected source and accepted contracts, without other unmerged implementations as inputs. The later owner-authorized consolidation below deliberately imports selected #265 compatibility work and adapts its useful tests.
 
-## Outcome and assessment
+## Consolidation of #265 into #266 — 2026-09-08
+
+The owner explicitly selected #266 as the surviving integration path and requested #265's compatibility work and useful tests, not both implementations wholesale. Comparison inputs are #266 at `7b2e9fe61f8c199ff01ee6e3f8ae11d087729829` and #265 at `4859e5dbde5800553735ed04d478bfa52032ae79`, against protected `e2047bf0adcd49c7e31b9715324ce5ee127fc95f`. Original heads are preserved at `archive/pr-266-comparison-7b2e9fe` and `archive/pr-265-comparison-4859e5d`; the research branch is not altered. Source provenance is owner/authorized-agent-controlled through the explicitly selected PRs.
+
+Retained from #265: 32 exact version-gate changes, portable Node >=24 package/documentation support, the Windows/Ubuntu Node 24 compatibility jobs, and the LF checkout rule for the exact-byte authority pointer. Its artifact selection, malformed payload, Buffer subrange, copy-isolation and table-name test intents are adapted to #266's operation-binding/ignition interfaces. The standalone artifact binding/admission APIs are not shipped. Identical read-only artifact sharing remains allowed under #266's proposed contract; #265's distinct-artifact restriction is not imported. No Resource planner, second initialization authority, scheduler or native mechanism is introduced.
+
+A public `prepareCudaJsExecution`/`ignite` regression against original #266 reproduces the customized-iterator defect on Node 24.15.0 and 26.7.0: nonzero control storage with an empty iterator was accepted and submitted after an empty snapshot passed zero-state checks. Runtime initialization now checks the actual typed-array brand, intrinsic extent and backing buffer, copies the actual typed-array elements without iterators/species, and checks snapshot extent before digest/zero-state checks. Both supported-version reproductions now reject before any write or submission. This is a host admission defect/fix, not observed hardware corruption.
+
+The durable `input-admission.mjs` capsule reports 30 cases, including malformed ownership/payload cases, table-name independence, unchanged owners, permitted identical read-only sharing, retry after rejection, Buffer subranges, iterator isolation, and shadowed byteLength/shared-buffer properties. Existing asynchronous caller-mutation, one-submission, service, cancellation/failure/stale and quarantine cases are retained. Neither synthetic table metadata nor simulated Tensor arithmetic is promoted into product or native qualification.
+
+Local qualification on Linux x64 under Node 24.15.0 and 26.7.0 passes the Tensor, runtime-adapter, public Device-JS import and exact public frontend capsules. Both generated source identities remain unchanged: ordinary `b0943a56b077bd41e6430431657f883e8262e663fbb51ab4cf1ae796a34f181d` and reuse `c1539112af9565ad5e2f052d3554d1c355a2cd9c561292e3477624b2124345fb`. The actual public peer remains CUDA-JS `844e9392ded7841fdac8b7d2b438e1c6d8cafc85`. CI now inspects both sources on Node 24 and 26, separate from native support.
+
+Reference evidence was regenerated from the combined tree, producer by producer through the existing evidence-lock tool, including the three explicit nested schedule keys. An external orchestration script initially requested a nonexistent `projection:progress` lock; inspection confirmed that profile has no separately hashed fixture projection. The script resumed at the next producer without changing repository validators or expectations. All 18 changed fixture files contain only 77 digest/evidence-key changes; expected cases and semantic outcomes are unchanged. Node 24 and 26 agree on composer key `0dfcd72db82122f56adedadde35c82af68c5ebb7e6f7acf4298f6705d923e58f` and integration key `bae927d8fc2373b671982be65b8f6b241147d2118542deb8158715ec8ce07500`: 393 reference requirements, 7/7 mutations, 52 native requirements explicitly deferred.
+
+The consolidated head still requires exact-commit installed-package/compatible-pair qualification and normal remote checks before #265 is superseded. No protected-main merge or #124 closure is part of this consolidation. Proposed package/cohort contracts, real Tensor linking/execution, general Graph/Search closure and physical CUDA qualification remain separate open gates.
+
+Local network isolation required a temporary, owner-triggered `agent/266-offline-inputs` transport branch with contents:read only. It exported exact source/peer revisions and Node distributions without persisted credentials; its one-day artifact and temporary branch are not candidate source. A separate temporary owner-triggered object-upload job may use contents:write only to create the exact locally qualified blobs/tree; it must verify the patch and final tree hashes and never move refs. The connected GitHub transaction alone advances #266 after exact-tree and expected-head read-back. Remove both temporary branches after the candidate is secured; retain bounded qualification logs as evidence. Pre-existing Windows tooling/worktree cleanup residue is not accessible here and is neither removed nor claimed cleaned. Source code and fixture edits are made only in the isolated consolidation checkout; package harnesses retain their own temporary cleanup.
+
+The following sections describe the original #266 attempt at `7b2e9fe`; its original Node-26-only task constraint is superseded by the owner's consolidation instruction above.
+
+## Original outcome and assessment
 
 Demonstrate optional Tensor evaluation through actual Program Package normalization, execution-package projection, one public CUDA-JS operation submission and dependency-ordered terminal cleanup. Portable evidence qualifies only the executed host/composition/device-source semantics. Physical CUDA qualification remains deferred under issue #124.
 
@@ -30,7 +50,7 @@ The largest risks are claiming vertical integration from isolated metadata tests
 
 Retain the fresh branch/worktree and review PR. Test-created package directories must be removed by their owning harness. Preserve all pre-existing branches, worktrees and recovery state. No native artifacts, production data, remote permission changes or destructive cleanup are part of this task.
 
-## Candidate result and review boundary
+## Original candidate result and review boundary
 
 All three execution nodes now have portable evidence. The operation binder resolves the existing selected evaluator artifact and every runtime pointer against the actual Resource plan. Program Package carries artifact, zero-initialization and device-effect declarations; runtime admission/ignition verifies their projected constraints and initial bytes. Progress emits a bounded one-block cohort using evaluator-owned aggregate service/cancel/quiescence callbacks. The composed entry admits three requests, services a full and partial batch, and produces checked nonzero results with one submission. Reversed lane order, pressure, cancellation, Tensor failure, reuse/stale scatter, simultaneous ignition and quarantine have falsifiers.
 

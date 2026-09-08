@@ -21,7 +21,7 @@ const terminalEvidencePath = path.join(experimentRoot, 'build', 'terminal-slice-
 const specPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0006-search-session-control-and-observation.md');
 const coveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Session reference requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Session reference requires Node 24 or newer; found ${process.version}`);
 
 async function readJson(absolutePath, missingCode) {
   try {

@@ -37,3 +37,5 @@ Focused qualification:
 node scripts/run-cuda-js-tensor-evaluator.mjs
 node conformance/cuda-js-tensor-evaluator/package.mjs
 ```
+
+The consolidated candidate retains #266's operation-binding API and runtime ignition as the input-admission path; #265's separate `copyPayload`/host-admission APIs are not added. Initialization uses private copies of the actual typed-array view (including Buffer subranges), independent of caller iterators, and verifies exact extent, digests and zero state before uploads. Portable Node 24/26 and hostile-input conformance are described in the [conformance capsule](../../../conformance/cuda-js-tensor-evaluator/README.md).

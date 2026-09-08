@@ -1,6 +1,6 @@
 # CUDA-MCGS Status
 
-**Status:** #124 review candidate — immutable input/pointer composition and bounded device cohort integration
+**Status:** #124 consolidated review candidate — #266 execution path with #265 portable compatibility and input falsifiers
 
 **Updated:** 2026-09-08
 
@@ -23,7 +23,7 @@ Legacy general-process material retained under `agent_files/` is historical rati
 
 The fresh candidate starts from protected main `e2047bf0adcd49c7e31b9715324ce5ee127fc95f`. Its [assessment and evidence](docs/development/2026-09-08-evaluator-composed-path-124.md) cover immutable artifact binding, complete selected runtime pointers, finite Progress opportunities and terminal runtime cleanup/quarantine. The [contract additions](docs/specs/SPEC-0005-evaluator-resource-binding-addendum.md) are proposals for review. The original research branch and prior attempts are preserved separately. General Graph/Search closure, dependent/concurrent producers, broader physical service profiles and native CUDA qualification remain open; #124 is not closed by this bounded candidate.
 
-Protected CUDA-MCGS `main` is `9db49de37c8d9d6507bac70ef62b4095a1d6faa7`, produced by PR #262 after exact-head portable/package/reference qualification.
+The protected #262 Tensor-evaluator checkpoint is `9db49de37c8d9d6507bac70ef62b4095a1d6faa7`. Current protected `main` at consolidation is `e2047bf0adcd49c7e31b9715324ce5ee127fc95f`; the consolidation remains on PR #266, not protected `main`.
 
 The protected Tensor evaluator slice now includes:
 

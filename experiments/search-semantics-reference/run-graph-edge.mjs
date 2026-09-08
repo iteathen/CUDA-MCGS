@@ -15,7 +15,7 @@ const readJson = async (file, code) => {
   catch (error) { if (error.code === 'ENOENT' && code) fail(code, `${file} is required`); throw error; }
 };
 
-assert(Number(process.versions.node.split('.')[0]) >= 26);
+assert(Number(process.versions.node.split('.')[0]) >= 24);
 const fixture = await readJson(path.join(here, 'fixtures', 'graph-edge-cases.json'));
 const composer = await readJson(path.join(root, 'conformance', 'search-compiler', 'build', 'evidence.json'), 'GRAPH_EDGE_COMPOSER_EVIDENCE_MISSING');
 const projection = await readJson(path.join(root, 'conformance', 'search-compiler', 'build', 'graph-profiles.json'), 'GRAPH_EDGE_PROJECTION_MISSING');

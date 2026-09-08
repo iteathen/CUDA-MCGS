@@ -17,7 +17,7 @@ const verifierPath = path.join(experimentRoot, 'run-integration.mjs');
 const integrationEvidencePath = path.join(experimentRoot, 'build', 'integration-evidence.json');
 const gateEvidencePath = path.join(experimentRoot, 'build', 'integration-gate-evidence.json');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS reference integration gate requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS reference integration gate requires Node 24 or newer; found ${process.version}`);
 
 const requiredEvidenceIds = [
   'search-ir',

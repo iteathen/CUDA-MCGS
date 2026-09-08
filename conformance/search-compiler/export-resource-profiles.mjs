@@ -22,7 +22,7 @@ const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const schemaRoot = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0');
 const evidencePath = path.join(experimentRoot, 'build', 'evidence.json');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Resource-profile projection requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Resource-profile projection requires Node 24 or newer; found ${process.version}`);
 
 async function readJson(absolutePath) {
   return JSON.parse(await readFile(absolutePath, 'utf8'));

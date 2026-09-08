@@ -12,7 +12,7 @@ const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const fixturePath = path.join(experimentRoot, 'fixtures', 'integration-cases.json');
 const coveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS reference integration requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS reference integration requires Node 24 or newer; found ${process.version}`);
 
 async function readJson(absolutePath, code) {
   try {

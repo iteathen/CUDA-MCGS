@@ -22,7 +22,7 @@ const pathEvidencePath = path.join(experimentRoot, 'build', 'graph-path-evidence
 const rootEvidencePath = path.join(experimentRoot, 'build', 'graph-root-evidence.json');
 const reclaimEvidencePath = path.join(experimentRoot, 'build', 'graph-reclaim-evidence.json');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Graph advance occurrence closure requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Graph advance occurrence closure requires Node 24 or newer; found ${process.version}`);
 
 async function readJson(absolutePath, missingCode) {
   try {

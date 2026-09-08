@@ -36,7 +36,7 @@ const schemaReference = (id) => ({ id, version: id.split('/').at(-1), sha256: sh
 const withSchema = (result, schemaSha) => ({ ...result, schemaSha });
 const contentIdentity = ({ algorithm, sha256: digest }) => ({ algorithm, sha256: digest });
 
-function fakeTensorDeviceProgram() {
+function fakeTensorDeviceProgram(sharedName = 'weights') {
   const parameters = [
     { parameterIndex: 0, parameterName: 'itemIndex', role: 'item-index', type: 'u32', dtype: 'u32', access: 'read', itemVarying: false, byteLength: 0 },
     { parameterIndex: 1, parameterName: 'features', role: 'input', type: 'ptr<f32>', dtype: 'f32', access: 'read', itemVarying: true, byteLength: 16 },
@@ -44,6 +44,7 @@ function fakeTensorDeviceProgram() {
     { parameterIndex: 3, parameterName: 'scores', role: 'output', type: 'ptr<f32>', dtype: 'f32', access: 'write', itemVarying: true, byteLength: 16 },
     { parameterIndex: 4, parameterName: 'scratch', role: 'workspace', type: 'ptr<f32>', dtype: 'f32', access: 'read-write', itemVarying: true, byteLength: 32 },
   ];
+  parameters[2].parameterName = sharedName;
   const fn = { name: 'tensorRunItem', parameters: parameters.map(({ parameterName: name, type }) => ({ name, type })), returns: 'u32' };
   const library = {
     schemaVersion: 1,
@@ -63,7 +64,7 @@ function fakeTensorDeviceProgram() {
     parameters,
     inputs: [
       { ...parameters[1], name: 'features', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 64 }, valueId: 'value.features', elementCount: 4 },
-      { ...parameters[2], name: 'weights', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 128 }, valueId: 'value.weights', elementCount: 4 },
+      { ...parameters[2], name: sharedName, spec: { dtype: 'f32', dtypeWidth: 4, alignment: 128 }, valueId: `value.${sharedName}`, elementCount: 4 },
     ],
     outputs: [{ ...parameters[3], name: 'scores', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 32 }, valueId: 'value.scores', perItemElements: 2, elementCount: 4 }],
     workspace: [{ ...parameters[4], perItemElements: 4, elementCount: 8, alignmentBytes: 256 }],
@@ -177,6 +178,26 @@ const knownProfiles = [
 ];
 const resourceResult = normalizeResourceProfile(resourceInput, inspected, knownProfiles);
 export const composedOwnerFixture = { runtime, evaluatorResult, resourceResult, programBinding, inspected, knownProfiles, artifactPayload, artifactResource, evaluatorSchemaSha };
+// Reuse accepted fixture builders to vary the artifact owner and callable name.
+// This is a synthetic Tensor/table binding case, not table numerical evidence.
+export function createTableInputOwnerFixture() {
+  const parameter = 'lookupEntries';
+  const tableRuntime = createTensorEvaluatorRuntimeContribution(createTensorEvaluatorConnector(fakeTensorDeviceProgram(parameter), { requestCapacity: 3 }));
+  const input = structuredClone(selectedInput);
+  input.artifacts[0].kind = 'table';
+  input.artifacts[0].identity = { algorithm: 'sha256', sha256: sha256('independent-table-artifact') };
+  const bound = bindTensorEvaluatorProfileProgram(input, tableRuntime, { publicRequirements: tableRuntime.requiredCudaJsContracts.map(schemaReference) });
+  const evaluator = normalizeEvaluatorProfile(bindTensorEvaluatorProfileResources(bound, tableRuntime), inspected, selectedFixture.domain, selectedFixture.graph);
+  const reference = { ...exactEvaluatorReference, identity: contentIdentity(evaluator.identity) };
+  const policy = normalizePolicyProfile(buildPolicyProfile('synthetic-vector-combined', inspected, selectedFixture.domain, selectedFixture.graph, domainSchemaSha, graphSchemaSha,
+    { evaluatorMode: 'combined', evaluatorProfile: reference, value: 'vector', reservation: true, admissionMode: 'sampled', stochastic: true }), inspected, selectedFixture.domain, selectedFixture.graph);
+  const resourceInput = buildResourceProfile('table-input-binding', inspected, { domain: selectedFixture.domain, graph: selectedFixture.graph, policy, evaluator },
+    { domain: domainSchemaSha, graph: graphSchemaSha, policy: policySchemaSha, evaluator: evaluatorSchemaSha });
+  const profiles = [...domainProfiles.map(result => withSchema(result, domainSchemaSha)), ...graphProfiles.map(result => withSchema(result, graphSchemaSha)), withSchema(policy, policySchemaSha), withSchema(evaluator, evaluatorSchemaSha)];
+  return { runtime: tableRuntime, evaluatorResult: evaluator, resourceResult: normalizeResourceProfile(resourceInput, inspected, profiles),
+    selection: { parameter, artifact: input.artifacts[0].id, resource: artifactResource.id } };
+}
+
 assert.equal('resourceRequirements' in programBinding, false);
 assert.equal('tensorBindings' in programBinding, false);
 const binding = createTensorEvaluatorResourceBinding(runtime, evaluatorResult, resourceResult);
