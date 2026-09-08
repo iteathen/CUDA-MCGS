@@ -6,8 +6,8 @@
     "status": "candidate",
     "product_area": "adapters",
     "path": "adapters/evaluators/cuda-js-tensor",
-    "purpose": "Admit an injected public CUDA-JS-Tensor TensorDeviceProgram, emit a finite evaluator-owned restricted Device-JS runtime contribution, and bind its exact source/function/import identity into selected evaluator-program ownership without taking over Tensor mathematics, Resource physical planning, Progress scheduling or lower CUDA ownership.",
-    "roles": ["adapter", "evaluator-integration", "device-runtime-contribution", "program-binding"],
+    "purpose": "Admit an injected public CUDA-JS-Tensor TensorDeviceProgram, emit a finite evaluator-owned restricted Device-JS runtime contribution, bind its exact source/function/import identity into selected evaluator-program ownership, and project its exact representation bytes through Resource-owned physical placement without taking over Tensor mathematics, Resource planning, Progress scheduling or lower CUDA ownership.",
+    "roles": ["adapter", "evaluator-integration", "device-runtime-contribution", "program-binding", "resource-binding"],
     "governing_authority": [
       "docs/specs/SPEC-0009-evaluator-contract.md",
       "docs/specs/SPEC-0011-finite-search-resources.md",
@@ -16,31 +16,35 @@
       "https://github.com/iteathen/CUDA-MCGS/issues/124"
     ],
     "design": {
-      "owned_invariant": "An admitted TensorDeviceProgram retains one exact public callable/import identity; MCGS-owned evaluator request/batch/result state uses finite generations and stale-safe incarnation checks; and any selected Tensor runtime source/functions/imports become exact evaluator-program-owned identity before entering generic Search Compiler composition.",
+      "owned_invariant": "An admitted TensorDeviceProgram retains one exact public callable/import identity; MCGS-owned evaluator request/batch/result state uses finite generations and stale-safe incarnation checks; selected Tensor runtime source/functions/imports become exact evaluator-program identity; and adapter-owned representation byte resources are derived from that admitted runtime before Resource independently owns their physical placement.",
       "intended_equivalence_class": [
         "public CUDA-JS-Tensor TensorDeviceProgram capabilities with item-parallel callable semantics",
         "product-neutral scalar, vector or multi-output Tensor evaluator payloads",
         "finite request capacity with one first-realization active Tensor batch and partial-batch progress",
-        "generic Program Package composition through evaluator-owned source/function/import fragments"
+        "generic Program Package composition through evaluator-owned source/function/import fragments",
+        "Resource-owned physical composition of exact evaluator representation byte resources"
       ],
       "excluded_cases": [
         "Tensor mathematics or TensorProgram/TensorPlan interpretation",
         "domain/model/product input encoding semantics",
-        "Resource pool/partition/provider planning",
+        "semantic classification of shared immutable Tensor inputs",
+        "Resource pool/partition/provider planning or placement policy",
         "global Progress scheduler topology or worker selection",
         "model/checkpoint/head/product semantics",
         "native CUDA/provider mechanisms",
         "host-driven active evaluator progression"
       ],
-      "authoritative_state_owner": "CUDA-JS-Tensor owns callable/item/workspace/library facts; CUDA-MCGS SPEC-0009 owns generated evaluator request/batch/result incarnation and evaluator program source/import ownership; Resource owns physical plan bindings; Progress owns service order; CUDA-JS owns lower Device-JS/native lifecycle.",
+      "authoritative_state_owner": "CUDA-JS-Tensor owns callable/item/workspace/library facts; CUDA-MCGS SPEC-0009 owns evaluator request/batch/result incarnation, generated program ownership and the exact representation-byte needs of this selected Tensor evaluator realization; Resource owns physical pool/partition/provider placement and accounting; Progress owns service order; CUDA-JS owns lower Device-JS/native lifecycle.",
       "public_ports": ["adapters/evaluators/cuda-js-tensor/index.mjs"],
-      "injected_dependencies": ["public cuda-js-tensor TensorDeviceProgram capability", "explicit public CUDA-JS schema references selected by the runtime contribution"],
+      "injected_dependencies": ["public cuda-js-tensor TensorDeviceProgram capability", "explicit public CUDA-JS schema references selected by the runtime contribution", "normalized evaluator and Resource profile results supplied through their public composition boundary"],
       "adapter_boundaries": [
-        "CUDA-JS-Tensor owns public Tensor callable/library identity and per-item Tensor math/workspace",
-        "CUDA-MCGS evaluator owns request/batch/result generations, stale rejection, cancellation/retry and publication state",
+        "CUDA-JS-Tensor owns public Tensor callable/library identity and per-item Tensor math/workspace semantics",
+        "CUDA-MCGS evaluator owns request/batch/result generations, stale rejection, cancellation/retry, publication state and this realization's exact representation byte requirements",
         "selected evaluator profile/Search Program owns semantic encoded-input production and exact Tensor runtime source/import contribution identity",
+        "shared immutable Tensor inputs remain external until their selected evaluator/product owner binds them",
         "generic Search Compiler/Program Package remains Tensor-neutral and validates selected owner fragments",
-        "Resource owns physical pools, partitions, provider requirements and runtime pointer binding eligibility",
+        "Resource owns physical pools, partitions, provider requirements, placement, admission, pressure and runtime pointer binding eligibility",
+        "the Tensor resource binding may verify Resource-owned chains and derive views from Resource partition offsets but may not create or mutate Resource planning facts",
         "Progress owns when/where ready evaluator work executes",
         "CUDA-JS owns Device-JS validation/lowering, public atomic/publication primitives, linking and native execution"
       ],
@@ -50,12 +54,15 @@
         "emit token-validated Device-JS evaluator transitions",
         "bind exact generated source hash and explicit lower contract references into evaluator program identity",
         "project evaluator-owned source/function/external-import fragments without Composer Tensor vocabulary",
+        "derive dedicated evaluator byte resources from admitted runtime/Tensor representation layouts without rewriting semantic resource counts",
+        "preserve Tensor workspace alignment and reject workspace representation when evaluator workspace semantics are absent",
+        "bind exact evaluator/Resource identities and verify class-partition-pool-provider chains using Resource-owned placement offsets",
         "preserve one-item partial-batch progress without host timing",
-        "reject stale lane publication, import drift, source drift, capacity mismatch and ambiguous work-class ownership"
+        "reject stale lane publication, import drift, source drift, capacity mismatch, ambiguous work-class ownership, Resource chain drift and generated-resource conflicts"
       ],
       "cupid_qualities": ["composable", "predictable", "domain-based", "fail-closed"],
-      "second_instance": "A materially different conforming TensorDeviceProgram can use the same runtime/program-binding mechanisms while changing Tensor shapes/math, and a non-Tensor evaluator remains free to replace the entire Tensor-owned fragment without changing unrelated owner fragments.",
-      "first_consumer_deletion": "Removing Tensor evaluator selection removes the connector, generated Tensor runtime source/functions, imported Tensor callable and Tensor-runtime-only logical state/resource requirements while evaluator-free and non-Tensor profiles remain complete; Resource/Progress physical composition remains independently owned.",
+      "second_instance": "A materially different conforming TensorDeviceProgram can use the same runtime/program/resource-binding mechanisms while changing Tensor shapes/math/representation byte needs, and a non-Tensor evaluator remains free to replace the entire Tensor-owned fragment without changing unrelated Resource or owner fragments.",
+      "first_consumer_deletion": "Removing Tensor evaluator selection removes the connector, generated Tensor runtime source/functions, imported Tensor callable, Tensor-runtime-only representation resources and their Resource bindings while evaluator-free and non-Tensor profiles remain complete; Resource/Progress ownership remains independently coherent.",
       "essential_complexity": [
         "public callable/import identity",
         "finite request and batch generations",
@@ -63,62 +70,68 @@
         "per-request encoded-input/result staging",
         "partial-batch formation",
         "single-publication authority and explicit terminal dispositions",
-        "exact evaluator program source/function/import ownership"
+        "exact evaluator program source/function/import ownership",
+        "exact adapter-owned representation byte extents and alignment",
+        "exact evaluator/Resource identity binding and Resource-owned placement verification",
+        "explicit external boundary for shared immutable Tensor inputs"
       ],
-      "accidental_complexity_rejected": ["model semantics", "second Tensor compiler", "Tensor-specific Composer vocabulary", "adapter-owned Resource planner", "adapter-owned global scheduler", "private/deep imports", "native source", "host search progression loop", "shadow CUDA-JS helper catalog"],
+      "accidental_complexity_rejected": ["model semantics", "second Tensor compiler", "Tensor-specific Composer vocabulary", "adapter-owned Resource planner", "caller-supplied byte placement", "semantic-count-to-byte guesses", "control-state relabeling as unrelated workspace", "adapter-owned global scheduler", "private/deep imports", "native source", "host search progression loop", "shadow CUDA-JS helper catalog"],
       "complexity_moved_elsewhere": [
-        "Tensor math/callable ABI/workspace remain CUDA-JS-Tensor",
-        "semantic input encoding remains evaluator-profile/Search-Program owned",
-        "physical pool/partition/provider/runtime-pointer binding remains Resource owned",
+        "Tensor math/callable ABI/workspace semantics remain CUDA-JS-Tensor",
+        "semantic input encoding and shared immutable input ownership remain evaluator-profile/product owned",
+        "physical pool/partition/provider placement, admission, pressure and cleanup remain Resource owned",
         "service order/fairness/no-progress remain Progress owned",
         "allocation/operation/native linking/execution remain CUDA-JS"
       ],
-      "simplest_sufficient_total_system": "Validate one public TensorDeviceProgram, generate finite evaluator-owned Device-JS transitions and layouts, bind that exact source/functions/import into the selected evaluator program contribution using existing generic Program Package shapes, and leave physical Resource binding and Progress service order to their existing owners."
+      "simplest_sufficient_total_system": "Validate one public TensorDeviceProgram, generate finite evaluator-owned Device-JS transitions and exact representation layouts, bind exact source/functions/import and representation bytes into evaluator ownership, let the unchanged Resource planner own physical placement/providers, then verify those Resource chains without accepting caller offsets or creating a second planner; leave shared immutable Tensor input ownership and Progress service order to their existing owners."
     },
     "public_contracts": [
       "cuda-mcgs.tensor-evaluator-connector/0.1.0",
       "cuda-mcgs.tensor-evaluator-device-runtime/0.1.0",
-      "cuda-mcgs.tensor-evaluator-program-binding/0.1.0"
+      "cuda-mcgs.tensor-evaluator-program-binding/0.1.0",
+      "cuda-mcgs.tensor-evaluator-resource-binding/0.1.0"
     ],
     "owns": [
       "Tensor evaluator connector admission and import drift rejection",
       "finite Tensor evaluator request/batch/result/staging runtime contribution",
       "slot/request/batch generation and stale-lane validation",
       "Tensor batch gather/scatter and terminal publication transitions",
-      "adapter-local evaluator program source/function/import binding plus requirement-consumer ownership and structural deletion"
+      "adapter-local evaluator program source/function/import binding plus requirement-consumer ownership and structural deletion",
+      "adapter-local derivation of exact evaluator representation byte resources from admitted runtime/Tensor layouts",
+      "verification of exact evaluator/Resource identities and Resource-owned provider/view chains without placement authority"
     ],
     "persistent_state": [],
-    "generated_artifacts": ["immutable connector descriptor", "immutable Device-JS runtime contribution descriptor/source", "immutable evaluator program-binding descriptor", "portable conformance evidence"],
+    "generated_artifacts": ["immutable connector descriptor", "immutable Device-JS runtime contribution descriptor/source", "immutable evaluator program-binding descriptor", "immutable evaluator Resource-binding descriptor", "portable conformance evidence"],
     "testing": {
       "test_owner": "conformance/cuda-js-tensor-evaluator",
-      "authoritative_oracles": ["accepted SPEC-0009 evaluator semantics", "public CUDA-JS-Tensor TensorDeviceProgram contract", "public CUDA-JS restricted Device-JS/publication contracts", "generic Program Package owner/source/function/import contracts"],
+      "authoritative_oracles": ["accepted SPEC-0009 evaluator semantics", "accepted SPEC-0011 Resource ownership", "public CUDA-JS-Tensor TensorDeviceProgram contract", "public CUDA-JS restricted Device-JS/publication contracts", "generic Program Package owner/source/function/import contracts", "normalized Resource class/partition/pool/provider chains"],
       "coverage_map_location": ["conformance/cuda-js-tensor-evaluator/README.md"],
       "focused_fast_capsules_and_commands": ["node scripts/run-cuda-js-tensor-evaluator.mjs", "node conformance/cuda-js-tensor-evaluator/package.mjs"],
-      "owner_contract_capsules_and_commands": ["node scripts/run-evaluator-reference.mjs", "node scripts/run-progress-reference.mjs", "node scripts/run-search-ir-composer-reference.mjs"],
-      "integration_smoke_dependencies": ["repository source-boundary policy", "generic Search Compiler Program Package validation", "CUDA-JS Device-JS inspection", "documentation/governance verification"],
-      "deep_forensic_and_release_triggers": ["TensorDeviceProgram public ABI change", "evaluator request/batch/publication semantics change", "evaluator programContribution/Program Package source-import contract change", "Device-JS atomic/publication contract change", "Resource physical binding integration", "Progress runtime-entry integration"],
-      "expected_discovery_and_skip_policy": ["portable connector/runtime/program-binding capsule has zero native prerequisites and zero conditional skips"],
-      "evidence_key_dimensions": ["connector/runtime/program-binding source identity", "Tensor callable contract/item capacity/workspace/import identity", "explicit CUDA-JS requirement identities", "request capacity and generated logical resource layout", "explicit evaluator work-class mapping"],
-      "test_invalidation_inputs": ["SPEC-0009", "SPEC-0011", "SPEC-0012", "TensorDeviceProgram public contract", "Program Package owner/source/function/import contract", "CUDA-JS Device-JS/publication contract", "connector/runtime/program-binding source"],
-      "shared_setup_and_mutable_state_isolation": ["each reference case uses fresh state", "emitted-source oracle allocates fresh finite control/staging/result arrays", "program-binding oracle uses fresh profile/runtime fragments and immutable binding outputs"],
-      "failure_cluster_and_repair_owner": "integration.cuda-js-tensor-evaluator for connector/runtime/program-binding defects; evaluator profile/Search Program for semantic encoding; Resource for physical plan/binding defects; Progress for service-order defects; CUDA-JS-Tensor for generic callable defects; CUDA-JS for lower Device-JS/native defects",
-      "test_intent_consolidation_and_debt_policy": ["runtime/program-binding falsifiers stay owner-local", "generic Program Package validation remains Search Compiler owned", "conformance reference remains unexported", "exact lower inspection and native qualification stay separate evidence layers"],
-      "runtime_output_and_resource_budgets": ["bounded CUDA-free Node.js portable qualification", "finite generated arrays/fragments only", "no native/performance claim"]
+      "owner_contract_capsules_and_commands": ["node scripts/run-evaluator-reference.mjs", "node scripts/run-resource-reference.mjs", "node scripts/run-progress-reference.mjs", "node scripts/run-search-ir-composer-reference.mjs"],
+      "integration_smoke_dependencies": ["repository source-boundary policy", "generic Search Compiler evaluator/Resource/Program Package validation", "CUDA-JS Device-JS inspection", "documentation/governance verification"],
+      "deep_forensic_and_release_triggers": ["TensorDeviceProgram public ABI/layout change", "evaluator request/batch/publication/resource semantics change", "evaluator programContribution/Program Package source-import contract change", "Resource partition/provider contract change", "Device-JS atomic/publication contract change", "shared immutable Tensor input binding", "Progress runtime-entry integration"],
+      "expected_discovery_and_skip_policy": ["portable connector/runtime/program/resource-binding capsule has zero native prerequisites and zero conditional skips"],
+      "evidence_key_dimensions": ["connector/runtime/program/resource-binding source identity", "Tensor callable contract/item capacity/workspace/import identity", "explicit CUDA-JS requirement identities", "request capacity and exact generated representation layout", "evaluator and Resource profile identities", "Resource class/partition/pool/provider chain and partition-owned offsets", "explicit evaluator work-class mapping"],
+      "test_invalidation_inputs": ["SPEC-0009", "SPEC-0011", "SPEC-0012", "TensorDeviceProgram public contract", "Program Package owner/source/function/import contract", "Resource class/partition/provider contracts", "CUDA-JS Device-JS/publication contract", "connector/runtime/program/resource-binding source"],
+      "shared_setup_and_mutable_state_isolation": ["each reference case uses fresh state", "emitted-source oracle allocates fresh finite control/staging/result arrays", "program-binding oracle uses fresh profile/runtime fragments and immutable binding outputs", "resource-binding oracle uses fresh real evaluator/Resource normalization and mutates only cloned failure subjects"],
+      "failure_cluster_and_repair_owner": "integration.cuda-js-tensor-evaluator for connector/runtime/program binding, representation derivation or Resource-chain verification defects; evaluator profile/Search Program for semantic encoding/shared input ownership; Resource for physical plan/placement/provider defects; Progress for service-order defects; CUDA-JS-Tensor for generic callable defects; CUDA-JS for lower Device-JS/native defects",
+      "test_intent_consolidation_and_debt_policy": ["runtime/program/resource-binding falsifiers stay owner-local", "generic evaluator/Resource/Program Package validation remains Search Compiler owned", "conformance reference remains unexported", "exact lower inspection and native qualification stay separate evidence layers"],
+      "runtime_output_and_resource_budgets": ["bounded CUDA-free Node.js portable qualification", "finite generated arrays/fragments/resources only", "no native/performance claim"]
     },
     "lifecycle_and_cleanup": {
-      "startup_and_acquisition": ["validate public TensorDeviceProgram and finite capacities before creating connector/runtime descriptors", "bind exact runtime source identity and explicit public CUDA-JS schema references before evaluator normalization", "all MCGS-owned control/staging/result bytes remain explicit pre-ignition initialization requirements"],
-      "steady_state_ownership": ["post-batch work carries captured item/slot/request/batch incarnation", "program binding is immutable pre-ignition composition metadata and never drives runtime service", "Progress services ready work; runtime transitions never poll the host", "shared Tensor inputs remain explicit pre-ignition external inputs"],
-      "cancellation_and_failure": ["queued/inflight cancellation is ordered by the release/acquire cancel-intent observation immediately before terminal publication claim", "Tensor failure maps to typed evaluator failure/retry state", "stale token mismatch is read-only and cannot mutate reused lane state", "program source/import/work-class drift fails before composition", "batch generation is published only after at least one queued request is claimed", "generation exhaustion never wraps"],
-      "teardown_and_resource_release": ["adapter structural ownership identifies Tensor-only source/functions/import/requirements for deletion/substitution", "logical runtime resource requirements are not represented as released until Resource/Progress/Search lifecycle composition proves physical terminal closure", "this component does not own CUDA-JS allocations"],
-      "generated_cache_package_test_and_diagnostic_disposition": ["no persistent runtime cache", "installed package exposes connector/runtime/program-binding production surfaces while conformance remains physically absent", "portable emitted-source/program-binding evidence is not native/provider evidence"],
+      "startup_and_acquisition": ["validate public TensorDeviceProgram and finite capacities before creating connector/runtime descriptors", "bind exact runtime source identity and explicit public CUDA-JS schema references before evaluator normalization", "derive exact adapter-owned representation byte resources before evaluator normalization", "validate exact evaluator/Resource identities and Resource-owned placement/provider chains before ignition", "all adapter-owned control/staging/result/workspace bytes remain explicit pre-ignition initialization requirements"],
+      "steady_state_ownership": ["post-batch work carries captured item/slot/request/batch incarnation", "program/resource bindings are immutable pre-ignition composition metadata and never drive runtime service", "Resource partition offsets remain the sole physical placement facts consumed by the resource binding", "Progress services ready work; runtime transitions never poll the host", "shared immutable Tensor inputs remain explicit pre-ignition external inputs"],
+      "cancellation_and_failure": ["queued/inflight cancellation is ordered by the release/acquire cancel-intent observation immediately before terminal publication claim", "Tensor failure maps to typed evaluator failure/retry state", "stale token mismatch is read-only and cannot mutate reused lane state", "program source/import/work-class drift fails before composition", "representation byte/layout/resource/provider drift fails before ignition", "batch generation is published only after at least one queued request is claimed", "generation exhaustion never wraps"],
+      "teardown_and_resource_release": ["adapter structural ownership identifies Tensor-only source/functions/import/requirements and representation resources for deletion/substitution", "Resource owns terminal disposition of the resulting pools/partitions/providers", "logical/runtime resource requirements are not represented as released until Resource/Progress/Search lifecycle composition proves physical terminal closure", "this component does not own CUDA-JS allocations"],
+      "generated_cache_package_test_and_diagnostic_disposition": ["no persistent runtime cache", "installed package exposes connector/runtime/program/resource-binding production surfaces while conformance remains physically absent", "portable emitted-source/program/resource-binding evidence is not native/provider evidence"],
       "persistence_migration_backup_and_recovery_retention": ["not applicable in this realization"],
-      "archive_deprecation_and_supersession": ["public Tensor, evaluator programContribution, Program Package, or CUDA-JS publication contract changes require explicit compatibility reassessment"],
-      "cleanup_verification": ["import drift, pressure, cancellation, retry and stale-reused-lane portable falsifiers", "exact source/requirement/work-class drift falsifiers", "consumer-scoped shared-requirement deletion preserves unrelated non-Tensor consumers and removes Tensor-only requirement residue", "full Resource/Progress terminal cleanup remains required before #124 acceptance"]
+      "archive_deprecation_and_supersession": ["public Tensor, evaluator resource/programContribution, Resource partition/provider, Program Package, or CUDA-JS publication contract changes require explicit compatibility reassessment"],
+      "cleanup_verification": ["import drift, pressure, cancellation, retry and stale-reused-lane portable falsifiers", "exact source/requirement/work-class drift falsifiers", "semantic evaluator resource preservation and exact representation-resource derivation", "Resource partition/provider access/alignment/identity drift falsifiers", "shared immutable Tensor input remains external", "consumer-scoped shared-requirement deletion preserves unrelated non-Tensor consumers and removes Tensor-only requirement residue", "full Progress and cross-owner terminal cleanup remains required before #124 acceptance"]
     },
-    "allowed_dependencies": ["injected public cuda-js-tensor capability values", "declared public CUDA-JS contract identifiers/schema references consumed by the existing CUDA-JS runtime adapter", "generic evaluator/Program Package public shapes without importing Search Compiler private implementation"],
-    "forbidden_dependencies": ["cuda-js-tensor private/deep source", "CUDA-JS private/deep source", "Search Compiler private implementation", "native addons/FFI/CUDA/PTX", "product semantics", "Python", "adapter-owned Resource planner", "adapter-owned global scheduler", "host gather/launch/poll/relaunch progression"],
+    "allowed_dependencies": ["injected public cuda-js-tensor capability values", "declared public CUDA-JS contract identifiers/schema references consumed by the existing CUDA-JS runtime adapter", "generic normalized evaluator/Resource/Program Package values without importing Search Compiler private implementation"],
+    "forbidden_dependencies": ["cuda-js-tensor private/deep source", "CUDA-JS private/deep source", "Search Compiler private implementation", "native addons/FFI/CUDA/PTX", "product semantics", "caller-supplied Resource placement", "Python", "adapter-owned Resource planner", "adapter-owned global scheduler", "host gather/launch/poll/relaunch progression"],
     "known_consumers": ["conformance/cuda-js-tensor-evaluator", "generic Search Program/Program Package composition", "Resource/Progress composition for remaining issue #124 work"],
-    "validation": ["node scripts/run-cuda-js-tensor-evaluator.mjs", "node conformance/cuda-js-tensor-evaluator/package.mjs", "node scripts/run-evaluator-reference.mjs", "node scripts/run-progress-reference.mjs", "node scripts/run-search-ir-composer-reference.mjs"],
+    "validation": ["node scripts/run-cuda-js-tensor-evaluator.mjs", "node conformance/cuda-js-tensor-evaluator/package.mjs", "node scripts/run-evaluator-reference.mjs", "node scripts/run-resource-reference.mjs", "node scripts/run-progress-reference.mjs", "node scripts/run-search-ir-composer-reference.mjs"],
     "owner": "CUDA-MCGS framework"
   }
 }
