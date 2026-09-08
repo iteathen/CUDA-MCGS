@@ -1,0 +1,104 @@
+name: "Authorized #124 requirement-consumer ownership repair"
+
+on:
+  push:
+    branches:
+      - feature/124-tensor-program-binding
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Apply reviewed requirement-consumer ownership repair and self-remove
+        run: |
+          set -euo pipefail
+          workflow=.github/workflows/authorized-124-requirement-consumer-repair.yml
+          production=adapters/evaluators/cuda-js-tensor/src/program-binding.mjs
+          oracle=conformance/cuda-js-tensor-evaluator/program-binding.mjs
+          component=adapters/evaluators/cuda-js-tensor/component.yaml
+
+          test "$(git hash-object "$production")" = 2322292c07748591ea3ebf897659a18befec8249
+          test "$(git hash-object "$oracle")" = 9f54c0b7c381cb9f777ac764102787b1a29fb42c
+          test "$(git hash-object "$component")" = eccbbe2bc93b17dff3369d883da63060945ed448
+
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function replaceExact(path, oldText, newText) {
+            let text = fs.readFileSync(path, 'utf8');
+            const first = text.indexOf(oldText);
+            if (first < 0 || text.indexOf(oldText, first + oldText.length) >= 0) {
+              throw new Error(`${path}: exact repair seam missing or non-unique`);
+            }
+            text = text.slice(0, first) + newText + text.slice(first + oldText.length);
+            fs.writeFileSync(path, text);
+          }
+
+          const production = 'adapters/evaluators/cuda-js-tensor/src/program-binding.mjs';
+          replaceExact(
+            production,
+            `    ownership: {\n      sourceUnits: [sourceId],\n      functions: functions.map(({ name }) => name).sort(),\n      deviceImports: [importId],\n      publicRequirements: contribution.requiredCudaJsContracts.slice().sort(),\n    },`,
+            `    ownership: {\n      sourceUnits: [sourceId],\n      functions: functions.map(({ name }) => name).sort(),\n      deviceImports: [importId],\n      publicRequirementConsumers: contribution.requiredCudaJsContracts\n        .slice()\n        .sort()\n        .map((contractId) => ({ contractId, consumer: profile.id })),\n    },`,
+          );
+
+          const oracle = 'conformance/cuda-js-tensor-evaluator/program-binding.mjs';
+          replaceExact(
+            oracle,
+            `assert.deepEqual(binding.ownership.deviceImports, ['evaluator.tensor.program-binding.tensor-import']);\nassert(binding.claimLimits.includes('resource-plan-binding-not-included'));`,
+            `assert.deepEqual(binding.ownership.deviceImports, ['evaluator.tensor.program-binding.tensor-import']);\nassert.deepEqual(binding.ownership.publicRequirementConsumers, runtime.requiredCudaJsContracts\n  .slice()\n  .sort()\n  .map((contractId) => ({ contractId, consumer: boundInput.id })));\nassert(binding.claimLimits.includes('resource-plan-binding-not-included'));`,
+          );
+          replaceExact(
+            oracle,
+            `const nonTensor = Object.freeze({\n  sourceUnit: { id: 'source.non-tensor', ownerProfile: 'evaluator.analytic', semanticOwner: 'evaluator.analytic' },\n  function: { name: 'analyticEvaluate', ownerProfile: 'evaluator.analytic' },\n  requirement: { contract: schemaReference('cuda-js.device-js/0.1.0'), consumers: ['evaluator.analytic'] },\n});\nconst before = {\n  sourceUnits: [nonTensor.sourceUnit, binding.sourceUnit],\n  functions: [nonTensor.function, ...binding.functions],\n  deviceImports: [...binding.deviceImports],\n  publicRequirements: [nonTensor.requirement, ...binding.requiredCudaJsContracts.map((contract) => ({ contract, consumers: [binding.ownerProfile] }))],\n};\nconst ownedSourceUnits = new Set(binding.ownership.sourceUnits);\nconst ownedFunctions = new Set(binding.ownership.functions);\nconst ownedImports = new Set(binding.ownership.deviceImports);\nconst ownedRequirements = new Set(binding.ownership.publicRequirements);\nconst after = {\n  sourceUnits: before.sourceUnits.filter(({ id }) => !ownedSourceUnits.has(id)),\n  functions: before.functions.filter(({ name }) => !ownedFunctions.has(name)),\n  deviceImports: before.deviceImports.filter(({ id }) => !ownedImports.has(id)),\n  publicRequirements: before.publicRequirements.filter(({ contract }) => !ownedRequirements.has(contract.id) || contract.id === nonTensor.requirement.contract.id),\n};\nassert.deepEqual(after.sourceUnits, [nonTensor.sourceUnit]);\nassert.deepEqual(after.functions, [nonTensor.function]);\nassert.deepEqual(after.deviceImports, []);\nassert(after.publicRequirements.some(({ consumers }) => consumers.includes('evaluator.analytic')));`,
+            `const nonTensor = Object.freeze({\n  sourceUnit: { id: 'source.non-tensor', ownerProfile: 'evaluator.analytic', semanticOwner: 'evaluator.analytic' },\n  function: { name: 'analyticEvaluate', ownerProfile: 'evaluator.analytic' },\n});\nconst sharedRequirement = lowerRequirements.find(({ id }) => id === 'cuda-js.device-js/0.1.0');\nconst tensorOnlyRequirements = lowerRequirements.filter(({ id }) => id !== sharedRequirement.id);\nconst before = {\n  sourceUnits: [nonTensor.sourceUnit, binding.sourceUnit],\n  functions: [nonTensor.function, ...binding.functions],\n  deviceImports: [...binding.deviceImports],\n  publicRequirements: [\n    { contract: sharedRequirement, consumers: ['evaluator.analytic', binding.ownerProfile].sort() },\n    ...tensorOnlyRequirements.map((contract) => ({ contract, consumers: [binding.ownerProfile] })),\n  ],\n};\nconst ownedSourceUnits = new Set(binding.ownership.sourceUnits);\nconst ownedFunctions = new Set(binding.ownership.functions);\nconst ownedImports = new Set(binding.ownership.deviceImports);\nconst ownedRequirementConsumers = new Set(binding.ownership.publicRequirementConsumers\n  .map(({ contractId, consumer }) => \\`${contractId}\\0${consumer}\\`));\nconst after = {\n  sourceUnits: before.sourceUnits.filter(({ id }) => !ownedSourceUnits.has(id)),\n  functions: before.functions.filter(({ name }) => !ownedFunctions.has(name)),\n  deviceImports: before.deviceImports.filter(({ id }) => !ownedImports.has(id)),\n  publicRequirements: before.publicRequirements\n    .map(({ contract, consumers }) => ({\n      contract,\n      consumers: consumers.filter((consumer) => !ownedRequirementConsumers.has(\\`${contract.id}\\0${consumer}\\`)),\n    }))\n    .filter(({ consumers }) => consumers.length > 0),\n};\nassert.deepEqual(after.sourceUnits, [nonTensor.sourceUnit]);\nassert.deepEqual(after.functions, [nonTensor.function]);\nassert.deepEqual(after.deviceImports, []);\nassert.deepEqual(after.publicRequirements, [{ contract: sharedRequirement, consumers: ['evaluator.analytic'] }]);\nassert(after.publicRequirements.every(({ consumers }) => !consumers.includes(binding.ownerProfile)), 'Tensor requirement consumer residue must be absent after deletion');`,
+          );
+          replaceExact(
+            oracle,
+            `    'structural-tensor-deletion-preserves-non-tensor-fragment',`,
+            `    'consumer-scoped-shared-requirement-deletion',\n    'structural-tensor-deletion-preserves-non-tensor-fragment',`,
+          );
+
+          const component = 'adapters/evaluators/cuda-js-tensor/component.yaml';
+          replaceExact(
+            component,
+            `"adapter-local evaluator program source/function/import/requirement binding and structural deletion ownership"`,
+            `"adapter-local evaluator program source/function/import binding plus requirement-consumer ownership and structural deletion"`,
+          );
+          replaceExact(
+            component,
+            `"structural Tensor deletion preserves unrelated non-Tensor fragment"`,
+            `"consumer-scoped shared-requirement deletion preserves unrelated non-Tensor consumers and removes Tensor-only requirement residue"`,
+          );
+          NODE
+
+          node --check "$production"
+          node --check "$oracle"
+          node -e "JSON.parse(require('node:fs').readFileSync('$component','utf8'))"
+          node scripts/run-cuda-js-tensor-evaluator.mjs
+          node conformance/cuda-js-tensor-evaluator/package.mjs
+
+          rm -- "$workflow"
+          allowed='^(adapters/evaluators/cuda-js-tensor/(component\.yaml|src/program-binding\.mjs)|conformance/cuda-js-tensor-evaluator/program-binding\.mjs|\.github/workflows/authorized-124-requirement-consumer-repair\.yml)$'
+          while IFS= read -r changed; do
+            path="${changed:3}"
+            if [[ ! "$path" =~ $allowed ]]; then
+              echo "unexpected working-tree path: $path" >&2
+              exit 1
+            fi
+          done < <(git status --porcelain=v1 --untracked-files=all)
+
+          git add -A -- "$production" "$oracle" "$component" "$workflow"
+          git diff --cached --check
+          git config user.name "OpenAI authorized project agent"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Scope Tensor requirement deletion to its consumer"
+          git push origin HEAD:refs/heads/feature/124-tensor-program-binding
