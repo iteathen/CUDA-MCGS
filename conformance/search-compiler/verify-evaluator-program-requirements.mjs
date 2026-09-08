@@ -146,11 +146,17 @@ assert(projected.consumers.includes(runtimeEvaluator.normalized.id), 'evaluator 
 const undeclaredEvaluator = { ...legacy, schemaSha: evaluatorSchemaSha };
 const undeclaredContext = packageContext(undeclaredEvaluator, 'evaluator-runtime-undeclared');
 const undeclaredFixture = buildProgramPackageProfile(inspected, undeclaredContext, 'evaluator-runtime-undeclared');
-bindReleaseAcquireHelper(undeclaredFixture, undeclaredEvaluator.normalized.id);
-assert.throws(
-  () => normalizeProgramPackageProfile(undeclaredFixture.input, inspected, undeclaredFixture.context),
-  { code: 'COMPOSE_HELPER_REQUIREMENT' },
-  'helper use without evaluator-declared public requirement must fail closed',
+const undeclaredFunctionName = bindReleaseAcquireHelper(undeclaredFixture, undeclaredEvaluator.normalized.id);
+const undeclaredPackage = normalizeProgramPackageProfile(undeclaredFixture.input, inspected, undeclaredFixture.context);
+assert.equal(
+  undeclaredPackage.normalized.publicRequirements.some(({ contract }) => contract.id === RELEASE_ACQUIRE_ID),
+  false,
+  'opaque helper metadata must not synthesize a CUDA-JS public requirement',
+);
+assert.deepEqual(
+  undeclaredPackage.normalized.functions.find(({ name }) => name === undeclaredFunctionName)?.helpers,
+  ['gpu.atomic.load-acquire-device'],
+  'Program Package must preserve opaque helper declaration metadata without claiming lower helper support',
 );
 
 const absentContext = packageContext(null, 'evaluator-runtime-absent');
@@ -159,4 +165,4 @@ const absentPackage = normalizeProgramPackageProfile(absentFixture.input, inspec
 assert.equal(absentPackage.normalized.publicRequirements.some(({ contract }) => contract.id === RELEASE_ACQUIRE_ID), false, 'evaluator absence must remove evaluator-only public requirement');
 assert.equal(JSON.stringify(absentPackage.normalized).includes('evaluator.synthetic-analytic-evaluation-only'), false, 'evaluator absence must leave no evaluator profile residue');
 
-console.log('evaluator_program_requirements=pass legacy=exact-delegate empty=reject canonical=proved duplicate=reject bounded=64 package_projection=owned helper_omission=reject absence=zero-residue');
+console.log('evaluator_program_requirements=pass legacy=exact-delegate empty=reject canonical=proved duplicate=reject bounded=64 package_projection=owned helper_requirement_inference=absent absence=zero-residue');

@@ -2127,14 +2127,29 @@ await runCase('reject-runtime-entry-call-target', () => {
   assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_FUNCTION_CALL' });
 });
 
-await runCase('reject-unsupported-device-js-helper', () => {
-  const mutated = clone(programPackageFixtures[0].input); mutated.functions.find(({ executionRole }) => executionRole === 'device-callable').helpers = ['gpu.native.cuda'];
-  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_HELPER_UNSUPPORTED' });
+await runCase('legacy-helper-metadata-is-opaque-to-lower-language', () => {
+  const mutated = clone(programPackageFixtures[0].input);
+  const fn = mutated.functions.find(({ executionRole }) => executionRole === 'device-callable');
+  fn.helpers = ['gpu.native.cuda'];
+  const normalized = normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context);
+  assert.deepEqual(normalized.normalized.publicRequirements, programPackageProfiles[0].normalized.publicRequirements);
+  assert.deepEqual(
+    normalized.normalized.functions.find(({ name }) => name === fn.name).helpers,
+    ['gpu.native.cuda'],
+  );
+  assert.notEqual(normalized.identity.sha256, programPackageProfiles[0].identity.sha256);
 });
 
-await runCase('reject-helper-without-public-requirement', () => {
-  const mutated = clone(programPackageFixtures[0].input); const fn = mutated.functions.find(({ executionRole }) => executionRole === 'device-callable'); const unit = mutated.sourceUnits.find(({ id }) => id === fn.sourceUnit); unit.source += '// gpu.atomic.storeReleaseDevice\n'; unit.sourceIdentity.sha256 = sourceTextSha256(Buffer.from(unit.source)); fn.helpers = ['gpu.atomic.store-release-device'];
-  assert.throws(() => normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context), { code: 'COMPOSE_HELPER_REQUIREMENT' });
+await runCase('helper-looking-source-does-not-synthesize-public-requirement', () => {
+  const mutated = clone(programPackageFixtures[0].input);
+  const fn = mutated.functions.find(({ executionRole }) => executionRole === 'device-callable');
+  const unit = mutated.sourceUnits.find(({ id }) => id === fn.sourceUnit);
+  unit.source += '// gpu.atomic.storeReleaseDevice\n';
+  unit.sourceIdentity.sha256 = sourceTextSha256(Buffer.from(unit.source));
+  fn.helpers = ['gpu.atomic.store-release-device'];
+  const normalized = normalizeProgramPackageProfile(mutated, inspected, programPackageFixtures[0].context);
+  assert.deepEqual(normalized.normalized.publicRequirements, programPackageProfiles[0].normalized.publicRequirements);
+  assert.notEqual(normalized.identity.sha256, programPackageProfiles[0].identity.sha256);
 });
 
 await runCase('reject-unselected-source-owner', () => {

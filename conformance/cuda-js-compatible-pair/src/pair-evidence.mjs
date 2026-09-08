@@ -9,6 +9,7 @@ import { assertExactExecutionPackage, executionBindings } from './capsule.mjs';
 const CUDA_MCGS_REPOSITORY = 'iteathen/CUDA-MCGS';
 const CUDA_JS_REPOSITORY = 'iteathen/CUDA-JS';
 const SOURCE_EXTENSIONS = new Set(['.mjs', '.js', '.cjs', '.d.ts', '.json']);
+const DEVICE_JS_INSPECTION_CAPABILITY = 'pure-cuda-free-public-program-semantic-inspection-shared-with-compile';
 const FORBIDDEN_LOWER_VOCABULARY = Object.freeze([
   /cuda[-_]mcgs/i,
   /\bsearchProgram\b/,
@@ -104,8 +105,10 @@ export function assertPublicCudaJsIdentity(publicCudaJs, expected) {
   if (packageIdentity !== expected?.package || String(lower?.publicApi?.schemaVersion) !== String(expected?.apiSchema)) {
     fail('PAIR_STALE_LOWER', 'loaded public CUDA-JS package/API identity differs from the exact expected lower pair');
   }
-  if (typeof publicCudaJs.openCudaRuntime !== 'function' || typeof publicCudaJs.compileDeviceProgram !== 'function') {
-    fail('PAIR_STALE_LOWER', 'loaded public CUDA-JS root export lacks the required exact-pair public surface');
+  if (typeof publicCudaJs.openCudaRuntime !== 'function' || typeof publicCudaJs.inspectDeviceProgram !== 'function'
+      || typeof publicCudaJs.compileDeviceProgram !== 'function'
+      || lower?.capabilities?.deviceJsInspection !== DEVICE_JS_INSPECTION_CAPABILITY) {
+    fail('PAIR_STALE_LOWER', 'loaded public CUDA-JS root export lacks the required exact-pair inspection/compile surface');
   }
   return true;
 }
@@ -119,12 +122,31 @@ export function assertPairExecutionEvidence(executionPackage, capsule) {
 }
 
 export function assertRecorderTransaction(snapshot, executionPackage, capsule) {
-  if (!snapshot || snapshot.compileRequests?.length !== 1 || snapshot.compilerResults?.length !== 1 || snapshot.moduleLoads?.length !== 1 || snapshot.functionSubmits?.length !== 1) {
-    fail('PAIR_EVIDENCE_TRANSACTION', 'recorder does not contain exactly one compile/load/submit transaction');
+  if (!snapshot || snapshot.inspectionRequests?.length !== 1 || snapshot.inspectionResults?.length !== 1
+      || snapshot.compileRequests?.length !== 1 || snapshot.compilerResults?.length !== 1
+      || snapshot.moduleLoads?.length !== 1 || snapshot.functionSubmits?.length !== 1) {
+    fail('PAIR_EVIDENCE_TRANSACTION', 'recorder does not contain exactly one inspect/compile/load/submit transaction');
   }
   const expectedSourceSha = sha256Text(executionPackage.cudaJsAdapter.searchProgram.source);
-  if (snapshot.compileRequests[0].source?.sha256 !== expectedSourceSha) fail('PAIR_EVIDENCE_TRANSACTION', 'recorded Device-JS compile input is not the execution-package source used by the adapter');
+  if (snapshot.inspectionRequests[0].source?.sha256 !== expectedSourceSha || snapshot.compileRequests[0].source?.sha256 !== expectedSourceSha) {
+    fail('PAIR_EVIDENCE_TRANSACTION', 'recorded Device-JS inspect/compile input is not the execution-package source used by the adapter');
+  }
+  for (const key of ['functions', 'imports', 'compile']) {
+    if (JSON.stringify(snapshot.inspectionRequests[0][key]) !== JSON.stringify(snapshot.compileRequests[0][key])) {
+      fail('PAIR_EVIDENCE_TRANSACTION', `recorded Device-JS inspect and compile ${key} differ`);
+    }
+  }
+  const inspectedProgram = snapshot.inspectionResults[0]?.deviceProgram;
   const compiled = snapshot.compilerResults[0];
+  const compiledProgram = compiled?.deviceProgram;
+  if (snapshot.inspectionResults[0]?.schemaVersion !== 1 || compiled?.schemaVersion !== 1 || !inspectedProgram || !compiledProgram) {
+    fail('PAIR_EVIDENCE_TRANSACTION', 'recorded Device-JS inspection/compilation results are incomplete');
+  }
+  const inspectedSha = inspectedProgram.sha256 ?? null;
+  const compiledSha = compiledProgram.sha256 ?? null;
+  if ((inspectedSha === null) !== (compiledSha === null) || (inspectedSha !== null && inspectedSha !== compiledSha)) {
+    fail('PAIR_EVIDENCE_TRANSACTION', 'recorded producer-supplied Device-JS inspection and compilation identities differ');
+  }
   const artifact = compiled.linker?.artifact ?? compiled.compiler?.artifact;
   const load = snapshot.moduleLoads[0];
   if (!artifact?.bytesSha256 || artifact.bytesSha256 !== load.request?.bytesSha256 || artifact.byteLength !== load.request?.byteLength || artifact.format !== load.request?.format) {

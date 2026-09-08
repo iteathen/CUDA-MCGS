@@ -8,7 +8,6 @@ import { fileURLToPath } from 'node:url';
 import {
   composeSearchProgram,
   normalizeProgramPackageProfile,
-  programPackageConstants,
 } from '../../components/search-compiler/testing.mjs';
 import { inspectCatalog } from './src/catalog.mjs';
 import { buildProgramPackageProfile } from './src/program-package-fixtures.mjs';
@@ -63,12 +62,12 @@ function packageContext(ownerResult) {
   };
 }
 
-function bindCas(fixture, ownerId) {
+function bindHelper(fixture, ownerId, helper = CAS) {
   const unit = fixture.input.sourceUnits.find(({ ownerProfile }) => ownerProfile === ownerId);
-  assert(unit, 'CAS owner must contribute one source unit');
+  assert(unit, 'helper owner must contribute one source unit');
   const fn = fixture.input.functions.find(({ sourceUnit }) => sourceUnit === unit.id);
-  assert(fn, 'CAS owner source unit must own one function');
-  const source = `function ${fn.name}(state, index, compare, value) { return gpu.atomic.cas(state, index, compare, value); }\n`;
+  assert(fn, 'helper owner source unit must own one function');
+  const source = `function ${fn.name}(state, index, compare, value) { return ${helper}(state, index, compare, value); }\n`;
   unit.source = source;
   unit.sourceIdentity = sourceIdentity(source);
   fn.parameters = [
@@ -78,7 +77,7 @@ function bindCas(fixture, ownerId) {
     { name: 'value', type: 'u32' },
   ];
   fn.returns = 'u32';
-  fn.helpers = [CAS];
+  fn.helpers = [helper];
   return { unit, fn };
 }
 
@@ -90,33 +89,31 @@ const ownerResult = profile('extension.synthetic-cas-owner', 'cuda-mcgs.syntheti
 });
 const context = packageContext(ownerResult);
 
-assert.equal(programPackageConstants.baseDeviceJsCasHelper, CAS, 'Program Package must expose the accepted CAS helper identity');
-
 const baselineFixture = buildProgramPackageProfile(inspected, context, 'cas-composition');
 const baseline = normalizeProgramPackageProfile(baselineFixture.input, inspected, baselineFixture.context);
 
 const casFixture = buildProgramPackageProfile(inspected, context, 'cas-composition');
-const selected = bindCas(casFixture, ownerResult.normalized.id);
+const selected = bindHelper(casFixture, ownerResult.normalized.id);
 const normalized = normalizeProgramPackageProfile(casFixture.input, inspected, casFixture.context);
 const normalizedFunction = normalized.normalized.functions.find(({ name }) => name === selected.fn.name);
 assert(normalizedFunction, 'normalized CAS function must remain present');
-assert.deepEqual(normalizedFunction.helpers, [CAS], 'accepted CAS helper must remain identity-material function metadata');
-assert.deepEqual(normalized.normalized.publicRequirements, baseline.normalized.publicRequirements, 'base Device-JS CAS must not synthesize a non-base public requirement');
+assert.deepEqual(normalizedFunction.helpers, [CAS], 'CAS declaration remains identity-material MCGS metadata');
+assert.deepEqual(normalized.normalized.publicRequirements, baseline.normalized.publicRequirements, 'CAS metadata must not reverse-engineer a lower public requirement');
 assert(normalized.normalized.publicRequirements.some(({ contract }) => contract.id === 'cuda-js.device-js/0.1.0'), 'base Device-JS contract must remain selected');
-
 const program = composeSearchProgram(normalized);
-assert(program.normalized.functions.some(({ name, helpers }) => name === selected.fn.name && helpers.includes(CAS)), 'CAS helper must propagate into Search Program metadata');
-assert(program.normalized.source.includes('gpu.atomic.cas'), 'CAS source spelling must propagate unchanged into Search Program source');
+assert(program.normalized.source.includes('gpu.atomic.cas'), 'CAS source bytes must propagate unchanged to the Search Program');
 
-const missingSource = structuredClone(casFixture.input);
-const missingFn = missingSource.functions.find(({ name }) => name === selected.fn.name);
-const missingUnit = missingSource.sourceUnits.find(({ id }) => id === missingFn.sourceUnit);
-missingUnit.source = `function ${missingFn.name}(state, index, compare, value) { return value; }\n`;
-missingUnit.sourceIdentity = sourceIdentity(missingUnit.source);
-assert.throws(
-  () => normalizeProgramPackageProfile(missingSource, inspected, casFixture.context),
-  { code: 'COMPOSE_HELPER_MAPPING' },
-  'declared CAS without exact public source spelling must fail closed',
+const opaque = structuredClone(casFixture.input);
+const opaqueFn = opaque.functions.find(({ name }) => name === selected.fn.name);
+const opaqueUnit = opaque.sourceUnits.find(({ id }) => id === opaqueFn.sourceUnit);
+opaqueUnit.source = `function ${opaqueFn.name}(state, index, compare, value) { return gpu.atomic.exchange(state, index, compare, value); }\n`;
+opaqueUnit.sourceIdentity = sourceIdentity(opaqueUnit.source);
+opaqueFn.helpers = ['gpu.atomic.exchange'];
+const opaqueNormalized = normalizeProgramPackageProfile(opaque, inspected, casFixture.context);
+assert.deepEqual(
+  opaqueNormalized.normalized.functions.find(({ name }) => name === opaqueFn.name).helpers,
+  ['gpu.atomic.exchange'],
+  'Program Package must not recreate CUDA-JS helper support authority',
 );
 
 const duplicate = structuredClone(casFixture.input);
@@ -124,15 +121,15 @@ duplicate.functions.find(({ name }) => name === selected.fn.name).helpers = [CAS
 assert.throws(
   () => normalizeProgramPackageProfile(duplicate, inspected, casFixture.context),
   { code: 'COMPOSE_FUNCTION_CALLS' },
-  'duplicate CAS helper metadata must fail closed',
+  'MCGS still owns canonical uniqueness of its identity metadata',
 );
 
-const unsupported = structuredClone(casFixture.input);
-unsupported.functions.find(({ name }) => name === selected.fn.name).helpers = ['gpu.atomic.exchange'];
+const malformed = structuredClone(casFixture.input);
+malformed.functions.find(({ name }) => name === selected.fn.name).helpers = ['not-a-gpu-declaration'];
 assert.throws(
-  () => normalizeProgramPackageProfile(unsupported, inspected, casFixture.context),
-  { code: 'COMPOSE_HELPER_UNSUPPORTED' },
-  'CAS admission must not widen arbitrary atomic helpers',
+  () => normalizeProgramPackageProfile(malformed, inspected, casFixture.context),
+  { code: 'COMPOSE_HELPER_DECLARATION' },
+  'MCGS helper metadata remains bounded to its declared gpu namespace shape without claiming support',
 );
 
-console.log('device_js_cas_composition=pass accepted=cas source_mapping=exact base_requirement=unchanged search_program=propagated duplicate=reject arbitrary_atomic=reject native_claim=none');
+console.log('device_js_helper_ownership=pass cas=no-special-case lower_support=not-owned lower_requirement_reverse_map=absent metadata=opaque-bounded native_claim=none');

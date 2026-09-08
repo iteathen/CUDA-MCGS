@@ -26,21 +26,9 @@ const COMPOSE_CONTRACT = 'SPEC-0005';
 const RESTRICTED_SOURCE_TYPES = new Set(['bool', 'u32', 'i32', 'u64', 'f32', 'f64', 'f16', 'bf16', 'ptr<bool>', 'ptr<u32>', 'ptr<i32>', 'ptr<u64>', 'ptr<f32>', 'ptr<f64>', 'ptr<f16>', 'ptr<bf16>', 'sideband<host-to-device,u32>', 'sideband<device-to-host,u32>']);
 const RETURN_TYPES = new Set(['void', 'bool', 'u32', 'i32', 'u64', 'f32', 'f64', 'f16', 'bf16']);
 const RESOURCE_VIEW_WIDTH = new Map([['u32', 4n], ['u64', 8n], ['i32', 4n], ['f32', 4n], ['f64', 8n], ['f16', 2n], ['bf16', 2n]]);
-const HELPER_REQUIREMENTS = new Map([
-  ['gpu.atomic.load-acquire-device', 'cuda-js.device-publication-release-acquire/0.1.0'],
-  ['gpu.atomic.store-release-device', 'cuda-js.device-publication-release-acquire/0.1.0'],
-  ['gpu.mailbox.load-acquire-system', 'cuda-js.publication-mailbox/0.1.0'],
-]);
-const HELPER_SOURCE_NAMES = new Map([
-  ['gpu.thread.global-x', 'gpu.thread.globalX'],
-  ['gpu.atomic.load-acquire-device', 'gpu.atomic.loadAcquireDevice'],
-  ['gpu.atomic.store-release-device', 'gpu.atomic.storeReleaseDevice'],
-  ['gpu.mailbox.load-acquire-system', 'gpu.mailbox.loadAcquireSystem'],
-  ['gpu.barrier.block', 'gpu.barrier.block'],
-  ['gpu.fence.device', 'gpu.fence.device'],
-]);
 const BASE_REQUIREMENTS = new Set(['cuda-js.device-js/0.1.0', 'cuda-js.operation-lifecycle/0.1.0', 'cuda-js.publication-mailbox/0.1.0']);
 const FORBIDDEN_SOURCE = /(?:#include|__global__|__device__|\b(?:import|export|require|eval|process|Buffer)\b|node:|\.cu\b|\.cuh\b|\.ptx\b|\bcuda[A-Za-z0-9_]*\b)/;
+const HELPER_DECLARATION = /^gpu\.[A-Za-z0-9_.-]+$/;
 
 function assertEnum(value, allowed, code, label) {
   if (!allowed.includes(value)) fail(code, `${label} is invalid`);
@@ -204,10 +192,7 @@ function normalizeFunction(input, index, context) {
   const calls = [...input.calls].sort(compareRaw); const helpers = [...input.helpers].sort(compareRaw);
   if (new Set(calls).size !== calls.length || new Set(helpers).size !== helpers.length) fail('COMPOSE_FUNCTION_CALLS', `${input.name} repeats a call/helper`);
   for (const call of calls) assertString(call, /^[A-Za-z_$][A-Za-z0-9_$]*$/, 'COMPOSE_FUNCTION_CALL', `${input.name} call`);
-  for (const helper of helpers) {
-    if (!HELPER_SOURCE_NAMES.has(helper)) fail('COMPOSE_HELPER_UNSUPPORTED', `${input.name} uses unsupported helper ${helper}`);
-    if (!sourceUnit.source.includes(HELPER_SOURCE_NAMES.get(helper))) fail('COMPOSE_HELPER_MAPPING', `${input.name} helper is absent from its source unit`);
-  }
+  for (const helper of helpers) assertString(helper, HELPER_DECLARATION, 'COMPOSE_HELPER_DECLARATION', `${input.name} helper declaration`);
   return { name: input.name, executionRole, parameters, returns: input.returns, sourceUnit: input.sourceUnit, ownerProfile: input.ownerProfile, semanticRole: input.semanticRole, calls, helpers };
 }
 
@@ -568,10 +553,6 @@ export function normalizeProgramPackageProfile(input, inspected, suppliedContext
   if (publicRequirements.length !== expectedRequirements.size
       || [...expectedRequirements].some(([id, expected]) => !publicRequirements.some(({ contract }) => contract.id === id && schemaKey(contract) === schemaKey(expected)))) {
     fail('COMPOSE_PUBLIC_REQUIREMENT_CLOSURE', 'public requirements differ from the exact selected-owner set');
-  }
-  for (const fn of functions) for (const helper of fn.helpers) {
-    const requirement = HELPER_REQUIREMENTS.get(helper);
-    if (requirement && !publicRequirements.some(({ contract }) => contract.id === requirement)) fail('COMPOSE_HELPER_REQUIREMENT', `${fn.name} helper lacks ${requirement}`);
   }
   context.publicRequirements = publicRequirements;
 

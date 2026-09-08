@@ -95,6 +95,9 @@ function prepareImports(executionPackage, supplied) {
 function injectingCudaJs(cudaJs, imports) {
   return new Proxy(cudaJs, {
     get(target, property, receiver) {
+      if (property === 'inspectDeviceProgram') {
+        return (request) => target.inspectDeviceProgram({ ...request, imports });
+      }
       if (property === 'compileDeviceProgram') {
         return (runtime, request) => target.compileDeviceProgram(runtime, { ...request, imports });
       }
