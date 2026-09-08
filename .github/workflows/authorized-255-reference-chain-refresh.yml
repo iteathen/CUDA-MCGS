@@ -1,0 +1,170 @@
+name: "Authorized #255 exact reference-chain refresh"
+
+on:
+  push:
+    branches:
+      - feature/124-device-resident-evaluator
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.7.0
+      - name: Refresh exact checked-in reference identities and self-remove
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          node scripts/run-search-ir-composer-reference.mjs
+          for owner in domain graph policy evaluator resource progress output session stage; do
+            node "scripts/export-search-ir-composer-${owner}-profiles.mjs"
+          done
+
+          cat > /tmp/refresh-fixtures.mjs <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+
+          const fixtureDir = 'experiments/search-semantics-reference/fixtures';
+          const buildDir = 'conformance/search-compiler/build';
+          const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
+          const fixturePaths = fs.readdirSync(fixtureDir)
+            .filter((name) => name.endsWith('.json'))
+            .sort()
+            .map((name) => path.join(fixtureDir, name));
+
+          function same(a, b) {
+            return JSON.stringify(a) === JSON.stringify(b);
+          }
+
+          function writeFixture(p, data) {
+            fs.writeFileSync(p, `${JSON.stringify(data, null, 2)}\n`);
+          }
+
+          const composer = readJson(path.join(buildDir, 'evidence.json')).representationCompositionEvidenceKey;
+          if (composer?.algorithm !== 'sha256' || !Number.isSafeInteger(composer?.byteLength) || !/^[0-9a-f]{64}$/.test(composer?.sha256 ?? '')) {
+            throw new Error('invalid generated Composer evidence identity');
+          }
+
+          const projectionsBySchema = new Map();
+          for (const name of fs.readdirSync(buildDir).filter((name) => name.endsWith('.json'))) {
+            const generated = readJson(path.join(buildDir, name));
+            if (typeof generated?.schema === 'string' && generated?.projectionIdentity) {
+              projectionsBySchema.set(generated.schema, { schema: generated.schema, ...generated.projectionIdentity });
+            }
+          }
+          if (projectionsBySchema.size < 9) throw new Error(`expected generated profile projections; found ${projectionsBySchema.size}`);
+
+          const rootControlPath = path.join(buildDir, 'root-control.json');
+          const rootControl = fs.existsSync(rootControlPath) ? readJson(rootControlPath) : null;
+          const rootControlIdentity = rootControl?.projectionIdentity ?? rootControl?.identity ?? null;
+
+          let touched = 0;
+          for (const p of fixturePaths) {
+            const data = readJson(p);
+            let changed = false;
+            if (data.composerEvidence !== undefined && !same(data.composerEvidence, composer)) {
+              data.composerEvidence = structuredClone(composer);
+              changed = true;
+            }
+            if (data.profileProjection !== undefined) {
+              const expected = projectionsBySchema.get(data.profileProjection?.schema);
+              if (!expected) throw new Error(`${p}: unknown profileProjection schema ${data.profileProjection?.schema}`);
+              if (!same(data.profileProjection, expected)) {
+                data.profileProjection = structuredClone(expected);
+                changed = true;
+              }
+            }
+            if (data.rootControlProjection !== undefined && rootControlIdentity !== null && !same(data.rootControlProjection, rootControlIdentity)) {
+              data.rootControlProjection = structuredClone(rootControlIdentity);
+              changed = true;
+            }
+            if (changed) {
+              writeFixture(p, data);
+              touched += 1;
+            }
+          }
+          if (touched === 0) throw new Error('reference-chain refresh found no stale base fixture identities');
+          console.log(`base_fixture_refresh=${touched}`);
+          NODE
+          node /tmp/refresh-fixtures.mjs
+
+          cat > /tmp/propagate-evidence.mjs <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+
+          const [key, evidencePath, minimumText = '1'] = process.argv.slice(2);
+          const minimum = Number(minimumText);
+          if (!key || !evidencePath || !Number.isSafeInteger(minimum) || minimum < 0) throw new Error('usage: key evidencePath minimum');
+          const evidence = JSON.parse(fs.readFileSync(evidencePath, 'utf8'));
+          const identity = evidence?.evidenceIdentity;
+          if (identity?.algorithm !== 'sha256' || !Number.isSafeInteger(identity?.byteLength) || !/^[0-9a-f]{64}$/.test(identity?.sha256 ?? '')) {
+            throw new Error(`${evidencePath}: invalid evidenceIdentity`);
+          }
+          const fixtureDir = 'experiments/search-semantics-reference/fixtures';
+          let updated = 0;
+          for (const name of fs.readdirSync(fixtureDir).filter((name) => name.endsWith('.json')).sort()) {
+            const p = path.join(fixtureDir, name);
+            const data = JSON.parse(fs.readFileSync(p, 'utf8'));
+            if (data[key] === undefined) continue;
+            if (JSON.stringify(data[key]) !== JSON.stringify(identity)) {
+              data[key] = structuredClone(identity);
+              fs.writeFileSync(p, `${JSON.stringify(data, null, 2)}\n`);
+            }
+            updated += 1;
+          }
+          if (updated < minimum) throw new Error(`${key}: expected at least ${minimum} fixture consumers, found ${updated}`);
+          console.log(`propagated=${key} consumers=${updated} sha256=${identity.sha256}`);
+          NODE
+
+          node scripts/run-graph-node-reference.mjs
+          node /tmp/propagate-evidence.mjs nodeEvidence experiments/search-semantics-reference/build/graph-node-evidence.json 1
+
+          node scripts/run-graph-edge-reference.mjs
+          node /tmp/propagate-evidence.mjs edgeEvidence experiments/search-semantics-reference/build/graph-edge-evidence.json 1
+
+          node scripts/run-graph-ref-reference.mjs
+          node /tmp/propagate-evidence.mjs refEvidence experiments/search-semantics-reference/build/graph-ref-evidence.json 1
+
+          node scripts/run-graph-path-reference.mjs
+          node /tmp/propagate-evidence.mjs pathEvidence experiments/search-semantics-reference/build/graph-path-evidence.json 1
+
+          node scripts/run-graph-root-reference.mjs
+          node /tmp/propagate-evidence.mjs rootEvidence experiments/search-semantics-reference/build/graph-root-evidence.json 1
+
+          node scripts/run-graph-reclaim-reference.mjs
+          node /tmp/propagate-evidence.mjs reclaimEvidence experiments/search-semantics-reference/build/graph-reclaim-evidence.json 1
+
+          node scripts/run-graph-advance-occurrence-reference.mjs
+          node /tmp/propagate-evidence.mjs advanceOccurrenceEvidence experiments/search-semantics-reference/build/graph-advance-occurrence-evidence.json 1
+
+          node scripts/run-graph-cleanup-reference.mjs
+          node /tmp/propagate-evidence.mjs cleanupEvidence experiments/search-semantics-reference/build/graph-cleanup-evidence.json 0
+
+          for owner in policy evaluator resource progress output; do
+            node "scripts/run-${owner}-reference.mjs"
+            node /tmp/propagate-evidence.mjs "${owner}Evidence" "experiments/search-semantics-reference/build/${owner}-evidence.json" 0
+          done
+
+          rm -- .github/workflows/authorized-255-reference-chain-refresh.yml
+          git config user.name "OpenAI authorized project agent"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/search-semantics-reference/fixtures .github/workflows/authorized-255-reference-chain-refresh.yml
+          git diff --cached --check
+
+          while IFS= read -r changed; do
+            case "$changed" in
+              experiments/search-semantics-reference/fixtures/*.json|.github/workflows/authorized-255-reference-chain-refresh.yml) ;;
+              *) echo "unexpected staged path: $changed" >&2; exit 1 ;;
+            esac
+          done < <(git diff --cached --name-only)
+
+          test -n "$(git diff --cached --name-only)"
+          git commit -m "Refresh #255 downstream reference evidence chain"
+          git push origin HEAD:refs/heads/feature/124-device-resident-evaluator
