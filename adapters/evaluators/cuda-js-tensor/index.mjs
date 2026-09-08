@@ -16,6 +16,7 @@ export {
 } from './src/program-binding.mjs';
 
 export {
+  createTensorEvaluatorResourceLayout,
   createTensorEvaluatorResourceBinding,
   tensorEvaluatorResourceBindingConstants,
 } from './src/resource-binding.mjs';
