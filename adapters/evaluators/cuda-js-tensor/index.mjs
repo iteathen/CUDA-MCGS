@@ -14,3 +14,8 @@ export {
   createTensorEvaluatorProgramBinding,
   tensorEvaluatorProgramBindingConstants,
 } from './src/program-binding.mjs';
+
+export {
+  createTensorEvaluatorResourceBinding,
+  tensorEvaluatorResourceBindingConstants,
+} from './src/resource-binding.mjs';
