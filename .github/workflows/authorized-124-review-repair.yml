@@ -1,0 +1,105 @@
+name: "Authorized #124 review repair"
+
+on:
+  push:
+    branches:
+      - feature/124-evaluator-runtime
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Apply reviewed batch-identity repair and self-remove
+        run: |
+          set -euo pipefail
+          workflow=.github/workflows/authorized-124-review-repair.yml
+          runtime=adapters/evaluators/cuda-js-tensor/src/runtime-contribution.mjs
+          oracle=conformance/cuda-js-tensor-evaluator/runtime.mjs
+          component=adapters/evaluators/cuda-js-tensor/component.yaml
+          readme=conformance/cuda-js-tensor-evaluator/README.md
+
+          test "$(git hash-object "$runtime")" = d2f188ee7f3a16c2f7aa2f2de60fbe756008a9db
+          test "$(git hash-object "$oracle")" = 67e7744589314469217412622cfce059bd6e0d2d
+          test "$(git hash-object "$component")" = 5ae64975741227fb7402a40aed310de8e9f60fa4
+          test "$(git hash-object "$readme")" = 500bd2431cf364961693989529ba99e8c12649f3
+
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function replaceExact(path, oldText, newText) {
+            let text = fs.readFileSync(path, 'utf8');
+            if (!text.includes(oldText)) throw new Error(`${path}: exact repair seam missing`);
+            text = text.replace(oldText, newText);
+            fs.writeFileSync(path, text);
+          }
+
+          const runtime = 'adapters/evaluators/cuda-js-tensor/src/runtime-contribution.mjs';
+          replaceExact(runtime,
+            `  generation += gpu.u64(1n);\n  \${control64}[\${u64(c64.batchGeneration)}] = generation;\n  \${control32}[\${u64(c32.batchOccupancy)}] = gpu.u32(0);`,
+            `  generation += gpu.u64(1n);\n  \${control32}[\${u64(c32.batchOccupancy)}] = gpu.u32(0);`);
+          replaceExact(runtime,
+            `  if (occupancy === gpu.u32(0)) {\n    gpu.atomic.storeReleaseDevice(\${control32}, \${u64(c32.batchState)}, \${u32(BATCH.free)});\n    return \${u32(RESULT.noWork)};\n  }\n  \${control32}[\${u64(c32.batchOccupancy)}] = occupancy;`,
+            `  if (occupancy === gpu.u32(0)) {\n    gpu.atomic.storeReleaseDevice(\${control32}, \${u64(c32.batchState)}, \${u32(BATCH.free)});\n    return \${u32(RESULT.noWork)};\n  }\n  \${control64}[\${u64(c64.batchGeneration)}] = generation;\n  \${control32}[\${u64(c32.batchOccupancy)}] = occupancy;`);
+
+          const oracle = 'conformance/cuda-js-tensor-evaluator/runtime.mjs';
+          replaceExact(oracle,
+            `const gpu = {\n  u32(value) { return Number(value) >>> 0; },`,
+            `let beforeCas = null;\nconst gpu = {\n  u32(value) { return Number(value) >>> 0; },`);
+          replaceExact(oracle,
+            `    cas(pointer, index, compare, value) {\n      const i = atomicIndex(index);\n      const prior = pointer[i];`,
+            `    cas(pointer, index, compare, value) {\n      const i = atomicIndex(index);\n      if (beforeCas) beforeCas(pointer, i, compare, value);\n      const prior = pointer[i];`);
+          replaceExact(oracle,
+            `// No-work service must not consume batch-generation identity.\nassert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), result.noWork);\nassert.equal(readBatchGeneration(), 0n);\n\n// Two ready requests form a partial batch and preserve request/item identity.`,
+            `// No-work service must not consume batch-generation identity.\nassert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), result.noWork);\nassert.equal(readBatchGeneration(), 0n);\n\n// Losing every observed queued slot before claim is still no-work and must not\n// consume batch-generation identity. This injects one adversarial cancellation\n// exactly at the slot claim CAS without pretending to model physical scheduling.\nassert.equal(fn.mcgsTensorEvaluatorAdmit(6, 7n, c32, c64), result.ok);\nconst lostClaimSlotGeneration = readSlotGeneration(6);\nbeforeCas = (pointer, index, compare, value) => {\n  if (pointer === c32 && index === o32.slotState + 6 && compare === slotState.queued && value === slotState.inflight) {\n    pointer[index] = slotState.cancelled;\n    beforeCas = null;\n  }\n};\nassert.equal(fn.mcgsTensorEvaluatorFormBatch(c32, c64), result.noWork);\nassert.equal(beforeCas, null);\nassert.equal(readBatchGeneration(), 0n);\nassert.equal(c32[o32.batchState], batchState.free);\nassert.equal(fn.mcgsTensorEvaluatorRecycle(6, lostClaimSlotGeneration, 7n, c32, c64), result.ok);\n\n// Two ready requests form a partial batch and preserve request/item identity.`);
+          replaceExact(oracle,
+            `// Inflight cancellation wins before the publication CAS and suppresses readiness.`,
+            `// Inflight cancellation observed at the declared pre-publication ordering point suppresses readiness.`);
+          replaceExact(oracle,
+            `    'no-work-generation-stability',\n    'partial-batch-request-item-identity',`,
+            `    'no-work-generation-stability',\n    'lost-claim-no-work-generation-stability',\n    'partial-batch-request-item-identity',`);
+
+          const component = 'adapters/evaluators/cuda-js-tensor/component.yaml';
+          replaceExact(component,
+            `"cancellation_and_failure": ["queued/inflight cancellation is ordered against one publication CAS", "Tensor failure maps to typed evaluator failure/retry state", "stale token mismatch is read-only and cannot mutate reused lane state", "generation exhaustion never wraps"]`,
+            `"cancellation_and_failure": ["queued/inflight cancellation is ordered by the release/acquire cancel-intent observation immediately before terminal publication claim", "Tensor failure maps to typed evaluator failure/retry state", "stale token mismatch is read-only and cannot mutate reused lane state", "batch generation is published only after at least one queued request is claimed", "generation exhaustion never wraps"]`);
+
+          const readme = 'conformance/cuda-js-tensor-evaluator/README.md';
+          replaceExact(readme,
+            `request/item incarnation, no-work generation stability, pressure, cancellation, retry, scatter and terminal publication.`,
+            `request/item incarnation, no-work generation stability including an adversarial observed-then-lost slot claim, pressure, cancellation, retry, scatter and terminal publication.`);
+          NODE
+
+          test "$(git hash-object "$runtime")" = 8b19773696edd95f8cacb9ab8619122f8612e9fc
+          test "$(git hash-object "$oracle")" = 267e20488f30bae76aab532f8cee2a28f102e420
+          test "$(git hash-object "$component")" = 91c6b1ab4e15c851a9a029bdd499cccda3fe199b
+          test "$(git hash-object "$readme")" = 1408cdb7d57a5fca08c299086b601cdff8312f95
+
+          node --check "$runtime"
+          node --check "$oracle"
+          node -e "JSON.parse(require('node:fs').readFileSync('$component','utf8'))"
+          node scripts/run-cuda-js-tensor-evaluator.mjs
+
+          rm -- "$workflow"
+          allowed='^(adapters/evaluators/cuda-js-tensor/(component\.yaml|src/runtime-contribution\.mjs)|conformance/cuda-js-tensor-evaluator/(README\.md|runtime\.mjs)|\.github/workflows/authorized-124-review-repair\.yml)$'
+          while IFS= read -r changed; do
+            path="${changed:3}"
+            if [[ ! "$path" =~ $allowed ]]; then
+              echo "unexpected working-tree path: $path" >&2
+              exit 1
+            fi
+          done < <(git status --porcelain=v1 --untracked-files=all)
+
+          git add -A -- "$runtime" "$oracle" "$component" "$readme" "$workflow"
+          git diff --cached --check
+          git config user.name "OpenAI authorized project agent"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Preserve batch identity on lost claims"
+          node conformance/cuda-js-tensor-evaluator/package.mjs
+          git push origin HEAD:refs/heads/feature/124-evaluator-runtime
