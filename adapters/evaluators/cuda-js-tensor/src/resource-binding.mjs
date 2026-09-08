@@ -28,9 +28,7 @@ function exactKeys(value, expected, code, label) {
   object(value, label);
   const actual = Object.keys(value).sort();
   const wanted = [...expected].sort();
-  if (actual.length !== wanted.length || actual.some((key, index) => key !== wanted[index])) {
-    fail(code, `${label} fields must be exactly ${wanted.join(', ')}`);
-  }
+  if (actual.length !== wanted.length || actual.some((key, index) => key !== wanted[index])) fail(code, `${label} fields must be exactly ${wanted.join(', ')}`);
 }
 
 function decimal(value, label) {
@@ -55,6 +53,14 @@ function accessSet(value, label) {
   return result;
 }
 
+function contentIdentity(value, label) {
+  object(value, label);
+  if (value.algorithm !== 'sha256' || typeof value.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(value.sha256)) {
+    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_IDENTITY', `${label} must be a sha256 content identity`);
+  }
+  return { algorithm: 'sha256', sha256: value.sha256 };
+}
+
 function programBinding(value) {
   object(value, 'Tensor evaluator program binding');
   if (value.kind !== 'cuda-mcgs-tensor-evaluator-program-binding' || value.contract !== PROGRAM_BINDING_CONTRACT
@@ -65,26 +71,36 @@ function programBinding(value) {
   return value;
 }
 
-function evaluatorProfile(value, ownerProfile) {
-  object(value, 'normalized evaluator profile');
-  if (value.schema !== EVALUATOR_SCHEMA || value.status !== 'accepted' || value.contract?.id !== 'SPEC-0009'
-      || value.id !== ownerProfile || value.execution?.deviceOwned !== true || value.execution?.hostProgress !== 'none'
-      || !Array.isArray(value.resources)) {
+function evaluatorProfileResult(value, ownerProfile) {
+  object(value, 'evaluator profile result');
+  const normalized = object(value.normalized, 'normalized evaluator profile');
+  const identity = contentIdentity(value.identity, 'evaluator profile identity');
+  if (normalized.schema !== EVALUATOR_SCHEMA || normalized.status !== 'accepted' || normalized.contract?.id !== 'SPEC-0009'
+      || normalized.id !== ownerProfile || normalized.execution?.deviceOwned !== true || normalized.execution?.hostProgress !== 'none'
+      || !Array.isArray(normalized.resources)) {
     fail('TENSOR_EVALUATOR_RESOURCE_BINDING_EVALUATOR', 'normalized evaluator profile does not match the program-binding owner');
   }
-  return value;
+  return { normalized, identity };
 }
 
-function resourceProfile(value, evaluator) {
-  object(value, 'normalized Resource profile');
-  if (value.schema !== RESOURCE_SCHEMA || value.status !== 'accepted' || value.contract?.id !== 'SPEC-0011'
-      || !Array.isArray(value.contributors) || !Array.isArray(value.classes) || !Array.isArray(value.partitions)
-      || !Array.isArray(value.pools) || !Array.isArray(value.providerRequirements)) {
+function resourceProfileResult(value, evaluatorResult) {
+  object(value, 'Resource profile result');
+  const normalized = object(value.normalized, 'normalized Resource profile');
+  const identity = contentIdentity(value.identity, 'Resource profile identity');
+  if (normalized.schema !== RESOURCE_SCHEMA || normalized.status !== 'accepted' || normalized.contract?.id !== 'SPEC-0011'
+      || !Array.isArray(normalized.contributors) || !Array.isArray(normalized.classes) || !Array.isArray(normalized.partitions)
+      || !Array.isArray(normalized.pools) || !Array.isArray(normalized.providerRequirements)) {
     fail('TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE', 'normalized Resource profile is invalid');
   }
-  const contributors = value.contributors.filter(({ contract, profile }) => contract?.id === 'SPEC-0009' && profile?.id === evaluator.id);
+  const evaluator = evaluatorResult.normalized;
+  const contributors = normalized.contributors.filter(({ contract, profile }) => contract?.id === 'SPEC-0009' && profile?.id === evaluator.id);
   if (contributors.length !== 1) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE', 'Resource plan does not contain exactly one selected evaluator contributor');
-  return { profile: value, contributor: contributors[0] };
+  const contributor = contributors[0];
+  if (contributor.profile?.schema?.id !== evaluator.schema || contributor.profile?.identity?.algorithm !== 'sha256'
+      || contributor.profile.identity.sha256 !== evaluatorResult.identity.sha256) {
+    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_IDENTITY', 'Resource evaluator contributor differs from the exact evaluator profile identity');
+  }
+  return { normalized, identity, contributor };
 }
 
 function runtimeDescriptor(entry) {
@@ -110,17 +126,8 @@ function runtimeDescriptor(entry) {
   } else {
     fail('TENSOR_EVALUATOR_RESOURCE_BINDING_LOGICAL', `unknown runtime logical resource ${entry.id}`);
   }
-  return {
-    parameterName: entry.parameterName,
-    logicalId: entry.id,
-    logicalKind: 'runtime-resource',
-    dtype: entry.dtype,
-    elementCount: BigInt(entry.elementCount),
-    byteLength: BigInt(entry.byteLength),
-    requiredAccess,
-    allowedClasses,
-    initialization: entry.initialization,
-  };
+  return { parameterName: entry.parameterName, logicalId: entry.id, logicalKind: 'runtime-resource', dtype: entry.dtype,
+    elementCount: BigInt(entry.elementCount), byteLength: BigInt(entry.byteLength), requiredAccess, allowedClasses, initialization: entry.initialization };
 }
 
 function tensorDescriptor(entry) {
@@ -135,17 +142,9 @@ function tensorDescriptor(entry) {
   else if (entry.role === 'output') allowedClasses = ['result'];
   else if (entry.role === 'workspace') allowedClasses = ['workspace'];
   else fail('TENSOR_EVALUATOR_RESOURCE_BINDING_LOGICAL', `${entry.parameterName} Tensor role is unsupported`);
-  return {
-    parameterName: entry.parameterName,
-    logicalId: `tensor.${entry.parameterName}`,
-    logicalKind: 'tensor-binding',
-    dtype: entry.dtype,
-    elementCount: BigInt(entry.byteLength) / dtypeWidth,
-    byteLength: BigInt(entry.byteLength),
-    requiredAccess: accessSet(entry.access, entry.parameterName),
-    allowedClasses,
-    initialization: entry.initialization,
-  };
+  return { parameterName: entry.parameterName, logicalId: `tensor.${entry.parameterName}`, logicalKind: 'tensor-binding', dtype: entry.dtype,
+    elementCount: BigInt(entry.byteLength) / dtypeWidth, byteLength: BigInt(entry.byteLength), requiredAccess: accessSet(entry.access, entry.parameterName),
+    allowedClasses, initialization: entry.initialization };
 }
 
 function logicalDescriptors(binding) {
@@ -156,22 +155,18 @@ function logicalDescriptors(binding) {
     byParameter.set(descriptor.parameterName, descriptor);
   }
   const pointerTypes = new Map();
-  for (const fn of binding.functions) {
-    for (const parameter of fn.parameters ?? []) {
-      if (typeof parameter.type !== 'string' || !parameter.type.startsWith('ptr<')) continue;
-      const match = /^ptr<([A-Za-z0-9_-]+)>$/.exec(parameter.type);
-      if (!match) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_PARAMETER', `${fn.name}.${parameter.name} pointer type is invalid`);
-      const prior = pointerTypes.get(parameter.name);
-      if (prior && prior !== match[1]) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_PARAMETER', `${parameter.name} has inconsistent pointer dtypes`);
-      pointerTypes.set(parameter.name, match[1]);
-    }
+  for (const fn of binding.functions) for (const parameter of fn.parameters ?? []) {
+    if (typeof parameter.type !== 'string' || !parameter.type.startsWith('ptr<')) continue;
+    const match = /^ptr<([A-Za-z0-9_-]+)>$/.exec(parameter.type);
+    if (!match) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_PARAMETER', `${fn.name}.${parameter.name} pointer type is invalid`);
+    const prior = pointerTypes.get(parameter.name);
+    if (prior && prior !== match[1]) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_PARAMETER', `${parameter.name} has inconsistent pointer dtypes`);
+    pointerTypes.set(parameter.name, match[1]);
   }
   if (pointerTypes.size !== byParameter.size || [...pointerTypes.keys()].some((name) => !byParameter.has(name))) {
     fail('TENSOR_EVALUATOR_RESOURCE_BINDING_COVERAGE', 'logical resources do not exactly cover evaluator program pointer parameters');
   }
-  for (const [name, dtype] of pointerTypes) if (byParameter.get(name).dtype !== dtype) {
-    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_DTYPE', `${name} logical dtype differs from program pointer type`);
-  }
+  for (const [name, dtype] of pointerTypes) if (byParameter.get(name).dtype !== dtype) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_DTYPE', `${name} logical dtype differs from program pointer type`);
   return byParameter;
 }
 
@@ -190,9 +185,7 @@ function exactResourceChain(resource, contributorId, evaluatorResource) {
 }
 
 function assertPhysicalEnvelope(descriptor, evaluatorResource, chain, localOffset) {
-  if (evaluatorResource.unit !== 'bytes' || !descriptor.allowedClasses.includes(evaluatorResource.class)) {
-    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_SEMANTIC', `${descriptor.parameterName} cannot bind to evaluator resource ${evaluatorResource.id}`);
-  }
+  if (evaluatorResource.unit !== 'bytes' || !descriptor.allowedClasses.includes(evaluatorResource.class)) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_SEMANTIC', `${descriptor.parameterName} cannot bind to evaluator resource ${evaluatorResource.id}`);
   const maximum = decimal(evaluatorResource.maximum, `${evaluatorResource.id} maximum`);
   const partitionCapacity = decimal(chain.partition.capacity, `${chain.partition.id} capacity`);
   const partitionOffset = decimal(chain.partition.offset, `${chain.partition.id} offset`);
@@ -214,9 +207,7 @@ function assertPhysicalEnvelope(descriptor, evaluatorResource, chain, localOffse
   if (localOffset + descriptor.byteLength > partitionCapacity) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_RANGE', `${descriptor.parameterName} exceeds its evaluator Resource partition`);
   const physicalOffset = partitionOffset + localOffset;
   const dtypeWidth = width(descriptor.dtype, descriptor.parameterName);
-  if (physicalOffset % dtypeWidth !== 0n || physicalOffset + descriptor.byteLength > poolCapacity) {
-    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_ALIGNMENT', `${descriptor.parameterName} provider-relative view is misaligned or out of range`);
-  }
+  if (physicalOffset % dtypeWidth !== 0n || physicalOffset + descriptor.byteLength > poolCapacity) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_ALIGNMENT', `${descriptor.parameterName} provider-relative view is misaligned or out of range`);
   return physicalOffset;
 }
 
@@ -224,10 +215,11 @@ function overlap(left, right) {
   return left.pool === right.pool && left.byteOffset < right.byteOffset + right.byteLength && right.byteOffset < left.byteOffset + left.byteLength;
 }
 
-export function createTensorEvaluatorResourceBinding(programBindingInput, normalizedEvaluatorProfile, normalizedResourceProfile, options = {}) {
+export function createTensorEvaluatorResourceBinding(programBindingInput, evaluatorProfileResultInput, resourceProfileResultInput, options = {}) {
   const binding = programBinding(programBindingInput);
-  const evaluator = evaluatorProfile(normalizedEvaluatorProfile, binding.ownerProfile);
-  const { profile: resource, contributor } = resourceProfile(normalizedResourceProfile, evaluator);
+  const evaluatorResult = evaluatorProfileResult(evaluatorProfileResultInput, binding.ownerProfile);
+  const evaluator = evaluatorResult.normalized;
+  const { normalized: resource, identity: resourceIdentity, contributor } = resourceProfileResult(resourceProfileResultInput, evaluatorResult);
   exactKeys(options, ['allocations'], 'TENSOR_EVALUATOR_RESOURCE_BINDING_OPTIONS', 'resource-binding options');
   if (!Array.isArray(options.allocations)) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_OPTIONS', 'allocations must be an array');
   const logicalByParameter = logicalDescriptors(binding);
@@ -252,40 +244,27 @@ export function createTensorEvaluatorResourceBinding(programBindingInput, normal
     const chain = exactResourceChain(resource, contributor.id, evaluatorResource);
     const physicalOffset = assertPhysicalEnvelope(descriptor, evaluatorResource, chain, localOffset);
     views.push({
-      parameterName,
-      logicalId: descriptor.logicalId,
-      logicalKind: descriptor.logicalKind,
-      evaluatorResource: evaluatorResource.id,
-      evaluatorResourceClass: evaluatorResource.class,
-      resourceClass: chain.resourceClass.id,
-      partition: chain.partition.id,
-      pool: chain.pool.id,
+      parameterName, logicalId: descriptor.logicalId, logicalKind: descriptor.logicalKind,
+      evaluatorResource: evaluatorResource.id, evaluatorResourceClass: evaluatorResource.class,
+      resourceClass: chain.resourceClass.id, partition: chain.partition.id, pool: chain.pool.id,
       providerRequirement: chain.provider.id,
       access: descriptor.requiredAccess.includes('write') ? (descriptor.requiredAccess.includes('read') ? 'read-write' : 'write') : 'read',
       requiredAccess: [...descriptor.requiredAccess],
-      view: {
-        dtype: descriptor.dtype,
-        byteOffset: physicalOffset.toString(),
-        elementCount: descriptor.elementCount.toString(),
-      },
-      byteLength: descriptor.byteLength.toString(),
-      localByteOffset: localOffset.toString(),
-      initialization: descriptor.initialization,
+      view: { dtype: descriptor.dtype, byteOffset: physicalOffset.toString(), elementCount: descriptor.elementCount.toString() },
+      byteLength: descriptor.byteLength.toString(), localByteOffset: localOffset.toString(), initialization: descriptor.initialization,
     });
   }
-  for (let leftIndex = 0; leftIndex < views.length; leftIndex += 1) {
-    for (let rightIndex = leftIndex + 1; rightIndex < views.length; rightIndex += 1) {
-      const left = { pool: views[leftIndex].pool, byteOffset: BigInt(views[leftIndex].view.byteOffset), byteLength: BigInt(views[leftIndex].byteLength) };
-      const right = { pool: views[rightIndex].pool, byteOffset: BigInt(views[rightIndex].view.byteOffset), byteLength: BigInt(views[rightIndex].byteLength) };
-      if (overlap(left, right)) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_OVERLAP', `${views[leftIndex].parameterName} and ${views[rightIndex].parameterName} overlap in ${left.pool}`);
-    }
+  for (let leftIndex = 0; leftIndex < views.length; leftIndex += 1) for (let rightIndex = leftIndex + 1; rightIndex < views.length; rightIndex += 1) {
+    const left = { pool: views[leftIndex].pool, byteOffset: BigInt(views[leftIndex].view.byteOffset), byteLength: BigInt(views[leftIndex].byteLength) };
+    const right = { pool: views[rightIndex].pool, byteOffset: BigInt(views[rightIndex].view.byteOffset), byteLength: BigInt(views[rightIndex].byteLength) };
+    if (overlap(left, right)) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_OVERLAP', `${views[leftIndex].parameterName} and ${views[rightIndex].parameterName} overlap in ${left.pool}`);
   }
   const providers = [...new Set(views.map(({ providerRequirement }) => providerRequirement))].sort();
-  const result = {
-    kind: 'cuda-mcgs-tensor-evaluator-resource-binding',
-    contract: RESOURCE_BINDING_CONTRACT,
+  return freeze({
+    kind: 'cuda-mcgs-tensor-evaluator-resource-binding', contract: RESOURCE_BINDING_CONTRACT,
     ownerProfile: evaluator.id,
-    resourcePlan: resource.id,
+    evaluatorProfileIdentity: { ...evaluatorResult.identity },
+    resourcePlan: { id: resource.id, identity: { ...resourceIdentity } },
     evaluatorContributor: contributor.id,
     allocations: views,
     usesProviderRequirements: providers,
@@ -295,14 +274,14 @@ export function createTensorEvaluatorResourceBinding(programBindingInput, normal
       providerRequirements: 'resource-owned-references-only',
     },
     claimLimits: [
+      'exact-evaluator-and-resource-plan-identities-bound',
       'explicit-caller-owned-byte-placement',
       'resource-plan-policy-not-created-or-mutated',
       'provider-requirements-referenced-not-owned',
       'progress-runtime-entry-and-service-order-not-included',
       'no-native-or-provider-qualification',
     ],
-  };
-  return freeze(result);
+  });
 }
 
 export const tensorEvaluatorResourceBindingConstants = Object.freeze({

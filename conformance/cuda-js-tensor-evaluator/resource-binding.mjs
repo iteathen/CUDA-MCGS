@@ -81,7 +81,8 @@ function evaluatorProfileInput() {
   };
 }
 
-function resourceProfile(evaluator) {
+function resourceProfile(evaluatorResult) {
+  const evaluator = evaluatorResult.normalized;
   const owner = 'owner.evaluator.tensor';
   const classFor = (resource) => ({
     id: `resource.class-${resource.class}`, contributor: owner, sourceResource: resource.id, unit: 'bytes',
@@ -104,7 +105,7 @@ function resourceProfile(evaluator) {
   return {
     schema: 'cuda-mcgs.resource-profile/0.2.0', representation: 'cuda-mcgs.search-ir/0.2.0', status: 'accepted', contract: { id: 'SPEC-0011' }, id: 'resource.tensor-fixture',
     contributors: [
-      { id: owner, contract: { id: 'SPEC-0009' }, profile: { id: evaluator.id } },
+      { id: owner, contract: { id: 'SPEC-0009' }, profile: { id: evaluator.id, schema: { id: evaluator.schema }, identity: { ...evaluatorResult.identity } } },
       { id: 'owner.evaluator.analytic', contract: { id: 'SPEC-0009' }, profile: { id: 'evaluator.analytic' } },
     ],
     classes: [...classes, nonTensorClass],
@@ -124,7 +125,9 @@ const runtime = createTensorEvaluatorRuntimeContribution(connector);
 const requirements = runtime.requiredCudaJsContracts.map(schemaReference);
 const boundEvaluator = bindTensorEvaluatorProfileProgram(evaluatorProfileInput(), runtime, { publicRequirements: requirements });
 const program = createTensorEvaluatorProgramBinding(runtime, boundEvaluator, { id: 'evaluator.tensor.program-binding', workClasses });
-const resources = resourceProfile(boundEvaluator);
+const evaluatorResult = { normalized: boundEvaluator, identity: { algorithm: 'sha256', sha256: sha256(JSON.stringify(boundEvaluator)) } };
+const resources = resourceProfile(evaluatorResult);
+const resourceResult = { normalized: resources, identity: { algorithm: 'sha256', sha256: sha256(JSON.stringify(resources)) } };
 const runtimeByParameter = new Map(program.resourceRequirements.map((entry) => [entry.parameterName, entry]));
 const tensorByParameter = new Map(program.tensorBindings.map((entry) => [entry.parameterName, entry]));
 let inputOffset = 0;
@@ -151,10 +154,11 @@ for (const entry of program.tensorBindings) {
   place(entry.parameterName, target, entry.byteLength, 4);
 }
 
-const binding = createTensorEvaluatorResourceBinding(program, boundEvaluator, resources, { allocations });
+const binding = createTensorEvaluatorResourceBinding(program, evaluatorResult, resourceResult, { allocations });
 assert.equal(binding.contract, tensorEvaluatorResourceBindingConstants.contract);
 assert.equal(binding.ownerProfile, boundEvaluator.id);
-assert.equal(binding.resourcePlan, resources.id);
+assert.deepEqual(binding.evaluatorProfileIdentity, evaluatorResult.identity);
+assert.deepEqual(binding.resourcePlan, { id: resources.id, identity: resourceResult.identity });
 assert.equal(binding.allocations.length, runtimeByParameter.size + tensorByParameter.size);
 assert(binding.allocations.every(({ resourceClass }) => resources.classes.find(({ id }) => id === resourceClass)?.contributor === 'owner.evaluator.tensor'));
 assert(binding.allocations.every(({ providerRequirement }) => resources.providerRequirements.some(({ id }) => id === providerRequirement)));
@@ -163,6 +167,7 @@ assert(binding.allocations.some(({ parameterName, evaluatorResourceClass, requir
 assert(binding.allocations.some(({ parameterName, evaluatorResourceClass }) => parameterName === 'weights' && evaluatorResourceClass === 'artifact'));
 assert(!binding.usesProviderRequirements.includes('resource.provider-non-tensor'));
 assert.equal(binding.ownership.providerRequirements, 'resource-owned-references-only');
+assert(binding.claimLimits.includes('exact-evaluator-and-resource-plan-identities-bound'));
 assert(binding.claimLimits.includes('progress-runtime-entry-and-service-order-not-included'));
 assert.equal('progress' in binding, false);
 assert(Object.isFrozen(binding));
@@ -170,40 +175,44 @@ assert(Object.isFrozen(binding.allocations[0]));
 
 const missing = allocations.slice(1);
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(program, boundEvaluator, resources, { allocations: missing }),
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, resourceResult, { allocations: missing }),
   (error) => error instanceof TensorEvaluatorConnectorError && error.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_COVERAGE',
 );
 const wrongSemantic = structuredClone(allocations);
 wrongSemantic.find(({ parameterName }) => parameterName === 'mcgsEvalControl32').evaluatorResource = 'evaluator.tensor.resource-input';
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(program, boundEvaluator, resources, { allocations: wrongSemantic }),
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, resourceResult, { allocations: wrongSemantic }),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_SEMANTIC',
 );
 const overlap = structuredClone(allocations);
-const featureAllocation = overlap.find(({ parameterName }) => parameterName === 'features');
-featureAllocation.byteOffset = '0';
+overlap.find(({ parameterName }) => parameterName === 'features').byteOffset = '0';
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(program, boundEvaluator, resources, { allocations: overlap }),
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, resourceResult, { allocations: overlap }),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_OVERLAP',
 );
 const outOfRange = structuredClone(allocations);
 outOfRange.find(({ parameterName }) => parameterName === 'weights').byteOffset = '1020';
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(program, boundEvaluator, resources, { allocations: outOfRange }),
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, resourceResult, { allocations: outOfRange }),
   (error) => ['TENSOR_EVALUATOR_RESOURCE_BINDING_RANGE', 'TENSOR_EVALUATOR_RESOURCE_BINDING_ALIGNMENT'].includes(error?.code),
 );
 const providerDrift = structuredClone(resources);
 providerDrift.providerRequirements.find(({ id }) => id === 'resource.provider-workspace').access = ['read', 'write'];
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(program, boundEvaluator, providerDrift, { allocations }),
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, { ...resourceResult, normalized: providerDrift }, { allocations }),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_ACCESS',
 );
 const crossOwner = structuredClone(resources);
-const workspaceClass = crossOwner.classes.find(({ sourceResource }) => sourceResource === 'evaluator.tensor.resource-workspace');
-workspaceClass.contributor = 'owner.evaluator.analytic';
+crossOwner.classes.find(({ sourceResource }) => sourceResource === 'evaluator.tensor.resource-workspace').contributor = 'owner.evaluator.analytic';
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(program, boundEvaluator, crossOwner, { allocations }),
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, { ...resourceResult, normalized: crossOwner }, { allocations }),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_CHAIN',
+);
+const staleEvaluatorContributor = structuredClone(resources);
+staleEvaluatorContributor.contributors.find(({ id }) => id === 'owner.evaluator.tensor').profile.identity.sha256 = 'f'.repeat(64);
+assert.throws(
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, { ...resourceResult, normalized: staleEvaluatorContributor }, { allocations }),
+  (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_IDENTITY',
 );
 
 console.log(JSON.stringify({
@@ -212,6 +221,7 @@ console.log(JSON.stringify({
   allocations: binding.allocations.length,
   providerRequirements: binding.usesProviderRequirements.length,
   cases: [
+    'exact-evaluator-resource-plan-identity-binding',
     'complete-pointer-coverage',
     'explicit-caller-byte-placement',
     'semantic-class-to-resource-chain-validation',
