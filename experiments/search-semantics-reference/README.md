@@ -4,7 +4,7 @@ Provides CUDA-free behavioral oracles and an integration gate for the accepted s
 
 ## Run
 
-Use Node.js 26 or newer from a repository checkout. The command regenerates the evidence chain and runs the integration/mutation gates. Physical CUDA, performance, and product acceptance remain separate.
+Use Node.js 24 or newer from a repository checkout. The command regenerates the evidence chain and runs the integration/mutation gates. Physical CUDA, performance, and product acceptance remain separate.
 
 From the repository root:
 

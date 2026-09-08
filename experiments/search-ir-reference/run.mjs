@@ -12,7 +12,7 @@ const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
 const fixtureRoot = path.join(experimentRoot, 'fixtures');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Search IR reference requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Search IR reference requires Node 24 or newer; found ${process.version}`);
 
 async function readJson(relative) {
   return JSON.parse(await readFile(path.join(experimentRoot, relative), 'utf8'));

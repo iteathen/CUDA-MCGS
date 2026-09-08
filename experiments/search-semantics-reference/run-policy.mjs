@@ -16,7 +16,7 @@ const policyProjectionPath = path.join(repositoryRoot, 'conformance', 'search-co
 const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 const policySpecPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0008-search-policy-and-backup.md');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Policy reference requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Policy reference requires Node 24 or newer; found ${process.version}`);
 
 async function readJson(absolutePath, missingCode) {
   try {

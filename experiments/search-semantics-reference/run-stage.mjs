@@ -18,7 +18,7 @@ const composerEvidencePath = path.join(composerRoot, 'build', 'evidence.json');
 const specPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0003-search-stage-and-extension-surface.md');
 const coveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Stage reference requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Stage reference requires Node 24 or newer; found ${process.version}`);
 
 async function readJson(absolutePath, missingCode) {
   try { return JSON.parse(await readFile(absolutePath, 'utf8')); }

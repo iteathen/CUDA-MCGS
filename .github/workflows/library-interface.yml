@@ -26,3 +26,31 @@ jobs:
           node-version: 26.7.0
       - name: Pack, install, and exercise public library surface
         run: node scripts/run-library-interface.mjs
+
+  node24-compatibility:
+    name: Node 24 portable compatibility (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - name: Qualify complete portable reference chain
+        run: node scripts/run-engine-reference-integration.mjs
+      - name: Qualify runtime adapter
+        run: node scripts/run-cuda-js-runtime-adapter.mjs
+      - name: Qualify public Device-JS import composition
+        run: node scripts/run-device-js-import-composition.mjs
+      - name: Qualify Tensor evaluator
+        run: node scripts/run-cuda-js-tensor-evaluator.mjs
+      - name: Qualify installed Tensor evaluator
+        run: node conformance/cuda-js-tensor-evaluator/package.mjs
+      - name: Qualify installed public library
+        run: node scripts/run-library-interface.mjs

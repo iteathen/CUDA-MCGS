@@ -4,7 +4,7 @@ Validates Search IR normalization, composition, identity, deletion, and evidence
 
 ## Run
 
-Use Node.js 26 or newer from a repository checkout. This is CUDA-free evidence; it does not qualify GPU execution.
+Use Node.js 24 or newer from a repository checkout. This is CUDA-free evidence; it does not qualify GPU execution.
 
 From the repository root:
 

@@ -14,7 +14,7 @@ const composerEvidencePath = path.join(experimentRoot, 'build', 'evidence.json')
 const coveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 const specPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0004-async-stage-channels.md');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS Channel evidence requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Channel evidence requires Node 24 or newer; found ${process.version}`);
 
 async function readJson(absolutePath, missingMessage = null) {
   try { return JSON.parse(await readFile(absolutePath, 'utf8')); }
