@@ -16,6 +16,8 @@ jobs:
         with:
           ref: feature/124-explicit-runtime-metadata-audit
           fetch-depth: 0
+      - name: Repair patch quoting
+        run: sed -i 's/${name}/\\${name}/g' .github/authorized-124-audit-oracle-tightening.cjs
       - name: Tighten oracle
         run: node .github/authorized-124-audit-oracle-tightening.cjs
       - name: Remove transport and qualify
