@@ -16,6 +16,8 @@ The sequential atomic shim and resource-layout composition are only CUDA-free se
 
 The installed-package falsifier verifies `cuda-mcgs/evaluator/cuda-js-tensor` exposes the connector, runtime-contribution, program-binding and resource-binding production builders after `npm pack`/install while this conformance directory remains physically absent and unexported.
 
+The Resource capsule also qualifies the public artifact-input binding using explicit model and table owner selections, real normalized evaluator/Resource identities, read-only partition-derived views, immutable lifecycle/provenance records, and failures for identity, owner, lifetime, bounds, access and placement drift. The installed-package check covers this export too. This is metadata admission only: payload verification/residence, full pointer composition, Progress and physical cleanup remain unproved.
+
 Run:
 
 ```sh

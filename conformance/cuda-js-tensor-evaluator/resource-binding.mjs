@@ -11,6 +11,7 @@ import {
   createTensorEvaluatorConnector,
   createTensorEvaluatorProgramBinding,
   createTensorEvaluatorResourceBinding,
+  createTensorEvaluatorArtifactInputBinding,
   createTensorEvaluatorRuntimeContribution,
   tensorEvaluatorResourceBindingConstants,
 } from '../../adapters/evaluators/cuda-js-tensor/index.mjs';
@@ -36,7 +37,7 @@ const schemaReference = (id) => ({ id, version: id.split('/').at(-1), sha256: sh
 const withSchema = (result, schemaSha) => ({ ...result, schemaSha });
 const contentIdentity = ({ algorithm, sha256: digest }) => ({ algorithm, sha256: digest });
 
-function fakeTensorDeviceProgram() {
+function fakeTensorDeviceProgram(sharedName = 'weights') {
   const parameters = [
     { parameterIndex: 0, parameterName: 'itemIndex', role: 'item-index', type: 'u32', dtype: 'u32', access: 'read', itemVarying: false, byteLength: 0 },
     { parameterIndex: 1, parameterName: 'features', role: 'input', type: 'ptr<f32>', dtype: 'f32', access: 'read', itemVarying: true, byteLength: 16 },
@@ -44,6 +45,7 @@ function fakeTensorDeviceProgram() {
     { parameterIndex: 3, parameterName: 'scores', role: 'output', type: 'ptr<f32>', dtype: 'f32', access: 'write', itemVarying: true, byteLength: 16 },
     { parameterIndex: 4, parameterName: 'scratch', role: 'workspace', type: 'ptr<f32>', dtype: 'f32', access: 'read-write', itemVarying: true, byteLength: 32 },
   ];
+  parameters[2].parameterName = sharedName;
   const fn = { name: 'tensorRunItem', parameters: parameters.map(({ parameterName: name, type }) => ({ name, type })), returns: 'u32' };
   const library = {
     schemaVersion: 1,
@@ -62,7 +64,7 @@ function fakeTensorDeviceProgram() {
     parameters,
     inputs: [
       { ...parameters[1], name: 'features', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 64 }, valueId: 'value.features', elementCount: 4 },
-      { ...parameters[2], name: 'weights', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 128 }, valueId: 'value.weights', elementCount: 4 },
+      { ...parameters[2], name: sharedName, spec: { dtype: 'f32', dtypeWidth: 4, alignment: 128 }, valueId: `value.${sharedName}`, elementCount: 4 },
     ],
     outputs: [{ ...parameters[3], name: 'scores', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 32 }, valueId: 'value.scores', perItemElements: 2, elementCount: 4 }],
     workspace: [{ ...parameters[4], perItemElements: 4, elementCount: 8, alignmentBytes: 256 }],
@@ -91,6 +93,10 @@ const selectedFixture = baselineEvaluatorFixtures[0];
 const selectedInput = structuredClone(selectedFixture.input);
 selectedInput.request.maxActive = '3';
 selectedInput.batching.maximumItems = '2';
+// The selected evaluator owner, not the Tensor adapter, chooses this artifact
+// resource and its finite whole-payload representation.
+const selectedArtifactResource = selectedInput.resources.find(({ class: kind }) => kind === 'artifact');
+Object.assign(selectedArtifactResource, { minimum: '16', maximum: '16', alignment: '128' });
 const originalSemanticResources = structuredClone(selectedInput.resources);
 const connector = createTensorEvaluatorConnector(fakeTensorDeviceProgram(), { requestCapacity: 3 });
 const runtime = createTensorEvaluatorRuntimeContribution(connector);
@@ -243,6 +249,78 @@ assert.throws(
   () => bindTensorEvaluatorProfileResources(conflictingResource, runtime),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE',
 );
+
+const artifactSelections = [{
+  parameterName: 'weights',
+  artifactId: evaluatorResult.normalized.artifacts[0].id,
+  artifactIdentity: contentIdentity(evaluatorResult.normalized.artifacts[0].identity),
+  resourceId: selectedArtifactResource.id,
+}];
+const artifactInputs = createTensorEvaluatorArtifactInputBinding(runtime, evaluatorResult, resourceResult, artifactSelections);
+assert.equal(artifactInputs.inputs.length, 1);
+const weights = artifactInputs.inputs[0];
+assert.equal(weights.evaluatorResource, selectedArtifactResource.id);
+assert.equal(weights.evaluatorResourceClass, 'artifact');
+assert.equal(weights.access, 'read');
+assert.equal(weights.byteLength, '16');
+assert.equal(weights.alignment, '128');
+assert.equal(weights.view.byteOffset, resourceResult.normalized.partitions.find(({ id }) => id === weights.partition).offset);
+assert.deepEqual(weights.artifact, evaluatorResult.normalized.artifacts[0]);
+assert.equal(weights.payload.sha256, weights.artifact.provenance.contentSha256);
+assert(Object.isFrozen(weights.artifact.provenance));
+assert(Object.isFrozen(artifactInputs.inputs));
+assert.deepEqual(createTensorEvaluatorArtifactInputBinding(runtime, evaluatorResult, resourceResult, artifactSelections), artifactInputs);
+
+const artifactCases = [
+  ['missing-selection', 'TENSOR_EVALUATOR_ARTIFACT_SELECTION', (subject) => { subject.selections = []; }],
+  ['unknown-parameter', 'TENSOR_EVALUATOR_ARTIFACT_SELECTION', (subject) => { subject.selections[0].parameterName = 'features'; }],
+  ['caller-placement', 'TENSOR_EVALUATOR_ARTIFACT_SELECTION', (subject) => { subject.selections[0].byteOffset = '0'; }],
+  ['unknown-owner', 'TENSOR_EVALUATOR_ARTIFACT_OWNER', (subject) => { subject.selections[0].artifactId = 'evaluator.unknown'; }],
+  ['artifact-identity-drift', 'TENSOR_EVALUATOR_ARTIFACT_IDENTITY', (subject) => { subject.selections[0].artifactIdentity.sha256 = '0'.repeat(64); }],
+  ['mutable-artifact', 'TENSOR_EVALUATOR_ARTIFACT_LIFETIME', (subject) => { subject.evaluator.normalized.artifacts[0].mutability = 'selected-mutable'; }],
+  ['session-artifact', 'TENSOR_EVALUATOR_ARTIFACT_LIFETIME', (subject) => { subject.evaluator.normalized.artifacts[0].scope = 'session'; }],
+  ['late-residence', 'TENSOR_EVALUATOR_ARTIFACT_LIFETIME', (subject) => { subject.evaluator.normalized.artifacts[0].residentBeforeIgnition = false; }],
+  ['byte-bound', 'TENSOR_EVALUATOR_ARTIFACT_EXTENT', (subject) => { subject.evaluator.normalized.artifacts[0].maxBytes = '15'; }],
+  ['element-bound', 'TENSOR_EVALUATOR_ARTIFACT_EXTENT', (subject) => { subject.evaluator.normalized.artifacts[0].maxElements = '3'; }],
+  ['non-artifact-resource', 'TENSOR_EVALUATOR_ARTIFACT_OWNER', (subject) => { subject.selections[0].resourceId = representationResources[0].id; }],
+  ['alignment-drift', 'TENSOR_EVALUATOR_RESOURCE_BINDING_ALIGNMENT', (subject) => { subject.evaluator.normalized.resources.find(({ id }) => id === selectedArtifactResource.id).alignment = '64'; }],
+  ['resource-byte-drift', 'TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE', (subject) => { subject.evaluator.normalized.resources.find(({ id }) => id === selectedArtifactResource.id).maximum = '32'; }],
+  ['provider-access-drift', 'TENSOR_EVALUATOR_RESOURCE_BINDING_ACCESS', (subject) => { subject.resource.normalized.providerRequirements.find(({ id }) => id === weights.providerRequirement).access = ['write']; }],
+  ['runtime-source-drift', 'TENSOR_EVALUATOR_RESOURCE_BINDING_IDENTITY', (subject) => { subject.runtime.device.source += '\n// drift'; }],
+];
+for (const [id, code, mutate] of artifactCases) {
+  // Runtime includes callable import functions; only its data/source is mutated.
+  const subject = { runtime: { ...runtime, device: { ...runtime.device } }, evaluator: structuredClone(evaluatorResult), resource: structuredClone(resourceResult), selections: structuredClone(artifactSelections) };
+  mutate(subject);
+  assert.throws(() => createTensorEvaluatorArtifactInputBinding(subject.runtime, subject.evaluator, subject.resource, subject.selections), (error) => error instanceof TensorEvaluatorConnectorError && error.code === code, id);
+}
+// A table evaluator with a differently named callable input uses the same
+// binding contract. Rebuild real owner identities and Resource composition.
+const tableRuntime = createTensorEvaluatorRuntimeContribution(createTensorEvaluatorConnector(fakeTensorDeviceProgram('lookupEntries'), { requestCapacity: 3 }));
+const tableInput = structuredClone(selectedInput);
+tableInput.artifacts[0].kind = 'table';
+tableInput.artifacts[0].identity = { algorithm: 'sha256', sha256: sha256('independent-table-artifact') };
+const tableProgram = bindTensorEvaluatorProfileProgram(tableInput, tableRuntime, { publicRequirements: tableRuntime.requiredCudaJsContracts.map(schemaReference) });
+const tableEvaluator = normalizeEvaluatorProfile(bindTensorEvaluatorProfileResources(tableProgram, tableRuntime), inspected, selectedFixture.domain, selectedFixture.graph);
+const tableReference = { ...exactEvaluatorReference, identity: contentIdentity(tableEvaluator.identity) };
+const tablePolicy = normalizePolicyProfile(buildPolicyProfile('synthetic-vector-combined', inspected, selectedFixture.domain, selectedFixture.graph, domainSchemaSha, graphSchemaSha,
+  { evaluatorMode: 'combined', evaluatorProfile: tableReference, value: 'vector', reservation: true, admissionMode: 'sampled', stochastic: true }), inspected, selectedFixture.domain, selectedFixture.graph);
+const tableResourceInput = buildResourceProfile('table-input-binding', inspected, { domain: selectedFixture.domain, graph: selectedFixture.graph, policy: tablePolicy, evaluator: tableEvaluator },
+  { domain: domainSchemaSha, graph: graphSchemaSha, policy: policySchemaSha, evaluator: evaluatorSchemaSha });
+const tableResource = normalizeResourceProfile(tableResourceInput, inspected, [
+  ...domainProfiles.map((result) => withSchema(result, domainSchemaSha)), ...graphProfiles.map((result) => withSchema(result, graphSchemaSha)),
+  withSchema(tablePolicy, policySchemaSha), withSchema(tableEvaluator, evaluatorSchemaSha),
+]);
+const tableBinding = createTensorEvaluatorArtifactInputBinding(tableRuntime, tableEvaluator, tableResource, [{ ...artifactSelections[0], parameterName: 'lookupEntries', artifactIdentity: tableInput.artifacts[0].identity }]);
+assert.equal(tableBinding.inputs[0].artifact.kind, 'table');
+assert.equal(tableBinding.inputs[0].parameterName, 'lookupEntries');
+assert.notDeepEqual(tableBinding.identity, artifactInputs.identity);
+// Removing the adapter selection does not mutate or remove owner artifacts or
+// Resource entries: a non-Tensor consumer can retain them.
+assert.deepEqual(selectedInput.resources, originalSemanticResources);
+assert.equal(evaluatorResult.normalized.artifacts[0].kind, 'model');
+assert.deepEqual(createTensorEvaluatorArtifactInputBinding(runtime, evaluatorResult, resourceResult, artifactSelections), artifactInputs);
+console.log(JSON.stringify({ schema: 'cuda-mcgs.tensor-evaluator-artifact-input-portable-evidence/0.1.0', status: 'pass', cases: ['explicit-selected-artifact', 'resource-owned-read-only-view', 'immutable-owner-lifecycle-record', 'independent-table-owner-and-parameter-name', 'selection-does-not-mutate-shared-owners', ...artifactCases.map(([id]) => id)], claim: 'binding-metadata-only' }));
 
 console.log(JSON.stringify({
   schema: 'cuda-mcgs.tensor-evaluator-resource-layout-binding-portable-evidence/0.3.0',

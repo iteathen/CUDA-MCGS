@@ -8,6 +8,20 @@
 
 ## Required outcome
 
+### Resumption after protected PR #262 — 2026-09-08
+
+The original proposal below records the earlier runtime work. Its sequencing is superseded by `next_step.yaml`: selected immutable input ownership, complete pointer ABI, Progress integration, terminal cross-owner cleanup, then physical qualification. Resume from `d93dde5358df0f5304ecf4af02305b36a0fa8d78`, preserving the protected ownership refactor. Current branch: `codex/124-immutable-input-binding`. Account-global `iteathen/.github/AGENTS.md` routes to `AGENT_LOCAL.md`; agent-system remediation belongs to a separate worker.
+
+The first bounded unit verifies an explicit Tensor input → existing selected evaluator artifact → existing evaluator Resource entry relationship. SPEC-0009 EVAL-RESIDENT-001/004, EVAL-LIFE-002, EVAL-COMPAT-002 and EVAL-CLEANUP-001 own identity/residence/lifetime; SPEC-0011 owns physical placement and accounting. Public Tensor descriptors remain the only source of Tensor byte extents and alignment. No lower-layer change is required for this metadata unit.
+
+Selected design: support distinct whole immutable engine-scoped artifacts already admitted in the normalized evaluator profile, with explicit exact artifact identities and existing exact-size Resource entries. Emit immutable read-only bindings plus a canonical composition identity. Reuse the existing Resource chain verifier. Do not expand Program Binding or the Resource planner. The first profile deliberately rejects aliasing/subranges and other owner/lifetime classes until their contracts are composed.
+
+Rejected alternatives: inferring artifact meaning from `weights` or equal byte sizes; synthesizing generic artifact resources in the Tensor adapter; accepting caller placement offsets; adding Tensor-specific fields to universal evaluator schemas; implementing Progress before the input/pointer ABI is complete. A mapping identity outside evaluator normalization is usable only if the subsequent runtime composition binds it: this unit does not claim that end-to-end identity closure yet.
+
+Acceptance for this unit: real evaluator/Resource normalization; exact selected artifact identity, extent/alignment/access and Resource placement checks; a materially different table artifact and input name; deterministic immutable output; negative identity/lifetime/extent/placement cases; no mutation of selected owner records; installed-package export and exact-source checks. Qualification remains portable metadata-only. Payload digest admission, actual device residence, full evaluator deletion/substitution, complete pointer ABI, Progress and terminal cleanup remain open.
+
+Rollback is removal of this optional binding API and its owner-local tests; no persistent runtime or remote state is created. Retain the task branch/worktree for continuation. Required checks are the Tensor evaluator capsule, package boundary, relevant library/Resource/evaluator checks and the unchanged documentation validator. The known root-redirect validator contradiction is reported, not bypassed. Broader runtime/peer checks become mandatory when subsequent runtime composition changes.
+
 Implement one optional, product-neutral CUDA-MCGS evaluator runtime contribution that can keep evaluator request accumulation, finite batching, freshness validation, Tensor item execution, scatter/readiness/publication, failure/cancellation mapping and terminal disposition in the composed device program without host gather/launch/poll/relaunch progression.
 
 The implementation must consume CUDA-JS-Tensor only through the already protected public Tensor connector/device-import boundary. It must not make Tensor mandatory, move Tensor mathematics into CUDA-MCGS, move evaluator scheduling into the Tensor adapter, or add a private/native CUDA workaround.

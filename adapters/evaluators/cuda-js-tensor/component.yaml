@@ -7,7 +7,7 @@
     "product_area": "adapters",
     "path": "adapters/evaluators/cuda-js-tensor",
     "purpose": "Admit an injected public CUDA-JS-Tensor TensorDeviceProgram, emit a finite evaluator-owned restricted Device-JS runtime contribution, bind its exact source/function/import identity into selected evaluator-program ownership, and project its exact representation bytes through Resource-owned physical placement without taking over Tensor mathematics, Resource planning, Progress scheduling or lower CUDA ownership.",
-    "roles": ["adapter", "evaluator-integration", "device-runtime-contribution", "program-binding", "resource-binding"],
+    "roles": ["adapter", "evaluator-integration", "device-runtime-contribution", "program-binding", "resource-binding", "artifact-input-binding"],
     "governing_authority": [
       "docs/specs/SPEC-0009-evaluator-contract.md",
       "docs/specs/SPEC-0011-finite-search-resources.md",
@@ -22,7 +22,8 @@
         "product-neutral scalar, vector or multi-output Tensor evaluator payloads",
         "finite request capacity with one first-realization active Tensor batch and partial-batch progress",
         "generic Program Package composition through evaluator-owned source/function/import fragments",
-        "Resource-owned physical composition of exact evaluator representation byte resources"
+        "Resource-owned physical composition of exact evaluator representation byte resources",
+        "explicit selection of existing immutable engine-scoped evaluator artifacts and exact Resource entries for whole shared Tensor inputs"
       ],
       "excluded_cases": [
         "Tensor mathematics or TensorProgram/TensorPlan interpretation",

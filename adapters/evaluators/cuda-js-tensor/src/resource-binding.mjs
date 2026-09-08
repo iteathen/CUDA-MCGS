@@ -354,11 +354,10 @@ function requireAccess(envelope, required, label) {
   for (const access of required) if (!envelope.includes(access)) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_ACCESS', `${label} omits required ${access} access`);
 }
 
-function bindDescriptor(descriptor, evaluator, resource, contributor) {
-  const evaluatorResourceId = generatedResourceId(evaluator.id, descriptor);
+function bindDescriptor(descriptor, evaluator, resource, contributor, evaluatorResourceId = generatedResourceId(evaluator.id, descriptor)) {
   const evaluatorResource = evaluator.resources.find(({ id }) => id === evaluatorResourceId);
   if (!evaluatorResource) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE', `${descriptor.parameterName} evaluator representation resource ${evaluatorResourceId} is absent`);
-  const expected = resourceRecord(evaluator.id, descriptor);
+  const expected = { ...resourceRecord(evaluator.id, descriptor), id: evaluatorResourceId };
   if (!sameResource(evaluatorResource, expected)) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE', `${evaluatorResourceId} differs from the exact runtime layout`);
   const chain = exactResourceChain(resource, contributor.id, evaluatorResource);
   const byteLength = descriptor.byteLength;
@@ -450,6 +449,98 @@ export function createTensorEvaluatorResourceBinding(runtimeContributionInput, e
       'resource-plan-policy-and-placement-not-created-or-mutated',
       'shared-immutable-tensor-input-binding-remains-explicit',
       'progress-runtime-entry-and-service-order-not-included',
+      'no-native-or-provider-qualification',
+    ],
+  });
+}
+
+// The selection is supplied by the evaluator composition owner. Parameter names,
+// equal extents and Tensor roles cannot establish artifact meaning on their own.
+export function createTensorEvaluatorArtifactInputBinding(runtimeContributionInput, evaluatorProfileResultInput, resourceProfileResultInput, selections) {
+  const contribution = runtime(runtimeContributionInput);
+  const evaluatorResult = evaluatorProfileResult(evaluatorProfileResultInput, contribution);
+  const evaluator = evaluatorResult.normalized;
+  const { normalized: resource, identity: resourceIdentity, contributor } = resourceProfileResult(resourceProfileResultInput, evaluatorResult);
+  const { external } = descriptors(contribution.resources, contribution.tensorBindings);
+  if (!Array.isArray(selections) || selections.length !== external.length) {
+    fail('TENSOR_EVALUATOR_ARTIFACT_SELECTION', 'every shared Tensor input requires exactly one explicit artifact selection');
+  }
+  const byParameter = new Map();
+  const artifactIds = new Set();
+  const resourceIds = new Set();
+  for (const selection of selections) {
+    exactKeys(selection, ['parameterName', 'artifactId', 'artifactIdentity', 'resourceId'], 'TENSOR_EVALUATOR_ARTIFACT_SELECTION', 'artifact input selection');
+    if (!external.some(({ parameterName }) => parameterName === selection.parameterName) || byParameter.has(selection.parameterName)) {
+      fail('TENSOR_EVALUATOR_ARTIFACT_SELECTION', 'artifact selection has an unknown or duplicate shared Tensor parameter');
+    }
+    namespacedId(selection.artifactId, 'selected artifact id');
+    namespacedId(selection.resourceId, 'selected artifact resource id');
+    // Shared subranges/aliasing need their own lifetime and encoding contract.
+    if (artifactIds.has(selection.artifactId) || resourceIds.has(selection.resourceId)) {
+      fail('TENSOR_EVALUATOR_ARTIFACT_SELECTION', 'the first artifact input profile requires distinct whole artifacts and resources');
+    }
+    artifactIds.add(selection.artifactId);
+    resourceIds.add(selection.resourceId);
+    byParameter.set(selection.parameterName, selection);
+  }
+  const inputs = external.map((descriptor) => {
+    const selection = byParameter.get(descriptor.parameterName);
+    const matches = evaluator.artifacts?.filter(({ id }) => id === selection.artifactId) ?? [];
+    if (matches.length !== 1) fail('TENSOR_EVALUATOR_ARTIFACT_OWNER', 'selected artifact is not uniquely owned by the selected evaluator');
+    const artifact = matches[0];
+    const identity = contentIdentity(selection.artifactIdentity, 'selected artifact identity');
+    if (artifact.identity?.algorithm !== identity.algorithm || artifact.identity.sha256 !== identity.sha256) {
+      fail('TENSOR_EVALUATOR_ARTIFACT_IDENTITY', 'selected artifact identity differs from the admitted evaluator artifact');
+    }
+    if (artifact.mutability !== 'immutable' || artifact.scope !== 'engine' || artifact.residentBeforeIgnition !== true) {
+      fail('TENSOR_EVALUATOR_ARTIFACT_LIFETIME', 'this profile requires immutable engine-scoped artifacts resident before ignition');
+    }
+    if (decimal(artifact.maxBytes, 'artifact maxBytes') < descriptor.byteLength || decimal(artifact.maxElements, 'artifact maxElements') < descriptor.elementCount) {
+      fail('TENSOR_EVALUATOR_ARTIFACT_EXTENT', 'Tensor input exceeds selected artifact bounds');
+    }
+    if (!HEX64.test(artifact.provenance?.contentSha256 ?? '')) fail('TENSOR_EVALUATOR_ARTIFACT_IDENTITY', 'artifact payload digest is absent');
+    const resources = evaluator.resources.filter(({ id }) => id === selection.resourceId);
+    if (resources.length !== 1 || resources[0].class !== 'artifact' || resources[0].scope !== 'per-engine') {
+      fail('TENSOR_EVALUATOR_ARTIFACT_OWNER', 'selected resource must be an existing evaluator-owned per-engine artifact resource');
+    }
+    const selectedResource = resources[0];
+    const alignment = decimal(selectedResource.alignment, 'artifact resource alignment');
+    if (alignment < descriptor.alignment || alignment % descriptor.alignment !== 0n) {
+      fail('TENSOR_EVALUATOR_RESOURCE_BINDING_ALIGNMENT', 'artifact resource does not satisfy public Tensor alignment');
+    }
+    const binding = bindDescriptor({
+      ...descriptor,
+      alignment,
+      resourceClass: 'artifact',
+      pressureStatus: selectedResource.pressureStatus,
+      initialization: 'artifact-before-ignition',
+    }, evaluator, resource, contributor, selection.resourceId);
+    return {
+      ...binding,
+      artifact: structuredClone(artifact),
+      payload: { byteLength: descriptor.byteLength.toString(), sha256: artifact.provenance.contentSha256 },
+    };
+  }).sort((left, right) => left.parameterName < right.parameterName ? -1 : left.parameterName > right.parameterName ? 1 : 0);
+  const normalized = {
+    contract: 'cuda-mcgs.tensor-evaluator-artifact-input-binding/0.1.0',
+    ownerProfile: evaluator.id,
+    evaluatorProfileIdentity: evaluatorResult.identity,
+    resourcePlan: { id: resource.id, identity: resourceIdentity },
+    inputs,
+  };
+  // Canonicalize all nested public records, not just caller selection order.
+  const canonical = (value) => Array.isArray(value) ? value.map(canonical)
+    : value !== null && typeof value === 'object'
+      ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])])) : value;
+  return freeze({
+    ...normalized,
+    identity: { algorithm: 'sha256', sha256: createHash('sha256').update(JSON.stringify(canonical(normalized)), 'utf8').digest('hex') },
+    claimLimits: [
+      'selected-evaluator-whole-immutable-engine-artifacts-only',
+      'resource-owned-placement',
+      'binding-identity-must-be-included-in-runtime-composition',
+      'payload-digest-admission-and-device-residence-not-executed',
+      'progress-and-terminal-resource-closure-not-executed',
       'no-native-or-provider-qualification',
     ],
   });
