@@ -131,13 +131,21 @@ export function assertRecorderTransaction(snapshot, executionPackage, capsule) {
   if (snapshot.inspectionRequests[0].source?.sha256 !== expectedSourceSha || snapshot.compileRequests[0].source?.sha256 !== expectedSourceSha) {
     fail('PAIR_EVIDENCE_TRANSACTION', 'recorded Device-JS inspect/compile input is not the execution-package source used by the adapter');
   }
-  if (JSON.stringify(snapshot.inspectionRequests[0].compile) !== JSON.stringify(snapshot.compileRequests[0].compile)) {
-    fail('PAIR_EVIDENCE_TRANSACTION', 'recorded Device-JS inspect and compile options differ');
+  for (const key of ['functions', 'imports', 'compile']) {
+    if (JSON.stringify(snapshot.inspectionRequests[0][key]) !== JSON.stringify(snapshot.compileRequests[0][key])) {
+      fail('PAIR_EVIDENCE_TRANSACTION', `recorded Device-JS inspect and compile ${key} differ`);
+    }
   }
   const inspectedProgram = snapshot.inspectionResults[0]?.deviceProgram;
   const compiled = snapshot.compilerResults[0];
-  if (!inspectedProgram?.sha256 || inspectedProgram.sha256 !== compiled.deviceProgram?.sha256) {
-    fail('PAIR_EVIDENCE_TRANSACTION', 'recorded Device-JS inspection and compilation identities differ');
+  const compiledProgram = compiled?.deviceProgram;
+  if (snapshot.inspectionResults[0]?.schemaVersion !== 1 || compiled?.schemaVersion !== 1 || !inspectedProgram || !compiledProgram) {
+    fail('PAIR_EVIDENCE_TRANSACTION', 'recorded Device-JS inspection/compilation results are incomplete');
+  }
+  const inspectedSha = inspectedProgram.sha256 ?? null;
+  const compiledSha = compiledProgram.sha256 ?? null;
+  if ((inspectedSha === null) !== (compiledSha === null) || (inspectedSha !== null && inspectedSha !== compiledSha)) {
+    fail('PAIR_EVIDENCE_TRANSACTION', 'recorded producer-supplied Device-JS inspection and compilation identities differ');
   }
   const artifact = compiled.linker?.artifact ?? compiled.compiler?.artifact;
   const load = snapshot.moduleLoads[0];
