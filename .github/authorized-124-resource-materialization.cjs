@@ -1,0 +1,295 @@
+const fs = require('node:fs');
+
+function replaceExact(path, oldText, newText) {
+  let text = fs.readFileSync(path, 'utf8');
+  const first = text.indexOf(oldText);
+  if (first < 0 || text.indexOf(oldText, first + 1) >= 0) throw new Error(`${path}: exact seam must occur once`);
+  text = text.slice(0, first) + newText + text.slice(first + oldText.length);
+  fs.writeFileSync(path, text);
+}
+
+function mutateSection(path, startMarker, endMarker, body) {
+  let text = fs.readFileSync(path, 'utf8');
+  const start = text.indexOf(startMarker);
+  if (start < 0 || text.indexOf(startMarker, start + 1) >= 0) throw new Error(`${path}: start marker must occur once`);
+  const end = text.indexOf(endMarker, start + startMarker.length);
+  if (end < 0) throw new Error(`${path}: end marker missing`);
+  const before = text.slice(start, end);
+  const after = body(before);
+  if (after === before) throw new Error(`${path}: section mutation made no change`);
+  fs.writeFileSync(path, text.slice(0, start) + after + text.slice(end));
+}
+
+const resource = 'components/search-compiler/src/resource.mjs';
+replaceExact(resource,
+`function normalizeProviderRequirement(input, index, poolById) {
+  exactKeys(input, ['id', 'pool', 'unit', 'capacity', 'alignment', 'memorySpaces', 'access', 'lifecycle', 'opaqueResult'], 'RESOURCE_PROVIDER_FIELDS', \`provider requirement \${index}\`);
+  assertNamespacedId(input.id, 'RESOURCE_PROVIDER_ID', \`provider requirement \${index} id\`);
+  const pool = poolById.get(input.pool);
+  if (!pool || pool.providerRequirement !== input.id || input.unit !== pool.unit || input.capacity !== pool.capacity || input.alignment !== pool.alignment) fail('RESOURCE_PROVIDER_POOL', \`\${input.id} differs from logical pool\`);
+  const memorySpaces = enumSet(input.memorySpaces, MEMORY_SPACES, 'RESOURCE_PROVIDER_MEMORY', \`\${input.id} memorySpaces\`, 1);
+  const access = enumSet(input.access, ACCESS, 'RESOURCE_PROVIDER_ACCESS', \`\${input.id} access\`, 1);
+  if (memorySpaces.join('\\0') !== pool.memorySpaces.join('\\0') || access.join('\\0') !== pool.access.join('\\0')) fail('RESOURCE_PROVIDER_POOL', \`\${input.id} access/memory differs from pool\`);
+  return {
+    id: input.id, pool: input.pool, unit: input.unit, capacity: input.capacity, alignment: input.alignment,
+    memorySpaces, access,
+    lifecycle: normalizeSchemaReference(input.lifecycle, \`\${input.id} lifecycle\`),
+    opaqueResult: normalizeContentIdentity(input.opaqueResult, 'RESOURCE_PROVIDER_RESULT', \`\${input.id} opaqueResult\`),
+  };
+}`,
+`function normalizeProviderRequirement(input, index, poolById) {
+  exactKeys(input, ['id', 'pool', 'unit', 'capacity', 'materialization', 'byteLength', 'alignment', 'memorySpaces', 'access', 'lifecycle', 'opaqueResult'], 'RESOURCE_PROVIDER_FIELDS', \`provider requirement \${index}\`);
+  assertNamespacedId(input.id, 'RESOURCE_PROVIDER_ID', \`provider requirement \${index} id\`);
+  const pool = poolById.get(input.pool);
+  if (!pool || pool.providerRequirement !== input.id || input.unit !== pool.unit || input.capacity !== pool.capacity || input.alignment !== pool.alignment) fail('RESOURCE_PROVIDER_POOL', \`\${input.id} differs from logical pool\`);
+  const memorySpaces = enumSet(input.memorySpaces, MEMORY_SPACES, 'RESOURCE_PROVIDER_MEMORY', \`\${input.id} memorySpaces\`, 1);
+  const access = enumSet(input.access, ACCESS, 'RESOURCE_PROVIDER_ACCESS', \`\${input.id} access\`, 1);
+  if (memorySpaces.join('\\0') !== pool.memorySpaces.join('\\0') || access.join('\\0') !== pool.access.join('\\0')) fail('RESOURCE_PROVIDER_POOL', \`\${input.id} access/memory differs from pool\`);
+  const materialization = assertEnum(input.materialization, ['resident-storage', 'semantic-only'], 'RESOURCE_PROVIDER_MATERIALIZATION', \`\${input.id} materialization\`);
+  const byteLength = normalizeDecimalUint(input.byteLength, \`\${input.id} byteLength\`);
+  if (materialization === 'semantic-only' && byteLength !== '0') fail('RESOURCE_PROVIDER_MATERIALIZATION', \`\${input.id} semantic-only provider cannot own physical bytes\`);
+  if (materialization === 'resident-storage') {
+    if (byteLength === '0') fail('RESOURCE_PROVIDER_MATERIALIZATION', \`\${input.id} resident storage requires a positive byteLength\`);
+    if (!memorySpaces.some((space) => space === 'device-search' || space === 'device-publication')) fail('RESOURCE_PROVIDER_MATERIALIZATION', \`\${input.id} resident storage requires a device memory space\`);
+  }
+  return {
+    id: input.id, pool: input.pool, unit: input.unit, capacity: input.capacity, materialization, byteLength, alignment: input.alignment,
+    memorySpaces, access,
+    lifecycle: normalizeSchemaReference(input.lifecycle, \`\${input.id} lifecycle\`),
+    opaqueResult: normalizeContentIdentity(input.opaqueResult, 'RESOURCE_PROVIDER_RESULT', \`\${input.id} opaqueResult\`),
+  };
+}`);
+
+const packageCore = 'components/search-compiler/src/program-package-core.mjs';
+replaceExact(packageCore,
+`function normalizeResource(input, index, context) {
+  exactKeys(input, ['id', 'ownerProfile', 'providerRequirement', 'materialization', 'unit', 'capacity', 'alignment', 'memorySpaces', 'access'], 'COMPOSE_RESOURCE_FIELDS', \`resource \${index}\`);
+  assertNamespacedId(input.id, 'COMPOSE_RESOURCE_ID', \`resource \${index} id\`);
+  if (input.ownerProfile !== context.resourceResult.normalized.id) fail('COMPOSE_RESOURCE_OWNER', \`\${input.id} has the wrong resource-plan owner\`);
+  const provider = context.providerById.get(input.providerRequirement);
+  if (!provider) fail('COMPOSE_RESOURCE_PROVIDER', \`\${input.id} names unknown provider requirement\`);
+  const materialization = assertEnum(input.materialization, ['resident-storage', 'semantic-only'], 'COMPOSE_RESOURCE_MATERIALIZATION', \`\${input.id} materialization\`);
+  const expectedMaterialization = provider.unit === 'bytes' && provider.memorySpaces.some((space) => ['device-search', 'device-publication'].includes(space)) ? 'resident-storage' : 'semantic-only';
+  if (materialization !== expectedMaterialization || input.unit !== provider.unit || input.capacity !== provider.capacity || input.alignment !== provider.alignment) fail('COMPOSE_RESOURCE_PROVIDER', \`\${input.id} differs from \${provider.id}\`);
+  const memorySpaces = [...input.memorySpaces].sort(compareRaw); const access = [...input.access].sort(compareRaw);
+  if (memorySpaces.join('\\0') !== [...provider.memorySpaces].sort(compareRaw).join('\\0') || access.join('\\0') !== [...provider.access].sort(compareRaw).join('\\0')) fail('COMPOSE_RESOURCE_PROVIDER', \`\${input.id} access differs from \${provider.id}\`);
+  return { id: input.id, ownerProfile: input.ownerProfile, providerRequirement: input.providerRequirement, materialization, unit: input.unit, capacity: normalizeDecimalUint(input.capacity), alignment: positiveDecimal(input.alignment, 'COMPOSE_RESOURCE_ALIGNMENT', \`\${input.id} alignment\`), memorySpaces, access };
+}`,
+`function normalizeResource(input, index, context) {
+  exactKeys(input, ['id', 'ownerProfile', 'providerRequirement', 'materialization', 'byteLength', 'unit', 'capacity', 'alignment', 'memorySpaces', 'access'], 'COMPOSE_RESOURCE_FIELDS', \`resource \${index}\`);
+  assertNamespacedId(input.id, 'COMPOSE_RESOURCE_ID', \`resource \${index} id\`);
+  if (input.ownerProfile !== context.resourceResult.normalized.id) fail('COMPOSE_RESOURCE_OWNER', \`\${input.id} has the wrong resource-plan owner\`);
+  const provider = context.providerById.get(input.providerRequirement);
+  if (!provider) fail('COMPOSE_RESOURCE_PROVIDER', \`\${input.id} names unknown provider requirement\`);
+  const materialization = assertEnum(input.materialization, ['resident-storage', 'semantic-only'], 'COMPOSE_RESOURCE_MATERIALIZATION', \`\${input.id} materialization\`);
+  const byteLength = normalizeDecimalUint(input.byteLength, \`\${input.id} byteLength\`);
+  if (materialization !== provider.materialization || byteLength !== provider.byteLength || input.unit !== provider.unit || input.capacity !== provider.capacity || input.alignment !== provider.alignment) fail('COMPOSE_RESOURCE_PROVIDER', \`\${input.id} differs from \${provider.id}\`);
+  const memorySpaces = [...input.memorySpaces].sort(compareRaw); const access = [...input.access].sort(compareRaw);
+  if (memorySpaces.join('\\0') !== [...provider.memorySpaces].sort(compareRaw).join('\\0') || access.join('\\0') !== [...provider.access].sort(compareRaw).join('\\0')) fail('COMPOSE_RESOURCE_PROVIDER', \`\${input.id} access differs from \${provider.id}\`);
+  return { id: input.id, ownerProfile: input.ownerProfile, providerRequirement: input.providerRequirement, materialization, byteLength, unit: input.unit, capacity: normalizeDecimalUint(input.capacity), alignment: positiveDecimal(input.alignment, 'COMPOSE_RESOURCE_ALIGNMENT', \`\${input.id} alignment\`), memorySpaces, access };
+}`);
+replaceExact(packageCore, 'offset + byteLength > BigInt(resource.capacity)', 'offset + byteLength > BigInt(resource.byteLength)');
+replaceExact(packageCore, 'BigInt(byteOffset) + BigInt(byteLength) > BigInt(resource.capacity)', 'BigInt(byteOffset) + BigInt(byteLength) > BigInt(resource.byteLength)');
+replaceExact(packageCore, 'byteLength: entry.capacity, alignment: entry.alignment', 'byteLength: entry.byteLength, alignment: entry.alignment');
+
+const resourceFixture = 'conformance/search-compiler/src/resource-fixtures.mjs';
+replaceExact(resourceFixture,
+`function providerRequirement(profile, resourcePool) {
+  return {
+    id: resourcePool.providerRequirement, pool: resourcePool.id, unit: resourcePool.unit, capacity: resourcePool.capacity, alignment: resourcePool.alignment,
+    memorySpaces: resourcePool.memorySpaces, access: resourcePool.access, lifecycle: schemaReference(\`cuda-mcgs.synthetic-\${profile}-\${resourcePool.id.replaceAll('.', '-')}-provider-lifecycle\`),
+    opaqueResult: contentIdentity(\`\${profile}:\${resourcePool.id}:opaque-provider-result\`),
+  };
+}`,
+`function providerRequirement(profile, resourcePool) {
+  const resident = resourcePool.unit === 'bytes' && resourcePool.memorySpaces.some((space) => space === 'device-search' || space === 'device-publication');
+  return {
+    id: resourcePool.providerRequirement, pool: resourcePool.id, unit: resourcePool.unit, capacity: resourcePool.capacity,
+    materialization: resident ? 'resident-storage' : 'semantic-only', byteLength: resident ? resourcePool.capacity : '0', alignment: resourcePool.alignment,
+    memorySpaces: resourcePool.memorySpaces, access: resourcePool.access, lifecycle: schemaReference(\`cuda-mcgs.synthetic-\${profile}-\${resourcePool.id.replaceAll('.', '-')}-provider-lifecycle\`),
+    opaqueResult: contentIdentity(\`\${profile}:\${resourcePool.id}:opaque-provider-result\`),
+  };
+}`);
+replaceExact(resourceFixture,
+`  const providerRequirements = pools.map((entry) => providerRequirement(profile, entry));
+  const contributorProfiles = contributors.map(({ profile: reference }) => reference);`,
+`  const providerRequirements = pools.map((entry) => providerRequirement(profile, entry));
+  if (options.providerMaterialization) {
+    const requested = options.providerMaterialization;
+    const provider = providerRequirements.find((entry) => entry.unit === requested.unit && entry.materialization === 'semantic-only'
+      && entry.memorySpaces.some((space) => space === 'device-search' || space === 'device-publication'));
+    if (!provider) throw new Error(\`\${profile} fixture has no eligible \${requested.unit} semantic provider\`);
+    provider.materialization = 'resident-storage';
+    provider.byteLength = requested.byteLength;
+  }
+  const contributorProfiles = contributors.map(({ profile: reference }) => reference);`);
+
+const packageFixture = 'conformance/search-compiler/src/program-package-fixtures.mjs';
+replaceExact(packageFixture,
+`    materialization: provider.unit === 'bytes' && provider.memorySpaces.some((space) => ['device-search', 'device-publication'].includes(space)) ? 'resident-storage' : 'semantic-only',
+    unit: provider.unit,`,
+`    materialization: provider.materialization,
+    byteLength: provider.byteLength,
+    unit: provider.unit,`);
+
+const runner = 'conformance/search-compiler/run.mjs';
+replaceExact(runner,
+`  assert.deepEqual(resourceProfiles.map(({ normalized }) => normalized.id), [
+    'resource.synthetic-evaluator-absent',
+    'resource.synthetic-evaluator-workspace',
+    'resource.synthetic-live-session',
+  ]);
+});
+
+let progressProfileInputs;`,
+`  assert.deepEqual(resourceProfiles.map(({ normalized }) => normalized.id), [
+    'resource.synthetic-evaluator-absent',
+    'resource.synthetic-evaluator-workspace',
+    'resource.synthetic-live-session',
+  ]);
+});
+
+await runCase('resource-provider-materialization-explicit-defaults', () => {
+  for (const profile of resourceProfiles) {
+    for (const provider of profile.normalized.providerRequirements) {
+      const expectedResident = provider.unit === 'bytes' && provider.memorySpaces.some((space) => space === 'device-search' || space === 'device-publication');
+      assert.equal(provider.materialization, expectedResident ? 'resident-storage' : 'semantic-only');
+      assert.equal(provider.byteLength, expectedResident ? provider.capacity : '0');
+    }
+  }
+});
+
+await runCase('resource-provider-explicit-nonbyte-resident-byte-extent', () => {
+  const mutated = clone(resourceProfileInputs[1]);
+  const provider = mutated.providerRequirements.find(({ unit, memorySpaces }) => unit !== 'bytes' && memorySpaces.some((space) => space === 'device-search' || space === 'device-publication'));
+  assert(provider);
+  const semanticCapacity = provider.capacity;
+  provider.materialization = 'resident-storage';
+  provider.byteLength = '4096';
+  const normalized = normalizeResourceProfile(mutated, inspected, knownResourceProfiles).normalized;
+  const actual = normalized.providerRequirements.find(({ id }) => id === provider.id);
+  assert.equal(actual.unit, provider.unit);
+  assert.equal(actual.capacity, semanticCapacity);
+  assert.equal(actual.materialization, 'resident-storage');
+  assert.equal(actual.byteLength, '4096');
+});
+
+await runCase('reject-resource-provider-semantic-physical-bytes', () => {
+  const mutated = clone(resourceProfileInputs[0]);
+  const provider = mutated.providerRequirements.find(({ materialization }) => materialization === 'semantic-only');
+  assert(provider);
+  provider.byteLength = '1';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PROVIDER_MATERIALIZATION' });
+});
+
+await runCase('reject-resource-provider-resident-zero-bytes', () => {
+  const mutated = clone(resourceProfileInputs[0]);
+  const provider = mutated.providerRequirements.find(({ materialization }) => materialization === 'resident-storage');
+  assert(provider);
+  provider.byteLength = '0';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PROVIDER_MATERIALIZATION' });
+});
+
+await runCase('reject-resource-provider-resident-without-device-space', () => {
+  const mutated = clone(resourceProfileInputs[1]);
+  const provider = mutated.providerRequirements.find(({ materialization, unit }) => materialization === 'semantic-only' && unit !== 'bytes');
+  assert(provider);
+  const pool = mutated.pools.find(({ id }) => id === provider.pool);
+  assert(pool);
+  const partitionClasses = mutated.partitions.filter(({ pool: id }) => id === pool.id).map(({ class: id }) => id);
+  for (const resourceClass of mutated.classes.filter(({ id }) => partitionClasses.includes(id))) resourceClass.memorySpaces = ['host-admission'];
+  pool.memorySpaces = ['host-admission'];
+  provider.memorySpaces = ['host-admission'];
+  provider.materialization = 'resident-storage';
+  provider.byteLength = '4096';
+  assert.throws(() => normalizeResourceProfile(mutated, inspected, knownResourceProfiles), { code: 'RESOURCE_PROVIDER_MATERIALIZATION' });
+});
+
+let progressProfileInputs;`);
+
+replaceExact(runner,
+`await runCase('build-canonical-execution-packages', () => {
+  executionPackages = programPackageProfiles.map((profile, index) => buildExecutionPackage(profile, searchPrograms[index]));
+  assert(executionPackages.every(({ normalized }) => normalized.schema === 'cuda-mcgs.execution-package/0.2.0'));
+  assert.equal(new Set(executionPackages.map(({ identity }) => identity.sha256)).size, 4);
+});`,
+`await runCase('build-canonical-execution-packages', () => {
+  executionPackages = programPackageProfiles.map((profile, index) => buildExecutionPackage(profile, searchPrograms[index]));
+  assert(executionPackages.every(({ normalized }) => normalized.schema === 'cuda-mcgs.execution-package/0.2.0'));
+  assert.equal(new Set(executionPackages.map(({ identity }) => identity.sha256)).size, 4);
+});
+
+await runCase('program-package-resource-materialization-is-resource-owned', () => {
+  for (let index = 0; index < programPackageProfiles.length; index += 1) {
+    const providers = new Map(programPackageFixtures[index].context.resourceResult.normalized.providerRequirements.map((entry) => [entry.id, entry]));
+    for (const resource of programPackageProfiles[index].normalized.resources) {
+      const provider = providers.get(resource.providerRequirement);
+      assert(provider);
+      assert.equal(resource.materialization, provider.materialization);
+      assert.equal(resource.byteLength, provider.byteLength);
+      assert.equal(resource.unit, provider.unit);
+      assert.equal(resource.capacity, provider.capacity);
+    }
+    const resident = searchPrograms[index].normalized.resources.filter(({ materialization }) => materialization === 'resident-storage');
+    const lower = executionPackages[index].normalized.cudaJsAdapter.resourceRequirements;
+    assert.equal(lower.length, resident.length);
+    for (let resourceIndex = 0; resourceIndex < resident.length; resourceIndex += 1) assert.equal(lower[resourceIndex].byteLength, resident[resourceIndex].byteLength);
+  }
+});`);
+
+replaceExact(runner,
+`function composeOwnerChain(chain, label) {
+  return composeProgramPackageFixture(buildProgramPackageProfile(inspected, chain.context, label));
+}
+
+function dispositionRecords(context) {`,
+`function composeOwnerChain(chain, label) {
+  return composeProgramPackageFixture(buildProgramPackageProfile(inspected, chain.context, label));
+}
+
+await runCase('compose-explicit-nonbyte-resident-provider-byte-extent', () => {
+  const chain = buildOwnerChain({
+    label: 'synthetic-record-provider-materialization',
+    domain: domainProfiles[0], graph: graphProfiles[0], policy: policyProfiles[0],
+    resourceOptions: { providerMaterialization: { unit: 'records', byteLength: '4096' } },
+  });
+  const { composition } = composeOwnerChain(chain, 'record-provider-materialization');
+  const provider = chain.resource.normalized.providerRequirements.find(({ unit, materialization }) => unit === 'records' && materialization === 'resident-storage');
+  assert(provider);
+  assert.equal(provider.byteLength, '4096');
+  const packageResource = composition.compositionProfile.normalized.resources.find(({ providerRequirement }) => providerRequirement === provider.id);
+  assert(packageResource);
+  assert.equal(packageResource.unit, 'records');
+  assert.equal(packageResource.capacity, provider.capacity);
+  assert.equal(packageResource.byteLength, '4096');
+  const resident = composition.searchProgram.normalized.resources.filter(({ materialization }) => materialization === 'resident-storage');
+  const residentIndex = resident.findIndex(({ providerRequirement }) => providerRequirement === provider.id);
+  assert(residentIndex >= 0);
+  assert.equal(composition.executionPackage.normalized.cudaJsAdapter.resourceRequirements[residentIndex].byteLength, '4096');
+});
+
+function dispositionRecords(context) {`);
+
+const resourceSchema = 'schemas/search-ir/0.2.0/resource-profile.schema.json';
+mutateSection(resourceSchema, '    "providerRequirement": {', '    "diagnostics": {', (section) => {
+  const oldRequired = '"required": ["id", "pool", "unit", "capacity", "alignment", "memorySpaces", "access", "lifecycle", "opaqueResult"]';
+  const newRequired = '"required": ["id", "pool", "unit", "capacity", "materialization", "byteLength", "alignment", "memorySpaces", "access", "lifecycle", "opaqueResult"]';
+  if (!section.includes(oldRequired)) throw new Error('resource provider schema required seam missing');
+  section = section.replace(oldRequired, newRequired);
+  const oldCapacity = '"capacity": { "$ref": "#/$defs/decimalUint" }, "alignment":';
+  const newCapacity = '"capacity": { "$ref": "#/$defs/decimalUint" }, "materialization": { "enum": ["resident-storage", "semantic-only"] }, "byteLength": { "$ref": "#/$defs/decimalUint" }, "alignment":';
+  if (!section.includes(oldCapacity)) throw new Error('resource provider schema capacity seam missing');
+  return section.replace(oldCapacity, newCapacity);
+});
+
+const packageSchema = 'schemas/search-ir/0.2.0/program-package-profile.schema.json';
+mutateSection(packageSchema, '    "resource": {', '    "resourceView": {', (section) => {
+  const oldRequired = '"required": ["id", "ownerProfile", "providerRequirement", "materialization", "unit", "capacity", "alignment", "memorySpaces", "access"]';
+  const newRequired = '"required": ["id", "ownerProfile", "providerRequirement", "materialization", "byteLength", "unit", "capacity", "alignment", "memorySpaces", "access"]';
+  if (!section.includes(oldRequired)) throw new Error('program resource schema required seam missing');
+  section = section.replace(oldRequired, newRequired);
+  const oldCapacity = '        "capacity": { "$ref": "primitives.schema.json#/$defs/decimalUint" },\n        "alignment":';
+  const newCapacity = '        "capacity": { "$ref": "primitives.schema.json#/$defs/decimalUint" },\n        "byteLength": { "$ref": "primitives.schema.json#/$defs/decimalUint" },\n        "alignment":';
+  if (!section.includes(oldCapacity)) throw new Error('program resource schema capacity seam missing');
+  return section.replace(oldCapacity, newCapacity);
+});
