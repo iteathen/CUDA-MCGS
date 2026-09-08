@@ -48,7 +48,7 @@ jobs:
       - name: Apply fail-closed audit refactor
         run: node .github/authorized-124-explicit-metadata-audit.cjs
       - name: Remove one-shot transport
-        run: git rm .github/authorized-124-explicit-metadata-audit.cjs .github/workflows/authorized-124-explicit-metadata-audit.yml
+        run: git rm -f .github/authorized-124-explicit-metadata-audit.cjs .github/workflows/authorized-124-explicit-metadata-audit.yml
       - name: Syntax and focused qualification
         run: |
           node --check adapters/evaluators/cuda-js-tensor/src/runtime-contribution.mjs
