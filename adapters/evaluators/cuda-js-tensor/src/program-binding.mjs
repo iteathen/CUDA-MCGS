@@ -326,7 +326,10 @@ export function createTensorEvaluatorProgramBinding(runtimeContribution, normali
       sourceUnits: [sourceId],
       functions: functions.map(({ name }) => name).sort(),
       deviceImports: [importId],
-      publicRequirements: contribution.requiredCudaJsContracts.slice().sort(),
+      publicRequirementConsumers: contribution.requiredCudaJsContracts
+        .slice()
+        .sort()
+        .map((contractId) => ({ contractId, consumer: profile.id })),
     },
     resourceRequirements: contribution.resources.map((entry) => ({ ...entry })),
     tensorBindings: contribution.tensorBindings.map((entry) => ({ ...entry })),

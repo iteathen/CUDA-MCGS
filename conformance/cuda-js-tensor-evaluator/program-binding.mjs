@@ -146,6 +146,10 @@ assert.deepEqual([...executeFunction.calls].sort(), ['mcgsTensorEvaluateItem', '
 const publishFunction = binding.functions.find(({ name }) => name === 'mcgsTensorEvaluatorPublishItem');
 assert.deepEqual([...publishFunction.calls].sort(), ['mcgsTensorEvaluatorBatchItemMatches', 'mcgsTensorEvaluatorFinishBatchItem'].sort());
 assert.deepEqual(binding.ownership.deviceImports, ['evaluator.tensor.program-binding.tensor-import']);
+assert.deepEqual(binding.ownership.publicRequirementConsumers, runtime.requiredCudaJsContracts
+  .slice()
+  .sort()
+  .map((contractId) => ({ contractId, consumer: boundInput.id })));
 assert(binding.claimLimits.includes('resource-plan-binding-not-included'));
 assert(binding.claimLimits.includes('progress-runtime-entry-binding-not-included'));
 assert(Object.isFrozen(binding));
@@ -158,28 +162,39 @@ assert(Object.isFrozen(binding.functions[0]));
 const nonTensor = Object.freeze({
   sourceUnit: { id: 'source.non-tensor', ownerProfile: 'evaluator.analytic', semanticOwner: 'evaluator.analytic' },
   function: { name: 'analyticEvaluate', ownerProfile: 'evaluator.analytic' },
-  requirement: { contract: schemaReference('cuda-js.device-js/0.1.0'), consumers: ['evaluator.analytic'] },
 });
+const sharedRequirement = lowerRequirements.find(({ id }) => id === 'cuda-js.device-js/0.1.0');
+const tensorOnlyRequirements = lowerRequirements.filter(({ id }) => id !== sharedRequirement.id);
 const before = {
   sourceUnits: [nonTensor.sourceUnit, binding.sourceUnit],
   functions: [nonTensor.function, ...binding.functions],
   deviceImports: [...binding.deviceImports],
-  publicRequirements: [nonTensor.requirement, ...binding.requiredCudaJsContracts.map((contract) => ({ contract, consumers: [binding.ownerProfile] }))],
+  publicRequirements: [
+    { contract: sharedRequirement, consumers: ['evaluator.analytic', binding.ownerProfile].sort() },
+    ...tensorOnlyRequirements.map((contract) => ({ contract, consumers: [binding.ownerProfile] })),
+  ],
 };
 const ownedSourceUnits = new Set(binding.ownership.sourceUnits);
 const ownedFunctions = new Set(binding.ownership.functions);
 const ownedImports = new Set(binding.ownership.deviceImports);
-const ownedRequirements = new Set(binding.ownership.publicRequirements);
+const ownedRequirementConsumers = new Set(binding.ownership.publicRequirementConsumers
+  .map(({ contractId, consumer }) => contractId + '\0' + consumer));
 const after = {
   sourceUnits: before.sourceUnits.filter(({ id }) => !ownedSourceUnits.has(id)),
   functions: before.functions.filter(({ name }) => !ownedFunctions.has(name)),
   deviceImports: before.deviceImports.filter(({ id }) => !ownedImports.has(id)),
-  publicRequirements: before.publicRequirements.filter(({ contract }) => !ownedRequirements.has(contract.id) || contract.id === nonTensor.requirement.contract.id),
+  publicRequirements: before.publicRequirements
+    .map(({ contract, consumers }) => ({
+      contract,
+      consumers: consumers.filter((consumer) => !ownedRequirementConsumers.has(contract.id + '\0' + consumer)),
+    }))
+    .filter(({ consumers }) => consumers.length > 0),
 };
 assert.deepEqual(after.sourceUnits, [nonTensor.sourceUnit]);
 assert.deepEqual(after.functions, [nonTensor.function]);
 assert.deepEqual(after.deviceImports, []);
-assert(after.publicRequirements.some(({ consumers }) => consumers.includes('evaluator.analytic')));
+assert.deepEqual(after.publicRequirements, [{ contract: sharedRequirement, consumers: ['evaluator.analytic'] }]);
+assert(after.publicRequirements.every(({ consumers }) => !consumers.includes(binding.ownerProfile)), 'Tensor requirement consumer residue must be absent after deletion');
 
 // Failure boundaries: lower contract identity is explicit, capacities are finite,
 // work-class ownership is explicit, and stale profile source identity is rejected.
@@ -227,6 +242,7 @@ console.log(JSON.stringify({
     'program-package-source-function-import-fragments',
     'external-import-not-local-call-edge',
     'explicit-work-class-mapping',
+    'consumer-scoped-shared-requirement-deletion',
     'structural-tensor-deletion-preserves-non-tensor-fragment',
     'capacity-and-source-drift-fail-closed',
     'deep-freeze',

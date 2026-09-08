@@ -85,7 +85,7 @@
       "finite Tensor evaluator request/batch/result/staging runtime contribution",
       "slot/request/batch generation and stale-lane validation",
       "Tensor batch gather/scatter and terminal publication transitions",
-      "adapter-local evaluator program source/function/import/requirement binding and structural deletion ownership"
+      "adapter-local evaluator program source/function/import binding plus requirement-consumer ownership and structural deletion"
     ],
     "persistent_state": [],
     "generated_artifacts": ["immutable connector descriptor", "immutable Device-JS runtime contribution descriptor/source", "immutable evaluator program-binding descriptor", "portable conformance evidence"],
@@ -113,7 +113,7 @@
       "generated_cache_package_test_and_diagnostic_disposition": ["no persistent runtime cache", "installed package exposes connector/runtime/program-binding production surfaces while conformance remains physically absent", "portable emitted-source/program-binding evidence is not native/provider evidence"],
       "persistence_migration_backup_and_recovery_retention": ["not applicable in this realization"],
       "archive_deprecation_and_supersession": ["public Tensor, evaluator programContribution, Program Package, or CUDA-JS publication contract changes require explicit compatibility reassessment"],
-      "cleanup_verification": ["import drift, pressure, cancellation, retry and stale-reused-lane portable falsifiers", "exact source/requirement/work-class drift falsifiers", "structural Tensor deletion preserves unrelated non-Tensor fragment", "full Resource/Progress terminal cleanup remains required before #124 acceptance"]
+      "cleanup_verification": ["import drift, pressure, cancellation, retry and stale-reused-lane portable falsifiers", "exact source/requirement/work-class drift falsifiers", "consumer-scoped shared-requirement deletion preserves unrelated non-Tensor consumers and removes Tensor-only requirement residue", "full Resource/Progress terminal cleanup remains required before #124 acceptance"]
     },
     "allowed_dependencies": ["injected public cuda-js-tensor capability values", "declared public CUDA-JS contract identifiers/schema references consumed by the existing CUDA-JS runtime adapter", "generic evaluator/Program Package public shapes without importing Search Compiler private implementation"],
     "forbidden_dependencies": ["cuda-js-tensor private/deep source", "CUDA-JS private/deep source", "Search Compiler private implementation", "native addons/FFI/CUDA/PTX", "product semantics", "Python", "adapter-owned Resource planner", "adapter-owned global scheduler", "host gather/launch/poll/relaunch progression"],
