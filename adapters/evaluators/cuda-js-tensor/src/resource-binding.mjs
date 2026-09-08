@@ -169,10 +169,13 @@ function runtimeDescriptor(entry) {
 
 function tensorDescriptor(entry, connectorParameter) {
   object(entry, 'Tensor binding');
+  const expectedRuntimeAccess = connectorParameter?.role === 'input' && connectorParameter.itemVarying === false
+    ? connectorParameter.access
+    : 'read-write';
   if (!connectorParameter || connectorParameter.role !== entry.role || connectorParameter.dtype !== entry.dtype
-      || connectorParameter.type !== entry.type || connectorParameter.access !== entry.access
+      || connectorParameter.type !== entry.type || entry.access !== expectedRuntimeAccess
       || connectorParameter.itemVarying !== entry.itemVarying || connectorParameter.byteLength !== entry.byteLength) {
-    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_CONNECTOR', `${entry.parameterName ?? '<unknown>'} Tensor binding differs from the admitted connector`);
+    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_CONNECTOR', `${entry.parameterName ?? '<unknown>'} Tensor binding differs from the admitted connector/runtime staging contract`);
   }
   identifier(entry.parameterName, 'Tensor binding parameterName');
   const byteLength = BigInt(positiveSafeInteger(entry.byteLength, `${entry.parameterName} byteLength`));
