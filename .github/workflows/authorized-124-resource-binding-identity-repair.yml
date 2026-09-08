@@ -1,0 +1,219 @@
+name: "Authorized #124 Resource binding identity repair"
+
+on:
+  push:
+    branches:
+      - feature/124-tensor-resource-binding
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 26.7.0
+      - name: Apply exact identity repair and self-remove
+        run: |
+          set -euo pipefail
+          workflow=.github/workflows/authorized-124-resource-binding-identity-repair.yml
+          production=adapters/evaluators/cuda-js-tensor/src/resource-binding.mjs
+          oracle=conformance/cuda-js-tensor-evaluator/resource-binding.mjs
+
+          test "$(git hash-object "$production")" = 38430315734209521a52f40de52e42a2e008e6f7
+          test "$(git hash-object "$oracle")" = 4706bb0e1c9ef64847b572d47f9d3620a8dd8995
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          function replaceExact(path, oldText, newText) {
+            let text = fs.readFileSync(path, 'utf8');
+            const first = text.indexOf(oldText);
+            if (first < 0 || text.indexOf(oldText, first + oldText.length) >= 0) throw new Error(`${path}: exact repair seam missing or non-unique`);
+            text = text.slice(0, first) + newText + text.slice(first + oldText.length);
+            fs.writeFileSync(path, text);
+          }
+
+          const production = 'adapters/evaluators/cuda-js-tensor/src/resource-binding.mjs';
+          replaceExact(production,
+`function evaluatorProfile(value, ownerProfile) {
+  object(value, 'normalized evaluator profile');
+  if (value.schema !== EVALUATOR_SCHEMA || value.status !== 'accepted' || value.contract?.id !== 'SPEC-0009'
+      || value.id !== ownerProfile || value.execution?.deviceOwned !== true || value.execution?.hostProgress !== 'none'
+      || !Array.isArray(value.resources)) {
+    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_EVALUATOR', 'normalized evaluator profile does not match the program-binding owner');
+  }
+  return value;
+}
+
+function resourceProfile(value, evaluator) {
+  object(value, 'normalized Resource profile');
+  if (value.schema !== RESOURCE_SCHEMA || value.status !== 'accepted' || value.contract?.id !== 'SPEC-0011'
+      || !Array.isArray(value.contributors) || !Array.isArray(value.classes) || !Array.isArray(value.partitions)
+      || !Array.isArray(value.pools) || !Array.isArray(value.providerRequirements)) {
+    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE', 'normalized Resource profile is invalid');
+  }
+  const contributors = value.contributors.filter(({ contract, profile }) => contract?.id === 'SPEC-0009' && profile?.id === evaluator.id);
+  if (contributors.length !== 1) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE', 'Resource plan does not contain exactly one selected evaluator contributor');
+  return { profile: value, contributor: contributors[0] };
+}`,
+`function contentIdentity(value, label) {
+  object(value, label);
+  if (value.algorithm !== 'sha256' || typeof value.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(value.sha256)) {
+    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_IDENTITY', `${label} must be a sha256 content identity`);
+  }
+  return { algorithm: 'sha256', sha256: value.sha256 };
+}
+
+function evaluatorProfileResult(value, ownerProfile) {
+  object(value, 'evaluator profile result');
+  const normalized = object(value.normalized, 'normalized evaluator profile');
+  const identity = contentIdentity(value.identity, 'evaluator profile identity');
+  if (normalized.schema !== EVALUATOR_SCHEMA || normalized.status !== 'accepted' || normalized.contract?.id !== 'SPEC-0009'
+      || normalized.id !== ownerProfile || normalized.execution?.deviceOwned !== true || normalized.execution?.hostProgress !== 'none'
+      || !Array.isArray(normalized.resources)) {
+    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_EVALUATOR', 'normalized evaluator profile does not match the program-binding owner');
+  }
+  return { normalized, identity };
+}
+
+function resourceProfileResult(value, evaluatorResult) {
+  object(value, 'Resource profile result');
+  const normalized = object(value.normalized, 'normalized Resource profile');
+  const identity = contentIdentity(value.identity, 'Resource profile identity');
+  if (normalized.schema !== RESOURCE_SCHEMA || normalized.status !== 'accepted' || normalized.contract?.id !== 'SPEC-0011'
+      || !Array.isArray(normalized.contributors) || !Array.isArray(normalized.classes) || !Array.isArray(normalized.partitions)
+      || !Array.isArray(normalized.pools) || !Array.isArray(normalized.providerRequirements)) {
+    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE', 'normalized Resource profile is invalid');
+  }
+  const evaluator = evaluatorResult.normalized;
+  const contributors = normalized.contributors.filter(({ contract, profile }) => contract?.id === 'SPEC-0009' && profile?.id === evaluator.id);
+  if (contributors.length !== 1) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE', 'Resource plan does not contain exactly one selected evaluator contributor');
+  const contributor = contributors[0];
+  if (contributor.profile?.schema?.id !== evaluator.schema || contributor.profile?.identity?.algorithm !== 'sha256'
+      || contributor.profile.identity.sha256 !== evaluatorResult.identity.sha256) {
+    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_IDENTITY', 'Resource evaluator contributor differs from the exact evaluator profile identity');
+  }
+  return { normalized, identity, contributor };
+}`);
+
+          replaceExact(production,
+`export function createTensorEvaluatorResourceBinding(programBindingInput, normalizedEvaluatorProfile, normalizedResourceProfile, options = {}) {
+  const binding = programBinding(programBindingInput);
+  const evaluator = evaluatorProfile(normalizedEvaluatorProfile, binding.ownerProfile);
+  const { profile: resource, contributor } = resourceProfile(normalizedResourceProfile, evaluator);`,
+`export function createTensorEvaluatorResourceBinding(programBindingInput, evaluatorProfileResultInput, resourceProfileResultInput, options = {}) {
+  const binding = programBinding(programBindingInput);
+  const evaluatorResult = evaluatorProfileResult(evaluatorProfileResultInput, binding.ownerProfile);
+  const evaluator = evaluatorResult.normalized;
+  const { normalized: resource, identity: resourceIdentity, contributor } = resourceProfileResult(resourceProfileResultInput, evaluatorResult);`);
+
+          replaceExact(production,
+`    ownerProfile: evaluator.id,
+    resourcePlan: resource.id,
+    evaluatorContributor: contributor.id,`,
+`    ownerProfile: evaluator.id,
+    evaluatorProfileIdentity: { ...evaluatorResult.identity },
+    resourcePlan: { id: resource.id, identity: { ...resourceIdentity } },
+    evaluatorContributor: contributor.id,`);
+
+          replaceExact(production,
+`      'explicit-caller-owned-byte-placement',
+      'resource-plan-policy-not-created-or-mutated',`,
+`      'exact-evaluator-and-resource-plan-identities-bound',
+      'explicit-caller-owned-byte-placement',
+      'resource-plan-policy-not-created-or-mutated',`);
+
+          const oracle = 'conformance/cuda-js-tensor-evaluator/resource-binding.mjs';
+          replaceExact(oracle,
+`function resourceProfile(evaluator) {
+  const owner = 'owner.evaluator.tensor';`,
+`function resourceProfile(evaluatorResult) {
+  const evaluator = evaluatorResult.normalized;
+  const owner = 'owner.evaluator.tensor';`);
+          replaceExact(oracle,
+`      { id: owner, contract: { id: 'SPEC-0009' }, profile: { id: evaluator.id } },`,
+`      { id: owner, contract: { id: 'SPEC-0009' }, profile: { id: evaluator.id, schema: { id: evaluator.schema }, identity: { ...evaluatorResult.identity } } },`);
+          replaceExact(oracle,
+`const program = createTensorEvaluatorProgramBinding(runtime, boundEvaluator, { id: 'evaluator.tensor.program-binding', workClasses });
+const resources = resourceProfile(boundEvaluator);`,
+`const program = createTensorEvaluatorProgramBinding(runtime, boundEvaluator, { id: 'evaluator.tensor.program-binding', workClasses });
+const evaluatorResult = { normalized: boundEvaluator, identity: { algorithm: 'sha256', sha256: sha256(JSON.stringify(boundEvaluator)) } };
+const resources = resourceProfile(evaluatorResult);
+const resourceResult = { normalized: resources, identity: { algorithm: 'sha256', sha256: sha256(JSON.stringify(resources)) } };`);
+
+          const callOld = `createTensorEvaluatorResourceBinding(program, boundEvaluator, resources, { allocations`;
+          const callNew = `createTensorEvaluatorResourceBinding(program, evaluatorResult, resourceResult, { allocations`;
+          let text = fs.readFileSync(oracle, 'utf8');
+          if (!text.includes(callOld)) throw new Error('resource binding call seam missing');
+          text = text.split(callOld).join(callNew);
+          fs.writeFileSync(oracle, text);
+
+          replaceExact(oracle,
+`assert.equal(binding.ownerProfile, boundEvaluator.id);
+assert.equal(binding.resourcePlan, resources.id);`,
+`assert.equal(binding.ownerProfile, boundEvaluator.id);
+assert.deepEqual(binding.evaluatorProfileIdentity, evaluatorResult.identity);
+assert.deepEqual(binding.resourcePlan, { id: resources.id, identity: resourceResult.identity });`);
+
+          replaceExact(oracle,
+`const providerDrift = structuredClone(resources);
+providerDrift.providerRequirements.find(({ id }) => id === 'resource.provider-workspace').access = ['read', 'write'];
+assert.throws(
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, resourceResult, { allocations }),
+  (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_ACCESS',
+);
+const crossOwner = structuredClone(resources);
+const workspaceClass = crossOwner.classes.find(({ sourceResource }) => sourceResource === 'evaluator.tensor.resource-workspace');
+workspaceClass.contributor = 'owner.evaluator.analytic';
+assert.throws(
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, resourceResult, { allocations }),
+  (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_CHAIN',
+);`,
+`const providerDrift = structuredClone(resources);
+providerDrift.providerRequirements.find(({ id }) => id === 'resource.provider-workspace').access = ['read', 'write'];
+assert.throws(
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, { ...resourceResult, normalized: providerDrift }, { allocations }),
+  (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_ACCESS',
+);
+const crossOwner = structuredClone(resources);
+const workspaceClass = crossOwner.classes.find(({ sourceResource }) => sourceResource === 'evaluator.tensor.resource-workspace');
+workspaceClass.contributor = 'owner.evaluator.analytic';
+assert.throws(
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, { ...resourceResult, normalized: crossOwner }, { allocations }),
+  (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_CHAIN',
+);
+const staleEvaluatorContributor = structuredClone(resources);
+staleEvaluatorContributor.contributors.find(({ id }) => id === 'owner.evaluator.tensor').profile.identity.sha256 = 'f'.repeat(64);
+assert.throws(
+  () => createTensorEvaluatorResourceBinding(program, evaluatorResult, { ...resourceResult, normalized: staleEvaluatorContributor }, { allocations }),
+  (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_IDENTITY',
+);`);
+
+          replaceExact(oracle,
+`    'complete-pointer-coverage',`,
+`    'exact-evaluator-resource-plan-identity-binding',
+    'complete-pointer-coverage',`);
+          NODE
+
+          node --check "$production"
+          node --check "$oracle"
+          node scripts/run-cuda-js-tensor-evaluator.mjs
+
+          rm -- "$workflow"
+          allowed='^(adapters/evaluators/cuda-js-tensor/src/resource-binding\.mjs|conformance/cuda-js-tensor-evaluator/resource-binding\.mjs|\.github/workflows/authorized-124-resource-binding-identity-repair\.yml)$'
+          while IFS= read -r changed; do
+            path="${changed:3}"
+            if [[ ! "$path" =~ $allowed ]]; then echo "unexpected working-tree path: $path" >&2; exit 1; fi
+          done < <(git status --porcelain=v1 --untracked-files=all)
+
+          git add -A -- "$production" "$oracle" "$workflow"
+          git diff --cached --check
+          git config user.name "OpenAI authorized project agent"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Bind Tensor Resource views to exact profile identities"
+          git push origin HEAD:refs/heads/feature/124-tensor-resource-binding
