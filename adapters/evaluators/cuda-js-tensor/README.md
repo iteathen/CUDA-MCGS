@@ -1,19 +1,30 @@
 # CUDA-JS-Tensor evaluator connector
 
-`integration.cuda-js-tensor-evaluator` is an optional CUDA-MCGS admission/composition adapter for a public `cuda-js-tensor` `TensorDeviceProgram`.
+`integration.cuda-js-tensor-evaluator` is the optional CUDA-MCGS adapter for a public `cuda-js-tensor` `TensorDeviceProgram`.
 
-The production export is deliberately stateless. It validates the public Tensor callable, finite item/request capacity, parameter roles, workspace total and opaque Device-JS library identity, then provides a fresh owner-produced `DeviceJsImport` only if that import still matches the admitted identity. It does not implement a second evaluator scheduler/runtime.
+The admission connector remains stateless: it validates the public Tensor callable, finite item/request capacity, parameter roles, workspace total and opaque Device-JS library identity, then returns a fresh owner-produced `DeviceJsImport` only while that identity still matches the admitted Tensor program.
 
-Tensor mathematics, TensorProgram/TensorPlan meaning, item-axis addressing, the callable ABI and Tensor workspace remain owned by CUDA-JS-Tensor. CUDA-JS owns Device-JS library linking and native execution. CUDA-MCGS retains evaluator request/batch/readiness semantics under SPEC-0009. PR #241 protected the generic Search Program/execution-package import path and `integration.cuda-js` now validates matching live opaque imports before forwarding them through public `compileDeviceProgram({ imports })`; the remaining #124 work is the evaluator-owned request/batch/scatter/readiness/search-lifecycle runtime above that boundary.
+The adapter also exposes an evaluator-owned **device runtime contribution**. That contribution generates restricted Device-JS plus finite MCGS-owned request-slot, batch, result and staging layouts for admission, partial/full batching, Tensor item execution, stale-safe scatter, publication, cancellation, retry and recycle. It is a contribution to a Search Program, not a host runtime and not a scheduler. `Progress` still owns when and where ready evaluator work is serviced after ignition.
 
-The adapter uses only documented public fields plus `TensorDeviceProgram.importAs()`. It does not import CUDA-JS-Tensor source, inspect generated PTX/LTO, compile a model, or add product semantics.
+Ownership stays split deliberately:
 
-The request/batch/scatter state machine used by the portable capsule lives under `conformance/` only; it is not exported in the package and is not production runtime authority.
+- CUDA-JS-Tensor owns Tensor mathematics, TensorProgram/TensorPlan meaning, item-axis addressing, the public item callable ABI and Tensor workspace.
+- CUDA-MCGS evaluator semantics own request/batch/result incarnation, finite evaluator state, stale rejection, cancellation/retry and result publication.
+- The selected evaluator profile/Search Program owns semantic encoding of domain/model inputs. The generic Tensor adapter exposes per-request encoded-input staging but does not invent domain/model encoding.
+- Progress owns service order/topology and partial-batch opportunity. The first runtime contribution permits a one-item partial batch and at most one active Tensor batch without using host timing or polling.
+- CUDA-JS owns Device-JS validation/lowering, device release/acquire helpers, linking, allocation/operation mechanics and native execution.
 
-Portable conformance is intentionally non-native. It proves only the connector/reference semantics it executes; it does not establish CUDA/provider/hardware support.
+Every post-batch item work record must carry the captured incarnation token `{ itemIndex, slot, slotGeneration, requestGeneration, batchGeneration }`. Generated execute/scatter/publish/retry functions revalidate that token before touching current lane state. A delayed work item from an older lane incarnation returns stale without invoking Tensor or mutating the reused request/result lane.
+
+Publication uses a single CAS from `inflight` to evaluator-owned `publishing`, followed by a release publication of the terminal slot state. The contribution explicitly selects the public CUDA-JS Device-JS and device release/acquire contracts; it does not maintain a helper spelling catalog or infer lower requirements from helper text.
+
+All MCGS-owned control, request-staging and result-staging buffers require explicit zero initialization before ignition. Shared Tensor inputs remain explicit external pre-ignition inputs. The CUDA-JS runtime adapter still submits one Search Program operation; this adapter does not add a host gather/launch/poll/relaunch loop.
+
+This is the first production runtime slice for #124, not full #124 acceptance. The contribution is not yet wired into a concrete Progress-owned runtime-entry composition, and the portable source/state oracle is not native/provider/hardware evidence.
 
 Focused qualification:
 
 ```sh
 node scripts/run-cuda-js-tensor-evaluator.mjs
+node conformance/cuda-js-tensor-evaluator/package.mjs
 ```
