@@ -41,15 +41,15 @@ jobs:
           gzip -dc "$conf_readme_gz" > "$conf_readme"
 
           printf '%s  %s\n' \
-            5ee9bc12614e2055b6b228811d30da10422fbc1fb8658b3227ce9bb77bfe86fc "$rb" \
-            2aa8a463992707fb325f420973ed36f220f9cbab7378b325406acf52a14a9686 "$test" \
+            b5e9b2c7db1cd4503e5e30a3e97e490815b3d90761540a39e8f9c117851ac875 "$rb" \
+            47ca8006c70d138e81b75bb78733a51b4a6de0870955b41d70e9a41132077012 "$test" \
             965a47e34f2a78cd81fb03a2ff9646654b539a77a99096a84b79bb7f777e4d9f "$index" \
             caf78798027a9676c0cf19190844d0fa938a4716b07bea4b32657bdad4855915 "$package_test" \
             0a56c554faff15df760ca63844769736b52b61e41d6106d868a9dbc916138bb5 "$readme" \
             2a637dc9f1a8394504db15f7014c3c6032b07467fef49bce42ecdf64655956fd "$conf_readme" | sha256sum -c -
 
-          test "$(git hash-object "$rb")" = 18577949767d2dd61a7d3ded57382d97fbf24c23
-          test "$(git hash-object "$test")" = e6175482280902b5d967170e2e4d42e862281007
+          test "$(git hash-object "$rb")" = c2fa8bbac5f664fb0a45ed5cdde6ebb6bbf6d129
+          test "$(git hash-object "$test")" = cb23d742aa17eec1f7b8674401ee459737d325cd
           test "$(git hash-object "$index")" = 28afb1b32db42ae32e15c2f0722d4efbea47ed1c
           test "$(git hash-object "$package_test")" = 23e0d582a13abd6505fcf1b114eaf49ff6bcf200
           test "$(git hash-object "$readme")" = 690cc7c711de4d6e69afda2c62ff9c015a42d978
