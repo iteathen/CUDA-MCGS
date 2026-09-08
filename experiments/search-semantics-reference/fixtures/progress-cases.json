@@ -2,8 +2,8 @@
   "schema": "cuda-mcgs.reference-progress-fixtures/0.1.0",
   "composerEvidence": {
     "algorithm": "sha256",
-    "byteLength": 708983,
-    "sha256": "b09622fe1c3faeb4cb37c58e45241aa035e7caec92d107fc81990220fa0e437f"
+    "byteLength": 709018,
+    "sha256": "448bab881cbfc8502acb5958f914a1833854c355de83a7aec9b4fadf42bd30f3"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-progress-profile-projection/0.2.0",
