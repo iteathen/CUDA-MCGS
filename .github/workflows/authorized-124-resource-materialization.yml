@@ -21,6 +21,7 @@ jobs:
           set -euo pipefail
           workflow=.github/workflows/authorized-124-resource-materialization.yml
           transport=.github/authorized-124-resource-materialization.cjs
+          verifier_patch=.github/authorized-124-resource-verifier-patch.cjs
           resource=components/search-compiler/src/resource.mjs
           package_core=components/search-compiler/src/program-package-core.mjs
           resource_fixture=conformance/search-compiler/src/resource-fixtures.mjs
@@ -28,6 +29,12 @@ jobs:
           runner=conformance/search-compiler/run.mjs
           resource_schema=schemas/search-ir/0.2.0/resource-profile.schema.json
           package_schema=schemas/search-ir/0.2.0/program-package-profile.schema.json
+          terminal=conformance/search-compiler/verify-terminal-output-host-delivery.mjs
+          operation=conformance/search-compiler/verify-operation-local-access.mjs
+          cas=conformance/search-compiler/verify-device-js-cas-composition.mjs
+          evaluator=conformance/search-compiler/verify-evaluator-program-requirements.mjs
+          sideband=conformance/search-compiler/verify-external-control-sideband-authority.mjs
+          promotion=conformance/search-compiler/verify-promotion-boundary.mjs
 
           test "$(git hash-object "$resource")" = a55fd3798dd80539440b7b8818a3a3211cea15f6
           test "$(git hash-object "$package_core")" = e2505693b0d9c15ebddb22317d30e6adad976d1d
@@ -36,6 +43,13 @@ jobs:
           test "$(git hash-object "$runner")" = bec3517349e68d3ea2fec7764403b652a5d28ed7
           test "$(git hash-object "$resource_schema")" = 18df2dda8c9f6da173eb32975fea9f35da7e83c0
           test "$(git hash-object "$package_schema")" = 5bfd2c4193cc7246233eeaa03bb89389100e0d6b
+          test "$(git hash-object "$terminal")" = 4c8717cb679deeead8e5c89c2091d02da182964d
+          test "$(git hash-object "$operation")" = e4f17490c43c99b8a69c8b4ba4914ad10a8d45cd
+          test "$(git hash-object "$cas")" = fcb0bf2ba117191d650ed045cb3bbdf8bf6ca8e2
+          test "$(git hash-object "$evaluator")" = 79e82b557eb1b3c0945d4bca548d004d817e3112
+          test "$(git hash-object "$sideband")" = 3b87eef47078e9c0300f6fb755d3c13a531da802
+          test "$(git hash-object "$promotion")" = cf9701dea59f9f0f62dba720759024c7c2432ae8
+          test "$(git hash-object "$verifier_patch")" = 891c577c9b4d9c223246cbf62b1552c978469da3
 
           node - "$transport" <<'NODE'
           const fs = require('node:fs');
@@ -66,17 +80,25 @@ jobs:
           NODE
 
           node --check "$transport"
+          node --check "$verifier_patch"
           node "$transport"
+          node "$verifier_patch"
           node --check "$resource"
           node --check "$package_core"
           node --check "$resource_fixture"
           node --check "$package_fixture"
           node --check "$runner"
+          node --check "$terminal"
+          node --check "$operation"
+          node --check "$cas"
+          node --check "$evaluator"
+          node --check "$sideband"
+          node --check "$promotion"
           node -e "JSON.parse(require('node:fs').readFileSync('$resource_schema','utf8')); JSON.parse(require('node:fs').readFileSync('$package_schema','utf8'))"
           node scripts/run-search-ir-composer-reference.mjs
 
-          rm -- "$workflow" "$transport"
-          allowed='^(components/search-compiler/src/(resource|program-package-core)\.mjs|conformance/search-compiler/(run\.mjs|src/(resource-fixtures|program-package-fixtures)\.mjs)|schemas/search-ir/0\.2\.0/(resource-profile|program-package-profile)\.schema\.json|\.github/(workflows/authorized-124-resource-materialization\.yml|authorized-124-resource-materialization\.cjs))$'
+          rm -- "$workflow" "$transport" "$verifier_patch"
+          allowed='^(components/search-compiler/src/(resource|program-package-core)\.mjs|conformance/search-compiler/(run\.mjs|src/(resource-fixtures|program-package-fixtures)\.mjs|verify-(terminal-output-host-delivery|operation-local-access|device-js-cas-composition|evaluator-program-requirements|external-control-sideband-authority|promotion-boundary)\.mjs)|schemas/search-ir/0\.2\.0/(resource-profile|program-package-profile)\.schema\.json|\.github/(workflows/authorized-124-resource-materialization\.yml|authorized-124-resource-(materialization|verifier-patch)\.cjs))$'
           while IFS= read -r changed; do
             path="${changed:3}"
             if [[ ! "$path" =~ $allowed ]]; then
@@ -85,7 +107,7 @@ jobs:
             fi
           done < <(git status --porcelain=v1 --untracked-files=all)
 
-          git add -A -- "$resource" "$package_core" "$resource_fixture" "$package_fixture" "$runner" "$resource_schema" "$package_schema" "$workflow" "$transport"
+          git add -A -- "$resource" "$package_core" "$resource_fixture" "$package_fixture" "$runner" "$resource_schema" "$package_schema" "$terminal" "$operation" "$cas" "$evaluator" "$sideband" "$promotion" "$workflow" "$transport" "$verifier_patch"
           git diff --cached --check
           git config user.name "OpenAI authorized project agent"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
