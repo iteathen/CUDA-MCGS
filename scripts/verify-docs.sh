@@ -7,6 +7,7 @@ cd "$repo_root"
 required=(
   .gitattributes
   README.md
+  AGENTS.md
   AGENT_LOCAL.md
   STATUS.md
   next_step.yaml
@@ -253,8 +254,9 @@ for adapter in CLAUDE.md GEMINI.md .github/copilot-instructions.md; do
   }
 done
 
-[[ ! -e AGENTS.md ]] || {
-  printf 'AGENTS.md must not exist in this ordinary repository; universal agent authority belongs in iteathen/.github\n' >&2
+expected_root_agents='[Global agent instructions](https://github.com/iteathen/.github/blob/main/AGENTS.md)'
+printf '%s\n' "$expected_root_agents" | cmp -s - AGENTS.md || {
+  printf 'AGENTS.md must remain the exact thin compatibility/discovery pointer to iteathen/.github/AGENTS.md\n' >&2
   exit 1
 }
 [[ ! -e agent_files/AGENTS.md ]] || {
