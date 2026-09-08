@@ -87,9 +87,9 @@
     },
     "public_contracts": [
       "cuda-mcgs.tensor-evaluator-connector/0.1.0",
-      "cuda-mcgs.tensor-evaluator-device-runtime/0.1.0",
-      "cuda-mcgs.tensor-evaluator-program-binding/0.1.0",
-      "cuda-mcgs.tensor-evaluator-resource-binding/0.1.0"
+      "cuda-mcgs.tensor-evaluator-device-runtime/0.2.0",
+      "cuda-mcgs.tensor-evaluator-program-binding/0.2.0",
+      "cuda-mcgs.tensor-evaluator-resource-binding/0.2.0"
     ],
     "owns": [
       "Tensor evaluator connector admission and import drift rejection",

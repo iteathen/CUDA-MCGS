@@ -77,7 +77,10 @@ const slotState = state.slotStates;
 const batchState = state.batchStates;
 
 assert.equal(contribution.kind, 'cuda-mcgs-tensor-evaluator-runtime-contribution');
-assert.equal(contribution.contract, 'cuda-mcgs.tensor-evaluator-device-runtime/0.1.0');
+assert.equal(contribution.contract, 'cuda-mcgs.tensor-evaluator-device-runtime/0.2.0');
+assert(contribution.resources.every(({ resourceKey, representationRole, resourceClass, pressureStatus, resourceAccess, alignmentBytes }) => typeof resourceKey === 'string' && typeof representationRole === 'string' && typeof resourceClass === 'string' && typeof pressureStatus === 'string' && Array.isArray(resourceAccess) && Number.isSafeInteger(alignmentBytes)));
+assert(contribution.tensorBindings.every(({ parameterIndex, resourceKey, representationRole, storageDisposition, resourceAccess, alignmentBytes }) => Number.isSafeInteger(parameterIndex) && typeof resourceKey === 'string' && typeof representationRole === 'string' && typeof storageDisposition === 'string' && Array.isArray(resourceAccess) && Number.isSafeInteger(alignmentBytes)));
+assert(contribution.device.functions.every(({ calls }) => Array.isArray(calls)), 'runtime must publish explicit local call graph metadata');
 assert.equal(contribution.execution.deviceOwned, true);
 assert.equal(contribution.execution.hostProgress, 'none');
 assert.equal(contribution.execution.maxConcurrentBatches, 1);
