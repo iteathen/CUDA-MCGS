@@ -40,7 +40,7 @@ function tokenKey(token) {
 
 export function createTensorEvaluatorReference(connector) {
   object(connector, 'connector');
-  if (connector.contract !== 'cuda-mcgs.tensor-evaluator-connector/0.1.0') fail('TENSOR_EVALUATOR_CONNECTOR', 'connector contract is invalid');
+  if (connector.contract !== 'cuda-mcgs.tensor-evaluator-connector/0.2.0') fail('TENSOR_EVALUATOR_CONNECTOR', 'connector contract is invalid');
   const slots = Array.from({ length: connector.requestCapacity }, (_, slot) => ({ slot, generation: 0, state: 'free', request: null, result: null, batch: null }));
   let batchGeneration = 0;
   let closed = false;

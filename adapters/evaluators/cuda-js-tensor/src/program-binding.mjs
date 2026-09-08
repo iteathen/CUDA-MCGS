@@ -2,8 +2,8 @@ import { createHash } from 'node:crypto';
 
 import { TensorEvaluatorConnectorError } from './connector.mjs';
 
-const BINDING_CONTRACT = 'cuda-mcgs.tensor-evaluator-program-binding/0.2.0';
-const RUNTIME_CONTRACT = 'cuda-mcgs.tensor-evaluator-device-runtime/0.2.0';
+const BINDING_CONTRACT = 'cuda-mcgs.tensor-evaluator-program-binding/0.3.0';
+const RUNTIME_CONTRACT = 'cuda-mcgs.tensor-evaluator-device-runtime/0.3.0';
 const EVALUATOR_SCHEMA = 'cuda-mcgs.evaluator-profile/0.2.0';
 const DEVICE_IMPORT_SCHEMA = 'cuda-mcgs.device-js-import-declaration/0.1.0';
 const WORK_CLASS_KEYS = Object.freeze(['encode', 'admit', 'batch', 'execute', 'scatter', 'publish']);
@@ -302,10 +302,9 @@ export function createTensorEvaluatorProgramBinding(runtimeContribution, normali
         .sort()
         .map((contractId) => ({ contractId, consumer: profile.id })),
     },
-    resourceRequirements: contribution.resources.map((entry) => ({ ...entry })),
-    tensorBindings: contribution.tensorBindings.map((entry) => ({ ...entry })),
     claimLimits: [
       'program-source-function-import-binding-only',
+      'resource-descriptors-not-relayed-through-program-binding',
       'resource-plan-binding-not-included',
       'progress-runtime-entry-binding-not-included',
       'no-native-or-provider-qualification',

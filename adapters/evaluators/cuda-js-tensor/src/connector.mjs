@@ -1,4 +1,4 @@
-const CONNECTOR_CONTRACT = 'cuda-mcgs.tensor-evaluator-connector/0.1.0';
+const CONNECTOR_CONTRACT = 'cuda-mcgs.tensor-evaluator-connector/0.2.0';
 const TENSOR_CONTRACTS = new Set([
   'SPEC-0009-item-parallel-device-tensor-program-v1',
   'SPEC-0009-item-parallel-device-tensor-program-v1+SPEC-0009-gather-concat-v1',
@@ -99,6 +99,30 @@ function normalizeProgramParameters(value) {
   return parameters;
 }
 
+function exactElementBytes(elementCount, dtypeWidth, byteLength, label) {
+  if (elementCount > Math.floor(Number.MAX_SAFE_INTEGER / dtypeWidth) || elementCount * dtypeWidth !== byteLength) {
+    fail('TENSOR_EVALUATOR_LAYOUT', `${label} elementCount/dtypeWidth differ from byteLength`);
+  }
+}
+
+function roleLayoutFacts(entry, parameter, elementCount, label) {
+  if (parameter.role === 'workspace') {
+    if (parameter.byteLength % elementCount !== 0) fail('TENSOR_EVALUATOR_LAYOUT', `${label} byteLength does not divide by elementCount`);
+    const dtypeWidth = positiveInteger(parameter.byteLength / elementCount, `${label} dtypeWidth`);
+    const alignmentBytes = positiveInteger(entry.alignmentBytes, `${label} alignmentBytes`);
+    if (alignmentBytes < dtypeWidth || alignmentBytes % dtypeWidth !== 0) fail('TENSOR_EVALUATOR_LAYOUT', `${label} alignment is incompatible with dtype width`);
+    return { dtypeWidth, alignmentBytes };
+  }
+  const spec = object(entry.spec, `${label} TensorSpec`);
+  const dtypeWidth = positiveInteger(spec.dtypeWidth, `${label} TensorSpec dtypeWidth`);
+  const alignmentBytes = positiveInteger(spec.alignment, `${label} TensorSpec alignment`);
+  if (spec.dtype !== parameter.dtype || alignmentBytes < dtypeWidth || alignmentBytes % dtypeWidth !== 0) {
+    fail('TENSOR_EVALUATOR_LAYOUT', `${label} TensorSpec dtype/alignment differs from the public parameter`);
+  }
+  exactElementBytes(elementCount, dtypeWidth, parameter.byteLength, label);
+  return { dtypeWidth, alignmentBytes };
+}
+
 function normalizeRoleProjection(value, parameters, role, label) {
   if (!Array.isArray(value)) fail('TENSOR_EVALUATOR_CALLABLE', `${label} must be an array`);
   const expected = parameters.filter((entry) => entry.role === role);
@@ -113,27 +137,32 @@ function normalizeRoleProjection(value, parameters, role, label) {
       fail('TENSOR_EVALUATOR_CALLABLE', `${label} differs from Tensor parameter ${parameter.parameterName}`);
     }
     if (role === 'input') {
+      const elementCount = positiveInteger(entry.elementCount, `${parameter.parameterName} elementCount`);
       return {
         ...parameter,
         name: text(entry.name, `${parameter.parameterName} input name`),
         valueId: text(entry.valueId, `${parameter.parameterName} input valueId`),
-        elementCount: positiveInteger(entry.elementCount, `${parameter.parameterName} elementCount`),
+        elementCount,
+        ...roleLayoutFacts(entry, parameter, elementCount, parameter.parameterName),
       };
     }
     if (role === 'output') {
+      const elementCount = positiveInteger(entry.elementCount, `${parameter.parameterName} elementCount`);
       return {
         ...parameter,
         name: text(entry.name, `${parameter.parameterName} output name`),
         valueId: text(entry.valueId, `${parameter.parameterName} output valueId`),
         perItemElements: positiveInteger(entry.perItemElements, `${parameter.parameterName} perItemElements`),
-        elementCount: positiveInteger(entry.elementCount, `${parameter.parameterName} elementCount`),
+        elementCount,
+        ...roleLayoutFacts(entry, parameter, elementCount, parameter.parameterName),
       };
     }
+    const elementCount = positiveInteger(entry.elementCount, `${parameter.parameterName} elementCount`);
     return {
       ...parameter,
       perItemElements: positiveInteger(entry.perItemElements, `${parameter.parameterName} perItemElements`),
-      elementCount: positiveInteger(entry.elementCount, `${parameter.parameterName} elementCount`),
-      alignmentBytes: positiveInteger(entry.alignmentBytes, `${parameter.parameterName} alignmentBytes`),
+      elementCount,
+      ...roleLayoutFacts(entry, parameter, elementCount, parameter.parameterName),
     };
   });
 }

@@ -28,11 +28,11 @@ function fakeTensorDeviceProgram(overrides = {}) {
     { parameterIndex: 4, parameterName: 'workspace', role: 'workspace', type: 'ptr<f32>', dtype: 'f32', access: 'read-write', itemVarying: true, byteLength: 32 },
   ];
   const inputs = [
-    { ...parameters[1], name: 'features', valueId: 'value.features', elementCount: 8 },
-    { ...parameters[2], name: 'weights', valueId: 'value.weights', elementCount: 16 },
+    { ...parameters[1], name: 'features', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 64 }, valueId: 'value.features', elementCount: 8 },
+    { ...parameters[2], name: 'weights', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 128 }, valueId: 'value.weights', elementCount: 16 },
   ];
   const outputs = [
-    { ...parameters[3], name: 'scores', valueId: 'value.scores', perItemElements: 2, elementCount: 4 },
+    { ...parameters[3], name: 'scores', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 32 }, valueId: 'value.scores', perItemElements: 2, elementCount: 4 },
   ];
   const workspace = [
     { ...parameters[4], perItemElements: 4, elementCount: 8, alignmentBytes: 16 },
@@ -93,15 +93,19 @@ runCase('TENSOR-EVAL-C01A-public-binding-descriptors-preserved', () => {
   const workspace = connector.parameters.find(({ parameterName }) => parameterName === 'workspace');
   assert.deepEqual(features, {
     parameterIndex: 1, parameterName: 'features', role: 'input', type: 'ptr<f32>', dtype: 'f32', access: 'read', itemVarying: true,
-    byteLength: 32, name: 'features', valueId: 'value.features', elementCount: 8,
+    byteLength: 32, name: 'features', valueId: 'value.features', elementCount: 8, dtypeWidth: 4, alignmentBytes: 64,
   });
   assert.equal(weights.itemVarying, false);
+  assert.equal(weights.dtypeWidth, 4);
+  assert.equal(weights.alignmentBytes, 128);
   assert.equal(weights.valueId, 'value.weights');
   assert.equal(scores.valueId, 'value.scores');
   assert.equal(scores.perItemElements, 2);
   assert.equal(scores.elementCount, 4);
+  assert.equal(scores.alignmentBytes, 32);
   assert.equal(workspace.perItemElements, 4);
   assert.equal(workspace.elementCount, 8);
+  assert.equal(workspace.dtypeWidth, 4);
   assert.equal(workspace.alignmentBytes, 16);
   assert(Object.isFrozen(connector.parameters));
   assert(Object.isFrozen(workspace));
@@ -191,6 +195,9 @@ runCase('TENSOR-EVAL-F03-invalid-public-shapes-reject', () => {
   const malformedWorkspace = fakeTensorDeviceProgram();
   malformedWorkspace.workspace = malformedWorkspace.workspace.map((entry) => ({ ...entry, alignmentBytes: 0 }));
   assert.throws(() => createTensorEvaluatorConnector(malformedWorkspace), (error) => error?.code === 'TENSOR_EVALUATOR_BOUNDS');
+  const malformedSpec = fakeTensorDeviceProgram();
+  malformedSpec.inputs = malformedSpec.inputs.map((entry, index) => index === 0 ? { ...entry, spec: { ...entry.spec, alignment: 2 } } : entry);
+  assert.throws(() => createTensorEvaluatorConnector(malformedSpec), (error) => error?.code === 'TENSOR_EVALUATOR_LAYOUT');
   const malformedOutput = fakeTensorDeviceProgram();
   malformedOutput.outputs = malformedOutput.outputs.map((entry) => ({ ...entry, valueId: '' }));
   assert.throws(() => createTensorEvaluatorConnector(malformedOutput), (error) => error?.code === 'TENSOR_EVALUATOR_INPUT');

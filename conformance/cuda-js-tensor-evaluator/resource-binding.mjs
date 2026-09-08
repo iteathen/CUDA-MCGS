@@ -61,10 +61,10 @@ function fakeTensorDeviceProgram() {
     outputFormat: 'lto-ir',
     parameters,
     inputs: [
-      { ...parameters[1], name: 'features', valueId: 'value.features', elementCount: 4 },
-      { ...parameters[2], name: 'weights', valueId: 'value.weights', elementCount: 4 },
+      { ...parameters[1], name: 'features', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 64 }, valueId: 'value.features', elementCount: 4 },
+      { ...parameters[2], name: 'weights', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 128 }, valueId: 'value.weights', elementCount: 4 },
     ],
-    outputs: [{ ...parameters[3], name: 'scores', valueId: 'value.scores', perItemElements: 2, elementCount: 4 }],
+    outputs: [{ ...parameters[3], name: 'scores', spec: { dtype: 'f32', dtypeWidth: 4, alignment: 32 }, valueId: 'value.scores', perItemElements: 2, elementCount: 4 }],
     workspace: [{ ...parameters[4], perItemElements: 4, elementCount: 8, alignmentBytes: 256 }],
     totalWorkspaceBytes: 32,
     function: fn,
@@ -104,9 +104,12 @@ assert(representationResources.length > 0);
 assert(representationResources.every(({ unit, minimum, maximum }) => unit === 'bytes' && minimum === maximum));
 const representationById = new Map(representationResources.map((entry) => [entry.id, entry]));
 const evaluatorResourceId = ({ resourceKey }) => resourceBound.id + '.resource-' + resourceKey;
-const controlDescriptors = runtime.resources.filter(({ representationRole }) => representationRole === 'runtime-control');
-assert(controlDescriptors.length > 0);
-assert(controlDescriptors.every((descriptor) => representationById.get(evaluatorResourceId(descriptor))?.class === descriptor.resourceClass), 'runtime-control accounting class must come from explicit runtime metadata');
+const requestControls = runtime.resources.filter(({ representationRole }) => representationRole === 'request-control');
+const batchControls = runtime.resources.filter(({ representationRole }) => representationRole === 'batch-control');
+assert.equal(requestControls.length, 2);
+assert.equal(batchControls.length, 2);
+assert(requestControls.every((descriptor) => descriptor.resourceClass === 'request' && representationById.get(evaluatorResourceId(descriptor))?.class === 'request'));
+assert(batchControls.every((descriptor) => descriptor.resourceClass === 'batch' && representationById.get(evaluatorResourceId(descriptor))?.class === 'batch'));
 const externalDescriptor = runtime.tensorBindings.find(({ storageDisposition }) => storageDisposition === 'external-owner-required');
 assert(externalDescriptor);
 assert.equal(representationById.has(evaluatorResourceId(externalDescriptor)), false, 'external-owner-required Tensor input must not be synthesized as adapter-owned storage');
@@ -168,19 +171,32 @@ const knownProfiles = [
   withSchema(evaluatorResult, evaluatorSchemaSha),
 ];
 const resourceResult = normalizeResourceProfile(resourceInput, inspected, knownProfiles);
-const binding = createTensorEvaluatorResourceBinding(programBinding, evaluatorResult, resourceResult);
+assert.equal('resourceRequirements' in programBinding, false);
+assert.equal('tensorBindings' in programBinding, false);
+const binding = createTensorEvaluatorResourceBinding(runtime, evaluatorResult, resourceResult);
 
 assert.equal(binding.contract, tensorEvaluatorResourceBindingConstants.contract);
 assert.equal(binding.ownerProfile, evaluatorResult.normalized.id);
 assert.deepEqual(binding.evaluatorProfileIdentity, contentIdentity(evaluatorResult.identity));
 assert.deepEqual(binding.resourcePlan, { id: resourceResult.normalized.id, identity: contentIdentity(resourceResult.identity) });
+const sourceDriftRuntime = { ...runtime, device: { ...runtime.device, source: runtime.device.source + '\n// audit-source-drift\n' } };
+assert.throws(
+  () => createTensorEvaluatorResourceBinding(sourceDriftRuntime, evaluatorResult, resourceResult),
+  (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_IDENTITY',
+  'Resource Binding must reject a runtime whose source differs from the normalized evaluator identity',
+);
 assert.equal(binding.externalTensorParameters.length, 1);
+assert.equal(binding.externalTensorParameters[0].alignment, '128', 'shared Tensor input must preserve public TensorSpec alignment');
 assert.deepEqual(binding.externalTensorParameters.map(({ parameterName }) => parameterName), ['weights']);
 assert.equal(binding.resourceBindings.length, representationResources.length);
 assert(binding.resourceBindings.every(({ evaluatorResource }) => representationResources.some(({ id }) => id === evaluatorResource)));
 assert(binding.resourceBindings.every(({ providerRequirement }) => resourceResult.normalized.providerRequirements.some(({ id, unit }) => id === providerRequirement && unit === 'bytes')));
 assert(binding.resourceBindings.every(({ partition, view }) => resourceResult.normalized.partitions.find(({ id }) => id === partition)?.offset === view.byteOffset), 'provider-relative offsets must come from Resource-owned partitions');
-assert(binding.resourceBindings.some(({ parameterName, evaluatorResourceClass, requiredAccess }) => parameterName === 'mcgsEvalControl32' && evaluatorResourceClass === 'batch' && requiredAccess.includes('atomic')));
+assert(binding.resourceBindings.some(({ representationRole, evaluatorResourceClass, requiredAccess }) => representationRole === 'request-control' && evaluatorResourceClass === 'request' && requiredAccess.includes('atomic')));
+assert(binding.resourceBindings.some(({ representationRole, evaluatorResourceClass, requiredAccess }) => representationRole === 'batch-control' && evaluatorResourceClass === 'batch' && requiredAccess.includes('atomic')));
+assert(binding.resourceBindings.some(({ parameterName, alignment }) => parameterName === 'features' && alignment === '64'));
+assert(binding.resourceBindings.some(({ parameterName, alignment }) => parameterName === 'scores' && alignment === '32'));
+assert(binding.resourceBindings.some(({ representationRole, alignment }) => representationRole === 'request-staging' && alignment === '4'), 'request staging must use copy dtype alignment, not Tensor pointer alignment');
 assert(binding.resourceBindings.some(({ parameterName, alignment }) => parameterName === 'scratch' && alignment === '256'));
 assert.equal(binding.ownership.placement, 'resource-plan-partitions');
 assert(binding.claimLimits.includes('no-caller-supplied-resource-offsets'));
@@ -189,26 +205,26 @@ assert(Object.isFrozen(binding));
 assert(Object.isFrozen(binding.resourceBindings[0]));
 
 const missingRepresentation = structuredClone(evaluatorResult);
-const atomicControlDescriptor = runtime.resources.find(({ representationRole, resourceAccess }) => representationRole === 'runtime-control' && resourceAccess.includes('atomic'));
+const atomicControlDescriptor = runtime.resources.find(({ representationRole, resourceAccess }) => representationRole === 'request-control' && resourceAccess.includes('atomic'));
 assert(atomicControlDescriptor);
 missingRepresentation.normalized.resources = missingRepresentation.normalized.resources.filter(({ id }) => id !== evaluatorResourceId(atomicControlDescriptor));
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(programBinding, missingRepresentation, resourceResult),
+  () => createTensorEvaluatorResourceBinding(runtime, missingRepresentation, resourceResult),
   (error) => error instanceof TensorEvaluatorConnectorError && error.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_RESOURCE',
 );
 
 const providerDrift = structuredClone(resourceResult);
-const controlAllocation = binding.resourceBindings.find(({ representationRole, requiredAccess }) => representationRole === 'runtime-control' && requiredAccess.includes('atomic'));
+const controlAllocation = binding.resourceBindings.find(({ representationRole, requiredAccess }) => representationRole === 'request-control' && requiredAccess.includes('atomic'));
 providerDrift.normalized.providerRequirements.find(({ id }) => id === controlAllocation.providerRequirement).access = ['read', 'write'];
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(programBinding, evaluatorResult, providerDrift),
+  () => createTensorEvaluatorResourceBinding(runtime, evaluatorResult, providerDrift),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_ACCESS',
 );
 
 const placementDrift = structuredClone(resourceResult);
 placementDrift.normalized.partitions.find(({ id }) => id === binding.resourceBindings.find(({ representationRole }) => representationRole === 'tensor-workspace').partition).offset = '4';
 assert.throws(
-  () => createTensorEvaluatorResourceBinding(programBinding, evaluatorResult, placementDrift),
+  () => createTensorEvaluatorResourceBinding(runtime, evaluatorResult, placementDrift),
   (error) => error?.code === 'TENSOR_EVALUATOR_RESOURCE_BINDING_ALIGNMENT',
 );
 
@@ -229,7 +245,7 @@ assert.throws(
 );
 
 console.log(JSON.stringify({
-  schema: 'cuda-mcgs.tensor-evaluator-resource-layout-binding-portable-evidence/0.2.0',
+  schema: 'cuda-mcgs.tensor-evaluator-resource-layout-binding-portable-evidence/0.3.0',
   status: 'pass',
   evaluatorRepresentationResources: representationResources.length,
   resourceBindings: binding.resourceBindings.length,
@@ -237,7 +253,10 @@ console.log(JSON.stringify({
   cases: [
     'semantic-resource-counts-preserved',
     'runtime-byte-extents-become-evaluator-identity',
-    'control-state-not-disguised-as-workspace',
+    'exact-runtime-source-identity-bound-to-evaluator',
+    'request-and-batch-control-storage-classed-separately',
+    'tensor-input-output-alignment-preserved',
+    'program-binding-does-not-relay-resource-facts',
     'tensor-workspace-alignment-preserved',
     'shared-immutable-tensor-input-remains-external',
     'unchanged-resource-planner-produces-byte-provider-chains',

@@ -1,9 +1,9 @@
-import { TensorEvaluatorConnectorError } from './connector.mjs';
-import { tensorEvaluatorRuntimeConstants } from './runtime-contribution.mjs';
+import { createHash } from 'node:crypto';
 
-const RESOURCE_BINDING_CONTRACT = 'cuda-mcgs.tensor-evaluator-resource-binding/0.2.0';
-const RUNTIME_CONTRACT = 'cuda-mcgs.tensor-evaluator-device-runtime/0.2.0';
-const PROGRAM_BINDING_CONTRACT = 'cuda-mcgs.tensor-evaluator-program-binding/0.2.0';
+import { TensorEvaluatorConnectorError } from './connector.mjs';
+
+const RESOURCE_BINDING_CONTRACT = 'cuda-mcgs.tensor-evaluator-resource-binding/0.3.0';
+const RUNTIME_CONTRACT = 'cuda-mcgs.tensor-evaluator-device-runtime/0.3.0';
 const EVALUATOR_SCHEMA = 'cuda-mcgs.evaluator-profile/0.2.0';
 const RESOURCE_SCHEMA = 'cuda-mcgs.resource-profile/0.2.0';
 const NAMESPACED_ID = /^[a-z][a-z0-9-]*(?:\.[a-z0-9][a-z0-9-]*)+$/;
@@ -11,10 +11,10 @@ const KEBAB = /^[a-z0-9][a-z0-9-]*$/;
 const IDENTIFIER = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
 const DECIMAL = /^(?:0|[1-9][0-9]*)$/;
 const HEX64 = /^[0-9a-f]{64}$/;
-const DTYPE_WIDTH = tensorEvaluatorRuntimeConstants.dtypeWidth;
-const RESOURCE_CLASSES = new Set(['batch', 'input', 'result', 'workspace']);
+const RESOURCE_CLASSES = new Set(['request', 'batch', 'input', 'result', 'workspace']);
 const REPRESENTATION_ROLES = new Set([
-  'runtime-control',
+  'request-control',
+  'batch-control',
   'request-staging',
   'result-staging',
   'tensor-input-staging',
@@ -56,11 +56,6 @@ function positiveSafeInteger(value, label) {
   return value;
 }
 
-function width(dtype, label) {
-  const value = DTYPE_WIDTH[dtype];
-  if (!Number.isSafeInteger(value) || value <= 0) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_DTYPE', `${label} uses unsupported dtype ${dtype}`);
-  return value;
-}
 
 function namespacedId(value, label) {
   if (typeof value !== 'string' || !NAMESPACED_ID.test(value)) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_ID', `${label} must be a namespaced id`);
@@ -81,6 +76,13 @@ function contentIdentity(value, label) {
   object(value, label);
   if (value.algorithm !== 'sha256' || typeof value.sha256 !== 'string' || !HEX64.test(value.sha256)) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_IDENTITY', `${label} must be a sha256 content identity`);
   return { algorithm: 'sha256', sha256: value.sha256 };
+}
+
+function runtimeSourceIdentity(value) {
+  const source = value?.device?.source;
+  if (typeof source !== 'string' || source.length === 0) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_IDENTITY', 'runtime Device-JS source is absent');
+  const canonical = source.replace(/\r\n?/g, '\n').replace(/\n+$/g, '') + '\n';
+  return { algorithm: 'sha256', sha256: createHash('sha256').update(canonical, 'utf8').digest('hex') };
 }
 
 function accessList(value, label) {
@@ -106,14 +108,6 @@ function runtime(value) {
   return value;
 }
 
-function programBinding(value) {
-  object(value, 'Tensor evaluator program binding');
-  if (value.kind !== 'cuda-mcgs-tensor-evaluator-program-binding' || value.contract !== PROGRAM_BINDING_CONTRACT
-      || typeof value.ownerProfile !== 'string' || !Array.isArray(value.resourceRequirements) || !Array.isArray(value.tensorBindings)) {
-    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_PROGRAM', 'program binding is not the admitted explicit-layout Tensor evaluator program-binding shape');
-  }
-  return value;
-}
 
 function resourceClass(value, label) {
   if (typeof value !== 'string' || !RESOURCE_CLASSES.has(value)) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_SEMANTIC', `${label} resourceClass is invalid`);
@@ -127,7 +121,7 @@ function representationRole(value, label) {
 
 function runtimeDescriptor(entry) {
   exactKeys(entry, [
-    'id', 'resourceKey', 'representationRole', 'parameterName', 'dtype', 'access', 'resourceClass', 'pressureStatus',
+    'id', 'resourceKey', 'representationRole', 'parameterName', 'dtype', 'dtypeWidth', 'access', 'resourceClass', 'pressureStatus',
     'resourceAccess', 'elementCount', 'byteLength', 'alignmentBytes', 'initialization',
     ...(Object.hasOwn(entry, 'perRequestElements') ? ['perRequestElements', 'members'] : []),
   ], 'TENSOR_EVALUATOR_RESOURCE_BINDING_LOGICAL', 'runtime resource requirement');
@@ -137,7 +131,7 @@ function runtimeDescriptor(entry) {
   identifier(entry.parameterName, `${entry.id} parameterName`);
   const elementCount = BigInt(positiveSafeInteger(entry.elementCount, `${entry.id} elementCount`));
   const byteLength = BigInt(positiveSafeInteger(entry.byteLength, `${entry.id} byteLength`));
-  const dtypeWidth = BigInt(width(entry.dtype, entry.id));
+  const dtypeWidth = BigInt(positiveSafeInteger(entry.dtypeWidth, `${entry.id} dtypeWidth`));
   const alignment = BigInt(positiveSafeInteger(entry.alignmentBytes, `${entry.id} alignmentBytes`));
   if (elementCount * dtypeWidth !== byteLength) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_LOGICAL', `${entry.id} element layout differs from byteLength`);
   if (alignment < dtypeWidth || alignment % dtypeWidth !== 0n) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_ALIGNMENT', `${entry.id} alignment is incompatible with dtype width`);
@@ -169,16 +163,17 @@ function runtimeDescriptor(entry) {
 function tensorDescriptor(entry) {
   exactKeys(entry, [
     'parameterIndex', 'resourceKey', 'representationRole', 'parameterName', 'role', 'type', 'dtype', 'access', 'itemVarying',
-    'byteLength', 'storageDisposition', 'resourceClass', 'pressureStatus', 'resourceAccess', 'alignmentBytes', 'initialization',
+    'elementCount', 'byteLength', 'dtypeWidth', 'storageDisposition', 'resourceClass', 'pressureStatus', 'resourceAccess', 'alignmentBytes', 'initialization',
   ], 'TENSOR_EVALUATOR_RESOURCE_BINDING_LOGICAL', 'Tensor binding');
   if (!Number.isSafeInteger(entry.parameterIndex) || entry.parameterIndex <= 0) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_PARAMETER', 'Tensor binding parameterIndex is invalid');
   identifier(entry.parameterName, 'Tensor binding parameterName');
   const resourceKey = kebab(entry.resourceKey, `${entry.parameterName} resourceKey`);
   const role = representationRole(entry.representationRole, entry.parameterName);
+  const elementCount = BigInt(positiveSafeInteger(entry.elementCount, `${entry.parameterName} elementCount`));
   const byteLength = BigInt(positiveSafeInteger(entry.byteLength, `${entry.parameterName} byteLength`));
-  const dtypeWidth = BigInt(width(entry.dtype, entry.parameterName));
+  const dtypeWidth = BigInt(positiveSafeInteger(entry.dtypeWidth, `${entry.parameterName} dtypeWidth`));
   const alignment = BigInt(positiveSafeInteger(entry.alignmentBytes, `${entry.parameterName} alignmentBytes`));
-  if (entry.type !== `ptr<${entry.dtype}>` || byteLength % dtypeWidth !== 0n) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_LOGICAL', `${entry.parameterName} Tensor type/byte layout is invalid`);
+  if (entry.type !== `ptr<${entry.dtype}>` || elementCount * dtypeWidth !== byteLength) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_LOGICAL', `${entry.parameterName} Tensor type/byte layout is invalid`);
   if (alignment < dtypeWidth || alignment % dtypeWidth !== 0n) fail('TENSOR_EVALUATOR_RESOURCE_BINDING_ALIGNMENT', `${entry.parameterName} alignment is incompatible with dtype width`);
   const requiredAccess = accessList(entry.resourceAccess, `${entry.parameterName} resourceAccess`);
   if (entry.storageDisposition === 'external-owner-required') {
@@ -192,7 +187,7 @@ function tensorDescriptor(entry) {
       representationRole: role,
       parameterName: entry.parameterName,
       dtype: entry.dtype,
-      elementCount: byteLength / dtypeWidth,
+      elementCount,
       byteLength,
       alignment,
       requiredAccess,
@@ -213,7 +208,7 @@ function tensorDescriptor(entry) {
     representationRole: role,
     parameterName: entry.parameterName,
     dtype: entry.dtype,
-    elementCount: byteLength / dtypeWidth,
+    elementCount,
     byteLength,
     alignment,
     resourceClass: klass,
@@ -303,14 +298,19 @@ export function bindTensorEvaluatorProfileResources(profileInput, runtimeContrib
   return freeze(bound);
 }
 
-function evaluatorProfileResult(value, ownerProfile) {
+function evaluatorProfileResult(value, runtimeContribution) {
   object(value, 'evaluator profile result');
   const normalized = object(value.normalized, 'normalized evaluator profile');
   const identity = contentIdentity(value.identity, 'evaluator profile identity');
   if (normalized.schema !== EVALUATOR_SCHEMA || normalized.status !== 'accepted' || normalized.contract?.id !== 'SPEC-0009'
-      || normalized.id !== ownerProfile || normalized.execution?.deviceOwned !== true || normalized.execution?.hostProgress !== 'none'
+      || normalized.execution?.deviceOwned !== true || normalized.execution?.hostProgress !== 'none'
       || !Array.isArray(normalized.resources)) {
-    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_EVALUATOR', 'normalized evaluator profile does not match the program-binding owner');
+    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_EVALUATOR', 'normalized evaluator profile is not an accepted device-owned SPEC-0009 result');
+  }
+  const runtimeIdentity = runtimeSourceIdentity(runtimeContribution);
+  if (normalized.programContribution?.sourceIdentity?.algorithm !== runtimeIdentity.algorithm
+      || normalized.programContribution.sourceIdentity.sha256 !== runtimeIdentity.sha256) {
+    fail('TENSOR_EVALUATOR_RESOURCE_BINDING_IDENTITY', 'runtime Device-JS source differs from the exact normalized evaluator program source identity');
   }
   return { normalized, identity };
 }
@@ -407,11 +407,11 @@ function bindDescriptor(descriptor, evaluator, resource, contributor) {
   };
 }
 
-export function createTensorEvaluatorResourceBinding(programBindingInput, evaluatorProfileResultInput, resourceProfileResultInput) {
-  const binding = programBinding(programBindingInput);
-  const evaluatorResult = evaluatorProfileResult(evaluatorProfileResultInput, binding.ownerProfile);
+export function createTensorEvaluatorResourceBinding(runtimeContributionInput, evaluatorProfileResultInput, resourceProfileResultInput) {
+  const contribution = runtime(runtimeContributionInput);
+  const evaluatorResult = evaluatorProfileResult(evaluatorProfileResultInput, contribution);
   const { normalized: resource, identity: resourceIdentity, contributor } = resourceProfileResult(resourceProfileResultInput, evaluatorResult);
-  const { materialized, external } = descriptors(binding.resourceRequirements, binding.tensorBindings);
+  const { materialized, external } = descriptors(contribution.resources, contribution.tensorBindings);
   const resourceBindings = materialized.map((descriptor) => bindDescriptor(descriptor, evaluatorResult.normalized, resource, contributor));
   const providers = [...new Set(resourceBindings.map(({ providerRequirement }) => providerRequirement))].sort();
   return freeze({
@@ -442,6 +442,8 @@ export function createTensorEvaluatorResourceBinding(programBindingInput, evalua
     },
     claimLimits: [
       'runtime-byte-extents-and-classification-come-from-explicit-runtime-metadata',
+      'resource-binding-consumes-runtime-owner-directly',
+      'exact-runtime-source-identity-bound-to-evaluator-profile',
       'no-name-or-prefix-semantic-inference',
       'no-synthetic-runtime-reconstruction',
       'no-caller-supplied-resource-offsets',
@@ -456,8 +458,6 @@ export function createTensorEvaluatorResourceBinding(programBindingInput, evalua
 export const tensorEvaluatorResourceBindingConstants = Object.freeze({
   contract: RESOURCE_BINDING_CONTRACT,
   runtimeContract: RUNTIME_CONTRACT,
-  programBindingContract: PROGRAM_BINDING_CONTRACT,
   evaluatorSchema: EVALUATOR_SCHEMA,
   resourceSchema: RESOURCE_SCHEMA,
-  dtypeWidth: DTYPE_WIDTH,
 });
