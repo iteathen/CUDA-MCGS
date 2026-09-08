@@ -22,141 +22,100 @@ jobs:
         run: |
           set -euo pipefail
 
+          lock() {
+            node tools/reference-evidence-locks.mjs --write "$1"
+          }
+
+          # Producer foundations.
+          node scripts/run-search-ir-reference.mjs
+          lock search-ir
+
           node scripts/run-search-ir-composer-reference.mjs
+          lock composer
+
           for owner in domain graph policy evaluator resource progress output session stage; do
             node "scripts/export-search-ir-composer-${owner}-profiles.mjs"
           done
 
-          cat > /tmp/refresh-fixtures.mjs <<'NODE'
-          import fs from 'node:fs';
-          import path from 'node:path';
+          # Only fixtures whose contract stores an identity-bearing projection are
+          # lock-maintained here. Descriptor projections remain untouched by the
+          # canonical maintainer.
+          lock projection:domain
+          lock projection:graph
+          lock projection:policy
+          lock projection:evaluator
+          lock projection:resource
+          lock root-control
 
-          const fixtureDir = 'experiments/search-semantics-reference/fixtures';
-          const buildDir = 'conformance/search-compiler/build';
-          const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
-          const fixturePaths = fs.readdirSync(fixtureDir)
-            .filter((name) => name.endsWith('.json'))
-            .sort()
-            .map((name) => path.join(fixtureDir, name));
-
-          function same(a, b) {
-            return JSON.stringify(a) === JSON.stringify(b);
-          }
-
-          function writeFixture(p, data) {
-            fs.writeFileSync(p, `${JSON.stringify(data, null, 2)}\n`);
-          }
-
-          const composer = readJson(path.join(buildDir, 'evidence.json')).representationCompositionEvidenceKey;
-          if (composer?.algorithm !== 'sha256' || !Number.isSafeInteger(composer?.byteLength) || !/^[0-9a-f]{64}$/.test(composer?.sha256 ?? '')) {
-            throw new Error('invalid generated Composer evidence identity');
-          }
-
-          const projectionsBySchema = new Map();
-          for (const name of fs.readdirSync(buildDir).filter((name) => name.endsWith('.json'))) {
-            const generated = readJson(path.join(buildDir, name));
-            if (typeof generated?.schema === 'string' && generated?.projectionIdentity) {
-              projectionsBySchema.set(generated.schema, { schema: generated.schema, ...generated.projectionIdentity });
-            }
-          }
-          if (projectionsBySchema.size < 9) throw new Error(`expected generated profile projections; found ${projectionsBySchema.size}`);
-
-          const rootControlPath = path.join(buildDir, 'root-control.json');
-          const rootControl = fs.existsSync(rootControlPath) ? readJson(rootControlPath) : null;
-          const rootControlIdentity = rootControl?.projectionIdentity ?? rootControl?.identity ?? null;
-
-          let touched = 0;
-          for (const p of fixturePaths) {
-            const data = readJson(p);
-            let changed = false;
-            if (data.composerEvidence !== undefined && !same(data.composerEvidence, composer)) {
-              data.composerEvidence = structuredClone(composer);
-              changed = true;
-            }
-            if (typeof data.profileProjection?.schema === 'string') {
-              const expected = projectionsBySchema.get(data.profileProjection.schema);
-              if (!expected) throw new Error(`${p}: unknown profileProjection schema ${data.profileProjection.schema}`);
-              if (!same(data.profileProjection, expected)) {
-                data.profileProjection = structuredClone(expected);
-                changed = true;
-              }
-            }
-            if (data.rootControlProjection !== undefined && rootControlIdentity !== null && !same(data.rootControlProjection, rootControlIdentity)) {
-              data.rootControlProjection = structuredClone(rootControlIdentity);
-              changed = true;
-            }
-            if (changed) {
-              writeFixture(p, data);
-              touched += 1;
-            }
-          }
-          if (touched === 0) throw new Error('reference-chain refresh found no stale base fixture identities');
-          console.log(`base_fixture_refresh=${touched}`);
-          NODE
-          node /tmp/refresh-fixtures.mjs
-
-          cat > /tmp/propagate-evidence.mjs <<'NODE'
-          import fs from 'node:fs';
-          import path from 'node:path';
-
-          const [key, evidencePath, minimumText = '1'] = process.argv.slice(2);
-          const minimum = Number(minimumText);
-          if (!key || !evidencePath || !Number.isSafeInteger(minimum) || minimum < 0) throw new Error('usage: key evidencePath minimum');
-          const evidence = JSON.parse(fs.readFileSync(evidencePath, 'utf8'));
-          const identity = evidence?.evidenceIdentity;
-          if (identity?.algorithm !== 'sha256' || !Number.isSafeInteger(identity?.byteLength) || !/^[0-9a-f]{64}$/.test(identity?.sha256 ?? '')) {
-            throw new Error(`${evidencePath}: invalid evidenceIdentity`);
-          }
-          const fixtureDir = 'experiments/search-semantics-reference/fixtures';
-          let updated = 0;
-          for (const name of fs.readdirSync(fixtureDir).filter((name) => name.endsWith('.json')).sort()) {
-            const p = path.join(fixtureDir, name);
-            const data = JSON.parse(fs.readFileSync(p, 'utf8'));
-            if (data[key] === undefined) continue;
-            if (JSON.stringify(data[key]) !== JSON.stringify(identity)) {
-              data[key] = structuredClone(identity);
-              fs.writeFileSync(p, `${JSON.stringify(data, null, 2)}\n`);
-            }
-            updated += 1;
-          }
-          if (updated < minimum) throw new Error(`${key}: expected at least ${minimum} fixture consumers, found ${updated}`);
-          console.log(`propagated=${key} consumers=${updated} sha256=${identity.sha256}`);
-          NODE
+          # Downstream reference producers are refreshed in their declared dependency order.
+          node scripts/run-search-semantics-reference.mjs
+          lock domain
 
           node scripts/run-graph-node-reference.mjs
-          node /tmp/propagate-evidence.mjs nodeEvidence experiments/search-semantics-reference/build/graph-node-evidence.json 1
+          lock graph-node
 
           node scripts/run-graph-edge-reference.mjs
-          node /tmp/propagate-evidence.mjs edgeEvidence experiments/search-semantics-reference/build/graph-edge-evidence.json 1
+          lock graph-edge
 
           node scripts/run-graph-ref-reference.mjs
-          node /tmp/propagate-evidence.mjs refEvidence experiments/search-semantics-reference/build/graph-ref-evidence.json 1
+          lock graph-ref
 
           node scripts/run-graph-path-reference.mjs
-          node /tmp/propagate-evidence.mjs pathEvidence experiments/search-semantics-reference/build/graph-path-evidence.json 1
+          lock graph-path
 
           node scripts/run-graph-root-reference.mjs
-          node /tmp/propagate-evidence.mjs rootEvidence experiments/search-semantics-reference/build/graph-root-evidence.json 1
+          lock graph-root
 
           node scripts/run-graph-reclaim-reference.mjs
-          node /tmp/propagate-evidence.mjs reclaimEvidence experiments/search-semantics-reference/build/graph-reclaim-evidence.json 1
+          lock graph-reclaim
 
           node scripts/run-graph-advance-occurrence-reference.mjs
-          node /tmp/propagate-evidence.mjs advanceOccurrenceEvidence experiments/search-semantics-reference/build/graph-advance-occurrence-evidence.json 1
+          lock graph-advance
 
           node scripts/run-graph-cleanup-reference.mjs
-          node /tmp/propagate-evidence.mjs cleanupEvidence experiments/search-semantics-reference/build/graph-cleanup-evidence.json 0
+          lock graph-cleanup
 
-          for owner in policy evaluator resource progress output; do
-            node "scripts/run-${owner}-reference.mjs"
-            node /tmp/propagate-evidence.mjs "${owner}Evidence" "experiments/search-semantics-reference/build/${owner}-evidence.json" 0
-          done
+          node scripts/run-policy-reference.mjs
+          lock policy
+
+          node scripts/run-evaluator-reference.mjs
+          lock evaluator
+
+          node scripts/run-resource-reference.mjs
+          lock resource
+
+          node scripts/run-progress-reference.mjs
+          lock progress
+
+          node scripts/run-output-reference.mjs
+          lock output
+
+          node scripts/run-framework-lifecycle-reference.mjs
+          lock framework
+
+          node scripts/run-terminal-slice-reference.mjs
+          lock terminal
+
+          node scripts/run-session-reference.mjs
+          lock session
+
+          node scripts/run-stage-reference.mjs
+          lock stage
+
+          node scripts/run-channel-reference-evidence.mjs
+          lock channel
+
+          # The canonical maintainer must report no remaining drift, then the normal
+          # full integration driver must reproduce the complete packet without writes.
+          node tools/reference-evidence-locks.mjs --check
+          node scripts/run-engine-reference-integration.mjs
 
           rm -- .github/workflows/authorized-255-reference-chain-refresh.yml
           git config user.name "OpenAI authorized project agent"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add experiments/search-semantics-reference/fixtures .github/workflows/authorized-255-reference-chain-refresh.yml
           git diff --cached --check
+          git diff --exit-code
 
           while IFS= read -r changed; do
             case "$changed" in
