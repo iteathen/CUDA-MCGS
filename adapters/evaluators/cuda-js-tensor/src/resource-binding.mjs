@@ -546,6 +546,47 @@ export function createTensorEvaluatorArtifactInputBinding(runtimeContributionInp
   });
 }
 
+// Admission retains private byte snapshots. Consumers receive copies so neither
+// caller mutation nor a consumer's upload buffer can change admitted content.
+// This is a pre-ignition evaluator responsibility; it performs no device work.
+export function admitTensorEvaluatorArtifactInputs(runtimeContribution, evaluatorResult, resourceResult, selections, payloads) {
+  const binding = createTensorEvaluatorArtifactInputBinding(runtimeContribution, evaluatorResult, resourceResult, selections);
+  exactKeys(payloads, binding.inputs.map(({ parameterName }) => parameterName), 'TENSOR_EVALUATOR_ARTIFACT_PAYLOADS', 'artifact payloads');
+  const snapshots = new Map();
+  for (const input of binding.inputs) {
+    const bytes = payloads[input.parameterName];
+    if (!(bytes instanceof Uint8Array)
+        || (typeof SharedArrayBuffer !== 'undefined' && bytes.buffer instanceof SharedArrayBuffer)) {
+      fail('TENSOR_EVALUATOR_ARTIFACT_PAYLOAD_TYPE', `${input.parameterName} requires an unshared Uint8Array`);
+    }
+    if (BigInt(bytes.byteLength) !== BigInt(input.payload.byteLength)) {
+      fail('TENSOR_EVALUATOR_ARTIFACT_PAYLOAD_EXTENT', `${input.parameterName} payload differs from the exact bound byte extent`);
+    }
+    // Uint8Array.from also copies Buffer subranges; Buffer.slice would alias.
+    const snapshot = Uint8Array.from(bytes);
+    const digest = createHash('sha256').update(snapshot).digest('hex');
+    if (digest !== input.payload.sha256) {
+      fail('TENSOR_EVALUATOR_ARTIFACT_PAYLOAD_IDENTITY', `${input.parameterName} payload differs from the selected artifact content digest`);
+    }
+    snapshots.set(input.parameterName, snapshot);
+  }
+  return Object.freeze({
+    contract: 'cuda-mcgs.tensor-evaluator-artifact-input-admission/0.1.0',
+    binding,
+    copyPayload(parameterName) {
+      const snapshot = snapshots.get(parameterName);
+      if (!snapshot) fail('TENSOR_EVALUATOR_ARTIFACT_PAYLOADS', 'requested parameter is not an admitted artifact input');
+      return Uint8Array.from(snapshot);
+    },
+    claimLimits: Object.freeze([
+      'exact-selected-artifact-payload-digest-and-extent',
+      'private-host-snapshots-only',
+      'device-residence-and-package-pointer-composition-not-executed',
+      'no-progress-terminal-or-native-qualification',
+    ]),
+  });
+}
+
 export const tensorEvaluatorResourceBindingConstants = Object.freeze({
   contract: RESOURCE_BINDING_CONTRACT,
   runtimeContract: RUNTIME_CONTRACT,

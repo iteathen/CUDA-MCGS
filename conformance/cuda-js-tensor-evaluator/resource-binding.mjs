@@ -12,6 +12,7 @@ import {
   createTensorEvaluatorProgramBinding,
   createTensorEvaluatorResourceBinding,
   createTensorEvaluatorArtifactInputBinding,
+  admitTensorEvaluatorArtifactInputs,
   createTensorEvaluatorRuntimeContribution,
   tensorEvaluatorResourceBindingConstants,
 } from '../../adapters/evaluators/cuda-js-tensor/index.mjs';
@@ -91,6 +92,8 @@ const baselineEvaluatorFixtures = buildEvaluatorProfiles(inspected, domainProfil
 const baselineEvaluatorProfiles = baselineEvaluatorFixtures.map(({ input, domain, graph }) => normalizeEvaluatorProfile(input, inspected, domain, graph));
 const selectedFixture = baselineEvaluatorFixtures[0];
 const selectedInput = structuredClone(selectedFixture.input);
+const artifactPayload = Uint8Array.from({ length: 16 }, (_, index) => index + 1);
+selectedInput.artifacts[0].provenance.contentSha256 = sha256(artifactPayload);
 selectedInput.request.maxActive = '3';
 selectedInput.batching.maximumItems = '2';
 // The selected evaluator owner, not the Tensor adapter, chooses this artifact
@@ -271,6 +274,32 @@ assert(Object.isFrozen(weights.artifact.provenance));
 assert(Object.isFrozen(artifactInputs.inputs));
 assert.deepEqual(createTensorEvaluatorArtifactInputBinding(runtime, evaluatorResult, resourceResult, artifactSelections), artifactInputs);
 
+const admitPayloads = (payloads) => admitTensorEvaluatorArtifactInputs(runtime, evaluatorResult, resourceResult, artifactSelections, payloads);
+const callerBytes = Buffer.concat([Buffer.from([99]), Buffer.from(artifactPayload), Buffer.from([98])]);
+const admitted = admitPayloads({ weights: callerBytes.subarray(1, 17) });
+assert(Object.isFrozen(admitted));
+assert.deepEqual(admitted.binding, artifactInputs);
+callerBytes.fill(0);
+const uploadCopy = admitted.copyPayload('weights');
+assert.deepEqual(uploadCopy, artifactPayload, 'admission must snapshot only the supplied Buffer view');
+uploadCopy.fill(0);
+assert.deepEqual(admitted.copyPayload('weights'), artifactPayload, 'upload copies must not mutate admitted content');
+const corruptPayload = Uint8Array.from(artifactPayload);
+corruptPayload[7] ^= 1;
+const payloadCases = [
+  ['missing-payload', {}, 'TENSOR_EVALUATOR_ARTIFACT_PAYLOADS'],
+  ['extra-payload', { weights: artifactPayload, extra: artifactPayload }, 'TENSOR_EVALUATOR_ARTIFACT_PAYLOADS'],
+  ['untyped-payload', { weights: Array.from(artifactPayload) }, 'TENSOR_EVALUATOR_ARTIFACT_PAYLOAD_TYPE'],
+  ['shared-payload', { weights: new Uint8Array(new SharedArrayBuffer(16)) }, 'TENSOR_EVALUATOR_ARTIFACT_PAYLOAD_TYPE'],
+  ['short-payload', { weights: artifactPayload.subarray(1) }, 'TENSOR_EVALUATOR_ARTIFACT_PAYLOAD_EXTENT'],
+  ['long-payload', { weights: new Uint8Array(17) }, 'TENSOR_EVALUATOR_ARTIFACT_PAYLOAD_EXTENT'],
+  ['wrong-content', { weights: corruptPayload }, 'TENSOR_EVALUATOR_ARTIFACT_PAYLOAD_IDENTITY'],
+];
+for (const [id, payloads, code] of payloadCases) assert.throws(() => admitPayloads(payloads), { code }, id);
+assert.throws(() => admitted.copyPayload('features'), { code: 'TENSOR_EVALUATOR_ARTIFACT_PAYLOADS' });
+assert.deepEqual(admitPayloads({ weights: artifactPayload }).copyPayload('weights'), artifactPayload, 'failed admission must not poison a later valid admission');
+console.log(JSON.stringify({ artifactPayloadAdmission: 'pass', negativeCases: payloadCases.length + 1, snapshotIsolation: 'caller-and-consumer', claim: 'host-only' }));
+
 const artifactCases = [
   ['missing-selection', 'TENSOR_EVALUATOR_ARTIFACT_SELECTION', (subject) => { subject.selections = []; }],
   ['unknown-parameter', 'TENSOR_EVALUATOR_ARTIFACT_SELECTION', (subject) => { subject.selections[0].parameterName = 'features'; }],
@@ -315,6 +344,11 @@ const tableBinding = createTensorEvaluatorArtifactInputBinding(tableRuntime, tab
 assert.equal(tableBinding.inputs[0].artifact.kind, 'table');
 assert.equal(tableBinding.inputs[0].parameterName, 'lookupEntries');
 assert.notDeepEqual(tableBinding.identity, artifactInputs.identity);
+const tableAdmission = admitTensorEvaluatorArtifactInputs(tableRuntime, tableEvaluator, tableResource,
+  [{ ...artifactSelections[0], parameterName: 'lookupEntries', artifactIdentity: tableInput.artifacts[0].identity }],
+  { lookupEntries: artifactPayload });
+assert.deepEqual(tableAdmission.copyPayload('lookupEntries'), artifactPayload);
+assert.throws(() => tableAdmission.copyPayload('weights'), { code: 'TENSOR_EVALUATOR_ARTIFACT_PAYLOADS' });
 // Removing the adapter selection does not mutate or remove owner artifacts or
 // Resource entries: a non-Tensor consumer can retain them.
 assert.deepEqual(selectedInput.resources, originalSemanticResources);

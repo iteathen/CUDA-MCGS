@@ -18,6 +18,8 @@ The installed-package falsifier verifies `cuda-mcgs/evaluator/cuda-js-tensor` ex
 
 The Resource capsule also qualifies the public artifact-input binding using explicit model and table owner selections, real normalized evaluator/Resource identities, read-only partition-derived views, immutable lifecycle/provenance records, and failures for identity, owner, lifetime, bounds, access and placement drift. The installed-package check covers this export too. This is metadata admission only: payload verification/residence, full pointer composition, Progress and physical cleanup remain unproved.
 
+The payload-admission capsule verifies exact digest/extent against real normalized owner profiles, private snapshot isolation from caller Buffer subranges and returned upload copies, rejection of missing/extra/wrongly typed/shared/short/long/corrupt payloads, and valid retry after rejected admission. These are host admission checks; they do not establish device residence or permit atomic control pointers to be projected as ordinary operation access.
+
 Run:
 
 ```sh

@@ -23,7 +23,8 @@
         "finite request capacity with one first-realization active Tensor batch and partial-batch progress",
         "generic Program Package composition through evaluator-owned source/function/import fragments",
         "Resource-owned physical composition of exact evaluator representation byte resources",
-        "explicit selection of existing immutable engine-scoped evaluator artifacts and exact Resource entries for whole shared Tensor inputs"
+        "explicit selection of existing immutable engine-scoped evaluator artifacts and exact Resource entries for whole shared Tensor inputs",
+        "pre-ignition digest and extent admission of private host snapshots for those selected immutable artifacts"
       ],
       "excluded_cases": [
         "Tensor mathematics or TensorProgram/TensorPlan interpretation",

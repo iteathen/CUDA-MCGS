@@ -1,7 +1,7 @@
 {
   "schema_version": 124,
   "updated": "2026-09-08",
-  "status": "issue_124_active_shared_immutable_tensor_input_binding_next",
+  "status": "issue_124_active_pointer_abi_contract_gap",
   "objective": "Complete CUDA-MCGS #124 from the protected Tensor evaluator audit-closure checkpoint without restarting accepted evaluator, Tensor or CUDA-JS foundations.",
   "agent_authority": {
     "global": "https://github.com/iteathen/.github/blob/main/AGENTS.md",
@@ -24,11 +24,11 @@
   "current_focus": {
     "repository": "iteathen/CUDA-MCGS",
     "issue": 124,
-    "protected_main": "9db49de37c8d9d6507bac70ef62b4095a1d6faa7",
+    "protected_main": "e2047bf0adcd49c7e31b9715324ce5ee127fc95f",
     "protected_checkpoint_pr": 262,
-    "name": "shared immutable Tensor input ownership and binding",
-    "state": "active_owner_directed",
-    "next_action": "Read the protected selected-evaluator/artifact/input ownership surfaces plus the public Tensor and Resource/runtime entry contracts; bind shared immutable Tensor inputs only through their natural selected owner, then complete the pointer-binding ABI before Progress integration.",
+    "name": "atomic operation-binding authority and complete evaluator pointer ABI",
+    "state": "blocked_at_operation_binding_contract",
+    "next_action": "Specify the CUDA-MCGS operation-local atomic/publication binding extension required by SPEC-0005 ACCESS-REP-004, verify its projection against public CUDA-JS contracts, and establish the accepted schema/Composer/adapter boundary. Then close immutable artifact mapping identity and device residence with complete pointer composition before any Progress mutation. Local payload admission is implemented but does not close device integration. See the continuation assessment in docs/development/2026-09-07-device-resident-evaluator-124-assessment-and-plan.md.",
     "execution_sequence": [
       "refresh account-global AGENTS.md, AGENT_LOCAL.md and exact protected repository state",
       "assess shared immutable Tensor input meaning and current selected-owner contracts",
@@ -66,6 +66,7 @@
     "portable conformance remains separated from native/provider/hardware evidence"
   ],
   "blockers": [
+    "Evaluator request/batch control pointers require atomic effects; accepted Program Package operation bindings permit only ordinary read/write access. ACCESS-REP-004 forbids substituting read-write. Existing operation-local conformance confirms atomic/publication rejection. This is a CUDA-MCGS composition representation gap; no lower CUDA-JS capability gap is yet established.",
     "No product numerical oracle is a prerequisite for generic #124 work.",
     "Direct physical NVIDIA qualification remains deferred until suitable hardware is actually exposed."
   ],

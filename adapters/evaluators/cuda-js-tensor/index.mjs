@@ -19,5 +19,6 @@ export {
   bindTensorEvaluatorProfileResources,
   createTensorEvaluatorResourceBinding,
   createTensorEvaluatorArtifactInputBinding,
+  admitTensorEvaluatorArtifactInputs,
   tensorEvaluatorResourceBindingConstants,
 } from './src/resource-binding.mjs';

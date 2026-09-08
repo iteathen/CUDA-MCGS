@@ -1,6 +1,6 @@
 # CUDA-MCGS Status
 
-**Status:** #124 active — Tensor evaluator ownership-audit closure protected; shared immutable Tensor input binding is the next seam
+**Status:** #124 active — local immutable payload admission implemented; complete pointer ABI blocked on atomic operation-binding authority
 
 **Updated:** 2026-09-08
 
@@ -20,6 +20,8 @@ For CUDA-MCGS, current local routing is:
 Legacy general-process material retained under `agent_files/` is historical rationale where it overlaps account-global doctrine. It is not a second universal instruction chain.
 
 ## Protected #124 checkpoint
+
+The active continuation branch is `codex/124-immutable-input-binding`, with protected validator alignment through `e2047bf` merged locally. Owner/Resource metadata binding and immutable host payload admission are implemented locally; device residence, final artifact mapping identity and complete pointer composition remain open. The accepted Program Package access contract cannot represent evaluator control atomics and expressly forbids substituting ordinary `read-write`. The next action and exact evidence are recorded in `next_step.yaml` and the [continuation assessment](docs/development/2026-09-07-device-resident-evaluator-124-assessment-and-plan.md). Astra's `feature/124-progress-binding` at `d3199df` remains preserved, unqualified and unintegrated. #124 is not complete.
 
 Protected CUDA-MCGS `main` is `9db49de37c8d9d6507bac70ef62b4095a1d6faa7`, produced by PR #262 after exact-head portable/package/reference qualification.
 

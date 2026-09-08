@@ -16,6 +16,10 @@ After the evaluator profile and Resource plan are independently normalized, `cre
 
 The immutable result contains read-only Resource views, the selected artifact's provenance/initialization/teardown contracts, the expected raw payload digest, and a canonical binding identity. Runtime composition must include that identity and perform payload admission before ignition. This function is a metadata binding: it does not verify payload bytes, establish device residence, service Progress, or prove physical cleanup. Dropping the binding does not delete the selected owner's artifact or Resource records, which may still serve another consumer.
 
+`admitTensorEvaluatorArtifactInputs(runtime, evaluatorResult, resourceResult, selections, payloads)` repeats owner/Resource binding validation and admits exactly one unshared `Uint8Array` per selected parameter. It snapshots each supplied byte view and verifies its exact length and SHA-256 against selected artifact provenance. The returned frozen admission holds private host snapshots; `copyPayload(parameterName)` returns a fresh upload copy. Caller changes and changes to earlier copies cannot alter admitted content. No device allocation, upload or ignition occurs, and copies do not themselves certify subsequent device residence. Host snapshots are reclaimed when the admission is no longer referenced.
+
+Operation composition remains gated: the control descriptors require atomic effects, while SPEC-0005's accepted ordinary-access binding cannot express them. A coarse `access: read-write` in Resource metadata must not be projected as a substitute for those effects. The complete pointer ABI, binding-identity closure, device residence and Progress integration remain unfinished.
+
 Ownership stays split deliberately:
 
 - CUDA-JS-Tensor owns Tensor mathematics, TensorProgram/TensorPlan meaning, item-axis addressing, the public item callable ABI and Tensor workspace semantics.
