@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: 26.7.0
-      - name: Materialize, qualify, and self-remove
+      - name: Materialize, commit locally, qualify exact bytes, and self-remove
         run: |
           set -euo pipefail
           workflow=.github/workflows/authorized-124-correct-resource-layout.yml
@@ -59,18 +59,22 @@ jobs:
           node --check "$test"
           node --check "$index"
           node --check "$package_test"
-          node scripts/run-cuda-js-tensor-evaluator.mjs
-          node conformance/cuda-js-tensor-evaluator/package.mjs
-          node scripts/run-evaluator-reference.mjs
-          node scripts/run-progress-reference.mjs
-          node scripts/run-search-ir-composer-reference.mjs
 
           rm -- "$workflow" "$rb_gz" "$test_gz" "$package_gz" "$readme_gz" "$conf_readme_gz"
           git add -A -- "$workflow" "$rb_gz" "$test_gz" "$package_gz" "$readme_gz" "$conf_readme_gz" "$rb" "$test" "$index" "$package_test" "$readme" "$conf_readme"
           git diff --cached --check
           unexpected="$(git diff --cached --name-only | grep -Ev '^(adapters/evaluators/cuda-js-tensor/(README\.md|index\.mjs|src/resource-binding\.mjs)|conformance/cuda-js-tensor-evaluator/(README\.md|package\.mjs|resource-binding\.mjs)|\.github/(authorized-124-.*\.gz|workflows/authorized-124-correct-resource-layout\.yml))$' || true)"
           test -z "$unexpected" || { echo "unexpected staged paths:"; echo "$unexpected"; exit 1; }
+
           git config user.name "OpenAI authorized project agent"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Correct Tensor evaluator Resource layout ownership for #124"
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+
+          node scripts/run-cuda-js-tensor-evaluator.mjs
+          node conformance/cuda-js-tensor-evaluator/package.mjs
+          node scripts/run-evaluator-reference.mjs
+          node scripts/run-progress-reference.mjs
+          node scripts/run-search-ir-composer-reference.mjs
+
           git push origin HEAD:refs/heads/feature/124-tensor-resource-binding
