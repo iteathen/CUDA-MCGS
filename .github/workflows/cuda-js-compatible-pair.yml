@@ -17,9 +17,9 @@ jobs:
         os: [windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     env:
-      CUDA_JS_REVISION: 2ec2b9e7ffd3b6b5fe8d14364e2d758065d90e5c
-      CUDA_JS_TREE: 05fe89ff91e538aedf003a17c5b8d40c725a4b24
-      CUDA_JS_PACKAGE: cuda-js@0.1.0-alpha.18
+      CUDA_JS_REVISION: 844e9392ded7841fdac8b7d2b438e1c6d8cafc85
+      CUDA_JS_TREE: a0d48f0aea6ce5d1ac5c9697b64a5bd727c1980c
+      CUDA_JS_PACKAGE: cuda-js@0.1.0-alpha.19
       CUDA_JS_API_SCHEMA: '1'
     steps:
       - name: Check out exact CUDA-MCGS candidate
