@@ -34,6 +34,7 @@ const schemaRoot = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0');
 const sha256 = (value) => createHash('sha256').update(value, 'utf8').digest('hex');
 const schemaReference = (id) => ({ id, version: id.split('/').at(-1), sha256: sha256(`schema:${id}`) });
 const withSchema = (result, schemaSha) => ({ ...result, schemaSha });
+const contentIdentity = ({ algorithm, sha256: digest }) => ({ algorithm, sha256: digest });
 
 function fakeTensorDeviceProgram() {
   const parameters = [
@@ -148,8 +149,8 @@ const binding = createTensorEvaluatorResourceBinding(programBinding, connector, 
 
 assert.equal(binding.contract, tensorEvaluatorResourceBindingConstants.contract);
 assert.equal(binding.ownerProfile, evaluatorResult.normalized.id);
-assert.deepEqual(binding.evaluatorProfileIdentity, evaluatorResult.identity);
-assert.deepEqual(binding.resourcePlan, { id: resourceResult.normalized.id, identity: resourceResult.identity });
+assert.deepEqual(binding.evaluatorProfileIdentity, contentIdentity(evaluatorResult.identity));
+assert.deepEqual(binding.resourcePlan, { id: resourceResult.normalized.id, identity: contentIdentity(resourceResult.identity) });
 assert.equal(binding.externalTensorParameters.length, 1);
 assert.deepEqual(binding.externalTensorParameters.map(({ parameterName }) => parameterName), ['weights']);
 assert.equal(binding.allocations.length, representationResources.length);
