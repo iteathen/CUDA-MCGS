@@ -37,6 +37,34 @@ jobs:
           test "$(git hash-object "$resource_schema")" = 18df2dda8c9f6da173eb32975fea9f35da7e83c0
           test "$(git hash-object "$package_schema")" = 5bfd2c4193cc7246233eeaa03bb89389100e0d6b
 
+          node - "$transport" <<'NODE'
+          const fs = require('node:fs');
+          const path = process.argv[2];
+          let text = fs.readFileSync(path, 'utf8');
+          const start = text.indexOf('function mutateSection(');
+          const end = text.indexOf('\n\nconst resource =', start);
+          if (start < 0 || end < 0 || text.indexOf('function mutateSection(', start + 1) >= 0) throw new Error('temporary mutateSection seam is not unique');
+          const replacement = [
+            'function mutateSection(path, startMarker, endMarker, body) {',
+            "  let text = fs.readFileSync(path, 'utf8');",
+            "  const lineIndex = (marker, from = 0) => {",
+            "    if (from === 0 && text.startsWith(marker)) return 0;",
+            "    const found = text.indexOf('\\n' + marker, from);",
+            "    return found < 0 ? -1 : found + 1;",
+            "  };",
+            '  const start = lineIndex(startMarker);',
+            "  if (start < 0 || lineIndex(startMarker, start + 1) >= 0) throw new Error(`${path}: start marker must occur once at exact indentation`);",
+            '  const end = lineIndex(endMarker, start + startMarker.length);',
+            "  if (end < 0) throw new Error(`${path}: end marker missing at exact indentation`);",
+            '  const before = text.slice(start, end);',
+            '  const after = body(before);',
+            "  if (after === before) throw new Error(`${path}: section mutation made no change`);",
+            '  fs.writeFileSync(path, text.slice(0, start) + after + text.slice(end));',
+            '}',
+          ].join('\n');
+          fs.writeFileSync(path, text.slice(0, start) + replacement + text.slice(end));
+          NODE
+
           node --check "$transport"
           node "$transport"
           node --check "$resource"
