@@ -73,8 +73,8 @@ jobs:
 
           node scripts/run-cuda-js-tensor-evaluator.mjs
           node conformance/cuda-js-tensor-evaluator/package.mjs
+          node scripts/run-search-ir-composer-reference.mjs
           node scripts/run-evaluator-reference.mjs
           node scripts/run-progress-reference.mjs
-          node scripts/run-search-ir-composer-reference.mjs
 
           git push origin HEAD:refs/heads/feature/124-tensor-resource-binding
