@@ -1,6 +1,6 @@
 # CUDA-MCGS Status
 
-**Status:** #124 consolidated review candidate — #266 execution path with #265 portable compatibility and input falsifiers
+**Status:** #124 complete — protected evaluator composition integrated through PR #266
 
 **Updated:** 2026-09-08
 
@@ -19,35 +19,34 @@ For CUDA-MCGS, current local routing is:
 
 Legacy general-process material retained under `agent_files/` is historical rationale where it overlaps account-global doctrine. It is not a second universal instruction chain.
 
-## Protected #124 checkpoint
+## Protected #124 completion
 
-The fresh candidate starts from protected main `e2047bf0adcd49c7e31b9715324ce5ee127fc95f`. Its [assessment and evidence](docs/development/2026-09-08-evaluator-composed-path-124.md) cover immutable artifact binding, complete selected runtime pointers, finite Progress opportunities and terminal runtime cleanup/quarantine. The [contract additions](docs/specs/SPEC-0005-evaluator-resource-binding-addendum.md) are proposals for review. The original research branch and prior attempts are preserved separately. General Graph/Search closure, dependent/concurrent producers, broader physical service profiles and native CUDA qualification remain open; #124 is not closed by this bounded candidate.
+PR #266 is protected as `7edf7079f3f6069d076bebd380bdc9c640c57ce8`. The reviewed [assessment and evidence](docs/development/2026-09-08-evaluator-composed-path-124.md) cover immutable artifact binding, complete selected runtime pointers, finite Progress-owned evaluator service opportunities and terminal runtime cleanup/quarantine. The [operation-binding addendum](docs/specs/SPEC-0005-evaluator-resource-binding-addendum.md) is accepted for this bounded profile.
 
-The protected #262 Tensor-evaluator checkpoint is `9db49de37c8d9d6507bac70ef62b4095a1d6faa7`. Current protected `main` at consolidation is `e2047bf0adcd49c7e31b9715324ce5ee127fc95f`; the consolidation remains on PR #266, not protected `main`.
+The protected #124 path now demonstrates, without a host gather/launch/poll/relaunch progress loop:
 
-The protected Tensor evaluator slice now includes:
+- explicit selected immutable evaluator artifact → Tensor callable pointer → Resource-owned placement binding;
+- complete selected runtime pointer/view coverage with exact identity, extent, alignment, access, initialization and device-effect declarations;
+- one submitted Search Program operation servicing three device-owned requests across full and partial batches;
+- request incarnation/freshness preservation, duplicate-admission pressure handling and stale scatter rejection after slot reuse;
+- explicit cancellation-before-service, cancellation-between-batches and Tensor-failure dispositions;
+- dependency-ordered terminal cleanup when proved and honest quarantine when lower cleanup cannot be proved;
+- portable Node 24/26, installed-package and real public CUDA-JS frontend evidence without promotion to native/provider/hardware support.
 
-- public Tensor callable/import admission with Tensor-owned element-count, dtype-width and alignment facts preserved;
-- finite evaluator-owned request/batch/result/staging runtime contribution with stale-safe incarnation checks, cancellation, retry and publication semantics;
-- exact evaluator Program source/function/import ownership without Resource/Tensor-storage relay through Program Binding;
-- separate request-control and batch-control representation ownership;
-- direct Runtime-to-Resource binding with exact generated source identity verification;
-- Resource-owned class → partition → pool → provider placement verification;
-- portable installed-package evidence without native/provider/hardware promotion.
+The protected #262 Tensor-evaluator audit checkpoint remains `9db49de37c8d9d6507bac70ef62b4095a1d6faa7`; PR #266 builds on rather than replaces that foundation. Original #265/#266 comparison heads remain preserved separately for historical model-comparison evidence.
 
-These are protected foundations. Do not restart the evaluator ownership audit from zero.
+These are protected foundations. Do not restart the evaluator ownership or immutable-input investigation from zero.
 
-## Remaining #124 order
+## Post-#124 boundaries
 
-The remaining architectural order is:
+There is no remaining acceptance work inside issue #124. The following are separate future scopes and do not reopen #124 unless the project owner explicitly changes its contract:
 
-1. bind shared immutable Tensor inputs through the correct selected evaluator/product/artifact owner without making the generic Tensor adapter invent semantics;
-2. complete the Resource/runtime-entry pointer-binding ABI for every required mutable and immutable device input;
-3. integrate the evaluator service opportunity into Progress-owned runtime-entry/service order while preserving one submitted Search Program operation and no host gather/launch/poll/relaunch progression;
-4. prove terminal cross-owner cleanup/disposition across evaluator, Resource, Progress, Search lifecycle and lower CUDA-JS/Tensor resources;
-5. retain native/provider/hardware qualification as a separate deferred physical-evidence gate.
+1. broader Graph/Search terminal closure profiles beyond the bounded already-published evaluator cohort;
+2. dependent readiness, concurrent producers, multi-block service and wider fairness/scheduling profiles;
+3. real Tensor/native linking and physical CUDA memory-order/lifecycle qualification on suitable hardware;
+4. downstream product/model/checkpoint numerical correctness and performance evidence.
 
-Progress integration must not be implemented against an incomplete pointer-binding ABI.
+Physical CUDA qualification remains deliberately separate: portable/package/reference results establish only the semantics they execute.
 
 ## Ownership boundary
 
@@ -57,7 +56,7 @@ CUDA-JS-Tensor owns generic Tensor mathematics, TensorProgram/TensorPlan, item-a
 
 CUDA-JS owns consumer-neutral Device-JS/compiler/artifact/module/function/operation/memory/provider/native lifecycle mechanisms.
 
-Product/domain/model/checkpoint/numerical meaning remains downstream. Connect4 is deliberately paused and is not an execution dependency for generic #124 work.
+Product/domain/model/checkpoint/numerical meaning remains downstream. Connect4 is deliberately paused and was not an execution dependency for generic #124 work.
 
 ## Hard limits
 
@@ -67,6 +66,6 @@ Product/domain/model/checkpoint/numerical meaning remains downstream. Connect4 i
 - No product semantics moved upstream.
 - No second scheduler, provider registry, Tensor planner/runtime or Resource planner.
 - No caller-supplied physical placement escape hatch.
-- No host-produced active-search intermediate after ignition in the selected device-resident profile.
+- No host-produced active-search intermediate after ignition in a selected device-resident profile.
 - No portable/package/reference evidence promoted to native/provider/hardware support.
 - No weakening of exact identity, compatibility, stale-result, lifecycle, cleanup or quarantine truth.
