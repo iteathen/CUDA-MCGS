@@ -1,8 +1,8 @@
 {
   "schema_version": 124,
   "updated": "2026-09-08",
-  "status": "issue_124_consolidated_266_pending_exact_head_review",
-  "objective": "Complete CUDA-MCGS #124 from the protected Tensor evaluator audit-closure checkpoint without restarting accepted evaluator, Tensor or CUDA-JS foundations.",
+  "status": "issue_124_complete_pending_closure_reconciliation",
+  "objective": "Preserve protected CUDA-MCGS #124 completion and route broader service profiles, physical CUDA qualification and downstream product evidence as separate owner-directed work.",
   "agent_authority": {
     "global": "https://github.com/iteathen/.github/blob/main/AGENTS.md",
     "repository_entry": "AGENT_LOCAL.md",
@@ -10,11 +10,13 @@
     "rule": "The root AGENTS.md is a compatibility pointer only. Account-global AGENTS.md owns reusable engineering/process doctrine; AGENT_LOCAL.md and accepted local authority specialize repository facts. Retained legacy agent_files doctrine is not a second universal instruction chain."
   },
   "authority": [
-    "explicit owner instruction: continue CUDA-MCGS #124 from protected state",
+    "explicit owner instruction: review issue #124 and take appropriate action",
     "AGENT_LOCAL.md",
     "agent_files/README.md",
     "agent_files/SYSTEM_REGISTRY.md",
     "agent_files/VALIDATION_POLICY.md",
+    "docs/specs/SPEC-0005-stage-ptx-and-search-image-composition.md",
+    "docs/specs/SPEC-0005-evaluator-resource-binding-addendum.md",
     "docs/specs/SPEC-0009-evaluator-contract.md",
     "docs/specs/SPEC-0011-finite-search-resources.md",
     "docs/specs/SPEC-0012-device-owned-search-progress.md",
@@ -24,43 +26,13 @@
   "current_focus": {
     "repository": "iteathen/CUDA-MCGS",
     "issue": 124,
-    "protected_main": "e2047bf0adcd49c7e31b9715324ce5ee127fc95f",
-    "protected_checkpoint_pr": 262,
-    "name": "qualify consolidated #266 and supersede #265 without duplicate admission APIs",
-    "state": "consolidated_candidate_pending_review",
-    "next_action": "Verify exact-head Node 24/26 portable, installed-package and public frontend evidence; supersede #265 only after its useful changes are preserved and the consolidated candidate passes. Review proposed operation-binding/finite-cohort contracts before protected integration; keep #124 open for broader closure and physical qualification.",
-    "execution_sequence": [
-      "refresh account-global AGENTS.md, AGENT_LOCAL.md and exact protected repository state",
-      "assess shared immutable Tensor input meaning and current selected-owner contracts",
-      "research public Tensor/CUDA-JS/Resource/runtime-entry surfaces and existing falsifiers",
-      "reassess ownership, deletion/substitution, lifecycle and compatibility consequences",
-      "plan one bounded input-binding ownership unit",
-      "execute without product semantics, private imports, caller placement or new planner authority",
-      "qualify exact owner identity, immutable binding, Resource views, deletion/substitution and failure/drift cases",
-      "review the complete pointer ABI before any Progress mutation",
-      "cleanup/document and integrate only after exact-head normal CI"
-    ],
+    "state": "complete_pending_closure_reconciliation",
+    "protected_completion_pr": 266,
+    "protected_completion_commit": "7edf7079f3f6069d076bebd380bdc9c640c57ce8",
+    "qualified_candidate_head": "d1e566acbeee80fb8c6ddfbc9b10f74768eda89a",
+    "qualified_check_count": 37,
     "evidence": "docs/development/2026-09-08-evaluator-composed-path-124.md",
-    "consolidation": {
-      "primary_pr": 266,
-      "primary_original_head": "7b2e9fe61f8c199ff01ee6e3f8ae11d087729829",
-      "donor_pr": 265,
-      "donor_original_head": "4859e5dbde5800553735ed04d478bfa52032ae79",
-      "preserved_refs": [
-        "archive/pr-266-comparison-7b2e9fe",
-        "archive/pr-265-comparison-4859e5d"
-      ],
-      "selected_contributions": [
-        "Node 24 portable support and CI",
-        "LF authority-pointer checkout",
-        "artifact selection and payload falsifiers adapted to operation bindings and ignition"
-      ],
-      "excluded": [
-        "standalone artifact binding/admission public APIs",
-        "distinct-artifact restriction conflicting with allowed identical read-only sharing"
-      ],
-      "protected_main_merge": "not-part-of-this-consolidation"
-    }
+    "next_action": "Qualify and integrate this narrow status/spec reconciliation, update issue #124 acceptance checkboxes with protected evidence, then close #124 as completed. Do not reopen it for broader service profiles or physical CUDA qualification without an explicit owner change to the issue contract."
   },
   "protected_foundations": {
     "semantic_acceptance_issue": 122,
@@ -68,52 +40,36 @@
     "device_js_import_pr": 241,
     "tensor_binding_pr": 244,
     "ownership_audit_closure_pr": 262,
-    "protected_main": "9db49de37c8d9d6507bac70ef62b4095a1d6faa7",
-    "meaning": "Evaluator semantics, public runtime composition, public Tensor callable admission, finite runtime transitions, exact Program identity and Resource representation/placement verification are protected foundations."
+    "evaluator_service_completion_pr": 266,
+    "protected_completion_commit": "7edf7079f3f6069d076bebd380bdc9c640c57ce8",
+    "meaning": "Evaluator semantics, public runtime composition, public Tensor callable/import admission, immutable artifact/pointer binding, finite request/batch transitions, Progress-owned bounded evaluator service, exact Program/Resource composition, stale-safe publication and cleanup/quarantine truth are protected for the #124 bounded profile."
   },
-  "remaining_order": [
-    "shared immutable Tensor input ownership and binding",
-    "complete Resource/runtime-entry pointer-binding ABI",
-    "Progress-owned evaluator service opportunity/runtime-entry integration",
-    "terminal cross-owner Resource/Progress/Search lifecycle cleanup",
-    "native/provider/hardware qualification"
-  ],
-  "acceptance_remaining": [
-    "shared immutable Tensor inputs are bound by an explicit natural semantic owner and never guessed by the generic Tensor adapter",
-    "all runtime entry pointers/views have exact Resource-owned identity, extent, alignment, access and placement",
-    "multiple device-owned requests progress without host gather/launch/poll/relaunch progression",
-    "Progress owns service opportunity/order rather than the evaluator adapter",
-    "all cross-owner resources terminate or retain honest quarantine/orphan truth",
-    "portable conformance remains separated from native/provider/hardware evidence"
-  ],
-  "blockers": [
-    "No product numerical oracle is a prerequisite for generic #124 work.",
-    "Direct physical NVIDIA qualification remains deferred until suitable hardware is actually exposed."
-  ],
+  "remaining_order": [],
+  "acceptance_remaining": [],
   "validation": {
-    "required_before_mutation": [
-      "refresh current account-global AGENTS.md and repository AGENT_LOCAL.md",
-      "read exact protected evaluator, Resource, runtime adapter and public Tensor input/callable surfaces",
-      "reconfirm issue #124 acceptance and owner boundaries"
+    "implementation_review": [
+      "#266 refreshed onto then-current protected main before integration",
+      "all 37 checks on d1e566acbeee80fb8c6ddfbc9b10f74768eda89a completed successfully",
+      "CodeQL reported no new alerts in code changed by #266",
+      "service conformance covers multiple requests, full/partial batches, pressure, cancellation, Tensor failure, reuse and stale scatter",
+      "runtime conformance covers pre-write digest/zero rejection, snapshot isolation, one submission, ordered cleanup and quarantine"
     ],
-    "required_after_meaningful_unit": [
-      "focused owner-level falsifiers",
-      "./scripts/verify-docs.sh when durable repository authority/current-state files change",
-      "cuda-js-runtime-adapter when runtime composition changes",
-      "cuda-js-compatible-pair when peer contract composition changes",
-      "CUDA-JS-Tensor evaluator connector",
-      "library-interface when public composition changes"
+    "claim_limits": [
+      "portable/reference/package evidence is not physical CUDA/provider/hardware evidence",
+      "the accepted cohort is bounded to an already-published independent-ready evaluator profile",
+      "dependent readiness, concurrent producers, multi-block/wider fairness profiles remain separate future qualification",
+      "downstream product numerical correctness remains outside CUDA-MCGS authority"
     ],
-    "integration_gate": "exact-head required checks, discussion/review reconciliation and post-merge target readback before protected-main completion claims"
+    "integration_gate": "Closure reconciliation must pass exact-head required checks and post-merge protected-main readback before issue #124 is closed."
   },
+  "blockers": [],
   "do_not": [
     "Do not treat root AGENTS.md or retained legacy agent_files doctrine as a competing universal authority.",
     "Do not move Connect4 or other product semantics upstream.",
     "Do not deep-import CUDA-JS or CUDA-JS-Tensor internals.",
     "Do not create a second Tensor planner/runtime, scheduler, provider registry or Resource planner.",
     "Do not accept caller-supplied Resource placement offsets.",
-    "Do not implement Progress service order before the runtime pointer-binding ABI is complete.",
-    "Do not use a host read-decide-write/relaunch loop to advance the selected device-resident evaluator profile after ignition.",
+    "Do not use a host read-decide-write/relaunch loop to advance a selected device-resident evaluator profile after ignition.",
     "Do not weaken stale-result, lifecycle, cleanup, quarantine, compatibility or exact-identity gates.",
     "Do not promote portable/package/reference evidence to native/provider/hardware support."
   ],
