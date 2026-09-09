@@ -1,7 +1,7 @@
 {
   "schema_version": 124,
   "updated": "2026-09-08",
-  "status": "issue_124_active_shared_immutable_tensor_input_binding_next",
+  "status": "issue_124_consolidated_266_pending_exact_head_review",
   "objective": "Complete CUDA-MCGS #124 from the protected Tensor evaluator audit-closure checkpoint without restarting accepted evaluator, Tensor or CUDA-JS foundations.",
   "agent_authority": {
     "global": "https://github.com/iteathen/.github/blob/main/AGENTS.md",
@@ -24,11 +24,11 @@
   "current_focus": {
     "repository": "iteathen/CUDA-MCGS",
     "issue": 124,
-    "protected_main": "9db49de37c8d9d6507bac70ef62b4095a1d6faa7",
+    "protected_main": "e2047bf0adcd49c7e31b9715324ce5ee127fc95f",
     "protected_checkpoint_pr": 262,
-    "name": "shared immutable Tensor input ownership and binding",
-    "state": "active_owner_directed",
-    "next_action": "Read the protected selected-evaluator/artifact/input ownership surfaces plus the public Tensor and Resource/runtime entry contracts; bind shared immutable Tensor inputs only through their natural selected owner, then complete the pointer-binding ABI before Progress integration.",
+    "name": "qualify consolidated #266 and supersede #265 without duplicate admission APIs",
+    "state": "consolidated_candidate_pending_review",
+    "next_action": "Verify exact-head Node 24/26 portable, installed-package and public frontend evidence; supersede #265 only after its useful changes are preserved and the consolidated candidate passes. Review proposed operation-binding/finite-cohort contracts before protected integration; keep #124 open for broader closure and physical qualification.",
     "execution_sequence": [
       "refresh account-global AGENTS.md, AGENT_LOCAL.md and exact protected repository state",
       "assess shared immutable Tensor input meaning and current selected-owner contracts",
@@ -39,7 +39,28 @@
       "qualify exact owner identity, immutable binding, Resource views, deletion/substitution and failure/drift cases",
       "review the complete pointer ABI before any Progress mutation",
       "cleanup/document and integrate only after exact-head normal CI"
-    ]
+    ],
+    "evidence": "docs/development/2026-09-08-evaluator-composed-path-124.md",
+    "consolidation": {
+      "primary_pr": 266,
+      "primary_original_head": "7b2e9fe61f8c199ff01ee6e3f8ae11d087729829",
+      "donor_pr": 265,
+      "donor_original_head": "4859e5dbde5800553735ed04d478bfa52032ae79",
+      "preserved_refs": [
+        "archive/pr-266-comparison-7b2e9fe",
+        "archive/pr-265-comparison-4859e5d"
+      ],
+      "selected_contributions": [
+        "Node 24 portable support and CI",
+        "LF authority-pointer checkout",
+        "artifact selection and payload falsifiers adapted to operation bindings and ignition"
+      ],
+      "excluded": [
+        "standalone artifact binding/admission public APIs",
+        "distinct-artifact restriction conflicting with allowed identical read-only sharing"
+      ],
+      "protected_main_merge": "not-part-of-this-consolidation"
+    }
   },
   "protected_foundations": {
     "semantic_acceptance_issue": 122,

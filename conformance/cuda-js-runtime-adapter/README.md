@@ -4,7 +4,7 @@ Exercises compatibility admission, translation, operation lifecycle, failure pro
 
 ## Run
 
-Use Node.js 26 or newer from a repository checkout. No GPU is required; passing does not qualify the physical library pair.
+Use Node.js 24 or newer from a repository checkout. No GPU is required; passing does not qualify the physical library pair or change its Node/platform requirements.
 
 From the repository root:
 

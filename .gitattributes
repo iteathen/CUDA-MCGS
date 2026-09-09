@@ -7,5 +7,8 @@
 /LICENSING.md text eol=lf
 /package.json text eol=lf
 
+# The authority discovery pointer is validated against its exact LF bytes.
+/AGENTS.md text eol=lf
+
 # These discovery fixtures have exact-byte digests and must survive Windows checkout unchanged.
 /experiments/ptx-extension-composition-prototype/fixtures/ptx/*.ptx text eol=lf

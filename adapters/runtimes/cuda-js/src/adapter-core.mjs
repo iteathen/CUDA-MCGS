@@ -1,3 +1,10 @@
+import { createHash } from 'node:crypto';
+import { isSharedArrayBuffer, isUint8Array } from 'node:util/types';
+
+const typedArrayPrototype = Object.getPrototypeOf(Uint8Array.prototype);
+const typedArrayBuffer = Object.getOwnPropertyDescriptor(typedArrayPrototype, 'buffer').get;
+const typedArrayByteLength = Object.getOwnPropertyDescriptor(typedArrayPrototype, 'byteLength').get;
+
 const PACKAGE_SCHEMA = 'cuda-mcgs.execution-package/0.2.0';
 const ADAPTER_SCHEMA = 'cuda-mcgs.cuda-js-adapter-requirements/0.2.0';
 const CUDA_JS_REPOSITORY = 'iteathen/CUDA-JS';
@@ -123,6 +130,9 @@ function admitContracts(requirements, lower) {
 }
 
 function compileOptions(requirements) {
+  // Imported bodies are opaque: their signatures cannot exclude dense arithmetic
+  // or scoped atomics. Select the public combined profile without parsing them.
+  if ((requirements.searchProgram?.deviceImports?.length ?? 0) > 0) return Object.freeze({ headerProfile: 'cuda-device' });
   const contracts = new Set(requirements.publicContracts.map(({ id }) => id));
   const needsCccl = contracts.has('cuda-js.device-publication-release-acquire/0.1.0')
     || requirements.sidebandRequirements?.some(({ publication }) => publication === 'release-acquire');
@@ -199,10 +209,35 @@ function admitPackage(executionPackage, lower) {
     const source = binding.source;
     let normalizedBinding = binding;
     if (source?.kind === 'resource') {
+      exactObject(source, ['kind', 'resource', 'access', ...['view', 'deviceEffects', 'initialContentSha256', 'initialization'].filter((key) => Object.hasOwn(source, key))], 'resource binding');
       const resource = resources.get(source.resource);
       if (!resource || !['read', 'write', 'read-write'].includes(source.access)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `invalid resource binding ${binding.parameter}`);
       const view = normalizeResourceView(source, resource, binding.parameter);
       normalizedBinding = { parameter: binding.parameter, source: { kind: 'resource', resource: source.resource, access: source.access, ...(view ? { view } : {}) } };
+      if (Object.hasOwn(source, 'deviceEffects')) {
+        const allowed = new Set(['atomic-add-relaxed-device', 'atomic-cas-relaxed-device', 'atomic-load-acquire-device', 'atomic-store-release-device']);
+        const effects = source.deviceEffects;
+        if (!view || !['u32', 'u64'].includes(view.dtype) || !resource.accessRequirements.includes('atomic')
+            || !Array.isArray(effects) || effects.length === 0 || new Set(effects).size !== effects.length || effects.some((effect) => !allowed.has(effect))
+            || source.access === 'write' || (effects.some((effect) => effect !== 'atomic-load-acquire-device') && source.access !== 'read-write')) {
+          fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'invalid explicit device effects');
+        }
+        if (effects.some((effect) => effect.includes('acquire') || effect.includes('release'))
+            && !requirements.publicContracts.some(({ id }) => id === 'cuda-js.device-publication-release-acquire/0.1.0')) {
+          fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'device publication effects require their public contract');
+        }
+        normalizedBinding.source.deviceEffects = [...effects];
+      }
+      if (Object.hasOwn(source, 'initialContentSha256')) {
+        if (!view || source.access !== 'read' || source.deviceEffects || !/^[0-9a-f]{64}$/.test(source.initialContentSha256)) {
+          fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'immutable initial content requires a read-only explicit view and SHA-256');
+        }
+        normalizedBinding.source.initialContentSha256 = source.initialContentSha256;
+      }
+      if (Object.hasOwn(source, 'initialization')) {
+        if (source.initialization !== 'zero' || !view || source.initialContentSha256) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'invalid zero initialization declaration');
+        normalizedBinding.source.initialization = 'zero';
+      }
       allocatedResourceIds.add(source.resource);
     } else if (source?.kind === 'sideband') {
       if (!sidebands.has(source.sideband)) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', `invalid sideband binding ${binding.parameter}`);
@@ -212,9 +247,32 @@ function admitPackage(executionPackage, lower) {
     bindings.set(binding.parameter, normalizedBinding);
   }
 
+  for (const { source } of bindings.values()) if (source.initialContentSha256) {
+    for (const { source: other } of bindings.values()) {
+      if (other.kind !== 'resource' || other.resource !== source.resource) continue;
+      const start = other.view?.byteOffsetNumber ?? 0;
+      const length = other.view?.byteLengthNumber ?? resources.get(other.resource).byteLengthNumber;
+      if (start < source.view.byteOffsetNumber + source.view.byteLengthNumber && source.view.byteOffsetNumber < start + length) {
+        if (other.access !== 'read' || other.deviceEffects) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'immutable initial content overlaps mutable access');
+        if (other.initialContentSha256 && (other.initialContentSha256 !== source.initialContentSha256 || start !== source.view.byteOffsetNumber || length !== source.view.byteLengthNumber)) {
+          fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'overlapping immutable initial content disagrees');
+        }
+      }
+    }
+  }
   const searchProgram = object(requirements.searchProgram, 'searchProgram');
   const entry = searchProgram.functions?.find((fn) => fn.name === operation.function && fn.executionRole === 'runtime-entry');
   if (!entry || !Array.isArray(entry.parameters) || entry.parameters.length !== bindings.size || entry.parameters.some(({ name }) => !bindings.has(name))) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'runtime entry and operation bindings differ');
+  for (const fn of searchProgram.functions) {
+    if (Object.hasOwn(fn, 'launchConstraint')) {
+      exactObject(fn.launchConstraint, ['grid', 'block'], 'launch constraint');
+      for (const key of ['grid', 'block']) {
+        const expected = dimensions(fn.launchConstraint[key], `constraint ${key}`);
+        const actual = dimensions(operation.launchPolicy[key], key);
+        if (['x', 'y', 'z'].some((dimension) => expected[dimension] !== actual[dimension])) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'operation violates callable launch constraint');
+      }
+    }
+  }
   for (const parameter of entry.parameters) {
     const binding = bindings.get(parameter.name);
     if (binding.source.kind === 'resource' && binding.source.view && parameter.type !== `ptr<${binding.source.view.dtype}>`) {
@@ -425,6 +483,21 @@ function scalar(type, value, label) {
   fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${label} has unsupported scalar type ${type}`);
 }
 
+// Read typed-array internal state and copy its elements, not a caller-provided
+// iterator, species, buffer getter or byteLength property. Host snapshotting owns
+// initialization admission here; it creates no additional public admission API.
+function snapshotInitialization(bytes, byteLength, id) {
+  if (!isUint8Array(bytes) || typedArrayByteLength.call(bytes) !== byteLength) {
+    fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} initial bytes must exactly match byteLength`);
+  }
+  if (isSharedArrayBuffer(typedArrayBuffer.call(bytes))) {
+    fail('CUDA_JS_ADAPTER_INPUT', 'ignition', 'shared initialization bytes require an explicit coherent-snapshot contract');
+  }
+  const snapshot = new Uint8Array(bytes);
+  if (snapshot.byteLength !== byteLength) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} snapshot extent differs from the admitted resource`);
+  return snapshot;
+}
+
 class PreparedExecution {
   #plan;
   #owned;
@@ -444,21 +517,39 @@ class PreparedExecution {
     const scalarNames = new Set(this.#plan.operation.bindings.filter(({ source }) => source.kind === 'scalar').map(({ parameter }) => parameter));
     const scalarInputs = inputRecord(inputs.scalars?.[this.#plan.operation.id], scalarNames, 'scalar inputs');
 
+    const initialSnapshots = new Map();
+
     for (const [id, resource] of this.#plan.allocatedResources) {
       const modes = [...this.#plan.bindings.values()].filter(({ source }) => source.kind === 'resource' && source.resource === id).map(({ source }) => source.access);
       const bytes = resourceInputs[id];
       if (bytes === undefined && modes.some((mode) => mode !== 'write')) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} requires explicit initial bytes`);
-      if (bytes !== undefined && (!(bytes instanceof Uint8Array) || bytes.byteLength !== resource.byteLengthNumber)) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} initial bytes must exactly match byteLength`);
+      if (bytes !== undefined) initialSnapshots.set(id, snapshotInitialization(bytes, resource.byteLengthNumber, id));
     }
+    // All snapshots and digests are checked before the first asynchronous write.
+    for (const { source } of this.#plan.bindings.values()) if (source.initialContentSha256) {
+      const bytes = initialSnapshots.get(source.resource);
+      const start = source.view.byteOffsetNumber;
+      const digest = createHash('sha256').update(bytes.subarray(start, start + source.view.byteLengthNumber)).digest('hex');
+      if (digest !== source.initialContentSha256) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', 'immutable initial content digest mismatch');
+    }
+    for (const { source } of this.#plan.bindings.values()) if (source.initialization === 'zero') {
+      const bytes = initialSnapshots.get(source.resource);
+      if (!bytes || bytes.subarray(source.view.byteOffsetNumber, source.view.byteOffsetNumber + source.view.byteLengthNumber).some((value) => value !== 0)) {
+        fail('CUDA_JS_ADAPTER_INPUT', 'ignition', 'declared zero initialization is absent or nonzero');
+      }
+    }
+    const scalarArguments = new Map();
     for (const parameter of this.#plan.entry.parameters) {
       const binding = this.#plan.bindings.get(parameter.name);
       if (binding.source.kind !== 'scalar') continue;
       if (!Object.hasOwn(scalarInputs, parameter.name)) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `missing scalar value for ${parameter.name}`);
-      scalar(parameter.type, scalarInputs[parameter.name], parameter.name);
+      scalarArguments.set(parameter.name, scalar(parameter.type, scalarInputs[parameter.name], parameter.name));
     }
 
+    this.state = 'initializing';
     for (const [id] of this.#plan.allocatedResources) {
-      const bytes = resourceInputs[id];
+      if (this.#closed) fail('CUDA_JS_ADAPTER_STATE', 'initialization', 'execution closed during initialization');
+      const bytes = initialSnapshots.get(id);
       if (bytes === undefined) continue;
       try { await this.#owned.memories.get(id).write(bytes); }
       catch (error) {
@@ -485,11 +576,12 @@ class PreparedExecution {
       } else if (binding.source.kind === 'sideband') {
         args.push({ kind: 'publication-mailbox', mailbox: this.#owned.mailboxes.get(binding.source.sideband), lane: binding.source.sideband });
       } else {
-        args.push(scalar(parameter.type, scalarInputs[parameter.name], parameter.name));
+        args.push(scalarArguments.get(parameter.name));
       }
     }
 
     try {
+      if (this.#closed) fail('CUDA_JS_ADAPTER_STATE', 'ignition', 'execution closed before submission');
       this.#owned.operation = await this.#owned.function.submit({ grid: this.#plan.launch.grid, block: this.#plan.launch.block, sharedMemoryBytes: this.#plan.launch.sharedMemoryBytes, arguments: args, accesses });
       this.state = 'running';
       return this.status();

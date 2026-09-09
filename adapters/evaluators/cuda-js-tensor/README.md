@@ -27,7 +27,9 @@ Publication uses a single CAS from `inflight` to evaluator-owned `publishing`, f
 
 All adapter-owned control, request-staging, result-staging and selected Tensor workspace buffers are explicit evaluator byte resources with exact extents and pre-ignition initialization requirements. Shared immutable Tensor inputs remain explicit external pre-ignition inputs. The CUDA-JS runtime adapter still submits one Search Program operation; this adapter does not add a host gather/launch/poll/relaunch loop.
 
-This remains an incremental #124 slice, not full #124 acceptance. Program source/import ownership and adapter-owned Resource representation/placement verification are now explicit. Shared immutable Tensor input binding, Progress runtime-entry/service-order integration, terminal cross-owner resource closure and native/provider/hardware qualification remain open. Portable source/state/program/resource-binding evidence is not native/provider/hardware evidence.
+The #124 review candidate adds `createTensorEvaluatorOperationBindings(runtime, evaluator, resource, packageResources, selections)`. Each shared input selection names `{ parameter, artifact, resource }` from the selected evaluator; it supplies no offsets. The builder verifies immutable engine artifacts, follows Resource placement, covers every runtime pointer, and returns actual Program Package binding fragments with explicit views, initialization and device effects. Package normalization and runtime admission enforce those declarations under the [proposed binding addendum](../../../docs/specs/SPEC-0005-evaluator-resource-binding-addendum.md).
+
+The runtime contribution also exposes evaluator-owned `serviceItem`, `cancelPending` and `quiescent` callables. Search Compiler's Progress cohort generator consumes those public descriptors and the selected Progress work class. This is a finite already-produced, evaluation-only cohort in one block; parent Graph/Search closure, dependent producers, multi-block service and native/provider/hardware qualification remain open. Portable source/state/binding evidence is separate from public frontend inspection and physical qualification.
 
 Focused qualification:
 
@@ -35,3 +37,5 @@ Focused qualification:
 node scripts/run-cuda-js-tensor-evaluator.mjs
 node conformance/cuda-js-tensor-evaluator/package.mjs
 ```
+
+The consolidated candidate retains #266's operation-binding API and runtime ignition as the input-admission path; #265's separate `copyPayload`/host-admission APIs are not added. Initialization uses private copies of the actual typed-array view (including Buffer subranges), independent of caller iterators, and verifies exact extent, digests and zero state before uploads. Portable Node 24/26 and hostile-input conformance are described in the [conformance capsule](../../../conformance/cuda-js-tensor-evaluator/README.md).

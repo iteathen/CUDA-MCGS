@@ -34,3 +34,30 @@ jobs:
         run: node scripts/run-cuda-js-tensor-evaluator.mjs
       - name: Verify installed package export boundary
         run: node conformance/cuda-js-tensor-evaluator/package.mjs
+
+  public-frontend:
+    name: Tensor composed public frontend (Node ${{ matrix.node }})
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [24, 26.7.0]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Check out exact public CUDA-JS peer
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: iteathen/CUDA-JS
+          ref: 844e9392ded7841fdac8b7d2b438e1c6d8cafc85
+          path: .qualification/cuda-js
+          persist-credentials: false
+      - name: Install peer parser dependency without lifecycle scripts
+        run: npm ci --prefix .qualification/cuda-js --ignore-scripts --omit=dev --no-audit --no-fund
+      - name: Inspect composed source through public CUDA-JS
+        run: node conformance/cuda-js-tensor-evaluator/public-inspection.mjs .qualification/cuda-js

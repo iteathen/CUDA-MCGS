@@ -107,6 +107,7 @@
       "additionalProperties": false,
       "required": ["name", "executionRole", "parameters", "returns"],
       "properties": {
+        "launchConstraint": { "$ref": "program-package-profile.schema.json#/$defs/function/properties/launchConstraint" },
         "name": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" },
         "parameters": { "type": "array", "items": { "$ref": "program-package-profile.schema.json#/$defs/parameter" } },
         "returns": { "enum": ["void", "bool", "u32", "i32", "u64", "f32", "f64", "f16", "bf16"] },
@@ -138,8 +139,11 @@
               "properties": {
                 "kind": { "const": "resource" },
                 "resource": { "type": "string", "pattern": "^resource-[0-9]+$" },
-                "access": { "enum": ["read", "write", "read-write"], "description": "MCGS-owned ordinary operation-local access intent. Atomic/publication effects require a later accepted extension and cannot be weakened to this field." },
-                "view": { "$ref": "#/$defs/resourceView" }
+                "access": { "enum": ["read", "write", "read-write"], "description": "MCGS-owned operation-local hazard envelope. Atomic/publication meaning requires the explicit deviceEffects proposal; access alone grants no atomic authority." },
+                "view": { "$ref": "#/$defs/resourceView" },
+                "deviceEffects": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["atomic-add-relaxed-device", "atomic-cas-relaxed-device", "atomic-load-acquire-device", "atomic-store-release-device"] } },
+                "initialization": { "const": "zero" },
+                "initialContentSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
               }
             },
             { "type": "object", "additionalProperties": false, "required": ["kind", "schema"], "properties": { "kind": { "const": "scalar" }, "schema": { "$ref": "primitives.schema.json#/$defs/schemaReference" } } },

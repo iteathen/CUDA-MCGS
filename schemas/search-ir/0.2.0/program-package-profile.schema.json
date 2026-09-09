@@ -156,6 +156,10 @@
         "semanticRole": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
         "calls": { "type": "array", "items": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" } },
         "helpers": { "type": "array", "items": { "$ref": "primitives.schema.json#/$defs/namespacedId" } },
+        "launchConstraint": {
+          "type": "object", "additionalProperties": false, "required": ["grid", "block"],
+          "properties": { "grid": { "$ref": "#/$defs/dim3" }, "block": { "$ref": "#/$defs/dim3" } }
+        },
         "executionRole": { "enum": ["runtime-entry", "device-callable"], "description": "CUDA-MCGS Search Program callability role. integration.cuda-js maps this role to a supported public CUDA-JS program/function form; these values are not CUDA-JS API vocabulary." }
       }
     },
@@ -223,8 +227,21 @@
               "properties": {
                 "kind": { "const": "resource" },
                 "resource": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
-                "access": { "enum": ["read", "write", "read-write"], "description": "MCGS-owned ordinary operation-local access intent. Atomic/publication effects require a later accepted extension and cannot be weakened to this field." },
-                "view": { "$ref": "#/$defs/resourceView" }
+                "access": { "enum": ["read", "write", "read-write"], "description": "MCGS-owned operation-local hazard envelope. Atomic/publication meaning requires the explicit deviceEffects proposal; access alone grants no atomic authority." },
+                "view": { "$ref": "#/$defs/resourceView" },
+                "deviceEffects": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["atomic-add-relaxed-device", "atomic-cas-relaxed-device", "atomic-load-acquire-device", "atomic-store-release-device"] } },
+                "initialization": { "const": "zero" },
+                "artifact": {
+                  "type": "object", "additionalProperties": false,
+                  "required": ["ownerProfile", "artifactId", "artifactIdentity", "evaluatorResource", "contentSha256"],
+                  "properties": {
+                    "ownerProfile": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+                    "artifactId": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+                    "artifactIdentity": { "$ref": "primitives.schema.json#/$defs/contentIdentity" },
+                    "evaluatorResource": { "$ref": "primitives.schema.json#/$defs/namespacedId" },
+                    "contentSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+                  }
+                }
               }
             },
             { "type": "object", "additionalProperties": false, "required": ["kind", "schema"], "properties": { "kind": { "const": "scalar" }, "schema": { "$ref": "primitives.schema.json#/$defs/schemaReference" } } },

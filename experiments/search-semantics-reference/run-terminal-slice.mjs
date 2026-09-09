@@ -16,7 +16,7 @@ const domainFixturePath = path.join(experimentRoot, 'fixtures', 'domain-cases.js
 const frameworkFixturePath = path.join(experimentRoot, 'fixtures', 'framework-lifecycle-cases.json');
 const composerEvidencePath = path.join(composerRoot, 'build', 'evidence.json');
 
-assert(Number(process.versions.node.split('.')[0]) >= 26, `CUDA-MCGS terminal-slice reference requires Node 26 or newer; found ${process.version}`);
+assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS terminal-slice reference requires Node 24 or newer; found ${process.version}`);
 
 async function readJson(absolutePath, missingCode) {
   try {

@@ -37,3 +37,5 @@ This preserves one public canonical compiler while applying the accepted recursi
 `src/` is private implementation; `testing.mjs` is conformance-only. CUDA-JS runtime realization is a separate [adapter](../../adapters/runtimes/cuda-js/README.md).
 
 The prerelease API may change. Compiler/reference evidence does not establish native GPU execution.
+
+The #124 [binding proposal](../../docs/specs/SPEC-0005-evaluator-resource-binding-addendum.md) adds artifact references, zero initialization, explicit device effects and exact launch constraints to package composition. `createEvaluatorCohortService(progressResult, evaluatorResult, runtimeContribution, { name, cancellationParameter, blockSize })` generates one Progress-owned finite cohort callable and its launch metadata. Evaluator callbacks retain item/terminal state ownership. All lanes must enter the collective; the caller publishes the finite cohort before entry and admits no later producer. This does not generate a general Search/Graph scheduler or prove global closure.

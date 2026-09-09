@@ -3,13 +3,13 @@
   "composerEvidence": {
     "algorithm": "sha256",
     "byteLength": 709018,
-    "sha256": "448bab881cbfc8502acb5958f914a1833854c355de83a7aec9b4fadf42bd30f3"
+    "sha256": "0dfcd72db82122f56adedadde35c82af68c5ebb7e6f7acf4298f6705d923e58f"
   },
   "profileProjection": {
     "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
     "algorithm": "sha256",
     "byteLength": 140229,
-    "sha256": "fb48b66b967fe224e9a2471d99195b151fe4455ff51a20d12191be2bce7b7ddb"
+    "sha256": "c91ef6480510d5c91fbfe8ae9af7a4f92b632afb2efe9b71818ae011ea613fe2"
   },
   "expectedCases": [
     "graph-node-profile-projection-exact",

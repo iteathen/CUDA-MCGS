@@ -27,7 +27,7 @@ See the [framework overview](docs/architecture/FRAMEWORK_OVERVIEW.md), [accepted
 
 ## Start with the reference implementation
 
-For the bounded CUDA-free reference, use Node.js 26.7.0 and Git:
+For the bounded CUDA-free reference, use Node.js 24 or newer and Git. Node 24 and 26 have portable conformance coverage; native CUDA-JS execution retains the Node/platform requirements of its separately qualified compatible pair.
 
 ```bash
 git clone https://github.com/iteathen/CUDA-MCGS.git

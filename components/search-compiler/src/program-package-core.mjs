@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { normalizeArtifactReference, normalizeDeviceEffects, validateImmutableOperationRanges } from './operation-resource-contracts.mjs';
 
 import {
   assertString,
@@ -176,7 +177,7 @@ function normalizeParameter(input, functionName, index) {
 }
 
 function normalizeFunction(input, index, context) {
-  exactKeys(input, ['name', 'executionRole', 'parameters', 'returns', 'sourceUnit', 'ownerProfile', 'semanticRole', 'calls', 'helpers'], 'COMPOSE_FUNCTION_FIELDS', `function ${index}`);
+  exactKeys(input, ['name', 'executionRole', 'parameters', 'returns', 'sourceUnit', 'ownerProfile', 'semanticRole', 'calls', 'helpers', ...(Object.hasOwn(input, 'launchConstraint') ? ['launchConstraint'] : [])], 'COMPOSE_FUNCTION_FIELDS', `function ${index}`);
   assertString(input.name, /^[A-Za-z_$][A-Za-z0-9_$]*$/, 'COMPOSE_FUNCTION_NAME', `function ${index} name`);
   const executionRole = assertEnum(input.executionRole, ['runtime-entry', 'device-callable'], 'COMPOSE_FUNCTION_ROLE', `${input.name} executionRole`);
   if (!Array.isArray(input.parameters)) fail('COMPOSE_PARAMETER_COUNT', `${input.name} parameters must be an array`);
@@ -193,7 +194,12 @@ function normalizeFunction(input, index, context) {
   if (new Set(calls).size !== calls.length || new Set(helpers).size !== helpers.length) fail('COMPOSE_FUNCTION_CALLS', `${input.name} repeats a call/helper`);
   for (const call of calls) assertString(call, /^[A-Za-z_$][A-Za-z0-9_$]*$/, 'COMPOSE_FUNCTION_CALL', `${input.name} call`);
   for (const helper of helpers) assertString(helper, HELPER_DECLARATION, 'COMPOSE_HELPER_DECLARATION', `${input.name} helper declaration`);
-  return { name: input.name, executionRole, parameters, returns: input.returns, sourceUnit: input.sourceUnit, ownerProfile: input.ownerProfile, semanticRole: input.semanticRole, calls, helpers };
+  let launchConstraint;
+  if (Object.hasOwn(input, 'launchConstraint')) {
+    exactKeys(input.launchConstraint, ['grid', 'block'], 'COMPOSE_LAUNCH_CONSTRAINT', 'function launch constraint');
+    launchConstraint = { grid: normalizeDim3(input.launchConstraint.grid, 'constraint grid'), block: normalizeDim3(input.launchConstraint.block, 'constraint block') };
+  }
+  return { name: input.name, executionRole, parameters, returns: input.returns, sourceUnit: input.sourceUnit, ownerProfile: input.ownerProfile, semanticRole: input.semanticRole, calls, helpers, ...(launchConstraint ? { launchConstraint } : {}) };
 }
 
 function validateCallGraph(functions, maximumDepth) {
@@ -363,7 +369,7 @@ function normalizeResourceView(input, operationId, parameter, resource) {
   return { dtype: input.dtype, byteOffset, elementCount };
 }
 
-function normalizeBinding(input, operationId, index, parameters, resources, sidebands) {
+function normalizeBinding(input, operationId, index, parameters, resources, sidebands, context) {
   exactKeys(input, ['parameter', 'source'], 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} binding ${index}`);
   const parameter = parameters.find(({ name }) => name === input.parameter);
   if (!parameter) fail('COMPOSE_OPERATION_BINDING', `${operationId} binds unknown parameter ${input.parameter}`);
@@ -373,6 +379,9 @@ function normalizeBinding(input, operationId, index, parameters, resources, side
     const fields = ['kind', 'resource'];
     if (hasAccess) fields.push('access');
     if (hasView) fields.push('view');
+    if (Object.hasOwn(input.source, 'deviceEffects')) fields.push('deviceEffects');
+    if (Object.hasOwn(input.source, 'artifact')) fields.push('artifact');
+    if (Object.hasOwn(input.source, 'initialization')) fields.push('initialization');
     exactKeys(input.source, fields, 'COMPOSE_OPERATION_BINDING_FIELDS', `${operationId} ${input.parameter} resource`);
     const resource = resources.get(input.source.resource);
     if (!resource || resource.materialization !== 'resident-storage' || !parameter.type.startsWith('ptr<')) fail('COMPOSE_OPERATION_BINDING', `${operationId} resource binding is incompatible`);
@@ -384,6 +393,16 @@ function normalizeBinding(input, operationId, index, parameters, resources, side
       source.access = access;
     }
     if (hasView) source.view = normalizeResourceView(input.source.view, operationId, parameter, resource);
+    if (Object.hasOwn(input.source, 'initialization')) {
+      if (input.source.initialization !== 'zero' || !source.view || input.source.artifact) fail('COMPOSE_RESOURCE_INITIALIZATION', 'zero initialization requires an explicit non-artifact view');
+      source.initialization = 'zero';
+    }
+    if (Object.hasOwn(input.source, 'deviceEffects')) source.deviceEffects = normalizeDeviceEffects(input.source.deviceEffects, source, resource, context);
+    if (Object.hasOwn(input.source, 'artifact')) {
+      if (!source.view) fail('COMPOSE_ARTIFACT_EXTENT', 'artifact binding requires an explicit view');
+      source.artifact = normalizeArtifactReference(input.source.artifact, source, resource, context,
+        BigInt(source.view.elementCount) * RESOURCE_VIEW_WIDTH.get(source.view.dtype));
+    }
     return { parameter: input.parameter, source };
   }
   if (input.source?.kind === 'sideband') {
@@ -409,9 +428,12 @@ function normalizeOperation(input, index, context) {
   const entryPoint = context.functionByName.get(input.entryPoint);
   if (!entryPoint || entryPoint.executionRole !== 'runtime-entry') fail('COMPOSE_OPERATION_ENTRY', `${input.id} entry point is not a kernel`);
   if (!Array.isArray(input.bindings)) fail('COMPOSE_OPERATION_BINDING', `${input.id} bindings must be an array`);
-  const bindings = input.bindings.map((binding, bindingIndex) => normalizeBinding(binding, input.id, bindingIndex, entryPoint.parameters, context.resourceById, context.sidebandById)).sort((left, right) => compareRaw(left.parameter, right.parameter));
+  const bindings = input.bindings.map((binding, bindingIndex) => normalizeBinding(binding, input.id, bindingIndex, entryPoint.parameters, context.resourceById, context.sidebandById, context)).sort((left, right) => compareRaw(left.parameter, right.parameter));
   uniqueBy(bindings, 'parameter', 'COMPOSE_OPERATION_BINDING', `${input.id} binding`);
   if (bindings.length !== entryPoint.parameters.length) fail('COMPOSE_OPERATION_BINDING', `${input.id} does not bind every parameter`);
+  for (const fn of context.functionByName.values()) {
+    if (fn.launchConstraint && ['grid', 'block'].some((key) => fn.launchConstraint[key].some((value, dimension) => value !== input[key]?.[dimension]))) fail('COMPOSE_LAUNCH_CONSTRAINT', `${input.id} violates ${fn.name} launch constraint`);
+  }
   return { id: input.id, entryPoint: input.entryPoint, bindings, grid: normalizeDim3(input.grid, `${input.id} grid`), block: normalizeDim3(input.block, `${input.id} block`), dynamicSharedBytes: normalizeDecimalUint(input.dynamicSharedBytes), maxPending: positiveDecimal(input.maxPending, 'COMPOSE_OPERATION_PENDING', `${input.id} maxPending`) };
 }
 
@@ -588,6 +610,7 @@ export function normalizeProgramPackageProfile(input, inspected, suppliedContext
   if (operations.length !== kernels.length || kernels.some(({ name }) => !operations.some(({ entryPoint }) => entryPoint === name))) fail('COMPOSE_OPERATION_COVERAGE', 'every kernel requires one operation blueprint');
   const manifests = normalizeManifests(input.manifests); const provenance = normalizeProvenance(input.provenance, 'composition profile provenance'); const compatibility = normalizeCompatibility(input.compatibility, context);
   context.operations = operations;
+  validateImmutableOperationRanges(operations, context.resourceById, RESOURCE_VIEW_WIDTH);
   const deletion = normalizeDeletion(input.deletion, context);
   const normalized = {
     schema: input.schema, representation: input.representation, status: input.status, contract: normalizeCatalogContract(input.contract, inspected), id: input.id, version: input.version,
@@ -653,7 +676,12 @@ function buildCudaJsAdapterRequirements(program) {
     id: `operation-${index}`,
     function: entry.entryPoint,
     bindings: entry.bindings.map((binding) => {
-      if (binding.source.kind === 'resource') return { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource), access: binding.source.access, ...(binding.source.view ? { view: { ...binding.source.view } } : {}) } };
+      if (binding.source.kind === 'resource') return { parameter: binding.parameter, source: { kind: 'resource', resource: resourceNames.get(binding.source.resource), access: binding.source.access,
+        ...(binding.source.view ? { view: { ...binding.source.view } } : {}),
+        ...(binding.source.deviceEffects ? { deviceEffects: [...binding.source.deviceEffects] } : {}),
+        ...(binding.source.initialization ? { initialization: binding.source.initialization } : {}),
+        ...(binding.source.artifact ? { initialContentSha256: binding.source.artifact.contentSha256 } : {}),
+      } };
       if (binding.source.kind === 'sideband') return { parameter: binding.parameter, source: { kind: 'sideband', sideband: sidebandNames.get(binding.source.sideband) } };
       return { parameter: binding.parameter, source: { kind: 'scalar', schema: { ...binding.source.schema } } };
     }),
@@ -662,7 +690,7 @@ function buildCudaJsAdapterRequirements(program) {
   return {
     schema: CUDA_JS_ADAPTER_REQUIREMENTS_SCHEMA,
     publicContracts: program.publicRequirements.map(({ contract }) => ({ ...contract })),
-    searchProgram: { source: program.source, functions: program.functions.map(({ name, executionRole, parameters, returns }) => ({ name, executionRole, parameters: parameters.map((parameter) => ({ ...parameter })), returns })) },
+    searchProgram: { source: program.source, functions: program.functions.map(({ name, executionRole, parameters, returns, launchConstraint }) => ({ name, executionRole, parameters: parameters.map((parameter) => ({ ...parameter })), returns, ...(launchConstraint ? { launchConstraint: structuredClone(launchConstraint) } : {}) })) },
     resourceRequirements: resources.map((entry, index) => ({ id: `resource-${index}`, byteLength: entry.capacity, alignment: entry.alignment, memorySpaces: [...entry.memorySpaces], accessRequirements: [...entry.access] })),
     sidebandRequirements: sidebands.map((entry, index) => ({
       id: `sideband-${index}`, role: entry.role, direction: entry.direction, valueType: entry.valueType,
