@@ -64,13 +64,25 @@ function importSpecifiers(text) {
   return values;
 }
 
+function isCudaJsRepositoryUrl(specifier) {
+  let parsed;
+  try {
+    parsed = new URL(specifier);
+  } catch {
+    return false;
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return false;
+  const hostname = parsed.hostname.toLowerCase().replace(/\.+$/, "");
+  return hostname === "github.com" || hostname === "raw.githubusercontent.com";
+}
+
 function isPrivateCudaJsSpecifier(specifier) {
   const normalized = slash(specifier);
   const lower = normalized.toLowerCase();
   const pathSegments = lower.split("/").filter(Boolean);
   const namesCudaJsRepository = pathSegments.some((segment) => segment === "cuda-js" || segment === "cuda_js");
   if (namesCudaJsRepository && (
-    lower.startsWith(".") || lower.startsWith("/") || lower.startsWith("file:") || lower.includes("github.com/") || lower.includes("raw.githubusercontent.com/")
+    lower.startsWith(".") || lower.startsWith("/") || lower.startsWith("file:") || isCudaJsRepositoryUrl(normalized)
   )) return true;
 
   const packageMatch = normalized.match(/^(?:@iteathen\/)?cuda-js(?:\/(.*))?$/i);
