@@ -1,12 +1,12 @@
 # SPEC-0005 addendum: immutable initialization and device effects
 
-**Status:** Proposal
+**Status:** Accepted
 
-Candidate implementation submitted with #124; acceptance requires protected integration after review.
+**Accepted:** 2026-09-08 through reviewed PR #266, protected as `7edf7079f3f6069d076bebd380bdc9c640c57ce8`.
 
 **Owner:** CUDA-MCGS Program Package operation-binding meaning.
 
-This additive candidate addresses two missing facts required by the evaluator composed path. It does not reopen evaluator semantics, Resource planning or CUDA-JS atomic/compiler/runtime ownership. Existing resource bindings that omit the new fields retain their canonical representation.
+This additive accepted profile addresses two missing facts required by the evaluator composed path. It does not reopen evaluator semantics, Resource planning or CUDA-JS atomic/compiler/runtime ownership. Existing resource bindings that omit the new fields retain their canonical representation.
 
 ## Immutable artifact bindings
 
@@ -30,7 +30,7 @@ A resource-source binding may declare `initialization: "zero"` on an explicit no
 
 A generated function may carry an exact `launchConstraint: { grid, block }`. All operations in a package containing that function must match both dimensions, even if the function is not reachable from a particular entry. This conservative first profile avoids inferring source call/collective behavior. The constraint participates in package identity and survives runtime projection; both admission boundaries reject drift. The caller still owns uniform entry by all lanes. No static proof of arbitrary uniform control flow is claimed.
 
-The companion Progress candidate `cuda-mcgs.progress-evaluator-cohort/0.1.0` selects one independent-ready evaluator work class, one active batch, device flushing down to one item, cooperative claims, and explicit finite request/item/step bounds. One block enters every barrier collectively; lane zero forms each batch and applies external cancellation, while item lanes invoke evaluator-owned service callables. There are exactly `ceil(requestCapacity / itemCapacity)` service opportunities for an already-published cohort with no later producer. Evaluator owns prepare/execute/scatter/publication/cancellation/quiescence; Progress owns opportunities and references the selected work class. Unknown request states cannot satisfy quiescence. This service does not establish global Graph/Search closure or implement dependent readiness, multi-block fairness, concurrent producers, or general engine scheduling. Those profiles require separate qualification.
+The companion Progress profile `cuda-mcgs.progress-evaluator-cohort/0.1.0` selects one independent-ready evaluator work class, one active batch, device flushing down to one item, cooperative claims, and explicit finite request/item/step bounds. One block enters every barrier collectively; lane zero forms each batch and applies external cancellation, while item lanes invoke evaluator-owned service callables. There are exactly `ceil(requestCapacity / itemCapacity)` service opportunities for an already-published cohort with no later producer. Evaluator owns prepare/execute/scatter/publication/cancellation/quiescence; Progress owns opportunities and references the selected work class. Unknown request states cannot satisfy quiescence. This service does not establish global Graph/Search closure or implement dependent readiness, multi-block fairness, concurrent producers, or general engine scheduling. Those profiles require separate qualification.
 
 For imported Device-JS bodies, the runtime adapter selects public numeric-capable headers because an exposed f32 signature cannot exclude dense arithmetic in the opaque body. CUDA-JS remains the validator/compiler of the selected combined header profile.
 
