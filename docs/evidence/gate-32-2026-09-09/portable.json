@@ -1,0 +1,141 @@
+{
+  "schema": "cuda-mcgs.compatible-pair-32-portable-evidence/0.2.0",
+  "status": "pass",
+  "pair": {
+    "cudaMcgs": {
+      "repository": "iteathen/CUDA-MCGS",
+      "revision": "41215dd65432f6c9a9d2bf146aaf82fe5d2f2fed",
+      "tree": "405e189b08417ae777d89262e48167fd60243e80"
+    },
+    "cudaJs": {
+      "repository": "iteathen/CUDA-JS",
+      "revision": "97c0295ab79add204d4d8ced080a4da4b66149cf",
+      "tree": "ce03b3b9f598776c8d9e8ec6a59245da75941eb8",
+      "package": "cuda-js@0.1.0-alpha.19",
+      "apiSchema": "1"
+    }
+  },
+  "observedPair": {
+    "cudaMcgs": {
+      "repository": "iteathen/CUDA-MCGS",
+      "revision": "41215dd65432f6c9a9d2bf146aaf82fe5d2f2fed",
+      "tree": "405e189b08417ae777d89262e48167fd60243e80"
+    },
+    "cudaJs": {
+      "repository": "iteathen/CUDA-JS",
+      "revision": "97c0295ab79add204d4d8ced080a4da4b66149cf",
+      "tree": "ce03b3b9f598776c8d9e8ec6a59245da75941eb8",
+      "package": "cuda-js@0.1.0-alpha.19",
+      "apiSchema": "1"
+    }
+  },
+  "node": {
+    "version": "v26.7.0",
+    "moduleAbi": "147"
+  },
+  "platform": {
+    "platform": "win32",
+    "architecture": "x64"
+  },
+  "portableEvidenceIdentity": {
+    "algorithm": "sha256",
+    "byteLength": 1502,
+    "sha256": "e4c23b9b9f6eb0f962ae71c2fffaf945eac34a02e0a6d02c8a43e738d5d517ac"
+  },
+  "cudaJsConsumerNeutrality": {
+    "filesScanned": 114,
+    "identity": "3c5152b8f9ba51e5d17a33211438871cfb93c4ba62573668f4f58ddba00531ab"
+  },
+  "cases": [
+    {
+      "id": "PAIR-C00",
+      "name": "exact source pair builds the production-composed Channel/Output capsule",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F01",
+      "name": "stale CUDA-MCGS revision/tree fails before lower mutation",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F02",
+      "name": "stale CUDA-JS revision/tree/package/API fails before lower mutation",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F03",
+      "name": "unsafe launch or resource range is rejected before lower use",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F04",
+      "name": "selected Channel device release/acquire requirement is mandatory",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F05",
+      "name": "release/acquire helper removal or substitution is rejected",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F06",
+      "name": "host read-decide-write or relaunch contamination is rejected",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F07",
+      "name": "wrong Channel resource binding is rejected",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F08",
+      "name": "wrong terminal Output delivery resource is rejected",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F09",
+      "name": "wrong terminal Output range is rejected",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F10",
+      "name": "unsupported lower alignment/capability fails before partial realization",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F11",
+      "name": "premature terminal delivery is rejected",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F12",
+      "name": "deferred lower operation failure preserves lower facts and cleanup",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F13",
+      "name": "timeout/abandonment is not reported as completion",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F14",
+      "name": "cleanup/quarantine/restart-required truth is retained",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F15",
+      "name": "recorder binds compile/load/submit/delivery to one production-adapter transaction",
+      "status": "pass"
+    },
+    {
+      "id": "PAIR-F16",
+      "name": "exact CUDA-JS lower source/public contracts remain consumer-neutral",
+      "status": "pass"
+    }
+  ],
+  "claimLimits": [
+    "Portable exact-head construction, public-adapter lifecycle, source-provenance and falsifier evidence only; this is not native or physical CUDA qualification.",
+    "The historical adapter fake supplies lifecycle scaffolding only and is not the executed physical workload oracle.",
+    "CUDA-JS remains consumer-neutral; this capsule adds no CUDA-JS source or search vocabulary."
+  ]
+}

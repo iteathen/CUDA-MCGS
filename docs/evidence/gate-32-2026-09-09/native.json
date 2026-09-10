@@ -1,0 +1,1497 @@
+{
+  "schema": "cuda-mcgs.compatible-pair-32-native-evidence/0.1.0",
+  "status": "pass",
+  "claim": "exact-physical-compatible-pair-candidate",
+  "pair": {
+    "cudaMcgs": {
+      "repository": "iteathen/CUDA-MCGS",
+      "revision": "41215dd65432f6c9a9d2bf146aaf82fe5d2f2fed",
+      "tree": "405e189b08417ae777d89262e48167fd60243e80"
+    },
+    "cudaJs": {
+      "repository": "iteathen/CUDA-JS",
+      "revision": "97c0295ab79add204d4d8ced080a4da4b66149cf",
+      "tree": "ce03b3b9f598776c8d9e8ec6a59245da75941eb8",
+      "package": "cuda-js@0.1.0-alpha.19",
+      "apiSchema": "1"
+    }
+  },
+  "observedPair": {
+    "cudaMcgs": {
+      "repository": "iteathen/CUDA-MCGS",
+      "revision": "41215dd65432f6c9a9d2bf146aaf82fe5d2f2fed",
+      "tree": "405e189b08417ae777d89262e48167fd60243e80"
+    },
+    "cudaJs": {
+      "repository": "iteathen/CUDA-JS",
+      "revision": "97c0295ab79add204d4d8ced080a4da4b66149cf",
+      "tree": "ce03b3b9f598776c8d9e8ec6a59245da75941eb8",
+      "package": "cuda-js@0.1.0-alpha.19",
+      "apiSchema": "1"
+    }
+  },
+  "publicPackageResolution": {
+    "specifier": "cuda-js",
+    "resolvedEntry": "components/runtime-facade/index.mjs",
+    "sourceRoot": "<exact CUDA-JS checkout; local path redacted>"
+  },
+  "cudaJsConsumerNeutrality": {
+    "filesScanned": 114,
+    "identity": "3c5152b8f9ba51e5d17a33211438871cfb93c4ba62573668f4f58ddba00531ab"
+  },
+  "host": {
+    "node": {
+      "version": "v26.7.0",
+      "moduleAbi": "147",
+      "napi": "10",
+      "v8": "14.6.202.34-node.28",
+      "uv": "1.52.1",
+      "openssl": "3.5.7",
+      "execArgv": [
+        "--experimental-ffi"
+      ]
+    },
+    "process": {
+      "platform": "win32",
+      "architecture": "x64",
+      "release": {
+        "name": "node",
+        "sourceUrl": "https://nodejs.org/download/release/v26.7.0/node-v26.7.0.tar.gz",
+        "headersUrl": "https://nodejs.org/download/release/v26.7.0/node-v26.7.0-headers.tar.gz",
+        "libUrl": "https://nodejs.org/download/release/v26.7.0/win-x64/node.lib"
+      }
+    },
+    "os": {
+      "type": "Windows_NT",
+      "release": "10.0.26200",
+      "version": "Windows 11 Pro",
+      "machine": "x86_64",
+      "architecture": "x64"
+    }
+  },
+  "lower": {
+    "compatibility": {
+      "schemaVersion": 1,
+      "package": {
+        "name": "cuda-js",
+        "version": "0.1.0-alpha.19",
+        "format": "esm",
+        "nativeAddon": false,
+        "registryPublication": "not-yet-released",
+        "private": false,
+        "testingPhase": true,
+        "license": "AGPL-3.0-or-later",
+        "commercialLicensing": "available-separately"
+      },
+      "publicApi": {
+        "schemaVersion": 1,
+        "entries": [
+          "cuda-js",
+          "cuda-js/compatibility",
+          "cuda-js/testing"
+        ],
+        "testingEntry": "mock-only"
+      },
+      "node": {
+        "version": "v26.7.0",
+        "moduleAbi": "147",
+        "minimumVersion": "v26.1.0",
+        "operationPolicy": "testing-unconfirmed-at-or-above-minimum",
+        "ffi": "experimental",
+        "requiredFlags": [
+          "--experimental-ffi"
+        ],
+        "permissionRequirement": "--allow-ffi when the permission model is active"
+      },
+      "nativeProfiles": [
+        {
+          "host": "windows-native-x64",
+          "status": "testing-unconfirmed-by-default",
+          "qualifiedEvidence": "exact GTX 1660 Ti / Node v26.7.0 / Driver API 13030 profile only",
+          "abi": "win64",
+          "cudaHeader": "13.3.29",
+          "cudaHeaderSha256": "31df84e16179b6d97db4b3c0bae7697392a370b41983f4a8962f0e5a8069b577",
+          "driverApi": 13030,
+          "compilerProviders": "optional-exact-cuda-13.3",
+          "cublasLtProvider": "optional-exact-cuda-13.3-cublaslt-13.5.1-f32-row-major-matmul"
+        },
+        {
+          "host": "linux-native-x64",
+          "status": "testing-unconfirmed-by-default",
+          "qualification": "not-qualified",
+          "qualifiedEvidence": "none",
+          "abi": "sysv-x86-64",
+          "driverProvider": "canonical-libcuda-so.1",
+          "compilerProviders": "optional-exact-cuda-13.3",
+          "cublasLtProvider": "profile-not-yet-admitted"
+        },
+        {
+          "host": "linux-native-arm64",
+          "status": "backend-unavailable"
+        },
+        {
+          "host": "wsl2-x64",
+          "status": "backend-unavailable"
+        }
+      ],
+      "capabilities": {
+        "deviceSelection": "finite-sanitized-snapshot-opaque-process-local-selector-one-device-per-runtime-selected-targets",
+        "deviceMemory": "bounded-synchronous-copied-bytes",
+        "deviceMemoryAllocationMinimumAlignmentBytes": 256,
+        "moduleFormats": [
+          "ptx",
+          "cubin"
+        ],
+        "functionParameters": [
+          "device-memory",
+          "u32",
+          "u64",
+          "i32",
+          "f32",
+          "f64",
+          "f16",
+          "bf16",
+          "publication-mailbox-host-to-device-u32",
+          "publication-mailbox-device-to-host-u32"
+        ],
+        "typedDeviceViews": "allocation-owned-contiguous-1d-opaque-capability-explicit-launch-access",
+        "launchConcurrency": 1,
+        "gpuOperationLifecycle": "opaque-submit-status-wait-close-one-pending",
+        "boundedMultiOperationScheduling": "opt-in-capacity-two-two-private-streams-one-predecessor-no-queue",
+        "asyncTransfers": "opt-in-capacity-two-internal-pinned-staging-contiguous-h2d-d2h-d2d",
+        "publicationMailboxes": "private-mapped-named-u32-one-operation-lease-system-acquire-release",
+        "preparedOperationDags": "bounded-kernel-cublaslt-f32-dag-immutable-bindings-derived-library-access-single-stream-semantic-replay",
+        "preparedOperationDagLimits": {
+          "nodes": 32,
+          "edges": 64,
+          "bindings": 64,
+          "predecessorsPerNode": 8
+        },
+        "contextBoundLibraryAdapters": "optional-finite-driver-owned-provider-plans-existing-operation-lifecycle",
+        "cublasLtF32Matmul": "optional-row-major-contiguous-typed-views-explicit-bounded-workspace",
+        "compiler": "optional-nvrtc-13.3",
+        "compilerHeaderProfiles": {
+          "none": "default",
+          "cuda-cccl": "exact-manifest-verified-cuda-13.3-windows-qualified-linux-source-unqualified",
+          "cuda-numeric": "exact-manifest-verified-cuda-13.3-f64-f16-bf16-windows-qualified-linux-source-unqualified",
+          "cuda-device": "exact-composite-cuda-cccl-plus-cuda-numeric-windows-qualified-linux-source-unqualified"
+        },
+        "compilerOutputFormats": [
+          "ptx",
+          "lto-ir"
+        ],
+        "ptxRelocatableDeviceCode": "typed-boolean-default-false",
+        "linker": "optional-nvjitlink-13.3",
+        "linkInputFamilies": [
+          "ptx",
+          "typed-lto-ir"
+        ],
+        "deviceJsFrontend": "restricted-spec-0013-v1+spec-0022-atomic-observation-v1+spec-0022-device-publication-v1+spec-0014-publication-mailbox-v1",
+        "deviceJsInspection": "pure-cuda-free-public-program-semantic-inspection-shared-with-compile",
+        "deviceJsLimits": {
+          "parametersPerFunction": 64
+        },
+        "deviceJsDenseNumeric": "f64-f16-bf16-exact-casts-special-values-manifest-verified-headers",
+        "deviceJsErf": "f32-f64-same-kind-dense-child-provider-bound-erff-erf",
+        "deviceJsTanh": "f32-f64-same-kind-dense-child-provider-bound-tanhf-tanh",
+        "deviceJsNumericChildOrder": [
+          "SPEC-0030-erf-v1",
+          "SPEC-0030-tanh-v1"
+        ],
+        "deviceJsLibraries": "typed-leaf-libraries-explicit-aliased-imports-selected-runtime-target-rdc-or-lto-final-cubin",
+        "deviceJsParser": {
+          "name": "acorn",
+          "version": "8.15.0",
+          "role": "syntax-only-replaceable-adapter"
+        },
+        "strictJit": "unsupported",
+        "processIsolation": "not-selected",
+        "rawPointers": false,
+        "arbitraryNativeCalls": false
+      },
+      "migration": {
+        "preOne": true,
+        "compatiblePatch": "public API schema unchanged",
+        "additivePrerelease": "package prerelease or minor identity increments",
+        "incompatibleChange": "public API schema increments with a new accepted specification and consumer conformance"
+      },
+      "evidenceInvalidation": [
+        "Node version or module ABI",
+        "operating system, architecture, or ABI",
+        "CUDA header, Driver API, toolkit, provider, or GPU profile",
+        "public API, semantic overlay, generated products, permissions, parser version, or artifact options",
+        "resource ownership, lifetime, error, health, or cleanup behavior"
+      ],
+      "claimLimits": [
+        "Structurally admitted native Windows x64 and Linux x64 CUDA profiles may operate for testing without a separate opt-in; native Linux x64 remains not-qualified.",
+        "Only exact capability/profile combinations with their required evidence are qualified; successful operation does not promote support.",
+        "The ordinary device-allocation minimum-alignment projection applies only to ordinary base allocations; it adds no caller-selected alignment, arbitrary offset-view guarantee, native support promotion, or performance claim.",
+        "SPEC-0010 relocatable PTX and SPEC-0012 Device LTO have exact Windows native qualification; Linux and every other provider/device profile remain independently gated. SPEC-0011 u64/i32/f32 scalar launch kinds retain their own native promotion gate.",
+        "SPEC-0021 f64/f16/bf16 scalar launch kinds are implemented in the public portable/software/package path; their exact native ABI/launch promotion evidence remains open.",
+        "SPEC-0021 contiguous one-dimensional typed device views are implemented as allocation-owned opaque public capabilities with explicit launch-access enforcement. Portable/package behavior is implemented; native view consumption remains unqualified.",
+        "SPEC-0016 opaque GPU operation submission/completion has exact Windows delayed-completion/deferred-failure/cleanup evidence only for its recorded Node/Driver/GPU profile; no broader support is implied.",
+        "SPEC-0018 capacity-two scheduling and SPEC-0019 internal-pinned async transfers have exact Windows and installed-package evidence only for the recorded Node/Driver/GPU profile; the compatibility default remains one pending operation.",
+        "SPEC-0014 publication mailboxes have exact Windows and installed-package evidence only for privately mapped named u32 lanes, one live GPU operation lease, and system-scope acquire/release publication on the recorded Node/Driver/GPU profile.",
+        "SPEC-0013 Device-JS plus the scoped atomic-observation and device-publication children is an implemented restricted frontend using pinned Acorn only for syntax parsing; exact Windows source-only generated-source/compiler/launch/oracle/lifecycle evidence qualifies only its recorded profile.",
+        "inspectDeviceProgram() is a pure CUDA-free frontend inspection path. Its portable/package conformance proves only deterministic Device-JS semantic validation and public descriptor projection; it does not claim native/provider execution or performance.",
+        "SPEC-0030 adds an exact additive Device-JS dense numeric profile for f64/f16/bf16 pointers, locals, device functions, kernel scalars, casts, arithmetic and special-value math. Exact installed-package Windows CUDA 13.3 header/compiler/compute_75/GTX 1660 Ti numerical-oracle and cleanup evidence does not qualify Linux, other providers/targets, tensor operations, tensor cores, fast math, or performance.",
+        "SPEC-0030-erf-v1 additively admits same-kind f32/f64 gpu.math.erf through the dense numeric profile and private ordinary erff/erf lowering. Portable/package evidence does not promote native numerical accuracy, provider compatibility, Linux support, fast-math, lower precision, GELU semantics, or performance.",
+        "SPEC-0030-tanh-v1 additively admits same-kind f32/f64 gpu.math.tanh through the dense numeric profile and private ordinary tanhf/tanh lowering, with canonical composition after erf when both children are required. Portable/package evidence does not promote native numerical accuracy, provider compatibility, Linux support, fast-math, lower precision, activation/model semantics, or performance.",
+        "SPEC-0022 device publication has exact Windows installed-package evidence only for naturally aligned u32/u64 device-scope release/acquire readiness and one immutable multiword payload on the recorded profile; freshness, progress, generation policy and queue correctness remain excluded.",
+        "SPEC-0017 device selection is implemented in the portable/software/package path. Default-device compatibility and explicit selector orchestration are mock-qualified only; native default/explicit selection and distinct-device behavior remain unqualified until exact independent evidence exists.",
+        "SPEC-0020 immutable prepared operation DAGs implement canonical kernel-only identity plus the bounded SPEC-0031 cuBLASLt f32 child, replay, one whole-DAG operation lifecycle, derived library accesses, and a single-stream semantic realization. Exact installed-package Windows native preparation, mixed kernel/library submission, result parity, and cleanup evidence qualifies only the recorded profile. CUDA Graph realization and performance benefit remain unimplemented or unqualified.",
+        "SPEC-0023 and SPEC-0029 implement one optional context-owned cuBLASLt f32 row-major matmul profile over typed views and the ordinary operation lifecycle. Exact Windows CUDA 13.3 / cuBLASLt 13.5.1 ABI, numerical, public lifecycle, provider identity, and cleanup evidence does not qualify Linux, other provider versions, other dtypes/layouts, or performance.",
+        "Linux package import, source admission, readiness, and portable testing are not native CUDA support; WSL remains backend-unavailable.",
+        "No strict-JIT, process-isolation, performance, or production-stability claim.",
+        "CUDA-JS source is AGPL-3.0-or-later; separate commercial terms are available only through an executed agreement with the copyright holder.",
+        "NVIDIA CUDA Toolkit headers and native providers are separately licensed system inputs and are not bundled in the package.",
+        "Registry publication remains gated on a separate release, provenance, and registry review."
+      ]
+    },
+    "runtime": {
+      "schemaVersion": 1,
+      "package": {
+        "name": "cuda-js",
+        "version": "0.1.0-alpha.19",
+        "publicApiSchema": 1
+      },
+      "state": "open",
+      "health": "healthy",
+      "support": {
+        "schemaVersion": 1,
+        "status": "testing-unconfirmed",
+        "reason": "PROFILE_EVIDENCE_UNCONFIRMED",
+        "host": {
+          "schemaVersion": 1,
+          "node": {
+            "version": "v26.7.0",
+            "abi": "147",
+            "disposition": "qualified-experimental",
+            "reason": null,
+            "minimumVersion": "v26.1.0",
+            "qualifiedVersion": "v26.7.0"
+          },
+          "platform": "win32",
+          "architecture": "x64",
+          "os": {
+            "release": "10.0.26200",
+            "version": "Windows 11 Pro"
+          },
+          "hostKind": "windows-native-x64",
+          "disposition": "native-candidate",
+          "action": "run-windows-native-f7",
+          "ffi": {
+            "experimental": true,
+            "permission": "unrestricted-process"
+          }
+        },
+        "cuda": {
+          "driverApiVersion": 13030,
+          "selectedArchitecture": "cc-7.5",
+          "driverModel": "wddm-watchdog",
+          "watchdog": "enabled",
+          "integrated": false,
+          "computeMode": "default"
+        },
+        "claim": "testing-only-unconfirmed-profile"
+      },
+      "profile": {
+        "node": "v26.7.0",
+        "platform": "win32",
+        "architecture": "x64",
+        "cudaApiVersion": 13030,
+        "nativeOperational": true,
+        "nativeQualified": false
+      },
+      "driver": {
+        "apiVersion": 13030,
+        "deviceCount": 1
+      },
+      "device": {
+        "schemaVersion": 1,
+        "selection": "default",
+        "architecture": {
+          "major": 7,
+          "minor": 5,
+          "class": "cc-7.5"
+        },
+        "target": {
+          "policyVersion": "SPEC-0006-target-v1",
+          "compile": "compute_75",
+          "link": "sm_75",
+          "identity": "2b31c1c950698dabf4967645afb29d6050d7933eb5b9230a439c230370b93f2d"
+        }
+      },
+      "memory": {
+        "policy": {
+          "maxDeviceBytes": 268435456,
+          "maxAllocationBytes": 134217728,
+          "maxTransferBytes": 16777216
+        },
+        "reservedBytes": 0,
+        "allocationCount": 0,
+        "native": {
+          "freeBytes": 5383389184,
+          "totalBytes": 6442123264
+        }
+      },
+      "transfer": {
+        "schemaVersion": 1,
+        "profile": "internal-pinned-staging-v1",
+        "enabled": true,
+        "blockCount": 2,
+        "blockCapacity": 16777216,
+        "allocatedBlockCount": 0,
+        "busyBlockCount": 0
+      },
+      "mailbox": {
+        "schemaVersion": 1,
+        "profile": "private-mapped-sab-named-u32-system-scope",
+        "maximumLanes": 64,
+        "mailboxCount": 0
+      },
+      "libraries": {
+        "schemaVersion": 1,
+        "profile": "cublaslt-f32-row-major-matmul-v1",
+        "state": "unopened",
+        "planCount": 0,
+        "optional": true
+      },
+      "execution": {
+        "policy": {
+          "maxModuleBytes": 4194304,
+          "maxArguments": 32,
+          "maxCompletionMilliseconds": 30000,
+          "maxPendingGpuOperations": 2
+        },
+        "moduleCount": 0,
+        "functionCount": 0,
+        "completionCount": 0,
+        "preparedDagCount": 0,
+        "inFlight": false,
+        "pendingOperation": false,
+        "pendingOperationCount": 0,
+        "privateStream": false,
+        "privateStreamCount": 0
+      },
+      "compiler": {
+        "schemaVersion": 1,
+        "provider": {
+          "profile": "cuda-13.3-windows-x64-compiler",
+          "nvrtc": {
+            "version": "13.3",
+            "byteLength": 101385328,
+            "sha256": "c7af6b5dbd001852d1b4a18effc6fbcfc94787eddadffea629a8333cb25b05fe"
+          },
+          "nvrtcBuiltins": {
+            "version": "13.3",
+            "byteLength": 6684784,
+            "sha256": "82c703802846329d3bab3d8df06f8c956516a0eeec568033092d6c0a69b2733a"
+          },
+          "nvJitLink": {
+            "version": "13.3",
+            "byteLength": 92465776,
+            "sha256": "727a0acfc4495b229143b53843004eef36e0a3463fb2e1c7c4215468607fd613"
+          },
+          "headerProfiles": {
+            "cudaCccl": {
+              "profile": "cuda-13.3-cccl-cuda-nv-v1",
+              "algorithm": "sha256-path-u32le-size-u64le-content-v1",
+              "roots": [
+                "cuda",
+                "nv"
+              ],
+              "fileCount": 1166,
+              "byteLength": 8527126,
+              "sha256": "e9a5447d01afe22e7d15d2a4bb8c71a9f3a74175d9788781d51a8b61f3c2913c"
+            },
+            "cudaCcclNv": {
+              "profile": "cuda-13.3-cccl-nv-v1",
+              "algorithm": "sha256-path-u32le-size-u64le-content-v1",
+              "roots": [
+                "nv"
+              ],
+              "fileCount": 3,
+              "byteLength": 43086,
+              "sha256": "21727c2c9b50af2d0912e6ba8c2c1e78b5ba6a28c3a11bf8db1d87ce3e501cdc"
+            },
+            "cudaNumericBase": {
+              "profile": "cuda-13.3-dense-numeric-base-v1",
+              "algorithm": "sha256-path-u32le-size-u64le-content-v1",
+              "roots": [],
+              "files": [
+                "builtin_types.h",
+                "crt/host_defines.h",
+                "cuda_bf16.h",
+                "cuda_bf16.hpp",
+                "cuda_device_runtime_api.h",
+                "cuda_fp16.h",
+                "cuda_fp16.hpp",
+                "cuda_runtime_api.h",
+                "device_types.h",
+                "driver_types.h",
+                "surface_types.h",
+                "texture_types.h",
+                "vector_functions.h",
+                "vector_functions.hpp",
+                "vector_types.h"
+              ],
+              "fileCount": 15,
+              "byteLength": 1726046,
+              "sha256": "8c0fa0c3d5a12eba3834564951a56725f97b2664e561b2b3a472c1483746d5c5"
+            },
+            "cudaNumeric": {
+              "profile": "cuda-13.3-dense-numeric-v1",
+              "algorithm": "sha256-header-profile-components-v1",
+              "components": [
+                "cudaCcclNv",
+                "cudaNumericBase"
+              ],
+              "roots": [
+                "nv"
+              ],
+              "files": [
+                "builtin_types.h",
+                "crt/host_defines.h",
+                "cuda_bf16.h",
+                "cuda_bf16.hpp",
+                "cuda_device_runtime_api.h",
+                "cuda_fp16.h",
+                "cuda_fp16.hpp",
+                "cuda_runtime_api.h",
+                "device_types.h",
+                "driver_types.h",
+                "surface_types.h",
+                "texture_types.h",
+                "vector_functions.h",
+                "vector_functions.hpp",
+                "vector_types.h"
+              ],
+              "fileCount": 18,
+              "byteLength": 1769132,
+              "sha256": "d403c1aac7e0cba6b99deeabb3de71e74a91db5e9c9cfdab444f14eb7dc71b78"
+            },
+            "cudaDevice": {
+              "profile": "cuda-13.3-device-headers-v1",
+              "algorithm": "sha256-header-profile-components-v1",
+              "components": [
+                "cudaCccl",
+                "cudaNumericBase"
+              ],
+              "roots": [
+                "cuda",
+                "nv"
+              ],
+              "files": [
+                "builtin_types.h",
+                "crt/host_defines.h",
+                "cuda_bf16.h",
+                "cuda_bf16.hpp",
+                "cuda_device_runtime_api.h",
+                "cuda_fp16.h",
+                "cuda_fp16.hpp",
+                "cuda_runtime_api.h",
+                "device_types.h",
+                "driver_types.h",
+                "surface_types.h",
+                "texture_types.h",
+                "vector_functions.h",
+                "vector_functions.hpp",
+                "vector_types.h"
+              ],
+              "fileCount": 1181,
+              "byteLength": 10253172,
+              "sha256": "808866ffe4425d37f91add4eb6a5957ceed1134a483aa1eced3d614b42881687"
+            }
+          }
+        },
+        "cache": {
+          "mode": "disabled"
+        },
+        "resources": {
+          "programsCreated": 0,
+          "programsDestroyed": 0,
+          "linksCreated": 0,
+          "linksDestroyed": 0
+        },
+        "health": {
+          "current": "healthy"
+        },
+        "claim": "exact-windows-f6w-profile"
+      }
+    },
+    "compiler": {
+      "schemaVersion": 1,
+      "operation": "compile",
+      "log": "",
+      "cache": {
+        "key": "6190be1e732c7a2f3beb4d947f41fde6914be132c0c27430110b7d9c51a2b90f",
+        "status": "disabled"
+      },
+      "provider": {
+        "profile": "cuda-13.3-windows-x64-compiler",
+        "nvrtc": {
+          "version": "13.3",
+          "byteLength": 101385328,
+          "sha256": "c7af6b5dbd001852d1b4a18effc6fbcfc94787eddadffea629a8333cb25b05fe"
+        },
+        "nvrtcBuiltins": {
+          "version": "13.3",
+          "byteLength": 6684784,
+          "sha256": "82c703802846329d3bab3d8df06f8c956516a0eeec568033092d6c0a69b2733a"
+        },
+        "nvJitLink": {
+          "version": "13.3",
+          "byteLength": 92465776,
+          "sha256": "727a0acfc4495b229143b53843004eef36e0a3463fb2e1c7c4215468607fd613"
+        },
+        "headerProfiles": {
+          "cudaCccl": {
+            "profile": "cuda-13.3-cccl-cuda-nv-v1",
+            "algorithm": "sha256-path-u32le-size-u64le-content-v1",
+            "roots": [
+              "cuda",
+              "nv"
+            ],
+            "fileCount": 1166,
+            "byteLength": 8527126,
+            "sha256": "e9a5447d01afe22e7d15d2a4bb8c71a9f3a74175d9788781d51a8b61f3c2913c"
+          },
+          "cudaCcclNv": {
+            "profile": "cuda-13.3-cccl-nv-v1",
+            "algorithm": "sha256-path-u32le-size-u64le-content-v1",
+            "roots": [
+              "nv"
+            ],
+            "fileCount": 3,
+            "byteLength": 43086,
+            "sha256": "21727c2c9b50af2d0912e6ba8c2c1e78b5ba6a28c3a11bf8db1d87ce3e501cdc"
+          },
+          "cudaNumericBase": {
+            "profile": "cuda-13.3-dense-numeric-base-v1",
+            "algorithm": "sha256-path-u32le-size-u64le-content-v1",
+            "roots": [],
+            "files": [
+              "builtin_types.h",
+              "crt/host_defines.h",
+              "cuda_bf16.h",
+              "cuda_bf16.hpp",
+              "cuda_device_runtime_api.h",
+              "cuda_fp16.h",
+              "cuda_fp16.hpp",
+              "cuda_runtime_api.h",
+              "device_types.h",
+              "driver_types.h",
+              "surface_types.h",
+              "texture_types.h",
+              "vector_functions.h",
+              "vector_functions.hpp",
+              "vector_types.h"
+            ],
+            "fileCount": 15,
+            "byteLength": 1726046,
+            "sha256": "8c0fa0c3d5a12eba3834564951a56725f97b2664e561b2b3a472c1483746d5c5"
+          },
+          "cudaNumeric": {
+            "profile": "cuda-13.3-dense-numeric-v1",
+            "algorithm": "sha256-header-profile-components-v1",
+            "components": [
+              "cudaCcclNv",
+              "cudaNumericBase"
+            ],
+            "roots": [
+              "nv"
+            ],
+            "files": [
+              "builtin_types.h",
+              "crt/host_defines.h",
+              "cuda_bf16.h",
+              "cuda_bf16.hpp",
+              "cuda_device_runtime_api.h",
+              "cuda_fp16.h",
+              "cuda_fp16.hpp",
+              "cuda_runtime_api.h",
+              "device_types.h",
+              "driver_types.h",
+              "surface_types.h",
+              "texture_types.h",
+              "vector_functions.h",
+              "vector_functions.hpp",
+              "vector_types.h"
+            ],
+            "fileCount": 18,
+            "byteLength": 1769132,
+            "sha256": "d403c1aac7e0cba6b99deeabb3de71e74a91db5e9c9cfdab444f14eb7dc71b78"
+          },
+          "cudaDevice": {
+            "profile": "cuda-13.3-device-headers-v1",
+            "algorithm": "sha256-header-profile-components-v1",
+            "components": [
+              "cudaCccl",
+              "cudaNumericBase"
+            ],
+            "roots": [
+              "cuda",
+              "nv"
+            ],
+            "files": [
+              "builtin_types.h",
+              "crt/host_defines.h",
+              "cuda_bf16.h",
+              "cuda_bf16.hpp",
+              "cuda_device_runtime_api.h",
+              "cuda_fp16.h",
+              "cuda_fp16.hpp",
+              "cuda_runtime_api.h",
+              "device_types.h",
+              "driver_types.h",
+              "surface_types.h",
+              "texture_types.h",
+              "vector_functions.h",
+              "vector_functions.hpp",
+              "vector_types.h"
+            ],
+            "fileCount": 1181,
+            "byteLength": 10253172,
+            "sha256": "808866ffe4425d37f91add4eb6a5957ceed1134a483aa1eced3d614b42881687"
+          }
+        }
+      },
+      "headerProfile": "cuda-cccl",
+      "health": {
+        "current": "healthy"
+      },
+      "operationSequence": 2,
+      "artifact": {
+        "format": "ptx",
+        "byteLength": 49579,
+        "sha256": "8b2fa3431b4db8449ad183e49b0bb32ce2908b98c26178fb39207f47b86b6f64",
+        "bytesSha256": "8b2fa3431b4db8449ad183e49b0bb32ce2908b98c26178fb39207f47b86b6f64",
+        "architecture": "compute_75",
+        "relocatableDeviceCode": null,
+        "producer": null
+      }
+    },
+    "linker": null,
+    "selectedArtifact": {
+      "format": "ptx",
+      "byteLength": 49579,
+      "sha256": "8b2fa3431b4db8449ad183e49b0bb32ce2908b98c26178fb39207f47b86b6f64",
+      "bytesSha256": "8b2fa3431b4db8449ad183e49b0bb32ce2908b98c26178fb39207f47b86b6f64",
+      "architecture": "compute_75",
+      "relocatableDeviceCode": null,
+      "producer": null
+    },
+    "loadedModule": {
+      "request": {
+        "format": "ptx",
+        "byteLength": 49579,
+        "bytesSha256": "8b2fa3431b4db8449ad183e49b0bb32ce2908b98c26178fb39207f47b86b6f64"
+      },
+      "result": {
+        "kind": "module",
+        "format": "ptx",
+        "byteLength": 49579,
+        "sha256": "8b2fa3431b4db8449ad183e49b0bb32ce2908b98c26178fb39207f47b86b6f64",
+        "state": "open"
+      },
+      "moduleId": "module-0"
+    },
+    "terminalRuntime": {
+      "schemaVersion": 1,
+      "graceful": true,
+      "restartRequired": false,
+      "state": "closed",
+      "compiler": {
+        "graceful": true,
+        "restartRequired": false,
+        "cleanupClaim": "proved-native-resources-and-libraries",
+        "workerExited": true,
+        "workerExitCode": 0,
+        "resources": {
+          "programsCreated": 1,
+          "programsDestroyed": 1,
+          "linksCreated": 0,
+          "linksDestroyed": 0
+        }
+      },
+      "driver": {
+        "graceful": true,
+        "restartRequired": false,
+        "cleanupClaim": "proved-exact-windows-profile",
+        "workerExited": true,
+        "workerExitCode": 0,
+        "health": "closed",
+        "resourceCounts": {
+          "live": 0,
+          "closing": 0,
+          "closed": 14,
+          "orphaned": 0
+        }
+      }
+    }
+  },
+  "program": {
+    "programPackage": {
+      "algorithm": "sha256",
+      "byteLength": 70920,
+      "sha256": "b210725759c862e6ef9bdeccb45a2009ecd7deba238dd987df7de47434e11168"
+    },
+    "searchProgram": {
+      "algorithm": "sha256",
+      "byteLength": 58754,
+      "sha256": "6cb29816db0b40e92880b0c31f5973d4994e61590adeabe7611ad6610b8aebc5"
+    },
+    "executionPackage": {
+      "algorithm": "sha256",
+      "byteLength": 30369,
+      "sha256": "1fd6546bc3a71097ddb888dee7355a25e89eac0da110f2d2911b74ec05d0140c"
+    },
+    "deviceJsInput": {
+      "source": {
+        "byteLength": 1667,
+        "sha256": "3039891c779218eae6a45e5dd98053ed4c085227cd43d32862d31dbc0598adc5"
+      },
+      "functions": [
+        {
+          "name": "channel_handoff",
+          "kind": "device",
+          "parameters": [
+            {
+              "name": "channelState",
+              "type": "ptr<u32>"
+            }
+          ],
+          "returns": "u32"
+        },
+        {
+          "name": "engine_step",
+          "kind": "kernel",
+          "parameters": [
+            {
+              "name": "output",
+              "type": "ptr<u32>"
+            },
+            {
+              "name": "channelState",
+              "type": "ptr<u32>"
+            },
+            {
+              "name": "frameworkCancellation",
+              "type": "mailbox<host-to-device,u32>"
+            }
+          ],
+          "returns": "void"
+        },
+        {
+          "name": "fn_channel_synthetic_audit_feed",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_domain_synthetic_stochastic_history",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_evaluator_synthetic_vector_combined",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_extension_capability_synthetic_channel_stage_audit_consistency_extension_surface_synthetic_channel_stage_candidate_exit_0",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_extension_capability_synthetic_channel_stage_product_priority_extension_surface_synthetic_channel_stage_candidate_entry_0",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_extension_capability_synthetic_channel_stage_product_priority_extension_surface_synthetic_channel_stage_candidate_exit_1",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_graph_synthetic_reclaiming",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_output_synthetic_stage_channels",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_policy_synthetic_vector_combined",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_progress_synthetic_stage_channels",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_resource_synthetic_stage_channels",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        }
+      ],
+      "imports": null,
+      "compile": {
+        "headerProfile": "cuda-cccl"
+      }
+    },
+    "translatedDeviceJsSha256": "b358bc8891209d9c1331a212a385298f72d14950853c601d48af03d973e4b091",
+    "translatedDeviceJs": {
+      "contract": "SPEC-0013-v1+SPEC-0022-atomic-observation-v1+SPEC-0022-device-publication-v1+SPEC-0014-publication-mailbox-v1",
+      "sha256": "b358bc8891209d9c1331a212a385298f72d14950853c601d48af03d973e4b091",
+      "parser": {
+        "name": "acorn",
+        "version": "8.15.0"
+      },
+      "functions": [
+        {
+          "name": "channel_handoff",
+          "kind": "device",
+          "parameters": [
+            {
+              "name": "channelState",
+              "type": "ptr<u32>"
+            }
+          ],
+          "returns": "u32"
+        },
+        {
+          "name": "engine_step",
+          "kind": "kernel",
+          "parameters": [
+            {
+              "name": "output",
+              "type": "ptr<u32>"
+            },
+            {
+              "name": "channelState",
+              "type": "ptr<u32>"
+            },
+            {
+              "name": "frameworkCancellation",
+              "type": "mailbox<host-to-device,u32>"
+            }
+          ],
+          "returns": "void",
+          "launchParameters": [
+            {
+              "kind": "device-memory"
+            },
+            {
+              "kind": "device-memory"
+            },
+            {
+              "kind": "publication-mailbox-host-to-device-u32"
+            }
+          ],
+          "functionName": "djs_kernel_0"
+        },
+        {
+          "name": "fn_channel_synthetic_audit_feed",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_domain_synthetic_stochastic_history",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_evaluator_synthetic_vector_combined",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_extension_capability_synthetic_channel_stage_audit_consistency_extension_surface_synthetic_channel_stage_candidate_exit_0",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_extension_capability_synthetic_channel_stage_product_priority_extension_surface_synthetic_channel_stage_candidate_entry_0",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_extension_capability_synthetic_channel_stage_product_priority_extension_surface_synthetic_channel_stage_candidate_exit_1",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_graph_synthetic_reclaiming",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_output_synthetic_stage_channels",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_policy_synthetic_vector_combined",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_progress_synthetic_stage_channels",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        },
+        {
+          "name": "fn_resource_synthetic_stage_channels",
+          "kind": "device",
+          "parameters": [],
+          "returns": "u32"
+        }
+      ],
+      "kernels": [
+        {
+          "name": "engine_step",
+          "functionName": "djs_kernel_0",
+          "parameters": [
+            {
+              "kind": "device-memory"
+            },
+            {
+              "kind": "device-memory"
+            },
+            {
+              "kind": "publication-mailbox-host-to-device-u32"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "execution": {
+    "operationId": "operation-0",
+    "launch": {
+      "grid": {
+        "x": 4,
+        "y": 1,
+        "z": 1
+      },
+      "block": {
+        "x": 256,
+        "y": 1,
+        "z": 1
+      },
+      "sharedMemoryBytes": 0,
+      "arguments": [
+        {
+          "kind": "device-memory",
+          "id": "memory-1"
+        },
+        {
+          "kind": "device-memory",
+          "id": "memory-0"
+        },
+        {
+          "kind": "publication-mailbox",
+          "mailbox": {
+            "kind": "publication-mailbox",
+            "id": "mailbox-0"
+          },
+          "lane": "sideband-0"
+        }
+      ],
+      "accesses": [
+        {
+          "argumentIndex": 0,
+          "byteOffset": 0,
+          "byteLength": 12288,
+          "mode": "write"
+        },
+        {
+          "argumentIndex": 1,
+          "byteOffset": 0,
+          "byteLength": 49152,
+          "mode": "read-write"
+        }
+      ],
+      "after": {
+        "kind": "object",
+        "value": null
+      }
+    },
+    "usefulWorkItems": 1024,
+    "operationEvents": [
+      {
+        "operationId": "operation-0",
+        "role": "main",
+        "action": "status",
+        "functionId": "function-0",
+        "result": {
+          "schemaVersion": 1,
+          "status": "completed",
+          "grid": {
+            "x": 4,
+            "y": 1,
+            "z": 1
+          },
+          "block": {
+            "x": 256,
+            "y": 1,
+            "z": 1
+          },
+          "sharedMemoryBytes": 0,
+          "argumentKinds": [
+            "device-memory",
+            "device-memory",
+            "publication-mailbox-host-to-device-u32"
+          ],
+          "pollCount": 1,
+          "elapsedMilliseconds": 1,
+          "operationSequence": 9,
+          "health": {
+            "current": "healthy",
+            "history": []
+          }
+        }
+      },
+      {
+        "operationId": "operation-0",
+        "role": "main",
+        "action": "wait",
+        "functionId": "function-0",
+        "result": {
+          "schemaVersion": 1,
+          "status": "completed",
+          "grid": {
+            "x": 4,
+            "y": 1,
+            "z": 1
+          },
+          "block": {
+            "x": 256,
+            "y": 1,
+            "z": 1
+          },
+          "sharedMemoryBytes": 0,
+          "argumentKinds": [
+            "device-memory",
+            "device-memory",
+            "publication-mailbox-host-to-device-u32"
+          ],
+          "pollCount": 1,
+          "elapsedMilliseconds": 2,
+          "operationSequence": 9,
+          "health": {
+            "current": "healthy",
+            "history": []
+          }
+        }
+      }
+    ],
+    "wait": {
+      "state": "completed",
+      "operation": {
+        "schemaVersion": 1,
+        "status": "completed",
+        "grid": {
+          "x": 4,
+          "y": 1,
+          "z": 1
+        },
+        "block": {
+          "x": 256,
+          "y": 1,
+          "z": 1
+        },
+        "sharedMemoryBytes": 0,
+        "argumentKinds": [
+          "device-memory",
+          "device-memory",
+          "publication-mailbox-host-to-device-u32"
+        ],
+        "pollCount": 1,
+        "elapsedMilliseconds": 2,
+        "operationSequence": 9,
+        "health": {
+          "current": "healthy",
+          "history": []
+        }
+      }
+    },
+    "devicePublication": {
+      "semanticOwner": "channel.synthetic-evaluator-request",
+      "contract": "cuda-js.device-publication-release-acquire/0.1.0",
+      "function": "channel_handoff",
+      "helpers": [
+        "gpu.atomic.load-acquire-device",
+        "gpu.atomic.store-release-device",
+        "gpu.barrier.block",
+        "gpu.thread.global-x"
+      ],
+      "producerPayload": 305419896,
+      "producerReady": 1,
+      "consumerWordIndex": 1,
+      "observedConsumerWord": 305419897,
+      "expectedConsumerWord": 305419897,
+      "hostMailboxStores": 0,
+      "hostMailboxLoads": 0
+    }
+  },
+  "terminalDelivery": {
+    "id": "delivery-0",
+    "packageDelivery": "delivery.compatible-pair-32.terminal-output",
+    "resource": "resource-16",
+    "byteOffset": "0",
+    "byteLength": "4096",
+    "request": {
+      "memoryId": "memory-1",
+      "request": {
+        "deviceOffset": 0,
+        "byteLength": 4096
+      },
+      "operationId": "operation-1"
+    },
+    "transferEvents": [
+      {
+        "operationId": "operation-1",
+        "role": "transfer",
+        "action": "wait",
+        "memoryId": "memory-1",
+        "result": {
+          "schemaVersion": 1,
+          "status": "completed",
+          "pollCount": 1,
+          "elapsedMilliseconds": 2,
+          "operationSequence": 12,
+          "health": {
+            "current": "healthy",
+            "history": []
+          },
+          "kind": "device-to-host",
+          "result": {
+            "bytes": {
+              "byteLength": 4096,
+              "sha256": "5c8ee0ac5d9073a58dc688621e43a3d87146757dab23f5ed1e72a65eb792203a",
+              "hex": "000000007956341202000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a0000001b0000001c0000001d0000001e0000001f000000200000002100000022000000230000002400000025000000260000002700000028000000290000002a0000002b0000002c0000002d0000002e0000002f000000300000003100000032000000330000003400000035000000360000003700000038000000390000003a0000003b0000003c0000003d0000003e0000003f000000400000004100000042000000430000004400000045000000460000004700000048000000490000004a0000004b0000004c0000004d0000004e0000004f000000500000005100000052000000530000005400000055000000560000005700000058000000590000005a0000005b0000005c0000005d0000005e0000005f000000600000006100000062000000630000006400000065000000660000006700000068000000690000006a0000006b0000006c0000006d0000006e0000006f000000700000007100000072000000730000007400000075000000760000007700000078000000790000007a0000007b0000007c0000007d0000007e0000007f000000800000008100000082000000830000008400000085000000860000008700000088000000890000008a0000008b0000008c0000008d0000008e0000008f000000900000009100000092000000930000009400000095000000960000009700000098000000990000009a0000009b0000009c0000009d0000009e0000009f000000a0000000a1000000a2000000a3000000a4000000a5000000a6000000a7000000a8000000a9000000aa000000ab000000ac000000ad000000ae000000af000000b0000000b1000000b2000000b3000000b4000000b5000000b6000000b7000000b8000000b9000000ba000000bb000000bc000000bd000000be000000bf000000c0000000c1000000c2000000c3000000c4000000c5000000c6000000c7000000c8000000c9000000ca000000cb000000cc000000cd000000ce000000cf000000d0000000d1000000d2000000d3000000d4000000d5000000d6000000d7000000d8000000d9000000da000000db000000dc000000dd000000de000000df000000e0000000e1000000e2000000e3000000e4000000e5000000e6000000e7000000e8000000e9000000ea000000eb000000ec000000ed000000ee000000ef000000f0000000f1000000f2000000f3000000f4000000f5000000f6000000f7000000f8000000f9000000fa000000fb000000fc000000fd000000fe000000ff000000000100000101000002010000030100000401000005010000060100000701000008010000090100000a0100000b0100000c0100000d0100000e0100000f010000100100001101000012010000130100001401000015010000160100001701000018010000190100001a0100001b0100001c0100001d0100001e0100001f010000200100002101000022010000230100002401000025010000260100002701000028010000290100002a0100002b0100002c0100002d0100002e0100002f010000300100003101000032010000330100003401000035010000360100003701000038010000390100003a0100003b0100003c0100003d0100003e0100003f010000400100004101000042010000430100004401000045010000460100004701000048010000490100004a0100004b0100004c0100004d0100004e0100004f010000500100005101000052010000530100005401000055010000560100005701000058010000590100005a0100005b0100005c0100005d0100005e0100005f010000600100006101000062010000630100006401000065010000660100006701000068010000690100006a0100006b0100006c0100006d0100006e0100006f010000700100007101000072010000730100007401000075010000760100007701000078010000790100007a0100007b0100007c0100007d0100007e0100007f010000800100008101000082010000830100008401000085010000860100008701000088010000890100008a0100008b0100008c0100008d0100008e0100008f010000900100009101000092010000930100009401000095010000960100009701000098010000990100009a0100009b0100009c0100009d0100009e0100009f010000a0010000a1010000a2010000a3010000a4010000a5010000a6010000a7010000a8010000a9010000aa010000ab010000ac010000ad010000ae010000af010000b0010000b1010000b2010000b3010000b4010000b5010000b6010000b7010000b8010000b9010000ba010000bb010000bc010000bd010000be010000bf010000c0010000c1010000c2010000c3010000c4010000c5010000c6010000c7010000c8010000c9010000ca010000cb010000cc010000cd010000ce010000cf010000d0010000d1010000d2010000d3010000d4010000d5010000d6010000d7010000d8010000d9010000da010000db010000dc010000dd010000de010000df010000e0010000e1010000e2010000e3010000e4010000e5010000e6010000e7010000e8010000e9010000ea010000eb010000ec010000ed010000ee010000ef010000f0010000f1010000f2010000f3010000f4010000f5010000f6010000f7010000f8010000f9010000fa010000fb010000fc010000fd010000fe010000ff010000000200000102000002020000030200000402000005020000060200000702000008020000090200000a0200000b0200000c0200000d0200000e0200000f020000100200001102000012020000130200001402000015020000160200001702000018020000190200001a0200001b0200001c0200001d0200001e0200001f020000200200002102000022020000230200002402000025020000260200002702000028020000290200002a0200002b0200002c0200002d0200002e0200002f020000300200003102000032020000330200003402000035020000360200003702000038020000390200003a0200003b0200003c0200003d0200003e0200003f020000400200004102000042020000430200004402000045020000460200004702000048020000490200004a0200004b0200004c0200004d0200004e0200004f020000500200005102000052020000530200005402000055020000560200005702000058020000590200005a0200005b0200005c0200005d0200005e0200005f020000600200006102000062020000630200006402000065020000660200006702000068020000690200006a0200006b0200006c0200006d0200006e0200006f020000700200007102000072020000730200007402000075020000760200007702000078020000790200007a0200007b0200007c0200007d0200007e0200007f020000800200008102000082020000830200008402000085020000860200008702000088020000890200008a0200008b0200008c0200008d0200008e0200008f020000900200009102000092020000930200009402000095020000960200009702000098020000990200009a0200009b0200009c0200009d0200009e0200009f020000a0020000a1020000a2020000a3020000a4020000a5020000a6020000a7020000a8020000a9020000aa020000ab020000ac020000ad020000ae020000af020000b0020000b1020000b2020000b3020000b4020000b5020000b6020000b7020000b8020000b9020000ba020000bb020000bc020000bd020000be020000bf020000c0020000c1020000c2020000c3020000c4020000c5020000c6020000c7020000c8020000c9020000ca020000cb020000cc020000cd020000ce020000cf020000d0020000d1020000d2020000d3020000d4020000d5020000d6020000d7020000d8020000d9020000da020000db020000dc020000dd020000de020000df020000e0020000e1020000e2020000e3020000e4020000e5020000e6020000e7020000e8020000e9020000ea020000eb020000ec020000ed020000ee020000ef020000f0020000f1020000f2020000f3020000f4020000f5020000f6020000f7020000f8020000f9020000fa020000fb020000fc020000fd020000fe020000ff020000000300000103000002030000030300000403000005030000060300000703000008030000090300000a0300000b0300000c0300000d0300000e0300000f030000100300001103000012030000130300001403000015030000160300001703000018030000190300001a0300001b0300001c0300001d0300001e0300001f030000200300002103000022030000230300002403000025030000260300002703000028030000290300002a0300002b0300002c0300002d0300002e0300002f030000300300003103000032030000330300003403000035030000360300003703000038030000390300003a0300003b0300003c0300003d0300003e0300003f030000400300004103000042030000430300004403000045030000460300004703000048030000490300004a0300004b0300004c0300004d0300004e0300004f030000500300005103000052030000530300005403000055030000560300005703000058030000590300005a0300005b0300005c0300005d0300005e0300005f030000600300006103000062030000630300006403000065030000660300006703000068030000690300006a0300006b0300006c0300006d0300006e0300006f030000700300007103000072030000730300007403000075030000760300007703000078030000790300007a0300007b0300007c0300007d0300007e0300007f030000800300008103000082030000830300008403000085030000860300008703000088030000890300008a0300008b0300008c0300008d0300008e0300008f030000900300009103000092030000930300009403000095030000960300009703000098030000990300009a0300009b0300009c0300009d0300009e0300009f030000a0030000a1030000a2030000a3030000a4030000a5030000a6030000a7030000a8030000a9030000aa030000ab030000ac030000ad030000ae030000af030000b0030000b1030000b2030000b3030000b4030000b5030000b6030000b7030000b8030000b9030000ba030000bb030000bc030000bd030000be030000bf030000c0030000c1030000c2030000c3030000c4030000c5030000c6030000c7030000c8030000c9030000ca030000cb030000cc030000cd030000ce030000cf030000d0030000d1030000d2030000d3030000d4030000d5030000d6030000d7030000d8030000d9030000da030000db030000dc030000dd030000de030000df030000e0030000e1030000e2030000e3030000e4030000e5030000e6030000e7030000e8030000e9030000ea030000eb030000ec030000ed030000ee030000ef030000f0030000f1030000f2030000f3030000f4030000f5030000f6030000f7030000f8030000f9030000fa030000fb030000fc030000fd030000fe030000ff030000"
+            }
+          }
+        }
+      }
+    ],
+    "transferClose": {
+      "id": "operation-1",
+      "kind": "operation",
+      "role": "transfer",
+      "result": {
+        "schemaVersion": 1,
+        "kind": "operation",
+        "state": "closed",
+        "disposition": {
+          "kind": "operation",
+          "logicalClosed": true,
+          "terminalState": "completed"
+        }
+      }
+    },
+    "bytes": {
+      "byteLength": 4096,
+      "sha256": "5c8ee0ac5d9073a58dc688621e43a3d87146757dab23f5ed1e72a65eb792203a",
+      "hex": "000000007956341202000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a0000001b0000001c0000001d0000001e0000001f000000200000002100000022000000230000002400000025000000260000002700000028000000290000002a0000002b0000002c0000002d0000002e0000002f000000300000003100000032000000330000003400000035000000360000003700000038000000390000003a0000003b0000003c0000003d0000003e0000003f000000400000004100000042000000430000004400000045000000460000004700000048000000490000004a0000004b0000004c0000004d0000004e0000004f000000500000005100000052000000530000005400000055000000560000005700000058000000590000005a0000005b0000005c0000005d0000005e0000005f000000600000006100000062000000630000006400000065000000660000006700000068000000690000006a0000006b0000006c0000006d0000006e0000006f000000700000007100000072000000730000007400000075000000760000007700000078000000790000007a0000007b0000007c0000007d0000007e0000007f000000800000008100000082000000830000008400000085000000860000008700000088000000890000008a0000008b0000008c0000008d0000008e0000008f000000900000009100000092000000930000009400000095000000960000009700000098000000990000009a0000009b0000009c0000009d0000009e0000009f000000a0000000a1000000a2000000a3000000a4000000a5000000a6000000a7000000a8000000a9000000aa000000ab000000ac000000ad000000ae000000af000000b0000000b1000000b2000000b3000000b4000000b5000000b6000000b7000000b8000000b9000000ba000000bb000000bc000000bd000000be000000bf000000c0000000c1000000c2000000c3000000c4000000c5000000c6000000c7000000c8000000c9000000ca000000cb000000cc000000cd000000ce000000cf000000d0000000d1000000d2000000d3000000d4000000d5000000d6000000d7000000d8000000d9000000da000000db000000dc000000dd000000de000000df000000e0000000e1000000e2000000e3000000e4000000e5000000e6000000e7000000e8000000e9000000ea000000eb000000ec000000ed000000ee000000ef000000f0000000f1000000f2000000f3000000f4000000f5000000f6000000f7000000f8000000f9000000fa000000fb000000fc000000fd000000fe000000ff000000000100000101000002010000030100000401000005010000060100000701000008010000090100000a0100000b0100000c0100000d0100000e0100000f010000100100001101000012010000130100001401000015010000160100001701000018010000190100001a0100001b0100001c0100001d0100001e0100001f010000200100002101000022010000230100002401000025010000260100002701000028010000290100002a0100002b0100002c0100002d0100002e0100002f010000300100003101000032010000330100003401000035010000360100003701000038010000390100003a0100003b0100003c0100003d0100003e0100003f010000400100004101000042010000430100004401000045010000460100004701000048010000490100004a0100004b0100004c0100004d0100004e0100004f010000500100005101000052010000530100005401000055010000560100005701000058010000590100005a0100005b0100005c0100005d0100005e0100005f010000600100006101000062010000630100006401000065010000660100006701000068010000690100006a0100006b0100006c0100006d0100006e0100006f010000700100007101000072010000730100007401000075010000760100007701000078010000790100007a0100007b0100007c0100007d0100007e0100007f010000800100008101000082010000830100008401000085010000860100008701000088010000890100008a0100008b0100008c0100008d0100008e0100008f010000900100009101000092010000930100009401000095010000960100009701000098010000990100009a0100009b0100009c0100009d0100009e0100009f010000a0010000a1010000a2010000a3010000a4010000a5010000a6010000a7010000a8010000a9010000aa010000ab010000ac010000ad010000ae010000af010000b0010000b1010000b2010000b3010000b4010000b5010000b6010000b7010000b8010000b9010000ba010000bb010000bc010000bd010000be010000bf010000c0010000c1010000c2010000c3010000c4010000c5010000c6010000c7010000c8010000c9010000ca010000cb010000cc010000cd010000ce010000cf010000d0010000d1010000d2010000d3010000d4010000d5010000d6010000d7010000d8010000d9010000da010000db010000dc010000dd010000de010000df010000e0010000e1010000e2010000e3010000e4010000e5010000e6010000e7010000e8010000e9010000ea010000eb010000ec010000ed010000ee010000ef010000f0010000f1010000f2010000f3010000f4010000f5010000f6010000f7010000f8010000f9010000fa010000fb010000fc010000fd010000fe010000ff010000000200000102000002020000030200000402000005020000060200000702000008020000090200000a0200000b0200000c0200000d0200000e0200000f020000100200001102000012020000130200001402000015020000160200001702000018020000190200001a0200001b0200001c0200001d0200001e0200001f020000200200002102000022020000230200002402000025020000260200002702000028020000290200002a0200002b0200002c0200002d0200002e0200002f020000300200003102000032020000330200003402000035020000360200003702000038020000390200003a0200003b0200003c0200003d0200003e0200003f020000400200004102000042020000430200004402000045020000460200004702000048020000490200004a0200004b0200004c0200004d0200004e0200004f020000500200005102000052020000530200005402000055020000560200005702000058020000590200005a0200005b0200005c0200005d0200005e0200005f020000600200006102000062020000630200006402000065020000660200006702000068020000690200006a0200006b0200006c0200006d0200006e0200006f020000700200007102000072020000730200007402000075020000760200007702000078020000790200007a0200007b0200007c0200007d0200007e0200007f020000800200008102000082020000830200008402000085020000860200008702000088020000890200008a0200008b0200008c0200008d0200008e0200008f020000900200009102000092020000930200009402000095020000960200009702000098020000990200009a0200009b0200009c0200009d0200009e0200009f020000a0020000a1020000a2020000a3020000a4020000a5020000a6020000a7020000a8020000a9020000aa020000ab020000ac020000ad020000ae020000af020000b0020000b1020000b2020000b3020000b4020000b5020000b6020000b7020000b8020000b9020000ba020000bb020000bc020000bd020000be020000bf020000c0020000c1020000c2020000c3020000c4020000c5020000c6020000c7020000c8020000c9020000ca020000cb020000cc020000cd020000ce020000cf020000d0020000d1020000d2020000d3020000d4020000d5020000d6020000d7020000d8020000d9020000da020000db020000dc020000dd020000de020000df020000e0020000e1020000e2020000e3020000e4020000e5020000e6020000e7020000e8020000e9020000ea020000eb020000ec020000ed020000ee020000ef020000f0020000f1020000f2020000f3020000f4020000f5020000f6020000f7020000f8020000f9020000fa020000fb020000fc020000fd020000fe020000ff020000000300000103000002030000030300000403000005030000060300000703000008030000090300000a0300000b0300000c0300000d0300000e0300000f030000100300001103000012030000130300001403000015030000160300001703000018030000190300001a0300001b0300001c0300001d0300001e0300001f030000200300002103000022030000230300002403000025030000260300002703000028030000290300002a0300002b0300002c0300002d0300002e0300002f030000300300003103000032030000330300003403000035030000360300003703000038030000390300003a0300003b0300003c0300003d0300003e0300003f030000400300004103000042030000430300004403000045030000460300004703000048030000490300004a0300004b0300004c0300004d0300004e0300004f030000500300005103000052030000530300005403000055030000560300005703000058030000590300005a0300005b0300005c0300005d0300005e0300005f030000600300006103000062030000630300006403000065030000660300006703000068030000690300006a0300006b0300006c0300006d0300006e0300006f030000700300007103000072030000730300007403000075030000760300007703000078030000790300007a0300007b0300007c0300007d0300007e0300007f030000800300008103000082030000830300008403000085030000860300008703000088030000890300008a0300008b0300008c0300008d0300008e0300008f030000900300009103000092030000930300009403000095030000960300009703000098030000990300009a0300009b0300009c0300009d0300009e0300009f030000a0030000a1030000a2030000a3030000a4030000a5030000a6030000a7030000a8030000a9030000aa030000ab030000ac030000ad030000ae030000af030000b0030000b1030000b2030000b3030000b4030000b5030000b6030000b7030000b8030000b9030000ba030000bb030000bc030000bd030000be030000bf030000c0030000c1030000c2030000c3030000c4030000c5030000c6030000c7030000c8030000c9030000ca030000cb030000cc030000cd030000ce030000cf030000d0030000d1030000d2030000d3030000d4030000d5030000d6030000d7030000d8030000d9030000da030000db030000dc030000dd030000de030000df030000e0030000e1030000e2030000e3030000e4030000e5030000e6030000e7030000e8030000e9030000ea030000eb030000ec030000ed030000ee030000ef030000f0030000f1030000f2030000f3030000f4030000f5030000f6030000f7030000f8030000f9030000fa030000fb030000fc030000fd030000fe030000ff030000"
+    }
+  },
+  "lifecycle": {
+    "hostProtocol": [
+      "prepare",
+      "ignite",
+      "wait",
+      "deliver",
+      "close"
+    ],
+    "allocations": [
+      {
+        "request": {
+          "byteLength": 49152
+        },
+        "memoryId": "memory-0",
+        "byteLength": 49152
+      },
+      {
+        "request": {
+          "byteLength": 12288
+        },
+        "memoryId": "memory-1",
+        "byteLength": 12288
+      }
+    ],
+    "initializationWrites": [
+      {
+        "memoryId": "memory-0",
+        "bytes": {
+          "byteLength": 49152,
+          "sha256": "2aae7dc846aaf25f1cadf55f1666862046c6db9d65d84bdc07fa039dac405606"
+        },
+        "result": {
+          "schemaVersion": 1,
+          "deviceOffset": 0,
+          "byteLength": 49152,
+          "usage": {
+            "policy": {
+              "maxDeviceBytes": 268435456,
+              "maxAllocationBytes": 134217728,
+              "maxTransferBytes": 16777216
+            },
+            "reservedBytes": 61440,
+            "allocationCount": 2,
+            "native": {
+              "freeBytes": 5379194880,
+              "totalBytes": 6442123264
+            }
+          }
+        }
+      }
+    ],
+    "resourceCloses": [
+      {
+        "id": "operation-1",
+        "kind": "operation",
+        "role": "transfer",
+        "result": {
+          "schemaVersion": 1,
+          "kind": "operation",
+          "state": "closed",
+          "disposition": {
+            "kind": "operation",
+            "logicalClosed": true,
+            "terminalState": "completed"
+          }
+        }
+      },
+      {
+        "id": "operation-0",
+        "kind": "operation",
+        "role": "main",
+        "result": {
+          "schemaVersion": 1,
+          "kind": "operation",
+          "state": "closed",
+          "disposition": {
+            "kind": "operation",
+            "logicalClosed": true,
+            "terminalState": "completed"
+          }
+        }
+      },
+      {
+        "id": "function-0",
+        "kind": "function",
+        "result": {
+          "schemaVersion": 1,
+          "kind": "function",
+          "state": "closed",
+          "disposition": {
+            "kind": "function",
+            "invalidated": true
+          }
+        }
+      },
+      {
+        "id": "module-0",
+        "kind": "module",
+        "result": {
+          "schemaVersion": 1,
+          "kind": "module",
+          "state": "closed",
+          "disposition": {
+            "kind": "module",
+            "unloaded": true,
+            "backend": {
+              "nativeUnloaded": true
+            }
+          }
+        }
+      },
+      {
+        "id": "mailbox-0",
+        "kind": "publication-mailbox",
+        "result": {
+          "schemaVersion": 1,
+          "kind": "publication-mailbox",
+          "state": "closed",
+          "disposition": {
+            "kind": "publication-mailbox",
+            "unregistered": true,
+            "backend": {
+              "nativeUnregistered": true
+            }
+          }
+        }
+      },
+      {
+        "id": "memory-1",
+        "kind": "device-memory",
+        "result": {
+          "schemaVersion": 1,
+          "kind": "device-memory",
+          "state": "closed",
+          "disposition": {
+            "kind": "device",
+            "byteLength": 12288,
+            "freed": true,
+            "backend": {
+              "nativeFreed": true
+            }
+          }
+        }
+      },
+      {
+        "id": "memory-0",
+        "kind": "device-memory",
+        "result": {
+          "schemaVersion": 1,
+          "kind": "device-memory",
+          "state": "closed",
+          "disposition": {
+            "kind": "device",
+            "byteLength": 49152,
+            "freed": true,
+            "backend": {
+              "nativeFreed": true
+            }
+          }
+        }
+      }
+    ],
+    "cleanup": {
+      "status": "complete",
+      "failures": [],
+      "runtime": {
+        "schemaVersion": 1,
+        "graceful": true,
+        "restartRequired": false,
+        "state": "closed",
+        "compiler": {
+          "graceful": true,
+          "restartRequired": false,
+          "cleanupClaim": "proved-native-resources-and-libraries",
+          "workerExited": true,
+          "workerExitCode": 0,
+          "resources": {
+            "programsCreated": 1,
+            "programsDestroyed": 1,
+            "linksCreated": 0,
+            "linksDestroyed": 0
+          }
+        },
+        "driver": {
+          "graceful": true,
+          "restartRequired": false,
+          "cleanupClaim": "proved-exact-windows-profile",
+          "workerExited": true,
+          "workerExitCode": 0,
+          "health": "closed",
+          "resourceCounts": {
+            "live": 0,
+            "closing": 0,
+            "closed": 14,
+            "orphaned": 0
+          }
+        }
+      }
+    },
+    "runtimeClose": {
+      "schemaVersion": 1,
+      "graceful": true,
+      "restartRequired": false,
+      "state": "closed",
+      "compiler": {
+        "graceful": true,
+        "restartRequired": false,
+        "cleanupClaim": "proved-native-resources-and-libraries",
+        "workerExited": true,
+        "workerExitCode": 0,
+        "resources": {
+          "programsCreated": 1,
+          "programsDestroyed": 1,
+          "linksCreated": 0,
+          "linksDestroyed": 0
+        }
+      },
+      "driver": {
+        "graceful": true,
+        "restartRequired": false,
+        "cleanupClaim": "proved-exact-windows-profile",
+        "workerExited": true,
+        "workerExitCode": 0,
+        "health": "closed",
+        "resourceCounts": {
+          "live": 0,
+          "closing": 0,
+          "closed": 14,
+          "orphaned": 0
+        }
+      }
+    },
+    "pressure": {
+      "maxPending": "1",
+      "observedDisposition": "within-bound"
+    },
+    "deferredFailure": {
+      "observed": false,
+      "portableFalsifier": "PAIR-F12"
+    },
+    "timeoutAbandonment": {
+      "observed": false,
+      "portableFalsifier": "PAIR-F13"
+    },
+    "quarantine": false,
+    "retained": [],
+    "restartRequired": false,
+    "portableFailureSemantics": [
+      "PAIR-F01",
+      "PAIR-F02",
+      "PAIR-F03",
+      "PAIR-F04",
+      "PAIR-F05",
+      "PAIR-F06",
+      "PAIR-F07",
+      "PAIR-F08",
+      "PAIR-F09",
+      "PAIR-F10",
+      "PAIR-F11",
+      "PAIR-F12",
+      "PAIR-F13",
+      "PAIR-F14",
+      "PAIR-F15",
+      "PAIR-F16"
+    ]
+  },
+  "claimLimits": [
+    "This bundle qualifies only the exact source/runtime/provider/device tuple recorded above; it does not promote another OS, GPU, driver, toolkit, Node, target, or CUDA-JS revision.",
+    "Portable failure-path falsifiers remain separate evidence and are referenced by stable case ID; they are not relabeled as physical failure injection.",
+    "The recorder uses only the public cuda-js package and public capability methods; no generated CUDA/PTX, raw handle, pointer, FFI, or private CUDA-JS surface is inspected by CUDA-MCGS."
+  ]
+}

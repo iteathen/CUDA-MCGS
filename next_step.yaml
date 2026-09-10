@@ -1,6 +1,6 @@
 {
   "schema_version": 124,
-  "updated": "2026-09-08",
+  "updated": "2026-09-09",
   "status": "issue_124_complete",
   "objective": "Preserve protected CUDA-MCGS #124 completion and route broader service profiles, physical CUDA qualification and downstream product evidence as separate owner-directed work.",
   "agent_authority": {
@@ -89,5 +89,11 @@
     "no private sibling imports",
     "product-neutral generic implementation only",
     "preserve protected foundations and qualify every meaningful unit"
-  ]
+  ],
+  "accepted_physical_pair": {
+    "issue": "iteathen/CUDA-JS#32",
+    "status": "passed-reviewed-owner-approved",
+    "evidence": "docs/evidence/gate-32-2026-09-09/README.md",
+    "scope": "Exact terminal-only Windows pair; broader evaluator/Tensor and Linux physical evidence remain separate."
+  }
 }

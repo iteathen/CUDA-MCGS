@@ -48,6 +48,10 @@ There is no remaining acceptance work inside issue #124. The following are separ
 
 Physical CUDA qualification remains deliberately separate: portable/package/reference results establish only the semantics they execute.
 
+## Accepted physical compatible pair — CUDA-JS #32
+
+The owner-approved [evidence review](docs/evidence/gate-32-2026-09-09/README.md) accepts the exact protected CUDA-MCGS/CUDA-JS pair on Windows x64 / GTX 1660 Ti / driver 610.74 / CUDA 13.3 / Node 26.7.0. One 4 × 256 launch delivered 4096 terminal bytes with Channel release/acquire publication and graceful cleanup. This terminal-only pair does not qualify the broader #124 Tensor/evaluator physical profile, Linux, other hardware, or performance.
+
 ## Ownership boundary
 
 CUDA-MCGS owns Search IR/composition, evaluator request identity/incarnation/freshness, finite request/batch/resource semantics, scatter/readiness/publication, Progress/search lifecycle, cancellation/failure/retry dispositions and framework cleanup truth.
