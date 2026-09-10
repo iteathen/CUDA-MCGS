@@ -57,4 +57,4 @@ node --experimental-ffi scripts/run-cuda-js-compatible-pair.mjs native > compati
 
 A passing native run emits the exact source/host/runtime/provider/device/target/program/artifact/module/launch/publication/operation/delivery/cleanup tuple plus the copied terminal bytes. It qualifies only that recorded physical profile. Portable failure-path cases are referenced separately by stable ID and are not relabeled as physical failure injection.
 
-CUDA-JS issue #32 remains open until such a bundle is produced on an accepted physical NVIDIA host and reviewed against the exact integrated source pair. No hosted CI result in this repository closes that gate.
+CUDA-JS issue #32 was accepted for the [recorded exact Windows pair](../../docs/evidence/gate-32-2026-09-09/README.md). Use the package identity of the selected exact checkout (the accepted tuple uses alpha.19; the alpha.18 examples above are historical). The [#105 follow-up](../../docs/evidence/issue-105-2026-09-09/README.md) records fresh default/explicit single-GPU evidence and remaining skips. New physical tuples require their own evidence and review; hosted CI does not qualify them.

@@ -1,0 +1,4 @@
+CUDA-JS runtime adapter pre-ignition Device-JS and runtime-input validation: passed.
+cuda_js_resource_views=pass public-view=exact dense-header=cuda-device access=view-relative cleanup=child-before-parent quarantine=retained
+cuda_js_cleanup_dependency=pass child_before_parent=proved failed_disposal_retry=absent repeated_quarantine=stable
+CUDA-JS runtime adapter portable conformance: 20/20 cases passed.
