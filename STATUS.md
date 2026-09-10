@@ -52,6 +52,8 @@ Physical CUDA qualification remains deliberately separate: portable/package/refe
 
 The owner-approved [evidence review](docs/evidence/gate-32-2026-09-09/README.md) accepts the exact protected CUDA-MCGS/CUDA-JS pair on Windows x64 / GTX 1660 Ti / driver 610.74 / CUDA 13.3 / Node 26.7.0. One 4 × 256 launch delivered 4096 terminal bytes with Channel release/acquire publication and graceful cleanup. This terminal-only pair does not qualify the broader #124 Tensor/evaluator physical profile, Linux, other hardware, or performance.
 
+Issue [#105](https://github.com/iteathen/CUDA-MCGS/issues/105) now has a [single-GPU prerequisite assessment and fresh test evidence](docs/evidence/issue-105-2026-09-09/README.md): default and explicit selection passed the bounded physical Channel/Output capsule on the sole Windows GPU. Portable failure/selection evidence remains separately labeled. The accepted #32 prerequisite is satisfied for its exact Windows profile; distinct-device selection, replica aggregation/failure, coordinator cleanup, Linux qualification and scaling remain open.
+
 ## Ownership boundary
 
 CUDA-MCGS owns Search IR/composition, evaluator request identity/incarnation/freshness, finite request/batch/resource semantics, scatter/readiness/publication, Progress/search lifecycle, cancellation/failure/retry dispositions and framework cleanup truth.

@@ -85,4 +85,6 @@ Stop or narrow the profile if distinct device selection is unavailable, partitio
 
 ## Current disposition
 
+2026-09-09 update: the exact Windows single-device pair was accepted under CUDA-JS #32. The [#105 single-GPU evidence](../evidence/issue-105-2026-09-09/README.md) adds passing default/explicit selection runs and names the remaining multi-device skips. The following paragraph records the original Linux-first sequencing; its then-pending single-device prerequisite is superseded only for the accepted Windows tuple. The controlled 2+ GPU Linux qualification requirement remains open.
+
 The current Windows GTX 1660 Ti host exposes one GPU and cannot qualify distinct-device behavior. Under CUDA-JS ADR-0006, the first native selection/multi-GPU promotion target is Linux. CUDA-MCGS continues the dependency-ready `IR-PROGRAM-PACKAGE-01` path toward its first exact single-device Linux pair. Multi-GPU implementation begins only after the selected CUDA-JS foundation and a suitable controlled 2+ GPU Linux host exist; the direction is retained now so single-device packaging, resource and result identities do not foreclose later finite device sets.

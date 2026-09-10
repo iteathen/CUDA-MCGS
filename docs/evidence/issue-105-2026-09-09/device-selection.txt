@@ -1,0 +1,15 @@
+✔ finite discovery snapshot exposes only opaque selectors and sanitized architecture facts (1.2924ms)
+✔ default and explicit selection retain private native identity without exposing it publicly (0.2201ms)
+✔ refresh invalidates stale selectors and foreign selectors fail closed (0.8709ms)
+✔ a failed refresh invalidates the prior snapshot without retaining issued generations (0.2526ms)
+✔ empty and ambiguous private inventories fail with exact dispositions (0.162ms)
+✔ selected-device target identity depends on architecture and target-policy result, not native ordinal (0.6045ms)
+✔ architecture-only target resolution supports the implicit default device without inventing a selector (0.1785ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83.5324

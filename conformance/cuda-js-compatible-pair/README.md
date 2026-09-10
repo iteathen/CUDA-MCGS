@@ -2,7 +2,7 @@
 
 This capsule exercises a composed CUDA-MCGS program through the production adapter and public CUDA-JS package. It contains portable failure checks and a physical GPU runner.
 
-**Physical qualification remains open.** Hosted CI and portable results do not establish native CUDA correctness or support.
+**One exact Windows physical pair is accepted.** See the [preserved gate #32 review](../../docs/evidence/gate-32-2026-09-09/README.md) and [single-GPU #105 follow-up](../../docs/evidence/issue-105-2026-09-09/README.md). Hosted CI and portable results do not establish native CUDA correctness or support; other profiles remain unqualified.
 
 Use the [complete runbook](RUNBOOK.md) for exact checkout identities, package linking, Node 26.7.0/FFI requirements, platform prerequisites, commands, and evidence capture. The source pair is part of the result identity; an arbitrary installed CUDA-JS version is insufficient.
 
