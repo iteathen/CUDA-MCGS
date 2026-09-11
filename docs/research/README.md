@@ -4,6 +4,10 @@
 
 Research records external evidence that may affect CUDA-MCGS/UMCGS. It does not govern the project until converted into an accepted ADR or specification.
 
+## Exact solving and confluence
+
+- [`2026-09-11-asynchronous-confluence-hybrid-exact-connect4.md`](2026-09-11-asynchronous-confluence-hybrid-exact-connect4.md) — Josh Oshiro's replacement research paper for the earlier tripartite stream-confluence draft. It defines an exact semantic confluence boundary between a forward proof-search engine and CUDA-BSFP, replaces transient stream collision with immutable publication epochs, requires exact `Unknown/W/D/L` query semantics, and treats quotient/residual compression as a falsifiable internal representation hypothesis rather than an assumed theorem.
+
 ## CUDA-JS runtime boundary
 
 - [`2026-08-10-cuda-js-assumption-audit.md`](2026-08-10-cuda-js-assumption-audit.md) — historical official-source audit of the initial CUDA-JS sketch, including Node-API/JIT boundaries, NVRTC scope, managed/mapped memory, host micro-batching, atomic publication, and CUDA context-health implications.
