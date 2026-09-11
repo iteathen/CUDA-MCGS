@@ -7,6 +7,7 @@ Research records external evidence that may affect CUDA-MCGS/UMCGS. It does not 
 ## Exact solving and confluence
 
 - [`2026-09-11-asynchronous-confluence-hybrid-exact-connect4.md`](2026-09-11-asynchronous-confluence-hybrid-exact-connect4.md) — Josh Oshiro's replacement research paper for the earlier tripartite stream-confluence draft. It defines an exact semantic confluence boundary between a forward proof-search engine and CUDA-BSFP, replaces transient stream collision with immutable publication epochs, requires exact `Unknown/W/D/L` query semantics, and treats quotient/residual compression as a falsifiable internal representation hypothesis rather than an assumed theorem.
+- [`2026-09-11-hybrid-confluence-shared-structure-exploration.md`](2026-09-11-hybrid-confluence-shared-structure-exploration.md) — follow-on exploration of selective structure sharing between minimax/alpha-beta and CUDA-BSFP: monotone proof masks, bidirectional exact proof exchange, local versus asynchronous transposition, adaptive/ragged confluence surfaces, CPU witness/GPU closure specialization, residual quotient IDs, direct-address proof state, and the rule that physical state is merged only after measured net gain.
 
 ## CUDA-JS runtime boundary
 
