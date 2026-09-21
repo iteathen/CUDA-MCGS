@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "repository": "iteathen/CUDA-MCGS",
+  "claims": [
+    {
+      "id": "MCGS-INT-001",
+      "claim": "Maintained CUDA-free reference and conformance cases satisfy the repository's accepted contracts for their tested scope.",
+      "evidence_class": "INTERNAL-QUALIFICATION",
+      "status": "maintained internal qualification",
+      "oracle": "Repository-controlled reference implementations, schemas, and conformance checks",
+      "revision": "main",
+      "falsifier": "A maintained accepted reference/conformance case fails for the tested revision.",
+      "evidence": [
+        "README.md",
+        "conformance",
+        "components",
+        "docs/specs"
+      ],
+      "limitations": [
+        "Does not establish physical GPU execution, production reliability, or performance."
+      ],
+      "external_reproduction": false
+    },
+    {
+      "id": "MCGS-GPU-001",
+      "claim": "The complete framework is physically qualified as a production GPU-resident search runtime.",
+      "evidence_class": "UNVALIDATED",
+      "status": "explicitly open",
+      "oracle": null,
+      "revision": "main",
+      "falsifier": "Missing physical end-to-end qualification, incorrect results, host-driven progression where device ownership is required, or unresolved resource/runtime failures reject the claim.",
+      "evidence": [
+        "README.md",
+        "STATUS.md"
+      ],
+      "limitations": [
+        "Physical end-to-end CUDA qualification remains open."
+      ],
+      "external_reproduction": false
+    }
+  ]
+}
