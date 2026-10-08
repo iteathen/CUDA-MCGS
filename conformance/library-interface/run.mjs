@@ -119,6 +119,7 @@ try {
     assert.equal(library.libraryConstants.version, '0.1.0');
     assert.equal(library.libraryConstants.resolverOwner, 'tool.search-compiler');
     assert.equal(library.libraryConstants.runtimeOwner, 'integration.cuda-js');
+    assert.equal(typeof compiler.createFiniteDeviceSearchCore, 'function', 'installed compiler must expose its finite device source contribution');
   });
 
   await runCase('LIB-C01-explicit-facade-canonical-equivalence', () => {

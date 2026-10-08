@@ -1,0 +1,11 @@
+# Finite Device-JS graph/search conformance
+
+The independent fixture defines a diamond, a tree, an initial terminal and a cycle. All Domain keys intentionally collide; full equality determines sharing. Policy selects the least completed edge visits, adds explicit owner values once per path occurrence, and supplies the cycle value. The separate oracle counts admitted fixed paths. These game rules are conformance only.
+
+`core.test.mjs` checks normalized public owner bindings and real physical graph progression, parent-local backup, pressure before publication, stale root/focus references, preparation/reservation failure, partial-backup quarantine, read-only copied decision views, counter exhaustion and cancellation. The physical runner uses only public CUDA-JS APIs and submits one finite operation. One externally timed mailbox write exercises cancellation; it drives no search decisions or launches.
+
+Portable command: `node --test conformance/finite-device-search/core.test.mjs` (four physical tests intentionally skip).
+
+Physical command on the verified Node26.11.1 runtime: set `MCGS_FINITE_NATIVE=1`, then `node --experimental-ffi --test conformance/finite-device-search/core.test.mjs`. To record source-bound facts, also set `MCGS_FINITE_EVIDENCE` to a new JSON evidence path. The manifest requires the exact public CUDA-JS alpha21 peer contract. Supply the public package tarball from the qualified checkout/release at `2bff226b752d3c0af8b9185274d411e5990008d4` with `npm install --no-save --package-lock=false <cuda-js-0.1.0-alpha.21.tgz>` in this directory; the npm registry does not currently publish that package. The receipt records the exact version/revision used for physical evidence.
+
+The runtime entry here is a conformance wrapper around the compiler's device callable. The runner compiles the actual canonical Composer output after closing selected Graph/Progress source identities and complete Resource-owned placement views. Its physical allocation isolates the eight buffers, so it does not claim MCGS runtime adapter placement qualification. This evidence establishes the selected scalar profile through canonical Composer and public CUDA-JS, not a live session, collective callback profile, continuation, complete engine or performance result.
