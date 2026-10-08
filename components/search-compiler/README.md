@@ -20,6 +20,7 @@ The public Search Compiler is an encapsulated parent LEGO. Its `src/` modules ar
 | `output.mjs` | output-profile normalization and canonical identity |
 | `session.mjs`, `stage.mjs`, `channel.mjs` | optional session/stage/channel profile normalization |
 | `program-package*.mjs` | canonical Program Package, Search Program and execution-package composition |
+| `finite-device-search.mjs` | selected bounded Graph/Progress source generation with normalized Domain/Policy callbacks, exact buffers and fail-closed ownership |
 | `composer*.mjs` | composition orchestration/publication over the already-owned child results |
 | `foundation.mjs`, `validation.mjs`, `diagnostics.mjs` | owner-local validation/foundation mechanics shared only inside the parent |
 
@@ -39,3 +40,5 @@ This preserves one public canonical compiler while applying the accepted recursi
 The prerelease API may change. Compiler/reference evidence does not establish native GPU execution.
 
 The #124 [binding proposal](../../docs/specs/SPEC-0005-evaluator-resource-binding-addendum.md) adds artifact references, zero initialization, explicit device effects and exact launch constraints to package composition. `createEvaluatorCohortService(progressResult, evaluatorResult, runtimeContribution, { name, cancellationParameter, blockSize })` generates one Progress-owned finite cohort callable and its launch metadata. Evaluator callbacks retain item/terminal state ownership. All lanes must enter the collective; the caller publishes the finite cohort before entry and admits no later producer. This does not generate a general Search/Graph scheduler or prove global closure.
+
+`createFiniteDeviceSearchCore(context, options)` returns the selected scalar finite graph/search device callable and Graph/Progress contribution fragments for the existing Composer. It consumes exact normalized owner identities, independent u32/f32 Policy families, typed public hook metadata and finite Resource/Progress limits. The [contract and physical conformance](../../conformance/finite-device-search/README.md) scope its collision verification, atomic expansion, lease/backup/quarantine and cancellation evidence. This first profile has no reclamation, live focus, operation continuation, collective callback or product engine claim.

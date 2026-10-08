@@ -7,6 +7,7 @@ export * from './src/evaluator.mjs';
 export * from './src/resource.mjs';
 export * from './src/progress.mjs';
 export { createEvaluatorCohortService } from './src/progress-cohort.mjs';
+export { createFiniteDeviceSearchCore } from './src/finite-device-search.mjs';
 export * from './src/output.mjs';
 export * from './src/session.mjs';
 export * from './src/stage.mjs';

@@ -89,14 +89,16 @@
       "cuda-mcgs.search-ir/0.2.0",
       "cuda-mcgs.program-package-profile/0.2.0",
       "cuda-mcgs.search-program/0.2.0",
-      "cuda-mcgs.execution-package/0.2.0"
+      "cuda-mcgs.execution-package/0.2.0",
+      "cuda-mcgs.finite-device-search-core/0.1.0"
     ],
     "owns": [
       "canonical normalization implementation",
       "resolved Composer implementation",
       "Search Compiler validation-diagnostic classification",
       "Search Program/Program Package/execution-package implementation projection",
-      "candidate explicit artifact/initialization/device-effect/launch binding validation and finite Progress cohort source generation"
+      "candidate explicit artifact/initialization/device-effect/launch binding validation and finite Progress cohort source generation",
+      "Selected finite Graph/Progress Device-JS source generation inside the canonical compiler, with exact normalized Domain/Policy callback and resource bounds"
     ],
     "persistent_state": [],
     "generated_artifacts": [
@@ -105,7 +107,7 @@
       "execution-package values"
     ],
     "testing": {
-      "test_owner": "conformance/search-compiler",
+      "test_owner": "conformance/search-compiler and conformance/finite-device-search",
       "authoritative_oracles": [
         "accepted schemas/specifications",
         "independent Search IR/Search Semantics reference packets"
@@ -114,7 +116,8 @@
         "schemas/search-ir/0.2.0/requirement-coverage.json"
       ],
       "focused_fast_capsules_and_commands": [
-        "node scripts/run-search-ir-composer-reference.mjs"
+        "node scripts/run-search-ir-composer-reference.mjs",
+        "node --test conformance/finite-device-search/core.test.mjs"
       ],
       "owner_contract_capsules_and_commands": [
         "node scripts/run-engine-reference-integration.mjs"
@@ -153,7 +156,8 @@
         "new semantic falsifiers join the owning Composer/conformance capsule rather than creating duplicate interpreters"
       ],
       "runtime_output_and_resource_budgets": [
-        "CUDA-free bounded Node.js qualification; no native/performance claim"
+        "CUDA-free bounded Node.js qualification; no native/performance claim",
+        "Selected scalar physical conformance uses pinned public CUDA-JS; qualification scope and exact cleanup are recorded separately"
       ]
     },
     "lifecycle_and_cleanup": {
