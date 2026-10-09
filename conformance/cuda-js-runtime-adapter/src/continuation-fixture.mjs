@@ -31,6 +31,21 @@ export function initializedContinuationPackage() {
   a.continuation.initializationOperations=[{operation:'operation-bootstrap',readiness:{resource:'resource.bootstrap',view:{dtype:'u32',byteOffset:'0',elementCount:'4'},success:{wordOffset:'0',value:'0'}}}];
   return value;
 }
+export function stagedColdPackage({zeroBytes=0}={}) {
+  const value=initializedContinuationPackage(),a=value.cudaJsAdapter;
+  a.resourceRequirements.push({id:'resource.root-input',byteLength:'4',alignment:'4',memorySpaces:['device-search'],accessRequirements:['read']});
+  const boot=a.searchProgram.functions.find(f=>f.name==='continuation_boot'),operation=a.operationRequirements.find(o=>o.function==='continuation_boot');
+  boot.parameters.push({name:'input',type:'ptr<u32>'});
+  operation.bindings.push({parameter:'input',source:{kind:'resource',resource:'resource.root-input',access:'read',view:{dtype:'u32',byteOffset:'0',elementCount:'1'}}});
+  a.searchProgram.source=a.searchProgram.source.replace('continuation_boot(state, ready)','continuation_boot(state, ready, input)').replace('state[gpu.u32(0)]=gpu.u32(5)','state[gpu.u32(0)]=input[gpu.u32(0)]');
+  if(zeroBytes){
+    a.resourceRequirements.push({id:'resource.cold-zero',byteLength:String(zeroBytes),alignment:'4',memorySpaces:['device-search'],accessRequirements:['read']});
+    boot.parameters.push({name:'workspace',type:'ptr<u32>'});
+    operation.bindings.push({parameter:'workspace',source:{kind:'resource',resource:'resource.cold-zero',access:'read',initialization:'zero',view:{dtype:'u32',byteOffset:'0',elementCount:String(zeroBytes/4)}}});
+    a.searchProgram.source=a.searchProgram.source.replace('continuation_boot(state, ready, input)','continuation_boot(state, ready, input, workspace)');
+  }
+  return value;
+}
 export function continuationFake(flags={}) {
   const fake=publicCudaJsFake(flags);const api=fake.cudaJs;
   api.CUDA_JS_COMPATIBILITY.package.version='0.1.0-alpha.22';

@@ -10,6 +10,15 @@ The source-partition capsule checks exact source/hash/function/export admission,
 
 The admission-record capsule checks actual artifact byte digests, preparation versus ignition classification, copied declared cold-readiness delivery, close exclusion during a public description read, and rejection of binary or oversized runtime diagnostics. The read-only record conveys admitted public facts without adding scheduling or performance authority.
 
+The dev.2 cold-preinitialization capsule checks storage preparation without any
+initializer or ignition, caller snapshots before yielding, strict large zero
+validation, fixed-view late input staging, replacement/alias rejection, pending
+storage ownership and failure cleanup. Its opt-in native qualifier exercises a
+66 MB zero view, invalid content, storage substitution, a four-byte cold input,
+actual GPU bootstrap, one continuation ignition and graceful cleanup. This is
+generic adapter mechanism evidence. Actual engine input/clock responsiveness
+requires a separate product UCI phase observation.
+
 ## Run
 
 Use Node.js 24 or newer from a repository checkout. No GPU is required; passing does not qualify the physical library pair or change its Node/platform requirements.

@@ -83,3 +83,27 @@ The full integration gate now passes 393 reference requirements and all seven
 mutation falsifiers, with 52 native requirements explicitly deferred. This
 repair preserves the byte-identical ba98 runtime package; it adds no native,
 full-game or timing claim. See `experiments/search-semantics-reference/REFERENCE_SELECTION.md`.
+
+## Cold storage and clocked input
+
+Actual UCI phase evidence found roughly 1.4 seconds of input-loop blocking when
+the first position allocated/copied every cold resource and ignition scanned
+large zero views synchronously before the queued `go` line was received. The
+absolute clock origin was already correct; moving that origin cannot fix the
+lost input time.
+
+Package `0.0.0-dev.2` adds public storage preinitialization before consumer
+readiness. It checks owned snapshots and writes device storage without executing
+root admission or search. Exact duplicate proofs are checked once; large checks
+yield in bounded chunks. Later ignition accepts only exact declared cold input
+views, then performs existing GPU bootstrap/readiness and one continuation.
+Full-resource replacement, protected zero/content ranges and internal aliases
+are rejected. The resident Device-JS source and owner callback ABI are unchanged.
+
+A generic Node26.11/CUDA-JS22 physical probe rejected invalid last-byte zero
+content and storage substitution, observed 286 heartbeat ticks during 294 ms
+validation, completed bulk writes before any initializer, then staged a four-byte
+input and ignited once. Cancellation and graceful teardown reported zero live
+and orphan resources. This is mechanism qualification; actual product clock
+responsiveness must be observed separately. Both prior package bytes and prior
+reference chains remain historical records, with a separate dev.2 chain.

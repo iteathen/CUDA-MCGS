@@ -7,3 +7,4 @@ import '../conformance/cuda-js-runtime-adapter/cold-initialization.mjs';
 import '../conformance/cuda-js-runtime-adapter/public-requirement-selection.mjs';
 import '../conformance/cuda-js-runtime-adapter/device-source-partition.mjs';
 import '../conformance/cuda-js-runtime-adapter/admission-record.mjs';
+import '../conformance/cuda-js-runtime-adapter/cold-preinitialization.mjs';

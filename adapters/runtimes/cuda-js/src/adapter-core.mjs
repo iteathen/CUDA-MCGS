@@ -574,6 +574,36 @@ function snapshotInitialization(bytes, byteLength, id) {
   return snapshot;
 }
 
+async function admittedInitialSnapshots(plan, inputs) {
+  const resources=inputRecord(inputs,plan.allocatedResources,'resource inputs'),snapshots=new Map();
+  for(const [id,resource]of plan.allocatedResources){
+    const modes=[...plan.bindings.values()].filter(({source})=>source.kind==='resource'&&source.resource===id).map(({source})=>source.access);
+    const bytes=resources[id];
+    if(bytes===undefined&&modes.some(mode=>mode!=='write'))fail('CUDA_JS_ADAPTER_INPUT','ignition',`${id} requires explicit initial bytes`);
+    if(bytes!==undefined)snapshots.set(id,snapshotInitialization(bytes,resource.byteLengthNumber,id));
+  }
+  // Caller bytes are completely snapshotted before yielding. Each exact declared
+  // proof is checked once; differing hashes or overlapping extents stay distinct.
+  const proofs=new Set(),chunk=64*1024;
+  for(const {source}of plan.bindings.values()){
+    if(!source.initialContentSha256&&source.initialization!=='zero')continue;
+    const start=source.view.byteOffsetNumber,length=source.view.byteLengthNumber;
+    const key=JSON.stringify([source.resource,start,length,source.initialization??null,source.initialContentSha256??null]);
+    if(proofs.has(key))continue;proofs.add(key);
+    const bytes=snapshots.get(source.resource);
+    if(!bytes)fail('CUDA_JS_ADAPTER_INPUT','ignition','declared initial proof has no snapshot');
+    const hash=source.initialContentSha256?createHash('sha256'):null;
+    for(let offset=start;offset<start+length;offset+=chunk){
+      const slice=bytes.subarray(offset,Math.min(start+length,offset+chunk));
+      if(hash)hash.update(slice);
+      if(source.initialization==='zero'&&slice.some(value=>value!==0))fail('CUDA_JS_ADAPTER_INPUT','ignition','declared zero initialization is absent or nonzero');
+      if(length>chunk)await new Promise(resolve=>setImmediate(resolve));
+    }
+    if(hash&&hash.digest('hex')!==source.initialContentSha256)fail('CUDA_JS_ADAPTER_INPUT','ignition','immutable initial content digest mismatch');
+  }
+  return snapshots;
+}
+
 class ExternalExecution {
   #owned;#id;#declaration;#lower;#lowerClosed=false;#closed=false;#busy=false;#deliveryAttempted=false;
   constructor(owned,id,declaration,lower){this.kind='cuda-js-external-operation';this.state='running';this.#owned=owned;this.#id=id;this.#declaration=declaration;this.#lower=lower;}
@@ -622,12 +652,36 @@ class PreparedExecution {
   #activeDescriptions = 0;
   #initializationState = 'not-started';
   #initializationOperationCount = 0;
+  #storageInitialized = false;
+  #storageInitializationState = 'not-started';
+  #storageInitializationSummary = null;
   constructor(plan, owned) { this.kind = 'cuda-js-execution'; this.state = 'prepared'; this.#plan = plan; this.#owned = owned; }
 
+  async preinitialize(inputs={}) {
+    if(this.#closed||this.state!=='prepared'||this.#coldInitializing||this.#storageInitialized)fail('CUDA_JS_ADAPTER_STATE','initialization','cold storage can be initialized exactly once before ignition');
+    object(inputs,'cold storage inputs');for(const key of Object.keys(inputs))if(key!=='resources')fail('CUDA_JS_ADAPTER_INPUT','initialization','unknown cold storage input field');
+    this.#coldInitializing=true;this.#storageInitializationState='pending';
+    try {
+      const started=performance.now();
+      const snapshots=await admittedInitialSnapshots(this.#plan,inputs.resources);
+      const validated=performance.now();
+      for(const [id,bytes]of snapshots){
+        try{await this.#owned.memories.get(id).write(bytes);}
+        catch(error){const report=await cleanup(this.#owned);this.#closeReport=report;this.#closed=true;this.state='closed';throw wrapped('CUDA_JS_ADAPTER_ALLOCATION','initialization',`failed to initialize ${id}`,error,'allocation',report);}
+      }
+      this.#storageInitialized=true;this.#storageInitializationState='completed';
+      this.#storageInitializationSummary=Object.freeze({state:'completed',resourceCount:snapshots.size,snapshotBytes:[...snapshots.values()].reduce((sum,bytes)=>sum+bytes.byteLength,0),validationMilliseconds:validated-started,writeMilliseconds:performance.now()-validated});
+      return Object.freeze({state:this.state,storageInitialization:this.#storageInitializationSummary,ignition:'not-performed',initializationOperations:0});
+    } catch(error){this.#storageInitializationState='failed';throw error;}
+    finally{this.#coldInitializing=false;}
+  }
+
   async ignite(inputs = {}) {
-    if (this.#closed || this.state !== 'prepared') fail('CUDA_JS_ADAPTER_STATE', 'ignition', `cannot ignite from state ${this.state}`);
+    if (this.#closed || this.state !== 'prepared'||this.#coldInitializing) fail('CUDA_JS_ADAPTER_STATE', 'ignition', `cannot ignite from state ${this.state}`);
     object(inputs, 'runtime inputs');
-    const resourceInputs = inputRecord(inputs.resources, this.#plan.allocatedResources, 'resource inputs');
+    for(const key of Object.keys(inputs))if(!['resources','scalars','initializationParameters'].includes(key))fail('CUDA_JS_ADAPTER_INPUT','ignition','unknown runtime input field');
+    if(this.#storageInitialized&&inputs.resources!==undefined)fail('CUDA_JS_ADAPTER_INPUT','ignition','preinitialized storage cannot be substituted');
+    if(!this.#storageInitialized&&inputs.initializationParameters!==undefined)fail('CUDA_JS_ADAPTER_INPUT','ignition','late cold inputs require completed storage preinitialization');
     if (inputs.scalars !== undefined) {
       object(inputs.scalars, 'scalar input operations');
       for (const operationId of Object.keys(inputs.scalars)) if (this.#plan.continuation?!this.#plan.nodes.has(operationId)&&!this.#plan.initializationOperations.has(operationId):operationId !== this.#plan.operation.id) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `unknown scalar operation ${operationId}`);
@@ -646,45 +700,45 @@ class PreparedExecution {
       }}
     }
 
-    const initialSnapshots = new Map();
-
-    for (const [id, resource] of this.#plan.allocatedResources) {
-      const modes = [...this.#plan.bindings.values()].filter(({ source }) => source.kind === 'resource' && source.resource === id).map(({ source }) => source.access);
-      const bytes = resourceInputs[id];
-      if (bytes === undefined && modes.some((mode) => mode !== 'write')) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `${id} requires explicit initial bytes`);
-      if (bytes !== undefined) initialSnapshots.set(id, snapshotInitialization(bytes, resource.byteLengthNumber, id));
-    }
-    // All snapshots and digests are checked before the first asynchronous write.
-    for (const { source } of this.#plan.bindings.values()) if (source.initialContentSha256) {
-      const bytes = initialSnapshots.get(source.resource);
-      const start = source.view.byteOffsetNumber;
-      const digest = createHash('sha256').update(bytes.subarray(start, start + source.view.byteLengthNumber)).digest('hex');
-      if (digest !== source.initialContentSha256) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', 'immutable initial content digest mismatch');
-    }
-    for (const { source } of this.#plan.bindings.values()) if (source.initialization === 'zero') {
-      const bytes = initialSnapshots.get(source.resource);
-      if (!bytes || bytes.subarray(source.view.byteOffsetNumber, source.view.byteOffsetNumber + source.view.byteLengthNumber).some((value) => value !== 0)) {
-        fail('CUDA_JS_ADAPTER_INPUT', 'ignition', 'declared zero initialization is absent or nonzero');
+    const stages=[];
+    if(inputs.initializationParameters!==undefined){
+      object(inputs.initializationParameters,'cold initialization operation inputs');
+      for(const [operationId,parameters]of Object.entries(inputs.initializationParameters)){
+        if(!this.#plan.initializationOperations?.has(operationId))fail('CUDA_JS_ADAPTER_INPUT','ignition','late inputs require a declared cold initialization operation');
+        const plan=this.#plan.operations.get(operationId);
+        const admitted=inputRecord(parameters,new Set(plan.bindings.keys()),'cold initialization parameters');
+        for(const [name,bytes]of Object.entries(admitted)){
+          const source=plan.bindings.get(name).source,view=source.view;
+          if(source.kind!=='resource'||!view||source.access!=='read'||source.initialContentSha256||source.initialization||source.deviceEffects)fail('CUDA_JS_ADAPTER_INPUT','ignition','late cold input requires an ordinary mutable declared read view');
+          const start=view.byteOffsetNumber,length=view.byteLengthNumber;
+          for(const id of this.#plan.nodes.keys())for(const binding of this.#plan.operations.get(id).bindings.values())if(binding.source.kind==='resource'&&binding.source.resource===source.resource){
+            const other=binding.source.view,offset=other?.byteOffsetNumber??0,extent=other?.byteLengthNumber??this.#plan.resources.get(source.resource).byteLengthNumber;
+            if(start<offset+extent&&offset<start+length)fail('CUDA_JS_ADAPTER_INPUT','ignition','late cold staging overlaps internal resource range');
+          }
+          for(const binding of this.#plan.bindings.values())if(binding.source.kind==='resource'&&binding.source.resource===source.resource&&(binding.source.initialContentSha256||binding.source.initialization||binding.source.access!=='read')){
+            const other=binding.source.view,offset=other?.byteOffsetNumber??0,extent=other?.byteLengthNumber??this.#plan.resources.get(source.resource).byteLengthNumber;
+            if(start<offset+extent&&offset<start+length)fail('CUDA_JS_ADAPTER_INPUT','ignition','late cold staging overlaps protected initial content or output');
+          }
+          if(stages.some(stage=>stage.resource===source.resource&&start<stage.offset+stage.bytes.byteLength&&stage.offset<start+length))fail('CUDA_JS_ADAPTER_INPUT','ignition','late cold staged aliases overlap');
+          stages.push({resource:source.resource,offset:start,bytes:snapshotInitialization(bytes,length,`${operationId}/${name}`)});
+        }
       }
     }
+    if(!this.#storageInitialized)await this.preinitialize({resources:inputs.resources});
     this.state = 'initializing';
     this.#initializationState='pending';
     this.#coldInitializing=Boolean(this.#plan.initializationOperations?.size);
-    for (const [id] of this.#plan.allocatedResources) {
-      if (this.#closed) fail('CUDA_JS_ADAPTER_STATE', 'initialization', 'execution closed during initialization');
-      const bytes = initialSnapshots.get(id);
-      if (bytes === undefined) continue;
-      try { await this.#owned.memories.get(id).write(bytes); }
-      catch (error) {
-        const report = await cleanup(this.#owned); this.#closeReport = report; this.#closed = true; this.state = 'closed';
-        this.#coldInitializing=false;
-        throw wrapped('CUDA_JS_ADAPTER_ALLOCATION', 'initialization', `failed to initialize ${id}`, error, 'allocation', report);
-      }
-    }
 
 
     const initializationResults=[];
     try {
+      for(const stage of stages){
+        const memory=this.#owned.memories.get(stage.resource);
+        if(typeof memory.writeAsync!=='function')fail('CUDA_JS_ADAPTER_CAPABILITY','initialization','public asynchronous cold staging is unavailable',{classification:'unsupported-capability'});
+        const id=`cold-stage:${this.#owned.nextDeliverySequence++}`,transfer=await memory.writeAsync(stage.bytes,{deviceOffset:stage.offset});this.#owned.deliveryOperations.set(id,transfer);
+        try{const status=await transfer.wait();if(status?.status!=='completed')fail('CUDA_JS_ADAPTER_INITIALIZATION','initialization','cold input transfer did not complete',{classification:'operation'});}
+        finally{const failures=[];if(await closeOne(`delivery-operation:${id}`,transfer,this.#owned,failures))this.#owned.deliveryOperations.delete(id);else fail('CUDA_JS_ADAPTER_INITIALIZATION','cleanup','cold staging cleanup was not proved',{classification:'cleanup'});}
+      }
       if (this.#closed) fail('CUDA_JS_ADAPTER_STATE', 'ignition', 'execution closed before submission');
       for(const item of this.#plan.initializationOperations?.values()??[]) {
         const operationPlan=this.#plan.operations.get(item.operation),id=`initialization:${item.operation}`;
@@ -829,7 +883,7 @@ class PreparedExecution {
     if(this.#closed||this.#activeDescriptions)fail('CUDA_JS_ADAPTER_STATE','diagnostics','description requires an open execution and one pending read');
     if(typeof this.#owned.runtime.describe!=='function')fail('CUDA_JS_ADAPTER_CAPABILITY','diagnostics','public runtime description is unavailable',{classification:'unsupported-capability'});
     this.#activeDescriptions++;
-    try{return freeze({schema:'cuda-mcgs.cuda-js-execution-description/0.1.0',state:this.state,admission:this.#owned.admission,initialization:{state:this.#initializationState,operationCount:this.#initializationOperationCount},runtime:runtimeDescriptionSnapshot(await this.#owned.runtime.describe(),fail)});}
+    try{return freeze({schema:'cuda-mcgs.cuda-js-execution-description/0.1.0',state:this.state,admission:this.#owned.admission,storageInitialization:this.#storageInitializationSummary??{state:this.#storageInitializationState},initialization:{state:this.#initializationState,operationCount:this.#initializationOperationCount},runtime:runtimeDescriptionSnapshot(await this.#owned.runtime.describe(),fail)});}
     catch(error){if(error instanceof CudaJsRuntimeAdapterError)throw error;throw wrapped('CUDA_JS_ADAPTER_DESCRIPTION','diagnostics','public runtime description failed',error,'operation');}
     finally{this.#activeDescriptions--;}
   }

@@ -1,0 +1,35 @@
+{
+  "schema": "cuda-mcgs.reference-graph-ref-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 709018,
+    "sha256": "2f162aee57197c3fe84e4d3b469dd199d3dce9d83ccaf35a51fcbf69b251019a"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 140229,
+    "sha256": "9c8a50b9a25f0e3203cb2e1dd469566009bdc2e28a3e5b5fad5dbee0582ec8f5"
+  },
+  "nodeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10046,
+    "sha256": "7bb63210984026dc862405cb84b04962b2dc4f53cf7e7073cf43b286810f3343"
+  },
+  "expectedCases": [
+    "graph-ref-profile-projection-and-node-evidence-exact",
+    "graph-ref-validates-kind-arena-slot-generation-and-lifecycle-before-use",
+    "graph-ref-arena-incarnation-mismatch-is-typed-and-side-effect-free",
+    "graph-ref-consumes-current-node-reference-shape",
+    "graph-ref-stale-generation-cannot-read-protect-or-publish-replacement",
+    "graph-ref-generation-exhaustion-never-wraps-and-has-no-32-bit-limit",
+    "graph-ref-public-form-rejects-raw-address-and-invalid-access-is-side-effect-free",
+    "graph-ref-owner-reference-lifecycle-is-opaque-and-delegated",
+    "graph-ref-protection-before-retirement-blocks-until-one-exact-release",
+    "graph-ref-retirement-before-protection-prevents-check-then-pin",
+    "graph-ref-protection-capacity-is-explicit-and-finite",
+    "graph-ref-oracle-sensitivity-generation-check",
+    "graph-ref-oracle-sensitivity-protect-retire-order",
+    "graph-ref-requirement-coverage-exact"
+  ]
+}

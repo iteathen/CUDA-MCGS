@@ -50,6 +50,32 @@ The additive `cuda-mcgs.device-continuation/0.1.0` package declaration selects a
 
 Successful ignition additionally returns `initializationResults`, one record per declared initializer containing its operation id, resource id, exact typed view and a copied `Uint8Array` of the checked readiness bytes. These are the already admitted cold reads, not an arbitrary memory-read port. Canonical owners retain the readiness payload's field meaning; the adapter neither interprets root authority nor exposes a borrowed native view.
 
+The `0.0.0-dev.2` package adds `await prepared.preinitialize({resources})` for
+storage preparation before a consumer announces readiness. It snapshots each
+whole admitted resource, validates every zero/content proof, and completes its
+public device writes. It executes no initializer or search operation and leaves
+the execution `prepared`; root readiness remains `not-started`. Large proof
+checks yield in bounded chunks over the adapter-owned snapshots. Only exact
+duplicate proof declarations are deduplicated. Differing hashes and overlapping
+extents retain their independent checks. Pending preparation retains storage
+ownership and blocks ignition/close; write failure tears down or quarantines.
+
+After successful preinitialization, `ignite` must omit `resources`. It may supply
+`initializationParameters: {[initializerOperationId]: {[parameter]: bytes}}`.
+Each late input is an exact snapshot of an existing initializer's ordinary
+mutable read view. Zero-marked, immutable, atomic, output, internal-overlapping
+or overlapping staged aliases fail before transfer. No caller placement or
+whole-atlas replacement is accepted. The adapter stages only these bounded views,
+then performs the existing GPU-owned initializer/readiness check and single
+ignition. The original `ignite({resources, scalars})` route internally prepares
+storage and retains its behavior. This seam moves bulk initialization ahead of
+clocked input; it does not redefine a consumer's clock origin or search policy.
+
+`describe().storageInitialization` distinguishes storage preparation from
+semantic root initialization. Its completed summary contains actual snapshot
+byte/resource counts and host validation/write phase timings. These are adapter
+host phases, not inferred provider utilization or search-work counters.
+
 Optional `publicRequirementSelections` carry CUDA-MCGS consumer-owned canonical JSON selection documents and their exact SHA256 references. They bind the injected peer and complete public CUDA-JS compatibility metadata, including the existing asynchronous-transfer and scoped atomic-observation ports. These references are consumer selections, not CUDA-JS-issued schema digests. Missing, altered or mismatched selection bytes fail before the runtime opens.
 
 While the continuation is running, `submitExternal(operationId, {scalars, parameters})` admits only a preplanned `external-control` or `read-only-observation` operation. Each staged parameter is an exact byte snapshot of its declared ordinary view, disjoint from internal and immutable ranges. Concurrent shared views require compatible explicit atomic effects, or ordinary read-only access on both operations. Effects mechanically select the public lower atomic lease modes; semantic ownership and device ordering remain with canonical owners.

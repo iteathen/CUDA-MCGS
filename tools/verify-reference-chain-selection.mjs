@@ -3,11 +3,21 @@ import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {assertHistoricalReferenceBytes,assertSelectedReferenceBytes,semanticFixtureProjection,assertHistoricalProjectionPayload} from '../experiments/search-semantics-reference/src/reference-selection.mjs';
+import {assertHistoricalReferenceBytes,assertSelectedReferenceBytes,semanticFixtureProjection,assertHistoricalProjectionPayload,selectReferenceManifestPath} from '../experiments/search-semantics-reference/src/reference-selection.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const here=path.join(root,'experiments/search-semantics-reference');
 const json=async file=>JSON.parse(await readFile(file,'utf8'));
-const manifest=await json(path.join(here,'reference-chain-selection.json'));
+const manifest=await json(selectReferenceManifestPath());
+if(manifest.previousSelection){
+  assert.equal(manifest.previousSelection.version,'0.0.0-dev.1','unregistered retained chain');
+  const previousText=(await readFile(path.join(here,'reference-chain-selection.json'),'utf8')).replace(/\r\n?/g,'\n');
+  assert.equal(createHash('sha256').update(previousText).digest('hex'),manifest.previousSelection.manifestSha256,'retained previous manifest byte drift');
+  const previous=JSON.parse(previousText);
+  for(const [name,expected]of Object.entries(previous.selectedFixtures)){
+    const text=(await readFile(path.join(here,'fixtures',previous.version,name),'utf8')).replace(/\r\n?/g,'\n');
+    assert.equal(createHash('sha256').update(text).digest('hex'),expected,`retained previous fixture byte drift: ${name}`);
+  }
+}
 assertHistoricalReferenceBytes(manifest);
 assertSelectedReferenceBytes(manifest);
 assert.deepEqual(Object.keys(manifest.historicalFixtures).sort(),Object.keys(manifest.selectedFixtures).sort());

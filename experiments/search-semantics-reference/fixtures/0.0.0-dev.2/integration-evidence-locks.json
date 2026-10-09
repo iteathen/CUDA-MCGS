@@ -1,0 +1,110 @@
+{
+  "schema": "cuda-mcgs.reference-integration-evidence-locks/0.1.0",
+  "identities": {
+    "search-ir": {
+      "algorithm": "sha256",
+      "byteLength": 7749,
+      "sha256": "bd6679178c6754fe9b06d6fa54d038166b7ef39e32fb5f51513cc303cfd63a96"
+    },
+    "composer": {
+      "algorithm": "sha256",
+      "byteLength": 709018,
+      "sha256": "2f162aee57197c3fe84e4d3b469dd199d3dce9d83ccaf35a51fcbf69b251019a"
+    },
+    "domain": {
+      "algorithm": "sha256",
+      "byteLength": 30383,
+      "sha256": "061787ffe8b2963e8a4c3e1542ebe7a86df91b05bc7445b14938583103b3c32e"
+    },
+    "graph-node": {
+      "algorithm": "sha256",
+      "byteLength": 10046,
+      "sha256": "7bb63210984026dc862405cb84b04962b2dc4f53cf7e7073cf43b286810f3343"
+    },
+    "graph-edge": {
+      "algorithm": "sha256",
+      "byteLength": 11673,
+      "sha256": "be39a6a4b3db35ed9c101c68a1c06f479aaecb6625b1d5f98012885098e3286c"
+    },
+    "graph-ref": {
+      "algorithm": "sha256",
+      "byteLength": 9138,
+      "sha256": "0d26412c003756c47db1fff102e669cc00318eae283a424ededc4727fe1b49a8"
+    },
+    "graph-path": {
+      "algorithm": "sha256",
+      "byteLength": 9502,
+      "sha256": "afe80af16fd30ee8b36e360cfd44aaaf460ca5100666c8cae61e46c0b2c2fd73"
+    },
+    "graph-root": {
+      "algorithm": "sha256",
+      "byteLength": 9966,
+      "sha256": "aca7fd20e0d36e692a7b6cf7ec553afd0a4ef2d9d76074d66ef1f37de307c6cf"
+    },
+    "graph-reclaim": {
+      "algorithm": "sha256",
+      "byteLength": 12111,
+      "sha256": "a5ddc21d444ff6f84c01277d3a41e04ff60f1bac93bf85b6c4f87aa991a0d53e"
+    },
+    "graph-advance": {
+      "algorithm": "sha256",
+      "byteLength": 4206,
+      "sha256": "47c1995b3a9eab861b6bba46a02479f753c90ef9241b9122bc744d6f16601249"
+    },
+    "graph-cleanup": {
+      "algorithm": "sha256",
+      "byteLength": 5477,
+      "sha256": "b0af0c5927de95683654d975bdb150c8ad332a2b87f3c4c0d29d7f525c857f32"
+    },
+    "policy": {
+      "algorithm": "sha256",
+      "byteLength": 13103,
+      "sha256": "75848f3016d06372fb9b302da4e149a95cc8b813f50b538077e37e4d051d8c39"
+    },
+    "evaluator": {
+      "algorithm": "sha256",
+      "byteLength": 18050,
+      "sha256": "3d46c0f47f21e6e7cbba925878acce8c69694feed34d99066c5fcdc524681e6c"
+    },
+    "resource": {
+      "algorithm": "sha256",
+      "byteLength": 12511,
+      "sha256": "387a419b4a5e0f01cf58902e6e9715613bc190cff690a3ff7ee43324357974b0"
+    },
+    "progress": {
+      "algorithm": "sha256",
+      "byteLength": 12005,
+      "sha256": "15987b92cbe42c090f8aec29b55c707c11c4fa5191859f7bea9f2c3f5896a3fb"
+    },
+    "output": {
+      "algorithm": "sha256",
+      "byteLength": 16537,
+      "sha256": "6c923c606af5d3929879ed5005a5229d283ccb4bc9437a0bc5b5b66d6c6ea2e7"
+    },
+    "framework": {
+      "algorithm": "sha256",
+      "byteLength": 6529,
+      "sha256": "2146b02182c7b7f06e3f4450638e8d6204a9ada2e6b8614615215bf368fba0b7"
+    },
+    "terminal": {
+      "algorithm": "sha256",
+      "byteLength": 9333,
+      "sha256": "45de02a648391c8c1386d1afb3ad2c851fffcb49e11baf4b085d690ad365e8c3"
+    },
+    "session": {
+      "algorithm": "sha256",
+      "byteLength": 18551,
+      "sha256": "f8d6e1992d0066047215f338a135bb036c7c846ed1e7a73d845581dec0ffd84b"
+    },
+    "stage": {
+      "algorithm": "sha256",
+      "byteLength": 9367,
+      "sha256": "bfa40463c2cd08d0e5273341136e1ba553a728b6998c0730ebea9e8f0c38fdba"
+    },
+    "channel": {
+      "algorithm": "sha256",
+      "byteLength": 17031,
+      "sha256": "9d35394121b967bfb0f14fe31a3ddafe890f9c513062f6c251c22cdab0b1b2de"
+    }
+  }
+}
