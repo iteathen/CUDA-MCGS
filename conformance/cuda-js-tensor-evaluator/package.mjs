@@ -69,7 +69,8 @@ export async function importConformanceReference() { return import('cuda-mcgs/co
   const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8'));
 
   assert.equal(packageJson.name, 'cuda-mcgs');
-  assert.equal(packageJson.version, '0.0.0-dev.0');
+  const selectedPackage = JSON.parse((await readGitBlob('package.json')).toString('utf8'));
+  assert.equal(packageJson.version, selectedPackage.version, 'installed version must match the exact selected Git package');
   assert.equal(typeof shim.tensorEvaluator.createTensorEvaluatorConnector, 'function');
   assert.equal(typeof shim.tensorEvaluator.TensorEvaluatorConnectorError, 'function');
   assert.equal(typeof shim.tensorEvaluator.createTensorEvaluatorRuntimeContribution, 'function');
