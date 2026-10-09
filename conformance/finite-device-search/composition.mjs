@@ -1,15 +1,18 @@
 import * as compiler from '../../components/search-compiler/index.mjs';
 import { fixtureContext,identity } from './fixture.mjs';
 import { buildProgramPackageProfile } from '../search-compiler/src/program-package-fixtures.mjs';
+import {cooperativePolicyModule} from './cooperative-fixture.mjs';
 
 // Test-only assembly of selected owner values through the canonical Composer.
 // Runtime placement is deliberately a separate physical conformance boundary.
 export function composeFiniteFixture(options={}) {
+  if(options.cooperative)options={...options,policyModule:cooperativePolicyModule(options)};
   let context=fixtureContext(options);
   const generatorOptions={name:'finiteSearch',maxIterations:options.iterations??4};
-  const provisional=compiler.createFiniteDeviceSearchCore(context,generatorOptions);
+  const create=options.cooperative?compiler.createCooperativeDeviceSearchCore:compiler.createFiniteDeviceSearchCore;
+  const provisional=create(context,generatorOptions);
   context=fixtureContext({...options,graphSource:provisional.programContributions[0].source,progressSource:provisional.programContributions[1].source});
-  const core=compiler.createFiniteDeviceSearchCore(context,generatorOptions);
+  const core=create(context,generatorOptions);
   if(core.source!==provisional.source)throw new Error('source identity closure must be stable');
   const profileResults=['domain','graph','policy','resource','progress','output'].map(owner=>context[owner]);
   const built=buildProgramPackageProfile(context.authority,{profileResults,domainResult:context.domain,graphResult:context.graph,policyResult:context.policy,resourceResult:context.resource,progressResult:context.progress,outputResult:context.output,evaluatorResult:null,sessionResult:null,stageResult:null,channelResult:null},'finite-search');
@@ -29,7 +32,7 @@ export function composeFiniteFixture(options={}) {
     }else{unit.source=unit.source.replace('return 1;','return gpu.u32(1);');unit.sourceIdentity=identity(unit.source);}
   }
   const entry=input.functions.find(f=>f.name==='engine_step'),entryUnit=input.sourceUnits.find(u=>u.id===entry.sourceUnit);
-  entry.parameters=core.programContributions[1].functions[0].parameters;entry.calls=['finiteSearch'];entry.helpers=[];
+  entry.parameters=core.programContributions[1].functions.find(f=>f.name==='finiteSearch').parameters;entry.calls=['finiteSearch'];entry.helpers=[];
   entryUnit.source=`function engine_step(${entry.parameters.map(p=>p.name).join(',')}){finiteSearch(${entry.parameters.map(p=>p.name).join(',')});}\n`;entryUnit.sourceIdentity=identity(entryUnit.source);
   const offsets=new Map(),delivery=input.deliveries[0];
   const placements=core.buffers.map(buffer=>{
@@ -42,9 +45,9 @@ export function composeFiniteFixture(options={}) {
   });
   const scalarSchema={id:'cuda-mcgs.finite-fixture-u32/0.1.0',version:'0.1.0',sha256:identity('finite fixture scalar').sha256};
   input.operations[0].bindings=[...placements,{parameter:'cancellation',source:{kind:'sideband',sideband:input.sidebands.find(s=>s.role==='framework-cancellation').id}},...['expectedArena','expectedRootGeneration','expectedFocusEpoch'].map(parameter=>({parameter,source:{kind:'scalar',schema:scalarSchema}}))];
-  input.operations[0].grid=['1','1','1'];input.operations[0].block=['1','1','1'];
+  input.operations[0].grid=core.launch.grid;input.operations[0].block=core.launch.block;
   for(const record of input.deletion.records)record.functions=input.functions.filter(f=>input.sourceUnits.find(u=>u.id===f.sourceUnit)?.semanticOwner===record.owner).map(f=>f.name);
   const normalized=compiler.normalizeProgramPackageProfile(input,context.authority,built.context);
   const program=compiler.composeSearchProgram(normalized);
-  return {context,core,programPackage:normalized,program,placements};
+  return {context,core,programPackage:normalized,program,placements,profileInput:input,profileContext:built.context};
 }

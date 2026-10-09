@@ -2,6 +2,8 @@ const CONNECTOR_CONTRACT = 'cuda-mcgs.tensor-evaluator-connector/0.2.0';
 const TENSOR_CONTRACTS = new Set([
   'SPEC-0009-item-parallel-device-tensor-program-v1',
   'SPEC-0009-item-parallel-device-tensor-program-v1+SPEC-0009-gather-concat-v1',
+  'SPEC-0009-item-parallel-device-tensor-program-v1+SPEC-0009-block32-v1',
+  'SPEC-0009-item-parallel-device-tensor-program-v1+SPEC-0009-gather-concat-v1+SPEC-0009-block32-v1',
 ]);
 const IDENTIFIER = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
 const HEX64 = /^[0-9a-f]{64}$/;
@@ -216,6 +218,13 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
   const alias = options.alias ?? 'mcgsTensorRunItem';
   if (!IDENTIFIER.test(alias) || alias === 'gpu') fail('TENSOR_EVALUATOR_ALIAS', 'Tensor import alias must be a non-gpu Device-JS identifier');
   const callable = normalizeFunction(tensorDeviceProgram.function);
+  let participation;
+  if(tensorDeviceProgram.contract.endsWith('+SPEC-0009-block32-v1')){
+    const p=tensorDeviceProgram.participation;
+    if(p?.kind!=='block32'||p.scope!=='block'||p.requiredThreads!==32||p.block?.x!==32||p.block?.y!==1||p.block?.z!==1||p.uniformItemIndex!==true||p.uniformCall!==true||p.invocationCountPerParticipant!==1||typeof tensorDeviceProgram.requireParticipation!=='function')fail('TENSOR_EVALUATOR_PARTICIPATION','block32 requires exact public uniform participation admission');
+    tensorDeviceProgram.requireParticipation({block:{x:32,y:1,z:1},uniformItemIndex:true,uniformCall:true});
+    participation={kind:'collective-block',blockSize:32};
+  }else if(tensorDeviceProgram.participation?.kind&&tensorDeviceProgram.participation.kind!=='scalar')fail('TENSOR_EVALUATOR_PARTICIPATION','Tensor contract and participation differ');
   const baseParameters = normalizeProgramParameters(tensorDeviceProgram.parameters);
   if (callable.parameters.length !== baseParameters.length
       || callable.parameters.some((parameter, index) => parameter.name !== baseParameters[index].parameterName || parameter.type !== baseParameters[index].type)) {
@@ -244,6 +253,7 @@ export function createTensorEvaluatorConnector(tensorDeviceProgram, options = {}
       itemCapacity,
       totalWorkspaceBytes,
       outputFormat,
+      ...(participation?{participation}:{}),
     },
     requestCapacity,
     parameters,

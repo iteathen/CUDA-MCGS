@@ -135,6 +135,9 @@ function usesReferencePolicy(generator) {
 export function createResolvedComposerInput(profileTemplate, generatorInput) {
   const templateFields = [...PROFILE_TEMPLATE_FIELDS];
   if (Object.hasOwn(profileTemplate, 'sidebands')) templateFields.splice(templateFields.indexOf('deliveries'), 0, 'sidebands');
+  if (Object.hasOwn(profileTemplate, 'continuation')) templateFields.push('continuation');
+  if (Object.hasOwn(profileTemplate, 'publicRequirementSelections')) templateFields.push('publicRequirementSelections');
+  if (Object.hasOwn(profileTemplate, 'deviceSourcePartition')) templateFields.push('deviceSourcePartition');
   exactKeys(profileTemplate, templateFields, 'COMPOSER_PROFILE_TEMPLATE_FIELDS', 'program-package profile template');
   if (profileTemplate.schema !== PROGRAM_PACKAGE_SCHEMA) fail('COMPOSER_PROFILE_SCHEMA', 'profile template schema is incompatible');
   const generator = normalizeProgramGenerator(generatorInput);
@@ -171,6 +174,9 @@ export function normalizeResolvedComposerInput(input) {
   if (input.status !== STATUS) fail('COMPOSER_STATUS', 'resolved Composer input must remain proposal evidence');
   const profileFields = [...PROFILE_TEMPLATE_FIELDS];
   if (Object.hasOwn(input.profile, 'sidebands')) profileFields.splice(profileFields.indexOf('deliveries'), 0, 'sidebands');
+  if (Object.hasOwn(input.profile, 'continuation')) profileFields.push('continuation');
+  if (Object.hasOwn(input.profile, 'publicRequirementSelections')) profileFields.push('publicRequirementSelections');
+  if (Object.hasOwn(input.profile, 'deviceSourcePartition')) profileFields.push('deviceSourcePartition');
   exactKeys(input.profile, [...profileFields, 'generator'], 'COMPOSER_PROFILE_FIELDS', 'resolved program-package profile');
   if (input.profile.schema !== PROGRAM_PACKAGE_SCHEMA
       || input.profile.representation !== SEARCH_IR_REPRESENTATION

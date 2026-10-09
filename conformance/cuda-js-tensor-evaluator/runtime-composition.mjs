@@ -96,7 +96,13 @@ assert.equal(zeroFake.calls.filter(([name]) => name === 'memory.write').length, 
 assert.equal((await zeroExecution.close()).status, 'complete');
 
 for (const mutate of [
-  (pkg) => { pkg.cudaJsAdapter.operationRequirements[0].launchPolicy.grid[0] = '2'; },
+  (pkg) => {
+    const operation = pkg.cudaJsAdapter.operationRequirements[0];
+    pkg.cudaJsAdapter.searchProgram.functions.find(({ name }) => name === operation.function).launchConstraint = {
+      grid: [...operation.launchPolicy.grid], block: [...operation.launchPolicy.block],
+    };
+    operation.launchPolicy.grid[0] = '2';
+  },
   (pkg) => { pkg.cudaJsAdapter.operationRequirements[0].bindings.find(({ source }) => source.initialContentSha256).source.access = 'read-write'; },
   (pkg) => { pkg.cudaJsAdapter.operationRequirements[0].bindings.find(({ source }) => source.deviceEffects).source.deviceEffects = ['atomic-release-system']; },
 ]) {

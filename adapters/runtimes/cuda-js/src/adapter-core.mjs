@@ -1,5 +1,8 @@
 import { createHash } from 'node:crypto';
 import { isSharedArrayBuffer, isUint8Array } from 'node:util/types';
+import { admitContinuation,canonicalBindingIdentity } from './continuation-plan.mjs';
+import {admitSourcePartition,compileSourcePartition} from './source-partition.mjs';
+import {executionPackageIdentity,preparationRecord,runtimeDescriptionSnapshot} from './admission-record.mjs';
 
 const typedArrayPrototype = Object.getPrototypeOf(Uint8Array.prototype);
 const typedArrayBuffer = Object.getOwnPropertyDescriptor(typedArrayPrototype, 'buffer').get;
@@ -17,6 +20,8 @@ const CONTRACT_CAPABILITIES = new Map([
   ['cuda-js.operation-lifecycle/0.1.0', 'gpuOperationLifecycle'],
   ['cuda-js.publication-mailbox/0.1.0', 'publicationMailboxes'],
   ['cuda-js.device-publication-release-acquire/0.1.0', 'deviceJsFrontend'],
+  ['cuda-js.async-transfer/0.1.0','asyncTransfers'],
+  ['cuda-js.scoped-atomic-observation/0.1.0','deviceJsFrontend'],
 ]);
 
 function freeze(value) {
@@ -129,6 +134,31 @@ function admitContracts(requirements, lower) {
   }
 }
 
+function admitRequirementSelections(executionPackage,lower,peer) {
+  const selected=executionPackage.cudaJsAdapter?.publicRequirementSelections;if(selected===undefined)return;
+  if(!Array.isArray(selected)||selected.length<1||selected.length>64)fail('CUDA_JS_ADAPTER_REQUIREMENT_SELECTION','admission','consumer requirement selections must be a bounded array');
+  let nodes=0;
+  const canonical=(value,depth=0)=>{
+    if(++nodes>10000||depth>24)fail('CUDA_JS_ADAPTER_REQUIREMENT_SELECTION','admission','consumer selection metadata exceeds closed JSON bounds');
+    if(value===null||typeof value==='string'||typeof value==='boolean'||typeof value==='number'&&Number.isFinite(value))return value;
+    if(Array.isArray(value))return value.map(v=>canonical(v,depth+1));
+    if(value&&typeof value==='object'&&(Object.getPrototypeOf(value)===Object.prototype||Object.getPrototypeOf(value)===null))return Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k],depth+1)]));
+    fail('CUDA_JS_ADAPTER_REQUIREMENT_SELECTION','admission','consumer selection metadata must be plain canonical JSON');
+  };
+  const json=value=>{nodes=0;const text=JSON.stringify(canonical(value));if(Buffer.byteLength(text,'utf8')>65536)fail('CUDA_JS_ADAPTER_REQUIREMENT_SELECTION','admission','consumer selection metadata exceeds byte bound');return text;};
+  const contracts=executionPackage.cudaJsAdapter.publicContracts;
+  if(!Array.isArray(contracts)||contracts.length!==selected.length||new Set(contracts.map(c=>c.id)).size!==contracts.length)fail('CUDA_JS_ADAPTER_REQUIREMENT_SELECTION','admission','consumer selections must cover exact required contract set');
+  const seen=new Set(),metadata=json(lower),peerJson=json({repository:peer.repository,revision:peer.revision,package:peer.package});
+  for(const selection of selected) {
+    exactObject(selection,['reference','document'],'consumer selection');const reference=selection.reference,document=selection.document;
+    exactObject(reference,['id','version','sha256'],'consumer selection reference');exactObject(document,['schema','owner','requirement','lower'],'consumer selection document');
+    exactObject(document.requirement,['id','version','capability','value'],'consumer selected requirement');exactObject(document.lower,['peer','compatibility'],'consumer lower selection');
+    const contract=contracts.find(c=>c.id===reference.id),capability=CONTRACT_CAPABILITIES.get(reference.id),text=json(document);
+    if(seen.has(reference.id)||!contract||reference.version!=='0.1.0'||contract.version!==reference.version||contract.sha256!==reference.sha256||!/^[0-9a-f]{64}$/u.test(reference.sha256)||createHash('sha256').update(text,'utf8').digest('hex')!==reference.sha256||document.schema!=='cuda-mcgs.public-cuda-js-requirement-selection/0.1.0'||document.owner!=='CUDA-MCGS-consumer'||document.requirement.id!==reference.id||document.requirement.version!==reference.version||document.requirement.capability!==capability||document.requirement.value!==lower.capabilities?.[capability]||json(document.lower.compatibility)!==metadata||json(document.lower.peer)!==peerJson)fail('CUDA_JS_ADAPTER_REQUIREMENT_SELECTION','admission','consumer requirement bytes, public peer or capability selection differ',{classification:'unsupported-capability'});
+    seen.add(reference.id);
+  }
+}
+
 function compileOptions(requirements) {
   // Imported bodies are opaque: their signatures cannot exclude dense arithmetic
   // or scoped atomics. Select the public combined profile without parsing them.
@@ -156,12 +186,13 @@ function normalizeResourceView(source, resource, parameterName) {
   return { dtype: source.view.dtype, byteOffset: source.view.byteOffset, elementCount: source.view.elementCount, byteOffsetNumber: byteOffset, elementCountNumber: elementCount, byteLengthNumber: byteLength };
 }
 
-function admitPackage(executionPackage, lower) {
+function admitPackage(executionPackage, lower, {allowController=false}={}) {
   if (executionPackage.schema !== PACKAGE_SCHEMA || executionPackage.status !== 'accepted') fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'unsupported execution package schema/status');
   const requirements = object(executionPackage.cudaJsAdapter, 'cudaJsAdapter requirements');
   if (requirements.schema !== ADAPTER_SCHEMA) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'unsupported adapter requirements schema');
   admitContracts(requirements, lower);
   if (requirements.searchLifecycle?.ignition !== 'device-owned' || requirements.searchLifecycle?.cancellation !== 'bounded-external-intent' || requirements.searchLifecycle?.completion !== 'device-owned-closure') fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'unsupported search lifecycle');
+  if(requirements.continuation)return admitContinuation(executionPackage,lower,admitPackage,fail);
   if (!Array.isArray(requirements.operationRequirements) || requirements.operationRequirements.length !== 1) fail('CUDA_JS_ADAPTER_CAPABILITY', 'admission', 'v0 admits exactly one runtime operation', { classification: 'unsupported-capability' });
   const operation = requirements.operationRequirements[0];
   if (decimal(operation?.launchPolicy?.maxPending, 'operation maxPending', true) !== 1) fail('CUDA_JS_ADAPTER_CAPABILITY', 'admission', 'v0 admits maxPending=1 only', { classification: 'unsupported-capability' });
@@ -262,8 +293,12 @@ function admitPackage(executionPackage, lower) {
   }
   const searchProgram = object(requirements.searchProgram, 'searchProgram');
   const entry = searchProgram.functions?.find((fn) => fn.name === operation.function && fn.executionRole === 'runtime-entry');
+  if(entry?.executionProfile!==undefined&&entry.executionProfile!=='device-continuation-v1')fail('CUDA_JS_ADAPTER_PACKAGE','admission','unknown execution profile');
+  if(entry?.executionProfile==='device-continuation-v1'&&!allowController)fail('CUDA_JS_ADAPTER_CAPABILITY','admission','controller requires a declared continuation',{classification:'unsupported-capability'});
   if (!entry || !Array.isArray(entry.parameters) || entry.parameters.length !== bindings.size || entry.parameters.some(({ name }) => !bindings.has(name))) fail('CUDA_JS_ADAPTER_PACKAGE', 'admission', 'runtime entry and operation bindings differ');
-  for (const fn of searchProgram.functions) {
+  const reachable=operation.reachableFunctions;
+  if(reachable!==undefined&&(!Array.isArray(reachable)||new Set(reachable).size!==reachable.length||!reachable.includes(operation.function)||reachable.some(name=>!searchProgram.functions.some(fn=>fn.name===name))))fail('CUDA_JS_ADAPTER_PACKAGE','admission','operation reachable function closure is invalid');
+  for (const fn of searchProgram.functions.filter(fn=>reachable===undefined||reachable.includes(fn.name))) {
     if (Object.hasOwn(fn, 'launchConstraint')) {
       exactObject(fn.launchConstraint, ['grid', 'block'], 'launch constraint');
       for (const key of ['grid', 'block']) {
@@ -324,6 +359,15 @@ async function cleanup(owned) {
   const failures = [];
   const retained = new Set();
   let runtime = null;
+  let externalChildrenTerminal=true;
+  for(const [id,child]of [...(owned.externalChildren??[])].reverse()) {
+    try{await child.close();owned.externalChildren.delete(id);}catch(error){externalChildrenTerminal=false;failures.push(cleanupFailure(`external:${id}`,error));retained.add(`external:${id}`);}
+  }
+  if(!externalChildrenTerminal) {
+    if(owned.operation)retained.add('operation');if(owned.module)retained.add('module');if(owned.runtime)retained.add('runtime');
+    for(const id of owned.memories.keys())retained.add(`memory:${id}`);for(const id of owned.views.keys())retained.add(`view:${id}`);for(const id of owned.mailboxes.keys())retained.add(`mailbox:${id}`);
+    return cleanupReport(failures,runtime,retained);
+  }
 
   let deliveryChildrenTerminal = true;
   for (const [id, operation] of [...owned.deliveryOperations].reverse()) {
@@ -341,6 +385,7 @@ async function cleanup(owned) {
   else if (owned.operation) retained.add('operation');
 
   if (!operationTerminal) {
+    for(const name of owned.functions?.keys()??[])retained.add(`function:${name}`);
     if (owned.function) retained.add('function');
     if (owned.module) retained.add('module');
     for (const id of owned.mailboxes.keys()) retained.add(`mailbox:${id}`);
@@ -350,9 +395,10 @@ async function cleanup(owned) {
     return cleanupReport(failures, runtime, retained);
   }
 
-  const functionTerminal = await closeOne('function', owned.function, owned, failures);
+  let functionTerminal = await closeOne('function', owned.function, owned, failures);
   if (functionTerminal) owned.function = null;
   else if (owned.function) retained.add('function');
+  for(const [name,fn]of [...(owned.functions??[])].reverse()){if(await closeOne(`function:${name}`,fn,owned,failures))owned.functions.delete(name);else{functionTerminal=false;retained.add(`function:${name}`);}}
 
   let moduleTerminal = functionTerminal;
   if (functionTerminal) {
@@ -375,9 +421,10 @@ async function cleanup(owned) {
   }
 
   let viewChildrenTerminal = true;
+  const closedViews=new Map();
   for (const [id, view] of [...owned.views].reverse()) {
     const label = `view:${id}`;
-    const closed = await closeOne(label, view, owned, failures);
+    let closed=closedViews.get(view);if(closed===undefined){closed=await closeOne(label,view,owned,failures);closedViews.set(view,closed);}
     if (closed) owned.views.delete(id);
     else {
       viewChildrenTerminal = false;
@@ -437,12 +484,12 @@ function wrapped(code, phase, message, error, classification, report = null) {
   return new CudaJsRuntimeAdapterError(code, phase, message, { classification: effective, lower: error, cleanup: report, cause: error });
 }
 
-function preflightDeviceProgram(cudaJs, plan) {
+function preflightDeviceProgram(cudaJs, plan, imports) {
   let inspected;
   try {
-    inspected = cudaJs.inspectDeviceProgram({ source: plan.searchProgram.source, functions: plan.functions, compile: plan.compile });
+    inspected = cudaJs.inspectDeviceProgram({ source: plan.compilationSource??plan.searchProgram.source, functions: plan.compilationFunctions??plan.functions, compile: plan.compile,...(imports?{imports}:{}) });
   } catch (error) {
-    throw wrapped('CUDA_JS_ADAPTER_DEVICE_JS_PREFLIGHT', 'admission', 'CUDA-JS rejected the Search Program before runtime creation', error, 'validation');
+    throw wrapped('CUDA_JS_ADAPTER_DEVICE_JS_PREFLIGHT', 'admission', plan.compilationSource?'CUDA-JS rejected the declared main program before resident preparation':'CUDA-JS rejected the Search Program before runtime creation', error, 'validation');
   }
   if (inspected?.schemaVersion !== 1 || !inspected.deviceProgram || inspected.inspection?.compile === undefined || !Array.isArray(inspected.inspection?.publicHelperUsage)) {
     fail('CUDA_JS_ADAPTER_DEVICE_JS_PREFLIGHT', 'admission', 'CUDA-JS inspection returned an incomplete public result', { classification: 'unsupported-capability' });
@@ -452,7 +499,36 @@ function preflightDeviceProgram(cudaJs, plan) {
       fail('CUDA_JS_ADAPTER_DEVICE_JS_PREFLIGHT', 'admission', `CUDA-JS inspection changed selected compile option ${key}`, { classification: 'validation' });
     }
   }
+  if(plan.continuation)for(const operation of plan.operations.values()) {
+    const kernel=inspected.deviceProgram.kernels?.find(k=>k.name===operation.operation.function);
+    if(!kernel||(kernel.executionProfile??'ordinary')!==(operation.entry.executionProfile??'ordinary'))fail('CUDA_JS_ADAPTER_DEVICE_JS_PREFLIGHT','admission','returned controller profile differs from declared operation',{classification:'unsupported-capability'});
+  }
   return inspected;
+}
+
+function bindingKey(plan,operation,name){return plan.continuation?`${operation.id}/${name}`:name;}
+function launchArguments(plan,operationPlan,owned,scalars) {
+  const args=[],accesses=[];
+  for(const [index,parameter]of operationPlan.entry.parameters.entries()) {
+    const {source}=operationPlan.bindings.get(parameter.name);
+    if(source.kind==='resource') {
+      const view=source.view;args.push(view?owned.views.get(bindingKey(plan,operationPlan.operation,parameter.name)):owned.memories.get(source.resource));
+      let mode=source.access;
+      if(plan.continuation&&source.deviceEffects)mode=source.deviceEffects.every(effect=>effect==='atomic-load-acquire-device')?'atomic-observe-relaxed-device':'atomic-update-relaxed-device';
+      accesses.push({argumentIndex:index,byteOffset:0,byteLength:view?.byteLengthNumber??plan.resources.get(source.resource).byteLengthNumber,mode,...(mode.startsWith('atomic-')?{dtype:view.dtype}:{})});
+    } else if(source.kind==='sideband')args.push({kind:'publication-mailbox',mailbox:owned.mailboxes.get(source.sideband),lane:source.sideband});
+    else args.push(scalars.get(parameter.name));
+  }
+  return {arguments:args,accesses,...operationPlan.launch};
+}
+function operationScalars(operationPlan,values) {
+  const names=new Set([...operationPlan.bindings.values()].filter(b=>b.source.kind==='scalar').map(b=>b.parameter));
+  const supplied=inputRecord(values,names,'scalar inputs');const result=new Map();
+  for(const parameter of operationPlan.entry.parameters)if(operationPlan.bindings.get(parameter.name).source.kind==='scalar'){
+    if(!Object.hasOwn(supplied,parameter.name))fail('CUDA_JS_ADAPTER_INPUT','ignition',`missing scalar value for ${parameter.name}`);
+    result.set(parameter.name,scalar(parameter.type,supplied[parameter.name],parameter.name));
+  }
+  return result;
 }
 
 function inputRecord(value, allowed, label) {
@@ -498,12 +574,54 @@ function snapshotInitialization(bytes, byteLength, id) {
   return snapshot;
 }
 
+class ExternalExecution {
+  #owned;#id;#declaration;#lower;#lowerClosed=false;#closed=false;#busy=false;#deliveryAttempted=false;
+  constructor(owned,id,declaration,lower){this.kind='cuda-js-external-operation';this.state='running';this.#owned=owned;this.#id=id;this.#declaration=declaration;this.#lower=lower;}
+  get activeDelivery(){return this.#busy;}
+  async #closeLower() {
+    if(this.#lowerClosed)return;
+    const failures=[];
+    if(!await closeOne(`external-operation:${this.#id}`,this.#lower,this.#owned,failures))throw new CudaJsRuntimeAdapterError('CUDA_JS_ADAPTER_EXTERNAL_CLEANUP','cleanup','external operation cleanup was not proved',{classification:'cleanup',cleanup:cleanupReport(failures,null,new Set([`external:${this.#id}`,'runtime']))});
+    this.#lowerClosed=true;
+  }
+  async wait() {
+    if(this.#closed)fail('CUDA_JS_ADAPTER_STATE','completion','external operation is closed');
+    let status;
+    try{status=await this.#lower.wait();}catch(error){throw wrapped('CUDA_JS_ADAPTER_EXTERNAL','completion','external operation wait failed',error,'operation');}
+    if(status?.status!=='completed')throw wrapped('CUDA_JS_ADAPTER_EXTERNAL','completion','external operation did not complete',status?.failure??{code:'EXTERNAL_NOT_COMPLETED',category:'operation',details:status??{}},'operation');
+    this.state='completed';return Object.freeze({state:this.state,operation:freeze(status)});
+  }
+  async deliver() {
+    if(this.#closed||this.state!=='completed'||this.#busy||this.#deliveryAttempted)fail('CUDA_JS_ADAPTER_STATE','delivery','external delivery requires completed non-busy child with unused delivery');
+    const delivery=this.#declaration.delivery;if(!delivery)fail('CUDA_JS_ADAPTER_INPUT','delivery','external operation has no declared delivery');
+    this.#busy=true;this.#deliveryAttempted=true;let transfer=null;const id=`external-delivery:${this.#id}`;
+    try {
+      await this.#closeLower();
+      transfer=await this.#owned.memories.get(delivery.resource).readAsync({deviceOffset:delivery.byteOffsetNumber,byteLength:delivery.byteLengthNumber});
+      this.#owned.deliveryOperations.set(id,transfer);
+      const status=await transfer.wait();const bytes=status?.result?.bytes;
+      if(status?.status!=='completed'||!(bytes instanceof Uint8Array)||bytes.byteLength!==delivery.byteLengthNumber)fail('CUDA_JS_ADAPTER_DELIVERY','delivery','external copied result differs from declared range',{classification:'operation'});
+      return Object.freeze({operation:this.#declaration.operation,role:this.#declaration.role,resource:delivery.resource,view:freeze(delivery.view),bytes:new Uint8Array(bytes)});
+    } catch(error){if(error instanceof CudaJsRuntimeAdapterError)throw error;throw wrapped('CUDA_JS_ADAPTER_EXTERNAL','delivery','external delivery failed',error,'operation');}
+    finally {
+      try{if(transfer){const failures=[];if(await closeOne(`delivery-operation:${id}`,transfer,this.#owned,failures))this.#owned.deliveryOperations.delete(id);else throw new CudaJsRuntimeAdapterError('CUDA_JS_ADAPTER_DELIVERY_CLEANUP','cleanup','external delivery cleanup was not proved',{classification:'cleanup',cleanup:cleanupReport(failures,null,new Set([`delivery-operation:${id}`,`memory:${delivery.resource}`,'runtime']))});}}
+      finally{this.#busy=false;}
+    }
+  }
+  async close(){if(this.#closed)return Object.freeze({state:'closed',repeated:true});if(this.#busy)fail('CUDA_JS_ADAPTER_STATE','cleanup','external delivery is in flight');await this.#closeLower();this.#closed=true;this.state='closed';this.#owned.externalChildren.delete(this.#id);return Object.freeze({state:'closed'});}
+}
+
 class PreparedExecution {
   #plan;
   #owned;
   #closed = false;
   #activeDeliveries = 0;
   #closeReport = null;
+  #externalSubmitting = false;
+  #coldInitializing = false;
+  #activeDescriptions = 0;
+  #initializationState = 'not-started';
+  #initializationOperationCount = 0;
   constructor(plan, owned) { this.kind = 'cuda-js-execution'; this.state = 'prepared'; this.#plan = plan; this.#owned = owned; }
 
   async ignite(inputs = {}) {
@@ -512,10 +630,21 @@ class PreparedExecution {
     const resourceInputs = inputRecord(inputs.resources, this.#plan.allocatedResources, 'resource inputs');
     if (inputs.scalars !== undefined) {
       object(inputs.scalars, 'scalar input operations');
-      for (const operationId of Object.keys(inputs.scalars)) if (operationId !== this.#plan.operation.id) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `unknown scalar operation ${operationId}`);
+      for (const operationId of Object.keys(inputs.scalars)) if (this.#plan.continuation?!this.#plan.nodes.has(operationId)&&!this.#plan.initializationOperations.has(operationId):operationId !== this.#plan.operation.id) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `unknown scalar operation ${operationId}`);
     }
-    const scalarNames = new Set(this.#plan.operation.bindings.filter(({ source }) => source.kind === 'scalar').map(({ parameter }) => parameter));
-    const scalarInputs = inputRecord(inputs.scalars?.[this.#plan.operation.id], scalarNames, 'scalar inputs');
+    const scalarByOperation=new Map();
+    for(const operationId of this.#plan.continuation?[...this.#plan.initializationOperations.keys(),...this.#plan.nodes.keys()]:[this.#plan.operation.id]){
+      const operationPlan=this.#plan.operations?.get(operationId)??this.#plan;
+      scalarByOperation.set(operationId,operationScalars(operationPlan,inputs.scalars?.[operationId]));
+    }
+    if(this.#plan.continuation) {
+      const sharedScalars=new Map();
+      for(const id of this.#plan.nodes.keys()){const op=this.#plan.operations.get(id);for(const parameter of op.entry.parameters)if(op.bindings.get(parameter.name).source.kind==='scalar'){
+        const key=canonicalBindingIdentity(op,parameter),value=scalarByOperation.get(id).get(parameter.name);
+        if(sharedScalars.has(key)&&!Object.is(sharedScalars.get(key),value))fail('CUDA_JS_ADAPTER_INPUT','ignition','shared canonical scalar declaration has different per-node values');
+        sharedScalars.set(key,value);
+      }}
+    }
 
     const initialSnapshots = new Map();
 
@@ -538,15 +667,9 @@ class PreparedExecution {
         fail('CUDA_JS_ADAPTER_INPUT', 'ignition', 'declared zero initialization is absent or nonzero');
       }
     }
-    const scalarArguments = new Map();
-    for (const parameter of this.#plan.entry.parameters) {
-      const binding = this.#plan.bindings.get(parameter.name);
-      if (binding.source.kind !== 'scalar') continue;
-      if (!Object.hasOwn(scalarInputs, parameter.name)) fail('CUDA_JS_ADAPTER_INPUT', 'ignition', `missing scalar value for ${parameter.name}`);
-      scalarArguments.set(parameter.name, scalar(parameter.type, scalarInputs[parameter.name], parameter.name));
-    }
-
     this.state = 'initializing';
+    this.#initializationState='pending';
+    this.#coldInitializing=Boolean(this.#plan.initializationOperations?.size);
     for (const [id] of this.#plan.allocatedResources) {
       if (this.#closed) fail('CUDA_JS_ADAPTER_STATE', 'initialization', 'execution closed during initialization');
       const bytes = initialSnapshots.get(id);
@@ -554,39 +677,52 @@ class PreparedExecution {
       try { await this.#owned.memories.get(id).write(bytes); }
       catch (error) {
         const report = await cleanup(this.#owned); this.#closeReport = report; this.#closed = true; this.state = 'closed';
+        this.#coldInitializing=false;
         throw wrapped('CUDA_JS_ADAPTER_ALLOCATION', 'initialization', `failed to initialize ${id}`, error, 'allocation', report);
       }
     }
 
-    const args = [];
-    const accesses = [];
-    for (let index = 0; index < this.#plan.entry.parameters.length; index += 1) {
-      const parameter = this.#plan.entry.parameters[index];
-      const binding = this.#plan.bindings.get(parameter.name);
-      if (binding.source.kind === 'resource') {
-        if (binding.source.view) {
-          const view = this.#owned.views.get(parameter.name);
-          args.push(view);
-          accesses.push({ argumentIndex: index, byteOffset: 0, byteLength: binding.source.view.byteLengthNumber, mode: binding.source.access });
-        } else {
-          const resource = this.#plan.resources.get(binding.source.resource);
-          args.push(this.#owned.memories.get(binding.source.resource));
-          accesses.push({ argumentIndex: index, byteOffset: 0, byteLength: resource.byteLengthNumber, mode: binding.source.access });
-        }
-      } else if (binding.source.kind === 'sideband') {
-        args.push({ kind: 'publication-mailbox', mailbox: this.#owned.mailboxes.get(binding.source.sideband), lane: binding.source.sideband });
-      } else {
-        args.push(scalarArguments.get(parameter.name));
-      }
-    }
 
+    const initializationResults=[];
     try {
       if (this.#closed) fail('CUDA_JS_ADAPTER_STATE', 'ignition', 'execution closed before submission');
-      this.#owned.operation = await this.#owned.function.submit({ grid: this.#plan.launch.grid, block: this.#plan.launch.block, sharedMemoryBytes: this.#plan.launch.sharedMemoryBytes, arguments: args, accesses });
+      for(const item of this.#plan.initializationOperations?.values()??[]) {
+        const operationPlan=this.#plan.operations.get(item.operation),id=`initialization:${item.operation}`;
+        let child;
+        try {
+          const lower=await this.#owned.operationFunctions.get(item.operation).submit(launchArguments(this.#plan,operationPlan,this.#owned,scalarByOperation.get(item.operation)));
+          child=new ExternalExecution(this.#owned,id,{operation:item.operation,role:'cold-initialization'},lower);this.#owned.externalChildren.set(id,child);
+          await child.wait();await child.close();
+          const d=item.readiness,transferId=`initialization-readiness:${item.operation}`;
+          const transfer=await this.#owned.memories.get(d.resource).readAsync({deviceOffset:d.byteOffsetNumber,byteLength:d.byteLengthNumber});this.#owned.deliveryOperations.set(transferId,transfer);
+          try {
+            const status=await transfer.wait(),bytes=status?.result?.bytes;
+            if(status?.status!=='completed'||!(bytes instanceof Uint8Array)||bytes.byteLength!==d.byteLengthNumber||new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength).getUint32(d.wordOffsetNumber*4,true)!==d.valueNumber)fail('CUDA_JS_ADAPTER_INITIALIZATION','initialization','GPU-owned cold admission did not publish declared readiness',{classification:'validation'});
+            initializationResults.push(Object.freeze({operation:item.operation,resource:d.resource,view:Object.freeze({dtype:d.view.dtype,byteOffset:d.view.byteOffset,elementCount:d.view.elementCount}),bytes:new Uint8Array(bytes)}));
+          } finally {
+            const failures=[];if(await closeOne(`delivery-operation:${transferId}`,transfer,this.#owned,failures))this.#owned.deliveryOperations.delete(transferId);else fail('CUDA_JS_ADAPTER_INITIALIZATION','cleanup','cold readiness transfer cleanup was not proved',{classification:'cleanup'});
+          }
+        } catch(error){if(error instanceof CudaJsRuntimeAdapterError&&error.code==='CUDA_JS_ADAPTER_INITIALIZATION')throw error;throw wrapped('CUDA_JS_ADAPTER_INITIALIZATION','initialization','GPU-owned cold initialization failed',error,'operation');}
+      }
+      if(this.#plan.continuation) {
+        const bindings={},sharedKeys=new Map();let sequence=0;
+        const nodes=[...this.#plan.nodes.values()].map(node=>{
+          const operationPlan=this.#plan.operations.get(node.operation);
+          const launch=launchArguments(this.#plan,operationPlan,this.#owned,scalarByOperation.get(node.operation));
+          return {id:node.operation,after:node.after,function:this.#owned.operationFunctions.get(node.operation),...launch,
+            arguments:launch.arguments.map((value,index)=>{const identity=canonicalBindingIdentity(operationPlan,operationPlan.entry.parameters[index]);let key=sharedKeys.get(identity);if(key===undefined){key=`binding-${sequence++}`;sharedKeys.set(identity,key);bindings[key]=value;}return{binding:key};})};
+        });
+        this.#owned.operation=await this.#owned.runtime.submitDeviceContinuation({nodes,bindings,continuationNode:this.#plan.continuation.controllerOperation});
+      } else this.#owned.operation = await this.#owned.function.submit(launchArguments(this.#plan,this.#plan,this.#owned,scalarByOperation.get(this.#plan.operation.id)));
       this.state = 'running';
-      return this.status();
+      this.#coldInitializing=false;
+      this.#initializationState='completed';this.#initializationOperationCount=initializationResults.length;
+      return Object.freeze({...await this.status(),initializationResults:Object.freeze(initializationResults)});
     } catch (error) {
       const report = await cleanup(this.#owned); this.#closeReport = report; this.#closed = true; this.state = 'closed';
+      this.#coldInitializing=false;
+      this.#initializationState='failed';
+      if(error instanceof CudaJsRuntimeAdapterError&&error.code==='CUDA_JS_ADAPTER_INITIALIZATION'){error.cleanup=freeze(report);throw error;}
       throw wrapped('CUDA_JS_ADAPTER_OPERATION', 'ignition', 'CUDA-JS operation submission failed', error, 'operation', report);
     }
   }
@@ -603,6 +739,38 @@ class PreparedExecution {
     const sideband = this.#plan.sidebands.get(sidebandId);
     if (!sideband || sideband.direction !== 'device-to-host') fail('CUDA_JS_ADAPTER_INPUT', 'control', `${sidebandId} is not device-to-host`);
     return this.#owned.mailboxes.get(sidebandId).load(sidebandId);
+  }
+
+  async submitExternal(operationId,inputs={}) {
+    if(this.#closed||this.state!=='running'||!this.#plan.continuation)fail('CUDA_JS_ADAPTER_STATE','control','external submission requires running continuation');
+    const declaration=this.#plan.externalOperations.get(operationId);
+    if(!declaration)fail('CUDA_JS_ADAPTER_INPUT','control','operation is not a declared external role');
+    if(this.#externalSubmitting||this.#owned.externalChildren.size||this.#owned.deliveryOperations.size)fail('CUDA_JS_ADAPTER_STATE','control','external operation capacity is occupied or transfer cleanup is unproved');
+    object(inputs,'external inputs');for(const key of Object.keys(inputs))if(!['parameters','scalars'].includes(key))fail('CUDA_JS_ADAPTER_INPUT','control','unknown external input field');
+    const operationPlan=this.#plan.operations.get(operationId);const scalars=operationScalars(operationPlan,inputs.scalars);
+    const parameters=inputRecord(inputs.parameters,new Set([...operationPlan.bindings].filter(([,b])=>b.source.kind==='resource').map(([name])=>name)),'external staging parameters');
+    const stages=[];
+    for(const [name,bytes]of Object.entries(parameters)) {
+      const source=operationPlan.bindings.get(name).source;const view=source.view;
+      if(!view||source.initialContentSha256||source.deviceEffects)fail('CUDA_JS_ADAPTER_INPUT','control','external staging requires mutable explicit ordinary view');
+      const start=view.byteOffsetNumber,length=view.byteLengthNumber;
+      for(const id of this.#plan.nodes.keys())for(const binding of this.#plan.operations.get(id).bindings.values())if(binding.source.kind==='resource'&&binding.source.resource===source.resource){const other=binding.source.view;const offset=other?.byteOffsetNumber??0,extent=other?.byteLengthNumber??this.#plan.resources.get(source.resource).byteLengthNumber;if(start<offset+extent&&offset<start+length)fail('CUDA_JS_ADAPTER_INPUT','control','external staging overlaps internal resource range');}
+      for(const binding of this.#plan.bindings.values())if(binding.source.initialContentSha256&&binding.source.resource===source.resource){const other=binding.source.view;if(start<other.byteOffsetNumber+other.byteLengthNumber&&other.byteOffsetNumber<start+length)fail('CUDA_JS_ADAPTER_INPUT','control','external staging overlaps immutable content');}
+      if(stages.some(stage=>stage.resource===source.resource&&start<stage.offset+stage.bytes.byteLength&&stage.offset<start+length))fail('CUDA_JS_ADAPTER_INPUT','control','external staging aliases overlap');
+      stages.push({resource:source.resource,offset:start,bytes:snapshotInitialization(bytes,length,name)});
+    }
+    this.#externalSubmitting=true;
+    try {
+      for(const stage of stages) {
+        const memory=this.#owned.memories.get(stage.resource);if(typeof memory.writeAsync!=='function')fail('CUDA_JS_ADAPTER_CAPABILITY','control','public asynchronous external staging is unavailable',{classification:'unsupported-capability'});
+        const transfer=await memory.writeAsync(stage.bytes,{deviceOffset:stage.offset});const id=`external-stage:${this.#owned.nextDeliverySequence++}`;this.#owned.deliveryOperations.set(id,transfer);
+        try{const status=await transfer.wait();if(status?.status!=='completed')fail('CUDA_JS_ADAPTER_EXTERNAL','control','external staging did not complete',{classification:'operation'});}
+        finally{const failures=[];if(await closeOne(`delivery-operation:${id}`,transfer,this.#owned,failures))this.#owned.deliveryOperations.delete(id);else throw new CudaJsRuntimeAdapterError('CUDA_JS_ADAPTER_EXTERNAL_CLEANUP','cleanup','external staging cleanup was not proved',{classification:'cleanup',cleanup:cleanupReport(failures,null,new Set([`memory:${stage.resource}`,'runtime']))});}
+      }
+      const lower=await this.#owned.operationFunctions.get(operationId).submit(launchArguments(this.#plan,operationPlan,this.#owned,scalars));
+      const id=`${operationId}:${this.#owned.externalSequence++}`;const child=new ExternalExecution(this.#owned,id,declaration,lower);this.#owned.externalChildren.set(id,child);return child;
+    } catch(error){if(error instanceof CudaJsRuntimeAdapterError)throw error;throw wrapped('CUDA_JS_ADAPTER_EXTERNAL','control','external operation submission failed',error,'operation');}
+    finally{this.#externalSubmitting=false;}
   }
 
   async deliver(deliveryId) {
@@ -657,6 +825,15 @@ class PreparedExecution {
     return payload;
   }
 
+  async describe() {
+    if(this.#closed||this.#activeDescriptions)fail('CUDA_JS_ADAPTER_STATE','diagnostics','description requires an open execution and one pending read');
+    if(typeof this.#owned.runtime.describe!=='function')fail('CUDA_JS_ADAPTER_CAPABILITY','diagnostics','public runtime description is unavailable',{classification:'unsupported-capability'});
+    this.#activeDescriptions++;
+    try{return freeze({schema:'cuda-mcgs.cuda-js-execution-description/0.1.0',state:this.state,admission:this.#owned.admission,initialization:{state:this.#initializationState,operationCount:this.#initializationOperationCount},runtime:runtimeDescriptionSnapshot(await this.#owned.runtime.describe(),fail)});}
+    catch(error){if(error instanceof CudaJsRuntimeAdapterError)throw error;throw wrapped('CUDA_JS_ADAPTER_DESCRIPTION','diagnostics','public runtime description failed',error,'operation');}
+    finally{this.#activeDescriptions--;}
+  }
+
   async status() {
     if (this.#closed) return Object.freeze({ state: 'closed', operation: null, activeDeliveries: 0 });
     return Object.freeze({ state: this.state, operation: this.#owned.operation ? freeze(await this.#owned.operation.status()) : null, activeDeliveries: this.#activeDeliveries });
@@ -677,7 +854,7 @@ class PreparedExecution {
 
   async close() {
     if (this.#closed) return Object.freeze({ ...(this.#closeReport ?? { status: 'complete', failures: Object.freeze([]), runtime: null }), repeated: true });
-    if (this.#activeDeliveries !== 0) fail('CUDA_JS_ADAPTER_STATE', 'cleanup', 'cannot close while terminal delivery is in flight');
+    if (this.#activeDescriptions||this.#activeDeliveries !== 0||this.#externalSubmitting||this.#coldInitializing||[...this.#owned.externalChildren.values()].some(child=>child.activeDelivery)) fail('CUDA_JS_ADAPTER_STATE', 'cleanup', 'cannot close while description/cold initialization/delivery/external submission is in flight');
     const report = await cleanup(this.#owned);
     this.#closeReport = report;
     this.#closed = true;
@@ -691,39 +868,57 @@ export async function prepareCudaJsExecution(executionPackage, { cudaJs, peer, r
   object(cudaJs, 'cudaJs');
   object(runtimeOptions, 'runtimeOptions');
   const lower = admitPeer(executionPackage, cudaJs, peer);
+  admitRequirementSelections(executionPackage,lower,peer);
   const plan = admitPackage(executionPackage, lower);
+  plan.partition=executionPackage.cudaJsAdapter.deviceSourcePartition;
+  const partition=admitSourcePartition(plan,cudaJs,lower,fail);
+  const packageIdentity=executionPackageIdentity(executionPackage,fail);
+  // Public library composition selects RDC internally; an explicit request
+  // conflicts with that lower-owned selection, including continuation kernels.
+  if(partition||(plan.searchProgram.deviceImports?.length??0)>0)plan.compile=Object.freeze({headerProfile:'cuda-device'});
   if (runtimeOptions.compiler === false) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'compiler=false is incompatible with preparation');
   if (runtimeOptions.driver?.maxPending !== undefined && runtimeOptions.driver.maxPending !== 1) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'runtimeOptions.driver.maxPending must remain 1');
   if (runtimeOptions.driver?.execution?.maxPendingGpuOperations !== undefined && runtimeOptions.driver.execution.maxPendingGpuOperations !== 2) fail('CUDA_JS_ADAPTER_INPUT', 'admission', 'runtimeOptions.driver.execution.maxPendingGpuOperations must remain 2 for terminal delivery');
-  preflightDeviceProgram(cudaJs, plan);
-  const owned = { runtime: null, module: null, function: null, operation: null, deliveryOperations: new Map(), nextDeliverySequence: 0, memories: new Map(), views: new Map(), mailboxes: new Map(), failedClosures: new Map() };
+  if(!partition)preflightDeviceProgram(cudaJs, plan);
+  const owned = { runtime: null, module: null, function: null, functions:new Map(), operationFunctions:new Map(),externalChildren:new Map(),externalSequence:0,operation: null, deliveryOperations: new Map(), nextDeliverySequence: 0, memories: new Map(), views: new Map(), mailboxes: new Map(), failedClosures: new Map() };
   try {
     owned.runtime = await cudaJs.openCudaRuntime({
       ...runtimeOptions,
       driver: { ...(runtimeOptions.driver ?? {}), execution: { ...(runtimeOptions.driver?.execution ?? {}), maxPendingGpuOperations: 2 } },
       compiler: runtimeOptions.compiler ?? true,
     });
-    const compiled = await cudaJs.compileDeviceProgram(owned.runtime, { source: plan.searchProgram.source, functions: plan.functions, compile: plan.compile });
+    if(plan.continuation&&typeof owned.runtime.submitDeviceContinuation!=='function')fail('CUDA_JS_ADAPTER_CAPABILITY','admission','public continuation submission port is unavailable',{classification:'unsupported-capability'});
+    let localImports;
+    if(partition){localImports=await compileSourcePartition(partition,cudaJs,owned.runtime,fail);plan.compilationSource=partition.main.source;plan.compilationFunctions=partition.mainFunctions;preflightDeviceProgram(cudaJs,plan,localImports);}
+    const compiled = await cudaJs.compileDeviceProgram(owned.runtime, { source: plan.compilationSource??plan.searchProgram.source, functions: plan.compilationFunctions??plan.functions, compile: plan.compile,...(localImports?{imports:localImports}:{}) });
     const artifact = compiled?.linker?.artifact ?? compiled?.compiler?.artifact;
     if (!artifact || !['ptx', 'cubin'].includes(artifact.format) || !(artifact.bytes instanceof Uint8Array)) fail('CUDA_JS_ADAPTER_COMPILE', 'compilation', 'CUDA-JS compilation returned no loadable public artifact', { classification: 'compilation' });
     owned.module = await owned.runtime.loadModule({ format: artifact.format, bytes: artifact.bytes });
-    const kernel = compiled?.deviceProgram?.kernels?.find(({ name }) => name === plan.operation.function);
-    if (!kernel || !Array.isArray(kernel.parameters)) fail('CUDA_JS_ADAPTER_COMPILE', 'compilation', 'CUDA-JS device program exposed no runtime-entry kernel', { classification: 'compilation' });
-    owned.function = await owned.module.getFunction({ name: kernel.functionName, parameters: kernel.parameters });
+    for(const operationPlan of plan.operations?.values()??[plan]) {
+      const kernel = compiled?.deviceProgram?.kernels?.find(({ name }) => name === operationPlan.operation.function);
+      if (!kernel || !Array.isArray(kernel.parameters)) fail('CUDA_JS_ADAPTER_COMPILE', 'compilation', 'CUDA-JS device program exposed no runtime-entry kernel', { classification: 'compilation' });
+      if(plan.continuation&&(kernel.executionProfile??'ordinary')!==(operationPlan.entry.executionProfile??'ordinary'))fail('CUDA_JS_ADAPTER_COMPILE','compilation','compiled execution profile differs from selected operation',{classification:'compilation'});
+      const fn=owned.functions.get(kernel.functionName)??await owned.module.getFunction({ name: kernel.functionName, parameters: kernel.parameters,...(kernel.executionProfile?{executionProfile:kernel.executionProfile}:{}) });
+      if(plan.continuation){owned.functions.set(kernel.functionName,fn);owned.operationFunctions.set(operationPlan.operation.id,fn);}else owned.function=fn;
+    }
     for (const [id, resource] of plan.allocatedResources) owned.memories.set(id, await owned.runtime.allocateDevice({ byteLength: resource.byteLengthNumber }));
+    const sharedViews=new Map();
     for (const [parameter, binding] of plan.bindings) {
       if (binding.source.kind !== 'resource' || !binding.source.view) continue;
       const memory = owned.memories.get(binding.source.resource);
       if (!memory || typeof memory.view !== 'function') fail('CUDA_JS_ADAPTER_CAPABILITY', 'allocation', `${parameter} requires the public device-memory view capability`, { classification: 'unsupported-capability' });
       const view = binding.source.view;
-      owned.views.set(parameter, await memory.view({ dtype: view.dtype, byteOffset: view.byteOffsetNumber, elementCount: view.elementCountNumber, access: binding.source.access }));
+      const identity=plan.continuation?JSON.stringify({source:binding.source}):parameter;
+      let handle=sharedViews.get(identity);if(!handle){handle=await memory.view({ dtype: view.dtype, byteOffset: view.byteOffsetNumber, elementCount: view.elementCountNumber, access: binding.source.access });sharedViews.set(identity,handle);}
+      owned.views.set(parameter,handle);
     }
     for (const delivery of plan.deliveries.values()) if (typeof owned.memories.get(delivery.resource)?.readAsync !== 'function') fail('CUDA_JS_ADAPTER_CAPABILITY', 'allocation', `${delivery.id} public asynchronous memory read is unavailable`, { classification: 'unsupported-capability' });
     for (const [id, sideband] of plan.sidebands) owned.mailboxes.set(id, await owned.runtime.createPublicationMailbox({ lanes: [{ name: id, direction: sideband.direction }] }));
+    owned.admission=freeze(preparationRecord(packageIdentity,peer,plan,compiled,localImports));
     return new PreparedExecution(plan, owned);
   } catch (error) {
     if (error instanceof CudaJsRuntimeAdapterError && !owned.runtime) throw error;
-    const allocation = Boolean(owned.function);
+    const allocation = Boolean(owned.function||owned.functions.size);
     const report = await cleanup(owned);
     if (error instanceof CudaJsRuntimeAdapterError) { error.cleanup = freeze(report); throw error; }
     throw wrapped(allocation ? 'CUDA_JS_ADAPTER_ALLOCATION' : 'CUDA_JS_ADAPTER_COMPILE', allocation ? 'allocation' : 'compilation', `CUDA-JS ${allocation ? 'allocation' : 'preparation'} failed`, error, allocation ? 'allocation' : 'compilation', report);

@@ -15,6 +15,7 @@ const RESOURCE_CLASSES = new Set(['request', 'batch', 'input', 'result', 'worksp
 const REPRESENTATION_ROLES = new Set([
   'request-control',
   'batch-control',
+  'collective-control',
   'request-staging',
   'result-staging',
   'tensor-input-staging',

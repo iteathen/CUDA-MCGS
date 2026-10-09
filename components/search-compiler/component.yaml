@@ -90,7 +90,10 @@
       "cuda-mcgs.program-package-profile/0.2.0",
       "cuda-mcgs.search-program/0.2.0",
       "cuda-mcgs.execution-package/0.2.0",
-      "cuda-mcgs.finite-device-search-core/0.1.0"
+      "cuda-mcgs.finite-device-search-core/0.1.0",
+      "cuda-mcgs.cooperative-device-search-core/0.1.0",
+      "cuda-mcgs.resident-device-search-core/0.1.0",
+      "cuda-mcgs.device-continuation/0.1.0"
     ],
     "owns": [
       "canonical normalization implementation",
@@ -98,7 +101,8 @@
       "Search Compiler validation-diagnostic classification",
       "Search Program/Program Package/execution-package implementation projection",
       "candidate explicit artifact/initialization/device-effect/launch binding validation and finite Progress cohort source generation",
-      "Selected finite Graph/Progress Device-JS source generation inside the canonical compiler, with exact normalized Domain/Policy callback and resource bounds"
+      "Selected finite Graph/Progress Device-JS source generation inside the canonical compiler, with exact normalized Domain/Policy callback and resource bounds",
+      "Selected generic resident Graph/Resource/Progress/Output/Session Device-JS generation, producer-owned data profile factories, canonical cold root and live continuation package projection"
     ],
     "persistent_state": [],
     "generated_artifacts": [
@@ -189,7 +193,8 @@
     "allowed_dependencies": [
       "node:crypto",
       "node:fs/promises (testing port only)",
-      "accepted input values supplied by callers"
+      "accepted input values supplied by callers",
+      "node:fs (read-only bundled schema byte identities)"
     ],
     "forbidden_dependencies": [
       "experiments/",

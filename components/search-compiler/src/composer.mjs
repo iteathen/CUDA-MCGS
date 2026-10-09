@@ -98,5 +98,5 @@ export * from './composer-core.mjs';
 
 export const composerConstants = Object.freeze({
   ...core.composerConstants,
-  optionalProfileTemplateFields: Object.freeze(['deviceImports']),
+  optionalProfileTemplateFields: Object.freeze(['deviceImports','continuation','publicRequirementSelections','deviceSourcePartition']),
 });

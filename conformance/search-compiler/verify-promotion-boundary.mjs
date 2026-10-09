@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {assertSelectedSourceBlob} from './selected-source-evolution.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const componentRoot = path.join(root, 'components', 'search-compiler');
@@ -25,7 +26,8 @@ function imports(text) { const out=[]; for (const p of [/\b(?:import|export)\s+(
 assert.equal(await exists(oldRoot), false, 'old Composer experiment path must be absent');
 assert.equal(await exists(componentRoot), true, 'production Search Compiler component is absent');
 assert.equal(await exists(conformanceRoot), true, 'Search Compiler conformance capsule is absent');
-for (const [name, sha] of expected) { const bytes=await readFile(path.join(componentRoot,'src',name)); assert.equal(blob(bytes),sha,`promoted source blob drift: ${name}`); }
+const selectedPackage=JSON.parse(await readFile(path.join(root,'package.json'),'utf8'));
+for (const [name, sha] of expected) { const bytes=await readFile(path.join(componentRoot,'src',name)); assertSelectedSourceBlob(name,sha,blob(bytes),selectedPackage.version); }
 
 for (const file of await walk(path.join(componentRoot, 'src'))) {
   if (!file.endsWith('.mjs')) continue;

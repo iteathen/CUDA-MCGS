@@ -1,6 +1,9 @@
 import * as core from './program-package-core.mjs';
 import { assertNamespacedId } from './foundation.mjs';
 import { assertString, canonicalIdentity, compareRaw, exactKeys, fail } from './validation.mjs';
+import {normalizeDeviceContinuation,projectDeviceContinuation} from './device-continuation.mjs';
+import {normalizePublicRequirementSelections} from './public-requirement-selection.mjs';
+import {normalizeDeviceSourcePartition} from './device-source-partition.mjs';
 
 const DEVICE_IMPORT_SCHEMA = 'cuda-mcgs.device-js-import-declaration/0.1.0';
 const MAX_DEVICE_IMPORTS = 64;
@@ -94,36 +97,54 @@ function normalizeImportDeletion(input, normalizedDeletion, imports) {
 }
 
 export function normalizeProgramPackageProfile(input, inspected, suppliedContext) {
-  if (!Object.hasOwn(input ?? {}, 'deviceImports')) return core.normalizeProgramPackageProfile(input, inspected, suppliedContext);
+  const stripped=structuredClone(input);delete stripped.continuation;delete stripped.publicRequirementSelections;delete stripped.deviceSourcePartition;
+  const selections=result=>{const publicRequirementSelections=normalizePublicRequirementSelections(input?.publicRequirementSelections,result.normalized.publicRequirements),deviceSourcePartition=normalizeDeviceSourcePartition(input?.deviceSourcePartition,result.normalized);if(!publicRequirementSelections&&!deviceSourcePartition)return result;const normalized={...result.normalized,...(publicRequirementSelections?{publicRequirementSelections}:{}),...(deviceSourcePartition?{deviceSourcePartition}:{})};return {...result,normalized,identity:canonicalIdentity(normalized)};};
+  if (!Object.hasOwn(input ?? {}, 'deviceImports')) {
+    const base=core.normalizeProgramPackageProfile(stripped, inspected, suppliedContext);
+    const continuation=normalizeDeviceContinuation(input?.continuation,base.normalized);
+    if(!continuation)return selections(base);
+    const normalized={...base.normalized,continuation};return selections({...base,normalized,identity:canonicalIdentity(normalized)});
+  }
   for (const record of input?.deletion?.records ?? []) {
     if (!Object.hasOwn(record, 'deviceImports')) fail('COMPOSE_DEVICE_IMPORT_DELETION', `${record?.owner ?? '<missing>'} lacks deviceImports deletion ownership`);
   }
-  const base = core.normalizeProgramPackageProfile(stripImportOwnership(input), inspected, suppliedContext);
+  const base = core.normalizeProgramPackageProfile(stripImportOwnership(stripped), inspected, suppliedContext);
   const deviceImports = normalizeDeviceImports(input.deviceImports, base.normalized);
   const deletion = normalizeImportDeletion(input.deletion, base.normalized.deletion, deviceImports);
-  const normalized = { ...base.normalized, deviceImports, deletion };
-  return { normalized, identity: canonicalIdentity(normalized), semanticEngineIdentity: base.semanticEngineIdentity };
+  const continuation=normalizeDeviceContinuation(input?.continuation,base.normalized);
+  const normalized = { ...base.normalized, deviceImports, deletion,...(continuation?{continuation}:{}) };
+  return selections({ normalized, identity: canonicalIdentity(normalized), semanticEngineIdentity: base.semanticEngineIdentity });
 }
 
 export function composeSearchProgram(profileResult) {
   const base = core.composeSearchProgram(profileResult);
   const deviceImports = profileResult?.normalized?.deviceImports;
-  if (!deviceImports) return base;
-  const normalized = { ...base.normalized, deviceImports: structuredClone(deviceImports) };
+  const continuation=profileResult?.normalized?.continuation;
+  const publicRequirementSelections=profileResult?.normalized?.publicRequirementSelections;
+  const deviceSourcePartition=profileResult?.normalized?.deviceSourcePartition;
+  if (!deviceImports&&!continuation&&!publicRequirementSelections&&!deviceSourcePartition) return base;
+  const normalized = { ...base.normalized,...(deviceImports?{deviceImports:structuredClone(deviceImports)}:{}),...(continuation?{continuation:structuredClone(continuation)}:{}),...(publicRequirementSelections?{publicRequirementSelections:structuredClone(publicRequirementSelections)}:{}),...(deviceSourcePartition?{deviceSourcePartition:structuredClone(deviceSourcePartition)}:{}) };
   return { normalized, identity: canonicalIdentity(normalized) };
 }
 
 export function buildExecutionPackage(profileResult, programResult) {
   const base = core.buildExecutionPackage(profileResult, programResult);
   const deviceImports = programResult?.normalized?.deviceImports;
-  if (!deviceImports) return base;
+  const continuation=projectDeviceContinuation(programResult?.normalized?.continuation,programResult.normalized.operations,programResult.normalized.resources);
+  const publicRequirementSelections=programResult?.normalized?.publicRequirementSelections;
+  const deviceSourcePartition=programResult?.normalized?.deviceSourcePartition;
+  if (!deviceImports&&!continuation&&!publicRequirementSelections&&!deviceSourcePartition) return base;
   const normalized = {
     ...base.normalized,
     cudaJsAdapter: {
       ...base.normalized.cudaJsAdapter,
+      ...(continuation?{continuation}:{}),
+      ...(publicRequirementSelections?{publicRequirementSelections:structuredClone(publicRequirementSelections)}:{}),
+      ...(deviceSourcePartition?{deviceSourcePartition:structuredClone(deviceSourcePartition)}:{}),
       searchProgram: {
         ...base.normalized.cudaJsAdapter.searchProgram,
-        deviceImports: structuredClone(deviceImports),
+        ...(deviceSourcePartition?{functions:base.normalized.cudaJsAdapter.searchProgram.functions.map(fn=>({...fn,calls:[...programResult.normalized.functions.find(f=>f.name===fn.name).calls]}))}:{}),
+        ...(deviceImports?{deviceImports:structuredClone(deviceImports)}:{}),
       },
     },
   };

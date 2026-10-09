@@ -1,6 +1,6 @@
 {
   "name": "cuda-mcgs",
-  "version": "0.0.0-dev.0",
+  "version": "0.0.0-dev.1",
   "private": true,
   "description": "Prerelease public library surface for the CUDA-MCGS framework",
   "type": "module",
