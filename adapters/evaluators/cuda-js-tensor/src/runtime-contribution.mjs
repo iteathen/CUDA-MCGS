@@ -59,7 +59,7 @@ function object(value, label) {
 
 function exactOptions(value) {
   object(value, 'runtime options');
-  for (const key of Object.keys(value)) if (!['id'].includes(key)) fail('TENSOR_EVALUATOR_RUNTIME_OPTIONS', `unknown runtime option ${key}`);
+  for (const key of Object.keys(value)) if (!['id','participation','inputEncoder'].includes(key)) fail('TENSOR_EVALUATOR_RUNTIME_OPTIONS', `unknown runtime option ${key}`);
 }
 
 function checkedAdd(left, right, label) {
@@ -656,6 +656,52 @@ function resourcePlan(state, layout) {
   ];
 }
 
+function createCollectiveService(connector,state,layout,metadata){
+  const name='mcgsTensorEvaluatorServiceCollective',control='mcgsEvalCollectiveControl';
+  const service=serviceParameters(connector,layout);
+  const parameters=[service[0],param('expectedSlot','u32'),param('expectedSlotGeneration','u64'),param('expectedRequestGeneration','u64'),param('expectedBatchGeneration','u64'),...service.slice(1),param(control,'ptr<u32>')];
+  const byName=new Map(metadata.map(fn=>[fn.name,fn]));
+  const invoke=fn=>`${fn}(${byName.get(fn).parameters.map(p=>p.name).join(', ')})`;
+  const tensor=`${connector.deviceFunction.name}(itemIndex, ${connector.deviceFunction.parameters.filter(p=>p.name!=='itemIndex').map(p=>p.name).join(', ')})`;
+  const r32=GENERATED_NAMES.requestControl32,b32=GENERATED_NAMES.batchControl32;
+  const source=`
+function ${name}(${parameters.map(p=>p.name).join(', ')}) {
+  let lane=gpu.thread.x();
+  if(lane===gpu.u32(0)){
+    ${control}[gpu.u32(0)]=${invoke(GENERATED_NAMES.prepareItem)};
+    gpu.atomic.storeReleaseDevice(${control},gpu.u32(1),gpu.u32(0));
+    gpu.atomic.storeReleaseDevice(${control},gpu.u32(2),gpu.u32(0));
+  }
+  gpu.barrier.block();
+  if(${control}[gpu.u32(0)]===gpu.u32(0)){
+    let tensorStatus=${tensor};
+    if(tensorStatus!==gpu.u32(0)){gpu.atomic.storeReleaseDevice(${control},gpu.u32(1),gpu.u32(1));}
+    gpu.atomic.add(${control},gpu.u32(2),gpu.u32(1));
+  }
+  gpu.barrier.block();
+  if(lane===gpu.u32(0)){
+    let resultCode=${control}[gpu.u32(0)];
+    if(resultCode===gpu.u32(0)){
+      if(!${invoke(GENERATED_NAMES.batchItemMatches)}){resultCode=${u32(RESULT.stale)};}
+      else if(gpu.atomic.loadAcquireDevice(${r32},gpu.u64(expectedSlot)+${u64(state.requestControl32.cancelRequested)})!==gpu.u32(0)){
+        gpu.atomic.storeReleaseDevice(${b32},gpu.u64(itemIndex)+${u64(state.batchControl32.itemStatus)},${u32(ITEM.cancelled)});resultCode=${u32(RESULT.cancelled)};
+      }else if(gpu.atomic.loadAcquireDevice(${control},gpu.u32(1))!==gpu.u32(0)||gpu.atomic.loadAcquireDevice(${control},gpu.u32(2))!==gpu.u32(32)){
+        gpu.atomic.storeReleaseDevice(${b32},gpu.u64(itemIndex)+${u64(state.batchControl32.itemStatus)},${u32(ITEM.failed)});resultCode=${u32(RESULT.failed)};
+      }else{
+        gpu.atomic.storeReleaseDevice(${b32},gpu.u64(itemIndex)+${u64(state.batchControl32.itemStatus)},${u32(ITEM.computed)});
+        resultCode=${invoke(GENERATED_NAMES.scatterItem)};
+      }
+    }
+    if(resultCode===${u32(RESULT.ok)}||resultCode===${u32(RESULT.failed)}||resultCode===${u32(RESULT.cancelled)}){resultCode=${invoke(GENERATED_NAMES.publishItem)};}
+    ${control}[gpu.u32(0)]=resultCode;
+  }
+  gpu.barrier.block();
+  return ${control}[gpu.u32(0)];
+}
+`;
+  return {source,function:{...deviceFunction(name,parameters,'u32',[GENERATED_NAMES.prepareItem,GENERATED_NAMES.batchItemMatches,connector.deviceFunction.name,GENERATED_NAMES.scatterItem,GENERATED_NAMES.publishItem]),participation:{kind:'collective-block',blockSize:32},launchConstraint:{grid:['1','1','1'],block:['32','1','1']}},resource:{id:'runtime.collective-control',resourceKey:'tensor-runtime-collective-control',representationRole:'collective-control',parameterName:control,dtype:'u32',dtypeWidth:4,access:'read-write',resourceClass:'batch',deviceEffects:['atomic-add-relaxed-device','atomic-load-acquire-device','atomic-store-release-device'],pressureStatus:'evaluator-internal-failure',resourceAccess:['read','write','atomic'],elementCount:3,byteLength:12,alignmentBytes:4,initialization:'zero-before-ignition'}};
+}
+
 export function createTensorEvaluatorRuntimeContribution(connector, options = {}) {
   object(connector, 'Tensor evaluator connector');
   exactOptions(options);
@@ -663,6 +709,10 @@ export function createTensorEvaluatorRuntimeContribution(connector, options = {}
     fail('TENSOR_EVALUATOR_RUNTIME_CONNECTOR', 'runtime contribution requires the admitted public Tensor evaluator connector');
   }
   const id = options.id ?? 'evaluator.tensor-device-runtime';
+  const collective=connector.tensor.participation?.kind==='collective-block';
+  if(collective){
+    if(options.participation?.kind!=='collective-block'||options.participation.blockSize!==32||Object.keys(options.participation).length!==2||connector.requestCapacity!==1)fail('TENSOR_EVALUATOR_RUNTIME_PARTICIPATION','first uniform block32 realization requires explicit participation and exactly one active request; larger Tensor storage may serve a partial batch');
+  }else if(options.participation!==undefined)fail('TENSOR_EVALUATOR_RUNTIME_PARTICIPATION','collective execution requires a collective Tensor callable');
   namespacedId(id, 'runtime contribution id');
   const requestCapacity = connector.requestCapacity;
   const itemCapacity = connector.tensor.itemCapacity;
@@ -672,9 +722,36 @@ export function createTensorEvaluatorRuntimeContribution(connector, options = {}
   const layout = normalizeTensorLayout(connector);
   assertGeneratedNameSafety(connector, layout);
   const state = stateLayouts(requestCapacity, itemCapacity);
-  const source = generateSource(connector, state, layout);
-  const functions = functionMetadata(connector, layout);
+  let source = generateSource(connector, state, layout);
+  let functions = functionMetadata(connector, layout);
   const resources = resourcePlan(state, layout);
+  let collectiveService;
+  if(collective){
+    const generated=createCollectiveService(connector,state,layout,functions);
+    // Scalar service/execute cannot safely invoke an opaque collective Tensor body.
+    for(const name of [GENERATED_NAMES.executeItem,GENERATED_NAMES.serviceItem]){
+      const start=source.indexOf(`function ${name}(`);if(start>=0){let end=source.indexOf('\nfunction ',start+1);if(end<0)end=source.length;source=source.slice(0,start)+source.slice(end);}
+    }
+    source+=generated.source;functions=functions.filter(f=>![GENERATED_NAMES.executeItem,GENERATED_NAMES.serviceItem].includes(f.name));functions.push(generated.function);resources.push(generated.resource);collectiveService=generated.function.name;
+  }
+  let inputEncoder;
+  if(options.inputEncoder!==undefined){
+    inputEncoder=object(options.inputEncoder,'input encoder');
+    if(Object.keys(inputEncoder).sort().join(',')!=='entryPoint,externalFunctions,functions,source'||typeof inputEncoder.source!=='string'||!inputEncoder.source.length||!Array.isArray(inputEncoder.functions)||!inputEncoder.functions.length||!Array.isArray(inputEncoder.externalFunctions))fail('TENSOR_EVALUATOR_RUNTIME_ENCODER','encoder requires exact source, typed functions, entryPoint and external references');
+    const existing=new Set(functions.map(f=>f.name)),local=new Set(inputEncoder.functions.map(f=>f.name));
+    if(local.size!==inputEncoder.functions.length||[...local].some(name=>existing.has(name)))fail('TENSOR_EVALUATOR_RUNTIME_ENCODER','encoder symbols collide with lifecycle source');
+    const foreign=new Set();
+    for(const reference of inputEncoder.externalFunctions){
+      if(!reference||Object.keys(reference).sort().join(',')!=='name,ownerIdentity,ownerProfile,parameters,returns'||!reference.ownerIdentity||reference.ownerIdentity.algorithm!=='sha256'||!/^[0-9a-f]{64}$/.test(reference.ownerIdentity.sha256)||!Array.isArray(reference.parameters)||typeof reference.returns!=='string')fail('TENSOR_EVALUATOR_RUNTIME_ENCODER','external callable requires typed selected-owner identity reference');
+      identifier(reference.name,'external callable');namespacedId(reference.ownerProfile,'external callable owner');if(foreign.has(reference.name)||local.has(reference.name)||existing.has(reference.name))fail('TENSOR_EVALUATOR_RUNTIME_ENCODER','duplicate external callable reference');foreign.add(reference.name);
+    }
+    for(const fn of inputEncoder.functions){
+      identifier(fn.name,'encoder callable');if(fn.kind!=='device'||!Array.isArray(fn.parameters)||!Array.isArray(fn.calls)||typeof fn.returns!=='string'||fn.calls.some(call=>!local.has(call)&&!foreign.has(call)))fail('TENSOR_EVALUATOR_RUNTIME_ENCODER','encoder requires typed callable and exact declared selected-owner calls');
+    }
+    const entry=inputEncoder.functions.find(f=>f.name===inputEncoder.entryPoint),prefix=['ptr<u32>','u32','ptr<u32>','u32','u32','ptr<f32>','u32'];
+    if(!entry||entry.returns!=='u32'||entry.parameters.length<prefix.length||prefix.some((type,i)=>entry.parameters[i].type!==type))fail('TENSOR_EVALUATOR_RUNTIME_ENCODER','encoder entry requires the selected protected state/action/f32 staging ABI');
+    source+='\n'+inputEncoder.source;functions.push(...inputEncoder.functions);
+  }
   const tensorBindings = layout.tensorParameters.map((entry) => {
     const external = entry.role === 'input' && !entry.itemVarying;
     const resourceClass = external ? null : (entry.role === 'input' ? 'input' : (entry.role === 'output' ? 'result' : 'workspace'));
@@ -704,12 +781,12 @@ export function createTensorEvaluatorRuntimeContribution(connector, options = {}
   const workClasses = {
     encode: {
       owner: 'evaluator-profile-and-search-program',
-      functions: [],
+      functions: inputEncoder?[inputEncoder.entryPoint]:[],
       handoff: 'populate-request-input-partitions-before-admit-release',
     },
     admit: { owner: id, functions: [GENERATED_NAMES.admit] },
     batch: { owner: id, functions: [GENERATED_NAMES.formBatch] },
-    execute: { owner: id, functions: [GENERATED_NAMES.prepareItem, GENERATED_NAMES.executeItem] },
+    execute: { owner: id, functions: [GENERATED_NAMES.prepareItem, collectiveService??GENERATED_NAMES.executeItem] },
     scatter: { owner: id, functions: [GENERATED_NAMES.scatterItem] },
     publish: { owner: id, functions: [GENERATED_NAMES.publishItem] },
   };
@@ -729,6 +806,7 @@ export function createTensorEvaluatorRuntimeContribution(connector, options = {}
       partialBatch: 'immediate-when-any-queued-request-is-serviced',
       itemCapacity,
       requestCapacity,
+      ...(collective?{participation:options.participation,maxActiveItems:1}:{}),
     },
     staleSafety: {
       token: ['itemIndex', 'slot', 'slotGeneration', 'requestGeneration', 'batchGeneration'],
@@ -756,7 +834,8 @@ export function createTensorEvaluatorRuntimeContribution(connector, options = {}
     device: {
       source,
       functions,
-      serviceProtocol: { contract: 'cuda-mcgs.evaluator-finite-cohort-service/0.1.0', formBatch: GENERATED_NAMES.formBatch, serviceItem: GENERATED_NAMES.serviceItem, cancelPending: GENERATED_NAMES.cancelPending, quiescent: GENERATED_NAMES.quiescent },
+      ...(inputEncoder?{externalFunctions:inputEncoder.externalFunctions}:{}),
+      serviceProtocol: { contract: collective?'cuda-mcgs.evaluator-collective-item-service/0.1.0':'cuda-mcgs.evaluator-finite-cohort-service/0.1.0', formBatch: GENERATED_NAMES.formBatch, serviceItem: collectiveService??GENERATED_NAMES.serviceItem, cancelPending: GENERATED_NAMES.cancelPending, quiescent: GENERATED_NAMES.quiescent,...(collective?{participation:options.participation,launchConstraint:{grid:['1','1','1'],block:['32','1','1']}}:{}) },
       importIdentity: connector.deviceImportIdentity,
       createDeviceImport: connector.createDeviceImport,
       workClasses,

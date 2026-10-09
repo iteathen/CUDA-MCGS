@@ -98,8 +98,14 @@ for (const [code, mutate] of [
   ['COMPOSE_DEVICE_EFFECT', (value) => { value.operations[0].bindings.find(({ source }) => source.deviceEffects).source.deviceEffects = ['unknown']; }],
   ['COMPOSE_DEVICE_EFFECT', (value) => { value.operations[0].bindings.find(({ source }) => source.deviceEffects).source.access = 'read'; }],
   ['COMPOSE_OPERATION_BINDING', (value) => { value.operations[0].bindings.pop(); }],
-  ['COMPOSE_LAUNCH_CONSTRAINT', (value) => { value.operations[0].grid[0] = '2'; }],
-  ['COMPOSE_LAUNCH_CONSTRAINT', (value) => { value.operations[0].block[1] = '2'; }],
+  ['COMPOSE_LAUNCH_CONSTRAINT', (value) => {
+    value.functions.find(({ name }) => name === entry.name).launchConstraint = structuredClone(service.function.launchConstraint);
+    value.operations[0].grid[0] = '2';
+  }],
+  ['COMPOSE_LAUNCH_CONSTRAINT', (value) => {
+    value.functions.find(({ name }) => name === entry.name).launchConstraint = structuredClone(service.function.launchConstraint);
+    value.operations[0].block[1] = '2';
+  }],
   ['COMPOSE_ARTIFACT_MUTATION', (value) => {
     const shared = value.operations[0].bindings.find(({ parameter }) => parameter === 'weights').source;
     const writer = value.operations[0].bindings.find(({ parameter }) => parameter === 'scores').source;
@@ -109,6 +115,11 @@ for (const [code, mutate] of [
   const mutated = structuredClone(input); mutate(mutated);
   assert.throws(() => normalizeProgramPackageProfile(mutated, owners.inspected, built.context), { code });
 }
+// A declaration unreachable from this no-service entry does not constrain it.
+// The preceding falsifiers explicitly select the constraint on the entry itself.
+const unreachableConstraint = structuredClone(input);
+unreachableConstraint.operations[0].grid[0] = '2';
+assert.doesNotThrow(() => normalizeProgramPackageProfile(unreachableConstraint, owners.inspected, built.context));
 assert(Object.isFrozen(service.function.parameters[0]) && Object.isFrozen(pointers.bindings[0].source.view));
 // Source/effect meaning is retained in identity, without altering unrelated owner
 // contributions. The established deletion capsule proves evaluator absence.

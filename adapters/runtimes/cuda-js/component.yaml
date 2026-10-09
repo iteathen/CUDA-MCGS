@@ -25,7 +25,7 @@
       "docs/development/2026-09-04-cuda-js-runtime-adapter-125-assessment-and-plan.md"
     ],
     "design": {
-      "owned_invariant": "One fail-closed public-only translation path realizes an accepted v0 execution package through the exact injected CUDA-JS peer while preserving MCGS semantic ownership and lower CUDA-JS lifecycle/failure truth.",
+      "owned_invariant": "One fail-closed public-only translation path realizes an accepted ordinary operation or explicitly declared continuation child through the exact injected CUDA-JS peer while preserving MCGS semantic ownership and lower CUDA-JS lifecycle/failure truth.",
       "intended_equivalence_class": [
         "product-neutral accepted CUDA-MCGS execution packages",
         "different removable domain/policy/evaluator selections that produce the same accepted runtime boundary",
@@ -89,11 +89,14 @@
         "lower provider/compiler/resource/operation lifecycle remains CUDA-JS",
         "native exact-pair evidence remains CUDA-JS #32"
       ],
-      "simplest_sufficient_total_system": "Admit one accepted v0 operation, compile/load/resolve/allocate/mailbox through injected public CUDA-JS bricks, bind explicit runtime inputs, submit once, expose bounded control/completion and close owned children before the runtime."
+      "simplest_sufficient_total_system": "Admit the selected ordinary or finite continuation profile, mechanically compose public CUDA-JS resources, submit the internal search once, expose only declared bounded external roles and delivery, and close owned children before the runtime."
     },
     "public_contracts": [
       "cuda-mcgs.execution-package/0.2.0",
-      "cuda-mcgs.cuda-js-adapter-requirements/0.2.0"
+      "cuda-mcgs.cuda-js-adapter-requirements/0.2.0",
+      "cuda-mcgs.device-continuation/0.1.0",
+      "cuda-mcgs.device-source-partition/0.1.0",
+      "cuda-mcgs.cuda-js-execution-description/0.1.0"
     ],
     "owns": [
       "execution-package to public CUDA-JS translation implementation",
@@ -111,6 +114,7 @@
       "authoritative_oracles": [
         "accepted CUDA-MCGS execution-package requirements",
         "exact public CUDA-JS alpha.18 API/compatibility contract",
+        "additive public CUDA-JS alpha.22 continuation capability and canonical cuda-mcgs.device-continuation/0.1.0 declaration",
         "docs/development/2026-09-04-cuda-js-runtime-adapter-125-assessment-and-plan.md"
       ],
       "coverage_map_location": [
@@ -170,7 +174,7 @@
       ],
       "steady_state_ownership": [
         "one prepared execution owns only the public lower objects it assembled",
-        "one direct submitted operation; no adapter scheduler",
+        "one direct ordinary operation or one declared finite continuation ignition after bounded cold initialization; no adapter scheduler",
         "terminal delivery may read only explicitly declared Output-owned package ranges after completion; no arbitrary resident-memory read surface"
       ],
       "cancellation_and_failure": [
@@ -224,13 +228,17 @@
     ],
     "release": {
       "unit": "monorepo",
-      "compatibility": "Pre-1.0 fail-closed exact-peer adapter surface. Current portable qualification targets CUDA-JS 0.1.0-alpha.18/API schema 1 only; widening requires reassessment.",
+      "compatibility": "Pre-1.0 fail-closed exact-peer adapter surface. Historical ordinary fixtures retain their original peer identities. The additive continuation candidate requires the public alpha.22 continuation capability and bounds; portable checks do not qualify physical resident search or duration.",
       "distribution": "internal",
       "artifact_and_test_evidence_retention_cleanup": "No separate binary/native artifact. Portable conformance is reproducible; exact native compatible-pair evidence is retained by its lower owner rather than this component."
     },
     "owner": "CUDA-MCGS framework",
     "notes": [
       "#125 v0 admits exactly one operation with maxPending=1 and uses direct public CudaFunction.submit because accepted mailbox arguments are not a current prepared-DAG binding type.",
+      "The additive continuation child mechanically submits the canonical finite DAG once and admits only declared bounded external operations; its generic counter physical capsule has no resident-search semantic or duration authority.",
+      "Canonical cold initializers close and publish checked readiness before active ignition; shared exact declarations reuse named DAG bindings and consumer-owned requirement-selection documents bind the complete injected public compatibility metadata.",
+      "The declared source partition preserves semantic source ownership and compiles bounded units through public compileDeviceLibrary/imports; library-dependent syntax admission occurs after compiler runtime opening and before resident allocation.",
+      "The read-only execution description records actual preparation artifacts and bounded public lower facts; initialization readiness returns only copied declared cold results and retains canonical owner field meaning.",
       "The adapter never passes alignment to allocateDevice; alignment is a fail-closed compatibility admission fact only.",
       "SPEC-0005 terminal host-delivery projection adds one semantic delivery id mapped to exact public D2H bytes only after terminal completion; arbitrary resource reads remain unavailable."
     ]

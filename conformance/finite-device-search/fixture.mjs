@@ -79,8 +79,8 @@ export const policyFunctions = [
 policyFunctions.find(f=>f.name==='fpFrontier').participation={kind:'controller-only',blockSize:1};
 policyFunctions.find(f=>f.name==='fpFrontier').launchConstraint={grid:['1','1','1'],block:['1','1','1']};
 
-export function fixtureContext({ nodes=16, edges=32, depth=8, fault='', slow='',graphSource,progressSource }={}) {
-  let selectedPolicySource=policySource;
+export function fixtureContext({ nodes=16, edges=32, depth=8, fault='', slow='',graphSource,progressSource,policyModule }={}) {
+  let selectedPolicySource=policyModule?.source??policySource;
   if(fault==='prepare')selectedPolicySource=selectedPolicySource.replace('function fpPrepare(p,b,work) {return gpu.u32(0);}','function fpPrepare(p,b,work) {return gpu.u32(1);}');
   if(fault==='backup')selectedPolicySource=selectedPolicySource.replace('function fpApply(p,nb,eb,f,nfb,efb,v,vb,s,sb,work) {','function fpApply(p,nb,eb,f,nfb,efb,v,vb,s,sb,work) { if(nb===gpu.u32(0)){return gpu.u32(1);}');
   if(fault==='reserve')selectedPolicySource=selectedPolicySource.replace('function fpReserve(p,b,work) {','function fpReserve(p,b,work) { return gpu.u32(1);');
@@ -117,8 +117,9 @@ export function fixtureContext({ nodes=16, edges=32, depth=8, fault='', slow='',
   if(progressSource)progressInput.programContribution.sourceIdentity=identity(progressSource);
   const progress=withSchema(compiler.normalizeProgressProfile(progressInput,authority,resource,[domain,graph,policy]),'progress');
   const output=withSchema(compiler.normalizeOutputProfile(buildOutputProfile('finite-search',authority,resource,progress),authority,resource,progress),'output');
-  const sourceBundles=[{ownerProfile:domain.normalized.id,source:domainSource,functions:domainFunctions},{ownerProfile:policy.normalized.id,source:selectedPolicySource,functions:policyFunctions}];
+  const sourceBundles=[{ownerProfile:domain.normalized.id,source:domainSource,functions:domainFunctions},{ownerProfile:policy.normalized.id,source:selectedPolicySource,functions:policyModule?.functions??policyFunctions}];
   const slots={validateRoot:['domain','validate-root','fdValid'],key:['domain','identity-key','fdKey'],equalState:['domain','equal-state','fdEqual'],actions:['domain','produce-actions','fdActions'],actionValid:['domain','validate-action','fdActionValid'],actionEqual:['domain','equal-action','fdActionEqual'],transition:['domain','apply-transition','fdTransition'],terminal:['domain','terminal-outcome','fdTerminal'],relation:['domain','classify-path-relation','fdRelation'],initialize:['policy','initialize-policy-records','fpInit'],select:['policy','select-next','fpSelect'],reserve:['policy','reserve-in-flight','fpReserve'],release:['policy','release-in-flight','fpRelease'],terminalValue:['policy','map-terminal-outcome','fpTerminal'],frontier:['policy','classify-path-response','fpFrontier'],valueValid:['policy','map-terminal-outcome','fpValueValid'],prepare:['policy','prepare-backup','fpPrepare'],apply:['policy','apply-backup-step','fpApply'],complete:['policy','complete-backup','fpComplete'],decision:['policy','select-next','fpDecision']};
   const hooks=Object.fromEntries(Object.entries(slots).map(([slot,[owner,port,fn]])=>[slot,{ownerProfile:({domain,policy})[owner].normalized.id,port,function:fn}]));
+  if(policyModule){delete hooks.initialize;for(const [slot,fn]of Object.entries(policyModule.hooks))hooks[slot]={ownerProfile:policy.normalized.id,port:policyModule.contract.hooks[slot].port,function:fn};}
   return {authority,domain,graph,policy,resource,progress,output,sourceBundles,hooks};
 }

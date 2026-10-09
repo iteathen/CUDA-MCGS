@@ -25,7 +25,12 @@ function digest(source) { return {algorithm:'sha256',sha256:createHash('sha256')
 function freeze(x){if(x&&typeof x==='object'){for(const child of Object.values(x))freeze(child);Object.freeze(x);}return x;}
 
 export function createFiniteDeviceSearchCore(context,options) {
-  const optional=['maxActions','externalParameters','frontierParticipation'];
+  return createSelectedDeviceSearchCore(context,options,{abi:ABI,ports:PORTS,participation:{kind:'controller-only',blockSize:1},launch:launchConstraint,headerWords:32,contract:'cuda-mcgs.finite-device-search-core/0.1.0',generate});
+}
+
+// Private compiler child port: shared cold owner/bounds normalization, one selected generator.
+export function createSelectedDeviceSearchCore(context,options,selected) {
+  const optional=['maxActions','externalParameters','frontierParticipation',...(selected.optionalOptions??[])];
   exactKeys(options,['name','maxIterations',...optional.filter(key=>Object.hasOwn(options,key))], 'FINITE_CORE_OPTIONS','finite core options');
   if(!identifier.test(options.name))fail('FINITE_CORE_NAME','finite core name must be an identifier');
   const authority=normalizeAcceptedContractAuthority(context.authority);
@@ -42,9 +47,9 @@ export function createFiniteDeviceSearchCore(context,options) {
   if(!work||BigInt(maxIterations)>BigInt(work.bounds.maxAdmitted))fail('FINITE_CORE_PROGRESS','iterations exceed selected Progress admission');
   const maxActions=integer(options.maxActions??Math.min(Number(work.bounds.maxProducedPerStep),Number(p.selection.maxCandidates)),'actions');
   if(BigInt(maxActions)>BigInt(p.selection.maxCandidates)||BigInt(maxActions)>BigInt(work.bounds.maxProducedPerStep))fail('FINITE_CORE_PROGRESS','expansion fanout exceeds selected owners');
-  const participation=options.frontierParticipation??{kind:'controller-only',blockSize:1};
+  const participation=options.frontierParticipation??selected.participation;
   exactKeys(participation,['kind','blockSize'],'FINITE_CORE_PARTICIPATION','frontier participation');
-  if(participation.kind!=='controller-only'||participation.blockSize!==1)fail('FINITE_CORE_PARTICIPATION','collective frontier requires a separately qualified uniform-stage profile; no controller-only fallback');
+  if(participation.kind!==selected.participation.kind||participation.blockSize!==selected.participation.blockSize)fail('FINITE_CORE_PARTICIPATION','collective frontier requires its exact separately qualified uniform-stage profile; no controller-only fallback');
   const byRole=new Map(g.objectKinds.map(x=>[x.id,x.role]));
   const layoutFor=role=>g.layouts.find(x=>byRole.get(x.objectKind)===role);
   const valueWords=role=>words(d.valueSchemas.find(x=>x.semanticRole===role)?.maxEncodedBytes??0,`${role} words`);
@@ -54,14 +59,15 @@ export function createFiniteDeviceSearchCore(context,options) {
   const l={nodeCapacity,edgeCapacity,pathDepth,maxIterations,maxActions,stateWords:valueWords('state'),actionWords:valueWords('action'),outcomeWords:valueWords('terminal-outcome'),nodeU32Words:record('node','integer'),edgeU32Words:record('edge','integer'),nodeF32Words:record('node','floating'),edgeF32Words:record('edge','floating'),valueWords:integer(p.value.coordinates?.length,'value width')};
   integer(maxIterations*pathDepth*maxActions,'finite diagnostic/callback event bound');
   if(p.value.numeric?.representation!=='floating'||p.value.numeric?.storageBits!=='32')fail('FINITE_CORE_VALUE','first selected value family requires explicit f32 coordinates');
-  l.nodeMeta=32;l.edgeMeta=l.nodeMeta+nodeCapacity*8;l.pathMeta=l.edgeMeta+edgeCapacity*8;l.metaWords=l.pathMeta+pathDepth*5;
+  l.nodeMeta=selected.headerWords;l.edgeMeta=l.nodeMeta+nodeCapacity*8;l.pathMeta=l.edgeMeta+edgeCapacity*8;l.metaWords=l.pathMeta+pathDepth*5;
   l.edgePolicyU32=nodeCapacity*l.nodeU32Words;l.policyU32Words=l.edgePolicyU32+edgeCapacity*l.edgeU32Words;
   l.edgePolicyF32=nodeCapacity*l.nodeF32Words;l.policyF32Words=l.edgePolicyF32+edgeCapacity*l.edgeF32Words;
   l.stagedStates=maxActions*l.actionWords;l.targets=l.stagedStates+maxActions*l.stateWords;l.newFlags=l.targets+maxActions;l.outcome=l.newFlags+maxActions;l.scratchU32Words=Math.max(l.outcome+l.outcomeWords,maxActions*l.edgeU32Words+maxActions);
   l.valueBase=maxActions*l.edgeF32Words;l.scratchF32Words=l.valueBase+l.valueWords;
+  selected.augmentLayout?.(l,options,context);
   for(const [key,value]of Object.entries(l))integer(value,key);
   integer(nodeCapacity*l.stateWords,'resident state indexing');integer(edgeCapacity*l.actionWords,'resident action indexing');
-  const required={graphBytes:(l.metaWords+nodeCapacity*l.stateWords+edgeCapacity*l.actionWords+l.scratchU32Words)*4,policyBytes:(l.policyU32Words+l.policyF32Words+l.scratchF32Words)*4,outputBytes:(32+l.actionWords)*4};
+  const required={graphBytes:(l.metaWords+nodeCapacity*l.stateWords+edgeCapacity*l.actionWords+l.scratchU32Words+(l.extraGraphWords??0))*4,policyBytes:(l.policyU32Words+l.policyF32Words+l.scratchF32Words+(l.extraPolicyWords??0))*4,outputBytes:(32+l.actionWords)*4};
   const byteCapacity=profile=>r.classes.filter(x=>x.unit==='bytes'&&r.contributors.find(c=>c.id===x.contributor)?.profile.id===profile).reduce((n,x)=>n+BigInt(x.formula.maximumUnits),0n);
   if(BigInt(required.graphBytes)>byteCapacity(g.id)||BigInt(required.policyBytes)>byteCapacity(p.id)||BigInt(required.outputBytes)>BigInt(context.output.normalized.terminalEnvelope.maxBytes))fail('FINITE_CORE_RESOURCE','generated finite ranges exceed selected Resource/Output facts');
   const bundles=new Map();
@@ -72,44 +78,52 @@ export function createFiniteDeviceSearchCore(context,options) {
   for(const parameter of external){exactKeys(parameter,['name','type','ownerProfile','resourceClass'],'FINITE_CORE_EXTERNAL','external parameter');if(!identifier.test(parameter.name)||!/^ptr<(u32|i32|f32)>$/.test(parameter.type)||!profiles.has(parameter.ownerProfile)||!r.classes.some(c=>c.id===parameter.resourceClass&&r.contributors.find(o=>o.id===c.contributor)?.profile.id===parameter.ownerProfile))fail('FINITE_CORE_EXTERNAL','external capability must be typed and owned by a selected resource contributor');}
   if(new Set(external.map(x=>x.name)).size!==external.length||external.some(x=>reservedNames.has(x.name)||x.name===options.name||x.name.startsWith(options.name+'_')))fail('FINITE_CORE_EXTERNAL','duplicate or reserved external parameter');
   const h={};const calls=[];const callbackMetadata=[];
-  for(const [slot,[types,returns]]of Object.entries(ABI)){
+  for(const [slot,[types,returns]]of Object.entries(selected.abi)){
     const binding=context.hooks?.[slot],owner=profiles.get(binding?.ownerProfile),bundle=bundles.get(binding?.ownerProfile);
     const descriptor=bundle?.functions.find(f=>f.name===binding?.function);
-    const expectedOwner=Object.keys(ABI).indexOf(slot)<9?context.domain.normalized.id:context.policy.normalized.id;
-    if(!owner||binding.ownerProfile!==expectedOwner||!bundle||binding.port!==PORTS[slot]||!owner.normalized.ports.some(port=>port.id===binding.port)||!descriptor||descriptor.kind!=='device'||descriptor.returns!==returns||descriptor.parameters.length<types.length||types.some((type,i)=>descriptor.parameters[i]?.type!==type))fail('FINITE_CORE_HOOK',`${slot} requires a typed selected-owner public port reference`);
-    if(slot==='frontier'&&(JSON.stringify(descriptor.participation)!==JSON.stringify(participation)||JSON.stringify(descriptor.launchConstraint)!==JSON.stringify(launchConstraint)))fail('FINITE_CORE_PARTICIPATION','frontier callback must declare the exact selected participation and launch constraint');
+    const expectedOwner=Object.keys(ABI).slice(0,9).includes(slot)?context.domain.normalized.id:context.policy.normalized.id;
+    if(!owner||binding.ownerProfile!==expectedOwner||!bundle||binding.port!==selected.ports[slot]||!owner.normalized.ports.some(port=>port.id===binding.port)||!descriptor||descriptor.kind!=='device'||descriptor.returns!==returns||descriptor.parameters.length<types.length||types.some((type,i)=>descriptor.parameters[i]?.type!==type))fail('FINITE_CORE_HOOK',`${slot} requires a typed selected-owner public port reference`);
+    if(slot==='frontier'&&(JSON.stringify(descriptor.participation)!==JSON.stringify(participation)||JSON.stringify(descriptor.launchConstraint)!==JSON.stringify(selected.launch)))fail('FINITE_CORE_PARTICIPATION','frontier callback must declare the exact selected participation and launch constraint');
     const extras=descriptor.parameters.slice(types.length);if(extras.some(x=>!external.some(e=>e.name===x.name&&e.type===x.type)))fail('FINITE_CORE_HOOK',`${slot} has unbound typed extra parameters`);
     if(!identifier.test(descriptor.name))fail('FINITE_CORE_HOOK','callback symbol invalid');
-    h[slot]=(...args)=>`${descriptor.name}(${[...args,...extras.map(e=>e.name)].join(', ')})`;calls.push(descriptor.name);callbackMetadata.push({slot,ownerProfile:binding.ownerProfile,port:binding.port,function:descriptor.name,parameters:descriptor.parameters,returns:descriptor.returns,...(slot==='frontier'?{participation,launchConstraint}:{})});
+    h[slot]=(...args)=>`${descriptor.name}(${[...args,...extras.map(e=>e.name)].join(', ')})`;calls.push(descriptor.name);callbackMetadata.push({slot,ownerProfile:binding.ownerProfile,port:binding.port,function:descriptor.name,parameters:descriptor.parameters,returns:descriptor.returns,...(slot==='frontier'?{participation,launchConstraint:selected.launch}:{})});
   }
-  const generated=generate(options.name,l,h,external);
-  const buffers=[['m','u32',l.metaWords,g.id],['s','u32',nodeCapacity*l.stateWords,g.id],['a','u32',edgeCapacity*l.actionWords,g.id],['p','u32',l.policyU32Words,p.id],['f','f32',l.policyF32Words,p.id],['su','u32',l.scratchU32Words,g.id],['sf','f32',l.scratchF32Words,p.id],['out','u32',32+l.actionWords,context.output.normalized.id]].map(([name,elementType,elements,ownerProfile])=>({name,elementType,elements,byteLength:elements*4,ownerProfile,exclusive:true,access:name==='out'?'write':'read-write'}));
+  const generated=selected.generate(options.name,l,h,external,options,context);
+  const buffers=[['m','u32',l.metaWords,g.id],['s','u32',nodeCapacity*l.stateWords,g.id],['a','u32',edgeCapacity*l.actionWords,g.id],['p','u32',l.policyU32Words,p.id],['f','f32',l.policyF32Words,p.id],['su','u32',l.scratchU32Words,g.id],['sf','f32',l.scratchF32Words,p.id],['out','u32',32+l.actionWords,context.output.normalized.id],...(selected.extraBuffers?.(l,context)??[])].map(([name,elementType,elements,ownerProfile])=>({name,elementType,elements,byteLength:elements*4,ownerProfile,exclusive:true,access:name==='out'?'write':'read-write'}));
   const callbackBufferRanges={state:l.stateWords,action:l.actionWords,outcome:l.outcomeWords,nodePolicyU32:l.nodeU32Words,edgePolicyU32:l.edgeU32Words,nodePolicyF32:l.nodeF32Words,edgePolicyF32:l.edgeF32Words,value:l.valueWords,candidateU32:maxActions*l.edgeU32Words,candidateF32:maxActions*l.edgeF32Words,transitionDestination:l.stateWords,actionProduction:maxActions*l.actionWords};
-  const normalized={contract:'cuda-mcgs.finite-device-search-core/0.1.0',authority:authority.identities.contractSet.sha256,owners:owners.map(owner=>({id:context[owner].normalized.id,identity:context[owner].identity.sha256})),hookBindings:context.hooks,callbackMetadata,callbackBufferRanges,buffers,layout:l,frontierParticipation:participation,externalParameters:external,sourceIdentity:digest(generated.source)};
+  const normalized={contract:selected.contract,authority:authority.identities.contractSet.sha256,owners:owners.map(owner=>({id:context[owner].normalized.id,identity:context[owner].identity.sha256})),hookBindings:context.hooks,callbackMetadata,callbackBufferRanges,buffers,layout:l,frontierParticipation:participation,externalParameters:external,sourceIdentity:digest(generated.source)};
   const programContributions=contributions(generated,context,options.name);
-  return freeze({...generated,programContributions,buffers,callbackBufferRanges,layout:l,required,normalized,identity:canonicalIdentity(normalized),sourceIdentity:normalized.sourceIdentity,launch:launchConstraint,requiredCudaHelpers:['gpu.thread.globalX','gpu.mailbox.loadAcquireSystem','gpu.atomic.loadAcquireDevice','gpu.atomic.storeReleaseDevice'],compileRequirements:{headerProfile:'cuda-cccl'},selectedCallbacks:[...new Set(calls)],ownerProfiles:{graph:g.id,progress:progress.id,policy:p.id},preconditions:['exact-admitted-buffer-extents','one-controller-selected-participation','immutable-focus-per-operation','one-invocation-per-finite-operation-profile','no-reclamation','no-host-active-progress']});
+  return freeze({...generated,programContributions,buffers,callbackBufferRanges,layout:l,required,normalized,identity:canonicalIdentity(normalized),sourceIdentity:normalized.sourceIdentity,launch:selected.launch,requiredCudaHelpers:['gpu.thread.globalX','gpu.mailbox.loadAcquireSystem','gpu.atomic.loadAcquireDevice','gpu.atomic.storeReleaseDevice'],compileRequirements:{headerProfile:'cuda-cccl'},selectedCallbacks:[...new Set(calls)],ownerProfiles:{graph:g.id,progress:progress.id,policy:p.id},preconditions:['exact-admitted-buffer-extents',...(selected.preconditions??['one-controller-selected-participation','immutable-focus-per-operation','one-invocation-per-finite-operation-profile']),'no-reclamation','no-host-active-progress']});
 }
 
 function contributions(generated,context,name){
   const split=generated.source.indexOf(`function ${name}(`);
-  const fragments=[generated.source.slice(0,split),generated.source.slice(split)];
-  const sets=[generated.functions.slice(0,-1),generated.functions.slice(-1)];
+  const fragments=generated.sourceGroups?.map(g=>g.source)??[generated.source.slice(0,split),generated.source.slice(split)];
+  const sets=generated.sourceGroups?.map(g=>generated.functions.filter(f=>g.names.includes(f.name)))??[generated.functions.slice(0,-1),generated.functions.slice(-1)];
   return sets.map((set,i)=>{
-    const owner=context[i===0?'graph':'progress'].normalized.id,unit=owner+'.finite-source';
+    const ownerKey=generated.sourceGroups?.[i].owner??(i===0?'graph':'progress');
+    const owner=context[ownerKey].normalized.id,unit=owner+'.finite-source';
     const functions=set.map(fn=>{
       const start=fragments[i].indexOf(`function ${fn.name}(`),end=fragments[i].indexOf('\nfunction ',start+1),body=fragments[i].slice(start,end<0?undefined:end);
       const names=[...generated.functions.map(x=>x.name),...Object.values(context.hooks).map(x=>x.function)];
       const calls=[...new Set(names.filter(symbol=>symbol!==fn.name&&body.includes(symbol+'(')))];
       const helpers=[...new Set([...body.matchAll(/gpu\.(?:thread|mailbox|atomic)\.[A-Za-z]+/g)].map(m=>m[0]))];
-      return {name:fn.name,executionRole:'device-callable',parameters:fn.parameters.map(p=>({...p,...(p.type.startsWith('sideband<')?{sidebandRole:'framework-cancellation'}:{})})),returns:fn.returns,sourceUnit:unit,ownerProfile:owner,semanticRole:owner+'.finite-callable',calls,helpers,...(i===1?{launchConstraint}:{})};
+      return {name:fn.name,executionRole:'device-callable',parameters:fn.parameters.map(p=>({...p,...(p.type.startsWith('sideband<')?{sidebandRole:'framework-cancellation'}:{})})),returns:fn.returns,sourceUnit:unit,ownerProfile:owner,semanticRole:owner+'.finite-callable',calls,helpers,...(fn.name===name?{launchConstraint:generated.launchConstraint??launchConstraint}:{})};
     });
     return {ownerProfile:owner,sourceUnit:unit,source:fragments[i],sourceIdentity:digest(fragments[i]),functions};
   });
 }
 
+export function generateSelectedGraphHelpers(name,layout,hooks,external){
+  const generated=generate(name,layout,hooks,external);
+  return {source:generated.source.slice(0,generated.source.indexOf(`function ${name}(`)),functions:generated.functions.slice(0,-1)};
+}
+
 function generate(name,L,H,external){
   const U=x=>`gpu.u32(${x})`,N=slot=>`${name}_${slot}`,ext=external.map(x=>x.name),tail=ext.length?', '+ext.join(', '):'';
   const node=n=>`${U(L.nodeMeta)} + ${n} * ${U(8)}`,edge=e=>`${U(L.edgeMeta)} + ${e} * ${U(8)}`;
+  const initNode=(s,sb,p,pb,f,fb)=>H.initializeNode?H.initializeNode(s,sb,p,pb,f,fb):H.initialize(p,pb,f,fb);
+  const initEdge=(s,sb,a,ab,c,cb,p,pb,f,fb)=>H.initializeEdge?H.initializeEdge(s,sb,a,ab,c,cb,p,pb,f,fb):H.initialize(p,pb,f,fb);
   const source=`
 function ${N('valid')}(m,node,generation,arena) {if(arena!==m[${U(10)}]||node>=m[${U(0)}]){return false;}let b=${node('node')};return gpu.atomic.loadAcquireDevice(m,b)===${U(1)}&&m[b+${U(1)}]===generation;}
 function ${N('lookup')}(m,s,candidate,cb${tail}) {let key=${H.key('candidate','cb')};for(let n=${U(0)};n<m[${U(0)}];n++){let b=${node('n')};if(gpu.atomic.loadAcquireDevice(m,b)===${U(1)}&&m[b+${U(2)}]===key&&${H.equalState('s',`n*${U(L.stateWords)}`,'candidate','cb')}){return n;}}return ${U(4294967295)};}
@@ -133,9 +147,9 @@ function ${N('expand')}(m,s,a,p,f,su,sf,node${tail}) {
   let oldNodes=m[${U(0)}];let oldEdges=m[${U(1)}];
   for(let j=${U(0)};j<count;j++){
     let target=su[${U(L.targets)}+j];let tb=${node('target')};
-    if(su[${U(L.newFlags)}+j]!==${U(0)}){m[tb]=${U(2)};m[tb+${U(1)}]=${U(1)};m[tb+${U(2)}]=${H.key('su',`${U(L.stagedStates)}+j*${U(L.stateWords)}`)};m[tb+${U(3)}]=${U(4294967295)};m[tb+${U(4)}]=${U(0)};m[tb+${U(5)}]=${U(0)};m[tb+${U(6)}]=${U(0)};for(let w=${U(0)};w<${U(L.stateWords)};w++){s[target*${U(L.stateWords)}+w]=su[${U(L.stagedStates)}+j*${U(L.stateWords)}+w];}${H.initialize('p',`target*${U(L.nodeU32Words)}`,'f',`target*${U(L.nodeF32Words)}`)};gpu.atomic.storeReleaseDevice(m,tb,${U(1)});}
+    if(su[${U(L.newFlags)}+j]!==${U(0)}){m[tb]=${U(2)};m[tb+${U(1)}]=${U(1)};m[tb+${U(2)}]=${H.key('su',`${U(L.stagedStates)}+j*${U(L.stateWords)}`)};m[tb+${U(3)}]=${U(4294967295)};m[tb+${U(4)}]=${U(0)};m[tb+${U(5)}]=${U(0)};m[tb+${U(6)}]=${U(0)};for(let w=${U(0)};w<${U(L.stateWords)};w++){s[target*${U(L.stateWords)}+w]=su[${U(L.stagedStates)}+j*${U(L.stateWords)}+w];}${initNode('s',`target*${U(L.stateWords)}`,'p',`target*${U(L.nodeU32Words)}`,'f',`target*${U(L.nodeF32Words)}`)};gpu.atomic.storeReleaseDevice(m,tb,${U(1)});}
     let e=oldEdges+j;let eb=${edge('e')};m[eb]=${U(2)};m[eb+${U(1)}]=node;m[eb+${U(2)}]=m[nb+${U(1)}];m[eb+${U(3)}]=target;m[eb+${U(4)}]=${U(1)};m[eb+${U(5)}]=${U(4294967295)};if(j+${U(1)}<count){m[eb+${U(5)}]=e+${U(1)};}m[eb+${U(7)}]=${U(1)};
-    for(let w=${U(0)};w<${U(L.actionWords)};w++){a[e*${U(L.actionWords)}+w]=su[j*${U(L.actionWords)}+w];}${H.initialize('p',`${U(L.edgePolicyU32)}+e*${U(L.edgeU32Words)}`,'f',`${U(L.edgePolicyF32)}+e*${U(L.edgeF32Words)}`)};gpu.atomic.storeReleaseDevice(m,eb,${U(1)});
+    for(let w=${U(0)};w<${U(L.actionWords)};w++){a[e*${U(L.actionWords)}+w]=su[j*${U(L.actionWords)}+w];}${initEdge('s','sb','a',`e*${U(L.actionWords)}`,'s',`target*${U(L.stateWords)}`,'p',`${U(L.edgePolicyU32)}+e*${U(L.edgeU32Words)}`,'f',`${U(L.edgePolicyF32)}+e*${U(L.edgeF32Words)}`)};gpu.atomic.storeReleaseDevice(m,eb,${U(1)});
   }
   m[${U(0)}]=oldNodes+newCount;m[${U(1)}]=oldEdges+count;m[nb+${U(3)}]=oldEdges;m[nb+${U(4)}]=count;gpu.atomic.storeReleaseDevice(m,nb+${U(5)},${U(1)});m[${U(15)}]=m[${U(15)}]+${U(1)};return ${U(0)};
 }
@@ -144,7 +158,7 @@ function ${name}(m,s,a,p,f,su,sf,out,cancellation,expectedArena,expectedRootGene
   for(let j=${U(0)};j<${U(32+L.actionWords)};j++){out[j]=${U(0)};}
   if(m[${U(10)}]!==expectedArena||m[${U(11)}]!==expectedFocusEpoch||expectedArena===${U(0)}||m[${U(0)}]>${U(L.nodeCapacity)}||m[${U(1)}]>${U(L.edgeCapacity)}||m[${U(9)}]!==${U(0)}||m[${U(7)}]!==${U(0)}){out[${U(0)}]=${U(6)};return;}
   for(let c=${U(3)};c<${U(27)};c++){if(c===${U(3)}||c===${U(4)}||(c>=${U(14)}&&c<=${U(21)})||c===${U(26)}){if(m[c]>${U(4294967294-L.maxIterations*L.pathDepth*L.maxActions)}){out[${U(0)}]=${U(10)};return;}}}
-  if(m[${U(0)}]===${U(0)}){if(expectedRootGeneration!==${U(1)}||m[${U(8)}]!==${U(0)}){out[${U(0)}]=${U(6)};return;}if(!${H.validateRoot('s',U(0))}){out[${U(0)}]=${U(7)};return;}let nb=${U(L.nodeMeta)};m[nb]=${U(2)};m[nb+${U(1)}]=${U(1)};m[nb+${U(2)}]=${H.key('s',U(0))};m[nb+${U(3)}]=${U(4294967295)};m[nb+${U(4)}]=${U(0)};m[nb+${U(5)}]=${U(0)};m[nb+${U(6)}]=${U(0)};${H.initialize('p',U(0),'f',U(0))};gpu.atomic.storeReleaseDevice(m,nb,${U(1)});m[${U(0)}]=${U(1)};}
+  if(m[${U(0)}]===${U(0)}){if(expectedRootGeneration!==${U(1)}||m[${U(8)}]!==${U(0)}){out[${U(0)}]=${U(6)};return;}if(!${H.validateRoot('s',U(0))}){out[${U(0)}]=${U(7)};return;}let nb=${U(L.nodeMeta)};m[nb]=${U(2)};m[nb+${U(1)}]=${U(1)};m[nb+${U(2)}]=${H.key('s',U(0))};m[nb+${U(3)}]=${U(4294967295)};m[nb+${U(4)}]=${U(0)};m[nb+${U(5)}]=${U(0)};m[nb+${U(6)}]=${U(0)};${initNode('s',U(0),'p',U(0),'f',U(0))};gpu.atomic.storeReleaseDevice(m,nb,${U(1)});m[${U(0)}]=${U(1)};}
   let root=m[${U(8)}];if(!${N('valid')}(m,root,expectedRootGeneration,expectedArena)){out[${U(0)}]=${U(6)};return;}
   m[${U(7)}]=${U(1)};let stop=${U(0)};
   for(let iteration=${U(0)};iteration<${U(L.maxIterations)};iteration++){

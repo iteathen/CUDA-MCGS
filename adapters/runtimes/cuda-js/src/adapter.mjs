@@ -96,10 +96,10 @@ function injectingCudaJs(cudaJs, imports) {
   return new Proxy(cudaJs, {
     get(target, property, receiver) {
       if (property === 'inspectDeviceProgram') {
-        return (request) => target.inspectDeviceProgram({ ...request, imports });
+        return (request) => target.inspectDeviceProgram({ ...request, imports: [...(request.imports??[]),...imports] });
       }
       if (property === 'compileDeviceProgram') {
-        return (runtime, request) => target.compileDeviceProgram(runtime, { ...request, imports });
+        return (runtime, request) => target.compileDeviceProgram(runtime, { ...request, imports: [...(request.imports??[]),...imports] });
       }
       return Reflect.get(target, property, receiver);
     },

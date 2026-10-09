@@ -177,7 +177,7 @@ function normalizeParameter(input, functionName, index) {
 }
 
 function normalizeFunction(input, index, context) {
-  exactKeys(input, ['name', 'executionRole', 'parameters', 'returns', 'sourceUnit', 'ownerProfile', 'semanticRole', 'calls', 'helpers', ...(Object.hasOwn(input, 'launchConstraint') ? ['launchConstraint'] : [])], 'COMPOSE_FUNCTION_FIELDS', `function ${index}`);
+  exactKeys(input, ['name', 'executionRole', 'parameters', 'returns', 'sourceUnit', 'ownerProfile', 'semanticRole', 'calls', 'helpers', ...['launchConstraint','executionProfile'].filter(key=>Object.hasOwn(input,key))], 'COMPOSE_FUNCTION_FIELDS', `function ${index}`);
   assertString(input.name, /^[A-Za-z_$][A-Za-z0-9_$]*$/, 'COMPOSE_FUNCTION_NAME', `function ${index} name`);
   const executionRole = assertEnum(input.executionRole, ['runtime-entry', 'device-callable'], 'COMPOSE_FUNCTION_ROLE', `${input.name} executionRole`);
   if (!Array.isArray(input.parameters)) fail('COMPOSE_PARAMETER_COUNT', `${input.name} parameters must be an array`);
@@ -199,7 +199,18 @@ function normalizeFunction(input, index, context) {
     exactKeys(input.launchConstraint, ['grid', 'block'], 'COMPOSE_LAUNCH_CONSTRAINT', 'function launch constraint');
     launchConstraint = { grid: normalizeDim3(input.launchConstraint.grid, 'constraint grid'), block: normalizeDim3(input.launchConstraint.block, 'constraint block') };
   }
-  return { name: input.name, executionRole, parameters, returns: input.returns, sourceUnit: input.sourceUnit, ownerProfile: input.ownerProfile, semanticRole: input.semanticRole, calls, helpers, ...(launchConstraint ? { launchConstraint } : {}) };
+  let executionProfile;
+  if(Object.hasOwn(input,'executionProfile')){
+    if(executionRole!=='runtime-entry'||input.executionProfile!=='device-continuation-v1')fail('COMPOSE_EXECUTION_PROFILE','only runtime entries may select the closed public continuation profile');
+    executionProfile=input.executionProfile;
+  }
+  return { name: input.name, executionRole, parameters, returns: input.returns, sourceUnit: input.sourceUnit, ownerProfile: input.ownerProfile, semanticRole: input.semanticRole, calls, helpers, ...(launchConstraint ? { launchConstraint } : {}),...(executionProfile?{executionProfile}:{}) };
+}
+
+function reachableFunctionNames(entry,byName){
+  const seen=new Set();const pending=[entry];
+  while(pending.length){const name=pending.pop();if(seen.has(name))continue;seen.add(name);pending.push(...byName.get(name).calls);}
+  return [...seen].sort(compareRaw);
 }
 
 function validateCallGraph(functions, maximumDepth) {
@@ -431,7 +442,8 @@ function normalizeOperation(input, index, context) {
   const bindings = input.bindings.map((binding, bindingIndex) => normalizeBinding(binding, input.id, bindingIndex, entryPoint.parameters, context.resourceById, context.sidebandById, context)).sort((left, right) => compareRaw(left.parameter, right.parameter));
   uniqueBy(bindings, 'parameter', 'COMPOSE_OPERATION_BINDING', `${input.id} binding`);
   if (bindings.length !== entryPoint.parameters.length) fail('COMPOSE_OPERATION_BINDING', `${input.id} does not bind every parameter`);
-  for (const fn of context.functionByName.values()) {
+  for (const name of reachableFunctionNames(input.entryPoint,context.functionByName)) {
+    const fn=context.functionByName.get(name);
     if (fn.launchConstraint && ['grid', 'block'].some((key) => fn.launchConstraint[key].some((value, dimension) => value !== input[key]?.[dimension]))) fail('COMPOSE_LAUNCH_CONSTRAINT', `${input.id} violates ${fn.name} launch constraint`);
   }
   return { id: input.id, entryPoint: input.entryPoint, bindings, grid: normalizeDim3(input.grid, `${input.id} grid`), block: normalizeDim3(input.block, `${input.id} block`), dynamicSharedBytes: normalizeDecimalUint(input.dynamicSharedBytes), maxPending: positiveDecimal(input.maxPending, 'COMPOSE_OPERATION_PENDING', `${input.id} maxPending`) };
@@ -653,12 +665,13 @@ export function composeSearchProgram(profileResult) {
   return { normalized, identity: canonicalIdentity(normalized) };
 }
 
-function buildCudaJsAdapterRequirements(program) {
+function buildCudaJsAdapterRequirements(program, profile) {
   const resources = program.resources.filter(({ materialization }) => materialization === 'resident-storage');
   const resourceNames = new Map(resources.map((entry, index) => [entry.id, `resource-${index}`]));
   const sidebands = program.sidebands ?? [];
   const frameworkCancellation = sidebands.filter(({ role }) => role === 'framework-cancellation');
-  if (frameworkCancellation.length !== 1) fail('COMPOSE_SIDEBAND_REQUIRED', 'runtime realization requires exactly one framework-cancellation sideband');
+  const sessionCancellation=frameworkCancellation.length===0&&profile.semanticEngine.sessionProfile.kind==='selected'&&program.continuation?.externalOperations?.some(op=>op.role==='external-control');
+  if (frameworkCancellation.length !== 1&&!sessionCancellation) fail('COMPOSE_SIDEBAND_REQUIRED', 'v0 requires one framework-cancellation sideband; resident continuation requires its selected Session external control');
   if (!program.publicRequirements.some(({ contract }) => contract.id === 'cuda-js.publication-mailbox/0.1.0')) fail('COMPOSE_SIDEBAND_CAPABILITY', 'runtime realization requires the selected public publication capability');
   const sidebandNames = new Map(sidebands.map((entry, index) => [entry.id, `sideband-${index}`]));
   const deliveryRequirements = program.deliveries.map((entry, index) => ({
@@ -685,12 +698,13 @@ function buildCudaJsAdapterRequirements(program) {
       if (binding.source.kind === 'sideband') return { parameter: binding.parameter, source: { kind: 'sideband', sideband: sidebandNames.get(binding.source.sideband) } };
       return { parameter: binding.parameter, source: { kind: 'scalar', schema: { ...binding.source.schema } } };
     }),
+    reachableFunctions:reachableFunctionNames(entry.entryPoint,new Map(program.functions.map(fn=>[fn.name,fn]))),
     launchPolicy: { grid: [...entry.grid], block: [...entry.block], dynamicSharedBytes: entry.dynamicSharedBytes, maxPending: entry.maxPending },
   }));
   return {
     schema: CUDA_JS_ADAPTER_REQUIREMENTS_SCHEMA,
     publicContracts: program.publicRequirements.map(({ contract }) => ({ ...contract })),
-    searchProgram: { source: program.source, functions: program.functions.map(({ name, executionRole, parameters, returns, launchConstraint }) => ({ name, executionRole, parameters: parameters.map((parameter) => ({ ...parameter })), returns, ...(launchConstraint ? { launchConstraint: structuredClone(launchConstraint) } : {}) })) },
+    searchProgram: { source: program.source, functions: program.functions.map(({ name, executionRole, parameters, returns, launchConstraint,executionProfile }) => ({ name, executionRole, parameters: parameters.map((parameter) => ({ ...parameter })), returns, ...(launchConstraint ? { launchConstraint: structuredClone(launchConstraint) } : {}),...(executionProfile?{executionProfile}:{}) })) },
     resourceRequirements: resources.map((entry, index) => ({ id: `resource-${index}`, byteLength: entry.capacity, alignment: entry.alignment, memorySpaces: [...entry.memorySpaces], accessRequirements: [...entry.access] })),
     sidebandRequirements: sidebands.map((entry, index) => ({
       id: `sideband-${index}`, role: entry.role, direction: entry.direction, valueType: entry.valueType,
@@ -722,7 +736,7 @@ export function buildExecutionPackage(profileResult, programResult) {
       channelProfile: structuredClone(profile.semanticEngine.channelProfile),
     },
     program: { schema: program.schema, identity: identityReference(programResult.identity), sourceIdentity: { ...program.sourceIdentity }, functions: program.functions.map(({ name, executionRole, parameters, returns }) => ({ name, executionRole, parameters: structuredClone(parameters), returns })) },
-    cudaJsAdapter: buildCudaJsAdapterRequirements(program),
+    cudaJsAdapter: buildCudaJsAdapterRequirements(program, profile),
     manifests: structuredClone(profile.manifests),
     compatibility: structuredClone(profile.compatibility),
     provenance: structuredClone(profile.provenance),

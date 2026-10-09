@@ -12,6 +12,7 @@ import { buildInstalledOwnerResultsFixture } from './owner-results-fixture.mjs';
 const execFile = promisify(execFileCallback);
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(here, '..', '..');
+const sourcePackage = JSON.parse(await readFile(path.join(repositoryRoot, 'package.json'), 'utf8'));
 const gitCommand = process.platform === 'win32' ? 'git.exe' : 'git';
 const cases = [];
 
@@ -103,7 +104,7 @@ try {
     assert.equal(path.relative(installedPackageRoot, packageJsonPath), 'package.json');
     const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8'));
     assert.equal(packageJson.name, 'cuda-mcgs');
-    assert.equal(packageJson.version, '0.0.0-dev.0');
+    assert.equal(packageJson.version, sourcePackage.version, 'installed version must match the selected source package');
     assert.equal(packageJson.private, true);
     assert.equal(packageJson.scripts, undefined, 'installed manifest must not advertise repository-only scripts');
     assert.equal(installed.packed.name, packageJson.name);
@@ -300,7 +301,7 @@ const summary = {
   source: { revision, tree },
   package: {
     name: 'cuda-mcgs',
-    version: '0.0.0-dev.0',
+    version: sourcePackage.version,
     artifact: {
       filename: installed.packed.filename,
       shasum: installed.packed.shasum,

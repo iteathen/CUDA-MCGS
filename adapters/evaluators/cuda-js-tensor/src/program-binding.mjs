@@ -117,7 +117,7 @@ function evaluatorProfile(value, contribution, requireBoundSource) {
   if (decimal(value.batching.minimumReadyItems, 'batching.minimumReadyItems') !== 1n) {
     fail('TENSOR_EVALUATOR_PROGRAM_BINDING_BATCH', 'Tensor runtime first realization requires evaluator minimumReadyItems = 1');
   }
-  if (decimal(value.batching.maximumItems, 'batching.maximumItems') > BigInt(contribution.execution.itemCapacity)) {
+  if (decimal(value.batching.maximumItems, 'batching.maximumItems') > BigInt(contribution.execution.maxActiveItems??contribution.execution.itemCapacity)) {
     fail('TENSOR_EVALUATOR_PROGRAM_BINDING_CAPACITY', 'Tensor item capacity is below the evaluator profile maximum batch size');
   }
   const statusCodes = new Set((value.statuses ?? []).map(({ code }) => code));
@@ -230,12 +230,17 @@ export function createTensorEvaluatorProgramBinding(runtimeContribution, normali
   const exactSourceIdentity = sourceIdentity(contribution.device.source);
   const roles = functionRoles(contribution, profile, workClasses);
   const localFunctionNames = new Set(contribution.device.functions.map(({ name }) => name));
+  const externalFunctionNames=new Set();
+  for(const reference of contribution.device.externalFunctions??[]){
+    if(reference.ownerProfile!==profile.domainProfile.id||reference.ownerIdentity.sha256!==profile.domainProfile.identity.sha256||externalFunctionNames.has(reference.name)||localFunctionNames.has(reference.name))fail('TENSOR_EVALUATOR_PROGRAM_BINDING_FUNCTION','external encoder callable differs from selected Domain identity');
+    externalFunctionNames.add(reference.name);
+  }
   const functions = contribution.device.functions.map((fn) => {
     if (fn.kind !== 'device' || !Array.isArray(fn.parameters) || typeof fn.returns !== 'string' || !Array.isArray(fn.calls)) {
       fail('TENSOR_EVALUATOR_PROGRAM_BINDING_FUNCTION', (fn.name ?? '<missing>') + ' is not an explicit Device-JS callable descriptor');
     }
     const calls = fn.calls.map((name) => {
-      if (typeof name !== 'string' || !localFunctionNames.has(name)) fail('TENSOR_EVALUATOR_PROGRAM_BINDING_FUNCTION', fn.name + ' names unknown local call ' + String(name));
+      if (typeof name !== 'string' || (!localFunctionNames.has(name)&&!externalFunctionNames.has(name))) fail('TENSOR_EVALUATOR_PROGRAM_BINDING_FUNCTION', fn.name + ' names unknown selected-owner call ' + String(name));
       return name;
     });
     if (new Set(calls).size !== calls.length) fail('TENSOR_EVALUATOR_PROGRAM_BINDING_FUNCTION', fn.name + ' repeats a local call edge');
@@ -249,6 +254,7 @@ export function createTensorEvaluatorProgramBinding(runtimeContribution, normali
       semanticRole: roles.get(fn.name),
       calls,
       helpers: [],
+      ...(fn.launchConstraint?{launchConstraint:structuredClone(fn.launchConstraint)}:{}),
     };
   });
   const liveImport = object(contribution.device.importIdentity, 'runtime Tensor import identity');
