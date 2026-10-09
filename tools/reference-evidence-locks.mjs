@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {selectReferencePath,referenceSelection,assertHistoricalReferenceBytes,semanticFixtureProjection} from '../experiments/search-semantics-reference/src/reference-selection.mjs';
+import {selectReferencePath,referenceSelection,assertHistoricalReferenceBytes,semanticFixtureProjection,selectReferenceManifestPath} from '../experiments/search-semantics-reference/src/reference-selection.mjs';
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const historicalFixtureRoot = path.join(repositoryRoot, 'experiments', 'search-semantics-reference', 'fixtures');
@@ -89,9 +89,9 @@ function identityOf(id, evidence) {
 }
 
 const { mode, source: selectedSource } = parseArgs(process.argv.slice(2));
-const selectionManifest=await readJson(path.join(repositoryRoot,'experiments/search-semantics-reference/reference-chain-selection.json'));
+const selectionManifest=await readJson(selectReferenceManifestPath());
 assertHistoricalReferenceBytes(selectionManifest);
-if(mode==='write')assert.equal(referenceSelection.version,'0.0.0-dev.1','historical fixtures are immutable; maintenance requires an explicitly selected new chain');
+if(mode==='write')assert(['0.0.0-dev.1','0.0.0-dev.2'].includes(referenceSelection.version),'historical fixtures are immutable; maintenance requires an explicitly selected new chain');
 const integrationFixture = await readJson(integrationFixturePath);
 assert(Array.isArray(integrationFixture.evidenceInputs), 'integration-cases evidenceInputs must be an array');
 const descriptors = new Map(integrationFixture.evidenceInputs.map((entry) => [entry.id, entry]));

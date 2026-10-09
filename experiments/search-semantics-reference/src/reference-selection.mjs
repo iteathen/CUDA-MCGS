@@ -8,9 +8,9 @@ import {canonicalIdentity} from './canonical.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const historicalRoot=path.join(root,'experiments/search-semantics-reference/fixtures');
 const packageVersion=JSON.parse(readFileSync(path.join(root,'package.json'),'utf8')).version;
-export const referenceSelection=Object.freeze({version:packageVersion,historicalVersion:'0.0.0-dev.0',selectedVersion:'0.0.0-dev.1'});
+export const referenceSelection=Object.freeze({version:packageVersion,historicalVersion:'0.0.0-dev.0',selectedVersion:packageVersion});
 export function assertReferenceVersion(version,sourceVersion){
-  assert(['0.0.0-dev.0','0.0.0-dev.1'].includes(version),'unregistered reference-chain version');
+  assert(['0.0.0-dev.0','0.0.0-dev.1','0.0.0-dev.2'].includes(version),'unregistered reference-chain version');
   assert.equal(version,sourceVersion,'reference chain must match the selected source package version');
 }
 export function selectReferencePath(absolutePath,version=packageVersion){
@@ -38,6 +38,12 @@ export function semanticFixtureProjection(value){
 }
 export function selectReferenceRelativePath(relative){
   return path.relative(root,selectReferencePath(path.join(root,relative))).split(path.sep).join('/');
+}
+export function selectReferenceManifestPath(){
+  assertReferenceVersion(packageVersion,packageVersion);
+  const files={'0.0.0-dev.1':'reference-chain-selection.json','0.0.0-dev.2':'reference-chain-selection-0.0.0-dev.2.json'};
+  assert(files[packageVersion],'historical source selection has no current-source replay manifest');
+  return path.join(root,'experiments/search-semantics-reference',files[packageVersion]);
 }
 export function assertHistoricalReferenceBytes(manifest){
   for(const [name,expected]of Object.entries(manifest.historicalFixtures)){
