@@ -67,9 +67,19 @@ publication latency, sustained throughput or indefinite-lifetime qualification.
 
 Portable checkpoint gates cover the Compiler's 883 cases, installed library
 interface, runtime adapter, evaluator adapter and the resident owner falsifiers.
-The historical engine reference integration is still blocked by its immutable
+At checkpoint `cd2f164`, historical engine reference integration was blocked by its immutable
 fixture chain selecting the previous Composer evidence SHA. Source and schema
 evolution changes that ancestry even though the historical normalized semantic
 owner profiles remain unchanged. A distinct versioned reference-chain selection
 must be qualified before final release; the frozen historical oracles must not
 be overwritten or reported as passing against the new source.
+
+The subsequent conformance-only repair selects a separate
+`fixtures/0.0.0-dev.1` chain through an exact package-version resolver. All
+twenty-one historical fixture files remain byte-pinned and unchanged. The new
+ancestry is derived from passing actual owners in dependency order; semantic
+oracle data and historically normalized owner meaning are checked unchanged.
+The full integration gate now passes 393 reference requirements and all seven
+mutation falsifiers, with 52 native requirements explicitly deferred. This
+repair preserves the byte-identical ba98 runtime package; it adds no native,
+full-game or timing claim. See `experiments/search-semantics-reference/REFERENCE_SELECTION.md`.

@@ -1,0 +1,63 @@
+{
+  "schema": "cuda-mcgs.reference-graph-reclaim-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 709018,
+    "sha256": "2f162aee57197c3fe84e4d3b469dd199d3dce9d83ccaf35a51fcbf69b251019a"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 140229,
+    "sha256": "9c8a50b9a25f0e3203cb2e1dd469566009bdc2e28a3e5b5fad5dbee0582ec8f5"
+  },
+  "nodeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10046,
+    "sha256": "b2a2a0265cd921177ded7cd1c605330129017daa1ed27e563551bc1d48fc5db6"
+  },
+  "edgeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 11673,
+    "sha256": "8f7693b4661a7c895f436bad18812320b5babc0b08e2a6f6cfc838728c926764"
+  },
+  "refEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9138,
+    "sha256": "8750e7bc806e2236ac31292e7563f2314242b261a2aeeb8f9f12a78d6e8ee5bd"
+  },
+  "pathEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9502,
+    "sha256": "2e56d8b8d170ff2d19fbf03752ab8195e5df0e1eb83855d74e797e0aa6bc4889"
+  },
+  "rootControlProjection": {
+    "algorithm": "sha256",
+    "byteLength": 10489,
+    "sha256": "b662db97556a1a4e3ce97eaed6b815b94204906f14a926d866a9ba3b5826773f"
+  },
+  "rootEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9966,
+    "sha256": "50eacf4dec35b47f59c773f9d560d1d4c09cc75a3f55876717ec768e4818a984"
+  },
+  "expectedCases": [
+    "graph-reclaim-profile-and-upstream-evidence-exact",
+    "graph-reclaim-none-zero-semantic-residue",
+    "graph-reclaim-enabled-profile-declares-complete-finite-contract",
+    "graph-reclaim-retirement-preserves-old-protection-and-blocks-new-access",
+    "graph-reclaim-retirement-capacity-fails-atomically",
+    "graph-reclaim-quiescence-rejects-each-declared-protection-source",
+    "graph-reclaim-incremental-proof-is-finite-device-owned-and-resumable",
+    "graph-reclaim-quiescence-proof-restarts-after-protection-epoch-change",
+    "graph-reclaim-transposition-tombstone-precedes-reuse",
+    "graph-reclaim-owner-cleanup-precedes-storage-release",
+    "graph-reclaim-generation-advances-before-slot-reuse",
+    "graph-reclaim-retirement-record-reuses-without-capacity-leak",
+    "graph-reclaim-cancellation-leaves-valid-quarantine-and-resumes",
+    "graph-reclaim-owner-failure-quarantines-without-half-reuse",
+    "graph-reclaim-shared-transposed-node-remains-blocked-by-retained-borrow",
+    "graph-reclaim-semantic-reference-does-not-qualify-native-mechanism",
+    "graph-reclaim-requirement-coverage-exact"
+  ]
+}

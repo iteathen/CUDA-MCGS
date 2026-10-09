@@ -1,0 +1,110 @@
+{
+  "schema": "cuda-mcgs.reference-integration-evidence-locks/0.1.0",
+  "identities": {
+    "search-ir": {
+      "algorithm": "sha256",
+      "byteLength": 7749,
+      "sha256": "bd6679178c6754fe9b06d6fa54d038166b7ef39e32fb5f51513cc303cfd63a96"
+    },
+    "composer": {
+      "algorithm": "sha256",
+      "byteLength": 709018,
+      "sha256": "2f162aee57197c3fe84e4d3b469dd199d3dce9d83ccaf35a51fcbf69b251019a"
+    },
+    "domain": {
+      "algorithm": "sha256",
+      "byteLength": 30383,
+      "sha256": "5da2fd5c4094035286883b7487d1e53847db1ff4675da693a9b7c8f580b2caed"
+    },
+    "graph-node": {
+      "algorithm": "sha256",
+      "byteLength": 10046,
+      "sha256": "b2a2a0265cd921177ded7cd1c605330129017daa1ed27e563551bc1d48fc5db6"
+    },
+    "graph-edge": {
+      "algorithm": "sha256",
+      "byteLength": 11673,
+      "sha256": "8f7693b4661a7c895f436bad18812320b5babc0b08e2a6f6cfc838728c926764"
+    },
+    "graph-ref": {
+      "algorithm": "sha256",
+      "byteLength": 9138,
+      "sha256": "8750e7bc806e2236ac31292e7563f2314242b261a2aeeb8f9f12a78d6e8ee5bd"
+    },
+    "graph-path": {
+      "algorithm": "sha256",
+      "byteLength": 9502,
+      "sha256": "2e56d8b8d170ff2d19fbf03752ab8195e5df0e1eb83855d74e797e0aa6bc4889"
+    },
+    "graph-root": {
+      "algorithm": "sha256",
+      "byteLength": 9966,
+      "sha256": "50eacf4dec35b47f59c773f9d560d1d4c09cc75a3f55876717ec768e4818a984"
+    },
+    "graph-reclaim": {
+      "algorithm": "sha256",
+      "byteLength": 12111,
+      "sha256": "445067cc6bfc5da3f2e6c12bd05392e3b3763f3a1b8154b0a2ae05aa26f7cc9d"
+    },
+    "graph-advance": {
+      "algorithm": "sha256",
+      "byteLength": 4206,
+      "sha256": "8be8d0d80baf5d9067f1ac65e91a8c3d00a8b6ccfdeb26711aecf7094dcb28c5"
+    },
+    "graph-cleanup": {
+      "algorithm": "sha256",
+      "byteLength": 5477,
+      "sha256": "9a26514b4139da9e5ed2e90e60e5cd2f4cbed69d078e192899f5cc885be1a1d5"
+    },
+    "policy": {
+      "algorithm": "sha256",
+      "byteLength": 13103,
+      "sha256": "315a74a7b11425bd8b6c54af16ee908e6cad02ef6fea302d4ff824a5b8325a3a"
+    },
+    "evaluator": {
+      "algorithm": "sha256",
+      "byteLength": 18050,
+      "sha256": "9f57d61621948e9daf3ca10cf7d702cf23731afd29d17d739f780d575c84b018"
+    },
+    "resource": {
+      "algorithm": "sha256",
+      "byteLength": 12511,
+      "sha256": "d7c34dea09184ed9d13cd54cd46002fea1e34299c49729f2fa451c55409c9125"
+    },
+    "progress": {
+      "algorithm": "sha256",
+      "byteLength": 12005,
+      "sha256": "ea1f9f2397128063a70e296260c568129e6def43c47f37d5ad9e4cdf4a82eda5"
+    },
+    "output": {
+      "algorithm": "sha256",
+      "byteLength": 16537,
+      "sha256": "43e4c7f1bab2a001517bf4d5ceaf32a08122ee46f79cd3169974ac7b2870943a"
+    },
+    "framework": {
+      "algorithm": "sha256",
+      "byteLength": 6529,
+      "sha256": "c7cf5a82afb04890bdc1754fbc6c293bf9cf354a3307a5d54e10e366443e707c"
+    },
+    "terminal": {
+      "algorithm": "sha256",
+      "byteLength": 9333,
+      "sha256": "e83c1e136176f823a9b104d7f4c92aac5cae9457a808f386c0262bdc1ede9072"
+    },
+    "session": {
+      "algorithm": "sha256",
+      "byteLength": 18551,
+      "sha256": "5adb2a171762e7d592c21ecc4f31a22ec4d7f7d675690a1b9c66f5a25391048a"
+    },
+    "stage": {
+      "algorithm": "sha256",
+      "byteLength": 9367,
+      "sha256": "4b9f4ce382a191f7e4d866104d149d57150b7c19c3a4865601cc9015bcbf4a70"
+    },
+    "channel": {
+      "algorithm": "sha256",
+      "byteLength": 17031,
+      "sha256": "9d35394121b967bfb0f14fe31a3ddafe890f9c513062f6c251c22cdab0b1b2de"
+    }
+  }
+}
