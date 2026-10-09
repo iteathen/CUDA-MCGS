@@ -7,7 +7,9 @@ retained provenance; running current source does not replay the historical
 implementation. `fixtures/0.0.0-dev.1/*.json` is the distinct selected chain for
 the resident checkpoint. `fixtures/0.0.0-dev.2/*.json` separately selects the
 cold-preinitialization package. Its manifest pins the retained dev.1 manifest
-and fixture bytes as previous provenance. The resolver requires a registered version matching the
+and fixture bytes as previous provenance. `fixtures/0.0.0-dev.3/*.json` selects
+the terminal-authority and Output-tail evolution, retaining dev.2 and dev.1
+recursively as byte-pinned provenance. The resolver requires a registered version matching the
 source package. It names actual selected fixture paths in evidence source keys.
 
 The new chain changes Composer/profile/upstream evidence references and neutral

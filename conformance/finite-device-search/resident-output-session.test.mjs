@@ -56,6 +56,14 @@ test('compound focus admission reserves an Output slot before authority commit',
   assert.equal(q.fn.rs_apply(q.m,q.s,q.a,q.p,q.f,q.su,q.sf,q.authority,q.snap,q.encoded,q.command),0);
   assert.equal(q.authority[1],1);assert.equal(q.authority[3],2);
 });
+test('epoch and publication exhaustion reject before Graph admission or Output reservation',()=>{
+ for(const field of [3,4]){
+  const q=oracle();q.authority[field]=4294967294;
+  const graph=q.m.slice(),snap=q.snap.slice(),authority=q.authority.slice();
+  assert.equal(command(q),9);assert.equal(q.m[60],0);assert.deepEqual(q.snap,snap);
+  assert.deepEqual(q.authority,authority);assert.deepEqual(q.m.slice(0,64),graph.slice(0,64));
+ }
+});
 test('compound Policy facts cannot be captured during an incomplete backup transaction',()=>{
   const q=oracle();q.m[45]=2;
   assert.equal(q.fn.ro_publish(q.m,q.a,q.p,q.f,q.authority,q.snap,q.encoded),3);
@@ -63,15 +71,28 @@ test('compound Policy facts cannot be captured during an incomplete backup trans
   assert.equal(q.fn.ro_publish(q.m,q.a,q.p,q.f,q.authority,q.snap,q.encoded),0);
 });
 test('immutable public telemetry carries exact root work and owner-lifecycle counts without Policy inference',()=>{
-  const q=oracle();q.m[128+12]=7;q.m[73]=5;q.m[74]=4;
+  const q=oracle();q.m[128+12]=7;q.m[73]=5;q.m[74]=4;q.m[128+13]=3;q.m[128+14]=2;q.m[128+15]=1;
   q.fn.ro_publish(q.m,q.a,q.p,q.f,q.authority,q.snap,q.encoded);
   const out=new Uint32Array(q.out.layout.observerWords);q.fn.ro_observe(q.authority,q.snap,out,new Uint32Array(1),1,0,1,1);
   assert.equal(out[8],7);assert.equal(out[9],4);assert.equal(out[11],5);
+  assert.equal(out[q.out.layout.evaluationDispositionWord],1);q.m[128+15]=3;
+  assert.equal(out[q.out.layout.rootEvaluatorAdmissionsWord],3);
+  assert.equal(out[q.out.layout.rootEvaluatorReadyObservedWord],2);
+  q.m[128+13]=8;q.m[128+14]=7;
+  assert.equal(out[q.out.layout.rootEvaluatorAdmissionsWord],3,'root counts are immutable copied owner facts');
   q.p[16]=999;assert.equal(out[8],7);assert.equal(out[9],4);
+  assert.equal(out[q.out.layout.evaluationDispositionWord],1,'observer sees the immutable disposition at capture');
 });
 test('terminal cleanup facts copy actual owner counters and exact accepted command identity',()=>{
   const q=oracle(),out=new Uint32Array(q.out.layout.observerWords);
   q.m[32]=7;q.m[33]=6;q.m[46]=9;q.m[47]=8;q.m[80]=1;q.m[81]=1;q.m.set([1,2,3,4,5,6,7,8],64);
   q.fn.ro_terminalFacts(q.m,out,2,3,11);
   assert.deepEqual(Array.from(out.slice(15,24)),[1,1,7,6,9,8,2,3,11]);assert.deepEqual(Array.from(out.slice(24,32)),[1,2,3,4,5,6,7,8]);
+  q.m[83]=9;q.fn.ro_terminalFacts(q.m,out,0,0,2);assert.equal(out[23],2);assert.equal(out[q.out.layout.drainDispositionWord],9);
+});
+test('reserved capture aborts without a writing-slot leak when its publication is exhausted',()=>{
+  const q=oracle();assert.equal(q.fn.ro_reserve(q.m,q.authority,q.snap),0);assert.equal(q.m[60],1);assert.equal(q.snap[0],1);
+  q.authority[4]=4294967294;
+  assert.equal(q.fn.ro_publish(q.m,q.a,q.p,q.f,q.authority,q.snap,q.encoded),9);
+  assert.equal(q.m[60],0);assert.equal(q.snap[0],0);
 });

@@ -1,0 +1,56 @@
+{
+  "schema": "cuda-mcgs.reference-graph-advance-occurrence-fixtures/0.1.0",
+  "composerEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 709018,
+    "sha256": "2f162aee57197c3fe84e4d3b469dd199d3dce9d83ccaf35a51fcbf69b251019a"
+  },
+  "profileProjection": {
+    "schema": "cuda-mcgs.search-ir-composer-graph-profile-projection/0.2.0",
+    "algorithm": "sha256",
+    "byteLength": 140229,
+    "sha256": "9c8a50b9a25f0e3203cb2e1dd469566009bdc2e28a3e5b5fad5dbee0582ec8f5"
+  },
+  "nodeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 10046,
+    "sha256": "0a0ccd010a4ff4c7ed9e3e883b33dfb896dcf2459e45157adb36ebf93b641e6a"
+  },
+  "edgeEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 11673,
+    "sha256": "0e70389d001c834d4728cabde9ddb42d24410bbbf56b6ec834da6bc16cff055c"
+  },
+  "refEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9138,
+    "sha256": "574abea51cd0bfa3c3dd26591d6db8afb51758bb5aeb8c69db4e79305bfc4730"
+  },
+  "pathEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9502,
+    "sha256": "581af781517b33c92b32797b576d940be916697ca066077b3b7119d2a2f16ed4"
+  },
+  "rootControlProjection": {
+    "algorithm": "sha256",
+    "byteLength": 10489,
+    "sha256": "b662db97556a1a4e3ce97eaed6b815b94204906f14a926d866a9ba3b5826773f"
+  },
+  "rootEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 9966,
+    "sha256": "3d581eb101cf14f0cb90ee25fc52e63293e380a8d000ab7299c8b96af0ea9c2e"
+  },
+  "reclaimEvidence": {
+    "algorithm": "sha256",
+    "byteLength": 12111,
+    "sha256": "eee7b0aae58353bc78cfcf3a5b9b4d876870040fcc98bff357d9a74d5b33df9a"
+  },
+  "expectedCases": [
+    "graph-advance-occurrence-upstream-evidence-and-control-exact",
+    "graph-advance-occurrence-authority-commit-has-zero-eager-cleanup",
+    "graph-advance-occurrence-lazy-checkpoint-releases-only-sibling-occurrence",
+    "graph-advance-occurrence-retirement-order-blocks-new-protection-while-old-work-drains",
+    "graph-advance-occurrence-retained-borrow-gates-quiescence-and-reuse-is-generation-safe"
+  ]
+}

@@ -34,3 +34,18 @@ test('self-cycle prepares/completes each distinct node once while backing up dis
 test('cancellation abandons protected request/path exactly once without adding visits',()=>{
   const q=fixture();q.advance();assert.equal(q.m[20],1);assert.equal(q.m[80],1);assert.equal(q.m[81],1);q.values.mcgsEvalRequestControl32[q.runtime.state.requestControl32.slotState]=7;q.m[27]=6;q.functions.rp_consume(...q.args);assert.equal(q.m[28],0);assert.equal(q.m[29],1);assert.equal(q.p[0],0);assert.equal(q.m[46],q.m[47]);assert.equal(q.m[19],0);assert.equal(q.m[20],0);assert.equal(q.m[q.L.nodeMeta+12],0);assert.equal(q.m[73],1);assert.equal(q.m[74],0);assert.equal(q.m[80],0);assert.equal(q.m[81],0);
 });
+test('failed backup preparation remains first stop when its nested disposal fails',()=>{
+  const q=fixture();q.advance();q.p[1]=77;q.m[q.L.nodeMeta+6]=0;
+  assert.equal(q.functions.rp_backup(...q.args),8);
+  assert.equal(q.m[17],11);assert.equal(q.m[82],8);assert.equal(q.m[83],11);
+});
+test('node disposition flags record accepted ready results and later ordinary Policy traversal only',()=>{
+  const q=fixture(),at=q.L.nodeMeta+15;
+  q.advance();assert.equal(q.m[at],0);q.completeReady();assert.equal(q.m[at],1);
+  q.advance();assert.equal(q.m[at],3);
+});
+test('ready rejection and traversal without prior acceptance cannot mint acceptance/reuse facts',()=>{
+  const q=fixture();q.advance();q.values.mcgsEvalRequestControl32[q.runtime.state.requestControl32.slotState]=5;q.values.mcgsEvalResultOutput_f32[0]=NaN;
+  q.functions.rp_consume(...q.args);assert.equal(q.m[q.L.nodeMeta+14],1);assert.equal(q.m[q.L.nodeMeta+15],0);
+  const cold=fixture();cold.p[3]=1;cold.advance();assert.equal(cold.m[cold.L.nodeMeta+15],0);
+});

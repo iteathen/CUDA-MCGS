@@ -10,7 +10,7 @@ const historicalRoot=path.join(root,'experiments/search-semantics-reference/fixt
 const packageVersion=JSON.parse(readFileSync(path.join(root,'package.json'),'utf8')).version;
 export const referenceSelection=Object.freeze({version:packageVersion,historicalVersion:'0.0.0-dev.0',selectedVersion:packageVersion});
 export function assertReferenceVersion(version,sourceVersion){
-  assert(['0.0.0-dev.0','0.0.0-dev.1','0.0.0-dev.2'].includes(version),'unregistered reference-chain version');
+  assert(['0.0.0-dev.0','0.0.0-dev.1','0.0.0-dev.2','0.0.0-dev.3'].includes(version),'unregistered reference-chain version');
   assert.equal(version,sourceVersion,'reference chain must match the selected source package version');
 }
 export function selectReferencePath(absolutePath,version=packageVersion){
@@ -41,7 +41,7 @@ export function selectReferenceRelativePath(relative){
 }
 export function selectReferenceManifestPath(){
   assertReferenceVersion(packageVersion,packageVersion);
-  const files={'0.0.0-dev.1':'reference-chain-selection.json','0.0.0-dev.2':'reference-chain-selection-0.0.0-dev.2.json'};
+  const files={'0.0.0-dev.1':'reference-chain-selection.json','0.0.0-dev.2':'reference-chain-selection-0.0.0-dev.2.json','0.0.0-dev.3':'reference-chain-selection-0.0.0-dev.3.json'};
   assert(files[packageVersion],'historical source selection has no current-source replay manifest');
   return path.join(root,'experiments/search-semantics-reference',files[packageVersion]);
 }

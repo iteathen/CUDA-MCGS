@@ -107,3 +107,34 @@ input and ignited once. Cancellation and graceful teardown reported zero live
 and orphan resources. This is mechanism qualification; actual product clock
 responsiveness must be observed separately. Both prior package bytes and prior
 reference chains remain historical records, with a separate dev.2 chain.
+
+## Terminal authority and exhaustion
+
+Package `0.0.0-dev.3` latches the first authoritative stop before request/path
+drain. Subsequent disposal or consumption failures retain their own bounded
+drain disposition. The public terminal protocol declares that separate field
+after the complete legal-row region; successful quiescence requires it to be
+zero alongside the existing residue and lease-balance facts. It does not alias
+the observer header or first-stop field.
+
+Session rejects exhausted focus/publication generations before Domain replay,
+target admission or snapshot reservation. A failed reserved publication releases
+its writing slot. Typed command acknowledgements remain available on rejection.
+Isolated native fault injection qualifies cancellation plus disposal failure,
+prior failure plus drain failure, and clean cancellation. A separate generated
+Session probe qualifies both exhaustion boundaries with no admission/reservation.
+These are bounded owner falsifiers, not composed chess or strength evidence.
+
+An immutable Output tail also carries two explicitly scoped cumulative node
+facts: a selected Evaluator-ready result accepted by the selected Policy, and a
+later ordinary traversal directed by that same Policy after acceptance. New
+node incarnations start with neither fact. Rejection and traversal without
+acceptance cannot create them. They do not assert universal or current model
+cache validity; product interpretation requires the exact selected identities.
+Capture occurs only at controller quiescent boundaries, and observers consume
+the captured copy. Separate tail fields copy the root incarnation's cumulative
+Evaluator admission and ready-observation counts. A flag already present before
+returning to a root proves historical disposition only; it cannot alone prove
+fresh reuse after that return. Those counters permit a product to test subsequent
+work without a new root request under its exact selected cache semantics.
+Earlier packages and receipts retain their historical scope.

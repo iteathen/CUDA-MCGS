@@ -91,7 +91,7 @@ function identityOf(id, evidence) {
 const { mode, source: selectedSource } = parseArgs(process.argv.slice(2));
 const selectionManifest=await readJson(selectReferenceManifestPath());
 assertHistoricalReferenceBytes(selectionManifest);
-if(mode==='write')assert(['0.0.0-dev.1','0.0.0-dev.2'].includes(referenceSelection.version),'historical fixtures are immutable; maintenance requires an explicitly selected new chain');
+if(mode==='write')assert(['0.0.0-dev.1','0.0.0-dev.2','0.0.0-dev.3'].includes(referenceSelection.version),'historical fixtures are immutable; maintenance requires an explicitly selected new chain');
 const integrationFixture = await readJson(integrationFixturePath);
 assert(Array.isArray(integrationFixture.evidenceInputs), 'integration-cases evidenceInputs must be an array');
 const descriptors = new Map(integrationFixture.evidenceInputs.map((entry) => [entry.id, entry]));
