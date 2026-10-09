@@ -1,3 +1,4 @@
+import {selectReferencePath,selectReferenceRelativePath} from './src/reference-selection.mjs';
 import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -9,15 +10,16 @@ import { canonicalIdentity, sourceTextSha256 } from './src/canonical.mjs';
 import { assertUniqueStrings, exactKeys, fail } from './src/errors.mjs';
 import { registerGraphPathCases } from './src/graph-path-cases.mjs';
 
+const selectedJoin = (...parts) => selectReferencePath(path.join(...parts));
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const fixturePath = path.join(experimentRoot, 'fixtures', 'graph-path-cases.json');
-const composerEvidencePath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
-const graphProjectionPath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'graph-profiles.json');
-const nodeEvidencePath = path.join(experimentRoot, 'build', 'graph-node-evidence.json');
-const refEvidencePath = path.join(experimentRoot, 'build', 'graph-ref-evidence.json');
-const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
-const graphSpecPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0010-graph-storage-and-reclamation.md');
+const fixturePath = selectedJoin(experimentRoot, 'fixtures', 'graph-path-cases.json');
+const composerEvidencePath = selectedJoin(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
+const graphProjectionPath = selectedJoin(repositoryRoot, 'conformance', 'search-compiler', 'build', 'graph-profiles.json');
+const nodeEvidencePath = selectedJoin(experimentRoot, 'build', 'graph-node-evidence.json');
+const refEvidencePath = selectedJoin(experimentRoot, 'build', 'graph-ref-evidence.json');
+const requirementCoveragePath = selectedJoin(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
+const graphSpecPath = selectedJoin(repositoryRoot, 'docs', 'specs', 'SPEC-0010-graph-storage-and-reclamation.md');
 
 assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Graph PATH reference requires Node 24 or newer; found ${process.version}`);
 
@@ -171,7 +173,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/requirement-coverage.json',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(relative.startsWith('components/search-compiler/src/') ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8') : await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths.map(selectReferenceRelativePath)) sources[relative] = sourceTextSha256(relative.startsWith('components/search-compiler/src/') ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8') : await readFile(selectedJoin(repositoryRoot, relative)));
 const evidenceSubject = {
   schema: 'cuda-mcgs.search-semantics-graph-path-evidence-key/0.2.0',
   composerEvidence: fixture.composerEvidence,
@@ -217,10 +219,10 @@ const evidence = {
   ],
 };
 
-const evidenceDirectory = path.join(experimentRoot, 'build');
+const evidenceDirectory = selectedJoin(experimentRoot, 'build');
 await mkdir(evidenceDirectory, { recursive: true });
 const evidenceName = selectedCase === null ? 'graph-path-evidence.json' : `graph-path-evidence.${selectedCase}.json`;
-await writeFile(path.join(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
+await writeFile(selectedJoin(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
 
 console.log(`capsule=${evidence.capsule} scope=${evidence.scope} expected=${summary.expected} discovered=${summary.discovered} executed=${summary.executed} passed=${summary.passed} failed=${summary.failed} not_discovered=${summary.notDiscovered} not_executed_by_selection=${summary.notExecutedBySelection}`);
 console.log(`composer_evidence_sha256=${fixture.composerEvidence.sha256} graph_projection_sha256=${graphProjection.projectionIdentity.sha256} graph_node_evidence_sha256=${nodeEvidence.evidenceIdentity.sha256} graph_ref_evidence_sha256=${refEvidence.evidenceIdentity.sha256} graph_path_evidence_sha256=${evidenceIdentity.sha256} canonical_bytes=${evidenceIdentity.byteLength}`);

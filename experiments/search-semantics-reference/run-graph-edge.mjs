@@ -1,3 +1,4 @@
+import {selectReferencePath,selectReferenceRelativePath} from './src/reference-selection.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -9,19 +10,20 @@ import { registerGraphEdgeCases } from './src/graph-edge-cases.mjs';
 import { registerGraphEdgeLifecycleCases } from './src/graph-edge-lifecycle-cases.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const here = path.join(root, 'experiments', 'search-semantics-reference');
+const selectedJoin = (...parts) => selectReferencePath(path.join(...parts));
+const here = selectedJoin(root, 'experiments', 'search-semantics-reference');
 const readJson = async (file, code) => {
   try { return JSON.parse(await readFile(file, 'utf8')); }
   catch (error) { if (error.code === 'ENOENT' && code) fail(code, `${file} is required`); throw error; }
 };
 
 assert(Number(process.versions.node.split('.')[0]) >= 24);
-const fixture = await readJson(path.join(here, 'fixtures', 'graph-edge-cases.json'));
-const composer = await readJson(path.join(root, 'conformance', 'search-compiler', 'build', 'evidence.json'), 'GRAPH_EDGE_COMPOSER_EVIDENCE_MISSING');
-const projection = await readJson(path.join(root, 'conformance', 'search-compiler', 'build', 'graph-profiles.json'), 'GRAPH_EDGE_PROJECTION_MISSING');
-const nodeEvidence = await readJson(path.join(here, 'build', 'graph-node-evidence.json'), 'GRAPH_EDGE_NODE_EVIDENCE_MISSING');
-const coverage = await readJson(path.join(root, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json'));
-const spec = await readFile(path.join(root, 'docs', 'specs', 'SPEC-0010-graph-storage-and-reclamation.md'), 'utf8');
+const fixture = await readJson(selectedJoin(here, 'fixtures', 'graph-edge-cases.json'));
+const composer = await readJson(selectedJoin(root, 'conformance', 'search-compiler', 'build', 'evidence.json'), 'GRAPH_EDGE_COMPOSER_EVIDENCE_MISSING');
+const projection = await readJson(selectedJoin(root, 'conformance', 'search-compiler', 'build', 'graph-profiles.json'), 'GRAPH_EDGE_PROJECTION_MISSING');
+const nodeEvidence = await readJson(selectedJoin(here, 'build', 'graph-node-evidence.json'), 'GRAPH_EDGE_NODE_EVIDENCE_MISSING');
+const coverage = await readJson(selectedJoin(root, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json'));
+const spec = await readFile(selectedJoin(root, 'docs', 'specs', 'SPEC-0010-graph-storage-and-reclamation.md'), 'utf8');
 
 exactKeys(fixture, ['composerEvidence', 'expectedCases', 'nodeEvidence', 'profileProjection', 'schema'], 'GRAPH_EDGE_FIXTURE_FIELDS', 'Graph EDGE fixture');
 assert.equal(fixture.schema, 'cuda-mcgs.reference-graph-edge-fixtures/0.1.0');
@@ -94,12 +96,12 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/requirement-coverage.json'
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(root, relative)));
+for (const relative of sourcePaths.map(selectReferenceRelativePath)) sources[relative] = sourceTextSha256(await readFile(selectedJoin(root, relative)));
 const subject = { schema: 'cuda-mcgs.search-semantics-graph-edge-evidence-key/0.2.0', composerEvidence: fixture.composerEvidence, graphProfileProjection: projection.projectionIdentity, graphNodeEvidence: nodeEvidence.evidenceIdentity, graphEdgeRequirementCoverage: { planned: plan, executedRequirementCount: executed.length, executed }, selection: selected, sources, summary, cases };
 const evidenceIdentity = canonicalIdentity(subject, 'Graph EDGE reference evidence');
 const evidence = { schemaVersion: 1, capsule: 'cuda-mcgs-graph-edge-reference-v0.2.0', scope: selected === null ? 'full-graph-edge-reference' : 'focused-case', status: failed.length === 0 ? 'pass' : 'fail', composerEvidence: fixture.composerEvidence, graphProfileProjection: projection.projectionIdentity, graphNodeEvidence: nodeEvidence.evidenceIdentity, graphEdgeRequirementCoverage: subject.graphEdgeRequirementCoverage, evidenceIdentity, sources, summary, cases, claimLimits: ['GRAPH-EDGE-001 through GRAPH-EDGE-010 only.', 'NODE is consumed through typed-reference/child-resolution callbacks; action equality and multiplicity are injected.', 'No path, root, reclamation, production, native CUDA, performance or product claim.'] };
-await mkdir(path.join(here, 'build'), { recursive: true });
-await writeFile(path.join(here, selected === null ? 'build/graph-edge-evidence.json' : `build/graph-edge-evidence.${selected}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
+await mkdir(selectedJoin(here, 'build'), { recursive: true });
+await writeFile(selectedJoin(here, selected === null ? 'build/graph-edge-evidence.json' : `build/graph-edge-evidence.${selected}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
 console.log(`capsule=${evidence.capsule} expected=${summary.expected} discovered=${summary.discovered} executed=${summary.executed} passed=${summary.passed} failed=${summary.failed}`);
 console.log(`graph_edge_evidence_sha256=${evidenceIdentity.sha256} canonical_bytes=${evidenceIdentity.byteLength}`);
 if (failed.length) process.exit(1);

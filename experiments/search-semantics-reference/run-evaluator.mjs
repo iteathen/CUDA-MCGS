@@ -1,3 +1,4 @@
+import {selectReferencePath,selectReferenceRelativePath} from './src/reference-selection.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -8,13 +9,14 @@ import { canonicalIdentity, sourceTextSha256 } from './src/canonical.mjs';
 import { assertUniqueStrings, exactKeys, fail } from './src/errors.mjs';
 import { DIRECT_EVALUATOR_REQUIREMENTS, registerEvaluatorCases } from './src/evaluator-cases.mjs';
 
+const selectedJoin = (...parts) => selectReferencePath(path.join(...parts));
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const fixturePath = path.join(experimentRoot, 'fixtures', 'evaluator-cases.json');
-const composerEvidencePath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
-const evaluatorProjectionPath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evaluator-profiles.json');
-const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
-const evaluatorSpecPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0009-evaluator-contract.md');
+const fixturePath = selectedJoin(experimentRoot, 'fixtures', 'evaluator-cases.json');
+const composerEvidencePath = selectedJoin(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
+const evaluatorProjectionPath = selectedJoin(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evaluator-profiles.json');
+const requirementCoveragePath = selectedJoin(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
+const evaluatorSpecPath = selectedJoin(repositoryRoot, 'docs', 'specs', 'SPEC-0009-evaluator-contract.md');
 
 assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Evaluator reference requires Node 24 or newer; found ${process.version}`);
 
@@ -164,7 +166,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/requirement-coverage.json',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths.map(selectReferenceRelativePath)) sources[relative] = sourceTextSha256(await readFile(selectedJoin(repositoryRoot, relative)));
 const evidenceSubject = {
   schema: 'cuda-mcgs.search-semantics-evaluator-evidence-key/0.2.0',
   composerEvidence: fixture.composerEvidence,
@@ -206,10 +208,10 @@ const evidence = {
   ],
 };
 
-const evidenceDirectory = path.join(experimentRoot, 'build');
+const evidenceDirectory = selectedJoin(experimentRoot, 'build');
 await mkdir(evidenceDirectory, { recursive: true });
 const evidenceName = selectedCase === null ? 'evaluator-evidence.json' : `evaluator-evidence.${selectedCase}.json`;
-await writeFile(path.join(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
+await writeFile(selectedJoin(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
 
 console.log(`capsule=${evidence.capsule} scope=${evidence.scope} expected=${summary.expected} discovered=${summary.discovered} executed=${summary.executed} passed=${summary.passed} failed=${summary.failed} not_discovered=${summary.notDiscovered} not_executed_by_selection=${summary.notExecutedBySelection}`);
 console.log(`composer_evidence_sha256=${fixture.composerEvidence.sha256} evaluator_projection_sha256=${evaluatorProjection.projectionIdentity.sha256} evaluator_evidence_sha256=${evidenceIdentity.sha256} canonical_bytes=${evidenceIdentity.byteLength}`);

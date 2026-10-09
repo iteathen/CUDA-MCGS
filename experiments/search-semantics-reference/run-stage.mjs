@@ -1,3 +1,4 @@
+import {selectReferencePath,selectReferenceRelativePath} from './src/reference-selection.mjs';
 import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -9,14 +10,15 @@ import { canonicalIdentity, sourceTextSha256 } from './src/canonical.mjs';
 import { assertUniqueStrings, fail } from './src/errors.mjs';
 import { registerStageCases } from './src/stage-cases.mjs';
 
+const selectedJoin = (...parts) => selectReferencePath(path.join(...parts));
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const composerRoot = path.join(repositoryRoot, 'conformance', 'search-compiler');
-const fixturePath = path.join(experimentRoot, 'fixtures', 'stage-cases.json');
-const stageProjectionPath = path.join(composerRoot, 'build', 'stage-profiles.json');
-const composerEvidencePath = path.join(composerRoot, 'build', 'evidence.json');
-const specPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0003-search-stage-and-extension-surface.md');
-const coveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
+const composerRoot = selectedJoin(repositoryRoot, 'conformance', 'search-compiler');
+const fixturePath = selectedJoin(experimentRoot, 'fixtures', 'stage-cases.json');
+const stageProjectionPath = selectedJoin(composerRoot, 'build', 'stage-profiles.json');
+const composerEvidencePath = selectedJoin(composerRoot, 'build', 'evidence.json');
+const specPath = selectedJoin(repositoryRoot, 'docs', 'specs', 'SPEC-0003-search-stage-and-extension-surface.md');
+const coveragePath = selectedJoin(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 
 assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Stage reference requires Node 24 or newer; found ${process.version}`);
 
@@ -137,7 +139,7 @@ const sourcePaths = [
   'scripts/run-stage-reference.mjs',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(relative.startsWith('components/search-compiler/src/') ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8') : await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths.map(selectReferenceRelativePath)) sources[relative] = sourceTextSha256(relative.startsWith('components/search-compiler/src/') ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8') : await readFile(selectedJoin(repositoryRoot, relative)));
 
 const evidenceSubject = {
   schema: 'cuda-mcgs.search-semantics-stage-evidence-key/0.1.0',
@@ -171,10 +173,10 @@ const evidence = {
     'Device-JS validation/lowering, PTX/cubin/LTO/native artifacts, linking/loading, CUDA publication races, occupancy, performance and exact compatible-pair qualification remain CUDA-JS/native responsibilities.',
   ],
 };
-const evidenceDirectory = path.join(experimentRoot, 'build');
+const evidenceDirectory = selectedJoin(experimentRoot, 'build');
 await mkdir(evidenceDirectory, { recursive: true });
 const evidenceName = selectedCase === null ? 'stage-evidence.json' : `stage-evidence.${selectedCase}.json`;
-await writeFile(path.join(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
+await writeFile(selectedJoin(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
 console.log(`capsule=${evidence.capsule} scope=${evidence.scope} expected=${summary.expected} discovered=${summary.discovered} executed=${summary.executed} passed=${summary.passed} failed=${summary.failed} direct_requirements=${summary.directRequirements} direct_executed=${summary.directRequirementsExecuted}`);
 console.log(`composer_evidence_sha256=${composerEvidence.representationCompositionEvidenceKey.sha256} stage_projection_sha256=${stageProjection.projectionIdentity.sha256} stage_evidence_sha256=${evidenceIdentity.sha256} canonical_bytes=${evidenceIdentity.byteLength}`);
 if (failed.length > 0) process.exit(1);

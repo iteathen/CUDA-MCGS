@@ -1,3 +1,4 @@
+import {selectReferencePath,selectReferenceRelativePath} from './src/reference-selection.mjs';
 import { readSearchCompilerSource } from '../../components/search-compiler/testing.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -11,15 +12,16 @@ import { registerSessionBoundaryCases } from './src/session-boundary-cases.mjs';
 import { registerSessionCases } from './src/session-cases.mjs';
 import { registerSessionReplayCases } from './src/session-replay-cases.mjs';
 
+const selectedJoin = (...parts) => selectReferencePath(path.join(...parts));
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const composerRoot = path.join(repositoryRoot, 'conformance', 'search-compiler');
-const fixturePath = path.join(experimentRoot, 'fixtures', 'session-cases.json');
-const sessionProjectionPath = path.join(composerRoot, 'build', 'session-profiles.json');
-const composerEvidencePath = path.join(composerRoot, 'build', 'evidence.json');
-const terminalEvidencePath = path.join(experimentRoot, 'build', 'terminal-slice-evidence.json');
-const specPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0006-search-session-control-and-observation.md');
-const coveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
+const composerRoot = selectedJoin(repositoryRoot, 'conformance', 'search-compiler');
+const fixturePath = selectedJoin(experimentRoot, 'fixtures', 'session-cases.json');
+const sessionProjectionPath = selectedJoin(composerRoot, 'build', 'session-profiles.json');
+const composerEvidencePath = selectedJoin(composerRoot, 'build', 'evidence.json');
+const terminalEvidencePath = selectedJoin(experimentRoot, 'build', 'terminal-slice-evidence.json');
+const specPath = selectedJoin(repositoryRoot, 'docs', 'specs', 'SPEC-0006-search-session-control-and-observation.md');
+const coveragePath = selectedJoin(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 
 assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Session reference requires Node 24 or newer; found ${process.version}`);
 
@@ -154,7 +156,7 @@ const sourcePaths = [
   'scripts/verify-session-advance-boundary.mjs',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(relative.startsWith('components/search-compiler/src/') ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8') : await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths.map(selectReferenceRelativePath)) sources[relative] = sourceTextSha256(relative.startsWith('components/search-compiler/src/') ? Buffer.from(await readSearchCompilerSource(path.basename(relative)), 'utf8') : await readFile(selectedJoin(repositoryRoot, relative)));
 
 const evidenceSubject = {
   schema: 'cuda-mcgs.search-semantics-session-evidence-key/0.1.0',
@@ -191,10 +193,10 @@ const evidence = {
   ],
 };
 
-const evidenceDirectory = path.join(experimentRoot, 'build');
+const evidenceDirectory = selectedJoin(experimentRoot, 'build');
 await mkdir(evidenceDirectory, { recursive: true });
 const evidenceName = selectedCase === null ? 'session-evidence.json' : `session-evidence.${selectedCase}.json`;
-await writeFile(path.join(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
+await writeFile(selectedJoin(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
 
 console.log(`capsule=${evidence.capsule} scope=${evidence.scope} expected=${summary.expected} discovered=${summary.discovered} executed=${summary.executed} passed=${summary.passed} failed=${summary.failed} direct_requirements=${summary.directRequirements} direct_executed=${summary.directRequirementsExecuted}`);
 console.log(`composer_evidence_sha256=${composerEvidence.representationCompositionEvidenceKey.sha256} session_projection_sha256=${sessionProjection.projectionIdentity.sha256} session_evidence_sha256=${evidenceIdentity.sha256} canonical_bytes=${evidenceIdentity.byteLength}`);

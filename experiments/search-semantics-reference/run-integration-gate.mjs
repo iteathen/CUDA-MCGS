@@ -1,3 +1,4 @@
+import {selectReferencePath,selectReferenceRelativePath} from './src/reference-selection.mjs';
 import assert from 'node:assert/strict';
 import { readFile, rename, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -8,14 +9,15 @@ import { fileURLToPath } from 'node:url';
 import { canonicalClone, canonicalIdentity, sourceTextSha256 } from './src/canonical.mjs';
 import { fail } from './src/errors.mjs';
 
+const selectedJoin = (...parts) => selectReferencePath(path.join(...parts));
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const fixturePath = path.join(experimentRoot, 'fixtures', 'integration-cases.json');
-const frozenLocksPath = path.join(experimentRoot, 'fixtures', 'integration-evidence-locks.json');
-const coveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
-const verifierPath = path.join(experimentRoot, 'run-integration.mjs');
-const integrationEvidencePath = path.join(experimentRoot, 'build', 'integration-evidence.json');
-const gateEvidencePath = path.join(experimentRoot, 'build', 'integration-gate-evidence.json');
+const fixturePath = selectedJoin(experimentRoot, 'fixtures', 'integration-cases.json');
+const frozenLocksPath = selectedJoin(experimentRoot, 'fixtures', 'integration-evidence-locks.json');
+const coveragePath = selectedJoin(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
+const verifierPath = selectedJoin(experimentRoot, 'run-integration.mjs');
+const integrationEvidencePath = selectedJoin(experimentRoot, 'build', 'integration-evidence.json');
+const gateEvidencePath = selectedJoin(experimentRoot, 'build', 'integration-gate-evidence.json');
 
 assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS reference integration gate requires Node 24 or newer; found ${process.version}`);
 
@@ -99,7 +101,7 @@ async function assertFrozenOwnerEvidence(fixture) {
   assertExactEvidenceManifest(fixture);
   assertRequiredComposerWitnesses(fixture);
   for (const descriptor of fixture.evidenceInputs) {
-    const evidence = await readJson(path.join(repositoryRoot, descriptor.path));
+    const evidence = await readJson(selectedJoin(repositoryRoot, descriptor.path));
     assertFrozenIdentity(descriptor.id, identityOf(descriptor.id, evidence));
   }
 }
@@ -148,7 +150,7 @@ async function withFileMutation(absolutePath, mutate, body) {
 async function missingOwnerMutation(fixture) {
   const terminalDescriptor = fixture.evidenceInputs.find(({ id }) => id === 'terminal');
   assert(terminalDescriptor, 'terminal evidence descriptor is required for missing-owner mutation');
-  const evidencePath = path.join(repositoryRoot, terminalDescriptor.path);
+  const evidencePath = selectedJoin(repositoryRoot, terminalDescriptor.path);
   const backupPath = `${evidencePath}.integration-mutation-backup`;
   await rename(evidencePath, backupPath);
   try {
@@ -179,7 +181,7 @@ async function nativePromotionMutation() {
 async function channelRouteLossMutation(fixture) {
   const descriptor = fixture.evidenceInputs.find(({ id }) => id === 'channel');
   assert(descriptor, 'Channel evidence descriptor is required for route-loss mutation');
-  const channelPath = path.join(repositoryRoot, descriptor.path);
+  const channelPath = selectedJoin(repositoryRoot, descriptor.path);
   return withFileMutation(channelPath, async (original) => {
     const mutated = JSON.parse(original.toString('utf8'));
     mutated.directRequirements = mutated.directRequirements.slice(1);
@@ -246,7 +248,7 @@ const sourcePaths = [
   'scripts/run-engine-reference-integration.mjs',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths.map(selectReferenceRelativePath)) sources[relative] = sourceTextSha256(await readFile(selectedJoin(repositoryRoot, relative)));
 
 const gateSubject = {
   schema: 'cuda-mcgs.engine-reference-integration-gate-evidence-key/0.1.0',

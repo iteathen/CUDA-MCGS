@@ -1,3 +1,4 @@
+import {selectReferencePath,selectReferenceRelativePath} from './src/reference-selection.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -8,19 +9,20 @@ import { canonicalIdentity, sourceTextSha256 } from './src/canonical.mjs';
 import { assertUniqueStrings, exactKeys, fail } from './src/errors.mjs';
 import { registerGraphAdvanceOccurrenceCases } from './src/graph-advance-occurrence-cases.mjs';
 
+const selectedJoin = (...parts) => selectReferencePath(path.join(...parts));
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const fixturePath = path.join(experimentRoot, 'fixtures', 'graph-advance-occurrence-cases.json');
-const composerRoot = path.join(repositoryRoot, 'conformance', 'search-compiler');
-const composerEvidencePath = path.join(composerRoot, 'build', 'evidence.json');
-const graphProjectionPath = path.join(composerRoot, 'build', 'graph-profiles.json');
-const rootControlPath = path.join(composerRoot, 'build', 'root-control.json');
-const nodeEvidencePath = path.join(experimentRoot, 'build', 'graph-node-evidence.json');
-const edgeEvidencePath = path.join(experimentRoot, 'build', 'graph-edge-evidence.json');
-const refEvidencePath = path.join(experimentRoot, 'build', 'graph-ref-evidence.json');
-const pathEvidencePath = path.join(experimentRoot, 'build', 'graph-path-evidence.json');
-const rootEvidencePath = path.join(experimentRoot, 'build', 'graph-root-evidence.json');
-const reclaimEvidencePath = path.join(experimentRoot, 'build', 'graph-reclaim-evidence.json');
+const fixturePath = selectedJoin(experimentRoot, 'fixtures', 'graph-advance-occurrence-cases.json');
+const composerRoot = selectedJoin(repositoryRoot, 'conformance', 'search-compiler');
+const composerEvidencePath = selectedJoin(composerRoot, 'build', 'evidence.json');
+const graphProjectionPath = selectedJoin(composerRoot, 'build', 'graph-profiles.json');
+const rootControlPath = selectedJoin(composerRoot, 'build', 'root-control.json');
+const nodeEvidencePath = selectedJoin(experimentRoot, 'build', 'graph-node-evidence.json');
+const edgeEvidencePath = selectedJoin(experimentRoot, 'build', 'graph-edge-evidence.json');
+const refEvidencePath = selectedJoin(experimentRoot, 'build', 'graph-ref-evidence.json');
+const pathEvidencePath = selectedJoin(experimentRoot, 'build', 'graph-path-evidence.json');
+const rootEvidencePath = selectedJoin(experimentRoot, 'build', 'graph-root-evidence.json');
+const reclaimEvidencePath = selectedJoin(experimentRoot, 'build', 'graph-reclaim-evidence.json');
 
 assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Graph advance occurrence closure requires Node 24 or newer; found ${process.version}`);
 
@@ -134,7 +136,7 @@ const sourcePaths = [
   'docs/specs/SPEC-0010-graph-storage-and-reclamation.md',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths.map(selectReferenceRelativePath)) sources[relative] = sourceTextSha256(await readFile(selectedJoin(repositoryRoot, relative)));
 
 const evidenceSubject = {
   schema: 'cuda-mcgs.search-semantics-graph-advance-occurrence-evidence-key/0.2.0',
@@ -181,10 +183,10 @@ const evidence = {
   ],
 };
 
-const evidenceDirectory = path.join(experimentRoot, 'build');
+const evidenceDirectory = selectedJoin(experimentRoot, 'build');
 await mkdir(evidenceDirectory, { recursive: true });
 const evidenceName = selectedCase === null ? 'graph-advance-occurrence-evidence.json' : `graph-advance-occurrence-evidence.${selectedCase}.json`;
-await writeFile(path.join(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
+await writeFile(selectedJoin(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
 
 console.log(`capsule=${evidence.capsule} scope=${evidence.scope} expected=${summary.expected} discovered=${summary.discovered} executed=${summary.executed} passed=${summary.passed} failed=${summary.failed} not_discovered=${summary.notDiscovered} not_executed_by_selection=${summary.notExecutedBySelection}`);
 console.log(`graph_ref_evidence_sha256=${refEvidence.evidenceIdentity.sha256} graph_path_evidence_sha256=${pathEvidence.evidenceIdentity.sha256} graph_root_evidence_sha256=${rootEvidence.evidenceIdentity.sha256} graph_reclaim_evidence_sha256=${reclaimEvidence.evidenceIdentity.sha256} graph_advance_occurrence_evidence_sha256=${evidenceIdentity.sha256} canonical_bytes=${evidenceIdentity.byteLength}`);

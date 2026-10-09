@@ -1,3 +1,4 @@
+import {selectReferencePath,selectReferenceRelativePath} from './src/reference-selection.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -10,14 +11,15 @@ import { assertUniqueStrings, exactKeys, fail } from './src/errors.mjs';
 import { assertMutationDetected } from './src/mutation.mjs';
 import { normalizeDeclaredSchedule, runDeclaredSchedule } from './src/schedule.mjs';
 
+const selectedJoin = (...parts) => selectReferencePath(path.join(...parts));
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const fixturePath = path.join(experimentRoot, 'fixtures', 'neutral-schedules.json');
-const domainFixturePath = path.join(experimentRoot, 'fixtures', 'domain-cases.json');
-const composerEvidencePath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
-const domainProjectionPath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'domain-profiles.json');
-const domainSpecPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0007-domain-state-action-and-transition.md');
-const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
+const fixturePath = selectedJoin(experimentRoot, 'fixtures', 'neutral-schedules.json');
+const domainFixturePath = selectedJoin(experimentRoot, 'fixtures', 'domain-cases.json');
+const composerEvidencePath = selectedJoin(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
+const domainProjectionPath = selectedJoin(repositoryRoot, 'conformance', 'search-compiler', 'build', 'domain-profiles.json');
+const domainSpecPath = selectedJoin(repositoryRoot, 'docs', 'specs', 'SPEC-0007-domain-state-action-and-transition.md');
+const requirementCoveragePath = selectedJoin(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 
 assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS search-semantics reference requires Node 24 or newer; found ${process.version}`);
 
@@ -399,7 +401,7 @@ const sourcePaths = [
   'scripts/run-search-semantics-reference.mjs',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths.map(selectReferenceRelativePath)) sources[relative] = sourceTextSha256(await readFile(selectedJoin(repositoryRoot, relative)));
 const evidenceSubject = {
   schema: 'cuda-mcgs.search-semantics-reference-evidence-key/0.2.0',
   composerEvidence: fixture.composerEvidence,
@@ -440,10 +442,10 @@ const evidence = {
     'No production runtime, physical scheduler, CUDA-JS execution, native CUDA, performance, search-quality, public SDK, contract acceptance or multi-GPU support claim.',
   ],
 };
-const evidenceDirectory = path.join(experimentRoot, 'build');
+const evidenceDirectory = selectedJoin(experimentRoot, 'build');
 await mkdir(evidenceDirectory, { recursive: true });
 const evidenceName = selectedCase === null ? 'evidence.json' : `evidence.${selectedCase}.json`;
-await writeFile(path.join(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
+await writeFile(selectedJoin(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
 
 console.log(`capsule=${evidence.capsule} scope=${evidence.scope} expected=${summary.expected} discovered=${summary.discovered} executed=${summary.executed} passed=${summary.passed} failed=${summary.failed} required_skipped=0 conditional_skipped=0 optional_skipped=0 not_discovered=0 not_executed_by_selection=${summary.notExecutedBySelection}`);
 console.log(`composer_evidence_sha256=${fixture.composerEvidence.sha256} harness_evidence_sha256=${evidenceIdentity.sha256} canonical_bytes=${evidenceIdentity.byteLength}`);

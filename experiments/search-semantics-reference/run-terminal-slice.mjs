@@ -1,3 +1,4 @@
+import {selectReferencePath,selectReferenceRelativePath} from './src/reference-selection.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -8,13 +9,14 @@ import { canonicalIdentity, sourceTextSha256 } from './src/canonical.mjs';
 import { assertUniqueStrings, exactKeys, fail } from './src/errors.mjs';
 import { registerTerminalSliceCases } from './src/terminal-slice-cases.mjs';
 
+const selectedJoin = (...parts) => selectReferencePath(path.join(...parts));
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const composerRoot = path.join(repositoryRoot, 'conformance', 'search-compiler');
-const fixturePath = path.join(experimentRoot, 'fixtures', 'terminal-slice-cases.json');
-const domainFixturePath = path.join(experimentRoot, 'fixtures', 'domain-cases.json');
-const frameworkFixturePath = path.join(experimentRoot, 'fixtures', 'framework-lifecycle-cases.json');
-const composerEvidencePath = path.join(composerRoot, 'build', 'evidence.json');
+const composerRoot = selectedJoin(repositoryRoot, 'conformance', 'search-compiler');
+const fixturePath = selectedJoin(experimentRoot, 'fixtures', 'terminal-slice-cases.json');
+const domainFixturePath = selectedJoin(experimentRoot, 'fixtures', 'domain-cases.json');
+const frameworkFixturePath = selectedJoin(experimentRoot, 'fixtures', 'framework-lifecycle-cases.json');
+const composerEvidencePath = selectedJoin(composerRoot, 'build', 'evidence.json');
 
 assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS terminal-slice reference requires Node 24 or newer; found ${process.version}`);
 
@@ -43,7 +45,7 @@ const projectionDefinitions = [
 ];
 const projections = {};
 for (const [owner, fileName] of projectionDefinitions) {
-  projections[owner] = await readJson(path.join(composerRoot, 'build', fileName), `TERMINAL_SLICE_${owner.toUpperCase()}_PROJECTION_MISSING`);
+  projections[owner] = await readJson(selectedJoin(composerRoot, 'build', fileName), `TERMINAL_SLICE_${owner.toUpperCase()}_PROJECTION_MISSING`);
 }
 
 exactKeys(fixture, ['expectedCases', 'profileProjection', 'schema'], 'TERMINAL_SLICE_FIXTURE_FIELDS', 'terminal-slice fixture');
@@ -159,7 +161,7 @@ const sourcePaths = [
   'docs/specs/SPEC-0013-result-and-observation-publication.md',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths.map(selectReferenceRelativePath)) sources[relative] = sourceTextSha256(await readFile(selectedJoin(repositoryRoot, relative)));
 
 const projectionIdentities = Object.fromEntries(projectionDefinitions.map(([owner]) => [owner, projections[owner].projectionIdentity]));
 const evidenceSubject = {
@@ -192,10 +194,10 @@ const evidence = {
   ],
 };
 
-const evidenceDirectory = path.join(experimentRoot, 'build');
+const evidenceDirectory = selectedJoin(experimentRoot, 'build');
 await mkdir(evidenceDirectory, { recursive: true });
 const evidenceName = selectedCase === null ? 'terminal-slice-evidence.json' : `terminal-slice-evidence.${selectedCase}.json`;
-await writeFile(path.join(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
+await writeFile(selectedJoin(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
 
 console.log(`capsule=${evidence.capsule} scope=${evidence.scope} expected=${summary.expected} discovered=${summary.discovered} executed=${summary.executed} passed=${summary.passed} failed=${summary.failed}`);
 console.log(`composer_evidence_sha256=${composerEvidence.representationCompositionEvidenceKey.sha256} terminal_slice_evidence_sha256=${evidenceIdentity.sha256} canonical_bytes=${evidenceIdentity.byteLength}`);

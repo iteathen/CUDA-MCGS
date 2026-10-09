@@ -1,3 +1,4 @@
+import {selectReferencePath,selectReferenceRelativePath} from './src/reference-selection.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -7,10 +8,11 @@ import { fileURLToPath } from 'node:url';
 import { canonicalClone, canonicalIdentity, sourceTextSha256 } from './src/canonical.mjs';
 import { assertUniqueStrings, fail } from './src/errors.mjs';
 
+const selectedJoin = (...parts) => selectReferencePath(path.join(...parts));
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const fixturePath = path.join(experimentRoot, 'fixtures', 'integration-cases.json');
-const coveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
+const fixturePath = selectedJoin(experimentRoot, 'fixtures', 'integration-cases.json');
+const coveragePath = selectedJoin(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
 
 assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS reference integration requires Node 24 or newer; found ${process.version}`);
 
@@ -36,7 +38,7 @@ const evidenceById = new Map();
 for (const descriptor of fixture.evidenceInputs) {
   assert(typeof descriptor.id === 'string' && descriptor.id.length > 0, 'integration evidence descriptor id is required');
   if (evidenceById.has(descriptor.id)) fail('INTEGRATION_EVIDENCE_DESCRIPTOR_DUPLICATE', `duplicate evidence descriptor ${descriptor.id}`);
-  const absolutePath = path.join(repositoryRoot, descriptor.path);
+  const absolutePath = selectedJoin(repositoryRoot, descriptor.path);
   const evidence = await readJson(absolutePath, 'INTEGRATION_EVIDENCE_MISSING');
   assert.equal(evidence.capsule, descriptor.capsule, `${descriptor.id} capsule drifted`);
   assert.equal(evidence.status, 'pass', `${descriptor.id} evidence must pass`);
@@ -284,7 +286,7 @@ const sourcePaths = [
   'scripts/run-engine-reference-integration.mjs',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths.map(selectReferenceRelativePath)) sources[relative] = sourceTextSha256(await readFile(selectedJoin(repositoryRoot, relative)));
 
 if (integrationInputIdentities === null) integrationInputIdentities = Object.fromEntries([...evidenceById].map(([id]) => [id, evidenceIdentity(id)]));
 const evidenceSubject = {
@@ -324,9 +326,9 @@ const evidence = {
     'This candidate packet is not protected #122 semantic acceptance, production readiness, release readiness or a public SDK compatibility promise.',
   ],
 };
-const evidenceDirectory = path.join(experimentRoot, 'build');
+const evidenceDirectory = selectedJoin(experimentRoot, 'build');
 await mkdir(evidenceDirectory, { recursive: true });
-await writeFile(path.join(evidenceDirectory, 'integration-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`);
+await writeFile(selectedJoin(evidenceDirectory, 'integration-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`);
 console.log(`capsule=${evidence.capsule} status=${evidence.status} expected=${summary.expected} discovered=${summary.discovered} passed=${summary.passed} failed=${summary.failed} direct_requirements=${summary.directRequirements} channel_requirements=${summary.channelRequirements} reference_requirements=${summary.referenceRequirements} native_deferred=${summary.nativeDeferredRequirements}`);
 console.log(`composer_evidence_sha256=${evidence.composerEvidence.sha256} integration_evidence_sha256=${finalEvidenceIdentity.sha256} canonical_bytes=${finalEvidenceIdentity.byteLength}`);
 if (failed.length > 0) process.exit(1);

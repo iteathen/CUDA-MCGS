@@ -4,9 +4,11 @@ import assert from 'node:assert/strict';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {selectReferencePath,referenceSelection,assertHistoricalReferenceBytes,semanticFixtureProjection} from '../experiments/search-semantics-reference/src/reference-selection.mjs';
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const fixtureRoot = path.join(repositoryRoot, 'experiments', 'search-semantics-reference', 'fixtures');
+const historicalFixtureRoot = path.join(repositoryRoot, 'experiments', 'search-semantics-reference', 'fixtures');
+const fixtureRoot = selectReferencePath(historicalFixtureRoot);
 const integrationFixturePath = path.join(fixtureRoot, 'integration-cases.json');
 const integrationLocksPath = path.join(fixtureRoot, 'integration-evidence-locks.json');
 
@@ -87,6 +89,9 @@ function identityOf(id, evidence) {
 }
 
 const { mode, source: selectedSource } = parseArgs(process.argv.slice(2));
+const selectionManifest=await readJson(path.join(repositoryRoot,'experiments/search-semantics-reference/reference-chain-selection.json'));
+assertHistoricalReferenceBytes(selectionManifest);
+if(mode==='write')assert.equal(referenceSelection.version,'0.0.0-dev.1','historical fixtures are immutable; maintenance requires an explicitly selected new chain');
 const integrationFixture = await readJson(integrationFixturePath);
 assert(Array.isArray(integrationFixture.evidenceInputs), 'integration-cases evidenceInputs must be an array');
 const descriptors = new Map(integrationFixture.evidenceInputs.map((entry) => [entry.id, entry]));
@@ -165,10 +170,15 @@ for (const name of fixtureNames) {
     changes.push(`${name}:${key} <- ${source.sourceKey}`);
     if (mode === 'write') {
       fixture[key] = withIdentity(value, expected);
+      if(key==='composerEvidence'&&fixture.schedules)for(const schedule of Object.values(fixture.schedules))schedule.evidenceKey=expected.sha256;
       changed = true;
     }
   }
-  if (changed) await writeFile(absolutePath, `${JSON.stringify(fixture, null, 2)}\n`);
+  if (changed) {
+    const historical=await readJson(path.join(historicalFixtureRoot,name));
+    assert.deepEqual(semanticFixtureProjection(fixture),semanticFixtureProjection(historical),`${name}: reference ancestry maintenance cannot alter semantic oracles`);
+    await writeFile(absolutePath, `${JSON.stringify(fixture, null, 2)}\n`);
+  }
 }
 
 const locks = await readJson(integrationLocksPath);

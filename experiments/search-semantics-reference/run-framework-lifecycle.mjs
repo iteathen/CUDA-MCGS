@@ -1,3 +1,4 @@
+import {selectReferencePath,selectReferenceRelativePath} from './src/reference-selection.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
@@ -11,12 +12,13 @@ import {
   registerFrameworkLifecycleCases,
 } from './src/framework-lifecycle-cases.mjs';
 
+const selectedJoin = (...parts) => selectReferencePath(path.join(...parts));
 const experimentRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const repositoryRoot = path.resolve(experimentRoot, '..', '..');
-const fixturePath = path.join(experimentRoot, 'fixtures', 'framework-lifecycle-cases.json');
-const composerEvidencePath = path.join(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
-const requirementCoveragePath = path.join(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
-const frameworkSpecPath = path.join(repositoryRoot, 'docs', 'specs', 'SPEC-0000-framework-requirements.md');
+const fixturePath = selectedJoin(experimentRoot, 'fixtures', 'framework-lifecycle-cases.json');
+const composerEvidencePath = selectedJoin(repositoryRoot, 'conformance', 'search-compiler', 'build', 'evidence.json');
+const requirementCoveragePath = selectedJoin(repositoryRoot, 'schemas', 'search-ir', '0.2.0', 'requirement-coverage.json');
+const frameworkSpecPath = selectedJoin(repositoryRoot, 'docs', 'specs', 'SPEC-0000-framework-requirements.md');
 
 assert(Number(process.versions.node.split('.')[0]) >= 24, `CUDA-MCGS Framework lifecycle reference requires Node 24 or newer; found ${process.version}`);
 
@@ -176,7 +178,7 @@ const sourcePaths = [
   'schemas/search-ir/0.2.0/requirement-coverage.json',
 ];
 const sources = {};
-for (const relative of sourcePaths) sources[relative] = sourceTextSha256(await readFile(path.join(repositoryRoot, relative)));
+for (const relative of sourcePaths.map(selectReferenceRelativePath)) sources[relative] = sourceTextSha256(await readFile(selectedJoin(repositoryRoot, relative)));
 
 const evidenceSubject = {
   schema: 'cuda-mcgs.search-semantics-framework-lifecycle-evidence-key/0.2.0',
@@ -217,10 +219,10 @@ const evidence = {
   ],
 };
 
-const evidenceDirectory = path.join(experimentRoot, 'build');
+const evidenceDirectory = selectedJoin(experimentRoot, 'build');
 await mkdir(evidenceDirectory, { recursive: true });
 const evidenceName = selectedCase === null ? 'framework-lifecycle-evidence.json' : `framework-lifecycle-evidence.${selectedCase}.json`;
-await writeFile(path.join(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
+await writeFile(selectedJoin(evidenceDirectory, evidenceName), `${JSON.stringify(evidence, null, 2)}\n`);
 
 console.log(`capsule=${evidence.capsule} scope=${evidence.scope} expected=${summary.expected} discovered=${summary.discovered} executed=${summary.executed} passed=${summary.passed} failed=${summary.failed} not_discovered=${summary.notDiscovered} not_executed_by_selection=${summary.notExecutedBySelection}`);
 console.log(`composer_evidence_sha256=${fixture.composerEvidence.sha256} framework_evidence_sha256=${evidenceIdentity.sha256} canonical_bytes=${evidenceIdentity.byteLength}`);
