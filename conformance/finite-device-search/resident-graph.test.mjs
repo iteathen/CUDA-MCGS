@@ -28,12 +28,14 @@ test('admission publishes complete action-ready candidates without materializing
 test('one-candidate second chance preserves focus/path/evaluation leases and rejects stale reused handles',()=>{
   const q=graphFixture({nodes:2,edges:8}),{m,L,fn}=q;
   const root=q.admit(0);m[2]=root;const leaf=q.admit(1);const nb=L.nodeMeta+leaf*16,gen=m[nb+1];
+  m[nb+15]=3;
   assert.equal(q.admit(2),0xffffffff);assert.equal(m[11],0); // clock0 focus is protected
   m[nb+7]=1;assert.equal(q.admit(2),0xffffffff);assert.equal(m[11],0); // clock1 evaluation lease
   m[nb+7]=0;assert.equal(q.admit(2),0xffffffff); // focus again
   assert.equal(q.admit(2),0xffffffff);assert.equal(m[nb+9],0); // recent node receives second chance
   assert.equal(q.admit(2),0xffffffff); // focus again
   const next=q.admit(2);assert.equal(next,leaf);assert.equal(m[11],1);assert.equal(m[5],2);assert.equal(fn.rg_valid(m,leaf,gen),false);assert.equal(fn.rg_valid(m,leaf,m[nb+1]),true);
+  assert.equal(m[nb+15],0,'new incarnation cannot carry prior evaluation disposition');
   assert.equal(m[13],5);assert.equal(m[6],3); // root2 + new leaf1; no leaked old span
 });
 test('selected child realization reuses verified diamond node and lazily repairs stale references',()=>{

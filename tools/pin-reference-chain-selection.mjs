@@ -10,7 +10,7 @@ const here=path.join(root,'experiments/search-semantics-reference');
 const manifestPath=selectReferenceManifestPath();
 const json=async file=>JSON.parse(await readFile(file,'utf8'));
 const manifest=await json(manifestPath);
-assert(['0.0.0-dev.1','0.0.0-dev.2'].includes(manifest.version),'only registered new explicit chains may be maintained');
+assert(['0.0.0-dev.1','0.0.0-dev.2','0.0.0-dev.3'].includes(manifest.version),'only registered new explicit chains may be maintained');
 assert.equal((await json(path.join(root,'package.json'))).version,manifest.version);
 assertHistoricalReferenceBytes(manifest);
 const check=spawnSync(process.execPath,[path.join(root,'tools/reference-evidence-locks.mjs'),'--check'],{cwd:root,stdio:'inherit'});

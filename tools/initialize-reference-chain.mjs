@@ -7,7 +7,7 @@ import {selectReferenceManifestPath} from '../experiments/search-semantics-refer
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const historical=path.join(root,'experiments/search-semantics-reference/fixtures');
 const version=JSON.parse(await readFile(path.join(root,'package.json'),'utf8')).version;
-assert(['0.0.0-dev.1','0.0.0-dev.2'].includes(version),'only registered new chains may be initialized');
+assert(['0.0.0-dev.1','0.0.0-dev.2','0.0.0-dev.3'].includes(version),'only registered new chains may be initialized');
 const selected=path.join(historical,version);
 await assert.rejects(()=>access(selected),{code:'ENOENT'},'initialization cannot overwrite an existing selected chain');
 await mkdir(selected);
@@ -19,12 +19,14 @@ for(const name of (await readdir(historical)).filter(name=>name.endsWith('.json'
 }
 const manifest={schema:'cuda-mcgs.versioned-reference-chain-selection/0.1.0',version,
  historicalVersion:'0.0.0-dev.0',historicalImplementation:'retained-provenance-only; current source does not replay the historical implementation',
- sourceCheckpoint:version==='0.0.0-dev.1'?'cd2f164b4f28e2f09b5bfa84729c0602da17fc4a':'9d20798b8b1a5c82903e6035c8511ce119934fc8',
+ sourceCheckpoint:{'0.0.0-dev.1':'cd2f164b4f28e2f09b5bfa84729c0602da17fc4a','0.0.0-dev.2':'9d20798b8b1a5c82903e6035c8511ce119934fc8','0.0.0-dev.3':'2fd0dbd722c2f25e1e93093a4c4265ea4f17afd0'}[version],
  historicalComposer:'0dfcd72db82122f56adedadde35c82af68c5ebb7e6f7acf4298f6705d923e58f',
  selectedComposer:'2f162aee57197c3fe84e4d3b469dd199d3dce9d83ccaf35a51fcbf69b251019a',historicalFixtures};
-if(version==='0.0.0-dev.2'){
-  const previous=(await readFile(path.join(root,'experiments/search-semantics-reference/reference-chain-selection.json'),'utf8')).replace(/\r\n?/g,'\n');
-  manifest.previousSelection={version:'0.0.0-dev.1',manifestSha256:createHash('sha256').update(previous).digest('hex'),claim:'retained-provenance; current source does not replay previous implementation'};
+if(version!=='0.0.0-dev.1'){
+  const previousVersion=version==='0.0.0-dev.2'?'0.0.0-dev.1':'0.0.0-dev.2';
+  const previousName=previousVersion==='0.0.0-dev.1'?'reference-chain-selection.json':`reference-chain-selection-${previousVersion}.json`;
+  const previous=(await readFile(path.join(root,'experiments/search-semantics-reference',previousName),'utf8')).replace(/\r\n?/g,'\n');
+  manifest.previousSelection={version:previousVersion,manifestSha256:createHash('sha256').update(previous).digest('hex'),claim:'retained-provenance; current source does not replay previous implementation'};
 }
 await writeFile(selectReferenceManifestPath(),JSON.stringify(manifest,null,2)+'\n');
 console.log(`reference_chain_initialized=${version} historical_fixtures=${Object.keys(historicalFixtures).length}`);

@@ -8,15 +8,21 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const here=path.join(root,'experiments/search-semantics-reference');
 const json=async file=>JSON.parse(await readFile(file,'utf8'));
 const manifest=await json(selectReferenceManifestPath());
-if(manifest.previousSelection){
-  assert.equal(manifest.previousSelection.version,'0.0.0-dev.1','unregistered retained chain');
-  const previousText=(await readFile(path.join(here,'reference-chain-selection.json'),'utf8')).replace(/\r\n?/g,'\n');
-  assert.equal(createHash('sha256').update(previousText).digest('hex'),manifest.previousSelection.manifestSha256,'retained previous manifest byte drift');
+let retained=manifest;
+while(retained.previousSelection){
+  const expected={'0.0.0-dev.3':'0.0.0-dev.2','0.0.0-dev.2':'0.0.0-dev.1'}[retained.version];
+  assert(expected,'unregistered retained chain owner');
+  assert.equal(retained.previousSelection.version,expected,'unregistered retained chain');
+  const previousName=expected==='0.0.0-dev.1'?'reference-chain-selection.json':`reference-chain-selection-${expected}.json`;
+  const previousText=(await readFile(path.join(here,previousName),'utf8')).replace(/\r\n?/g,'\n');
+  assert.equal(createHash('sha256').update(previousText).digest('hex'),retained.previousSelection.manifestSha256,'retained previous manifest byte drift');
   const previous=JSON.parse(previousText);
+  assert.equal(previous.version,expected,'retained manifest version substitution');
   for(const [name,expected]of Object.entries(previous.selectedFixtures)){
     const text=(await readFile(path.join(here,'fixtures',previous.version,name),'utf8')).replace(/\r\n?/g,'\n');
     assert.equal(createHash('sha256').update(text).digest('hex'),expected,`retained previous fixture byte drift: ${name}`);
   }
+  retained=previous;
 }
 assertHistoricalReferenceBytes(manifest);
 assertSelectedReferenceBytes(manifest);

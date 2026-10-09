@@ -1,0 +1,533 @@
+{
+  "schema": "cuda-mcgs.resident-terminal-authority-native-evidence/0.1.0",
+  "version": "0.0.0-dev.3",
+  "sourceCheckpoint": "2fd0dbd722c2f25e1e93093a4c4265ea4f17afd0",
+  "source": {
+    "resident-stop.mjs": "85c7e31351ddd6a4ec3a5c3f8267a452373e654e31e2cc3713003d3dcbee685b",
+    "resident-entries.mjs": "babb96611f8e579bb561378c87e100c6b85426b17c8f94409ed6b2a21ca3c19d",
+    "resident-progress.mjs": "f8782947209a612dff57ab0388f6e3d4c7b148cc05adc0ab7f5a9529c35090a4",
+    "resident-graph.mjs": "f5726ddf6847b4cb0ef9de9268ee7d2af8e40a3d969caaa2fd0a8ddbda18360c",
+    "resident-session-output.mjs": "5bdc11bcba6f3dcc3d75d9f173fda4e3347773ae4cb7ca3dcecb170a084864bf",
+    "resident-device-search.mjs": "cd69bbd9d76dc7e692f0cf5f9aa298d8235e156846e9ca65ccb6220592adf9f0",
+    "resident-profiles.mjs": "eaa4dfa49192070034719b506ef3021ed3eafc66e1242bc1e825fdbbacd4f518"
+  },
+  "scope": "isolated generated owner falsifiers; not composed chess, cache validity, engine strength or latency",
+  "stop": {
+    "scope": "isolated-generated-stop-journal-fault-injection-not-engine-or-Graph-progression",
+    "node": "v26.11.1",
+    "compatibility": {
+      "schemaVersion": 1,
+      "package": {
+        "name": "cuda-js",
+        "version": "0.1.0-alpha.22",
+        "format": "esm",
+        "nativeAddon": false,
+        "registryPublication": "not-yet-released",
+        "private": false,
+        "testingPhase": true,
+        "license": "AGPL-3.0-or-later",
+        "commercialLicensing": "available-separately"
+      },
+      "publicApi": {
+        "schemaVersion": 1,
+        "entries": [
+          "cuda-js",
+          "cuda-js/compatibility",
+          "cuda-js/testing"
+        ],
+        "testingEntry": "mock-only"
+      },
+      "node": {
+        "version": "v26.7.0",
+        "moduleAbi": "147",
+        "minimumVersion": "v26.1.0",
+        "operationPolicy": "testing-unconfirmed-at-or-above-minimum",
+        "ffi": "experimental",
+        "requiredFlags": [
+          "--experimental-ffi"
+        ],
+        "permissionRequirement": "--allow-ffi when the permission model is active"
+      },
+      "nativeProfiles": [
+        {
+          "host": "windows-native-x64",
+          "status": "testing-unconfirmed-by-default",
+          "qualifiedEvidence": "exact GTX 1660 Ti / Node v26.7.0 / Driver API 13030 profile only",
+          "abi": "win64",
+          "cudaHeader": "13.3.29",
+          "cudaHeaderSha256": "31df84e16179b6d97db4b3c0bae7697392a370b41983f4a8962f0e5a8069b577",
+          "driverApi": 13030,
+          "compilerProviders": "optional-exact-cuda-13.3",
+          "cublasLtProvider": "optional-exact-cuda-13.3-cublaslt-13.5.1-f32-row-major-matmul"
+        },
+        {
+          "host": "linux-native-x64",
+          "status": "testing-unconfirmed-by-default",
+          "qualification": "not-qualified",
+          "qualifiedEvidence": "none",
+          "abi": "sysv-x86-64",
+          "driverProvider": "canonical-libcuda-so.1",
+          "compilerProviders": "optional-exact-cuda-13.3",
+          "cublasLtProvider": "profile-not-yet-admitted"
+        },
+        {
+          "host": "linux-native-arm64",
+          "status": "backend-unavailable"
+        },
+        {
+          "host": "wsl2-x64",
+          "status": "backend-unavailable"
+        }
+      ],
+      "capabilities": {
+        "deviceSelection": "finite-sanitized-snapshot-opaque-process-local-selector-one-device-per-runtime-selected-targets",
+        "deviceMemory": "bounded-synchronous-copied-bytes",
+        "deviceMemoryAllocationMinimumAlignmentBytes": 256,
+        "moduleFormats": [
+          "ptx",
+          "cubin"
+        ],
+        "functionParameters": [
+          "device-memory",
+          "u32",
+          "u64",
+          "i32",
+          "f32",
+          "f64",
+          "f16",
+          "bf16",
+          "publication-mailbox-host-to-device-u32",
+          "publication-mailbox-device-to-host-u32"
+        ],
+        "deviceViewRelation": "pure-same-runtime-byte-range-relation-v1",
+        "typedDeviceViews": "allocation-owned-contiguous-1d-opaque-capability-explicit-launch-access",
+        "launchConcurrency": 1,
+        "gpuOperationLifecycle": "opaque-submit-status-wait-close-one-pending",
+        "boundedMultiOperationScheduling": "opt-in-capacity-two-two-private-streams-one-predecessor-no-queue",
+        "asyncTransfers": "opt-in-capacity-two-internal-pinned-staging-contiguous-h2d-d2h-d2d",
+        "publicationMailboxes": "private-mapped-named-u32-one-operation-lease-system-acquire-release",
+        "preparedOperationDags": "bounded-kernel-cublaslt-f32-dag-immutable-bindings-derived-library-access-single-stream-semantic-replay",
+        "deviceContinuationCandidate": "kernel-only-finite-dag-final-1x1-controller-device-self-tail-opaque-mailboxes-one-operation-unqualified-v1",
+        "preparedOperationDagLimits": {
+          "nodes": 32,
+          "edges": 64,
+          "bindings": 64,
+          "predecessorsPerNode": 8
+        },
+        "contextBoundLibraryAdapters": "optional-finite-driver-owned-provider-plans-existing-operation-lifecycle",
+        "cublasLtF32Matmul": "optional-row-major-contiguous-typed-views-explicit-bounded-workspace",
+        "compiler": "optional-nvrtc-13.3",
+        "compilerHeaderProfiles": {
+          "none": "default",
+          "cuda-cccl": "exact-manifest-verified-cuda-13.3-windows-qualified-linux-source-unqualified",
+          "cuda-numeric": "exact-manifest-verified-cuda-13.3-f64-f16-bf16-windows-qualified-linux-source-unqualified",
+          "cuda-device": "exact-composite-cuda-cccl-plus-cuda-numeric-windows-qualified-linux-source-unqualified"
+        },
+        "compilerOutputFormats": [
+          "ptx",
+          "lto-ir"
+        ],
+        "ptxRelocatableDeviceCode": "typed-boolean-default-false",
+        "linker": "optional-nvjitlink-13.3",
+        "linkInputFamilies": [
+          "ptx",
+          "typed-lto-ir"
+        ],
+        "deviceJsFrontend": "restricted-spec-0013-v1+spec-0022-atomic-observation-v1+spec-0022-device-publication-v1+spec-0014-publication-mailbox-v1",
+        "deviceJsInspection": "pure-cuda-free-public-program-semantic-inspection-shared-with-compile",
+        "deviceJsLimits": {
+          "parametersPerFunction": 64
+        },
+        "deviceJsDenseNumeric": "f64-f16-bf16-exact-casts-special-values-manifest-verified-headers",
+        "deviceJsErf": "f32-f64-same-kind-dense-child-provider-bound-erff-erf",
+        "deviceJsTanh": "f32-f64-same-kind-dense-child-provider-bound-tanhf-tanh",
+        "deviceJsWarp32": "typed-width-lane-masked-ballot-device-only-v1",
+        "deviceJsNumericChildOrder": [
+          "SPEC-0030-erf-v1",
+          "SPEC-0030-tanh-v1"
+        ],
+        "deviceJsLibraries": "typed-leaf-libraries-explicit-aliased-imports-selected-runtime-target-rdc-or-lto-final-cubin",
+        "deviceJsParser": {
+          "name": "acorn",
+          "version": "8.15.0",
+          "role": "syntax-only-replaceable-adapter"
+        },
+        "strictJit": "unsupported",
+        "processIsolation": "not-selected",
+        "rawPointers": false,
+        "arbitraryNativeCalls": false
+      },
+      "migration": {
+        "preOne": true,
+        "compatiblePatch": "public API schema unchanged",
+        "additivePrerelease": "package prerelease or minor identity increments",
+        "incompatibleChange": "public API schema increments with a new accepted specification and consumer conformance"
+      },
+      "evidenceInvalidation": [
+        "Node version or module ABI",
+        "operating system, architecture, or ABI",
+        "CUDA header, Driver API, toolkit, provider, or GPU profile",
+        "public API, semantic overlay, generated products, permissions, parser version, or artifact options",
+        "resource ownership, lifetime, error, health, or cleanup behavior"
+      ],
+      "claimLimits": [
+        "SPEC-0022-warp32-v1 adds GPU-only width/lane/masked-ballot helpers with explicit participation and imported-library profile propagation. Native qualification is recorded separately for each exact profile; portable evidence does not establish GPU execution, participation safety, or performance.",
+        "Structurally admitted native Windows x64 and Linux x64 CUDA profiles may operate for testing without a separate opt-in; native Linux x64 remains not-qualified.",
+        "Only exact capability/profile combinations with their required evidence are qualified; successful operation does not promote support.",
+        "The ordinary device-allocation minimum-alignment projection applies only to ordinary base allocations; it adds no caller-selected alignment, arbitrary offset-view guarantee, native support promotion, or performance claim.",
+        "SPEC-0010 relocatable PTX and SPEC-0012 Device LTO have exact Windows native qualification; Linux and every other provider/device profile remain independently gated. SPEC-0011 u64/i32/f32 scalar launch kinds retain their own native promotion gate.",
+        "SPEC-0021 f64/f16/bf16 scalar launch kinds are implemented in the public portable/software/package path; their exact native ABI/launch promotion evidence remains open.",
+        "SPEC-0021 contiguous one-dimensional typed device views are implemented as allocation-owned opaque public capabilities with explicit launch-access enforcement. Portable/package behavior is implemented; native view consumption remains unqualified.",
+        "SPEC-0016 opaque GPU operation submission/completion has exact Windows delayed-completion/deferred-failure/cleanup evidence only for its recorded Node/Driver/GPU profile; no broader support is implied.",
+        "SPEC-0018 capacity-two scheduling and SPEC-0019 internal-pinned async transfers have exact Windows and installed-package evidence only for the recorded Node/Driver/GPU profile; the compatibility default remains one pending operation.",
+        "SPEC-0014 publication mailboxes have exact Windows and installed-package evidence only for privately mapped named u32 lanes, one live GPU operation lease, and system-scope acquire/release publication on the recorded Node/Driver/GPU profile.",
+        "SPEC-0013 Device-JS plus the scoped atomic-observation and device-publication children is an implemented restricted frontend using pinned Acorn only for syntax parsing; exact Windows source-only generated-source/compiler/launch/oracle/lifecycle evidence qualifies only its recorded profile.",
+        "inspectDeviceProgram() is a pure CUDA-free frontend inspection path. Its portable/package conformance proves only deterministic Device-JS semantic validation and public descriptor projection; it does not claim native/provider execution or performance.",
+        "SPEC-0030 adds an exact additive Device-JS dense numeric profile for f64/f16/bf16 pointers, locals, device functions, kernel scalars, casts, arithmetic and special-value math. Exact installed-package Windows CUDA 13.3 header/compiler/compute_75/GTX 1660 Ti numerical-oracle and cleanup evidence does not qualify Linux, other providers/targets, tensor operations, tensor cores, fast math, or performance.",
+        "SPEC-0030-erf-v1 additively admits same-kind f32/f64 gpu.math.erf through the dense numeric profile and private ordinary erff/erf lowering. Portable/package evidence does not promote native numerical accuracy, provider compatibility, Linux support, fast-math, lower precision, GELU semantics, or performance.",
+        "SPEC-0030-tanh-v1 additively admits same-kind f32/f64 gpu.math.tanh through the dense numeric profile and private ordinary tanhf/tanh lowering, with canonical composition after erf when both children are required. Portable/package evidence does not promote native numerical accuracy, provider compatibility, Linux support, fast-math, lower precision, activation/model semantics, or performance.",
+        "SPEC-0022 device publication has exact Windows installed-package evidence only for naturally aligned u32/u64 device-scope release/acquire readiness and one immutable multiword payload on the recorded profile; freshness, progress, generation policy and queue correctness remain excluded.",
+        "SPEC-0017 device selection is implemented in the portable/software/package path. Default-device compatibility and explicit selector orchestration are mock-qualified only; native default/explicit selection and distinct-device behavior remain unqualified until exact independent evidence exists.",
+        "SPEC-0020 immutable prepared operation DAGs implement canonical kernel-only identity plus the bounded SPEC-0031 cuBLASLt f32 child, replay, one whole-DAG operation lifecycle, derived library accesses, and a single-stream semantic realization. Exact installed-package Windows native preparation, mixed kernel/library submission, result parity, and cleanup evidence qualifies only the recorded profile. CUDA Graph realization and performance benefit remain unimplemented or unqualified.",
+        "SPEC-0023 and SPEC-0029 implement one optional context-owned cuBLASLt f32 row-major matmul profile over typed views and the ordinary operation lifecycle. Exact Windows CUDA 13.3 / cuBLASLt 13.5.1 ABI, numerical, public lifecycle, provider identity, and cleanup evidence does not qualify Linux, other provider versions, other dtypes/layouts, or performance.",
+        "Linux package import, source admission, readiness, and portable testing are not native CUDA support; WSL remains backend-unavailable.",
+        "No strict-JIT, process-isolation, performance, or production-stability claim.",
+        "CUDA-JS source is AGPL-3.0-or-later; separate commercial terms are available only through an executed agreement with the copyright holder.",
+        "NVIDIA CUDA Toolkit headers and native providers are separately licensed system inputs and are not bundled in the package.",
+        "Registry publication remains gated on a separate release, provenance, and registry review."
+      ]
+    },
+    "cases": [
+      {
+        "scenario": {
+          "cancelled": 1,
+          "prior": 0,
+          "consume": 0,
+          "dispose": 11,
+          "cause": 2,
+          "drain": 11
+        },
+        "sourceSha256": "ea9204378bb35f706bbcc430e243079a182f80ac01d3ac23c3867de4bdd02101",
+        "controllerSourceSha256": "78d48d43c5884ce7b4c782933b110452f8eb424d56606105160019b7e69de8b8",
+        "terminalFactsSourceSha256": "e67936866ec2a65d256aa7debe10056a6be846c6b244be185d6e16d0e555c882",
+        "artifactSha256": "cb4c981a52dff3496f40983e9353ce7c76645591b3ad7d3f0a4b4d6948839945",
+        "observedFirstCause": 2,
+        "observedDrainDisposition": 11,
+        "outputWords": 48,
+        "guardUnchanged": true
+      },
+      {
+        "scenario": {
+          "cancelled": 0,
+          "prior": 8,
+          "consume": 9,
+          "dispose": 11,
+          "cause": 8,
+          "drain": 9
+        },
+        "sourceSha256": "4896ffbdb0e95b62d5865a2f4296f891123221a28b05fc63728f06305fe8aca0",
+        "controllerSourceSha256": "78d48d43c5884ce7b4c782933b110452f8eb424d56606105160019b7e69de8b8",
+        "terminalFactsSourceSha256": "e67936866ec2a65d256aa7debe10056a6be846c6b244be185d6e16d0e555c882",
+        "artifactSha256": "d6fa4849317779dfe8a50c292eb3ea09e9cef326f9d8c815ba70dac08560aa11",
+        "observedFirstCause": 8,
+        "observedDrainDisposition": 9,
+        "outputWords": 48,
+        "guardUnchanged": true
+      },
+      {
+        "scenario": {
+          "cancelled": 1,
+          "prior": 0,
+          "consume": 0,
+          "dispose": 0,
+          "cause": 2,
+          "drain": 0
+        },
+        "sourceSha256": "588005b8cac64208b6aaa15fafb54f845bbbca90548f83c8df7e7bf8058557bf",
+        "controllerSourceSha256": "78d48d43c5884ce7b4c782933b110452f8eb424d56606105160019b7e69de8b8",
+        "terminalFactsSourceSha256": "e67936866ec2a65d256aa7debe10056a6be846c6b244be185d6e16d0e555c882",
+        "artifactSha256": "1d51d7260addcfb7e4c67f12f0af6430edec1de1e65a4e0e95551eca4b9e57a8",
+        "observedFirstCause": 2,
+        "observedDrainDisposition": 0,
+        "outputWords": 48,
+        "guardUnchanged": true
+      }
+    ],
+    "cleanup": {
+      "schemaVersion": 1,
+      "graceful": true,
+      "restartRequired": false,
+      "state": "closed",
+      "compiler": {
+        "graceful": true,
+        "restartRequired": false,
+        "cleanupClaim": "proved-native-resources-and-libraries",
+        "workerExited": true,
+        "workerExitCode": 0,
+        "resources": {
+          "programsCreated": 3,
+          "programsDestroyed": 3,
+          "linksCreated": 3,
+          "linksDestroyed": 3
+        }
+      },
+      "driver": {
+        "graceful": true,
+        "restartRequired": false,
+        "cleanupClaim": "proved-exact-windows-profile",
+        "workerExited": true,
+        "workerExitCode": 0,
+        "health": "closed",
+        "resourceCounts": {
+          "live": 0,
+          "closing": 0,
+          "closed": 30,
+          "orphaned": 0
+        }
+      }
+    }
+  },
+  "epoch": {
+    "scope": "isolated-generated-Session-counter-boundary-not-engine-or-Graph-progression",
+    "node": "v26.11.1",
+    "compatibility": {
+      "schemaVersion": 1,
+      "package": {
+        "name": "cuda-js",
+        "version": "0.1.0-alpha.22",
+        "format": "esm",
+        "nativeAddon": false,
+        "registryPublication": "not-yet-released",
+        "private": false,
+        "testingPhase": true,
+        "license": "AGPL-3.0-or-later",
+        "commercialLicensing": "available-separately"
+      },
+      "publicApi": {
+        "schemaVersion": 1,
+        "entries": [
+          "cuda-js",
+          "cuda-js/compatibility",
+          "cuda-js/testing"
+        ],
+        "testingEntry": "mock-only"
+      },
+      "node": {
+        "version": "v26.7.0",
+        "moduleAbi": "147",
+        "minimumVersion": "v26.1.0",
+        "operationPolicy": "testing-unconfirmed-at-or-above-minimum",
+        "ffi": "experimental",
+        "requiredFlags": [
+          "--experimental-ffi"
+        ],
+        "permissionRequirement": "--allow-ffi when the permission model is active"
+      },
+      "nativeProfiles": [
+        {
+          "host": "windows-native-x64",
+          "status": "testing-unconfirmed-by-default",
+          "qualifiedEvidence": "exact GTX 1660 Ti / Node v26.7.0 / Driver API 13030 profile only",
+          "abi": "win64",
+          "cudaHeader": "13.3.29",
+          "cudaHeaderSha256": "31df84e16179b6d97db4b3c0bae7697392a370b41983f4a8962f0e5a8069b577",
+          "driverApi": 13030,
+          "compilerProviders": "optional-exact-cuda-13.3",
+          "cublasLtProvider": "optional-exact-cuda-13.3-cublaslt-13.5.1-f32-row-major-matmul"
+        },
+        {
+          "host": "linux-native-x64",
+          "status": "testing-unconfirmed-by-default",
+          "qualification": "not-qualified",
+          "qualifiedEvidence": "none",
+          "abi": "sysv-x86-64",
+          "driverProvider": "canonical-libcuda-so.1",
+          "compilerProviders": "optional-exact-cuda-13.3",
+          "cublasLtProvider": "profile-not-yet-admitted"
+        },
+        {
+          "host": "linux-native-arm64",
+          "status": "backend-unavailable"
+        },
+        {
+          "host": "wsl2-x64",
+          "status": "backend-unavailable"
+        }
+      ],
+      "capabilities": {
+        "deviceSelection": "finite-sanitized-snapshot-opaque-process-local-selector-one-device-per-runtime-selected-targets",
+        "deviceMemory": "bounded-synchronous-copied-bytes",
+        "deviceMemoryAllocationMinimumAlignmentBytes": 256,
+        "moduleFormats": [
+          "ptx",
+          "cubin"
+        ],
+        "functionParameters": [
+          "device-memory",
+          "u32",
+          "u64",
+          "i32",
+          "f32",
+          "f64",
+          "f16",
+          "bf16",
+          "publication-mailbox-host-to-device-u32",
+          "publication-mailbox-device-to-host-u32"
+        ],
+        "deviceViewRelation": "pure-same-runtime-byte-range-relation-v1",
+        "typedDeviceViews": "allocation-owned-contiguous-1d-opaque-capability-explicit-launch-access",
+        "launchConcurrency": 1,
+        "gpuOperationLifecycle": "opaque-submit-status-wait-close-one-pending",
+        "boundedMultiOperationScheduling": "opt-in-capacity-two-two-private-streams-one-predecessor-no-queue",
+        "asyncTransfers": "opt-in-capacity-two-internal-pinned-staging-contiguous-h2d-d2h-d2d",
+        "publicationMailboxes": "private-mapped-named-u32-one-operation-lease-system-acquire-release",
+        "preparedOperationDags": "bounded-kernel-cublaslt-f32-dag-immutable-bindings-derived-library-access-single-stream-semantic-replay",
+        "deviceContinuationCandidate": "kernel-only-finite-dag-final-1x1-controller-device-self-tail-opaque-mailboxes-one-operation-unqualified-v1",
+        "preparedOperationDagLimits": {
+          "nodes": 32,
+          "edges": 64,
+          "bindings": 64,
+          "predecessorsPerNode": 8
+        },
+        "contextBoundLibraryAdapters": "optional-finite-driver-owned-provider-plans-existing-operation-lifecycle",
+        "cublasLtF32Matmul": "optional-row-major-contiguous-typed-views-explicit-bounded-workspace",
+        "compiler": "optional-nvrtc-13.3",
+        "compilerHeaderProfiles": {
+          "none": "default",
+          "cuda-cccl": "exact-manifest-verified-cuda-13.3-windows-qualified-linux-source-unqualified",
+          "cuda-numeric": "exact-manifest-verified-cuda-13.3-f64-f16-bf16-windows-qualified-linux-source-unqualified",
+          "cuda-device": "exact-composite-cuda-cccl-plus-cuda-numeric-windows-qualified-linux-source-unqualified"
+        },
+        "compilerOutputFormats": [
+          "ptx",
+          "lto-ir"
+        ],
+        "ptxRelocatableDeviceCode": "typed-boolean-default-false",
+        "linker": "optional-nvjitlink-13.3",
+        "linkInputFamilies": [
+          "ptx",
+          "typed-lto-ir"
+        ],
+        "deviceJsFrontend": "restricted-spec-0013-v1+spec-0022-atomic-observation-v1+spec-0022-device-publication-v1+spec-0014-publication-mailbox-v1",
+        "deviceJsInspection": "pure-cuda-free-public-program-semantic-inspection-shared-with-compile",
+        "deviceJsLimits": {
+          "parametersPerFunction": 64
+        },
+        "deviceJsDenseNumeric": "f64-f16-bf16-exact-casts-special-values-manifest-verified-headers",
+        "deviceJsErf": "f32-f64-same-kind-dense-child-provider-bound-erff-erf",
+        "deviceJsTanh": "f32-f64-same-kind-dense-child-provider-bound-tanhf-tanh",
+        "deviceJsWarp32": "typed-width-lane-masked-ballot-device-only-v1",
+        "deviceJsNumericChildOrder": [
+          "SPEC-0030-erf-v1",
+          "SPEC-0030-tanh-v1"
+        ],
+        "deviceJsLibraries": "typed-leaf-libraries-explicit-aliased-imports-selected-runtime-target-rdc-or-lto-final-cubin",
+        "deviceJsParser": {
+          "name": "acorn",
+          "version": "8.15.0",
+          "role": "syntax-only-replaceable-adapter"
+        },
+        "strictJit": "unsupported",
+        "processIsolation": "not-selected",
+        "rawPointers": false,
+        "arbitraryNativeCalls": false
+      },
+      "migration": {
+        "preOne": true,
+        "compatiblePatch": "public API schema unchanged",
+        "additivePrerelease": "package prerelease or minor identity increments",
+        "incompatibleChange": "public API schema increments with a new accepted specification and consumer conformance"
+      },
+      "evidenceInvalidation": [
+        "Node version or module ABI",
+        "operating system, architecture, or ABI",
+        "CUDA header, Driver API, toolkit, provider, or GPU profile",
+        "public API, semantic overlay, generated products, permissions, parser version, or artifact options",
+        "resource ownership, lifetime, error, health, or cleanup behavior"
+      ],
+      "claimLimits": [
+        "SPEC-0022-warp32-v1 adds GPU-only width/lane/masked-ballot helpers with explicit participation and imported-library profile propagation. Native qualification is recorded separately for each exact profile; portable evidence does not establish GPU execution, participation safety, or performance.",
+        "Structurally admitted native Windows x64 and Linux x64 CUDA profiles may operate for testing without a separate opt-in; native Linux x64 remains not-qualified.",
+        "Only exact capability/profile combinations with their required evidence are qualified; successful operation does not promote support.",
+        "The ordinary device-allocation minimum-alignment projection applies only to ordinary base allocations; it adds no caller-selected alignment, arbitrary offset-view guarantee, native support promotion, or performance claim.",
+        "SPEC-0010 relocatable PTX and SPEC-0012 Device LTO have exact Windows native qualification; Linux and every other provider/device profile remain independently gated. SPEC-0011 u64/i32/f32 scalar launch kinds retain their own native promotion gate.",
+        "SPEC-0021 f64/f16/bf16 scalar launch kinds are implemented in the public portable/software/package path; their exact native ABI/launch promotion evidence remains open.",
+        "SPEC-0021 contiguous one-dimensional typed device views are implemented as allocation-owned opaque public capabilities with explicit launch-access enforcement. Portable/package behavior is implemented; native view consumption remains unqualified.",
+        "SPEC-0016 opaque GPU operation submission/completion has exact Windows delayed-completion/deferred-failure/cleanup evidence only for its recorded Node/Driver/GPU profile; no broader support is implied.",
+        "SPEC-0018 capacity-two scheduling and SPEC-0019 internal-pinned async transfers have exact Windows and installed-package evidence only for the recorded Node/Driver/GPU profile; the compatibility default remains one pending operation.",
+        "SPEC-0014 publication mailboxes have exact Windows and installed-package evidence only for privately mapped named u32 lanes, one live GPU operation lease, and system-scope acquire/release publication on the recorded Node/Driver/GPU profile.",
+        "SPEC-0013 Device-JS plus the scoped atomic-observation and device-publication children is an implemented restricted frontend using pinned Acorn only for syntax parsing; exact Windows source-only generated-source/compiler/launch/oracle/lifecycle evidence qualifies only its recorded profile.",
+        "inspectDeviceProgram() is a pure CUDA-free frontend inspection path. Its portable/package conformance proves only deterministic Device-JS semantic validation and public descriptor projection; it does not claim native/provider execution or performance.",
+        "SPEC-0030 adds an exact additive Device-JS dense numeric profile for f64/f16/bf16 pointers, locals, device functions, kernel scalars, casts, arithmetic and special-value math. Exact installed-package Windows CUDA 13.3 header/compiler/compute_75/GTX 1660 Ti numerical-oracle and cleanup evidence does not qualify Linux, other providers/targets, tensor operations, tensor cores, fast math, or performance.",
+        "SPEC-0030-erf-v1 additively admits same-kind f32/f64 gpu.math.erf through the dense numeric profile and private ordinary erff/erf lowering. Portable/package evidence does not promote native numerical accuracy, provider compatibility, Linux support, fast-math, lower precision, GELU semantics, or performance.",
+        "SPEC-0030-tanh-v1 additively admits same-kind f32/f64 gpu.math.tanh through the dense numeric profile and private ordinary tanhf/tanh lowering, with canonical composition after erf when both children are required. Portable/package evidence does not promote native numerical accuracy, provider compatibility, Linux support, fast-math, lower precision, activation/model semantics, or performance.",
+        "SPEC-0022 device publication has exact Windows installed-package evidence only for naturally aligned u32/u64 device-scope release/acquire readiness and one immutable multiword payload on the recorded profile; freshness, progress, generation policy and queue correctness remain excluded.",
+        "SPEC-0017 device selection is implemented in the portable/software/package path. Default-device compatibility and explicit selector orchestration are mock-qualified only; native default/explicit selection and distinct-device behavior remain unqualified until exact independent evidence exists.",
+        "SPEC-0020 immutable prepared operation DAGs implement canonical kernel-only identity plus the bounded SPEC-0031 cuBLASLt f32 child, replay, one whole-DAG operation lifecycle, derived library accesses, and a single-stream semantic realization. Exact installed-package Windows native preparation, mixed kernel/library submission, result parity, and cleanup evidence qualifies only the recorded profile. CUDA Graph realization and performance benefit remain unimplemented or unqualified.",
+        "SPEC-0023 and SPEC-0029 implement one optional context-owned cuBLASLt f32 row-major matmul profile over typed views and the ordinary operation lifecycle. Exact Windows CUDA 13.3 / cuBLASLt 13.5.1 ABI, numerical, public lifecycle, provider identity, and cleanup evidence does not qualify Linux, other provider versions, other dtypes/layouts, or performance.",
+        "Linux package import, source admission, readiness, and portable testing are not native CUDA support; WSL remains backend-unavailable.",
+        "No strict-JIT, process-isolation, performance, or production-stability claim.",
+        "CUDA-JS source is AGPL-3.0-or-later; separate commercial terms are available only through an executed agreement with the copyright holder.",
+        "NVIDIA CUDA Toolkit headers and native providers are separately licensed system inputs and are not bundled in the package.",
+        "Registry publication remains gated on a separate release, provenance, and registry review."
+      ]
+    },
+    "cases": [
+      {
+        "exhaustedField": 3,
+        "sourceSha256": "e5daa24210958c3339d41cc9f9a8aa4c15e7bfc16a313ef31b50459fc5cffc97",
+        "sessionSourceSha256": "af5c806735f61ade3aa44d51243b38c7728c608ac6d2e4bf4edad51f3932473c",
+        "artifactSha256": "914561ddfa22bb757f2d486a8d4d27ce05ac9d6b3d05226cf83d71f2a94c7e41",
+        "typedResult": 9,
+        "targetAdmissions": 0,
+        "outputReservations": 0,
+        "authorityEpoch": 4294967294,
+        "publicationGeneration": 0
+      },
+      {
+        "exhaustedField": 4,
+        "sourceSha256": "e5daa24210958c3339d41cc9f9a8aa4c15e7bfc16a313ef31b50459fc5cffc97",
+        "sessionSourceSha256": "af5c806735f61ade3aa44d51243b38c7728c608ac6d2e4bf4edad51f3932473c",
+        "artifactSha256": "914561ddfa22bb757f2d486a8d4d27ce05ac9d6b3d05226cf83d71f2a94c7e41",
+        "typedResult": 9,
+        "targetAdmissions": 0,
+        "outputReservations": 0,
+        "authorityEpoch": 1,
+        "publicationGeneration": 4294967294
+      }
+    ],
+    "cleanup": {
+      "schemaVersion": 1,
+      "graceful": true,
+      "restartRequired": false,
+      "state": "closed",
+      "compiler": {
+        "graceful": true,
+        "restartRequired": false,
+        "cleanupClaim": "proved-native-resources-and-libraries",
+        "workerExited": true,
+        "workerExitCode": 0,
+        "resources": {
+          "programsCreated": 1,
+          "programsDestroyed": 1,
+          "linksCreated": 0,
+          "linksDestroyed": 0
+        }
+      },
+      "driver": {
+        "graceful": true,
+        "restartRequired": false,
+        "cleanupClaim": "proved-exact-windows-profile",
+        "workerExited": true,
+        "workerExitCode": 0,
+        "health": "closed",
+        "resourceCounts": {
+          "live": 0,
+          "closing": 0,
+          "closed": 21,
+          "orphaned": 0
+        }
+      }
+    }
+  }
+}

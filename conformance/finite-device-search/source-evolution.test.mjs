@@ -5,6 +5,7 @@ test('selected prerelease pins keep historical promotion immutable and reject ol
   for(const [name,pin]of Object.entries(selectedSourceEvolution.changes)){
     assert.doesNotThrow(()=>assertSelectedSourceBlob(name,pin.historical,pin.selected,'0.0.0-dev.1'));
     assert.doesNotThrow(()=>assertSelectedSourceBlob(name,pin.historical,pin.selected,'0.0.0-dev.2'));
+    assert.doesNotThrow(()=>assertSelectedSourceBlob(name,pin.historical,pin.selected,'0.0.0-dev.3'));
     assert.throws(()=>assertSelectedSourceBlob(name,pin.historical,pin.historical,'0.0.0-dev.1'));
     assert.throws(()=>assertSelectedSourceBlob(name,pin.historical,pin.selected,'0.0.0-dev.0'));
     assert.throws(()=>assertSelectedSourceBlob(name,pin.historical,pin.selected,'0.0.0-dev.99'));

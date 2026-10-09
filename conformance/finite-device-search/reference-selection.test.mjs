@@ -6,6 +6,8 @@ import {selectReferencePath,assertReferenceVersion,semanticFixtureProjection,ass
 test('reference fixture ancestry is explicitly selected by matching package version',()=>{
   const original=path.resolve('experiments/search-semantics-reference/fixtures/domain-cases.json');
   assert.doesNotThrow(()=>assertReferenceVersion('0.0.0-dev.0','0.0.0-dev.0'));
+  assert.doesNotThrow(()=>assertReferenceVersion('0.0.0-dev.3','0.0.0-dev.3'));
+  assert.throws(()=>assertReferenceVersion('0.0.0-dev.2','0.0.0-dev.3'));
   assert.throws(()=>selectReferencePath(original,'0.0.0-dev.0'));
   assert.equal(selectReferencePath(original),path.join(path.dirname(original),referenceSelection.version,'domain-cases.json'));
   assert.throws(()=>assertReferenceVersion('0.0.0-dev.0','0.0.0-dev.1'));
