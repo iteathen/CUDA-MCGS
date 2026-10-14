@@ -24,7 +24,7 @@ jobs:
       - name: Run deterministic CUDA-MCGS Search IR reference capsule
         run: node scripts/run-search-ir-reference.mjs
       - name: Retain platform evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: search-ir-reference-${{ matrix.os }}
           path: experiments/search-ir-reference/build/evidence.json
@@ -43,7 +43,7 @@ jobs:
           node scripts/export-search-ir-composer-graph-profiles.mjs
           node scripts/run-graph-node-reference.mjs
       - name: Retain Graph NODE evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: graph-node-reference
           path: |
@@ -65,7 +65,7 @@ jobs:
           node scripts/run-graph-node-reference.mjs
           node scripts/run-graph-edge-reference.mjs
       - name: Retain Graph EDGE evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: graph-edge-reference
           path: experiments/search-semantics-reference/build/graph-edge-evidence.json
@@ -85,7 +85,7 @@ jobs:
           node scripts/run-graph-node-reference.mjs
           node scripts/run-graph-ref-reference.mjs
       - name: Retain Graph REF evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: graph-ref-reference
           path: |
@@ -109,7 +109,7 @@ jobs:
           node scripts/run-graph-ref-reference.mjs
           node scripts/run-graph-path-reference.mjs
       - name: Retain Graph PATH evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: graph-path-reference
           path: |
@@ -136,7 +136,7 @@ jobs:
           node scripts/run-graph-path-reference.mjs
           node scripts/run-graph-root-reference.mjs
       - name: Retain Graph ROOT evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: graph-root-reference
           path: |
@@ -167,7 +167,7 @@ jobs:
           node scripts/run-graph-root-reference.mjs
           node scripts/run-graph-reclaim-reference.mjs
       - name: Retain Graph RECLAIM evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: graph-reclaim-reference
           path: |
@@ -201,7 +201,7 @@ jobs:
           node scripts/run-graph-reclaim-reference.mjs
           node scripts/run-graph-advance-occurrence-reference.mjs
       - name: Retain Graph ADVANCE occurrence evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: graph-advance-occurrence-reference
           path: |
@@ -237,7 +237,7 @@ jobs:
           node scripts/run-graph-advance-occurrence-reference.mjs
           node scripts/run-graph-cleanup-reference.mjs
       - name: Retain Graph CLEANUP evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: graph-cleanup-reference
           path: |
@@ -267,7 +267,7 @@ jobs:
           node scripts/export-search-ir-composer-policy-profiles.mjs
           node scripts/run-policy-reference.mjs
       - name: Retain Policy evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: policy-reference
           path: |
@@ -289,7 +289,7 @@ jobs:
           node scripts/export-search-ir-composer-evaluator-profiles.mjs
           node scripts/run-evaluator-reference.mjs
       - name: Retain Evaluator evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: evaluator-reference
           path: |
@@ -311,7 +311,7 @@ jobs:
           node scripts/export-search-ir-composer-resource-profiles.mjs
           node scripts/run-resource-reference.mjs
       - name: Retain Resource evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: resource-reference
           path: |
@@ -333,7 +333,7 @@ jobs:
           node scripts/export-search-ir-composer-progress-profiles.mjs
           node scripts/run-progress-reference.mjs
       - name: Retain Progress evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: progress-reference
           path: |
@@ -355,7 +355,7 @@ jobs:
           node scripts/export-search-ir-composer-output-profiles.mjs
           node scripts/run-output-reference.mjs
       - name: Retain Output evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: output-reference
           path: |
